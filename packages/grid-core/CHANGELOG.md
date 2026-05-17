@@ -1,5 +1,112 @@
 # @tomis/grid-core
 
+## 0.1.0
+
+### Minor Changes
+
+- f5ea968: ADR-MOD-GRID-REFACTOR-2026-05-17-007 (Wave 3) — extract storage adapter
+  primitives to single source.
+
+  The SSR-guard + try/catch + JSON parse/stringify + QuotaExceededError boilerplate
+  duplicated across 4 persistence hooks (`useStoragePersist`,
+  `useColumnPersistence`, `useColumnOrderPersist`, `useExpandedPersistence`) is
+  consolidated into a single `internal/storage` adapter under `@tomis/grid-core`.
+
+  - `grid-core`: adds a new `./internal/storage` subpath export
+    (`@tomis/grid-core/internal/storage`) exposing `getStorage`, `readJson`,
+    `readRaw`, `writeJson`, `writeRaw`, `removeKey`, type `StorageType`. Marked
+    `@internal` — sister packages in this monorepo consume it to share the
+    Web-Storage I/O layer. **Not part of the semver-stable public API**;
+    application code must not import from this subpath.
+  - `grid-pro-master`: `useExpandedPersistence` internal implementation now
+    routes Web Storage I/O through the new subpath.
+  - 4 hook public APIs (signatures, return shapes, option fields, envelope
+    formats, debounce timing, fallback semantics) unchanged. Pattern duplication
+    reduced from 4 sites to 1 (drift prevention).
+
+  Semver: minor (internal refactor + new internal-only subpath export). No
+  breaking changes.
+
+- f5ea968: ADR-016: Unify `onRowClick` signature — `BaseGridProps` and all legacy alias components now use `(row: TData, event: MouseEvent<HTMLTableRowElement>) => void` (2-arg). TypeScript contravariance keeps existing 1-arg callbacks assignable without changes.
+
+  ADR-008: `grid-pro-header` legacy `GroupedHeaderGrid` inline type aliases removed; `GridPaginationOptions` and `GridRowSelectionOptions` are now imported from `@tomis/grid-core` directly.
+
+- f5ea968: ADR-MOD-GRID-REFACTOR-2026-05-17-009 (옵션 A) — grid-core ↔ grid-features layering 정리.
+
+  Move `useColumnDrag`, `useColumnOrderPersist`, `DropIndicator`, `SortClearButton`
+  (and supporting types `UseColumnDragProps`, `UseColumnDragReturn`, `DragThProps`,
+  `UseColumnOrderPersistProps`, `SortClearButtonProps`) from `@tomis/grid-features`
+  to `@tomis/grid-core/internal/`, exposed via grid-core public API.
+
+  - `grid-core`: new public exports (minor add). `@tomis/grid-features` removed
+    from `dependencies` — architectural inversion해소.
+  - `grid-features`: retains deprecation aliases for one minor cycle. Adds
+    `@tomis/grid-core` as a workspace dependency to back the aliases. Public
+    surface unchanged; consumers should migrate imports to `@tomis/grid-core`.
+    Aliases will be removed in the next major.
+
+- f5ea968: ADR-MOD-GRID-REFACTOR-2026-05-17-010 — `SortBadge` 중복 제거 (grid-core/internal 단일화).
+
+  Consolidates the ~95%-identical `SortBadge` implementations in `grid-core/internal/`
+  and `grid-features/multi-sort/` into a single canonical source in grid-core.
+
+  - `grid-core`: `SortBadge` and `SortBadgeProps` graduated to public API (minor add).
+    The implementation is the superset of the previous internal version: accepts an
+    optional `className` prop (Tailwind override, C-5). Existing Grid.tsx call sites
+    (`<SortBadge sortIndex={sortIndex} />`) are unaffected — prop is optional.
+    `SortBadgeProps` moved from `@tomis/grid-features/multi-sort/types.ts`.
+  - `grid-features`: `SortBadge` and `SortBadgeProps` are now deprecation aliases
+    re-exporting from `@tomis/grid-core`. Public surface unchanged. Aliases will be
+    removed in the next major.
+
+- f5ea968: Deprecate 5 unused public APIs: `createTomisColumnHelper`, `useColumnPersistence`,
+  `ColumnVisibilityMenu`, `createGroupedColumns`, `TomisColumnGroup`. All retained as
+  deprecation aliases for one cycle. Removed in next major. ADR-013.
+- f5ea968: ADR-018: registry slot 정책 — tag / progress 슬롯 wiring + TomisColumnType union 확장.
+
+  - grid-core: TomisColumnType union 에 'tag', 'progress' 추가 (additive — backward-compat).
+    defaultRendererRegistry 에 2 placeholder entries 추가 (graceful fallback).
+  - grid-renderers: wireRegistry 에 TagCell / ProgressCell 어댑터 2건 추가 (6 → 8 wired slots).
+    size-limit 10 KB → 12 KB (ADR-018 S-A).
+  - button / avatar / icon 은 registry 외 처리 정책 (구조적 차단 — required non-value prop).
+    README "Action / Avatar Column Pattern" 섹션 추가 (ADR-018 D-3 X-B).
+  - aliases statusBadge / check 은 grid-renderers Record 에서 status quo (ADR-018 D-4 A-A).
+
+- f5ea968: feat(grid-pro-master): add MasterDetailGrid with expand/collapse row detail (MOD-GRID-16/G-001)
+
+  - `<MasterDetailGrid<TData>>` — Pro-tier Master-Detail row expansion component
+  - `renderDetailRow?: RenderDetailRow<TData>` — detail row render function prop
+  - `masterDetail?: MasterDetailOptions<TData>` — controlled/uncontrolled expanded state
+    - Controlled: `expandedRowKeys` + `onExpandChange` callback
+    - Uncontrolled: internal `useState<ExpandedState>`
+  - Imperative handle via `ref`: `expandAll()`, `collapseAll()` + full `GridHandle<TData>` API
+  - `ExpandToggleCell` — internal expand/collapse toggle button with depth-based indent (INDENT_PX=16)
+  - `DetailRow` — full-width `<tr data-detail-row>` for expanded master row content
+  - `verifyLicense('@tomis/grid-pro-master')` called at module level (Pro EULA guard)
+  - `@tomis/grid-core` and `@tomis/grid-license` added to peerDependencies
+
+  `@tomis/grid-core`: `GridHandle<TData>` extended with optional `expandAll?(): void` and `collapseAll?(): void` (after `scrollTo`) — backward-compatible (optional methods, base `<Grid>` unaffected)
+
+  `@tomis/grid-license`: add no-op `verifyLicense(_packageName: string): void` export stub (MOD-GRID-99-A deferred)
+
+### Patch Changes
+
+- f5ea968: ADR-MOD-GRID-REFACTOR-2026-05-17-002 — cross-package renderer wiring.
+
+  `@tomis/grid-renderers` now auto-registers 6 cell adapters into
+  `@tomis/grid-core`'s `defaultRendererRegistry` via a side-effect on import:
+  `text` / `number` / `date` / `dateTime` (with `format: 'datetime'`) / `badge` /
+  `link`. After `import '@tomis/grid-renderers'`, `createColumns({ type: 'number' })`
+  renders the real `NumberCell` instead of the previous `String(value)` placeholder.
+
+  - New peerDependency on `grid-renderers`: `@tomis/grid-core` (workspace:\*).
+  - New `sideEffects` array on `grid-renderers/package.json` so bundlers preserve the wiring import.
+  - grid-core placeholders remain as graceful fallback when grid-renderers is not imported.
+  - `boolean` keeps Y/N. `icon` / `checkbox` remain placeholder (structural + bypass).
+  - 5 extras (button/tag/avatar/progress + statusBadge/check aliases) deferred to ADR-018.
+
+  R-A + D-1A + D-2A + D-3A + D-4A combination.
+
 ## Unreleased (ADR-007 — Wave 3 — 2026-05-17)
 
 ### Added (Internal — not part of semver-stable public API)
@@ -21,7 +128,7 @@
   envelope + `storageKey === ''` short-circuit unchanged. `@deprecated`
   (ADR-013) marker preserved.
 - `useColumnOrderPersist` — same delegation. Public API + raw-array envelope
-  + mount-only restore semantics unchanged.
+  - mount-only restore semantics unchanged.
 
 ### Notes
 

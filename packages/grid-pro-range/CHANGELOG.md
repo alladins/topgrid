@@ -1,8 +1,29 @@
 # @tomis/grid-pro-range Changelog
 
+## 0.1.0
+
+### Minor Changes
+
+- f5ea968: Wire `<Watermark>` rendering in all 7 Pro Grid components when license is invalid
+  or `watermarkRequired === true`. Adds `useLicenseStatus()` hook and
+  `useWatermarkEnforcement()` void hook to `grid-license`. `MultiRowHeader` uses
+  the thead-row watermark pattern (H-D, HTML-valid, no portal), `DataMapCell`
+  uses a module-level singleton portal via the void registration hook (D-D,
+  ref-counted createRoot 1회 mount). Other five Pro components render
+  `<Watermark>` inline inside a wrapper `<div className="relative">`.
+
+  ADR-MOD-GRID-REFACTOR-2026-05-17-001 — option A + (b) granularity + H-D + D-D.
+
+### Patch Changes
+
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+  - @tomis/grid-license@0.1.0
+
 ## v0.3.0 (2026-05-17) — License watermark enforcement
 
 ### Added
+
 - License enforcement — `RangeSelectGrid` now reads `useLicenseStatus()` and renders `<Watermark required />` inside its existing `relative` wrapper when the license is invalid or `watermarkRequired === true`. (ADR-MOD-GRID-REFACTOR-2026-05-17-001)
 
 ## v0.2.0 (2026-05-15) — G-006 RangeSelectGrid 완전 통합

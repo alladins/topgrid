@@ -1,6 +1,6 @@
 {
   "name": "@tomis/grid-core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "license": "MIT",
   "description": "TanStack Table abstraction wrapper + useGridState core hook",
@@ -24,7 +24,10 @@
       "require": "./dist/internal/storage/index.cjs"
     }
   },
-  "files": ["dist", "README.md"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",

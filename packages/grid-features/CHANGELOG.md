@@ -1,5 +1,49 @@
 # @tomis/grid-features
 
+## 0.3.0
+
+### Minor Changes
+
+- f5ea968: ADR-MOD-GRID-REFACTOR-2026-05-17-009 (옵션 A) — grid-core ↔ grid-features layering 정리.
+
+  Move `useColumnDrag`, `useColumnOrderPersist`, `DropIndicator`, `SortClearButton`
+  (and supporting types `UseColumnDragProps`, `UseColumnDragReturn`, `DragThProps`,
+  `UseColumnOrderPersistProps`, `SortClearButtonProps`) from `@tomis/grid-features`
+  to `@tomis/grid-core/internal/`, exposed via grid-core public API.
+
+  - `grid-core`: new public exports (minor add). `@tomis/grid-features` removed
+    from `dependencies` — architectural inversion해소.
+  - `grid-features`: retains deprecation aliases for one minor cycle. Adds
+    `@tomis/grid-core` as a workspace dependency to back the aliases. Public
+    surface unchanged; consumers should migrate imports to `@tomis/grid-core`.
+    Aliases will be removed in the next major.
+
+- f5ea968: ADR-MOD-GRID-REFACTOR-2026-05-17-010 — `SortBadge` 중복 제거 (grid-core/internal 단일화).
+
+  Consolidates the ~95%-identical `SortBadge` implementations in `grid-core/internal/`
+  and `grid-features/multi-sort/` into a single canonical source in grid-core.
+
+  - `grid-core`: `SortBadge` and `SortBadgeProps` graduated to public API (minor add).
+    The implementation is the superset of the previous internal version: accepts an
+    optional `className` prop (Tailwind override, C-5). Existing Grid.tsx call sites
+    (`<SortBadge sortIndex={sortIndex} />`) are unaffected — prop is optional.
+    `SortBadgeProps` moved from `@tomis/grid-features/multi-sort/types.ts`.
+  - `grid-features`: `SortBadge` and `SortBadgeProps` are now deprecation aliases
+    re-exporting from `@tomis/grid-core`. Public surface unchanged. Aliases will be
+    removed in the next major.
+
+### Patch Changes
+
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+  - @tomis/grid-core@0.1.0
+
 ## Unreleased (ADR-010 — 2026-05-17)
 
 ### Deprecated
@@ -34,7 +78,7 @@ major.
 
 ### Added
 
-- `@tomis/grid-core` added to `dependencies` (workspace:*) — required by the
+- `@tomis/grid-core` added to `dependencies` (workspace:\*) — required by the
   deprecation aliases above. This reverses the previous architectural inversion
   (grid-core → grid-features hard dep is gone; grid-features → grid-core is the
   natural layering).

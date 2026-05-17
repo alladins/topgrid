@@ -1,5 +1,55 @@
 # @tomis/grid
 
+## 0.1.0
+
+### Minor Changes
+
+- f5ea968: Activate meta package facade — re-export public API of 12 underlying packages
+  (4 MIT + 7 Pro + 1 infrastructure). Previously placeholder `export {};`.
+
+  Name collisions resolved by prior ADRs and canonical-source selection:
+
+  - `defaultRendererRegistry` / `registerRenderer` → `@tomis/grid-renderers` (ADR-002 D-3A).
+  - `TomisColumnDef` → `@tomis/grid-core` (ADR-006 rename).
+  - `GroupedHeaderGrid` / `GroupedHeaderGridProps` → `@tomis/grid-pro-header`.
+
+  6 `@deprecated` grid-core APIs excluded from the facade per ADR-013 explicit prohibition.
+
+  License retained as `SEE LICENSE IN EULA` (Pro inclusion). MIT-only consumers should
+  import the underlying MIT packages directly.
+
+  ADR-MOD-GRID-REFACTOR-2026-05-17-003.
+
+### Patch Changes
+
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+  - @tomis/grid-license@0.1.0
+  - @tomis/grid-pro-agg@0.1.0
+  - @tomis/grid-pro-datamap@0.2.0
+  - @tomis/grid-pro-header@0.1.0
+  - @tomis/grid-pro-master@1.0.0
+  - @tomis/grid-pro-merging@1.0.0
+  - @tomis/grid-pro-range@0.1.0
+  - @tomis/grid-pro-tracking@1.0.0
+  - @tomis/grid-renderers@1.0.0
+  - @tomis/grid-core@0.1.0
+  - @tomis/grid-export@0.2.0
+  - @tomis/grid-features@0.3.0
+
 ## 0.1.0 — 2026-05-17
 
 ### Added

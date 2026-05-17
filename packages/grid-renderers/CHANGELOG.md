@@ -1,5 +1,50 @@
 # @tomis/grid-renderers
 
+## 1.0.0
+
+### Minor Changes
+
+- f5ea968: ADR-MOD-GRID-REFACTOR-2026-05-17-002 — cross-package renderer wiring.
+
+  `@tomis/grid-renderers` now auto-registers 6 cell adapters into
+  `@tomis/grid-core`'s `defaultRendererRegistry` via a side-effect on import:
+  `text` / `number` / `date` / `dateTime` (with `format: 'datetime'`) / `badge` /
+  `link`. After `import '@tomis/grid-renderers'`, `createColumns({ type: 'number' })`
+  renders the real `NumberCell` instead of the previous `String(value)` placeholder.
+
+  - New peerDependency on `grid-renderers`: `@tomis/grid-core` (workspace:\*).
+  - New `sideEffects` array on `grid-renderers/package.json` so bundlers preserve the wiring import.
+  - grid-core placeholders remain as graceful fallback when grid-renderers is not imported.
+  - `boolean` keeps Y/N. `icon` / `checkbox` remain placeholder (structural + bypass).
+  - 5 extras (button/tag/avatar/progress + statusBadge/check aliases) deferred to ADR-018.
+
+  R-A + D-1A + D-2A + D-3A + D-4A combination.
+
+- f5ea968: Add `value` prop to LinkCell and ButtonCell (replaces `label`). `label` retained
+  as deprecated alias for one cycle. Internal: `as unknown as CellComponent` cast
+  14→1 via `asCell<P>()` helper. ADR-014 amendment (D-partial + additive shim).
+- f5ea968: ADR-018: registry slot 정책 — tag / progress 슬롯 wiring + TomisColumnType union 확장.
+
+  - grid-core: TomisColumnType union 에 'tag', 'progress' 추가 (additive — backward-compat).
+    defaultRendererRegistry 에 2 placeholder entries 추가 (graceful fallback).
+  - grid-renderers: wireRegistry 에 TagCell / ProgressCell 어댑터 2건 추가 (6 → 8 wired slots).
+    size-limit 10 KB → 12 KB (ADR-018 S-A).
+  - button / avatar / icon 은 registry 외 처리 정책 (구조적 차단 — required non-value prop).
+    README "Action / Avatar Column Pattern" 섹션 추가 (ADR-018 D-3 X-B).
+  - aliases statusBadge / check 은 grid-renderers Record 에서 status quo (ADR-018 D-4 A-A).
+
+### Patch Changes
+
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+- Updated dependencies [f5ea968]
+  - @tomis/grid-core@0.1.0
+
 ## 0.3.0 — 2026-05-17 (ADR-018)
 
 ### Added
