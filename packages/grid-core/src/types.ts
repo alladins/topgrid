@@ -17,13 +17,48 @@ import type {
   ExpandedState,
   OnChangeFn,
   PaginationState,
+  Row,
   RowSelectionState,
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
 import type { PaginationMode } from './pagination/types';
 import type { ScrollToOptions as VirtualScrollToOptions } from '@tanstack/react-virtual';
-import type { MouseEvent, ReactNode } from 'react';
+import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
+
+// ─── G-006 (MOD-GRID-01): cell/row className callback canonical types ───
+// 권위 ownership: grid-core (ADR-MOD-GRID-REFACTOR-2026-05-17-009 역의존 제거 cross-ref).
+// `@tomis/grid-renderers/src/EditableCell.tsx` 는 본 타입을 type-only re-export.
+
+/**
+ * Grid-level cell className callback (G-006).
+ *
+ * Receives a TanStack `Cell<TData, unknown>` and returns a Tailwind className
+ * string (or undefined for no addition) to be appended to the rendered `<td>`.
+ *
+ * Canonical home: `@tomis/grid-core` (since G-006 / 2026-05-18 — ADR-MOD-GRID-01-007).
+ * `@tomis/grid-renderers` re-exports as type-only (ADR-MOD-GRID-REFACTOR-2026-05-17-009
+ * 역의존 제거 정책 부합).
+ *
+ * @see G-006 spec — canonical-gap-supplementation-spec.md §4.1
+ * @see ADR-MOD-GRID-01-007
+ * @see ADR-MOD-GRID-05-002 D3 (deferred Grid-level wiring 이행)
+ */
+export type CellClassNameCallback<TData> = (
+  cell: Cell<TData, unknown>,
+) => string | undefined;
+
+/**
+ * Grid-level row className callback (G-006).
+ *
+ * Receives a TanStack `Row<TData>` and returns a Tailwind className string
+ * (or undefined for no addition) to be appended to the rendered `<tr>`.
+ *
+ * @see ADR-MOD-GRID-01-007
+ */
+export type RowClassNameCallback<TData> = (
+  row: Row<TData>,
+) => string | undefined;
 
 /**
  * `<Grid>` `ref.current.scrollTo(index, options)` 의 옵션 타입 (G-004 D9).
@@ -133,6 +168,26 @@ export interface GridHandle<TData> {
    * 모두 reset → UX 회귀 위험 — 채택 안 함 (D11).
    */
   refresh: () => void;
+
+  /**
+   * 프로그래밍적 편집 시작 — `props.onStartEditing(rowId, colId)` 콜백 위임 (G-007 D2).
+   *
+   * @remarks
+   * G-004 ADR-005 의 callback-delegating 패턴 (addRow/deleteRow/updateRow) 와 일관:
+   * - controlled editing state 정책 — Grid 가 editing state 를 소유하지 않음.
+   * - 호출 시 `props.onStartEditing` 콜백 invoke. application 이 EditableCell 의
+   *   `isEditing` 을 setting 책임 (e.g. ChangeTrackingGrid + useChangeTracking).
+   * - 콜백 미제공 시 dev mode `console.warn` 1회 + no-op (production silent).
+   * - cross-package wiring (Grid scope editing state) 은 별도 cycle 결정 — 본 G-007 은
+   *   API surface 만 노출.
+   *
+   * **Optional**: 기본 `<Grid>` 는 본 method 를 구현. ChangeTrackingGrid / MasterDetailGrid /
+   * ContextMenuGrid 등 자체 handle 을 노출하는 wrapper 는 본 method 를 구현하지 않을 수 있음
+   * (`expandAll?` / `collapseAll?` 패턴과 일관 — backward compat C-23).
+   *
+   * @see ADR-MOD-GRID-01-008
+   */
+  startEditing?(rowId: string | number, colId: string): void;
 }
 
 /**
@@ -418,6 +473,102 @@ export interface GridProps<TData> {
     row: TData,
     event: MouseEvent<HTMLTableCellElement>,
   ) => void;
+
+  // ─── G-007 (MOD-GRID-01): 셀 키보드 이벤트 (D1) ───
+  /**
+   * 셀 키보드 이벤트 핸들러 — `<td onKeyDown>` 으로 wire (G-007 D1).
+   *
+   * @param cell - TanStack `Cell` 객체.
+   * @param row - `row.original` (TData) — `onCellClick` 와 일관된 (cell, row, event) 3-arg 시그니처.
+   * @param event - React `KeyboardEvent<HTMLTableCellElement>`.
+   *
+   * @remarks
+   * 시그니처는 `onCellClick` (ADR-MOD-GRID-01-004 D4) 과 일관 — `(cell, row, event)`.
+   *
+   * **focus management**: `<td>` 는 default 로 tabIndex 부재 → native focus 불가.
+   * 사용자가 `onCellKeyDown` 활용 시 cellRenderer 에서 `tabIndex={0}` 를 부여하거나
+   * (`<EditableCell>` 등) focus-able 자식 요소가 있어야 키보드 이벤트 도착함.
+   *
+   * **typical use case** (publish/organizeSchedule G-7 등가): char 입력 시 자동
+   * `startEditing()` 호출.
+   *
+   * @see ADR-MOD-GRID-01-008
+   */
+  onCellKeyDown?: (
+    cell: Cell<TData, unknown>,
+    row: TData,
+    event: KeyboardEvent<HTMLTableCellElement>,
+  ) => void;
+
+  // ─── G-007 (MOD-GRID-01): startEditing 콜백 (D2) ───
+  /**
+   * 프로그래밍적 편집 시작 콜백 — `ref.current.startEditing(rowId, colId)` 호출 시 invoke (G-007 D2).
+   *
+   * G-004 D3 의 callback-delegating 패턴과 동일 정책: Grid 가 editing state 를 소유하지 않으며
+   * application 이 EditableCell `isEditing` 갱신 책임.
+   *
+   * @example
+   * ```tsx
+   * const [editingCell, setEditingCell] = useState<{ rowId: string; colId: string } | null>(null);
+   * <Grid
+   *   ref={gridRef}
+   *   data={rows}
+   *   columns={columns}
+   *   onStartEditing={(rowId, colId) => setEditingCell({ rowId: String(rowId), colId })}
+   *   onCellKeyDown={(cell, _row, event) => {
+   *     if (event.key.length === 1 && cell.column.id.startsWith('d')) {
+   *       gridRef.current?.startEditing(cell.row.id, cell.column.id);
+   *     }
+   *   }}
+   * />
+   * ```
+   *
+   * @see ADR-MOD-GRID-01-008
+   */
+  onStartEditing?: (rowId: string | number, colId: string) => void;
+
+  // ─── G-006 (MOD-GRID-01): cellClassName / rowClassName callback (D1/D2) ───
+  /**
+   * 셀별 className 생성 callback (G-006 D1).
+   *
+   * 모든 cell 렌더 시 호출. 반환 string 은 `<td>` 의 기본 className 에 append.
+   *
+   * **canonical**: 본 callback type 은 grid-core 가 ownership. grid-renderers 는
+   * type-only re-export.
+   *
+   * **사용 예** (publish/organizeSchedule G-3 등가):
+   * ```tsx
+   * cellClassName={(cell) => {
+   *   if (!cell.column.id.startsWith('d')) return '';
+   *   const isSelected = cell.row.getIsSelected();
+   *   const hasValue = cell.getValue() != null && cell.getValue() !== '';
+   *   return [
+   *     isSelected && 'bg-indigo-100',
+   *     !isSelected && hasValue && 'bg-yellow-50',
+   *   ].filter(Boolean).join(' ');
+   * }}
+   * ```
+   *
+   * **성능 주의**: 매 cell 렌더마다 호출 — 대용량 데이터 시 callback 내부 계산 비용
+   * 주의 (useMemo 또는 stable callback 권장).
+   *
+   * @see ADR-MOD-GRID-01-007
+   * @see ADR-MOD-GRID-05-002 D3 (deferred Grid-level wiring 이행)
+   */
+  cellClassName?: CellClassNameCallback<TData>;
+
+  /**
+   * 행별 className 생성 callback (G-006 D2).
+   *
+   * 모든 row 렌더 시 호출. 반환 string 은 `<tr>` 의 기본 className 에 append.
+   *
+   * **virtualization 주의**: `enableVirtualization=true` 시 `<tr ref={measureElement}>`
+   * 가 row height 측정 — `rowClassName` 이 dynamic height 변경을 유발하면 measureElement
+   * 의 reflow 가 반복 발생 (성능 저하). static className 권장.
+   *
+   * @see ADR-MOD-GRID-01-007
+   */
+  rowClassName?: RowClassNameCallback<TData>;
 
   // ─── G-003 신규: 로딩 (D5/D8) ───
   /**

@@ -12,7 +12,6 @@ import {
   type JSX,
   type KeyboardEvent,
 } from 'react';
-import type { Cell } from '@tanstack/react-table';
 
 /**
  * Edit-mode input type — controls which native element is rendered.
@@ -28,21 +27,24 @@ export type EditType = 'text' | 'number' | 'date' | 'select' | 'textarea';
 /**
  * Grid-level callback for conditional cell formatting.
  *
- * Receives a TanStack `Cell<TData, unknown>` and returns a Tailwind className
- * string to be appended to the rendered cell. Exported from `@tomis/grid-renderers`
- * for future wiring by MOD-GRID-01 (Grid wrapper) or MOD-GRID-04 (createColumns).
+ * **Canonical ownership moved to `@tomis/grid-core`** (MOD-GRID-01 G-006, ADR-MOD-GRID-01-007,
+ * 2026-05-18) per ADR-MOD-GRID-REFACTOR-2026-05-17-009 역의존 제거 정책. 본 파일은 type-only
+ * re-export 만 유지 (backward compatibility — 외부 사용처가 `@tomis/grid-renderers` 에서
+ * import 하는 코드 보존).
  *
- * Within G-003 scope only the type is exported. `EditableCell` receives the
- * *resolved* string via the `cellClassName?: string` prop (Section 2.3).
+ * Receives a TanStack `Cell<TData, unknown>` and returns a Tailwind className string
+ * (or undefined for no addition) to be appended to the rendered cell.
  *
- * @see Spec MOD-GRID-05/G-003 D3 + Section 2.2
+ * @see ADR-MOD-GRID-01-007
+ * @see Spec MOD-GRID-05/G-003 D3 + Section 2.2 (legacy doc reference)
  */
-export type CellClassNameCallback<TData> = (cell: Cell<TData, unknown>) => string;
+export type { CellClassNameCallback } from '@tomis/grid-core';
 
 /**
  * Props for {@link EditableCell}.
  *
  * @see Spec MOD-GRID-05/G-003 Section 2.3
+ * @see ADR-MOD-GRID-05-003 (G-004) — maxLength + align + stopPropagationOnKeyDown
  */
 export interface EditableCellProps {
   /** Current value — rendered in view mode. `null`/`undefined` → empty text. */
@@ -65,6 +67,30 @@ export interface EditableCellProps {
   columnId?: string;
   /** Additional Tailwind className — injection point for Grid-level callbacks (D3). */
   cellClassName?: string;
+  /**
+   * Maximum character length for text/number/textarea inputs.
+   * Forwarded directly as the HTML `maxLength` attribute.
+   * Not applicable to `editType === 'select'`.
+   *
+   * @see ADR-MOD-GRID-05-003 D1 (G-004)
+   */
+  maxLength?: number;
+  /**
+   * Text alignment inside the edit input. Default `'left'`.
+   * Rendered as a Tailwind class (`text-center` / `text-right`) — C-5 compliant.
+   *
+   * @see ADR-MOD-GRID-05-003 D2 (G-004)
+   */
+  align?: 'left' | 'center' | 'right';
+  /**
+   * When `true`, calls `e.stopPropagation()` at the end of every keydown event
+   * on the editor element, preventing the grid host's keyboard handler from
+   * intercepting the key (Wijmo `prepareCellForEdit` pattern).
+   * Default `false`.
+   *
+   * @see ADR-MOD-GRID-05-003 D3 (G-004)
+   */
+  stopPropagationOnKeyDown?: boolean;
 }
 
 const INPUT_BASE_CLASS =
@@ -72,6 +98,13 @@ const INPUT_BASE_CLASS =
 
 const VIEW_BASE_CLASS =
   'min-h-[1.5rem] cursor-text px-1 rounded hover:bg-blue-50 hover:ring-1 hover:ring-blue-200';
+
+/** Maps `align` prop value to Tailwind text-alignment class (C-5). */
+function alignToClass(align: 'left' | 'center' | 'right'): string {
+  if (align === 'center') return 'text-center';
+  if (align === 'right') return 'text-right';
+  return ''; // 'left' is browser default — no class needed
+}
 
 /**
  * Inline editable cell with view ↔ edit mode transitions.
@@ -100,6 +133,9 @@ export function EditableCell({
   onCommit,
   onCancel,
   cellClassName,
+  maxLength,
+  align = 'left',
+  stopPropagationOnKeyDown = false,
 }: EditableCellProps): JSX.Element {
   const [draft, setDraft] = useState<string>(String(value ?? ''));
   const inputRef = useRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null>(null);
@@ -122,14 +158,20 @@ export function EditableCell({
         e.preventDefault();
         onCommit(draft);
       }
+      // ADR-MOD-GRID-05-003 D3: stop propagation after all native handling
+      // so the grid host's keyboard wiring (G-7) does not intercept.
+      if (stopPropagationOnKeyDown) e.stopPropagation();
     },
-    [draft, editType, onCommit, onCancel],
+    [draft, editType, onCommit, onCancel, stopPropagationOnKeyDown],
   );
 
   if (isEditing) {
     if (editType === 'select') {
       const opts = selectOptions ?? [];
-      const composed = [INPUT_BASE_CLASS, cellClassName ?? ''].filter(Boolean).join(' ');
+      const composed = [INPUT_BASE_CLASS, alignToClass(align), cellClassName ?? '']
+        .filter(Boolean)
+        .join(' ');
+      // maxLength is NOT forwarded to <select> — HTMLSelectElement has no maxLength.
       return (
         <select
           ref={(el) => {
@@ -155,7 +197,7 @@ export function EditableCell({
     }
 
     if (editType === 'textarea') {
-      const composed = [INPUT_BASE_CLASS, 'min-h-[3rem]', cellClassName ?? '']
+      const composed = [INPUT_BASE_CLASS, 'min-h-[3rem]', alignToClass(align), cellClassName ?? '']
         .filter(Boolean)
         .join(' ');
       return (
@@ -168,12 +210,15 @@ export function EditableCell({
           onBlur={() => onCommit(draft)}
           onKeyDown={handleKey}
           className={composed}
+          {...(maxLength !== undefined ? { maxLength } : {})}
         />
       );
     }
 
     const htmlType = editType === 'number' ? 'number' : editType === 'date' ? 'date' : 'text';
-    const composed = [INPUT_BASE_CLASS, cellClassName ?? ''].filter(Boolean).join(' ');
+    const composed = [INPUT_BASE_CLASS, alignToClass(align), cellClassName ?? '']
+      .filter(Boolean)
+      .join(' ');
     return (
       <input
         ref={(el) => {
@@ -185,6 +230,7 @@ export function EditableCell({
         onBlur={() => onCommit(draft)}
         onKeyDown={handleKey}
         className={composed}
+        {...(maxLength !== undefined ? { maxLength } : {})}
       />
     );
   }

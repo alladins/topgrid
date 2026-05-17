@@ -33,6 +33,13 @@ export interface UseGridImperativeHandleParams<TData> {
   onUpdateRow?:
     | ((rowId: string | number, patch: Partial<TData>) => void)
     | undefined;
+  /**
+   * `startEditing` 위임 콜백 (G-007 D2). 미제공 시 dev warn + no-op.
+   * Grid 는 editing state 를 소유하지 않음 — application 책임.
+   */
+  onStartEditing?:
+    | ((rowId: string | number, colId: string) => void)
+    | undefined;
   /** `scrollTo` index clamp 계산용 (`Math.max(0, dataLength - 1)`). */
   dataLength: number;
 }
@@ -138,6 +145,17 @@ export function useGridImperativeHandle<TData>(
 
       // D11: refresh — table.resetRowSelection() (table.reset() X — UX 회귀 방지).
       refresh: () => table.resetRowSelection(),
+
+      // G-007 D2: startEditing — callback-delegating (D3 패턴과 동일).
+      startEditing: (rowId, colId) => {
+        if (!params.onStartEditing) {
+          devWarn(
+            `startEditing(${String(rowId)}, ${colId}) called but no onStartEditing prop provided. No-op.`,
+          );
+          return;
+        }
+        params.onStartEditing(rowId, colId);
+      },
     }),
     // 의도적으로 params 객체가 아닌 individual fields 를 deps 로 명시 — `params` 는 매
     // 렌더마다 새 객체 (호출자가 inline literal 전달) 라 객체 자체를 deps 로 두면 매 렌더
@@ -150,6 +168,7 @@ export function useGridImperativeHandle<TData>(
       params.onAddRow,
       params.onDeleteRow,
       params.onUpdateRow,
+      params.onStartEditing,
       params.dataLength,
     ],
   );

@@ -9,9 +9,11 @@ export type {
   GridPaginationOptions,
   RowSelectionMode,
   GridColumnResizeMode,
-  GridHandle, // ★ G-004 (D2/D4)
+  GridHandle, // ★ G-004 (D2/D4) + G-007 (startEditing)
   GridScrollToOptions, // ★ G-004 (D2/D9)
   BaseGridProps, // ★ G-005 (D11 + AC-005)
+  CellClassNameCallback, // ★ G-006 (D1) — canonical ownership moved from grid-renderers
+  RowClassNameCallback, // ★ G-006 (D2)
   GridState, // ★ MOD-GRID-02 G-001
   UseGridStateOptions, // ★ MOD-GRID-02 G-002
   GridStateValues, // ★ MOD-GRID-02 G-002

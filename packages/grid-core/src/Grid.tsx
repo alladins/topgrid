@@ -154,11 +154,12 @@ function GridInner<TData>(
     props.virtualizerOptions,
   );
 
-  // G-004 D3/D4/D9/D11/D12: useGridImperativeHandle — ref 노출 (ref null 시 React 표준 skip).
+  // G-004 D3/D4/D9/D11/D12 + G-007 D2: useGridImperativeHandle — ref 노출 (ref null 시 React 표준 skip).
   useGridImperativeHandle<TData>(ref, table, virtualizer, scrollContainerRef, {
     onAddRow: props.onAddRow,
     onDeleteRow: props.onDeleteRow,
     onUpdateRow: props.onUpdateRow,
+    onStartEditing: props.onStartEditing,
     dataLength: props.data.length,
   });
 
@@ -381,6 +382,8 @@ function GridInner<TData>(
                 {virtualItems.map((virtualRow) => {
                   const row = table.getRowModel().rows[virtualRow.index];
                   if (!row) return null;
+                  // G-006 D2: rowClassName callback (undefined / '' 무효 → 빈 문자).
+                  const extraRowClass = props.rowClassName?.(row) ?? '';
                   return (
                     <tr
                       key={row.id}
@@ -390,7 +393,7 @@ function GridInner<TData>(
                         row.getIsSelected()
                           ? 'bg-blue-50 hover:bg-blue-100'
                           : 'hover:bg-gray-50'
-                      } ${rowBorderClassName}`}
+                      } ${rowBorderClassName} ${extraRowClass}`}
                       onClick={(event) => props.onRowClick?.(row.original, event)}
                       onDoubleClick={(event) =>
                         props.onRowDoubleClick?.(row.original, event)
@@ -405,13 +408,18 @@ function GridInner<TData>(
                           : { style: {}, className: '' };
                         const cellStyle: CSSProperties = { ...pinnedCell.style };
                         if (applyCellWidth) cellStyle.width = cellSize;
+                        // G-006 D1: cellClassName callback.
+                        const extraCellClass = props.cellClassName?.(cell) ?? '';
                         return (
                           <td
                             key={cell.id}
-                            className={`px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className}`}
+                            className={`px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className} ${extraCellClass}`}
                             style={cellStyle}
                             onClick={(event) =>
                               props.onCellClick?.(cell, row.original, event)
+                            }
+                            onKeyDown={(event) =>
+                              props.onCellKeyDown?.(cell, row.original, event)
                             }
                           >
                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -428,38 +436,47 @@ function GridInner<TData>(
                 )}
               </>
             ) : (
-              table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  data-index={row.index}
-                  className={`transition-colors ${isClickable ? 'cursor-pointer' : ''} ${
-                    row.getIsSelected() ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'
-                  } ${rowBorderClassName}`}
-                  onClick={(event) => props.onRowClick?.(row.original, event)}
-                  onDoubleClick={(event) => props.onRowDoubleClick?.(row.original, event)}
-                >
-                  {row.getVisibleCells().map((cell) => {
-                    const cellSize = cell.column.getSize();
-                    const applyCellWidth = useResizing || usePinning || cellSize !== 150;
-                    // D3: pinned body 셀 sticky style + z-20.
-                    const pinnedCell = usePinning
-                      ? getPinnedCellStyle(cell.column, table, 'tbody')
-                      : { style: {}, className: '' };
-                    const cellStyle: CSSProperties = { ...pinnedCell.style };
-                    if (applyCellWidth) cellStyle.width = cellSize;
-                    return (
-                      <td
-                        key={cell.id}
-                        className={`px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className}`}
-                        style={cellStyle}
-                        onClick={(event) => props.onCellClick?.(cell, row.original, event)}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))
+              table.getRowModel().rows.map((row) => {
+                // G-006 D2: rowClassName callback.
+                const extraRowClass = props.rowClassName?.(row) ?? '';
+                return (
+                  <tr
+                    key={row.id}
+                    data-index={row.index}
+                    className={`transition-colors ${isClickable ? 'cursor-pointer' : ''} ${
+                      row.getIsSelected() ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'
+                    } ${rowBorderClassName} ${extraRowClass}`}
+                    onClick={(event) => props.onRowClick?.(row.original, event)}
+                    onDoubleClick={(event) => props.onRowDoubleClick?.(row.original, event)}
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      const cellSize = cell.column.getSize();
+                      const applyCellWidth = useResizing || usePinning || cellSize !== 150;
+                      // D3: pinned body 셀 sticky style + z-20.
+                      const pinnedCell = usePinning
+                        ? getPinnedCellStyle(cell.column, table, 'tbody')
+                        : { style: {}, className: '' };
+                      const cellStyle: CSSProperties = { ...pinnedCell.style };
+                      if (applyCellWidth) cellStyle.width = cellSize;
+                      // G-006 D1: cellClassName callback.
+                      const extraCellClass = props.cellClassName?.(cell) ?? '';
+                      return (
+                        <td
+                          key={cell.id}
+                          className={`px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className} ${extraCellClass}`}
+                          style={cellStyle}
+                          onClick={(event) => props.onCellClick?.(cell, row.original, event)}
+                          onKeyDown={(event) =>
+                            props.onCellKeyDown?.(cell, row.original, event)
+                          }
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
