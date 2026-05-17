@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "composite": false,
+    "noEmit": true,
+    "skipLibCheck": true // MOD-GRID-09 G-003: upstream type bug in react-datepicker@8.3.0 + @types/react@18.3.x (bigint ReactNode); see ADR-MOD-GRID-09-004
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.typetest.ts",
+    "src/**/*.stories.tsx",
+    "src/**/*.stories.ts"
+  ]
+}

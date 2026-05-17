@@ -1,0 +1,494 @@
+/**
+ * `<Grid>` — TanStack Table v8 위에 단일 API + `enable*` 토글 (sort/filter/selection/pagination/pinning).
+ *
+ * 8개 기존 Grid variant (BaseGrid/VirtualGrid/TreeGrid/ColumnPinGrid/...) 의 공통 패턴을 흡수.
+ *
+ * @remarks
+ * - `forwardRef` + `useImperativeHandle` 지원: G-004 (이 Goal) 범위 — `GridHandle<TData>` ref 노출.
+ * - virtualization wiring: G-004 범위 — `enableVirtualization` opt-in (D6) + single-table padding-row (D5).
+ * - sticky pinning CSS / autoSelectFirstRow 등은 G-002/G-003 범위.
+ *
+ * @see G-001-spec.md Section 11.2 Step 4
+ * @see G-004-spec.md Section 11.1 Step 4
+ */
+
+import {
+  forwardRef,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent as ReactMouseEvent,
+  type ReactElement,
+  type Ref,
+} from 'react';
+import {
+  flexRender,
+  useReactTable,
+  type ColumnFiltersState,
+  type ColumnOrderState,
+  type ColumnPinningState,
+  type ColumnSizingState,
+  type ExpandedState,
+  type PaginationState,
+  type RowSelectionState,
+  type SortingState,
+  type VisibilityState,
+} from '@tanstack/react-table';
+
+import { useColumnDrag } from './internal/column-drag/useColumnDrag';
+import { DropIndicator } from './internal/column-drag/DropIndicator';
+import { SortClearButton } from './internal/multi-sort/SortClearButton';
+import { buildTableOptions } from './internal/buildTableOptions';
+import { getPinnedCellStyle } from './internal/computePinnedOffset';
+import { EmptyState } from './internal/EmptyState';
+import { ResizeHandle } from './internal/ResizeHandle';
+import { SkeletonRows } from './internal/Skeleton';
+import { SortBadge } from './internal/SortBadge';
+import { useAutoSelectFirstRow } from './internal/useAutoSelectFirstRow';
+import { useGridImperativeHandle } from './internal/useGridImperativeHandle';
+import { useGridVirtualizer } from './internal/useGridVirtualizer';
+import { ColumnVisibilityMenu } from './column/ColumnVisibilityMenu';
+import { useColumnPersistence } from './column/useColumnPersistence';
+import { GridPagination } from './pagination/GridPagination';
+import type { GridHandle, GridProps } from './types';
+
+const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_EMPTY_TEXT = '데이터가 없습니다.';
+const DEFAULT_VIRTUAL_SCROLL_HEIGHT = 400; // G-004 D7
+
+// Node `process` global 의 minimal local declare — `@types/node` 미설치 환경에서
+// dev mode 가드 시 사용 (C-4 준수). `useGridImperativeHandle.ts` 와 2회 중복 —
+// single occurrence pattern 으로 헬퍼 promotion 보류 (decisions.md L207 "1=anecdote" 룰).
+declare const process: { env: { NODE_ENV?: string } } | undefined;
+
+/**
+ * 통합 Grid 컴포넌트 (forwardRef + GridHandle ref API — G-004 D4).
+ *
+ * @typeParam TData - 행 데이터 타입.
+ * @param props - GridProps. 자세한 prop 정의는 {@link GridProps} 참고.
+ * @param ref - `GridHandle<TData>` ref. 미전달 시 imperative API skip (forwardRef 표준).
+ * @returns 표 컴포넌트.
+ *
+ * @see G-004-spec.md Section 2.3 + D4
+ */
+function GridInner<TData>(
+  props: GridProps<TData>,
+  ref: Ref<GridHandle<TData>>,
+): JSX.Element {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: props.pagination?.pageSize ?? DEFAULT_PAGE_SIZE,
+  });
+  const [columnPinning, setColumnPinning] = useState<ColumnPinningState>(
+    props.defaultColumnPinning ?? { left: [], right: [] },
+  );
+  const [columnSizing, setColumnSizing] = useState<ColumnSizingState>(
+    props.defaultColumnSizing ?? {},
+  );
+  // G-005 D5: TreeGrid alias `expandAll={true}` 호환 — `defaultExpanded` prop 으로 초기값 seed.
+  // `boolean` true 는 TanStack `ExpandedState` 의 valid 값 ('전체 펼침'). false / undefined → `{}`.
+  const initialExpanded: ExpandedState =
+    props.defaultExpanded === true
+      ? true
+      : typeof props.defaultExpanded === 'object'
+        ? props.defaultExpanded
+        : {};
+  const [expanded, setExpanded] = useState<ExpandedState>(initialExpanded);
+
+  // G-003 (MOD-GRID-04): 컬럼 가시성 + 순서 state (useColumnPersistence 가 덮어씀).
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([]);
+
+  const { options, effectiveColumns, selectionMode } = buildTableOptions(props, {
+    sorting,
+    setSorting,
+    columnFilters,
+    setColumnFilters,
+    rowSelection,
+    setRowSelection,
+    pagination,
+    setPagination,
+    columnPinning,
+    setColumnPinning,
+    columnSizing,
+    setColumnSizing,
+    expanded,
+    setExpanded,
+    columnVisibility,
+    setColumnVisibility,
+    columnOrder,
+    setColumnOrder,
+  });
+
+  const table = useReactTable<TData>({
+    ...options,
+    data: props.data,
+    columns: effectiveColumns,
+  });
+
+  // G-003 (MOD-GRID-04): 컬럼 가시성 + 순서 영속화 — Rules of Hooks: 항상 호출 (조건부 금지).
+  // spec Section 8.4: storageKey='' 시 no-op (EC-002). columnPersistence 미제공 시 fallback.
+  useColumnPersistence(table, props.columnPersistence ?? { storageKey: '' });
+
+  // G-003 D9: 데이터 로드 후 첫 행 자동 선택 (selectionMode='none' 시 no-op).
+  useAutoSelectFirstRow<TData>(
+    table,
+    props.autoSelectFirstRow === true,
+    props.data.length,
+    selectionMode,
+  );
+
+  // G-004 D5: scroll container ref — virtualization 활성 시 useVirtualizer 의 getScrollElement
+  // 대상이자, virtualization 비활성 시 ref.scrollTo() DOM fallback 의 querySelector 시작점.
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // G-004 D5/D8: useGridVirtualizer (enabled=props.enableVirtualization).
+  const virtualizer = useGridVirtualizer<TData>(
+    table,
+    scrollContainerRef,
+    props.enableVirtualization === true,
+    props.virtualizerOptions,
+  );
+
+  // G-004 D3/D4/D9/D11/D12: useGridImperativeHandle — ref 노출 (ref null 시 React 표준 skip).
+  useGridImperativeHandle<TData>(ref, table, virtualizer, scrollContainerRef, {
+    onAddRow: props.onAddRow,
+    onDeleteRow: props.onDeleteRow,
+    onUpdateRow: props.onUpdateRow,
+    dataLength: props.data.length,
+  });
+
+  // G-001 (MOD-GRID-07): 컬럼 드래그 재정렬 — HTML5 DnD (C-20, AC-001~AC-006).
+  // G-002 (MOD-GRID-07): localStorage 영속화 + 키보드 단축키 (AC-001~AC-004).
+  // C-29 exactOptionalPropertyTypes: optional props 조건부 spread.
+  const { getDragProps, dragOverId, getKeyDownHandler } = useColumnDrag<TData>({
+    table,
+    enabled: props.enableColumnReorder === true,
+    ...(props.onColumnOrderChange !== undefined
+      ? { onColumnOrderChange: props.onColumnOrderChange }
+      : {}),
+    ...(props.persistColumnOrder !== undefined
+      ? { persistColumnOrder: props.persistColumnOrder }
+      : {}),
+    ...(props.columnOrderStorageKey !== undefined
+      ? { columnOrderStorageKey: props.columnOrderStorageKey }
+      : {}),
+  });
+
+  // G-004 D7: virtualScrollHeight 미지정 + virtualization 활성 시 dev mode warn 1회 (mount 직후).
+  useEffect(() => {
+    if (
+      props.enableVirtualization === true &&
+      props.virtualScrollHeight === undefined &&
+      typeof process !== 'undefined' &&
+      process?.env?.NODE_ENV !== 'production'
+    ) {
+      console.warn(
+        `[tomis/grid-core] enableVirtualization=true but virtualScrollHeight not provided. Using default ${DEFAULT_VIRTUAL_SCROLL_HEIGHT}px.`,
+      );
+    }
+    // mount 시 1회 (deps 의도적 비움) — virtualization 토글 빈도 낮음.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // MOD-GRID-08 D5/EC-005: enableMultiSort=true + enableSort=false 조합 경고 (dev mode, mount 1회).
+  useEffect(() => {
+    if (
+      props.enableMultiSort === true &&
+      props.enableSort !== true &&
+      typeof process !== 'undefined' &&
+      process?.env?.NODE_ENV !== 'production'
+    ) {
+      console.warn(
+        '[tomis/grid-core] enableMultiSort=true has no effect when enableSort is not true. Add enableSort to the Grid.',
+      );
+    }
+    // mount 시 1회. eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // D7: mode='client'|'server'도 pagination UI 표시 (TanStack gate L103과 일관성)
+  const showPagination =
+    props.enablePagination === true ||
+    props.pagination?.mode === 'client' ||
+    props.pagination?.mode === 'server';
+  const isClickable = Boolean(props.onRowClick || props.onRowDoubleClick);
+
+  // G-002: sticky pinning + resize 활성 여부 + table className 분기 (D2/D10).
+  const usePinning = props.enableColumnPinning === true;
+  const useResizing = props.enableColumnResizing === true;
+  const resizeMode = props.columnResizeMode ?? 'onChange';
+  // D2: position: sticky × border-collapse 비호환 → enableColumnPinning=true 시 border-separate 강제.
+  const tableClassName = usePinning
+    ? 'min-w-full text-sm border-separate border-spacing-0'
+    : 'min-w-full divide-y divide-gray-200 text-sm';
+  // border-separate 환경에서는 divide-y 가 동작하지 않음 → tbody/td 에 명시적 border 적용.
+  const tbodyClassName = usePinning ? 'bg-white' : 'bg-white divide-y divide-gray-100';
+  const rowBorderClassName = usePinning ? 'border-b border-gray-100' : '';
+
+  // G-004 D5/D7: virtualization 활성 여부 + outer wrapper height/style 분기.
+  const isVirtual = props.enableVirtualization === true && virtualizer !== null;
+  const virtualItems = isVirtual ? virtualizer!.getVirtualItems() : [];
+  const totalSize = isVirtual ? virtualizer!.getTotalSize() : 0;
+  const paddingTop =
+    virtualItems.length > 0 ? (virtualItems[0]?.start ?? 0) : 0;
+  const paddingBottom =
+    virtualItems.length > 0
+      ? totalSize - (virtualItems[virtualItems.length - 1]?.end ?? 0)
+      : 0;
+  // D7: virtualization 활성 시 scroll container 높이 = props.virtualScrollHeight ?? 400.
+  // (인라인 style 동적 값 — C-5 허용. 비활성 시 빈 객체.)
+  const containerStyle: CSSProperties = isVirtual
+    ? {
+        height: props.virtualScrollHeight ?? DEFAULT_VIRTUAL_SCROLL_HEIGHT,
+        overflow: 'auto',
+      }
+    : {};
+  const containerClassName = isVirtual
+    ? 'rounded-lg border border-gray-200'
+    : 'overflow-x-auto rounded-lg border border-gray-200';
+  const leafColCount = table.getAllLeafColumns().length;
+
+  return (
+    <div className={`flex flex-col ${props.className ?? ''}`}>
+      {props.columnPersistence !== undefined && (
+        <div className="flex justify-end mb-1">
+          <ColumnVisibilityMenu table={table} />
+        </div>
+      )}
+      {props.showSortClearButton === true && props.enableMultiSort === true && (
+        <div className="flex justify-end mb-1">
+          <SortClearButton onClear={() => { table.setSorting([]); }} />
+        </div>
+      )}
+      <div ref={scrollContainerRef} className={containerClassName} style={containerStyle}>
+        <table className={tableClassName}>
+          <thead className="bg-gray-50 sticky top-0 z-10">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  const canSort = header.column.getCanSort();
+                  const sorted = header.column.getIsSorted();
+                  const sortGlyph = sorted === 'asc' ? '▲' : sorted === 'desc' ? '▼' : '⇅';
+                  // MOD-GRID-08: multi-sort badge index (0-based; -1 = not sorted).
+                  const sortIndex = header.column.getSortIndex();
+                  // D10: enableColumnResizing 또는 enableColumnPinning 시 항상 width 적용 (default 150 가드 제거).
+                  const size = header.getSize();
+                  const applyWidth = useResizing || usePinning || size !== 150;
+                  // D3: pinned 헤더 셀 sticky style + z-30 (thead × pinned intersection).
+                  const pinned = usePinning
+                    ? getPinnedCellStyle(header.column, table, 'thead')
+                    : { style: {}, className: '' };
+                  // exactOptionalPropertyTypes — width 만 조건부로 추가.
+                  const combinedStyle: CSSProperties = { ...pinned.style };
+                  if (applyWidth) combinedStyle.width = size;
+                  // G-001 (MOD-GRID-07): 컬럼 드래그 재정렬 props (AC-001~AC-004).
+                  // isPinned: column.getIsPinned() !== false → draggable=false + drop 무시 (AC-004).
+                  const isPinned = header.column.getIsPinned() !== false;
+                  const dragProps = getDragProps(header.column.id, isPinned);
+                  // G-002 (MOD-GRID-07): keyboard handler per-header (AC-003, D8 focus-scoped).
+                  const keyDownHandler = getKeyDownHandler(header.column.id, isPinned);
+
+                  // MOD-GRID-08 AC-002/AC-004: multi-sort aware click handler.
+                  // enableMultiSort=false (기본) 시 기존 단일 정렬 경로 100% 보존 (C-6).
+                  const isMulti = props.enableMultiSort === true;
+                  const handleHeaderClick = canSort
+                    ? (e: ReactMouseEvent) => {
+                        if (isMulti && (e.ctrlKey || e.metaKey)) {
+                          // AC-004 / D4: Ctrl/Cmd+Click → 해당 컬럼 정렬 제거 (EC-003 Mac 지원).
+                          table.setSorting((prev) =>
+                            prev.filter((s) => s.id !== header.column.id),
+                          );
+                        } else if (isMulti && e.shiftKey) {
+                          // AC-002: Shift+Click → 기존 정렬 유지하며 컬럼 추가 정렬.
+                          // EC-004: Shift+Ctrl 동시 시 ctrlKey 먼저 체크하므로 여기 미도달.
+                          header.column.toggleSorting(undefined, true);
+                        } else {
+                          // 기존 단일 정렬 경로 (enableMultiSort=false 또는 plain click).
+                          header.column.getToggleSortingHandler()?.(e);
+                        }
+                      }
+                    : undefined;
+                  return (
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      className={`relative px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap select-none ${
+                        canSort ? 'cursor-pointer hover:bg-gray-100' : ''
+                      } ${pinned.className}`}
+                      style={combinedStyle}
+                      onClick={handleHeaderClick}
+                      draggable={dragProps.draggable}
+                      onDragStart={(e) => dragProps.onDragStart(e.nativeEvent)}
+                      onDragOver={(e) => dragProps.onDragOver(e.nativeEvent)}
+                      onDragLeave={(e) => dragProps.onDragLeave(e.nativeEvent)}
+                      onDrop={(e) => dragProps.onDrop(e.nativeEvent)}
+                      onDragEnd={(e) => dragProps.onDragEnd(e.nativeEvent)}
+                      tabIndex={0}
+                      onKeyDown={(e) => keyDownHandler(e.nativeEvent)}
+                      aria-roledescription={props.enableColumnReorder === true ? 'draggable column' : undefined}
+                    >
+                      {/* G-001 (MOD-GRID-07): drop 위치 시각 인디케이터 (AC-003, C-5 Tailwind). */}
+                      <DropIndicator dragOverId={dragOverId} columnId={header.column.id} />
+                      <div className="flex items-center gap-1">
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(header.column.columnDef.header, header.getContext())}
+                        {canSort && <span className="text-gray-400">{sortGlyph}</span>}
+                        {/* AC-003 / MOD-GRID-08: 다중 정렬 우선순위 배지 (1/2/3). */}
+                        {isMulti && canSort && <SortBadge sortIndex={sortIndex} />}
+                      </div>
+                      {useResizing && <ResizeHandle header={header} mode={resizeMode} />}
+                    </th>
+                  );
+                })}
+              </tr>
+            ))}
+          </thead>
+          <tbody className={tbodyClassName}>
+            {props.loading === true ? (
+              /* G-003 D5: loading=true 시 tbody 영역만 SkeletonRows 치환 (thead 보존).
+                 D8: count default = props.loadingRowCount ?? pagination.pageSize ?? 5. */
+              <SkeletonRows
+                count={props.loadingRowCount ?? pagination.pageSize ?? 5}
+                table={table}
+              />
+            ) : table.getRowModel().rows.length === 0 ? (
+              /* G-003 D6: G-001 inline empty markup → EmptyState 1라인 호출로 추출.
+                 D7: slot → text → defaultText 우선순위.
+                 D12: getAllColumns() → getAllLeafColumns() 정정 (현 group columns 부재 → 동일 결과,
+                      MOD-GRID-14 multi-row header 도입 대비 leaf 정확 일치). */
+              <EmptyState
+                colSpan={table.getAllLeafColumns().length}
+                slot={props.emptyState}
+                text={props.emptyText}
+                defaultText={DEFAULT_EMPTY_TEXT}
+              />
+            ) : isVirtual ? (
+              /* G-004 D5: padding-row 패턴 (single-table + sticky/pinning 호환).
+                 G-002 sticky thead + pinned column 는 같은 <table> 자식이라 모두 보존됨.
+                 padding tr 은 aria-hidden + 빈 td 1개 (colSpan=leafColCount) — 시각 영향 0. */
+              <>
+                {paddingTop > 0 && (
+                  <tr style={{ height: paddingTop }} aria-hidden="true">
+                    <td colSpan={leafColCount} />
+                  </tr>
+                )}
+                {virtualItems.map((virtualRow) => {
+                  const row = table.getRowModel().rows[virtualRow.index];
+                  if (!row) return null;
+                  return (
+                    <tr
+                      key={row.id}
+                      data-index={virtualRow.index}
+                      ref={virtualizer!.measureElement}
+                      className={`transition-colors ${isClickable ? 'cursor-pointer' : ''} ${
+                        row.getIsSelected()
+                          ? 'bg-blue-50 hover:bg-blue-100'
+                          : 'hover:bg-gray-50'
+                      } ${rowBorderClassName}`}
+                      onClick={(event) => props.onRowClick?.(row.original, event)}
+                      onDoubleClick={(event) =>
+                        props.onRowDoubleClick?.(row.original, event)
+                      }
+                    >
+                      {row.getVisibleCells().map((cell) => {
+                        const cellSize = cell.column.getSize();
+                        const applyCellWidth =
+                          useResizing || usePinning || cellSize !== 150;
+                        const pinnedCell = usePinning
+                          ? getPinnedCellStyle(cell.column, table, 'tbody')
+                          : { style: {}, className: '' };
+                        const cellStyle: CSSProperties = { ...pinnedCell.style };
+                        if (applyCellWidth) cellStyle.width = cellSize;
+                        return (
+                          <td
+                            key={cell.id}
+                            className={`px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className}`}
+                            style={cellStyle}
+                            onClick={(event) =>
+                              props.onCellClick?.(cell, row.original, event)
+                            }
+                          >
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+                {paddingBottom > 0 && (
+                  <tr style={{ height: paddingBottom }} aria-hidden="true">
+                    <td colSpan={leafColCount} />
+                  </tr>
+                )}
+              </>
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <tr
+                  key={row.id}
+                  data-index={row.index}
+                  className={`transition-colors ${isClickable ? 'cursor-pointer' : ''} ${
+                    row.getIsSelected() ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'
+                  } ${rowBorderClassName}`}
+                  onClick={(event) => props.onRowClick?.(row.original, event)}
+                  onDoubleClick={(event) => props.onRowDoubleClick?.(row.original, event)}
+                >
+                  {row.getVisibleCells().map((cell) => {
+                    const cellSize = cell.column.getSize();
+                    const applyCellWidth = useResizing || usePinning || cellSize !== 150;
+                    // D3: pinned body 셀 sticky style + z-20.
+                    const pinnedCell = usePinning
+                      ? getPinnedCellStyle(cell.column, table, 'tbody')
+                      : { style: {}, className: '' };
+                    const cellStyle: CSSProperties = { ...pinnedCell.style };
+                    if (applyCellWidth) cellStyle.width = cellSize;
+                    return (
+                      <td
+                        key={cell.id}
+                        className={`px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className}`}
+                        style={cellStyle}
+                        onClick={(event) => props.onCellClick?.(cell, row.original, event)}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {showPagination && (
+        // C-29: exactOptionalPropertyTypes=true — optional prop은 조건부 spread로 전달 (undefined literal 직접 할당 금지).
+        <GridPagination
+          table={table}
+          {...(props.pagination?.mode !== undefined ? { mode: props.pagination.mode } : {})}
+          {...(props.pagination?.totalCount !== undefined ? { totalCount: props.pagination.totalCount } : {})}
+          {...(props.pagination?.pageSizeOptions !== undefined ? { pageSizeOptions: props.pagination.pageSizeOptions } : {})}
+          {...(props.pagination?.showTotalCount !== undefined ? { showTotalCount: props.pagination.showTotalCount } : {})}
+        />
+      )}
+    </div>
+  );
+}
+
+/**
+ * 통합 Grid 컴포넌트 (G-004 D4: forwardRef + GridHandle ref API).
+ *
+ * `forwardRef` + generic 컴포넌트는 TS 표준 미지원 → cast 패턴
+ * (ChangeTrackingGrid.tsx:215-217 검증된 패턴 차용).
+ *
+ * @typeParam TData - 행 데이터 타입.
+ *
+ * @see G-004-spec.md Section 2.3 + D4
+ */
+export const Grid = forwardRef(GridInner) as <TData>(
+  props: GridProps<TData> & { ref?: Ref<GridHandle<TData>> },
+) => ReactElement;

@@ -1,0 +1,63 @@
+name: Visual Regression
+
+# G-003 spec Section 2-3: GitHub Actions visual regression 워크플로우
+# D7 결정: on pull_request (branches: main) 트리거
+# C-13 충족: visual regression CI 자동화
+# C-17 충족: migration-impact:high/medium PR fail 시 block-on-migration-impact 차단
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  visual-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build Storybook static
+        run: pnpm -F docs build-storybook
+
+      - name: Serve Storybook static
+        run: npx http-server apps/docs/storybook-static --port 6006 &
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright visual regression
+        run: pnpm visual:test
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+
+  block-on-migration-impact:
+    runs-on: ubuntu-latest
+    needs: visual-regression
+    # AC-003 (C-17): migrationImpact high/medium PR 실패 시 차단
+    if: |
+      failure() &&
+      (contains(github.event.pull_request.labels.*.name, 'migration-impact:high') ||
+       contains(github.event.pull_request.labels.*.name, 'migration-impact:medium'))
+    steps:
+      - name: Block PR on visual regression failure
+        run: exit 1

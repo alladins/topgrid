@@ -1,0 +1,58 @@
+{
+  "name": "@tomis/grid-export",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "description": "Excel, PDF, CSV export for grid data",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./legacy": {
+      "types": "./dist/legacy/downloadExcel.d.ts",
+      "import": "./dist/legacy/downloadExcel.mjs",
+      "require": "./dist/legacy/downloadExcel.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "echo TODO"
+  },
+  "peerDependencies": {
+    "@tanstack/react-table": "^8.0.0",
+    "jspdf": "^2.5.0",
+    "jspdf-autotable": "^3.5.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "peerDependenciesMeta": {
+    "jspdf": {
+      "optional": true
+    },
+    "jspdf-autotable": {
+      "optional": true
+    },
+    "xlsx": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@tanstack/react-table": "^8.21.3",
+    "@types/react": "^19.0.0",
+    "react": "^19.1.0",
+    "tsup": "^8.0.0",
+    "typescript": "~5.8.3",
+    "xlsx": "^0.18.5"
+  }
+}

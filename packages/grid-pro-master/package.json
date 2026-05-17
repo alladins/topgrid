@@ -1,0 +1,39 @@
+{
+  "name": "@tomis/grid-pro-master",
+  "version": "0.0.0",
+  "type": "module",
+  "license": "SEE LICENSE IN EULA",
+  "private": true,
+  "description": "Pro: Master-Detail, TreeGrid, Context Menu",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "echo TODO"
+  },
+  "dependencies": {
+    "@tomis/grid-license": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tanstack/react-table": "^8.0.0",
+    "@tomis/grid-core": "workspace:*",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@tomis/grid-core": "workspace:*"
+  }
+}

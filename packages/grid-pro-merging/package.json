@@ -1,0 +1,46 @@
+{
+  "name": "@tomis/grid-pro-merging",
+  "version": "0.0.0",
+  "type": "module",
+  "license": "SEE LICENSE IN EULA",
+  "private": true,
+  "description": "Pro: Cell Merging (rowSpan) — column.mergeRows API + automatic rowSpan calculation",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "echo TODO",
+    "size": "size-limit"
+  },
+  "dependencies": {
+    "@tomis/grid-license": "workspace:*"
+  },
+  "peerDependencies": {
+    "@tanstack/react-table": "^8.0.0",
+    "@tanstack/react-virtual": "^3.0.0",
+    "@tomis/grid-core": "workspace:*",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@tanstack/react-virtual": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@tomis/grid-core": "workspace:*"
+  }
+}

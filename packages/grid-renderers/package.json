@@ -1,0 +1,30 @@
+{
+  "name": "@tomis/grid-renderers",
+  "version": "0.0.0",
+  "type": "module",
+  "license": "MIT",
+  "description": "Cell renderers: Button, Badge, Check, Link, Number, Date, Icon",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "sideEffects": ["./src/index.ts", "./dist/index.mjs", "./dist/index.cjs"],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "echo TODO"
+  },
+  "peerDependencies": {
+    "@tomis/grid-core": "workspace:*",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "@tanstack/react-table": ">=8.0.0 <9.0.0"
+  }
+}

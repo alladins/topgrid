@@ -1,0 +1,104 @@
+# createAsyncDataMap
+
+`createAsyncDataMap` creates an `AsyncDataMap<TItem>` — an async-loading extension of `DataMap<TItem>` with built-in caching and a 4-state machine.
+
+## Installation
+
+```bash
+pnpm add @tomis/grid-pro-datamap
+```
+
+## Basic Usage
+
+```typescript
+import { createAsyncDataMap, DataMapCell, DataMapEditor } from '@tomis/grid-pro-datamap';
+
+const statusMap = createAsyncDataMap({
+  loader: async () => {
+    const res = await fetch('/api/codes/status');
+    return res.json() as Promise<{ code: string; label: string }[]>;
+  },
+  valuePath: 'code',
+  displayPath: 'label',
+  staleTime: 60_000, // 1 minute cache (optional — default: 5 minutes)
+});
+
+// Use in column definition
+const column = {
+  id: 'status',
+  header: '상태',
+  dataMap: statusMap,
+  cell: DataMapCell,
+};
+```
+
+## API Reference
+
+### `createAsyncDataMap<TItem>(options): AsyncDataMap<TItem>`
+
+#### Options (`CreateAsyncDataMapOptions<TItem>`)
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `loader` | `() => Promise<TItem[]>` | Yes | Async function returning items |
+| `valuePath` | `keyof TItem \| (item: TItem) => unknown` | Yes | Code value path |
+| `displayPath` | `keyof TItem \| (item: TItem) => string` | Yes | Display label path |
+| `staleTime` | `number` (ms) | No | Cache TTL. Default: `300_000` (5 min) |
+
+#### `AsyncDataMap<TItem>` interface
+
+Extends `DataMap<TItem>` with:
+
+| Member | Type | Description |
+|--------|------|-------------|
+| `state` | `AsyncDataMapState` | Current loading state (readonly) |
+| `load()` | `() => Promise<void>` | Trigger async load. Concurrent calls share the same Promise (de-dupe) |
+| `invalidate()` | `() => void` | Clear cache + reset state to `'idle'` |
+| `onStateChange?` | `(cb) => () => void` | Subscribe to state changes. Returns unsubscribe function |
+
+#### `AsyncDataMapState`
+
+```typescript
+type AsyncDataMapState = 'idle' | 'loading' | 'loaded' | 'error';
+```
+
+| State | Description |
+|-------|-------------|
+| `'idle'` | Initial — `load()` not yet called |
+| `'loading'` | `loader()` Promise in flight |
+| `'loaded'` | Items cached and available |
+| `'error'` | `loader()` rejected — `getItems()` returns `[]` |
+
+## State Machine
+
+```
+idle ──[getItems() / load()]──▶ loading ──[resolve]──▶ loaded
+                                         ──[reject]──▶ error
+loaded ──[staleTime elapsed + getItems()]──▶ loading
+loaded ──[invalidate()]──▶ idle
+error  ──[load() retry]──▶ loading
+```
+
+## Caching
+
+- `staleTime` (ms): cache is valid for this duration after `loader()` resolves.
+- `invalidate()`: clears cache + resets to `'idle'`. Next `getItems()` triggers a fresh load.
+- Concurrent `load()` calls share the same `Promise` (no duplicate HTTP requests).
+
+## DataMapEditor Integration
+
+`DataMapEditor` automatically detects `AsyncDataMap` via duck typing (`'state' in dataMap && 'load' in dataMap`) and renders a Tailwind `animate-spin` spinner while `state === 'loading'`.
+
+```tsx
+<DataMapEditor
+  value={cellValue}
+  dataMap={statusMap} // AsyncDataMap — spinner shows during load
+  onCommit={(newValue) => { /* update row */ }}
+  onCancel={() => { /* cancel */ }}
+/>
+```
+
+## License
+
+Pro package — `SEE LICENSE IN EULA`. Requires valid TOMIS Grid Pro license.
+<!-- MOD-GRID-12/G-004 D-6: Docusaurus doc placeholder. Full API reference to be expanded post-MOD-GRID-99-A/G-002. -->

@@ -1,0 +1,156 @@
+[
+  {
+    "name": "@tomis/grid-core",
+    "path": "packages/grid-core/dist/index.mjs",
+    "limit": "30 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual"
+    ]
+  },
+  {
+    "name": "@tomis/grid-renderers",
+    "path": "packages/grid-renderers/dist/index.mjs",
+    "limit": "12 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual"
+    ]
+  },
+  {
+    "name": "@tomis/grid-export",
+    "path": "packages/grid-export/dist/index.mjs",
+    "limit": "20 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual",
+      "xlsx",
+      "jspdf"
+    ]
+  },
+  {
+    "name": "@tomis/grid-features",
+    "path": "packages/grid-features/dist/index.mjs",
+    "limit": "20 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual",
+      "date-fns",
+      "date-fns/locale",
+      "react-datepicker"
+    ]
+  },
+  {
+    "name": "@tomis/grid-pro-tracking",
+    "path": "packages/grid-pro-tracking/dist/index.mjs",
+    "limit": "20 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual",
+      "@tomis/grid-core"
+    ]
+  },
+  {
+    "name": "@tomis/grid-pro-range",
+    "path": "packages/grid-pro-range/dist/index.mjs",
+    "limit": "20 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual"
+    ]
+  },
+  {
+    "name": "@tomis/grid-pro-datamap",
+    "path": "packages/grid-pro-datamap/dist/index.mjs",
+    "limit": "20 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual"
+    ]
+  },
+  {
+    "name": "@tomis/grid-pro-merging",
+    "path": "packages/grid-pro-merging/dist/index.mjs",
+    "limit": "20 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual",
+      "@tomis/grid-core",
+      "@tomis/grid-license"
+    ]
+  },
+  {
+    "name": "@tomis/grid-pro-header",
+    "path": "packages/grid-pro-header/dist/index.mjs",
+    "limit": "20 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual"
+    ]
+  },
+  {
+    "name": "@tomis/grid-pro-agg",
+    "path": "packages/grid-pro-agg/dist/index.mjs",
+    "limit": "20 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual"
+    ]
+  },
+  {
+    "name": "@tomis/grid-pro-master",
+    "path": "packages/grid-pro-master/dist/index.mjs",
+    "limit": "20 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual"
+    ]
+  },
+  {
+    "name": "@tomis/grid (meta)",
+    "path": "packages/grid/dist/index.mjs",
+    "limit": "150 KB",
+    "brotli": true,
+    "ignore": [
+      "react",
+      "react-dom",
+      "@tanstack/react-table",
+      "@tanstack/react-virtual",
+      "xlsx",
+      "jspdf"
+    ]
+  }
+]

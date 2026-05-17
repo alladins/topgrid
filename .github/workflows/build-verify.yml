@@ -1,0 +1,73 @@
+name: Build & Dist Verify
+
+# ADR-015 Wave 3: CI 통합 — pnpm build + dist freshness 검증
+# ADR-001 정합: license API export 검증 (useLicenseStatus, useWatermarkEnforcement, subscribeLicense)
+# 참조: .claude/tw-grid/findings/wave3-adr-015-result.md
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build all packages
+        # apps/docs (Docusaurus) 는 customCss:[] pre-existing 오류로 제외.
+        # root package.json "build" script 와 동일: pnpm -r --filter './packages/*' build
+        run: pnpm build
+
+      - name: Verify dist freshness — stale verifyLicense check
+        # verifyLicense / verifyGridLicense 가 dist mjs+cjs 에 잔존하면 빌드가 stale.
+        # _verifyGridLicenseStub 은 \b 경계로 매치 안 됨 (의도적 유지 대상 — Wave 1 결과 참조).
+        # .map 소스맵 파일은 제외 (dist/*.mjs, dist/*.cjs 만 검사).
+        run: |
+          STALE=0
+          for f in packages/*/dist/index.mjs packages/*/dist/index.cjs; do
+            [ -f "$f" ] || continue
+            if grep -qE "\bverifyLicense\b|\bverifyGridLicense\b" "$f"; then
+              echo "ERROR: stale API name found in $f"
+              grep -oE "\bverifyLicense\b|\bverifyGridLicense\b" "$f" | sort | uniq
+              STALE=1
+            fi
+          done
+          if [ "$STALE" -eq 1 ]; then
+            echo "dist freshness: FAIL — run 'pnpm build' and commit updated dist"
+            exit 1
+          fi
+          echo "dist freshness: PASS"
+
+      - name: Verify license API exports — ADR-001 정합
+        # grid-license dist 에 신 license API 3종이 export 되어 있는지 확인.
+        # Wave 2 실행 결과: useLicenseStatus + useWatermarkEnforcement + subscribeLicense 모두 index.mjs 존재 확인.
+        run: |
+          MISSING=0
+          for sym in useLicenseStatus useWatermarkEnforcement subscribeLicense; do
+            if ! grep -q "$sym" packages/grid-license/dist/index.mjs; then
+              echo "ERROR: $sym missing in packages/grid-license/dist/index.mjs"
+              MISSING=1
+            fi
+          done
+          if [ "$MISSING" -eq 1 ]; then
+            echo "license API export check: FAIL"
+            exit 1
+          fi
+          echo "license API export check: PASS (useLicenseStatus, useWatermarkEnforcement, subscribeLicense)"

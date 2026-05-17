@@ -1,0 +1,8 @@
+[
+  {
+    "name": "@tomis/grid-pro-merging (ESM)",
+    "path": "dist/index.mjs",
+    "limit": "20 KB",
+    "gzip": true
+  }
+]

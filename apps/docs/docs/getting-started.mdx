@@ -1,0 +1,47 @@
+# 시작하기
+
+TOMIS Grid는 TanStack Table v8 기반의 headless React 그리드 라이브러리입니다.
+13개 패키지로 구성된 monorepo로, 공개(MIT) + Pro 기능 모두 지원합니다.
+
+## 설치
+
+```bash
+# 공개 패키지 (headless core)
+pnpm add @tomis/grid @tomis/grid-core @tomis/grid-features @tomis/grid-renderers
+
+# Pro 패키지 (라이선스 필요)
+pnpm add @tomis/grid-pro-agg @tomis/grid-pro-datamap @tomis/grid-pro-header \
+         @tomis/grid-pro-master @tomis/grid-pro-merging @tomis/grid-pro-range \
+         @tomis/grid-pro-tracking
+
+# peer dependencies
+pnpm add react react-dom @tanstack/react-table @tanstack/react-virtual
+```
+
+## 기본 사용 예시
+
+```tsx
+import { Grid } from '@tomis/grid';
+import { useGridState } from '@tomis/grid-core';
+
+const columns = [
+  { accessorKey: 'id', header: 'ID' },
+  { accessorKey: 'name', header: '이름' },
+];
+
+const data = [
+  { id: 1, name: '홍길동' },
+  { id: 2, name: '김철수' },
+];
+
+export function BasicGrid() {
+  const gridState = useGridState({ columns, data });
+  return <Grid state={gridState} />;
+}
+```
+
+## 다음 단계
+
+- [아키텍처](./architecture) — 13개 패키지 구조와 의존성 다이어그램
+- [API Reference](/api) — TypeDoc으로 자동 생성된 전체 API 문서
+- Pro 기능 — `@tomis/grid-license`를 통한 라이선스 활성화 후 Pro 패키지 사용 가능

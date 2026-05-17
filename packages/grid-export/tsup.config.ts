@@ -1,0 +1,27 @@
+import { defineConfig } from 'tsup';
+
+export default defineConfig({
+  entry: [
+    'src/index.ts',
+    'src/legacy/downloadExcel.ts', // ./legacy sub-entry (AC-005, D5)
+  ],
+  format: ['cjs', 'esm'],
+  dts: true,
+  sourcemap: true,
+  clean: true,
+  splitting: false,
+  treeshake: true,
+  outExtension({ format }) {
+    return { js: format === 'esm' ? '.mjs' : '.cjs' };
+  },
+  external: [
+    'react',
+    'react-dom',
+    '@tanstack/react-table',
+    '@tanstack/react-virtual',
+    'xlsx',
+    'jspdf',
+    '@dnd-kit/core',
+    '@tanstack/react-query',
+  ],
+});

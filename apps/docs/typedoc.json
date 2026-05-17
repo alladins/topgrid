@@ -1,0 +1,23 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPointStrategy": "packages",
+  "entryPoints": [
+    "../../packages/grid",
+    "../../packages/grid-core",
+    "../../packages/grid-export",
+    "../../packages/grid-features",
+    "../../packages/grid-license",
+    "../../packages/grid-pro-agg",
+    "../../packages/grid-pro-datamap",
+    "../../packages/grid-pro-header",
+    "../../packages/grid-pro-master",
+    "../../packages/grid-pro-merging",
+    "../../packages/grid-pro-range",
+    "../../packages/grid-pro-tracking",
+    "../../packages/grid-renderers"
+  ],
+  "out": "build/api",
+  "failOnWarnings": true,
+  "plugin": ["typedoc-plugin-markdown"],
+  "readme": "none"
+}
