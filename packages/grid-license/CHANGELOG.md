@@ -1,4 +1,4 @@
-# @tomis/grid-license
+# @topgrid/grid-license
 
 ## 0.1.0
 
@@ -26,12 +26,12 @@
   - Imperative handle via `ref`: `expandAll()`, `collapseAll()` + full `GridHandle<TData>` API
   - `ExpandToggleCell` — internal expand/collapse toggle button with depth-based indent (INDENT_PX=16)
   - `DetailRow` — full-width `<tr data-detail-row>` for expanded master row content
-  - `verifyLicense('@tomis/grid-pro-master')` called at module level (Pro EULA guard)
-  - `@tomis/grid-core` and `@tomis/grid-license` added to peerDependencies
+  - `verifyLicense('@topgrid/grid-pro-master')` called at module level (Pro EULA guard)
+  - `@topgrid/grid-core` and `@topgrid/grid-license` added to peerDependencies
 
-  `@tomis/grid-core`: `GridHandle<TData>` extended with optional `expandAll?(): void` and `collapseAll?(): void` (after `scrollTo`) — backward-compatible (optional methods, base `<Grid>` unaffected)
+  `@topgrid/grid-core`: `GridHandle<TData>` extended with optional `expandAll?(): void` and `collapseAll?(): void` (after `scrollTo`) — backward-compatible (optional methods, base `<Grid>` unaffected)
 
-  `@tomis/grid-license`: add no-op `verifyLicense(_packageName: string): void` export stub (MOD-GRID-99-A deferred)
+  `@topgrid/grid-license`: add no-op `verifyLicense(_packageName: string): void` export stub (MOD-GRID-99-A deferred)
 
 ## 0.1.0 — 2026-05-17
 

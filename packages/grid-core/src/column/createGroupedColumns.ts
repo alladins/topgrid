@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-core — createGroupedColumns factory.
+ * @topgrid/grid-core — createGroupedColumns factory.
  *
  * @deprecated No production users. Use TanStack `GroupColumnDef` directly, or pass
  * grouped column arrays to `useReactTable({ columns })`. Will be removed in next

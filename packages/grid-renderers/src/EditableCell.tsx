@@ -1,4 +1,4 @@
-// @tomis/grid-renderers — EditableCell (MOD-GRID-05 / G-003, G-005)
+// @topgrid/grid-renderers — EditableCell (MOD-GRID-05 / G-003, G-005)
 // Inline editable cell: text / number / date / select / textarea (5 editType).
 // Absorbs tw-framework-front EditableGrid.tsx L75-129 inline cell JSX.
 //
@@ -28,9 +28,9 @@ export type EditType = 'text' | 'number' | 'date' | 'select' | 'textarea';
 /**
  * Grid-level callback for conditional cell formatting.
  *
- * **Canonical ownership moved to `@tomis/grid-core`** (MOD-GRID-01 G-006, ADR-MOD-GRID-01-007,
+ * **Canonical ownership moved to `@topgrid/grid-core`** (MOD-GRID-01 G-006, ADR-MOD-GRID-01-007,
  * 2026-05-18) per ADR-MOD-GRID-REFACTOR-2026-05-17-009 역의존 제거 정책. 본 파일은 type-only
- * re-export 만 유지 (backward compatibility — 외부 사용처가 `@tomis/grid-renderers` 에서
+ * re-export 만 유지 (backward compatibility — 외부 사용처가 `@topgrid/grid-renderers` 에서
  * import 하는 코드 보존).
  *
  * Receives a TanStack `Cell<TData, unknown>` and returns a Tailwind className string
@@ -39,7 +39,7 @@ export type EditType = 'text' | 'number' | 'date' | 'select' | 'textarea';
  * @see ADR-MOD-GRID-01-007
  * @see Spec MOD-GRID-05/G-003 D3 + Section 2.2 (legacy doc reference)
  */
-export type { CellClassNameCallback } from '@tomis/grid-core';
+export type { CellClassNameCallback } from '@topgrid/grid-core';
 
 /**
  * Props for {@link EditableCell}.

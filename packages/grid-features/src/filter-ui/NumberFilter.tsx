@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — NumberFilter 메인 컴포넌트.
+ * @topgrid/grid-features — NumberFilter 메인 컴포넌트.
  *
  * MOD-GRID-09 G-002:
  * 컬럼 헤더 Popover + 7가지 숫자 연산자(=, !=, >, <, >=, <=, between) + 필터 인디케이터.

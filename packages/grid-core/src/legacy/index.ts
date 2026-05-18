@@ -1,5 +1,5 @@
 /**
- * `@tomis/grid-core/legacy` sub-entry — G-005 5 alias re-export (D8 — tree-shake + import 경로 명확).
+ * `@topgrid/grid-core/legacy` sub-entry — G-005 5 alias re-export (D8 — tree-shake + import 경로 명확).
  *
  * @deprecated 1 minor 버전 후 다음 major 에서 제거 (C-23).
  *

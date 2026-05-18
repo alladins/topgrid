@@ -5,12 +5,12 @@ sidebar_position: 5
 
 # Deprecated Alias 목록
 
-`@tomis/grid-core`는 이전 Grid 변형 컴포넌트와의 하위 호환성을 위해
+`@topgrid/grid-core`는 이전 Grid 변형 컴포넌트와의 하위 호환성을 위해
 **5개의 legacy alias**를 제공한다. 이 alias들은 C-23 semver 정책에 따라
 **최소 1 minor 버전 동안 유지**된다.
 
 > **주의**: `EditableGrid`, `ChangeTrackingGrid`, `RangeSelectGrid`는
-> `@tomis/grid-core`에 alias가 없다. 각 패키지에서 직접 import한다.
+> `@topgrid/grid-core`에 alias가 없다. 각 패키지에서 직접 import한다.
 > 자세한 내용은 이 문서 하단 ["grid-core alias 없는 컴포넌트"](#grid-core-alias-없는-컴포넌트) 섹션을 참조한다.
 
 ---
@@ -22,7 +22,7 @@ sidebar_position: 5
 > - breaking change 시 CHANGELOG.md에 마이그레이션 가이드
 > - 모든 패키지 semver 준수 (Changeset 도구 사용)
 
-이 5개 alias는 `@tomis/grid-core v0.x` 동안 유지되며,
+이 5개 alias는 `@topgrid/grid-core v0.x` 동안 유지되며,
 `v1.0` 이후 제거 시에는 최소 1 minor 버전(`v1.1` 이상)의 예고 기간이 필요하다.
 
 ---
@@ -30,7 +30,7 @@ sidebar_position: 5
 ## grid-core/src/index.ts 확인 결과
 
 ```ts
-// @tomis/grid-core/src/index.ts (실제 확인)
+// @topgrid/grid-core/src/index.ts (실제 확인)
 // G-005 D8: legacy alias 5종 — main entry 호환 (`/legacy` sub-entry 권장).
 export {
   BaseGrid,
@@ -52,17 +52,17 @@ export {
 | 항목 | 값 |
 |------|---|
 | **alias 이름** | `BaseGrid` |
-| **re-export 출처** | `@tomis/grid-core/src/legacy` |
-| **권장 대체** | `<Grid mode="client">` from `@tomis/grid-core` |
+| **re-export 출처** | `@topgrid/grid-core/src/legacy` |
+| **권장 대체** | `<Grid mode="client">` from `@topgrid/grid-core` |
 | **제거 예정** | 현재 minor + 1 이상 (C-23 보장) |
 
 ```tsx
 // 현재 (alias 사용 — deprecated)
-import { BaseGrid } from '@tomis/grid-core';
+import { BaseGrid } from '@topgrid/grid-core';
 <BaseGrid data={data} columns={columns} pagination={{ pageSize: 20 }} />
 
 // 권장 (Grid 직접 사용)
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 <Grid mode="client" data={data} columns={columns} pagination={{ pageSize: 20 }} />
 ```
 
@@ -76,17 +76,17 @@ import { Grid } from '@tomis/grid-core';
 | 항목 | 값 |
 |------|---|
 | **alias 이름** | `VirtualGrid`, `VirtualGridProps` |
-| **re-export 출처** | `@tomis/grid-core/src/legacy` |
+| **re-export 출처** | `@topgrid/grid-core/src/legacy` |
 | **권장 대체** | `<Grid enableVirtualization rowHeight containerHeight>` |
 | **제거 예정** | 현재 minor + 1 이상 (C-23 보장) |
 
 ```tsx
 // 현재 (alias 사용 — deprecated)
-import { VirtualGrid } from '@tomis/grid-core';
+import { VirtualGrid } from '@topgrid/grid-core';
 <VirtualGrid data={largeData} columns={columns} rowHeight={40} containerHeight={500} />
 
 // 권장 (Grid enableVirtualization)
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 <Grid
   mode="client"
   enableVirtualization
@@ -108,13 +108,13 @@ import { Grid } from '@tomis/grid-core';
 | 항목 | 값 |
 |------|---|
 | **alias 이름** | `ColumnPinGrid`, `ColumnPinGridProps` |
-| **re-export 출처** | `@tomis/grid-core/src/legacy` |
+| **re-export 출처** | `@topgrid/grid-core/src/legacy` |
 | **권장 대체** | `<Grid columnPinning={{ left: [...], right: [...] }}>` |
 | **제거 예정** | 현재 minor + 1 이상 (C-23 보장) |
 
 ```tsx
 // 현재 (alias 사용 — deprecated)
-import { ColumnPinGrid } from '@tomis/grid-core';
+import { ColumnPinGrid } from '@topgrid/grid-core';
 <ColumnPinGrid
   data={data}
   columns={columns}
@@ -123,7 +123,7 @@ import { ColumnPinGrid } from '@tomis/grid-core';
 />
 
 // 권장 (Grid 직접 사용)
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 <Grid
   mode="client"
   data={data}
@@ -139,23 +139,23 @@ import { Grid } from '@tomis/grid-core';
 | 항목 | 값 |
 |------|---|
 | **alias 이름** | `GroupedHeaderGrid`, `GroupedHeaderGridProps` |
-| **re-export 출처** | `@tomis/grid-core/src/legacy` → `@tomis/grid-pro-header` |
-| **권장 대체** | `import { GroupedHeaderGrid } from '@tomis/grid-pro-header'` (직접) |
+| **re-export 출처** | `@topgrid/grid-core/src/legacy` → `@topgrid/grid-pro-header` |
+| **권장 대체** | `import { GroupedHeaderGrid } from '@topgrid/grid-pro-header'` (직접) |
 | **제거 예정** | 현재 minor + 1 이상 (C-23 보장) |
 
 ```tsx
 // 현재 (grid-core alias 경유 — deprecated)
-import { GroupedHeaderGrid } from '@tomis/grid-core';
+import { GroupedHeaderGrid } from '@topgrid/grid-core';
 
 // 권장 (grid-pro-header 직접 import)
-import { GroupedHeaderGrid } from '@tomis/grid-pro-header';
+import { GroupedHeaderGrid } from '@topgrid/grid-pro-header';
 
 // 사용법은 동일
 <GroupedHeaderGrid data={data} columns={columnGroups} />
 ```
 
 > **참고**: `tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx`는
-> 이미 `@tomis/grid-pro-header`에서 re-export 중이므로 기존 상대 경로 import도
+> 이미 `@topgrid/grid-pro-header`에서 re-export 중이므로 기존 상대 경로 import도
 > 올바른 구현을 사용한다.
 
 ---
@@ -165,13 +165,13 @@ import { GroupedHeaderGrid } from '@tomis/grid-pro-header';
 | 항목 | 값 |
 |------|---|
 | **alias 이름** | `TreeGrid`, `TreeGridProps` |
-| **re-export 출처** | `@tomis/grid-core/src/legacy` |
+| **re-export 출처** | `@topgrid/grid-core/src/legacy` |
 | **권장 대체** | `<Grid treeData getSubRows expandAll>` |
 | **제거 예정** | 현재 minor + 1 이상 (C-23 보장) |
 
 ```tsx
 // 현재 (alias 사용 — deprecated)
-import { TreeGrid } from '@tomis/grid-core';
+import { TreeGrid } from '@topgrid/grid-core';
 <TreeGrid
   data={treeData}
   columns={columns}
@@ -180,7 +180,7 @@ import { TreeGrid } from '@tomis/grid-core';
 />
 
 // 권장 (Grid 직접 사용)
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 <Grid
   mode="client"
   treeData
@@ -195,20 +195,20 @@ import { Grid } from '@tomis/grid-core';
 
 ## grid-core alias 없는 컴포넌트
 
-아래 3개 컴포넌트는 `@tomis/grid-core`에 legacy alias가 **없다**.
+아래 3개 컴포넌트는 `@topgrid/grid-core`에 legacy alias가 **없다**.
 각 전용 패키지에서 직접 import한다.
 
-> **EC-01**: `@tomis/grid-core`에서 이 컴포넌트들을 import하려 하면 TypeScript 에러가 발생한다.
+> **EC-01**: `@topgrid/grid-core`에서 이 컴포넌트들을 import하려 하면 TypeScript 에러가 발생한다.
 
 ### EditableGrid
 
 ```tsx
 // ❌ 잘못된 방법 — grid-core에 alias 없음
-import { EditableGrid } from '@tomis/grid-core'; // TypeScript 에러
+import { EditableGrid } from '@topgrid/grid-core'; // TypeScript 에러
 
 // ✅ 올바른 방법 — 전용 패키지 사용
-import { EditableCell } from '@tomis/grid-renderers';
-import { useChangeTracking } from '@tomis/grid-pro-tracking';
+import { EditableCell } from '@topgrid/grid-renderers';
+import { useChangeTracking } from '@topgrid/grid-pro-tracking';
 
 // 또는 tw-framework-front 로컬 쉘 import (이전 완료 전까지)
 import { EditableGrid } from '@/components/tomis/Grid/EditableGrid';
@@ -218,26 +218,26 @@ import { EditableGrid } from '@/components/tomis/Grid/EditableGrid';
 
 ```tsx
 // ❌ 잘못된 방법 — grid-core에 alias 없음
-import { ChangeTrackingGrid } from '@tomis/grid-core'; // TypeScript 에러
+import { ChangeTrackingGrid } from '@topgrid/grid-core'; // TypeScript 에러
 
 // ✅ 올바른 방법 — tw-framework-front 로컬 compat shim (이미 완전 이전)
 import { ChangeTrackingGrid } from '@/components/tomis/Grid/ChangeTrackingGrid';
 
 // 또는 hook 직접 사용
-import { useChangeTracking } from '@tomis/grid-pro-tracking';
+import { useChangeTracking } from '@topgrid/grid-pro-tracking';
 ```
 
 ### RangeSelectGrid
 
 ```tsx
 // ❌ 잘못된 방법 — grid-core에 alias 없음
-import { RangeSelectGrid } from '@tomis/grid-core'; // TypeScript 에러
+import { RangeSelectGrid } from '@topgrid/grid-core'; // TypeScript 에러
 
 // ✅ 올바른 방법 — tw-framework-front 로컬 wrapper (이미 완전 이전)
 import { RangeSelectGrid } from '@/components/tomis/Grid/RangeSelectGrid';
 
 // 또는 pro 패키지 직접 사용
-import { RangeSelectGrid, useCellRange } from '@tomis/grid-pro-range';
+import { RangeSelectGrid, useCellRange } from '@topgrid/grid-pro-range';
 ```
 
 ---
@@ -249,11 +249,11 @@ import { RangeSelectGrid, useCellRange } from '@tomis/grid-pro-range';
 | `BaseGrid` | ✅ | `<Grid mode="client">` | 현재 minor + 1 이상 |
 | `VirtualGrid` | ✅ | `<Grid enableVirtualization>` | 현재 minor + 1 이상 |
 | `ColumnPinGrid` | ✅ | `<Grid columnPinning>` | 현재 minor + 1 이상 |
-| `GroupedHeaderGrid` | ✅ | `@tomis/grid-pro-header` 직접 | 현재 minor + 1 이상 |
+| `GroupedHeaderGrid` | ✅ | `@topgrid/grid-pro-header` 직접 | 현재 minor + 1 이상 |
 | `TreeGrid` | ✅ | `<Grid treeData>` | 현재 minor + 1 이상 |
-| `EditableGrid` | ❌ | `@tomis/grid-renderers` + 로컬 쉘 | — |
-| `ChangeTrackingGrid` | ❌ | `@tomis/grid-pro-tracking` compat shim | — |
-| `RangeSelectGrid` | ❌ | `@tomis/grid-pro-range` wrapper | — |
+| `EditableGrid` | ❌ | `@topgrid/grid-renderers` + 로컬 쉘 | — |
+| `ChangeTrackingGrid` | ❌ | `@topgrid/grid-pro-tracking` compat shim | — |
+| `RangeSelectGrid` | ❌ | `@topgrid/grid-pro-range` wrapper | — |
 
 ---
 

@@ -1,18 +1,18 @@
 /**
- * @tomis/grid-features — Public API.
+ * @topgrid/grid-features — Public API.
  *
  * G-001 (MOD-GRID-07): column drag-and-drop exports.
  * G-001 (MOD-GRID-08): multi-sort exports.
  * G-001 (MOD-GRID-09): filter-ui exports.
  */
 
-// ADR-009 (옵션 A): column-drag exports moved to @tomis/grid-core.
+// ADR-009 (옵션 A): column-drag exports moved to @topgrid/grid-core.
 // grid-features re-exports as deprecation alias (1 minor cycle).
-/** @deprecated Moved to `@tomis/grid-core` (ADR-009). Will be removed in next major. */
+/** @deprecated Moved to `@topgrid/grid-core` (ADR-009). Will be removed in next major. */
 export { useColumnDrag } from './column-drag/useColumnDrag';
-/** @deprecated Moved to `@tomis/grid-core` (ADR-009). Will be removed in next major. */
+/** @deprecated Moved to `@topgrid/grid-core` (ADR-009). Will be removed in next major. */
 export { DropIndicator } from './column-drag/DropIndicator';
-/** @deprecated Moved to `@tomis/grid-core` (ADR-009). Will be removed in next major. */
+/** @deprecated Moved to `@topgrid/grid-core` (ADR-009). Will be removed in next major. */
 export { useColumnOrderPersist } from './column-drag/useColumnOrderPersist';
 export type {
   UseColumnDragProps,
@@ -22,20 +22,20 @@ export type {
 export type { UseColumnOrderPersistProps } from './column-drag/useColumnOrderPersist';
 
 // MOD-GRID-08: multi-sort
-/** @deprecated Moved to `@tomis/grid-core` (ADR-010). Will be removed in next major. */
+/** @deprecated Moved to `@topgrid/grid-core` (ADR-010). Will be removed in next major. */
 export { SortBadge } from './multi-sort/SortBadge';
 export { useMultiSort } from './multi-sort/useMultiSort';
-// ADR-009: SortClearButton + SortClearButtonProps moved to @tomis/grid-core.
+// ADR-009: SortClearButton + SortClearButtonProps moved to @topgrid/grid-core.
 // grid-features re-exports as deprecation alias (1 minor cycle).
 export { SortClearButton } from './multi-sort/SortClearButton';
 export type {
   UseMultiSortOptions,
   UseMultiSortResult,
 } from './multi-sort/types';
-/** @deprecated Moved to `@tomis/grid-core` (ADR-010). Will be removed in next major. */
-export type { SortBadgeProps } from '@tomis/grid-core';
-/** @deprecated Moved to `@tomis/grid-core` (ADR-009). Will be removed in next major. */
-export type { SortClearButtonProps } from '@tomis/grid-core';
+/** @deprecated Moved to `@topgrid/grid-core` (ADR-010). Will be removed in next major. */
+export type { SortBadgeProps } from '@topgrid/grid-core';
+/** @deprecated Moved to `@topgrid/grid-core` (ADR-009). Will be removed in next major. */
+export type { SortClearButtonProps } from '@topgrid/grid-core';
 
 // MOD-GRID-09: filter-ui — TextFilter
 export { TextFilter } from './filter-ui/TextFilter';

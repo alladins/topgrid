@@ -1,10 +1,10 @@
-// @tomis/grid-pro-tracking — ChangeTrackingGrid alias (MOD-GRID-10/G-005).
+// @topgrid/grid-pro-tracking — ChangeTrackingGrid alias (MOD-GRID-10/G-005).
 //
 // Spec: artifacts/MOD-GRID-10/tracking/G-005-spec.md Sections 2.2, 7 (#3), 11.3 Step 3
 // AC mapping: AC-003 (alias signature) / AC-007 (virtualization compat — delegates to <Grid>)
 //
 // Design (D7 + C-29):
-// - Composes `useChangeTracking` + `<Grid>` from `@tomis/grid-core` (peer — D9).
+// - Composes `useChangeTracking` + `<Grid>` from `@topgrid/grid-core` (peer — D9).
 // - Optional fields (`mapping`, `validator`, `optimistic`, `editedCells`) use the
 //   C-29 conditional-spread pattern for `exactOptionalPropertyTypes` strictness.
 // - `onSave` is intentionally NOT auto-invoked — alias does not own a commit
@@ -13,8 +13,8 @@
 
 import { forwardRef, useImperativeHandle, useMemo } from 'react';
 import type { ReactElement, Ref } from 'react';
-import { Grid, type GridHandle, type GridProps } from '@tomis/grid-core';
-import { useLicenseStatus, Watermark } from '@tomis/grid-license';
+import { Grid, type GridHandle, type GridProps } from '@topgrid/grid-core';
+import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 import { useChangeTracking } from '../useChangeTracking';
 import type {
   ChangeSet,

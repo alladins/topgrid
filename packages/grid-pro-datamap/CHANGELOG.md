@@ -1,4 +1,4 @@
-# @tomis/grid-pro-datamap
+# @topgrid/grid-pro-datamap
 
 ## 0.2.0
 
@@ -23,7 +23,7 @@
 
 - Updated dependencies [f5ea968]
 - Updated dependencies [f5ea968]
-  - @tomis/grid-license@0.1.0
+  - @topgrid/grid-license@0.1.0
 
 ## 0.3.0 — 2026-05-17
 
@@ -50,7 +50,7 @@
 
 ### BREAKING (next major)
 
-- `TomisColumnDef<TData>` will be removed. Migrate: `import { DataMapColumnDef } from '@tomis/grid-pro-datamap'`.
+- `TomisColumnDef<TData>` will be removed. Migrate: `import { DataMapColumnDef } from '@topgrid/grid-pro-datamap'`.
 
 ---
 

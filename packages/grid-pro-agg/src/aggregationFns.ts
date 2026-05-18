@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-agg — pure aggregation helpers (no React imports)
+ * @topgrid/grid-pro-agg — pure aggregation helpers (no React imports)
  * MOD-GRID-15 / G-001
  * MOD-GRID-15 / G-003 — aggregationFns registry + registerAggregationFn / getAggregationFn
  *

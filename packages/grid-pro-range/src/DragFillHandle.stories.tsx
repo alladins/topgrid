@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — DragFillHandle Storybook stories (G-003, AC-007).
+ * @topgrid/grid-pro-range — DragFillHandle Storybook stories (G-003, AC-007).
  *
  * Default: 기본 핸들 표시 시나리오 (2×3 range).
  * DragFillSeries: 숫자 시리즈 [1,2,3] 소스 범위 — 드래그 시 [4,5,6] 자동 연장.

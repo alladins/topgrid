@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — Core types for CellRange selection + Drag-fill (G-003).
+ * @topgrid/grid-pro-range — Core types for CellRange selection + Drag-fill (G-003).
  *
  * CellCoord: 2D grid coordinate (row/col index, 0-based).
  * CellRange: Rectangular region defined by start + end CellCoord.

@@ -7,41 +7,41 @@ Packages are classified as Open (MIT) or Pro (commercial license).
 
 | Package | Category | Description |
 |---------|----------|-------------|
-| `@tomis/grid` | Open (MIT) | Meta package — re-exports all open packages |
-| `@tomis/grid-core` | Open (MIT) | TanStack Table abstraction wrapper + `useGridState` core hook |
-| `@tomis/grid-features` | Open (MIT) | Sort, filter, pagination and other common feature builder options |
-| `@tomis/grid-export` | Open (MIT) | Excel/CSV/PDF export (`xlsx`, `jspdf` peers) |
-| `@tomis/grid-renderers` | Open (MIT) | Cell renderer component library (date, number, badge, etc.) |
-| `@tomis/grid-license` | Open (MIT) | Runtime Pro license validation module |
-| `@tomis/grid-pro-agg` | Pro | Aggregation — group sum, average, count |
-| `@tomis/grid-pro-datamap` | Pro | Data mapping — code-to-label conversion, hierarchical select |
-| `@tomis/grid-pro-header` | Pro | Advanced header — multi-row header merge, fixed header |
-| `@tomis/grid-pro-master` | Pro | Master-Detail — row expansion + nested grid |
-| `@tomis/grid-pro-merging` | Pro | Cell merging — automatic rowSpan/colSpan for equal values |
-| `@tomis/grid-pro-range` | Pro | Range selection — drag cell select, copy, paste |
-| `@tomis/grid-pro-tracking` | Pro | Change tracking — edited row/cell dirty state management |
+| `@topgrid/grid` | Open (MIT) | Meta package — re-exports all open packages |
+| `@topgrid/grid-core` | Open (MIT) | TanStack Table abstraction wrapper + `useGridState` core hook |
+| `@topgrid/grid-features` | Open (MIT) | Sort, filter, pagination and other common feature builder options |
+| `@topgrid/grid-export` | Open (MIT) | Excel/CSV/PDF export (`xlsx`, `jspdf` peers) |
+| `@topgrid/grid-renderers` | Open (MIT) | Cell renderer component library (date, number, badge, etc.) |
+| `@topgrid/grid-license` | Open (MIT) | Runtime Pro license validation module |
+| `@topgrid/grid-pro-agg` | Pro | Aggregation — group sum, average, count |
+| `@topgrid/grid-pro-datamap` | Pro | Data mapping — code-to-label conversion, hierarchical select |
+| `@topgrid/grid-pro-header` | Pro | Advanced header — multi-row header merge, fixed header |
+| `@topgrid/grid-pro-master` | Pro | Master-Detail — row expansion + nested grid |
+| `@topgrid/grid-pro-merging` | Pro | Cell merging — automatic rowSpan/colSpan for equal values |
+| `@topgrid/grid-pro-range` | Pro | Range selection — drag cell select, copy, paste |
+| `@topgrid/grid-pro-tracking` | Pro | Change tracking — edited row/cell dirty state management |
 
 ## Dependency Diagram
 
 ```mermaid
 graph TD
   subgraph Open["Open (MIT)"]
-    grid["@tomis/grid<br/>(meta)"]
-    grid-core["@tomis/grid-core"]
-    grid-features["@tomis/grid-features"]
-    grid-export["@tomis/grid-export"]
-    grid-renderers["@tomis/grid-renderers"]
-    grid-license["@tomis/grid-license"]
+    grid["@topgrid/grid<br/>(meta)"]
+    grid-core["@topgrid/grid-core"]
+    grid-features["@topgrid/grid-features"]
+    grid-export["@topgrid/grid-export"]
+    grid-renderers["@topgrid/grid-renderers"]
+    grid-license["@topgrid/grid-license"]
   end
 
   subgraph Pro["Pro (commercial license)"]
-    pro-agg["@tomis/grid-pro-agg"]
-    pro-datamap["@tomis/grid-pro-datamap"]
-    pro-header["@tomis/grid-pro-header"]
-    pro-master["@tomis/grid-pro-master"]
-    pro-merging["@tomis/grid-pro-merging"]
-    pro-range["@tomis/grid-pro-range"]
-    pro-tracking["@tomis/grid-pro-tracking"]
+    pro-agg["@topgrid/grid-pro-agg"]
+    pro-datamap["@topgrid/grid-pro-datamap"]
+    pro-header["@topgrid/grid-pro-header"]
+    pro-master["@topgrid/grid-pro-master"]
+    pro-merging["@topgrid/grid-pro-merging"]
+    pro-range["@topgrid/grid-pro-range"]
+    pro-tracking["@topgrid/grid-pro-tracking"]
   end
 
   subgraph Peers["peer dependencies"]
@@ -97,11 +97,11 @@ topvel-grid-monorepo/
 
 ## Pro Package License Activation
 
-When using Pro packages, `@tomis/grid-license` performs runtime license validation.
+When using Pro packages, `@topgrid/grid-license` performs runtime license validation.
 Initialize your license key once at the application entry point.
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
+import { setLicenseKey } from '@topgrid/grid-license';
 
 setLicenseKey('YOUR-LICENSE-KEY');
 ```

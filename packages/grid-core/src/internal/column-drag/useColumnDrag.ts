@@ -1,8 +1,8 @@
 /**
- * @tomis/grid-core — useColumnDrag hook.
+ * @topgrid/grid-core — useColumnDrag hook.
  *
- * Moved from `@tomis/grid-features/column-drag/useColumnDrag.ts` per ADR-009 (옵션 A).
- * Aliased re-export remains in `@tomis/grid-features` for one minor cycle.
+ * Moved from `@topgrid/grid-features/column-drag/useColumnDrag.ts` per ADR-009 (옵션 A).
+ * Aliased re-export remains in `@topgrid/grid-features` for one minor cycle.
  *
  * G-001 (MOD-GRID-07): HTML5 Drag and Drop API 기반 컬럼 헤더 드래그 재정렬.
  * G-002 (MOD-GRID-07): localStorage 영속화 + 키보드 단축키 (Alt+← / Alt+→).

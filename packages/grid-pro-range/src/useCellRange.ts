@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — useCellRange 훅 (AC-003, AC-004, AC-006).
+ * @topgrid/grid-pro-range — useCellRange 훅 (AC-003, AC-004, AC-006).
  *
  * 마우스 드래그/Shift+Click 셀 범위 선택 핸들러를 제공하는 headless React 훅.
  *

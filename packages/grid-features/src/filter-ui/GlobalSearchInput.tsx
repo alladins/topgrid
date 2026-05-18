@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — GlobalSearchInput 컴포넌트.
+ * @topgrid/grid-features — GlobalSearchInput 컴포넌트.
  *
  * MOD-GRID-09 G-004 AC-004:
  * 입력값 변경 후 300ms debounce → table.setGlobalFilter(value) 호출.

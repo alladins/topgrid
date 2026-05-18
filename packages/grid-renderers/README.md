@@ -1,15 +1,15 @@
-# @tomis/grid-renderers
+# @topgrid/grid-renderers
 
 Cell renderers: Button, Badge, Check, Link, Number, Date, Icon
 
 ## Installation
 
 ```bash
-pnpm add @tomis/grid-renderers
+pnpm add @topgrid/grid-renderers
 # or
-npm install @tomis/grid-renderers
+npm install @topgrid/grid-renderers
 # or
-yarn add @tomis/grid-renderers
+yarn add @topgrid/grid-renderers
 ```
 
 ## Peer Dependencies
@@ -31,7 +31,7 @@ import {
   ButtonCell,
   LinkCell,
   CheckCell,
-} from '@tomis/grid-renderers';
+} from '@topgrid/grid-renderers';
 
 const columns = [
   {
@@ -117,8 +117,8 @@ deprecated alias for one release cycle and will be removed in the next major ver
 type-safe 한 컬럼 정의를 위해 `column.cell` 에 직접 명시하세요:
 
 ```typescript
-import { ButtonCell, AvatarCell } from '@tomis/grid-renderers';
-import { createColumns } from '@tomis/grid-core';
+import { ButtonCell, AvatarCell } from '@topgrid/grid-renderers';
+import { createColumns } from '@topgrid/grid-core';
 
 // ButtonCell (action 컬럼)
 const columns = createColumns<MyRow>([

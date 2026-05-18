@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — FilterIndicator 컴포넌트.
+ * @topgrid/grid-features — FilterIndicator 컴포넌트.
  *
  * MOD-GRID-09 G-001 AC-004:
  * 활성 필터 상태를 헤더에 표시하는 파란 dot 인디케이터.

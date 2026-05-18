@@ -27,7 +27,7 @@ import {
   SortBadge,
   SortClearButton,
   DropIndicator,
-} from '@tomis/grid-features';
+} from '@topgrid/grid-features';
 
 // ─── C-3 예외: mock Table/Column helpers ─────────────────────────────────────
 interface MockRow {

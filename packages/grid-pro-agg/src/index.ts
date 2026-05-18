@@ -1,9 +1,9 @@
-import { checkLicense } from '@tomis/grid-license';
+import { checkLicense } from '@topgrid/grid-license';
 
 checkLicense();
 
 /**
- * @tomis/grid-pro-agg — public API
+ * @topgrid/grid-pro-agg — public API
  * MOD-GRID-15 / G-001 (initial)
  * MOD-GRID-15 / G-002 (GroupRowProps, FooterRowProps type exports)
  * MOD-GRID-15 / G-003 (registry API exports)

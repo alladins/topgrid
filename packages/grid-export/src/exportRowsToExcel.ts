@@ -37,7 +37,7 @@ function formatValue(value: unknown, format?: ExcelColumn['format']): unknown {
  * 행 배열을 Excel 파일(.xlsx)로 다운로드한다.
  *
  * TanStack `Table<TData>` 인스턴스 없이 사용 가능.
- * `@tomis/grid-export` 의 `exportToExcel(table, options)` 와 평행 지원 (ADR-005 옵션 A).
+ * `@topgrid/grid-export` 의 `exportToExcel(table, options)` 와 평행 지원 (ADR-005 옵션 A).
  *
  * @example
  * exportRowsToExcel(rows, columns, { fileName: '보고서_2026.xlsx' });

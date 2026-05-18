@@ -6,7 +6,7 @@
  * `dateTime` / `badge` / `link`) 을 어댑터로 등록 (side-effect).
  *
  * 본 story 는 cross-package wiring 통합 검증:
- *   - `import '@tomis/grid-renderers'` 만 해도 `createColumns()` 가 실 컴포넌트 렌더.
+ *   - `import '@topgrid/grid-renderers'` 만 해도 `createColumns()` 가 실 컴포넌트 렌더.
  *   - `TomisColumnDef.type` 문자열 ID → registry lookup → adapter → cell 컴포넌트.
  *
  * Wave 1 ADR-014 amendment v2 도 커버: LinkCell `value?` prop 사용 (label deprecated alias 보존).
@@ -19,10 +19,10 @@
  * @see ADR-MOD-GRID-REFACTOR-2026-05-17-002 (Visual Regression Note)
  */
 import type { Meta, StoryObj } from '@storybook/react';
-import { Grid, createColumns } from '@tomis/grid-core';
-import type { TomisColumnDef } from '@tomis/grid-core';
+import { Grid, createColumns } from '@topgrid/grid-core';
+import type { TomisColumnDef } from '@topgrid/grid-core';
 // side-effect: grid-renderers wireDefaultRenderers() 호출 (6 슬롯 어댑터 등록)
-import '@tomis/grid-renderers';
+import '@topgrid/grid-renderers';
 
 interface ProductRow {
   id: number;

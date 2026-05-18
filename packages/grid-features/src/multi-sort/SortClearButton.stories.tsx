@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — SortClearButton Storybook Stories
+ * @topgrid/grid-features — SortClearButton Storybook Stories
  *
  * MOD-GRID-08 G-002 AC-006 / C-25:
  * 시나리오 D: maxMultiSortColCount=2 + SortClearButton.

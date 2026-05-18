@@ -16,7 +16,7 @@ export default defineConfig({
     'react-dom',
     '@tanstack/react-table',
     '@tanstack/react-virtual',
-    '@tomis/grid-core', // G-005 D9 — peer (legacy alias imports <Grid> / GridProps / GridHandle)
+    '@topgrid/grid-core', // G-005 D9 — peer (legacy alias imports <Grid> / GridProps / GridHandle)
     'xlsx',
     'jspdf',
     '@dnd-kit/core',

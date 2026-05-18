@@ -1,4 +1,4 @@
-# @tomis/grid-pro-header
+# @topgrid/grid-pro-header
 
 ## 0.1.0
 
@@ -16,7 +16,7 @@
 
 - f5ea968: ADR-016: Unify `onRowClick` signature — `BaseGridProps` and all legacy alias components now use `(row: TData, event: MouseEvent<HTMLTableRowElement>) => void` (2-arg). TypeScript contravariance keeps existing 1-arg callbacks assignable without changes.
 
-  ADR-008: `grid-pro-header` legacy `GroupedHeaderGrid` inline type aliases removed; `GridPaginationOptions` and `GridRowSelectionOptions` are now imported from `@tomis/grid-core` directly.
+  ADR-008: `grid-pro-header` legacy `GroupedHeaderGrid` inline type aliases removed; `GridPaginationOptions` and `GridRowSelectionOptions` are now imported from `@topgrid/grid-core` directly.
 
 ### Patch Changes
 
@@ -29,8 +29,8 @@
 - Updated dependencies [f5ea968]
 - Updated dependencies [f5ea968]
 - Updated dependencies [f5ea968]
-  - @tomis/grid-license@0.1.0
-  - @tomis/grid-core@0.1.0
+  - @topgrid/grid-license@0.1.0
+  - @topgrid/grid-core@0.1.0
 
 ## Unreleased (ADR-016 + ADR-008 — Wave 3 — 2026-05-17)
 
@@ -41,9 +41,9 @@
   JSX `onClick` handler now passes the native event as the second argument.
 - Inline `GridPaginationOptions` and `GridRowSelectionOptions` aliases removed
   from `legacy/GroupedHeaderGrid.tsx`; types are now imported from
-  `@tomis/grid-core` (ADR-008). `rowSelection` prop is now correctly typed as
+  `@topgrid/grid-core` (ADR-008). `rowSelection` prop is now correctly typed as
   `GridRowSelectionOptions<TData>`.
-- `@tomis/grid-core` added as a workspace dependency (required by the import
+- `@topgrid/grid-core` added as a workspace dependency (required by the import
   above).
 
 ## 0.1.0 — 2026-05-17

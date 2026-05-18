@@ -1,5 +1,5 @@
 {
-  "name": "@tomis/grid-pro-range",
+  "name": "@topgrid/grid-pro-range",
   "version": "0.1.0",
   "type": "module",
   "license": "SEE LICENSE IN EULA",
@@ -25,10 +25,10 @@
     "test": "echo TODO"
   },
   "dependencies": {
-    "@tomis/grid-license": "workspace:*"
+    "@topgrid/grid-license": "workspace:*"
   },
   "devDependencies": {
-    "@tomis/grid-core": "workspace:*"
+    "@topgrid/grid-core": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.0.0",

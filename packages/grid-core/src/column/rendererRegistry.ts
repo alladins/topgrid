@@ -1,15 +1,15 @@
 /**
- * @tomis/grid-core — Renderer Registry.
+ * @topgrid/grid-core — Renderer Registry.
  *
  * MOD-GRID-04 G-001: type → cell 컴포넌트 매핑 registry.
  *
- * **Wiring (ADR-MOD-GRID-REFACTOR-2026-05-17-002 + ADR-018)**: `@tomis/grid-renderers`
+ * **Wiring (ADR-MOD-GRID-REFACTOR-2026-05-17-002 + ADR-018)**: `@topgrid/grid-renderers`
  * registers `text`/`number`/`date`/`dateTime`/`badge`/`link`/`tag`/`progress` adapters via a
- * `import '@tomis/grid-renderers'` side-effect (replacing 8 placeholders).
+ * `import '@topgrid/grid-renderers'` side-effect (replacing 8 placeholders).
  * When grid-renderers is **not** imported, the placeholders below act as a
  * graceful fallback — every `TomisColumnType` still produces a renderable
  * `ReactNode` (`String(value)` / Y-N for `boolean`). Module-load order matters:
- * consumer must `import '@tomis/grid-renderers'` (typically once at app entry)
+ * consumer must `import '@topgrid/grid-renderers'` (typically once at app entry)
  * before rendering `<Grid>` to receive the adapters; otherwise placeholder
  * `String(value)` is rendered. `boolean` Y/N is unchanged regardless.
  * `icon` stays placeholder (D-1A — structural: IconCellProps.icon is ReactNode).
@@ -24,7 +24,7 @@ import type { TomisColumnType, RendererFn, RendererRegistry } from './types';
 /**
  * 기본 rendererRegistry (Map).
  *
- * - ADR-002+018 적용 후: `import '@tomis/grid-renderers'` 시점에 `text`/`number`/
+ * - ADR-002+018 적용 후: `import '@topgrid/grid-renderers'` 시점에 `text`/`number`/
  *   `date`/`dateTime`/`badge`/`link`/`tag`/`progress` 8개 placeholder 가 실 컴포넌트 어댑터로 교체됨.
  *   `boolean` (Y/N) / `icon` (placeholder) / `checkbox` (registry 우회) 는 변경 없음.
  * - grid-renderers 미import 시: 11 placeholder 가 fallback 으로 동작 (graceful degradation).
@@ -71,7 +71,7 @@ export const defaultRendererRegistry: RendererRegistry = new Map<TomisColumnType
  * L2: AG Grid `components` 주입 패턴 참조 (R-A).
  * `Map.set()` 사용 — `any` 없음 (C-4).
  *
- * ADR-002 의 `@tomis/grid-renderers/wireRegistry.ts` 가 이 함수로 6 슬롯
+ * ADR-002 의 `@topgrid/grid-renderers/wireRegistry.ts` 가 이 함수로 6 슬롯
  * (text/number/date/dateTime/badge/link) 을 wire 한다. 사용자 커스텀 renderer
  * 도 동일 API 로 덮어쓰기 가능 (마지막 호출이 우선).
  *

@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — TextFilter Storybook Stories
+ * @topgrid/grid-features — TextFilter Storybook Stories
  *
  * MOD-GRID-09 G-001 AC-007 / C-25:
  * contains + 인디케이터 + clear 시나리오.

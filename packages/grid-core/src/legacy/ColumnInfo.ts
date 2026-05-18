@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-core — Legacy ColumnInfo alias.
+ * @topgrid/grid-core — Legacy ColumnInfo alias.
  *
  * MOD-GRID-04 G-001: DataTable `ColumnInfo` 호환 alias.
  *
@@ -25,8 +25,8 @@
  *
  * @example
  * ```typescript
- * import type { ColumnInfo } from '@tomis/grid-core/legacy';
- * import { createColumns } from '@tomis/grid-core';
+ * import type { ColumnInfo } from '@topgrid/grid-core/legacy';
+ * import { createColumns } from '@topgrid/grid-core';
  *
  * const legacyDefs: ColumnInfo[] = [
  *   { id: 'name', type: 'text', align: 'left', name: '이름', width: '100' },

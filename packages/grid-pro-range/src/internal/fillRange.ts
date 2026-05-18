@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — Drag-fill pure functions (G-003).
+ * @topgrid/grid-pro-range — Drag-fill pure functions (G-003).
  *
  * fillRange: 소스 범위 값을 지정 방향·개수만큼 CellUpdate 배열로 생성.
  * detectSeriesStep: 숫자 배열에서 등차 step 감지.

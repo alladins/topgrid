@@ -1,6 +1,6 @@
 ---
-'@tomis/grid-core': minor
-'@tomis/grid-renderers': patch
+'@topgrid/grid-core': minor
+'@topgrid/grid-renderers': patch
 ---
 
 Add cellClassName + rowClassName + onCellKeyDown callbacks (G-006/G-007).

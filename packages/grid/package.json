@@ -1,10 +1,10 @@
 {
-  "name": "@tomis/grid",
+  "name": "@topgrid/grid",
   "version": "0.1.0",
   "type": "module",
   "license": "SEE LICENSE IN EULA",
   "private": true,
-  "description": "Meta package — aggregates all @tomis/grid-* packages (MIT + Pro facade)",
+  "description": "Meta package — aggregates all @topgrid/grid-* packages (MIT + Pro facade)",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -30,18 +30,18 @@
     "test": "echo TODO"
   },
   "dependencies": {
-    "@tomis/grid-core": "workspace:*",
-    "@tomis/grid-renderers": "workspace:*",
-    "@tomis/grid-features": "workspace:*",
-    "@tomis/grid-export": "workspace:*",
-    "@tomis/grid-license": "workspace:*",
-    "@tomis/grid-pro-tracking": "workspace:*",
-    "@tomis/grid-pro-range": "workspace:*",
-    "@tomis/grid-pro-datamap": "workspace:*",
-    "@tomis/grid-pro-merging": "workspace:*",
-    "@tomis/grid-pro-header": "workspace:*",
-    "@tomis/grid-pro-agg": "workspace:*",
-    "@tomis/grid-pro-master": "workspace:*"
+    "@topgrid/grid-core": "workspace:*",
+    "@topgrid/grid-renderers": "workspace:*",
+    "@topgrid/grid-features": "workspace:*",
+    "@topgrid/grid-export": "workspace:*",
+    "@topgrid/grid-license": "workspace:*",
+    "@topgrid/grid-pro-tracking": "workspace:*",
+    "@topgrid/grid-pro-range": "workspace:*",
+    "@topgrid/grid-pro-datamap": "workspace:*",
+    "@topgrid/grid-pro-merging": "workspace:*",
+    "@topgrid/grid-pro-header": "workspace:*",
+    "@topgrid/grid-pro-agg": "workspace:*",
+    "@topgrid/grid-pro-master": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.0.0",

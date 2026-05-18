@@ -1,5 +1,5 @@
 {
-  "name": "@tomis/grid-export",
+  "name": "@topgrid/grid-export",
   "version": "0.2.0",
   "type": "module",
   "license": "MIT",
@@ -54,5 +54,17 @@
     "tsup": "^8.0.0",
     "typescript": "~5.8.3",
     "xlsx": "^0.18.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alladins/topgrid.git",
+    "directory": "packages/grid-export"
+  },
+  "bugs": {
+    "url": "https://github.com/alladins/topgrid/issues"
+  },
+  "homepage": "https://github.com/alladins/topgrid#readme",
+  "publishConfig": {
+    "access": "public"
   }
 }

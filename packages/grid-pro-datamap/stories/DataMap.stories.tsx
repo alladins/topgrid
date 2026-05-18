@@ -10,7 +10,7 @@ import {
   DataMapCell,
   DataMapEditor,
   createDataMap,
-} from '@tomis/grid-pro-datamap';
+} from '@topgrid/grid-pro-datamap';
 
 // C-3 예외: mock 항목 데이터 — Storybook stories 허용 범위
 interface CityItem {

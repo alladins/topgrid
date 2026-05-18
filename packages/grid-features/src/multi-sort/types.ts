@@ -1,10 +1,10 @@
 /**
  * Multi-sort feature types.
- * @package @tomis/grid-features
+ * @package @topgrid/grid-features
  *
- * Note: `SortClearButtonProps` moved to `@tomis/grid-core` per ADR-009 (옵션 A).
- * Note: `SortBadgeProps` moved to `@tomis/grid-core` per ADR-010.
- * Both are re-exported from `@tomis/grid-core` as deprecation aliases (see grid-features/src/index.ts).
+ * Note: `SortClearButtonProps` moved to `@topgrid/grid-core` per ADR-009 (옵션 A).
+ * Note: `SortBadgeProps` moved to `@topgrid/grid-core` per ADR-010.
+ * Both are re-exported from `@topgrid/grid-core` as deprecation aliases (see grid-features/src/index.ts).
  */
 
 /**

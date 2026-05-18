@@ -1,4 +1,4 @@
-# @tomis/grid
+# @topgrid/grid
 
 ## 0.1.0
 
@@ -9,9 +9,9 @@
 
   Name collisions resolved by prior ADRs and canonical-source selection:
 
-  - `defaultRendererRegistry` / `registerRenderer` → `@tomis/grid-renderers` (ADR-002 D-3A).
-  - `TomisColumnDef` → `@tomis/grid-core` (ADR-006 rename).
-  - `GroupedHeaderGrid` / `GroupedHeaderGridProps` → `@tomis/grid-pro-header`.
+  - `defaultRendererRegistry` / `registerRenderer` → `@topgrid/grid-renderers` (ADR-002 D-3A).
+  - `TomisColumnDef` → `@topgrid/grid-core` (ADR-006 rename).
+  - `GroupedHeaderGrid` / `GroupedHeaderGridProps` → `@topgrid/grid-pro-header`.
 
   6 `@deprecated` grid-core APIs excluded from the facade per ADR-013 explicit prohibition.
 
@@ -37,18 +37,18 @@
 - Updated dependencies [f5ea968]
 - Updated dependencies [f5ea968]
 - Updated dependencies [f5ea968]
-  - @tomis/grid-license@0.1.0
-  - @tomis/grid-pro-agg@0.1.0
-  - @tomis/grid-pro-datamap@0.2.0
-  - @tomis/grid-pro-header@0.1.0
-  - @tomis/grid-pro-master@1.0.0
-  - @tomis/grid-pro-merging@1.0.0
-  - @tomis/grid-pro-range@0.1.0
-  - @tomis/grid-pro-tracking@1.0.0
-  - @tomis/grid-renderers@1.0.0
-  - @tomis/grid-core@0.1.0
-  - @tomis/grid-export@0.2.0
-  - @tomis/grid-features@0.3.0
+  - @topgrid/grid-license@0.1.0
+  - @topgrid/grid-pro-agg@0.1.0
+  - @topgrid/grid-pro-datamap@0.2.0
+  - @topgrid/grid-pro-header@0.1.0
+  - @topgrid/grid-pro-master@1.0.0
+  - @topgrid/grid-pro-merging@1.0.0
+  - @topgrid/grid-pro-range@0.1.0
+  - @topgrid/grid-pro-tracking@1.0.0
+  - @topgrid/grid-renderers@1.0.0
+  - @topgrid/grid-core@0.1.0
+  - @topgrid/grid-export@0.2.0
+  - @topgrid/grid-features@0.3.0
 
 ## 0.1.0 — 2026-05-17
 
@@ -58,7 +58,7 @@
   (4 MIT + 7 Pro + 1 infrastructure). Replaces the prior `export {};` placeholder
   per ADR-MOD-GRID-REFACTOR-2026-05-17-003 (Wave 4).
 - `sideEffects` field includes the meta's own dist entries so consumer bundlers
-  preserve `@tomis/grid-renderers`' `wireDefaultRenderers()` auto-wiring (ADR-002).
+  preserve `@topgrid/grid-renderers`' `wireDefaultRenderers()` auto-wiring (ADR-002).
 - 12 workspace `dependencies` added (`workspace:*`): grid-core, grid-renderers,
   grid-features, grid-export, grid-license, grid-pro-tracking, grid-pro-range,
   grid-pro-datamap, grid-pro-merging, grid-pro-header, grid-pro-agg, grid-pro-master.
@@ -69,13 +69,13 @@
 
 - **License retained as `SEE LICENSE IN EULA`** — the meta facade aggregates Pro
   packages. For MIT-only consumption, import the underlying MIT packages directly
-  (`@tomis/grid-core`, `@tomis/grid-renderers`, `@tomis/grid-features`, `@tomis/grid-export`).
+  (`@topgrid/grid-core`, `@topgrid/grid-renderers`, `@topgrid/grid-features`, `@topgrid/grid-export`).
 - **Name collisions resolved (probe: 5 TS2308 errors → 0)**:
-  - `defaultRendererRegistry`, `registerRenderer` — canonical source = `@tomis/grid-renderers`
+  - `defaultRendererRegistry`, `registerRenderer` — canonical source = `@topgrid/grid-renderers`
     (grid-core's are placeholder fallback per ADR-002 D-3A).
-  - `TomisColumnDef` (type) — canonical = `@tomis/grid-core` (grid-pro-datamap's alias
+  - `TomisColumnDef` (type) — canonical = `@topgrid/grid-core` (grid-pro-datamap's alias
     is `@deprecated` per ADR-006).
-  - `GroupedHeaderGrid`, `GroupedHeaderGridProps` — canonical = `@tomis/grid-pro-header`
+  - `GroupedHeaderGrid`, `GroupedHeaderGridProps` — canonical = `@topgrid/grid-pro-header`
     (grid-core's `legacy/` versions are C-6 alias).
 - **6 `@deprecated` grid-core APIs excluded** per ADR-013 explicit prohibition:
   `createTomisColumnHelper`, `createGroupedColumns`, `TomisColumnGroup`,

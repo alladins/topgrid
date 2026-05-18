@@ -8,9 +8,9 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   MasterDetailGrid,
   ContextMenuGrid,
-} from '@tomis/grid-pro-master';
-import type { ContextMenuItem } from '@tomis/grid-pro-master';
-import { createColumns } from '@tomis/grid-core';
+} from '@topgrid/grid-pro-master';
+import type { ContextMenuItem } from '@topgrid/grid-pro-master';
+import { createColumns } from '@topgrid/grid-core';
 
 // C-3 예외: mock rows — Storybook stories 허용 범위
 interface DeptRow {

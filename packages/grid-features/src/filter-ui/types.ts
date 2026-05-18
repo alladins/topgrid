@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — filter-ui 타입 정의.
+ * @topgrid/grid-features — filter-ui 타입 정의.
  *
  * MOD-GRID-09 G-001: TextFilter, FilterPopover, FilterIndicator 공유 타입.
  *

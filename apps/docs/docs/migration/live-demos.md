@@ -3,9 +3,9 @@ title: Live 데모
 sidebar_position: 4
 ---
 
-# Live 데모 — @tomis/grid-core 이전 결과
+# Live 데모 — @topgrid/grid-core 이전 결과
 
-이 페이지에서 `@tomis/grid-core`의 주요 Grid 패턴을 직접 실행해볼 수 있다.
+이 페이지에서 `@topgrid/grid-core`의 주요 Grid 패턴을 직접 실행해볼 수 있다.
 3개의 StackBlitz 임베드를 제공하며, CSP 차단 환경을 위한 정적 코드 블록 fallback도 포함한다.
 
 ---
@@ -28,7 +28,7 @@ sidebar_position: 4
 
 ```tsx
 // src/App.tsx — tomis-grid-basic
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 import { type ColumnDef } from '@tanstack/react-table';
 
 type Employee = {
@@ -106,7 +106,7 @@ export default function App() {
 
 ```tsx
 // src/App.tsx — tomis-grid-virtualized
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 import { type ColumnDef } from '@tanstack/react-table';
 
 type Row = { id: number; col1: string; col2: string; col3: number };
@@ -187,9 +187,9 @@ export default function App() {
 // (B) useChangeTracking hook 직접 사용 — 더 세밀한 제어
 
 import { useRef, useState } from 'react';
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 import { ChangeTrackingGrid, type ChangeTrackingHandle } from '../Grid/ChangeTrackingGrid';
-import { useChangeTracking } from '@tomis/grid-pro-tracking';
+import { useChangeTracking } from '@topgrid/grid-pro-tracking';
 import { type ColumnDef } from '@tanstack/react-table';
 
 type Product = { id: string; name: string; price: number; stock: number };
@@ -336,7 +336,7 @@ pnpm install
 pnpm --filter docs dev
 
 # 또는 개별 패키지 개발
-pnpm --filter @tomis/grid-core dev
+pnpm --filter @topgrid/grid-core dev
 ```
 
 ---

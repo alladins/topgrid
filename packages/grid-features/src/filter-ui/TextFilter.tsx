@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — TextFilter 메인 컴포넌트.
+ * @topgrid/grid-features — TextFilter 메인 컴포넌트.
  *
  * MOD-GRID-09 G-001:
  * 컬럼 헤더 Popover + contains/equals/startsWith/endsWith 연산자 + 필터 인디케이터.

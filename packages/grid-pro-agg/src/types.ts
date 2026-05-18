@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-agg — type definitions
+ * @topgrid/grid-pro-agg — type definitions
  * MOD-GRID-15 / G-001 aggregation scaffold
  * MOD-GRID-15 / G-002 group footer + expand/collapse
  * MOD-GRID-15 / G-003 custom aggregation registry

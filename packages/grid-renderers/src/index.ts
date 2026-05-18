@@ -1,4 +1,4 @@
-// @tomis/grid-renderers — public API
+// @topgrid/grid-renderers — public API
 // MOD-GRID-05 / G-001: TextCell + NumberCell + DateCell + formatters.
 // MOD-GRID-05 / G-002: StatusBadgeCell + LinkCell + ButtonCell + CheckCell + IconCell
 //                      + TagCell + AvatarCell + ProgressCell.
@@ -41,7 +41,7 @@ export {
 } from './rendererRegistry.js';
 
 // ADR-MOD-GRID-REFACTOR-2026-05-17-002: cross-package wiring side-effect.
-// Auto-registers 6 cell adapters into @tomis/grid-core's defaultRendererRegistry
+// Auto-registers 6 cell adapters into @topgrid/grid-core's defaultRendererRegistry
 // so `createColumns({ type: 'number' | ... })` dispatches to real cell components.
 // MUST be evaluated at import time — see package.json `sideEffects`.
 import { wireDefaultRenderers } from './wireRegistry.js';

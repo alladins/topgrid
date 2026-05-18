@@ -1,5 +1,5 @@
 ---
-'@tomis/grid-renderers': minor
+'@topgrid/grid-renderers': minor
 ---
 
 Add `initialDraft` prop to `EditableCell` — keystroke-triggered editing first char restoration (G-7 keyboard entry UX).

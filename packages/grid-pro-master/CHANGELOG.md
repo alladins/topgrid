@@ -1,4 +1,4 @@
-# @tomis/grid-pro-master
+# @topgrid/grid-pro-master
 
 ## 0.1.0
 
@@ -20,10 +20,10 @@
   The SSR-guard + try/catch + JSON parse/stringify + QuotaExceededError boilerplate
   duplicated across 4 persistence hooks (`useStoragePersist`,
   `useColumnPersistence`, `useColumnOrderPersist`, `useExpandedPersistence`) is
-  consolidated into a single `internal/storage` adapter under `@tomis/grid-core`.
+  consolidated into a single `internal/storage` adapter under `@topgrid/grid-core`.
 
   - `grid-core`: adds a new `./internal/storage` subpath export
-    (`@tomis/grid-core/internal/storage`) exposing `getStorage`, `readJson`,
+    (`@topgrid/grid-core/internal/storage`) exposing `getStorage`, `readJson`,
     `readRaw`, `writeJson`, `writeRaw`, `removeKey`, type `StorageType`. Marked
     `@internal` — sister packages in this monorepo consume it to share the
     Web-Storage I/O layer. **Not part of the semver-stable public API**;
@@ -47,12 +47,12 @@
   - Imperative handle via `ref`: `expandAll()`, `collapseAll()` + full `GridHandle<TData>` API
   - `ExpandToggleCell` — internal expand/collapse toggle button with depth-based indent (INDENT_PX=16)
   - `DetailRow` — full-width `<tr data-detail-row>` for expanded master row content
-  - `verifyLicense('@tomis/grid-pro-master')` called at module level (Pro EULA guard)
-  - `@tomis/grid-core` and `@tomis/grid-license` added to peerDependencies
+  - `verifyLicense('@topgrid/grid-pro-master')` called at module level (Pro EULA guard)
+  - `@topgrid/grid-core` and `@topgrid/grid-license` added to peerDependencies
 
-  `@tomis/grid-core`: `GridHandle<TData>` extended with optional `expandAll?(): void` and `collapseAll?(): void` (after `scrollTo`) — backward-compatible (optional methods, base `<Grid>` unaffected)
+  `@topgrid/grid-core`: `GridHandle<TData>` extended with optional `expandAll?(): void` and `collapseAll?(): void` (after `scrollTo`) — backward-compatible (optional methods, base `<Grid>` unaffected)
 
-  `@tomis/grid-license`: add no-op `verifyLicense(_packageName: string): void` export stub (MOD-GRID-99-A deferred)
+  `@topgrid/grid-license`: add no-op `verifyLicense(_packageName: string): void` export stub (MOD-GRID-99-A deferred)
 
 - f5ea968: feat(grid-pro-master): add ContextMenuGrid with right-click context menu (MOD-GRID-16/G-002)
 
@@ -69,7 +69,7 @@
   - `disabled` evaluation at render time with `opacity-50 cursor-not-allowed` styling (AC-007)
   - Viewport-edge position clamping in `ContextMenuPortal` (Section 9)
   - Esc key + outside-click close (AC-012)
-  - `verifyLicense('@tomis/grid-pro-master')` called at module level (Pro EULA guard, D6)
+  - `verifyLicense('@topgrid/grid-pro-master')` called at module level (Pro EULA guard, D6)
   - `internal/useContextMenu.ts` — pure state hook (isOpen, position, targetRow, targetCell, focusedIndex)
   - `internal/ContextMenuPortal.tsx` — createPortal-based menu renderer
 
@@ -87,16 +87,16 @@
     - `focus-visible:outline-2 focus-visible:outline-blue-500` focus ring
     - `useRowKeyboardNav` hook in `internal/useRowKeyboardNav.ts` (not public API)
     - `shouldToggleExpand(key)` pure helper (C-32)
-  - `TreeGrid` / `ColumnPinGrid` alias re-exports from `@tomis/grid-core`:
-    - `export { TreeGrid, type TreeGridProps } from '@tomis/grid-core'`
-    - `export { ColumnPinGrid, type ColumnPinGridProps } from '@tomis/grid-core'`
+  - `TreeGrid` / `ColumnPinGrid` alias re-exports from `@topgrid/grid-core`:
+    - `export { TreeGrid, type TreeGridProps } from '@topgrid/grid-core'`
+    - `export { ColumnPinGrid, type ColumnPinGridProps } from '@topgrid/grid-core'`
     - Deprecation warning automatic via `useDeprecationWarn` inside G-005 (MOD-GRID-01) implementations
     - C-6 backward compatibility maintained
   - `RowPinningOptions` type export (F-16-06 P1 — types only; UI in separate Goal):
     - `pinTop?: string[]` — top-pinned row ids
     - `pinBottom?: string[]` — bottom-pinned row ids
 
-  No new peerDependency additions. `@tomis/grid-core: workspace:*` already declared in G-001.
+  No new peerDependency additions. `@topgrid/grid-core: workspace:*` already declared in G-001.
 
 ### Patch Changes
 
@@ -109,8 +109,8 @@
 - Updated dependencies [f5ea968]
 - Updated dependencies [f5ea968]
 - Updated dependencies [f5ea968]
-  - @tomis/grid-license@0.1.0
-  - @tomis/grid-core@0.1.0
+  - @topgrid/grid-license@0.1.0
+  - @topgrid/grid-core@0.1.0
 
 ## Unreleased (ADR-007 — Wave 3 — 2026-05-17)
 
@@ -118,7 +118,7 @@
 
 - `useExpandedPersistence` — SSR guard + `localStorage` / `sessionStorage`
   try/catch + JSON.parse / stringify + QuotaExceededError boilerplate now
-  delegated to `@tomis/grid-core/internal/storage` adapter (consumed via the
+  delegated to `@topgrid/grid-core/internal/storage` adapter (consumed via the
   new `./internal/storage` subpath). Public API (`UseExpandedPersistenceOptions`,
   returned `[expanded, setExpanded]` tuple), in-memory fallback semantics,
   one-time `warnedUnavailable` dev warning, and QuotaExceededError dev warning

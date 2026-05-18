@@ -9,7 +9,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { MultiRowHeader, createColumnGroup } from '@tomis/grid-pro-header';
+import { MultiRowHeader, createColumnGroup } from '@topgrid/grid-pro-header';
 
 // C-3 예외: mock rows — Storybook stories 허용 범위
 interface EmployeeRow {

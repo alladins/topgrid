@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-core — Public type definitions for the unified `<Grid>` wrapper.
+ * @topgrid/grid-core — Public type definitions for the unified `<Grid>` wrapper.
  *
  * G-001 (MOD-GRID-01): TanStack Table v8 위에 단일 API + `enable*` 토글 통합.
  * 8개 기존 grid variant(BaseGrid/VirtualGrid/TreeGrid/...)를 흡수하기 위한 props 표면.
@@ -28,7 +28,7 @@ import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
 
 // ─── G-006 (MOD-GRID-01): cell/row className callback canonical types ───
 // 권위 ownership: grid-core (ADR-MOD-GRID-REFACTOR-2026-05-17-009 역의존 제거 cross-ref).
-// `@tomis/grid-renderers/src/EditableCell.tsx` 는 본 타입을 type-only re-export.
+// `@topgrid/grid-renderers/src/EditableCell.tsx` 는 본 타입을 type-only re-export.
 
 /**
  * Grid-level cell className callback (G-006).
@@ -36,8 +36,8 @@ import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
  * Receives a TanStack `Cell<TData, unknown>` and returns a Tailwind className
  * string (or undefined for no addition) to be appended to the rendered `<td>`.
  *
- * Canonical home: `@tomis/grid-core` (since G-006 / 2026-05-18 — ADR-MOD-GRID-01-007).
- * `@tomis/grid-renderers` re-exports as type-only (ADR-MOD-GRID-REFACTOR-2026-05-17-009
+ * Canonical home: `@topgrid/grid-core` (since G-006 / 2026-05-18 — ADR-MOD-GRID-01-007).
+ * `@topgrid/grid-renderers` re-exports as type-only (ADR-MOD-GRID-REFACTOR-2026-05-17-009
  * 역의존 제거 정책 부합).
  *
  * @see G-006 spec — canonical-gap-supplementation-spec.md §4.1

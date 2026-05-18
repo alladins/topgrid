@@ -1,15 +1,15 @@
-# @tomis/grid-features
+# @topgrid/grid-features
 
 Column reorder, multi-sort, filter UI features
 
 ## Installation
 
 ```bash
-pnpm add @tomis/grid-features
+pnpm add @topgrid/grid-features
 # or
-npm install @tomis/grid-features
+npm install @topgrid/grid-features
 # or
-yarn add @tomis/grid-features
+yarn add @topgrid/grid-features
 ```
 
 ## Peer Dependencies
@@ -28,7 +28,7 @@ yarn add @tomis/grid-features
 ### Column Drag-and-Drop Reorder
 
 ```tsx
-import { useColumnDrag, DropIndicator } from '@tomis/grid-features';
+import { useColumnDrag, DropIndicator } from '@topgrid/grid-features';
 
 export function ReorderableGrid({ columns, data }) {
   const { dragProps, dropProps } = useColumnDrag({ columns });
@@ -52,7 +52,7 @@ export function ReorderableGrid({ columns, data }) {
 ### Multi-Sort
 
 ```tsx
-import { useMultiSort, SortBadge, SortClearButton } from '@tomis/grid-features';
+import { useMultiSort, SortBadge, SortClearButton } from '@topgrid/grid-features';
 
 export function SortableGrid({ table }) {
   const { sortState } = useMultiSort({ table });

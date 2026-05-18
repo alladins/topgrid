@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-agg — internal GroupRow component
+ * @topgrid/grid-pro-agg — internal GroupRow component
  * MOD-GRID-15 / G-002
  *
  * Renders a single group header row with:

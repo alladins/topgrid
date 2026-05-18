@@ -1,11 +1,11 @@
-# @tomis/grid-license
+# @topgrid/grid-license
 
 Pro license validation runtime
 
 ## Overview
 
-`@tomis/grid-license` is the runtime license validation module for TOMIS Grid Pro packages.
-All Pro packages (`@tomis/grid-pro-*`) depend on this module to verify a valid license at runtime.
+`@topgrid/grid-license` is the runtime license validation module for TOMIS Grid Pro packages.
+All Pro packages (`@topgrid/grid-pro-*`) depend on this module to verify a valid license at runtime.
 
 > **Note**: This is an internal package. It is not published to npm separately. You do not need to install it directly — Pro packages include it as a dependency.
 
@@ -14,7 +14,7 @@ All Pro packages (`@tomis/grid-pro-*`) depend on this module to verify a valid l
 Call `setLicenseKey` once at your application entry point (e.g., `main.tsx`) before rendering any Pro grid component:
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
+import { setLicenseKey } from '@topgrid/grid-license';
 
 // Call once at app startup
 setLicenseKey('YOUR-LICENSE-KEY');

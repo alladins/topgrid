@@ -119,40 +119,40 @@ importers:
       '@tanstack/react-virtual':
         specifier: ^3.0.0
         version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
-      '@tomis/grid-core':
+      '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
-      '@tomis/grid-export':
+      '@topgrid/grid-export':
         specifier: workspace:*
         version: link:../grid-export
-      '@tomis/grid-features':
+      '@topgrid/grid-features':
         specifier: workspace:*
         version: link:../grid-features
-      '@tomis/grid-license':
+      '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
-      '@tomis/grid-pro-agg':
+      '@topgrid/grid-pro-agg':
         specifier: workspace:*
         version: link:../grid-pro-agg
-      '@tomis/grid-pro-datamap':
+      '@topgrid/grid-pro-datamap':
         specifier: workspace:*
         version: link:../grid-pro-datamap
-      '@tomis/grid-pro-header':
+      '@topgrid/grid-pro-header':
         specifier: workspace:*
         version: link:../grid-pro-header
-      '@tomis/grid-pro-master':
+      '@topgrid/grid-pro-master':
         specifier: workspace:*
         version: link:../grid-pro-master
-      '@tomis/grid-pro-merging':
+      '@topgrid/grid-pro-merging':
         specifier: workspace:*
         version: link:../grid-pro-merging
-      '@tomis/grid-pro-range':
+      '@topgrid/grid-pro-range':
         specifier: workspace:*
         version: link:../grid-pro-range
-      '@tomis/grid-pro-tracking':
+      '@topgrid/grid-pro-tracking':
         specifier: workspace:*
         version: link:../grid-pro-tracking
-      '@tomis/grid-renderers':
+      '@topgrid/grid-renderers':
         specifier: workspace:*
         version: link:../grid-renderers
       jspdf:
@@ -186,7 +186,7 @@ importers:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.2.6(react@19.2.6)
     devDependencies:
-      '@tomis/grid-renderers':
+      '@topgrid/grid-renderers':
         specifier: workspace:*
         version: link:../grid-renderers
 
@@ -229,7 +229,7 @@ importers:
       '@tanstack/react-virtual':
         specifier: ^3.0.0
         version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
-      '@tomis/grid-core':
+      '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
       date-fns:
@@ -262,7 +262,7 @@ importers:
       '@tanstack/react-virtual':
         specifier: ^3.0.0
         version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
-      '@tomis/grid-license':
+      '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
@@ -277,7 +277,7 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.0.0
         version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
-      '@tomis/grid-license':
+      '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
@@ -292,10 +292,10 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.0.0
         version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
-      '@tomis/grid-core':
+      '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
-      '@tomis/grid-license':
+      '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
@@ -310,7 +310,7 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.0.0
         version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
-      '@tomis/grid-license':
+      '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
@@ -320,7 +320,7 @@ importers:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.2.6(react@19.2.6)
     devDependencies:
-      '@tomis/grid-core':
+      '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
 
@@ -332,7 +332,7 @@ importers:
       '@tanstack/react-virtual':
         specifier: ^3.0.0
         version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
-      '@tomis/grid-license':
+      '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
@@ -342,7 +342,7 @@ importers:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.2.6(react@19.2.6)
     devDependencies:
-      '@tomis/grid-core':
+      '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
 
@@ -354,7 +354,7 @@ importers:
       '@tanstack/react-virtual':
         specifier: ^3.0.0
         version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
-      '@tomis/grid-license':
+      '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
@@ -364,7 +364,7 @@ importers:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.2.6(react@19.2.6)
     devDependencies:
-      '@tomis/grid-core':
+      '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
 
@@ -373,7 +373,7 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.0.0
         version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
-      '@tomis/grid-license':
+      '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
@@ -383,7 +383,7 @@ importers:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.2.6(react@19.2.6)
     devDependencies:
-      '@tomis/grid-core':
+      '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
 
@@ -392,7 +392,7 @@ importers:
       '@tanstack/react-table':
         specifier: '>=8.0.0 <9.0.0'
         version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
-      '@tomis/grid-core':
+      '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
       react:

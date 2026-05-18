@@ -1,4 +1,4 @@
-# @tomis/grid-pro-range
+# @topgrid/grid-pro-range
 
 Pro: Cell Range Selection, Drag-fill, Clipboard
 
@@ -7,9 +7,9 @@ Provides Excel-like cell range selection, drag-fill (auto-fill series), and clip
 ## Installation
 
 ```bash
-pnpm add @tomis/grid-pro-range
+pnpm add @topgrid/grid-pro-range
 # or
-npm install @tomis/grid-pro-range
+npm install @topgrid/grid-pro-range
 ```
 
 ## License Activation
@@ -17,7 +17,7 @@ npm install @tomis/grid-pro-range
 > **This is a Pro package requiring a valid license key.**
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
+import { setLicenseKey } from '@topgrid/grid-license';
 
 // Call once at your app entry point (e.g., main.tsx)
 setLicenseKey('YOUR-LICENSE-KEY');
@@ -38,8 +38,8 @@ Contact [sales@topvel.com](mailto:sales@topvel.com) to obtain a license key.
 ## Usage
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
-import { RangeSelectGrid, useCellRange } from '@tomis/grid-pro-range';
+import { setLicenseKey } from '@topgrid/grid-license';
+import { RangeSelectGrid, useCellRange } from '@topgrid/grid-pro-range';
 
 setLicenseKey('YOUR-LICENSE-KEY');
 
@@ -60,7 +60,7 @@ export function EditableGrid({ columns, data, onDataChange }) {
 ### Using the hook directly
 
 ```tsx
-import { useCellRange } from '@tomis/grid-pro-range';
+import { useCellRange } from '@topgrid/grid-pro-range';
 
 export function CustomGrid({ table }) {
   const { selectedRange, handleMouseDown, handleMouseEnter } = useCellRange({ table });

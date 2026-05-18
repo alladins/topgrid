@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-agg — GroupPanel component
+ * @topgrid/grid-pro-agg — GroupPanel component
  * MOD-GRID-15 / G-004 GroupPanel + group-level sorting
  *
  * Drag-and-drop grouping bar rendered above the grid.

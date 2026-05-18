@@ -1,10 +1,10 @@
 /**
  * SortClearButton — 다중 정렬 전체 초기화 버튼 컴포넌트.
  *
- * Moved from `@tomis/grid-features/multi-sort/SortClearButton.tsx` per ADR-009 (옵션 A).
- * Aliased re-export remains in `@tomis/grid-features` for one minor cycle.
+ * Moved from `@topgrid/grid-features/multi-sort/SortClearButton.tsx` per ADR-009 (옵션 A).
+ * Aliased re-export remains in `@topgrid/grid-features` for one minor cycle.
  *
- * @package @tomis/grid-core
+ * @package @topgrid/grid-core
  */
 
 import React from 'react';

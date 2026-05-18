@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-core — createColumns TypeScript 컴파일 타입 테스트
+ * @topgrid/grid-core — createColumns TypeScript 컴파일 타입 테스트
  *
  * MOD-GRID-04 G-001: TC-T01~TC-T03
  *

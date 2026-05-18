@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-master — Public type definitions for Master-Detail and Context Menu grids.
+ * @topgrid/grid-pro-master — Public type definitions for Master-Detail and Context Menu grids.
  *
  * G-001 (MOD-GRID-16): `<MasterDetailGrid>` wrapper enabling Master-Detail row
  * expansion with `renderDetailRow` prop and controlled/uncontrolled expanded state.
@@ -13,7 +13,7 @@
 
 import type { Cell, Row } from '@tanstack/react-table';
 import type { ReactNode } from 'react';
-import type { GridProps } from '@tomis/grid-core';
+import type { GridProps } from '@topgrid/grid-core';
 
 /**
  * Master-Detail expansion options.

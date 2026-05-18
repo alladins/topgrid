@@ -14,8 +14,8 @@ import {
 import {
   AggregationGrid,
   GroupPanel,
-} from '@tomis/grid-pro-agg';
-import type { AggregationColumnDef } from '@tomis/grid-pro-agg';
+} from '@topgrid/grid-pro-agg';
+import type { AggregationColumnDef } from '@topgrid/grid-pro-agg';
 
 // C-3 예외: mock rows — Storybook stories 허용 범위
 interface SalesRow {

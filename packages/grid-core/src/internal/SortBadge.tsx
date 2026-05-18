@@ -4,8 +4,8 @@ import type { SortBadgeProps } from './multi-sort/types';
  * 다중 정렬 우선순위 배지 — grid-core canonical source (ADR-010).
  *
  * @remarks
- * Grid.tsx 헤더 렌더 내부 + `@tomis/grid-features` public API 양쪽의 single source.
- * `@tomis/grid-features` 의 `SortBadge` 는 ADR-010 으로 이 컴포넌트의 deprecation alias.
+ * Grid.tsx 헤더 렌더 내부 + `@topgrid/grid-features` public API 양쪽의 single source.
+ * `@topgrid/grid-features` 의 `SortBadge` 는 ADR-010 으로 이 컴포넌트의 deprecation alias.
  * Tailwind className만 사용 (C-5).
  *
  * `sortIndex < 0` (= 미정렬) 시 null 반환.

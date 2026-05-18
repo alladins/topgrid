@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — useColumnDrag Storybook Stories
+ * @topgrid/grid-features — useColumnDrag Storybook Stories
  *
  * G-001 (MOD-GRID-07) AC-008 / C-25:
  * 6컬럼 + enableColumnReorder + drop 시나리오 스토리 1개.

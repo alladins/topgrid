@@ -1,5 +1,5 @@
 ---
-'@tomis/grid-renderers': minor
+'@topgrid/grid-renderers': minor
 ---
 
 Add 3 props to EditableCell — maxLength + align + stopPropagationOnKeyDown.

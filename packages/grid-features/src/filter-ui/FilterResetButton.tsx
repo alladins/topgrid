@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — FilterResetButton 컴포넌트.
+ * @topgrid/grid-features — FilterResetButton 컴포넌트.
  *
  * MOD-GRID-09 G-004 AC-005:
  * table.resetColumnFilters() + table.setGlobalFilter(undefined) 호출.

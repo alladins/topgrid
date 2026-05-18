@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — SelectFilter Storybook Stories.
+ * @topgrid/grid-features — SelectFilter Storybook Stories.
  *
  * MOD-GRID-09 G-004 AC-007 + Section 15.2:
  * - SelectFilter/Default: 5개 옵션 체크박스 필터 기본 기능 확인

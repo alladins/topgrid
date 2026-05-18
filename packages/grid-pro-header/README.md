@@ -1,4 +1,4 @@
-# @tomis/grid-pro-header
+# @topgrid/grid-pro-header
 
 Pro: Multi-row Header (Column Groups)
 
@@ -7,9 +7,9 @@ Provides multi-row header (column group) support for TOMIS Grid — merge column
 ## Installation
 
 ```bash
-pnpm add @tomis/grid-pro-header
+pnpm add @topgrid/grid-pro-header
 # or
-npm install @tomis/grid-pro-header
+npm install @topgrid/grid-pro-header
 ```
 
 ## License Activation
@@ -17,7 +17,7 @@ npm install @tomis/grid-pro-header
 > **This is a Pro package requiring a valid license key.**
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
+import { setLicenseKey } from '@topgrid/grid-license';
 
 // Call once at your app entry point (e.g., main.tsx)
 setLicenseKey('YOUR-LICENSE-KEY');
@@ -37,8 +37,8 @@ Contact [sales@topvel.com](mailto:sales@topvel.com) to obtain a license key.
 ## Usage
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
-import { MultiRowHeader, createColumnGroup } from '@tomis/grid-pro-header';
+import { setLicenseKey } from '@topgrid/grid-license';
+import { MultiRowHeader, createColumnGroup } from '@topgrid/grid-pro-header';
 
 setLicenseKey('YOUR-LICENSE-KEY');
 

@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — GlobalSearchInput + FilterResetButton Storybook Stories.
+ * @topgrid/grid-features — GlobalSearchInput + FilterResetButton Storybook Stories.
  *
  * MOD-GRID-09 G-004 AC-007 + Section 15.2 + Section 7 #8:
  * - GlobalSearch/Default: GlobalSearchInput + FilterResetButton 통합 story

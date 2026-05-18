@@ -4,8 +4,8 @@
 // C-1 준수: MergingGridProps — data, columns (MergingColumnDef[]), enableMerging?, className?
 //   - MergingColumnDef = ColumnDef & { meta?: { mergeRows?: boolean | fn } }
 import type { Meta, StoryObj } from '@storybook/react';
-import { MergingGrid } from '@tomis/grid-pro-merging';
-import type { MergingColumnDef } from '@tomis/grid-pro-merging';
+import { MergingGrid } from '@topgrid/grid-pro-merging';
+import type { MergingColumnDef } from '@topgrid/grid-pro-merging';
 
 // C-3 예외: mock rows — Storybook stories 허용 범위
 interface SalesRow {

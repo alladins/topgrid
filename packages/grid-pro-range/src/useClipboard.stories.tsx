@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — useClipboard Storybook 스토리 (G-004, AC-007).
+ * @topgrid/grid-pro-range — useClipboard Storybook 스토리 (G-004, AC-007).
  *
  * CopyStory: Ctrl+C → TSV 클립보드 복사 시나리오.
  * PasteStory: mocked TSV string을 pasteFromClipboard에 직접 주입 (Ctrl+V 시나리오).

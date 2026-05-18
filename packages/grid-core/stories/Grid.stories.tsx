@@ -7,7 +7,7 @@ import {
   PageSizeSelect,
   TotalCount,
   createColumns,
-} from '@tomis/grid-core';
+} from '@topgrid/grid-core';
 // Note: GridPagination is demonstrated via Grid's enablePagination=true prop (WithPaginationAndSort story)
 // ColumnVisibilityMenu is demonstrated via Grid's columnPersistence prop (ColumnVisibilityMenuStory)
 

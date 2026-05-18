@@ -9,7 +9,7 @@ import {
   exportToPdf,
   copyToClipboard,
   printGrid,
-} from '@tomis/grid-export';
+} from '@topgrid/grid-export';
 import type { Table } from '@tanstack/react-table';
 
 // C-3 예외: mock rows 데이터 — Storybook stories 허용 범위

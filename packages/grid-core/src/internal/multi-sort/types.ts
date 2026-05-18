@@ -1,7 +1,7 @@
 /**
- * @tomis/grid-core — multi-sort types (subset moved per ADR-009 + ADR-010).
+ * @topgrid/grid-core — multi-sort types (subset moved per ADR-009 + ADR-010).
  *
- * ADR-009: `SortClearButtonProps` moved here from `@tomis/grid-features/multi-sort/types.ts`.
+ * ADR-009: `SortClearButtonProps` moved here from `@topgrid/grid-features/multi-sort/types.ts`.
  * ADR-010: `SortBadgeProps` moved here (grid-core canonical source).
  * `UseMultiSortOptions`, `UseMultiSortResult` remain in grid-features.
  */

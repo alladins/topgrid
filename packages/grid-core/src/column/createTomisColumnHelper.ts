@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-core — createTomisColumnHelper.
+ * @topgrid/grid-core — createTomisColumnHelper.
  *
  * MOD-GRID-04 G-001: TanStack `createColumnHelper<TData>()` 순수 re-export.
  *
@@ -14,7 +14,7 @@
  *
  * @example
  * ```typescript
- * import { createTomisColumnHelper } from '@tomis/grid-core';
+ * import { createTomisColumnHelper } from '@topgrid/grid-core';
  *
  * const helper = createTomisColumnHelper<User>();
  *

@@ -1,6 +1,6 @@
 [
   {
-    "name": "@tomis/grid-pro-range",
+    "name": "@topgrid/grid-pro-range",
     "path": "dist/index.js",
     "limit": "20 KB",
     "gzip": true

@@ -3,7 +3,7 @@
  *
  * Wraps `GridProps<TData>` surface with `contextMenuItems` prop.
  * Renders its own standalone `useReactTable` table — does NOT import `<Grid>`
- * from `@tomis/grid-core` at runtime (Option B — MIT↔Pro EULA boundary, D1).
+ * from `@topgrid/grid-core` at runtime (Option B — MIT↔Pro EULA boundary, D1).
  *
  * Features:
  * - `contextMenuItems` prop: declarative right-click context menu items.
@@ -29,7 +29,7 @@ import {
   useReactTable,
   type Cell,
 } from '@tanstack/react-table';
-import type { GridHandle } from '@tomis/grid-core';
+import type { GridHandle } from '@topgrid/grid-core';
 import type { ContextMenuGridProps } from './types';
 import { useContextMenu } from './internal/useContextMenu';
 import { ContextMenuPortal } from './internal/ContextMenuPortal';

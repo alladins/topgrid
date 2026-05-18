@@ -3,8 +3,8 @@
 // C-3 예외: mock rows 데이터는 Storybook stories에서만 허용 (D7 결정, ADR-006)
 // C-1 준수: RangeSelectGridProps — data, columns, onRangeChange?, loading?, emptyText?
 import type { Meta, StoryObj } from '@storybook/react';
-import { RangeSelectGrid } from '@tomis/grid-pro-range';
-import { createColumns } from '@tomis/grid-core';
+import { RangeSelectGrid } from '@topgrid/grid-pro-range';
+import { createColumns } from '@topgrid/grid-core';
 
 // C-3 예외: mock rows — Storybook stories 허용 범위
 interface SpreadsheetRow {

@@ -1,5 +1,5 @@
 {
-  "name": "@tomis/grid-pro-master",
+  "name": "@topgrid/grid-pro-master",
   "version": "0.1.0",
   "type": "module",
   "license": "SEE LICENSE IN EULA",
@@ -25,15 +25,15 @@
     "test": "echo TODO"
   },
   "dependencies": {
-    "@tomis/grid-license": "workspace:*"
+    "@topgrid/grid-license": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.0.0",
-    "@tomis/grid-core": "workspace:*",
+    "@topgrid/grid-core": "workspace:*",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@tomis/grid-core": "workspace:*"
+    "@topgrid/grid-core": "workspace:*"
   }
 }

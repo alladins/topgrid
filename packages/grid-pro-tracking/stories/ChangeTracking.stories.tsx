@@ -7,8 +7,8 @@
 //   - columns: ColumnDef<TData>[]
 //   + 나머지 GridProps (enableSort 등)
 import type { Meta, StoryObj } from '@storybook/react';
-import { ChangeTrackingGrid } from '@tomis/grid-pro-tracking';
-import { createColumns } from '@tomis/grid-core';
+import { ChangeTrackingGrid } from '@topgrid/grid-pro-tracking';
+import { createColumns } from '@topgrid/grid-core';
 
 // C-3 예외: mock rows 데이터 — Storybook stories 허용 범위
 interface EmployeeRow {

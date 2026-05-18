@@ -225,7 +225,7 @@ ScopeAll.storyName = 'ScopeAll';
 // ---------------------------------------------------------------------------
 
 export default {
-  title: '@tomis/grid-export/scope-integration',
+  title: '@topgrid/grid-export/scope-integration',
   parameters: {
     docs: {
       description: {

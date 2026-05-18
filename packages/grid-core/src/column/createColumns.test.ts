@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-core — createColumns 단위 테스트
+ * @topgrid/grid-core — createColumns 단위 테스트
  *
  * MOD-GRID-04 G-001: TC-01~TC-10 (Vitest)
  *

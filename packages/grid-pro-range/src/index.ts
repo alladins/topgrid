@@ -1,9 +1,9 @@
-import { checkLicense } from '@tomis/grid-license';
+import { checkLicense } from '@topgrid/grid-license';
 
 checkLicense();
 
 /**
- * @tomis/grid-pro-range — public API (MOD-GRID-11 / G-001, G-002, G-003).
+ * @topgrid/grid-pro-range — public API (MOD-GRID-11 / G-001, G-002, G-003).
  *
  * CellRange 모델 + 마우스 드래그/Shift+Click 셀 범위 선택 + Drag-fill.
  * AC-009: types, 함수, 훅, 컴포넌트 전부 named export.

@@ -1,14 +1,14 @@
-# End User License Agreement (EULA) — @tomis/grid-license
+# End User License Agreement (EULA) — @topgrid/grid-license
 
-This End User License Agreement ("Agreement") governs your use of the @tomis/grid-license package.
+This End User License Agreement ("Agreement") governs your use of the @topgrid/grid-license package.
 
 ## 1. License Grant
 
-Subject to the terms of this Agreement and a valid license key issued by Topvel Inc., you are granted a non-exclusive, non-transferable license to use @tomis/grid-license in your applications.
+Subject to the terms of this Agreement and a valid license key issued by Topvel Inc., you are granted a non-exclusive, non-transferable license to use @topgrid/grid-license in your applications.
 
 ## 2. Permitted Use
 
-You may use this software to build internal or commercial applications, provided that a valid license key is activated via `setLicenseKey()` from `@tomis/grid-license`.
+You may use this software to build internal or commercial applications, provided that a valid license key is activated via `setLicenseKey()` from `@topgrid/grid-license`.
 
 ## 3. Restrictions
 

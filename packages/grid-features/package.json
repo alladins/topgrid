@@ -1,5 +1,5 @@
 {
-  "name": "@tomis/grid-features",
+  "name": "@topgrid/grid-features",
   "version": "0.3.0",
   "type": "module",
   "license": "MIT",
@@ -24,7 +24,7 @@
     "test": "echo TODO"
   },
   "dependencies": {
-    "@tomis/grid-core": "workspace:*"
+    "@topgrid/grid-core": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.0.0",
@@ -38,5 +38,17 @@
     "@tanstack/react-virtual": {
       "optional": true
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alladins/topgrid.git",
+    "directory": "packages/grid-features"
+  },
+  "bugs": {
+    "url": "https://github.com/alladins/topgrid/issues"
+  },
+  "homepage": "https://github.com/alladins/topgrid#readme",
+  "publishConfig": {
+    "access": "public"
   }
 }

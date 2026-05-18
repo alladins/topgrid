@@ -1,4 +1,4 @@
-# @tomis/grid-pro-tracking
+# @topgrid/grid-pro-tracking
 
 Pro: ChangeTracking, Mapping, Validator
 
@@ -7,9 +7,9 @@ Provides change tracking (dirty state) for TOMIS Grid — track edited cells and
 ## Installation
 
 ```bash
-pnpm add @tomis/grid-pro-tracking
+pnpm add @topgrid/grid-pro-tracking
 # or
-npm install @tomis/grid-pro-tracking
+npm install @topgrid/grid-pro-tracking
 ```
 
 ## License Activation
@@ -17,7 +17,7 @@ npm install @tomis/grid-pro-tracking
 > **This is a Pro package requiring a valid license key.**
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
+import { setLicenseKey } from '@topgrid/grid-license';
 
 // Call once at your app entry point (e.g., main.tsx)
 setLicenseKey('YOUR-LICENSE-KEY');
@@ -31,15 +31,15 @@ Contact [sales@topvel.com](mailto:sales@topvel.com) to obtain a license key.
 | Package | Version |
 |---------|---------|
 | `@tanstack/react-table` | `^8.0.0` |
-| `@tomis/grid-core` | `workspace:*` |
+| `@topgrid/grid-core` | `workspace:*` |
 | `react` | `^18.0.0 \|\| ^19.0.0` |
 | `react-dom` | `^18.0.0 \|\| ^19.0.0` |
 
 ## Usage
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
-import { useChangeTracking, buildChangeSet, ChangeTrackingGrid } from '@tomis/grid-pro-tracking';
+import { setLicenseKey } from '@topgrid/grid-license';
+import { useChangeTracking, buildChangeSet, ChangeTrackingGrid } from '@topgrid/grid-pro-tracking';
 
 setLicenseKey('YOUR-LICENSE-KEY');
 

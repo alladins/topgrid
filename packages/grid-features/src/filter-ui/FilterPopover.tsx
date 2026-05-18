@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — FilterPopover 컴포넌트.
+ * @topgrid/grid-features — FilterPopover 컴포넌트.
  *
  * MOD-GRID-09 G-001 AC-003:
  * 네이티브 div position:absolute 팝오버 구현 (@radix-ui 없음, D2).

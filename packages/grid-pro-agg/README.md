@@ -1,4 +1,4 @@
-# @tomis/grid-pro-agg
+# @topgrid/grid-pro-agg
 
 Pro: Aggregation (group footer)
 
@@ -7,9 +7,9 @@ Provides group-by aggregation for TOMIS Grid — compute sum, average, count, an
 ## Installation
 
 ```bash
-pnpm add @tomis/grid-pro-agg
+pnpm add @topgrid/grid-pro-agg
 # or
-npm install @tomis/grid-pro-agg
+npm install @topgrid/grid-pro-agg
 ```
 
 ## License Activation
@@ -17,7 +17,7 @@ npm install @tomis/grid-pro-agg
 > **This is a Pro package requiring a valid license key.**
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
+import { setLicenseKey } from '@topgrid/grid-license';
 
 // Call once at your app entry point (e.g., main.tsx)
 setLicenseKey('YOUR-LICENSE-KEY');
@@ -38,8 +38,8 @@ Contact [sales@topvel.com](mailto:sales@topvel.com) to obtain a license key.
 ## Usage
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
-import { AggregationGrid, GroupPanel } from '@tomis/grid-pro-agg';
+import { setLicenseKey } from '@topgrid/grid-license';
+import { AggregationGrid, GroupPanel } from '@topgrid/grid-pro-agg';
 
 setLicenseKey('YOUR-LICENSE-KEY');
 

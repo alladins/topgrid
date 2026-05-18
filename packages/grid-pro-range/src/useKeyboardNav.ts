@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — useKeyboardNav 훅 (AC-002~AC-007).
+ * @topgrid/grid-pro-range — useKeyboardNav 훅 (AC-002~AC-007).
  *
  * 키보드 내비게이션 + Shift+방향키 범위 확장 headless React 훅.
  *

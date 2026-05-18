@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — 순수 범위 유틸 함수 (AC-002).
+ * @topgrid/grid-pro-range — 순수 범위 유틸 함수 (AC-002).
  *
  * normalizeRange: start ≤ end 방향으로 정규화 (역방향 드래그 지원).
  * isInRange: 좌표가 범위 내 포함 여부 판별.

@@ -26,7 +26,7 @@
 
 import { type CSSProperties } from 'react';
 import { flexRender, type Header, type Table } from '@tanstack/react-table';
-import { useLicenseStatus, Watermark } from '@tomis/grid-license';
+import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 
 /**
  * Props for `MultiRowHeader`.

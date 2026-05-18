@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-core — ColumnVisibilityMenu component.
+ * @topgrid/grid-core — ColumnVisibilityMenu component.
  *
  * MOD-GRID-04 G-003: 컬럼 가시성 토글 UI.
  *

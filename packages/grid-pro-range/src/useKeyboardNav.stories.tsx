@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — useKeyboardNav Storybook 스토리 (AC-008).
+ * @topgrid/grid-pro-range — useKeyboardNav Storybook 스토리 (AC-008).
  *
  * Default + KeyboardNav 시나리오 스토리 제공.
  * C-3 예외: Storybook story이므로 fixture 데이터 허용.

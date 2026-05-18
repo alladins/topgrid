@@ -1,4 +1,4 @@
-# @tomis/grid-pro-merging
+# @topgrid/grid-pro-merging
 
 Pro: Cell Merging (rowSpan) — column.mergeRows API + automatic rowSpan calculation
 
@@ -7,9 +7,9 @@ Provides automatic cell merging for TOMIS Grid — detect consecutive cells with
 ## Installation
 
 ```bash
-pnpm add @tomis/grid-pro-merging
+pnpm add @topgrid/grid-pro-merging
 # or
-npm install @tomis/grid-pro-merging
+npm install @topgrid/grid-pro-merging
 ```
 
 ## License Activation
@@ -17,7 +17,7 @@ npm install @tomis/grid-pro-merging
 > **This is a Pro package requiring a valid license key.**
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
+import { setLicenseKey } from '@topgrid/grid-license';
 
 // Call once at your app entry point (e.g., main.tsx)
 setLicenseKey('YOUR-LICENSE-KEY');
@@ -32,16 +32,16 @@ Contact [sales@topvel.com](mailto:sales@topvel.com) to obtain a license key.
 |---------|---------|---------|
 | `@tanstack/react-table` | `^8.0.0` | Yes |
 | `@tanstack/react-virtual` | `^3.0.0` | Optional |
-| `@tomis/grid-core` | `workspace:*` | Yes |
+| `@topgrid/grid-core` | `workspace:*` | Yes |
 | `react` | `^18.0.0 \|\| ^19.0.0` | Yes |
 | `react-dom` | `^18.0.0 \|\| ^19.0.0` | Yes |
 
 ## Usage
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
-import { MergingGrid } from '@tomis/grid-pro-merging';
-import type { MergingColumnDef } from '@tomis/grid-pro-merging';
+import { setLicenseKey } from '@topgrid/grid-license';
+import { MergingGrid } from '@topgrid/grid-pro-merging';
+import type { MergingColumnDef } from '@topgrid/grid-pro-merging';
 
 setLicenseKey('YOUR-LICENSE-KEY');
 

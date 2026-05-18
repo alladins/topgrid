@@ -1,4 +1,4 @@
-// @tomis/grid-pro-tracking — pure changeMap helpers (MOD-GRID-10/G-002).
+// @topgrid/grid-pro-tracking — pure changeMap helpers (MOD-GRID-10/G-002).
 //
 // Spec: artifacts/MOD-GRID-10/tracking/G-002-spec.md Sections 2.1, 2.2, 6, 11.2
 // AC mapping: AC-001 (Map + structuredClone) / AC-002 (added/edited/deleted)

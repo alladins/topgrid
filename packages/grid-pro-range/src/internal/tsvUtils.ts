@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — RFC 4180 호환 TSV 유틸리티 (G-004, AC-003).
+ * @topgrid/grid-pro-range — RFC 4180 호환 TSV 유틸리티 (G-004, AC-003).
  *
  * stringifyTsv: 2D 값 배열 → TSV 문자열 (탭/줄바꿈 포함 셀은 " 래핑)
  * parseTsv: TSV 문자열 → 2D string 배열

@@ -1,4 +1,4 @@
-// @tomis/grid-pro-tracking — row status Tailwind class helpers (MOD-GRID-10/G-004)
+// @topgrid/grid-pro-tracking — row status Tailwind class helpers (MOD-GRID-10/G-004)
 //
 // Pure helper — zero React imports. No CSS files.
 // Spec: artifacts/MOD-GRID-10/tracking/G-004-spec.md Section 2.1

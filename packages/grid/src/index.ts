@@ -1,33 +1,33 @@
 /**
- * @tomis/grid — Meta package facade.
+ * @topgrid/grid — Meta package facade.
  *
  * Re-exports the public API of 13 underlying packages (4 MIT + 8 Pro + license).
  * Activates per ADR-MOD-GRID-REFACTOR-2026-05-17-003 (Wave 4).
  *
- * Side-effect import of `@tomis/grid-renderers` preserves cross-package wiring
+ * Side-effect import of `@topgrid/grid-renderers` preserves cross-package wiring
  * established by ADR-002 (R-A) — `createColumns({ type: 'number' | ... })` dispatches
  * to real cell components only after grid-renderers' `wireDefaultRenderers()` runs.
  *
  * Explicit (named) re-exports are used for:
- *   - `@tomis/grid-core`        — skip 6 `@deprecated` APIs (ADR-013) and 2
+ *   - `@topgrid/grid-core`        — skip 6 `@deprecated` APIs (ADR-013) and 2
  *                                 collision identifiers (`defaultRendererRegistry`,
  *                                 `registerRenderer`) whose canonical source is
- *                                 `@tomis/grid-renderers` (ADR-002 / refactor-analysis §1.1).
+ *                                 `@topgrid/grid-renderers` (ADR-002 / refactor-analysis §1.1).
  *                                 Also skip `GroupedHeaderGrid`/`GroupedHeaderGridProps`
- *                                 — canonical source is `@tomis/grid-pro-header` (legacy
+ *                                 — canonical source is `@topgrid/grid-pro-header` (legacy
  *                                 alias in grid-core is C-6 thin wrapper).
- *   - `@tomis/grid-pro-datamap` — skip `TomisColumnDef` deprecation alias (ADR-006);
- *                                 canonical type lives in `@tomis/grid-core`.
+ *   - `@topgrid/grid-pro-datamap` — skip `TomisColumnDef` deprecation alias (ADR-006);
+ *                                 canonical type lives in `@topgrid/grid-core`.
  *
  * `export *` is used for the remaining 10 packages (no collisions detected by probe).
  *
  * License: SEE LICENSE IN EULA (meta includes Pro packages). For MIT-only consumption,
- * import the underlying MIT packages directly: `@tomis/grid-core`, `@tomis/grid-renderers`,
- * `@tomis/grid-features`, `@tomis/grid-export`.
+ * import the underlying MIT packages directly: `@topgrid/grid-core`, `@topgrid/grid-renderers`,
+ * `@topgrid/grid-features`, `@topgrid/grid-export`.
  */
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-core (MIT) — explicit re-export
+// @topgrid/grid-core (MIT) — explicit re-export
 //   Skip:
 //     - 6 @deprecated APIs (ADR-013): createTomisColumnHelper, createGroupedColumns,
 //       TomisColumnGroup, useColumnPersistence, ColumnVisibilityMenu, ColumnVisibilityMenuProps
@@ -56,7 +56,7 @@ export {
   useColumnOrderPersist,
   SortBadge,
   SortClearButton,
-} from '@tomis/grid-core';
+} from '@topgrid/grid-core';
 export type {
   GridProps,
   GridRowSelectionOptions,
@@ -92,44 +92,44 @@ export type {
   UseColumnOrderPersistProps,
   SortBadgeProps,
   SortClearButtonProps,
-} from '@tomis/grid-core';
+} from '@topgrid/grid-core';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-renderers (MIT) — canonical source of defaultRendererRegistry +
+// @topgrid/grid-renderers (MIT) — canonical source of defaultRendererRegistry +
 // registerRenderer. Side-effect import preserves ADR-002 cross-package wiring.
 // ─────────────────────────────────────────────────────────────────────────────
-export * from '@tomis/grid-renderers';
+export * from '@topgrid/grid-renderers';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-features (MIT)
+// @topgrid/grid-features (MIT)
 //   Note: grid-features re-exports several symbols from grid-core (ADR-009/010
 //   deprecation aliases). TypeScript treats them as the same identity, so no
 //   collision with grid-core's export above. `export *` is safe here.
 // ─────────────────────────────────────────────────────────────────────────────
-export * from '@tomis/grid-features';
+export * from '@topgrid/grid-features';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-export (MIT)
+// @topgrid/grid-export (MIT)
 // ─────────────────────────────────────────────────────────────────────────────
-export * from '@tomis/grid-export';
+export * from '@topgrid/grid-export';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-license (Pro infrastructure)
+// @topgrid/grid-license (Pro infrastructure)
 // ─────────────────────────────────────────────────────────────────────────────
-export * from '@tomis/grid-license';
+export * from '@topgrid/grid-license';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-pro-tracking (Pro)
+// @topgrid/grid-pro-tracking (Pro)
 // ─────────────────────────────────────────────────────────────────────────────
-export * from '@tomis/grid-pro-tracking';
+export * from '@topgrid/grid-pro-tracking';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-pro-range (Pro)
+// @topgrid/grid-pro-range (Pro)
 // ─────────────────────────────────────────────────────────────────────────────
-export * from '@tomis/grid-pro-range';
+export * from '@topgrid/grid-pro-range';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-pro-datamap (Pro) — explicit re-export
+// @topgrid/grid-pro-datamap (Pro) — explicit re-export
 //   Skip: TomisColumnDef (deprecation alias per ADR-006; canonical = grid-core)
 // ─────────────────────────────────────────────────────────────────────────────
 export type {
@@ -142,34 +142,34 @@ export type {
   AsyncDataMap,
   AsyncDataMapState,
   CreateAsyncDataMapOptions,
-} from '@tomis/grid-pro-datamap';
+} from '@topgrid/grid-pro-datamap';
 export {
   createDataMap,
   DataMapCell,
   DataMapEditor,
   createAsyncDataMap,
-} from '@tomis/grid-pro-datamap';
+} from '@topgrid/grid-pro-datamap';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-pro-merging (Pro)
+// @topgrid/grid-pro-merging (Pro)
 // ─────────────────────────────────────────────────────────────────────────────
-export * from '@tomis/grid-pro-merging';
+export * from '@topgrid/grid-pro-merging';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-pro-header (Pro) — canonical source of GroupedHeaderGrid
+// @topgrid/grid-pro-header (Pro) — canonical source of GroupedHeaderGrid
 // ─────────────────────────────────────────────────────────────────────────────
-export * from '@tomis/grid-pro-header';
+export * from '@topgrid/grid-pro-header';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-pro-agg (Pro)
+// @topgrid/grid-pro-agg (Pro)
 // ─────────────────────────────────────────────────────────────────────────────
-export * from '@tomis/grid-pro-agg';
+export * from '@topgrid/grid-pro-agg';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// @tomis/grid-pro-master (Pro)
+// @topgrid/grid-pro-master (Pro)
 //   Note: grid-pro-master re-exports TreeGrid/ColumnPinGrid from grid-core
-//   (`export { TreeGrid } from '@tomis/grid-core'` in its src/index.ts).
+//   (`export { TreeGrid } from '@topgrid/grid-core'` in its src/index.ts).
 //   TypeScript treats these as the same identity as grid-core's direct exports
 //   above, so no collision.
 // ─────────────────────────────────────────────────────────────────────────────
-export * from '@tomis/grid-pro-master';
+export * from '@topgrid/grid-pro-master';

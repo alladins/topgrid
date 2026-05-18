@@ -1,4 +1,4 @@
-# @tomis/grid-pro-datamap
+# @topgrid/grid-pro-datamap
 
 Pro: DataMap (foreign key display)
 
@@ -7,9 +7,9 @@ Provides DataMap support for TOMIS Grid — map raw code values to human-readabl
 ## Installation
 
 ```bash
-pnpm add @tomis/grid-pro-datamap
+pnpm add @topgrid/grid-pro-datamap
 # or
-npm install @tomis/grid-pro-datamap
+npm install @topgrid/grid-pro-datamap
 ```
 
 ## License Activation
@@ -17,7 +17,7 @@ npm install @tomis/grid-pro-datamap
 > **This is a Pro package requiring a valid license key.**
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
+import { setLicenseKey } from '@topgrid/grid-license';
 
 // Call once at your app entry point (e.g., main.tsx)
 setLicenseKey('YOUR-LICENSE-KEY');
@@ -37,8 +37,8 @@ Contact [sales@topvel.com](mailto:sales@topvel.com) to obtain a license key.
 ## Usage
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid-license';
-import { createDataMap, DataMapCell, DataMapEditor } from '@tomis/grid-pro-datamap';
+import { setLicenseKey } from '@topgrid/grid-license';
+import { createDataMap, DataMapCell, DataMapEditor } from '@topgrid/grid-pro-datamap';
 
 setLicenseKey('YOUR-LICENSE-KEY');
 
@@ -67,7 +67,7 @@ const columns = [
 ### Async DataMap
 
 ```tsx
-import { createAsyncDataMap } from '@tomis/grid-pro-datamap';
+import { createAsyncDataMap } from '@topgrid/grid-pro-datamap';
 
 const asyncMap = createAsyncDataMap({
   fetchFn: async (query) => {

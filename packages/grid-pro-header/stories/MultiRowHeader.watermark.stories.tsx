@@ -10,8 +10,8 @@
  */
 import type { Meta, StoryObj } from '@storybook/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { MultiRowHeader, createColumnGroup } from '@tomis/grid-pro-header';
-import { setLicenseState } from '@tomis/grid-license';
+import { MultiRowHeader, createColumnGroup } from '@topgrid/grid-pro-header';
+import { setLicenseState } from '@topgrid/grid-license';
 
 const invalidLicense = {
   status: { valid: false, reason: 'invalid' as const },

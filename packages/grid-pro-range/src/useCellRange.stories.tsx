@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — useCellRange Storybook Story (AC-011).
+ * @topgrid/grid-pro-range — useCellRange Storybook Story (AC-011).
  *
  * Default story: 마우스 드래그 + Shift+Click 범위 선택 시뮬레이션 가능.
  * E-01 (v1.0.6) 바인딩 AC — Section 7 필수 포함.

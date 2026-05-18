@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-core — createColumns Storybook Stories
+ * @topgrid/grid-core — createColumns Storybook Stories
  *
  * MOD-GRID-04 G-001: C-25 — 4개 Story (AllTypes / WithLegacyColumnInfo / EmptyDefs / CheckboxOnly)
  *

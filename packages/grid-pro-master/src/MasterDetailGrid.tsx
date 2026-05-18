@@ -3,7 +3,7 @@
  *
  * Wraps `GridProps<TData>` surface with `renderDetailRow` + `masterDetail` expansion options.
  * Renders its own standalone `useReactTable` table — does NOT import `<Grid>` from
- * `@tomis/grid-core` at runtime (Option B — MIT↔Pro EULA boundary preservation, D1).
+ * `@topgrid/grid-core` at runtime (Option B — MIT↔Pro EULA boundary preservation, D1).
  *
  * Features:
  * - `renderDetailRow` prop: render function for expanded detail row content.
@@ -33,8 +33,8 @@ import {
   type ExpandedState,
   type Row,
 } from '@tanstack/react-table';
-import type { GridHandle, GridProps } from '@tomis/grid-core';
-import { useLicenseStatus, Watermark } from '@tomis/grid-license';
+import type { GridHandle, GridProps } from '@topgrid/grid-core';
+import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 import type { MasterDetailGridProps, RenderDetailRow } from './types';
 import { ExpandToggleCell } from './internal/ExpandToggleCell';
 import { DetailRow } from './DetailRow';

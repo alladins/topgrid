@@ -1,4 +1,4 @@
-// @tomis/grid-renderers — rendererRegistry (MOD-GRID-05 / G-003)
+// @topgrid/grid-renderers — rendererRegistry (MOD-GRID-05 / G-003)
 // Display-mode cell renderer registry: Record<type, CellComponent> mapping
 // for MOD-GRID-04 createColumns to auto-dispatch by `type` field.
 //

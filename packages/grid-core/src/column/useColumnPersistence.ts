@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-core — useColumnPersistence hook.
+ * @topgrid/grid-core — useColumnPersistence hook.
  *
  * MOD-GRID-04 G-003: 컬럼 가시성 + 순서 localStorage 영속화.
  *

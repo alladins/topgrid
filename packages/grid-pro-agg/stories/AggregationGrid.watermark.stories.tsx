@@ -17,9 +17,9 @@
  * @see ADR-MOD-GRID-REFACTOR-2026-05-17-001 (Visual Regression Note)
  */
 import type { Meta, StoryObj } from '@storybook/react';
-import { AggregationGrid } from '@tomis/grid-pro-agg';
-import type { AggregationColumnDef } from '@tomis/grid-pro-agg';
-import { setLicenseState } from '@tomis/grid-license';
+import { AggregationGrid } from '@topgrid/grid-pro-agg';
+import type { AggregationColumnDef } from '@topgrid/grid-pro-agg';
+import { setLicenseState } from '@topgrid/grid-license';
 
 // LicenseState 구조 (internal — types.ts): { status: LicenseStatus, rawKey: string, setAt: number }
 const invalidLicense = {

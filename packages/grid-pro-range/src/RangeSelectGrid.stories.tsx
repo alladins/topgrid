@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — RangeSelectGrid Storybook 스토리 (G-006, AC-008).
+ * @topgrid/grid-pro-range — RangeSelectGrid Storybook 스토리 (G-006, AC-008).
  *
  * Story (a): FullFeature — 5 hook 모두 활성화 (20행).
  * Story (b): VirtualizationLargeDataset — 1000행+ 가상화 + Drag-fill.

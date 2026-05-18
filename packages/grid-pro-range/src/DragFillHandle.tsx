@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — DragFillHandle component (G-003).
+ * @topgrid/grid-pro-range — DragFillHandle component (G-003).
  *
  * D4: isDraggingRef + dragStartRef + fillTargetRef 3개 ref로 drag 상태 추적.
  * ADR-MOD-GRID-11-006: mousedown/move/up 시퀀스 + drag state ref 패턴.

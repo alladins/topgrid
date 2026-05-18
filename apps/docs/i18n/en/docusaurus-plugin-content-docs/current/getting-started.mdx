@@ -7,12 +7,12 @@ It is organized as a monorepo of 13 packages, supporting both open-source (MIT) 
 
 ```bash
 # Open packages (headless core)
-pnpm add @tomis/grid @tomis/grid-core @tomis/grid-features @tomis/grid-renderers
+pnpm add @topgrid/grid @topgrid/grid-core @topgrid/grid-features @topgrid/grid-renderers
 
 # Pro packages (license required)
-pnpm add @tomis/grid-pro-agg @tomis/grid-pro-datamap @tomis/grid-pro-header \
-         @tomis/grid-pro-master @tomis/grid-pro-merging @tomis/grid-pro-range \
-         @tomis/grid-pro-tracking
+pnpm add @topgrid/grid-pro-agg @topgrid/grid-pro-datamap @topgrid/grid-pro-header \
+         @topgrid/grid-pro-master @topgrid/grid-pro-merging @topgrid/grid-pro-range \
+         @topgrid/grid-pro-tracking
 
 # peer dependencies
 pnpm add react react-dom @tanstack/react-table @tanstack/react-virtual
@@ -21,8 +21,8 @@ pnpm add react react-dom @tanstack/react-table @tanstack/react-virtual
 ## Basic Usage
 
 ```tsx
-import { Grid } from '@tomis/grid';
-import { useGridState } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid';
+import { useGridState } from '@topgrid/grid-core';
 
 const columns = [
   { accessorKey: 'id', header: 'ID' },
@@ -44,4 +44,4 @@ export function BasicGrid() {
 
 - [Architecture](./architecture) — 13-package structure and dependency diagram
 - [API Reference](/api) — Full API documentation auto-generated with TypeDoc
-- Pro features — available after license activation via `@tomis/grid-license`
+- Pro features — available after license activation via `@topgrid/grid-license`

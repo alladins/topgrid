@@ -1,4 +1,4 @@
-// @tomis/grid-pro-tracking — public types for useChangeTracking (MOD-GRID-10/G-001)
+// @topgrid/grid-pro-tracking — public types for useChangeTracking (MOD-GRID-10/G-001)
 //
 // Spec: artifacts/MOD-GRID-10/tracking/G-001-spec.md Section 2.1
 // AC mapping: AC-001 (no any) / AC-002 (config 6 fields) / AC-003 (12-member API)

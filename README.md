@@ -13,14 +13,14 @@ TanStack Table v8 기반 React 19 / TypeScript grid 라이브러리. **MIT 4 패
 가장 가벼운 진입점. Pro 기능 없이 단일 grid + 렌더러 + 필터 + 내보내기.
 
 ```bash
-pnpm add @tomis/grid-core @tomis/grid-renderers @tomis/grid-features @tomis/grid-export
+pnpm add @topgrid/grid-core @topgrid/grid-renderers @topgrid/grid-features @topgrid/grid-export
 # peer deps
 pnpm add @tanstack/react-table @tanstack/react-virtual react react-dom
 ```
 
 ```tsx
-import { Grid, useGridState, createColumns } from '@tomis/grid-core';
-import { NumberCell, StatusBadgeCell } from '@tomis/grid-renderers';
+import { Grid, useGridState, createColumns } from '@topgrid/grid-core';
+import { NumberCell, StatusBadgeCell } from '@topgrid/grid-renderers';
 
 const columns = createColumns<Row>([
   { accessorKey: 'id',     header: 'ID',     type: 'number' },
@@ -38,7 +38,7 @@ export function MyGrid({ rows }: { rows: Row[] }) {
 메타 facade 단일 진입. Pro 패키지를 모두 포함 (license 미설정 시 watermark 자동 표시).
 
 ```bash
-pnpm add @tomis/grid
+pnpm add @topgrid/grid
 # peer deps
 pnpm add @tanstack/react-table @tanstack/react-virtual react react-dom
 # optional peer (export 사용 시)
@@ -46,8 +46,8 @@ pnpm add xlsx jspdf jspdf-autotable
 ```
 
 ```tsx
-import { setLicenseKey } from '@tomis/grid';
-import { Grid, MasterDetailGrid, RangeSelectGrid } from '@tomis/grid';
+import { setLicenseKey } from '@topgrid/grid';
+import { Grid, MasterDetailGrid, RangeSelectGrid } from '@topgrid/grid';
 
 // 앱 부팅 시 1회
 setLicenseKey('YOUR-LICENSE-KEY');
@@ -67,29 +67,29 @@ export function App() {
 
 | 패키지 | Version | License | 역할 |
 |--------|---------|---------|------|
-| [`@tomis/grid-core`](./packages/grid-core)           | `0.1.0` | MIT | TanStack Table 추상화 + `<Grid>` + `useGridState` + `createColumns` + pagination + multi-sort base + legacy alias (BaseGrid / VirtualGrid / ColumnPinGrid / TreeGrid) + `internal/storage` adapter |
-| [`@tomis/grid-renderers`](./packages/grid-renderers) | `0.1.0` | MIT | 11종 cell renderer (Text / Number / Date / StatusBadge / Link / Button / Check / Icon / Tag / Avatar / Progress) + `EditableCell` + `defaultRendererRegistry` |
-| [`@tomis/grid-features`](./packages/grid-features)   | `0.3.0` | MIT | Filter UI (Text / Number / Date / Select) + `useMultiSort` + filter primitives |
-| [`@tomis/grid-export`](./packages/grid-export)       | `0.2.0` | MIT | Excel / CSV / PDF / 클립보드 / 인쇄 |
+| [`@topgrid/grid-core`](./packages/grid-core)           | `0.1.0` | MIT | TanStack Table 추상화 + `<Grid>` + `useGridState` + `createColumns` + pagination + multi-sort base + legacy alias (BaseGrid / VirtualGrid / ColumnPinGrid / TreeGrid) + `internal/storage` adapter |
+| [`@topgrid/grid-renderers`](./packages/grid-renderers) | `0.1.0` | MIT | 11종 cell renderer (Text / Number / Date / StatusBadge / Link / Button / Check / Icon / Tag / Avatar / Progress) + `EditableCell` + `defaultRendererRegistry` |
+| [`@topgrid/grid-features`](./packages/grid-features)   | `0.3.0` | MIT | Filter UI (Text / Number / Date / Select) + `useMultiSort` + filter primitives |
+| [`@topgrid/grid-export`](./packages/grid-export)       | `0.2.0` | MIT | Excel / CSV / PDF / 클립보드 / 인쇄 |
 
 ### Pro (8 — EULA)
 
 | 패키지 | Version | License | 역할 |
 |--------|---------|---------|------|
-| [`@tomis/grid-license`](./packages/grid-license)             | `0.1.0` | SEE LICENSE IN EULA | License runtime — `setLicenseKey` / `useLicenseStatus` / `Watermark` |
-| [`@tomis/grid-pro-tracking`](./packages/grid-pro-tracking)   | `0.1.0` | SEE LICENSE IN EULA | Change tracking + `ChangeTrackingGrid` + validator + mapping |
-| [`@tomis/grid-pro-range`](./packages/grid-pro-range)         | `0.1.0` | SEE LICENSE IN EULA | Cell range selection + keyboard nav + clipboard + drag-fill |
-| [`@tomis/grid-pro-datamap`](./packages/grid-pro-datamap)     | `0.2.0` | SEE LICENSE IN EULA | DataMap / AsyncDataMap — foreign key lookup |
-| [`@tomis/grid-pro-merging`](./packages/grid-pro-merging)     | `0.1.0` | SEE LICENSE IN EULA | Cell merging (rowSpan) — `column.mergeRows` API |
-| [`@tomis/grid-pro-header`](./packages/grid-pro-header)       | `0.1.0` | SEE LICENSE IN EULA | Multi-row grouped headers + `GroupedHeaderGrid` |
-| [`@tomis/grid-pro-agg`](./packages/grid-pro-agg)             | `0.1.0` | SEE LICENSE IN EULA | Aggregation + grouping + `GroupPanel` |
-| [`@tomis/grid-pro-master`](./packages/grid-pro-master)       | `0.1.0` | SEE LICENSE IN EULA | Master-detail + tree grid + context menu + row pinning |
+| [`@topgrid/grid-license`](./packages/grid-license)             | `0.1.0` | SEE LICENSE IN EULA | License runtime — `setLicenseKey` / `useLicenseStatus` / `Watermark` |
+| [`@topgrid/grid-pro-tracking`](./packages/grid-pro-tracking)   | `0.1.0` | SEE LICENSE IN EULA | Change tracking + `ChangeTrackingGrid` + validator + mapping |
+| [`@topgrid/grid-pro-range`](./packages/grid-pro-range)         | `0.1.0` | SEE LICENSE IN EULA | Cell range selection + keyboard nav + clipboard + drag-fill |
+| [`@topgrid/grid-pro-datamap`](./packages/grid-pro-datamap)     | `0.2.0` | SEE LICENSE IN EULA | DataMap / AsyncDataMap — foreign key lookup |
+| [`@topgrid/grid-pro-merging`](./packages/grid-pro-merging)     | `0.1.0` | SEE LICENSE IN EULA | Cell merging (rowSpan) — `column.mergeRows` API |
+| [`@topgrid/grid-pro-header`](./packages/grid-pro-header)       | `0.1.0` | SEE LICENSE IN EULA | Multi-row grouped headers + `GroupedHeaderGrid` |
+| [`@topgrid/grid-pro-agg`](./packages/grid-pro-agg)             | `0.1.0` | SEE LICENSE IN EULA | Aggregation + grouping + `GroupPanel` |
+| [`@topgrid/grid-pro-master`](./packages/grid-pro-master)       | `0.1.0` | SEE LICENSE IN EULA | Master-detail + tree grid + context menu + row pinning |
 
 ### Meta (1)
 
 | 패키지 | Version | License | 역할 |
 |--------|---------|---------|------|
-| [`@tomis/grid`](./packages/grid)                             | `0.1.0` | SEE LICENSE IN EULA | **Facade** — 위 12 패키지의 public API 단일 재export (ADR-003). MIT + Pro 통합 — Pro 포함이므로 EULA 적용 |
+| [`@topgrid/grid`](./packages/grid)                             | `0.1.0` | SEE LICENSE IN EULA | **Facade** — 위 12 패키지의 public API 단일 재export (ADR-003). MIT + Pro 통합 — Pro 포함이므로 EULA 적용 |
 
 ---
 
@@ -148,7 +148,7 @@ export function App() {
 
 ### 3. Meta Facade Activation (ADR-003)
 
-`@tomis/grid` 가 12 underlying package public API 를 단일 entry로 재export. tsup `treeshake: true` + `sideEffects` 필드 보존으로 ~1.5 KB dist shim. 5 cross-package name collision 해소 (canonical source 명시).
+`@topgrid/grid` 가 12 underlying package public API 를 단일 entry로 재export. tsup `treeshake: true` + `sideEffects` 필드 보존으로 ~1.5 KB dist shim. 5 cross-package name collision 해소 (canonical source 명시).
 
 ### 4. Storage Adapter Consolidation (ADR-007)
 
@@ -160,7 +160,7 @@ export function App() {
 
 ### 6. tw-framework-front Integration (ADR-004 + ADR-005 + ADR-008)
 
-`tw-framework-front` 5 grid variant 가 monorepo legacy alias (BaseGrid / VirtualGrid / ColumnPinGrid / TreeGrid) 로 교체 + `excelExport.ts` → `@tomis/grid-export` 위임 + `types/tomis/grid.ts` → grid-core re-export 단순화.
+`tw-framework-front` 5 grid variant 가 monorepo legacy alias (BaseGrid / VirtualGrid / ColumnPinGrid / TreeGrid) 로 교체 + `excelExport.ts` → `@topgrid/grid-export` 위임 + `types/tomis/grid.ts` → grid-core re-export 단순화.
 
 ---
 
@@ -172,13 +172,13 @@ export function App() {
 |------|---------|--------|------|---------|
 | `LinkCell` `label` prop | `value` prop 사용 | `grid-renderers` | ADR-014 (D-partial) | next major |
 | `ButtonCell` `label` prop | `value` prop 사용 | `grid-renderers` | ADR-014 (D-partial) | next major |
-| `TomisColumnDef` (from `@tomis/grid-pro-datamap`) | `DataMapColumnDef` import | `grid-pro-datamap` | ADR-006 | next major |
+| `TomisColumnDef` (from `@topgrid/grid-pro-datamap`) | `DataMapColumnDef` import | `grid-pro-datamap` | ADR-006 | next major |
 | `createTomisColumnHelper` | `createColumns` 사용 | `grid-core` | ADR-013 | next major |
-| `createGroupedColumns` + `TomisColumnGroup` | `@tomis/grid-pro-header` `GroupedHeaderGrid` | `grid-core` | ADR-013 | next major |
+| `createGroupedColumns` + `TomisColumnGroup` | `@topgrid/grid-pro-header` `GroupedHeaderGrid` | `grid-core` | ADR-013 | next major |
 | `useColumnPersistence` | `useStoragePersist` (storage adapter) | `grid-core` | ADR-013 | next major |
 | `ColumnVisibilityMenu` + `ColumnVisibilityMenuProps` | (재구현 권고 — Grid.tsx 내부 ref) | `grid-core` | ADR-013 | next major |
 
-> facade `@tomis/grid` 는 위 6 dead API 를 **재export 하지 않습니다** (ADR-013). deprecation phase 동안 사용 시 `@tomis/grid-core` 에서 직접 import 가 필요합니다.
+> facade `@topgrid/grid` 는 위 6 dead API 를 **재export 하지 않습니다** (ADR-013). deprecation phase 동안 사용 시 `@topgrid/grid-core` 에서 직접 import 가 필요합니다.
 
 ---
 
@@ -195,7 +195,7 @@ export function App() {
 | `jspdf-autotable` | `^3.5.0` | grid-export / grid meta | optional |
 | `date-fns` | `^4.1.0` | grid-features 전용 | 필수 |
 | `react-datepicker` | `^8.3.0` | grid-features 전용 | 필수 |
-| `@tomis/grid-core` | `workspace:*` | 4 패키지 peer (grid-renderers / grid-pro-tracking / grid-pro-merging / grid-pro-master) | 필수 |
+| `@topgrid/grid-core` | `workspace:*` | 4 패키지 peer (grid-renderers / grid-pro-tracking / grid-pro-merging / grid-pro-master) | 필수 |
 
 상세 (peer 이력 + Wave 별 변경분 + drift 해소) → `D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-00-decisions.md` (Amendment 섹션).
 
@@ -273,8 +273,8 @@ pnpm changeset publish      # npm publish (Pro 패키지는 access=restricted)
 
 ## License
 
-- **MIT (4 packages)**: `@tomis/grid-core` / `@tomis/grid-renderers` / `@tomis/grid-features` / `@tomis/grid-export` — `LICENSE` 파일 참조.
-- **EULA (9 packages)**: `@tomis/grid` (meta) + `@tomis/grid-license` + 7 Pro — 각 패키지 `EULA.md` 참조. 라이선스 키 발급: [sales@topvel.com](mailto:sales@topvel.com).
+- **MIT (4 packages)**: `@topgrid/grid-core` / `@topgrid/grid-renderers` / `@topgrid/grid-features` / `@topgrid/grid-export` — `LICENSE` 파일 참조.
+- **EULA (9 packages)**: `@topgrid/grid` (meta) + `@topgrid/grid-license` + 7 Pro — 각 패키지 `EULA.md` 참조. 라이선스 키 발급: [sales@topvel.com](mailto:sales@topvel.com).
 
 ---
 

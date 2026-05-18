@@ -9,9 +9,9 @@
  * @see ADR-MOD-GRID-REFACTOR-2026-05-17-001 (Visual Regression Note)
  */
 import type { Meta, StoryObj } from '@storybook/react';
-import { MergingGrid } from '@tomis/grid-pro-merging';
-import type { MergingColumnDef } from '@tomis/grid-pro-merging';
-import { setLicenseState } from '@tomis/grid-license';
+import { MergingGrid } from '@topgrid/grid-pro-merging';
+import type { MergingColumnDef } from '@topgrid/grid-pro-merging';
+import { setLicenseState } from '@topgrid/grid-license';
 
 const invalidLicense = {
   status: { valid: false, reason: 'invalid' as const },

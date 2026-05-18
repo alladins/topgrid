@@ -8,9 +8,9 @@
  * @see ADR-MOD-GRID-REFACTOR-2026-05-17-001 (Visual Regression Note)
  */
 import type { Meta, StoryObj } from '@storybook/react';
-import { RangeSelectGrid } from '@tomis/grid-pro-range';
-import { createColumns } from '@tomis/grid-core';
-import { setLicenseState } from '@tomis/grid-license';
+import { RangeSelectGrid } from '@topgrid/grid-pro-range';
+import { createColumns } from '@topgrid/grid-core';
+import { setLicenseState } from '@topgrid/grid-license';
 
 const invalidLicense = {
   status: { valid: false, reason: 'invalid' as const },

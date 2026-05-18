@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — useClipboard hook (G-004).
+ * @topgrid/grid-pro-range — useClipboard hook (G-004).
  *
  * Ctrl+C: 현재 선택 범위 → RFC 4180 TSV → navigator.clipboard.writeText.
  * Ctrl+V: navigator.clipboard.readText → parseTsv → CellUpdate[] → onPaste 콜백.

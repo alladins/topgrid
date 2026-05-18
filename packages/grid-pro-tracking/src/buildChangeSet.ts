@@ -1,4 +1,4 @@
-// @tomis/grid-pro-tracking — buildChangeSet pure helper (MOD-GRID-10/G-003).
+// @topgrid/grid-pro-tracking — buildChangeSet pure helper (MOD-GRID-10/G-003).
 //
 // Spec: artifacts/MOD-GRID-10/tracking/G-003-spec.md Sections 2.4, 6, 11.3 Step 4
 // AC mapping: AC-001 (Mapping semantics) / AC-002 (Validator semantics)

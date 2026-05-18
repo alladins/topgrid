@@ -210,7 +210,7 @@ KoreanFont.storyName = 'KoreanFont';
 // ---------------------------------------------------------------------------
 
 export default {
-  title: '@tomis/grid-export/exportToPdf',
+  title: '@topgrid/grid-export/exportToPdf',
   parameters: {
     docs: {
       description: {

@@ -3,7 +3,7 @@
 // C-3 예외: 1000행/5000행 mock 데이터는 Storybook stories에서만 허용 (D7 결정, ADR-006)
 // enableVirtualization / virtualScrollHeight — packages/grid-core/src/types.ts L585/L593 확인
 import type { Meta, StoryObj } from '@storybook/react';
-import { Grid, createColumns } from '@tomis/grid-core';
+import { Grid, createColumns } from '@topgrid/grid-core';
 
 interface LargeRow {
   id: number;

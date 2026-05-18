@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — RangeSelectGrid 컴포넌트 (G-006 Capstone).
+ * @topgrid/grid-pro-range — RangeSelectGrid 컴포넌트 (G-006 Capstone).
  *
  * 5-hook 완전 통합: useCellRange + useKeyboardNav + DragFillHandle +
  * useClipboard + useKeyboardEdit + @tanstack/react-virtual 가상화.
@@ -20,7 +20,7 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useLicenseStatus, Watermark } from '@tomis/grid-license';
+import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 
 import type { CellCoord, CellRange, RangeSelectGridAllProps } from './types';
 import { isInRange } from './internal/normalize';

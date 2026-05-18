@@ -9,7 +9,7 @@ sidebar_position: 2
 8개 Grid 변형과 아키텍처가 다르다. `ColumnInfo`/`ButtonInfo`/`RowActionInfo`
 prop 구조를 사용하며, `listAction(act, value)` 단일 콜백으로 모든 액션을 처리한다.
 
-이 가이드는 `DataTable`을 `@tomis/grid-core`의 `<Grid mode="server">` 패턴으로
+이 가이드는 `DataTable`을 `@topgrid/grid-core`의 `<Grid mode="server">` 패턴으로
 전환하는 5개 변환 항목을 다룬다.
 
 ---
@@ -64,12 +64,12 @@ export interface ColumnInfo {
 
 ### `createColumns()` 헬퍼 사용 (권장)
 
-`@tomis/grid-core`의 `createColumns` 헬퍼는 `ColumnInfo` 배열을
+`@topgrid/grid-core`의 `createColumns` 헬퍼는 `ColumnInfo` 배열을
 `ColumnDef[]`로 자동 변환한다.
 
 ```tsx
-import { Grid, createColumns } from '@tomis/grid-core';
-import type { ColumnInfo } from '@tomis/grid-core'; // legacy alias — AC-005
+import { Grid, createColumns } from '@topgrid/grid-core';
+import type { ColumnInfo } from '@topgrid/grid-core'; // legacy alias — AC-005
 
 // Before
 const columnInfos: ColumnInfo[] = [
@@ -89,7 +89,7 @@ const columns = createColumns(columnInfos);
 
 ```tsx
 import { type ColumnDef } from '@tanstack/react-table';
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 
 type Employee = { empNo: string; empName: string; salary: number; hireDate: string };
 
@@ -137,7 +137,7 @@ pageingInfo: {
 ### Grid pagination 매핑
 
 ```tsx
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 import { useState } from 'react';
 
 function MyPage() {
@@ -193,7 +193,7 @@ export interface ButtonInfo {
 ### toolbar slot 패턴
 
 ```tsx
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 
 // Before
 const buttonInfo: ButtonInfo = {
@@ -374,7 +374,7 @@ import { DataTable } from '@/components/DataTable/data-table';
 />
 
 // ===== AFTER (Grid) =====
-import { Grid, createColumns } from '@tomis/grid-core';
+import { Grid, createColumns } from '@topgrid/grid-core';
 
 const columns = createColumns([
   { id: 'empNo', type: 'text', align: 'center', name: '사원번호', width: '100' },

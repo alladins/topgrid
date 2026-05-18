@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-header — public types barrel.
+ * @topgrid/grid-pro-header — public types barrel.
  *
  * Re-exports interface types from implementation files for consumers
  * who need type-only imports.

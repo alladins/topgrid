@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — SelectFilter 컴포넌트.
+ * @topgrid/grid-features — SelectFilter 컴포넌트.
  *
  * MOD-GRID-09 G-004 AC-001:
  * column.getFacetedUniqueValues() Map 읽어 체크박스 옵션 렌더.

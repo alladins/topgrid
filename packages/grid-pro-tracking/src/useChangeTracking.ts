@@ -1,4 +1,4 @@
-// @tomis/grid-pro-tracking — useChangeTracking hook (MOD-GRID-10/G-002).
+// @topgrid/grid-pro-tracking — useChangeTracking hook (MOD-GRID-10/G-002).
 //
 // Spec: artifacts/MOD-GRID-10/tracking/G-002-spec.md Sections 2.1, 6, 11.2, 11.3
 // AC mapping: AC-001..AC-007 (Storybook AC-008 lives in __stories__/).

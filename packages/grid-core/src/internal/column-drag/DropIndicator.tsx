@@ -1,8 +1,8 @@
 /**
- * @tomis/grid-core — DropIndicator 컴포넌트.
+ * @topgrid/grid-core — DropIndicator 컴포넌트.
  *
- * Moved from `@tomis/grid-features/column-drag/DropIndicator.tsx` per ADR-009 (옵션 A).
- * Aliased re-export remains in `@tomis/grid-features` for one minor cycle.
+ * Moved from `@topgrid/grid-features/column-drag/DropIndicator.tsx` per ADR-009 (옵션 A).
+ * Aliased re-export remains in `@topgrid/grid-features` for one minor cycle.
  *
  * G-001 (MOD-GRID-07): 드래그 중 drop 위치 시각 인디케이터 (AC-003).
  *

@@ -1,15 +1,15 @@
-# @tomis/grid-export
+# @topgrid/grid-export
 
 Excel, PDF, CSV export for grid data
 
 ## Installation
 
 ```bash
-pnpm add @tomis/grid-export
+pnpm add @topgrid/grid-export
 # or
-npm install @tomis/grid-export
+npm install @topgrid/grid-export
 # or
-yarn add @tomis/grid-export
+yarn add @topgrid/grid-export
 ```
 
 ## Peer Dependencies
@@ -28,7 +28,7 @@ yarn add @tomis/grid-export
 ### Excel Export (TanStack Table)
 
 ```tsx
-import { exportToExcel } from '@tomis/grid-export';
+import { exportToExcel } from '@topgrid/grid-export';
 
 // Export all visible rows to Excel
 exportToExcel(table, {
@@ -42,7 +42,7 @@ exportToExcel(table, {
 Use when you have raw row data without a TanStack `Table` instance.
 
 ```tsx
-import { exportRowsToExcel, type ExcelColumn } from '@tomis/grid-export';
+import { exportRowsToExcel, type ExcelColumn } from '@topgrid/grid-export';
 
 const columns: ExcelColumn[] = [
   { key: 'name', header: '이름', width: 20 },
@@ -60,7 +60,7 @@ exportRowsToExcel(rows, columns, {
 ### CSV Export
 
 ```tsx
-import { exportToCSV } from '@tomis/grid-export';
+import { exportToCSV } from '@topgrid/grid-export';
 
 exportToCSV(table, {
   fileName: 'my-data.csv',
@@ -71,7 +71,7 @@ exportToCSV(table, {
 ### PDF Export
 
 ```tsx
-import { exportToPdf } from '@tomis/grid-export';
+import { exportToPdf } from '@topgrid/grid-export';
 
 exportToPdf(table, {
   fileName: 'my-data.pdf',
@@ -82,7 +82,7 @@ exportToPdf(table, {
 ### Clipboard & Print
 
 ```tsx
-import { copyToClipboard, printGrid } from '@tomis/grid-export';
+import { copyToClipboard, printGrid } from '@topgrid/grid-export';
 
 // Copy selected data to clipboard
 copyToClipboard(table);

@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-agg — internal FooterRow component
+ * @topgrid/grid-pro-agg — internal FooterRow component
  * MOD-GRID-15 / G-002
  *
  * Renders a synthetic footer row after each group's leaf rows (D4).

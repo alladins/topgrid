@@ -1,5 +1,5 @@
-// @tomis/grid-renderers — wireRegistry (ADR-MOD-GRID-REFACTOR-2026-05-17-002)
-// Side-effect wiring: registers 6 cell adapters into @tomis/grid-core's
+// @topgrid/grid-renderers — wireRegistry (ADR-MOD-GRID-REFACTOR-2026-05-17-002)
+// Side-effect wiring: registers 6 cell adapters into @topgrid/grid-core's
 // defaultRendererRegistry so `createColumns()` dispatches `type` → real cell.
 //
 // Wired slots (8): text / number / date / dateTime (bespoke +format) / badge / link (bespoke +null) / tag / progress.
@@ -18,7 +18,7 @@
 
 import { createElement, type ComponentType } from 'react';
 import type { CellContext } from '@tanstack/react-table';
-import { registerRenderer, type RendererFn } from '@tomis/grid-core';
+import { registerRenderer, type RendererFn } from '@topgrid/grid-core';
 import { TextCell } from './TextCell.js';
 import { NumberCell } from './NumberCell.js';
 import { DateCell } from './DateCell.js';
@@ -46,7 +46,7 @@ function adaptValueCell<TData, V>(
 /**
  * Wire the 8 default cell adapters into grid-core's `defaultRendererRegistry`.
  *
- * Invoked once, as a side-effect of `import '@tomis/grid-renderers'`
+ * Invoked once, as a side-effect of `import '@topgrid/grid-renderers'`
  * (see src/index.ts). Idempotent — calling twice overwrites with identical
  * adapters. `registerRenderer` uses `Map.set`, so existing slots are replaced
  * (placeholders → adapters); unmentioned slots (boolean/icon/checkbox) retain

@@ -1,4 +1,4 @@
-# @tomis/grid-renderers
+# @topgrid/grid-renderers
 
 ## 0.1.0
 
@@ -6,13 +6,13 @@
 
 - f5ea968: ADR-MOD-GRID-REFACTOR-2026-05-17-002 — cross-package renderer wiring.
 
-  `@tomis/grid-renderers` now auto-registers 6 cell adapters into
-  `@tomis/grid-core`'s `defaultRendererRegistry` via a side-effect on import:
+  `@topgrid/grid-renderers` now auto-registers 6 cell adapters into
+  `@topgrid/grid-core`'s `defaultRendererRegistry` via a side-effect on import:
   `text` / `number` / `date` / `dateTime` (with `format: 'datetime'`) / `badge` /
-  `link`. After `import '@tomis/grid-renderers'`, `createColumns({ type: 'number' })`
+  `link`. After `import '@topgrid/grid-renderers'`, `createColumns({ type: 'number' })`
   renders the real `NumberCell` instead of the previous `String(value)` placeholder.
 
-  - New peerDependency on `grid-renderers`: `@tomis/grid-core` (workspace:\*).
+  - New peerDependency on `grid-renderers`: `@topgrid/grid-core` (workspace:\*).
   - New `sideEffects` array on `grid-renderers/package.json` so bundlers preserve the wiring import.
   - grid-core placeholders remain as graceful fallback when grid-renderers is not imported.
   - `boolean` keeps Y/N. `icon` / `checkbox` remain placeholder (structural + bypass).
@@ -43,15 +43,15 @@
 - Updated dependencies [f5ea968]
 - Updated dependencies [f5ea968]
 - Updated dependencies [f5ea968]
-  - @tomis/grid-core@0.1.0
+  - @topgrid/grid-core@0.1.0
 
 ## 0.3.0 — 2026-05-17 (ADR-018)
 
 ### Added
 
 - `wireRegistry.ts` gains `tag` and `progress` slots (6 → 8 wired slots).
-  `import '@tomis/grid-renderers'` now auto-wires `TagCell` / `ProgressCell`
-  adapters into `@tomis/grid-core`'s `defaultRendererRegistry` alongside the
+  `import '@topgrid/grid-renderers'` now auto-wires `TagCell` / `ProgressCell`
+  adapters into `@topgrid/grid-core`'s `defaultRendererRegistry` alongside the
   existing 6 adapters.
   (ADR-MOD-GRID-REFACTOR-2026-05-17-018 D-2 X-A1)
 - `type: 'tag'` column definition now renders `TagCell` chips (value must be
@@ -73,12 +73,12 @@
 
 ### Added
 
-- ADR-MOD-GRID-REFACTOR-2026-05-17-002 — cross-package wiring with `@tomis/grid-core`.
-  - `import '@tomis/grid-renderers'` now auto-wires 6 cell adapters into
-    `@tomis/grid-core`'s `defaultRendererRegistry` via a side-effect
+- ADR-MOD-GRID-REFACTOR-2026-05-17-002 — cross-package wiring with `@topgrid/grid-core`.
+  - `import '@topgrid/grid-renderers'` now auto-wires 6 cell adapters into
+    `@topgrid/grid-core`'s `defaultRendererRegistry` via a side-effect
     `wireDefaultRenderers()` call: `text` / `number` / `date` / `dateTime` (with
     `format: 'datetime'`) / `badge` / `link`.
-  - New peerDependency: `@tomis/grid-core` (`workspace:*`).
+  - New peerDependency: `@topgrid/grid-core` (`workspace:*`).
   - `package.json` `sideEffects` declared (`./src/index.ts`, `./dist/index.mjs`,
     `./dist/index.cjs`) so bundlers preserve the wiring import.
 

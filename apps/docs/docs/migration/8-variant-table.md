@@ -6,7 +6,7 @@ sidebar_position: 1
 # 8개 Grid 변형 → `<Grid>` 이전 가이드
 
 이 문서는 TOMIS `tw-framework-front`에서 사용하던 8개의 Grid 변형 컴포넌트를
-`@tomis/grid-core`의 통합 `<Grid>` 컴포넌트(및 관련 Pro 패키지)로 이전하는
+`@topgrid/grid-core`의 통합 `<Grid>` 컴포넌트(및 관련 Pro 패키지)로 이전하는
 **참조 테이블**이다. 실제 파일 단위 이전은 MOD-GRID-17 이하 각 Goal에서 수행한다.
 
 > **읽기 전에**: [증분 이전 전략](./incremental-strategy.md)을 먼저 읽어
@@ -18,14 +18,14 @@ sidebar_position: 1
 
 | # | 변형 | 현재 상태 | 대상 패키지 | 주요 변환 포인트 |
 |---|------|----------|------------|----------------|
-| 1 | **BaseGrid** | 미이전 (raw TanStack) | `@tomis/grid-core` | `<Grid mode="client">` + 동일 props |
-| 2 | **VirtualGrid** | 미이전 (`@tanstack/react-virtual`) | `@tomis/grid-core` | `<Grid enableVirtualization rowHeight containerHeight>` |
-| 3 | **TreeGrid** | 미이전 (`getExpandedRowModel`) | `@tomis/grid-core` (legacy alias) | `<TreeGrid>` alias 사용 |
-| 4 | **ColumnPinGrid** | 미이전 (`ColumnPinningState`) | `@tomis/grid-core` (legacy alias) | `<ColumnPinGrid pinLeft pinRight>` alias 사용 |
-| 5 | **EditableGrid** | 부분 이전 (import 교체, 쉘 로컬 유지) | `@tomis/grid-renderers` + `@tomis/grid-pro-tracking` | `<Grid enableEditing>` + `useChangeTracking` |
-| 6 | **GroupedHeaderGrid** | **완전 이전** | `@tomis/grid-pro-header` | 기존 import 유지 — 추가 작업 없음 |
-| 7 | **ChangeTrackingGrid** | **완전 이전** (compat shim) | `@tomis/grid-pro-tracking` | 기존 코드 변경 없음 — shim이 내부를 처리 |
-| 8 | **RangeSelectGrid** | **완전 이전** (wrapper) | `@tomis/grid-pro-range` | 기존 코드 변경 없음 — wrapper가 Pro로 위임 |
+| 1 | **BaseGrid** | 미이전 (raw TanStack) | `@topgrid/grid-core` | `<Grid mode="client">` + 동일 props |
+| 2 | **VirtualGrid** | 미이전 (`@tanstack/react-virtual`) | `@topgrid/grid-core` | `<Grid enableVirtualization rowHeight containerHeight>` |
+| 3 | **TreeGrid** | 미이전 (`getExpandedRowModel`) | `@topgrid/grid-core` (legacy alias) | `<TreeGrid>` alias 사용 |
+| 4 | **ColumnPinGrid** | 미이전 (`ColumnPinningState`) | `@topgrid/grid-core` (legacy alias) | `<ColumnPinGrid pinLeft pinRight>` alias 사용 |
+| 5 | **EditableGrid** | 부분 이전 (import 교체, 쉘 로컬 유지) | `@topgrid/grid-renderers` + `@topgrid/grid-pro-tracking` | `<Grid enableEditing>` + `useChangeTracking` |
+| 6 | **GroupedHeaderGrid** | **완전 이전** | `@topgrid/grid-pro-header` | 기존 import 유지 — 추가 작업 없음 |
+| 7 | **ChangeTrackingGrid** | **완전 이전** (compat shim) | `@topgrid/grid-pro-tracking` | 기존 코드 변경 없음 — shim이 내부를 처리 |
+| 8 | **RangeSelectGrid** | **완전 이전** (wrapper) | `@topgrid/grid-pro-range` | 기존 코드 변경 없음 — wrapper가 Pro로 위임 |
 
 ---
 
@@ -50,10 +50,10 @@ interface BaseGridProps<TData> {
 }
 ```
 
-### After: `@tomis/grid-core` Grid 사용
+### After: `@topgrid/grid-core` Grid 사용
 
 ```tsx
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 
 // Before
 import { BaseGrid } from '../Grid/BaseGrid';
@@ -68,7 +68,7 @@ import { BaseGrid } from '../Grid/BaseGrid';
 />
 
 // After
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 <Grid
   mode="client"
   data={rows}
@@ -102,10 +102,10 @@ interface VirtualGridProps<TData> extends BaseGridProps<TData> {
 // 참고: VirtualGrid는 pagination prop을 무시함 — EC-06 참조
 ```
 
-### After: `@tomis/grid-core` Grid enableVirtualization 사용
+### After: `@topgrid/grid-core` Grid enableVirtualization 사용
 
 ```tsx
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 
 // Before
 import { VirtualGrid } from '../Grid/VirtualGrid';
@@ -118,7 +118,7 @@ import { VirtualGrid } from '../Grid/VirtualGrid';
 />
 
 // After
-import { Grid } from '@tomis/grid-core';
+import { Grid } from '@topgrid/grid-core';
 <Grid
   mode="client"
   enableVirtualization
@@ -156,7 +156,7 @@ interface TreeGridProps<TData> {
 }
 ```
 
-### After: `@tomis/grid-core` legacy alias 사용
+### After: `@topgrid/grid-core` legacy alias 사용
 
 ```tsx
 // Before
@@ -170,7 +170,7 @@ import { TreeGrid } from '../Grid/TreeGrid';
 />
 
 // After — legacy alias (grid-core/src/index.ts에서 re-export 확인)
-import { TreeGrid } from '@tomis/grid-core';
+import { TreeGrid } from '@topgrid/grid-core';
 <TreeGrid
   data={treeData}
   columns={columns}
@@ -206,7 +206,7 @@ interface ColumnPinGridProps<TData> {
 }
 ```
 
-### After: `@tomis/grid-core` legacy alias 사용
+### After: `@topgrid/grid-core` legacy alias 사용
 
 ```tsx
 // Before
@@ -221,7 +221,7 @@ import { ColumnPinGrid } from '../Grid/ColumnPinGrid';
 />
 
 // After — legacy alias
-import { ColumnPinGrid } from '@tomis/grid-core';
+import { ColumnPinGrid } from '@topgrid/grid-core';
 <ColumnPinGrid
   data={rows}
   columns={columns}
@@ -238,7 +238,7 @@ import { ColumnPinGrid } from '@tomis/grid-core';
 
 ## 5. EditableGrid
 
-**현재 상태**: 부분 이전 — `@tomis/grid-renderers` + `@tomis/grid-pro-tracking` import 사용 중,
+**현재 상태**: 부분 이전 — `@topgrid/grid-renderers` + `@topgrid/grid-pro-tracking` import 사용 중,
 컴포넌트 쉘은 `tw-framework-front` 로컬에 유지
 
 ### Before: 원본 Props 인터페이스
@@ -259,7 +259,7 @@ interface EditableGridProps<TData> {
 }
 ```
 
-### After: `@tomis/grid-core` + pro 패키지 조합
+### After: `@topgrid/grid-core` + pro 패키지 조합
 
 ```tsx
 // Before (현재 로컬 쉘)
@@ -273,8 +273,8 @@ import { EditableGrid } from '../Grid/EditableGrid';
 />
 
 // After (완전 이전 완료 후 — 해당 MOD-GRID Goal 완성 시)
-import { Grid } from '@tomis/grid-core';
-import { useChangeTracking } from '@tomis/grid-pro-tracking';
+import { Grid } from '@topgrid/grid-core';
+import { useChangeTracking } from '@topgrid/grid-pro-tracking';
 
 function MyPage() {
   const tracking = useChangeTracking({ data: rows, rowKey: (row) => row.id });
@@ -301,33 +301,33 @@ function MyPage() {
 
 ## 6. GroupedHeaderGrid
 
-**현재 상태**: **완전 이전 완료** — `@tomis/grid-pro-header`에서 re-export
+**현재 상태**: **완전 이전 완료** — `@topgrid/grid-pro-header`에서 re-export
 
 ### 확인된 파일 (실제 확인)
 
 ```tsx
 // tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx
-export { GroupedHeaderGrid } from '@tomis/grid-pro-header';
-export type { GroupedHeaderGridProps } from '@tomis/grid-pro-header';
+export { GroupedHeaderGrid } from '@topgrid/grid-pro-header';
+export type { GroupedHeaderGridProps } from '@topgrid/grid-pro-header';
 ```
 
 ### 이미 완료 — 추가 작업 없음
 
 기존 사용처 코드는 `../Grid/GroupedHeaderGrid`를 import하면 자동으로
-`@tomis/grid-pro-header`의 구현을 사용한다. 변경 불필요.
+`@topgrid/grid-pro-header`의 구현을 사용한다. 변경 불필요.
 
 ```tsx
 // 기존 코드 — 변경 없음
 import { GroupedHeaderGrid } from '../Grid/GroupedHeaderGrid';
 <GroupedHeaderGrid data={rows} columns={columnGroups} />
-// ↑ 이미 @tomis/grid-pro-header를 통해 동작 중
+// ↑ 이미 @topgrid/grid-pro-header를 통해 동작 중
 ```
 
 ---
 
 ## 7. ChangeTrackingGrid
 
-**현재 상태**: **완전 이전 완료** — compat shim (`@tomis/grid-pro-tracking` 기반)
+**현재 상태**: **완전 이전 완료** — compat shim (`@topgrid/grid-pro-tracking` 기반)
 
 ### compat shim이 보존하는 구 API
 
@@ -362,13 +362,13 @@ const changes = gridRef.current?.getChanges();
 
 > **추가 작업 없음**: shim이 내부적으로 `useChangeTracking`을 사용하므로
 > 외부 코드는 변경 불필요. `useChangeTracking` hook을 직접 사용하려면
-> `@tomis/grid-pro-tracking`에서 직접 import한다.
+> `@topgrid/grid-pro-tracking`에서 직접 import한다.
 
 ---
 
 ## 8. RangeSelectGrid
 
-**현재 상태**: **완전 이전 완료** — `@tomis/grid-pro-range` wrapper
+**현재 상태**: **완전 이전 완료** — `@topgrid/grid-pro-range` wrapper
 
 ### 확인된 Props 인터페이스 (실제 확인)
 
@@ -396,11 +396,11 @@ import { RangeSelectGrid } from '../Grid/RangeSelectGrid';
   columns={columns}
   onRangeChange={(range) => console.log(range)}
 />
-// ↑ 내부적으로 @tomis/grid-pro-range의 ProRangeSelectGrid에 위임 중
+// ↑ 내부적으로 @topgrid/grid-pro-range의 ProRangeSelectGrid에 위임 중
 ```
 
 > **`useCellRange` hook 직접 사용**: 더 세밀한 제어가 필요하면
-> `@tomis/grid-pro-range`에서 직접 import한다.
+> `@topgrid/grid-pro-range`에서 직접 import한다.
 
 ---
 

@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — L0 backward-compat alias (AC-010, C-6).
+ * @topgrid/grid-pro-range — L0 backward-compat alias (AC-010, C-6).
  *
  * L0 API(`data, columns, onRangeChange?, loading?, emptyText?, className?`)를
  * 그대로 수용하여 신규 RangeSelectGrid로 위임.

@@ -1,7 +1,7 @@
 /**
  * @file storageAdapter — SSR-safe Web Storage primitives (ADR-007 Wave 3).
  *
- * **Internal-only**. Do NOT export from `@tomis/grid-core` public API.
+ * **Internal-only**. Do NOT export from `@topgrid/grid-core` public API.
  * ADR-MOD-GRID-REFACTOR-2026-05-17-007 alternative #3 explicitly rejected
  * public exposure: "4 hook 의 internal 구현 디테일 — public 노출 시 사용자가
  * 직접 사용하면 hook 의도와 충돌. internal 로 한정."

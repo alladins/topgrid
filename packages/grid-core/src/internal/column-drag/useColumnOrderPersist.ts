@@ -1,8 +1,8 @@
 /**
- * @tomis/grid-core — useColumnOrderPersist hook.
+ * @topgrid/grid-core — useColumnOrderPersist hook.
  *
- * Moved from `@tomis/grid-features/column-drag/useColumnOrderPersist.ts` per ADR-009 (옵션 A).
- * Aliased re-export remains in `@tomis/grid-features` for one minor cycle.
+ * Moved from `@topgrid/grid-features/column-drag/useColumnOrderPersist.ts` per ADR-009 (옵션 A).
+ * Aliased re-export remains in `@topgrid/grid-features` for one minor cycle.
  *
  * G-002 (MOD-GRID-07): 컬럼 순서 localStorage 영속화.
  *

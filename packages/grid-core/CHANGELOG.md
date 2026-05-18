@@ -1,4 +1,4 @@
-# @tomis/grid-core
+# @topgrid/grid-core
 
 ## 0.1.0
 
@@ -10,10 +10,10 @@
   The SSR-guard + try/catch + JSON parse/stringify + QuotaExceededError boilerplate
   duplicated across 4 persistence hooks (`useStoragePersist`,
   `useColumnPersistence`, `useColumnOrderPersist`, `useExpandedPersistence`) is
-  consolidated into a single `internal/storage` adapter under `@tomis/grid-core`.
+  consolidated into a single `internal/storage` adapter under `@topgrid/grid-core`.
 
   - `grid-core`: adds a new `./internal/storage` subpath export
-    (`@tomis/grid-core/internal/storage`) exposing `getStorage`, `readJson`,
+    (`@topgrid/grid-core/internal/storage`) exposing `getStorage`, `readJson`,
     `readRaw`, `writeJson`, `writeRaw`, `removeKey`, type `StorageType`. Marked
     `@internal` — sister packages in this monorepo consume it to share the
     Web-Storage I/O layer. **Not part of the semver-stable public API**;
@@ -29,20 +29,20 @@
 
 - f5ea968: ADR-016: Unify `onRowClick` signature — `BaseGridProps` and all legacy alias components now use `(row: TData, event: MouseEvent<HTMLTableRowElement>) => void` (2-arg). TypeScript contravariance keeps existing 1-arg callbacks assignable without changes.
 
-  ADR-008: `grid-pro-header` legacy `GroupedHeaderGrid` inline type aliases removed; `GridPaginationOptions` and `GridRowSelectionOptions` are now imported from `@tomis/grid-core` directly.
+  ADR-008: `grid-pro-header` legacy `GroupedHeaderGrid` inline type aliases removed; `GridPaginationOptions` and `GridRowSelectionOptions` are now imported from `@topgrid/grid-core` directly.
 
 - f5ea968: ADR-MOD-GRID-REFACTOR-2026-05-17-009 (옵션 A) — grid-core ↔ grid-features layering 정리.
 
   Move `useColumnDrag`, `useColumnOrderPersist`, `DropIndicator`, `SortClearButton`
   (and supporting types `UseColumnDragProps`, `UseColumnDragReturn`, `DragThProps`,
-  `UseColumnOrderPersistProps`, `SortClearButtonProps`) from `@tomis/grid-features`
-  to `@tomis/grid-core/internal/`, exposed via grid-core public API.
+  `UseColumnOrderPersistProps`, `SortClearButtonProps`) from `@topgrid/grid-features`
+  to `@topgrid/grid-core/internal/`, exposed via grid-core public API.
 
-  - `grid-core`: new public exports (minor add). `@tomis/grid-features` removed
+  - `grid-core`: new public exports (minor add). `@topgrid/grid-features` removed
     from `dependencies` — architectural inversion해소.
   - `grid-features`: retains deprecation aliases for one minor cycle. Adds
-    `@tomis/grid-core` as a workspace dependency to back the aliases. Public
-    surface unchanged; consumers should migrate imports to `@tomis/grid-core`.
+    `@topgrid/grid-core` as a workspace dependency to back the aliases. Public
+    surface unchanged; consumers should migrate imports to `@topgrid/grid-core`.
     Aliases will be removed in the next major.
 
 - f5ea968: ADR-MOD-GRID-REFACTOR-2026-05-17-010 — `SortBadge` 중복 제거 (grid-core/internal 단일화).
@@ -54,9 +54,9 @@
     The implementation is the superset of the previous internal version: accepts an
     optional `className` prop (Tailwind override, C-5). Existing Grid.tsx call sites
     (`<SortBadge sortIndex={sortIndex} />`) are unaffected — prop is optional.
-    `SortBadgeProps` moved from `@tomis/grid-features/multi-sort/types.ts`.
+    `SortBadgeProps` moved from `@topgrid/grid-features/multi-sort/types.ts`.
   - `grid-features`: `SortBadge` and `SortBadgeProps` are now deprecation aliases
-    re-exporting from `@tomis/grid-core`. Public surface unchanged. Aliases will be
+    re-exporting from `@topgrid/grid-core`. Public surface unchanged. Aliases will be
     removed in the next major.
 
 - f5ea968: Deprecate 5 unused public APIs: `createTomisColumnHelper`, `useColumnPersistence`,
@@ -82,24 +82,24 @@
   - Imperative handle via `ref`: `expandAll()`, `collapseAll()` + full `GridHandle<TData>` API
   - `ExpandToggleCell` — internal expand/collapse toggle button with depth-based indent (INDENT_PX=16)
   - `DetailRow` — full-width `<tr data-detail-row>` for expanded master row content
-  - `verifyLicense('@tomis/grid-pro-master')` called at module level (Pro EULA guard)
-  - `@tomis/grid-core` and `@tomis/grid-license` added to peerDependencies
+  - `verifyLicense('@topgrid/grid-pro-master')` called at module level (Pro EULA guard)
+  - `@topgrid/grid-core` and `@topgrid/grid-license` added to peerDependencies
 
-  `@tomis/grid-core`: `GridHandle<TData>` extended with optional `expandAll?(): void` and `collapseAll?(): void` (after `scrollTo`) — backward-compatible (optional methods, base `<Grid>` unaffected)
+  `@topgrid/grid-core`: `GridHandle<TData>` extended with optional `expandAll?(): void` and `collapseAll?(): void` (after `scrollTo`) — backward-compatible (optional methods, base `<Grid>` unaffected)
 
-  `@tomis/grid-license`: add no-op `verifyLicense(_packageName: string): void` export stub (MOD-GRID-99-A deferred)
+  `@topgrid/grid-license`: add no-op `verifyLicense(_packageName: string): void` export stub (MOD-GRID-99-A deferred)
 
 ### Patch Changes
 
 - f5ea968: ADR-MOD-GRID-REFACTOR-2026-05-17-002 — cross-package renderer wiring.
 
-  `@tomis/grid-renderers` now auto-registers 6 cell adapters into
-  `@tomis/grid-core`'s `defaultRendererRegistry` via a side-effect on import:
+  `@topgrid/grid-renderers` now auto-registers 6 cell adapters into
+  `@topgrid/grid-core`'s `defaultRendererRegistry` via a side-effect on import:
   `text` / `number` / `date` / `dateTime` (with `format: 'datetime'`) / `badge` /
-  `link`. After `import '@tomis/grid-renderers'`, `createColumns({ type: 'number' })`
+  `link`. After `import '@topgrid/grid-renderers'`, `createColumns({ type: 'number' })`
   renders the real `NumberCell` instead of the previous `String(value)` placeholder.
 
-  - New peerDependency on `grid-renderers`: `@tomis/grid-core` (workspace:\*).
+  - New peerDependency on `grid-renderers`: `@topgrid/grid-core` (workspace:\*).
   - New `sideEffects` array on `grid-renderers/package.json` so bundlers preserve the wiring import.
   - grid-core placeholders remain as graceful fallback when grid-renderers is not imported.
   - `boolean` keeps Y/N. `icon` / `checkbox` remain placeholder (structural + bypass).
@@ -111,10 +111,10 @@
 
 ### Added (Internal — not part of semver-stable public API)
 
-- `./internal/storage` subpath export (`@tomis/grid-core/internal/storage`)
+- `./internal/storage` subpath export (`@topgrid/grid-core/internal/storage`)
   exposing SSR-safe Web Storage primitives: `getStorage`, `readJson`, `readRaw`,
   `writeJson`, `writeRaw`, `removeKey`, type `StorageType`. Marked `@internal`
-  — sister packages within this monorepo (`@tomis/grid-pro-master`) consume it
+  — sister packages within this monorepo (`@topgrid/grid-pro-master`) consume it
   to share the SSR-guard + try/catch + JSON I/O layer. Application code MUST
   NOT import from this subpath; use the persistence hooks instead.
   (ADR-MOD-GRID-REFACTOR-2026-05-17-007)
@@ -136,8 +136,8 @@
   to 1 (drift prevention; ADR-007's stated primary goal). Per-hook boilerplate
   trimmed by ~10–30 LOC each; consolidated single-source adapter adds ~150 LOC.
   Net LOC is roughly neutral — the value is in single-source bug-fix targeting.
-- New subpath `@tomis/grid-core/internal/storage` follows the same convention
-  as the existing `@tomis/grid-core/legacy` subpath (precedent established
+- New subpath `@topgrid/grid-core/internal/storage` follows the same convention
+  as the existing `@topgrid/grid-core/legacy` subpath (precedent established
   in G-005 D13). ADR-007 alternative #3 (public export from main barrel)
   explicitly rejected.
 
@@ -162,21 +162,21 @@
 - `TomisColumnType` union extended: `'tag'` and `'progress'` members added (11 total,
   up from 9). Additive — no breaking change. Existing narrow checks on the union
   continue to work; new members produce `String(value)` placeholder when
-  `@tomis/grid-renderers` is not imported (graceful fallback).
+  `@topgrid/grid-renderers` is not imported (graceful fallback).
   (ADR-MOD-GRID-REFACTOR-2026-05-17-018 D-2 X-A1)
 - `defaultRendererRegistry` gains 2 placeholder entries: `'tag'` and `'progress'`
   (fallback `String(info.getValue() ?? '')`). These are replaced by real adapters
-  when `@tomis/grid-renderers` is imported (mirrors existing ADR-002 pattern).
+  when `@topgrid/grid-renderers` is imported (mirrors existing ADR-002 pattern).
 
 ## Unreleased (ADR-002 — 2026-05-17)
 
 ### Changed
 
-- `defaultRendererRegistry` documentation updated: `@tomis/grid-renderers` now
+- `defaultRendererRegistry` documentation updated: `@topgrid/grid-renderers` now
   wires `text` / `number` / `date` / `dateTime` / `badge` / `link` adapters
   via side-effect on import (ADR-MOD-GRID-REFACTOR-2026-05-17-002). The 9
   placeholders remain in place and act as a graceful fallback when
-  `@tomis/grid-renderers` is **not** imported (every `TomisColumnType` still
+  `@topgrid/grid-renderers` is **not** imported (every `TomisColumnType` still
   produces a renderable `ReactNode`). No public API change — `registerRenderer`
   and `defaultRendererRegistry` signatures unchanged.
 
@@ -207,12 +207,12 @@
   public API (ADR-010). Superset of the previous internal-only version: accepts an
   optional `className` prop (Tailwind override, C-5). Grid.tsx internal usage unchanged
   (prop is optional; `sortIndex`-only calls still work).
-- `SortBadgeProps` — type for the above; moved from `@tomis/grid-features`.
+- `SortBadgeProps` — type for the above; moved from `@topgrid/grid-features`.
 
 ### Notes
 
-- `@tomis/grid-features` retains a deprecation alias `SortBadge` re-exporting from
-  `@tomis/grid-core` for one minor cycle. `SortBadgeProps` likewise deprecated in
+- `@topgrid/grid-features` retains a deprecation alias `SortBadge` re-exporting from
+  `@topgrid/grid-core` for one minor cycle. `SortBadgeProps` likewise deprecated in
   grid-features (re-exported from grid-core). Will be removed in next major.
 - `internal/SortBadge.tsx` is retained as the implementation file (flat layout,
   cosmetic deviation from ADR-009's `internal/multi-sort/` nesting — noted in ADR-010
@@ -222,7 +222,7 @@
 
 ## Unreleased (ADR-009 — 2026-05-17)
 
-### Added (moved from `@tomis/grid-features` per ADR-MOD-GRID-REFACTOR-2026-05-17-009 옵션 A)
+### Added (moved from `@topgrid/grid-features` per ADR-MOD-GRID-REFACTOR-2026-05-17-009 옵션 A)
 
 - `useColumnDrag` — HTML5 drag-and-drop hook for column reordering.
 - `useColumnOrderPersist` — localStorage persistence helper for column order.
@@ -233,7 +233,7 @@
 
 ### Changed
 
-- **Removed `@tomis/grid-features` from `dependencies`** — architectural inversion
+- **Removed `@topgrid/grid-features` from `dependencies`** — architectural inversion
   resolved. grid-core is now self-contained (no workspace `dependencies`; only
   `peerDependencies`). semver: minor (new public exports).
 - `Grid.tsx` now imports the 3 wiring helpers from `./internal/column-drag/` and
@@ -241,7 +241,7 @@
 
 ### Notes
 
-- `@tomis/grid-features` retains deprecation aliases for the 4 runtime exports +
+- `@topgrid/grid-features` retains deprecation aliases for the 4 runtime exports +
   5 type exports for one minor cycle. They will be removed in the next major.
 - ADR-010 (SortBadge consolidation) remains in Wave 3 and is unblocked by this
   change.

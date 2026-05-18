@@ -7,7 +7,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useLicenseStatus, Watermark } from '@tomis/grid-license';
+import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 import type { JSX } from 'react';
 import { useMemo, useRef } from 'react';
 

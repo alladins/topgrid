@@ -2,12 +2,12 @@
  * `useExpandedPersistence` — Pro-tier hook that persists TanStack `ExpandedState`
  * to Web Storage (localStorage / sessionStorage) across page refreshes.
  *
- * Option B — independent hook. Does NOT modify `useGridState` in `@tomis/grid-core` (D17).
+ * Option B — independent hook. Does NOT modify `useGridState` in `@topgrid/grid-core` (D17).
  * External composition pattern: wire `[expanded, setExpanded]` return value into
  * `masterDetail.expandedRowKeys` + `onExpandChange` on `<MasterDetailGrid>`.
  *
  * Internal SSR-guard + try/catch + JSON I/O boilerplate is now delegated to
- * `@tomis/grid-core/internal/storage` (ADR-007 Wave 3). External API, in-memory
+ * `@topgrid/grid-core/internal/storage` (ADR-007 Wave 3). External API, in-memory
  * fallback semantics, and dev-mode warning behaviour unchanged.
  *
  * @see G-003-spec.md Section 2.1 + D3 (D17 in decisions.md)
@@ -22,7 +22,7 @@ import {
   readJson,
   writeJson,
   type StorageType,
-} from '@tomis/grid-core/internal/storage';
+} from '@topgrid/grid-core/internal/storage';
 
 // Minimal process declare for dev-mode guard (C-4). Mirrors MasterDetailGrid.tsx L44.
 declare const process: { env: { NODE_ENV?: string } } | undefined;
@@ -75,7 +75,7 @@ type ExpandedStateSetter = (
  * Pro-tier hook — persists TanStack `ExpandedState` to Web Storage.
  *
  * @remarks
- * Does NOT modify `useGridState` in `@tomis/grid-core` (Option B, D17).
+ * Does NOT modify `useGridState` in `@topgrid/grid-core` (Option B, D17).
  * Wire the returned `[expanded, setExpanded]` into `<MasterDetailGrid>`:
  * ```tsx
  * masterDetail={{

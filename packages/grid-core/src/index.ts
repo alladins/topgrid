@@ -1,4 +1,4 @@
-// @tomis/grid-core — public API (MOD-GRID-01 / G-001 + G-002 + G-003 + G-004 + G-005 + MOD-GRID-02 / G-001~G-006).
+// @topgrid/grid-core — public API (MOD-GRID-01 / G-001 + G-002 + G-003 + G-004 + G-005 + MOD-GRID-02 / G-001~G-006).
 export { Grid } from './Grid';
 export { useGridState } from './useGridState'; // ★ MOD-GRID-02 G-001
 export { useUrlSync } from './useUrlSync'; // ★ MOD-GRID-02 G-005

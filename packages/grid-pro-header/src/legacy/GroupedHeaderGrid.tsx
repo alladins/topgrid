@@ -27,7 +27,7 @@ import {
   type SortingState,
   type ColumnDef,
 } from '@tanstack/react-table';
-import type { GridPaginationOptions, GridRowSelectionOptions } from '@tomis/grid-core';
+import type { GridPaginationOptions, GridRowSelectionOptions } from '@topgrid/grid-core';
 import { MultiRowHeader } from '../MultiRowHeader';
 
 /**
@@ -56,7 +56,7 @@ export interface GroupedHeaderGridProps<TData = unknown> {
 /**
  * Legacy self-contained grid component with grouped multi-row headers.
  *
- * Delegates header rendering to `MultiRowHeader` from `@tomis/grid-pro-header`.
+ * Delegates header rendering to `MultiRowHeader` from `@topgrid/grid-pro-header`.
  * tbody and pagination are ported verbatim from AS-IS L0 (C-17).
  *
  * @typeParam TData - The row data type (must extend `object`).

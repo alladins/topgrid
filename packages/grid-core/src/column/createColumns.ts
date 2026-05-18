@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-core — createColumns factory.
+ * @topgrid/grid-core — createColumns factory.
  *
  * MOD-GRID-04 G-001: `createColumns<TData>(defs)` 핵심 공개 API.
  *

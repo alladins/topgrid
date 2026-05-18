@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — TextFilter 커스텀 filterFn.
+ * @topgrid/grid-features — TextFilter 커스텀 filterFn.
  *
  * MOD-GRID-09 G-001 AC-002: TanStack FilterFn<unknown> 구현.
  *

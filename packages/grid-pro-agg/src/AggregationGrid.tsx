@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-agg — AggregationGrid React component
+ * @topgrid/grid-pro-agg — AggregationGrid React component
  * MOD-GRID-15 / G-001 (initial scaffold)
  * MOD-GRID-15 / G-002 (GroupRow + FooterRow integration, virtualization, callbacks)
  * MOD-GRID-15 / G-003 (3-branch aggregationFn registry lookup)
@@ -35,7 +35,7 @@ import {
   type SortingState,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useLicenseStatus, Watermark } from '@tomis/grid-license';
+import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 
 import { resolveAggregationFn, getAggregationFn, BUILT_IN_AGGREGATION_KEYS } from './aggregationFns';
 import { GroupPanel } from './GroupPanel';

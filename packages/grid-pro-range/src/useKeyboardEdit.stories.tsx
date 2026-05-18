@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — useKeyboardEdit Storybook 스토리 (G-005, AC-006).
+ * @topgrid/grid-pro-range — useKeyboardEdit Storybook 스토리 (G-005, AC-006).
  *
  * DeleteStory: 범위 선택 후 Delete 키 → onDeleteRange 호출 로그 표시.
  * BulkEditStory: 범위 선택 후 임의 문자 타이핑 → onBulkEdit 호출 로그 표시.

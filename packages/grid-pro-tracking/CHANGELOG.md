@@ -1,4 +1,4 @@
-# @tomis/grid-pro-tracking
+# @topgrid/grid-pro-tracking
 
 ## 0.1.0
 
@@ -25,8 +25,8 @@
 - Updated dependencies [f5ea968]
 - Updated dependencies [f5ea968]
 - Updated dependencies [f5ea968]
-  - @tomis/grid-license@0.1.0
-  - @tomis/grid-core@0.1.0
+  - @topgrid/grid-license@0.1.0
+  - @topgrid/grid-core@0.1.0
 
 ## 0.1.0 — 2026-05-17
 

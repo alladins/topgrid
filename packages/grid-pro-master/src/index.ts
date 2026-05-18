@@ -1,4 +1,4 @@
-import { checkLicense } from '@tomis/grid-license';
+import { checkLicense } from '@topgrid/grid-license';
 
 checkLicense();
 
@@ -18,7 +18,7 @@ export type { UseExpandedPersistenceOptions } from './internal/useExpandedPersis
 export type { RowPinningOptions } from './types';
 
 // G-003 (MOD-GRID-16): TreeGrid / ColumnPinGrid C-6 alias re-export (G-005 산출물 재활용, D18)
-// @tomis/grid-core is a peerDependency (package.json). G-005 (MOD-GRID-01) implements
+// @topgrid/grid-core is a peerDependency (package.json). G-005 (MOD-GRID-01) implements
 // these aliases with useDeprecationWarn — no new wrapper needed.
-export { TreeGrid, type TreeGridProps } from '@tomis/grid-core';
-export { ColumnPinGrid, type ColumnPinGridProps } from '@tomis/grid-core';
+export { TreeGrid, type TreeGridProps } from '@topgrid/grid-core';
+export { ColumnPinGrid, type ColumnPinGridProps } from '@topgrid/grid-core';

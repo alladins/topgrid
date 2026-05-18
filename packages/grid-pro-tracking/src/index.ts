@@ -1,4 +1,4 @@
-import { checkLicense } from '@tomis/grid-license';
+import { checkLicense } from '@topgrid/grid-license';
 
 checkLicense();
 

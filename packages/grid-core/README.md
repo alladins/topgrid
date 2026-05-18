@@ -1,15 +1,15 @@
-# @tomis/grid-core
+# @topgrid/grid-core
 
 TanStack Table abstraction wrapper + useGridState core hook
 
 ## Installation
 
 ```bash
-pnpm add @tomis/grid-core
+pnpm add @topgrid/grid-core
 # or
-npm install @tomis/grid-core
+npm install @topgrid/grid-core
 # or
-yarn add @tomis/grid-core
+yarn add @topgrid/grid-core
 ```
 
 ## Peer Dependencies
@@ -24,7 +24,7 @@ yarn add @tomis/grid-core
 ## Usage
 
 ```tsx
-import { Grid, useGridState } from '@tomis/grid-core';
+import { Grid, useGridState } from '@topgrid/grid-core';
 
 const columns = [
   { accessorKey: 'id', header: 'ID' },

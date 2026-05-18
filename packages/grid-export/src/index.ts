@@ -1,4 +1,4 @@
-// @tomis/grid-export — public API (MOD-GRID-06 / G-001 Excel + G-002 CSV + G-003 PDF + G-004 Clipboard/Print)
+// @topgrid/grid-export — public API (MOD-GRID-06 / G-001 Excel + G-002 CSV + G-003 PDF + G-004 Clipboard/Print)
 
 // Core export functions (TanStack Table-based)
 export { exportToExcel } from './exportToExcel';
@@ -28,5 +28,5 @@ export type {
 // G-004 Types
 export type { ClipboardOptions, PrintOptions } from './types';
 
-// Legacy alias is available via '@tomis/grid-export/legacy' sub-entry (AC-005, D5).
-// Import: import { downloadExcel } from '@tomis/grid-export/legacy';
+// Legacy alias is available via '@topgrid/grid-export/legacy' sub-entry (AC-005, D5).
+// Import: import { downloadExcel } from '@topgrid/grid-export/legacy';

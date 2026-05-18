@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — DateFilter Storybook stories.
+ * @topgrid/grid-features — DateFilter Storybook stories.
  *
  * MOD-GRID-09 G-003 D5 / Section 13.
  * C-31 wiring: 모든 story에서 `columnDef.filterFn: dateRangeFilterFn` 명시.

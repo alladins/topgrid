@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — MultiSort Storybook Stories
+ * @topgrid/grid-features — MultiSort Storybook Stories
  *
  * MOD-GRID-08 G-001 AC-007 / C-25:
  * 3 시나리오: A(다중 정렬+배지), B(Ctrl+Click 정렬 제거), C(enableMultiSort=false 단일 정렬 보존).
@@ -10,7 +10,7 @@
  * Storybook 연동 후 `title: 'grid-features/multi-sort/MultiSortGrid'` 로 자동 등록됨.
  *
  * 패턴: useColumnDrag.stories.tsx 와 동일 — useReactTable 직접 사용 (Grid wrapper 미사용).
- * Grid.tsx 내 internal/SortBadge 와 달리, 여기서는 @tomis/grid-features export SortBadge 시연.
+ * Grid.tsx 내 internal/SortBadge 와 달리, 여기서는 @topgrid/grid-features export SortBadge 시연.
  * 이유: grid-features → grid-core 방향 cross-package import 순환 위험 회피 (Section 11.4).
  *
  * @see G-001-spec.md Section 12.2

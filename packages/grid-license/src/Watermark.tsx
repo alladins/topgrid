@@ -14,7 +14,7 @@ export function Watermark({ required }: WatermarkProps): React.ReactElement | nu
   if (!required) return null;
   return (
     <div className="absolute top-0 right-0 opacity-40 pointer-events-none select-none text-sm font-semibold text-gray-500 p-2">
-      Unlicensed @tomis/grid
+      Unlicensed @topgrid/grid
     </div>
   );
 }

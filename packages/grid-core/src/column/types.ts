@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-core — Column type definitions.
+ * @topgrid/grid-core — Column type definitions.
  *
  * MOD-GRID-04 G-001: createColumns + type 자동 renderer 분기.
  *

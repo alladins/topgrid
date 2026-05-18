@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — DateFilter 컴포넌트.
+ * @topgrid/grid-features — DateFilter 컴포넌트.
  *
  * MOD-GRID-09 G-003:
  * react-datepicker 기반 날짜 범위(from/to) 선택 필터.

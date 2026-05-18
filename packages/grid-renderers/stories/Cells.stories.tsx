@@ -16,7 +16,7 @@ import {
   AvatarCell,
   ProgressCell,
   EditableCell,
-} from '@tomis/grid-renderers';
+} from '@topgrid/grid-renderers';
 
 // ─── TextCell ─────────────────────────────────────────────────────────────
 const textMeta: Meta<typeof TextCell> = {

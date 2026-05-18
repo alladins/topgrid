@@ -5,7 +5,7 @@
 // C-29: exactOptionalPropertyTypes 호환 (undefined 분기 명시)
 import type { CellContext } from '@tanstack/react-table';
 import type { JSX } from 'react';
-import { useWatermarkEnforcement } from '@tomis/grid-license';
+import { useWatermarkEnforcement } from '@topgrid/grid-license';
 
 import type { DataMap, DataMapColumnDef } from './types';
 

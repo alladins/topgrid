@@ -1,4 +1,4 @@
-// @tomis/grid-license
+// @topgrid/grid-license
 export { setLicenseKey } from './setLicenseKey.js';
 export { checkLicense } from './checkLicense.js';
 export { Watermark } from './Watermark.js';

@@ -12,8 +12,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import type { CellContext, ColumnDef } from '@tanstack/react-table';
-import { DataMapCell, createDataMap } from '@tomis/grid-pro-datamap';
-import { setLicenseState } from '@tomis/grid-license';
+import { DataMapCell, createDataMap } from '@topgrid/grid-pro-datamap';
+import { setLicenseState } from '@topgrid/grid-license';
 
 const invalidLicense = {
   status: { valid: false, reason: 'invalid' as const },

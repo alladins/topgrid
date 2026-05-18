@@ -16,7 +16,7 @@ import { exportToExcel } from '../exportToExcel';
  * 신규 코드는 `exportToExcel()` 직접 사용 권장.
  *
  * @example
- * import { downloadExcel } from '@tomis/grid-export/legacy';
+ * import { downloadExcel } from '@topgrid/grid-export/legacy';
  * // DataTable 기존 패턴 교체
  * downloadExcel(table);
  */

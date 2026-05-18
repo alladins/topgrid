@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-pro-range — useKeyboardEdit hook (G-005).
+ * @topgrid/grid-pro-range — useKeyboardEdit hook (G-005).
  *
  * Delete 키: 선택 범위 내 편집 가능 컬럼 셀 초기화 → onDeleteRange callback (D3).
  * Printable key: 범위 전체 동일 값 입력 → onBulkEdit callback (D3, D6 IME 검사).

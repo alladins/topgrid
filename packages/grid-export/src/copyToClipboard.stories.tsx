@@ -205,7 +205,7 @@ PrintGridLandscape.storyName = 'PrintGridLandscape';
 // ---------------------------------------------------------------------------
 
 export default {
-  title: '@tomis/grid-export/clipboard-print',
+  title: '@topgrid/grid-export/clipboard-print',
   parameters: {
     docs: {
       description: {

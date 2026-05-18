@@ -1,5 +1,5 @@
 /**
- * @tomis/grid-features — NumberFilter Storybook Stories
+ * @topgrid/grid-features — NumberFilter Storybook Stories
  *
  * MOD-GRID-09 G-002 AC-007 / C-25:
  * 7 operator + between 시나리오 + 인디케이터 + clear 시나리오.

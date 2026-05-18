@@ -1,5 +1,5 @@
 /**
- * @deprecated Moved to `@tomis/grid-core` (ADR-010). Import from `@tomis/grid-core` instead.
+ * @deprecated Moved to `@topgrid/grid-core` (ADR-010). Import from `@topgrid/grid-core` instead.
  * Will be removed in the next major version.
  */
-export { SortBadge } from '@tomis/grid-core';
+export { SortBadge } from '@topgrid/grid-core';

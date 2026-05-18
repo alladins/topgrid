@@ -1,6 +1,6 @@
 [
   {
-    "name": "@tomis/grid-core",
+    "name": "@topgrid/grid-core",
     "path": "packages/grid-core/dist/index.mjs",
     "limit": "30 KB",
     "brotli": true,
@@ -12,7 +12,7 @@
     ]
   },
   {
-    "name": "@tomis/grid-renderers",
+    "name": "@topgrid/grid-renderers",
     "path": "packages/grid-renderers/dist/index.mjs",
     "limit": "12 KB",
     "brotli": true,
@@ -24,7 +24,7 @@
     ]
   },
   {
-    "name": "@tomis/grid-export",
+    "name": "@topgrid/grid-export",
     "path": "packages/grid-export/dist/index.mjs",
     "limit": "20 KB",
     "brotli": true,
@@ -38,7 +38,7 @@
     ]
   },
   {
-    "name": "@tomis/grid-features",
+    "name": "@topgrid/grid-features",
     "path": "packages/grid-features/dist/index.mjs",
     "limit": "20 KB",
     "brotli": true,
@@ -53,7 +53,7 @@
     ]
   },
   {
-    "name": "@tomis/grid-pro-tracking",
+    "name": "@topgrid/grid-pro-tracking",
     "path": "packages/grid-pro-tracking/dist/index.mjs",
     "limit": "20 KB",
     "brotli": true,
@@ -62,11 +62,11 @@
       "react-dom",
       "@tanstack/react-table",
       "@tanstack/react-virtual",
-      "@tomis/grid-core"
+      "@topgrid/grid-core"
     ]
   },
   {
-    "name": "@tomis/grid-pro-range",
+    "name": "@topgrid/grid-pro-range",
     "path": "packages/grid-pro-range/dist/index.mjs",
     "limit": "20 KB",
     "brotli": true,
@@ -78,7 +78,7 @@
     ]
   },
   {
-    "name": "@tomis/grid-pro-datamap",
+    "name": "@topgrid/grid-pro-datamap",
     "path": "packages/grid-pro-datamap/dist/index.mjs",
     "limit": "20 KB",
     "brotli": true,
@@ -90,7 +90,7 @@
     ]
   },
   {
-    "name": "@tomis/grid-pro-merging",
+    "name": "@topgrid/grid-pro-merging",
     "path": "packages/grid-pro-merging/dist/index.mjs",
     "limit": "20 KB",
     "brotli": true,
@@ -99,12 +99,12 @@
       "react-dom",
       "@tanstack/react-table",
       "@tanstack/react-virtual",
-      "@tomis/grid-core",
-      "@tomis/grid-license"
+      "@topgrid/grid-core",
+      "@topgrid/grid-license"
     ]
   },
   {
-    "name": "@tomis/grid-pro-header",
+    "name": "@topgrid/grid-pro-header",
     "path": "packages/grid-pro-header/dist/index.mjs",
     "limit": "20 KB",
     "brotli": true,
@@ -116,7 +116,7 @@
     ]
   },
   {
-    "name": "@tomis/grid-pro-agg",
+    "name": "@topgrid/grid-pro-agg",
     "path": "packages/grid-pro-agg/dist/index.mjs",
     "limit": "20 KB",
     "brotli": true,
@@ -128,7 +128,7 @@
     ]
   },
   {
-    "name": "@tomis/grid-pro-master",
+    "name": "@topgrid/grid-pro-master",
     "path": "packages/grid-pro-master/dist/index.mjs",
     "limit": "20 KB",
     "brotli": true,
@@ -140,7 +140,7 @@
     ]
   },
   {
-    "name": "@tomis/grid (meta)",
+    "name": "@topgrid/grid (meta)",
     "path": "packages/grid/dist/index.mjs",
     "limit": "150 KB",
     "brotli": true,
