@@ -1,8 +1,9 @@
-// @tomis/grid-renderers — EditableCell (MOD-GRID-05 / G-003)
+// @tomis/grid-renderers — EditableCell (MOD-GRID-05 / G-003, G-005)
 // Inline editable cell: text / number / date / select / textarea (5 editType).
 // Absorbs tw-framework-front EditableGrid.tsx L75-129 inline cell JSX.
 //
 // @see Spec MOD-GRID-05/G-003 Section 2.1 / 2.2 / 2.3
+// @see ADR-MOD-GRID-05-004 (G-005) — initialDraft prop for keystroke-triggered editing
 
 import {
   useState,
@@ -91,6 +92,27 @@ export interface EditableCellProps {
    * @see ADR-MOD-GRID-05-003 D3 (G-004)
    */
   stopPropagationOnKeyDown?: boolean;
+  /**
+   * Initial draft value applied on mount when the cell enters editing state.
+   *
+   * Use case: G-7 keyboard-triggered editing — the first keystroke is captured
+   * by the focusable view-mode `<div>` before `<EditableCell>` mounts, so the
+   * character would be lost. Passing it as `initialDraft` restores the Wijmo
+   * `prepareCellForEdit` + `hostElement.keydown` "type directly to enter" UX.
+   *
+   * Behaviour:
+   * - If `undefined` (default): the input mounts with the current cell value
+   *   (existing behaviour, no change).
+   * - If a string: the draft state is initialised to `initialDraft` and the
+   *   cursor is positioned at the end of the string after focus.
+   *
+   * Note: this prop is read only on the **first render** (mount). Subsequent
+   * changes to `initialDraft` while the component is mounted have no effect —
+   * the component controls its own draft state after mount.
+   *
+   * @since ADR-MOD-GRID-05-004 (G-005, 2026-05-18)
+   */
+  initialDraft?: string;
 }
 
 const INPUT_BASE_CLASS =
@@ -123,6 +145,9 @@ function alignToClass(align: 'left' | 'center' | 'right'): string {
  *
  * Local `draft` state is reset to `String(value ?? '')` whenever the cell
  * enters edit mode (via `useEffect`), which also schedules `inputRef.focus()`.
+ * When `initialDraft` is provided, the draft is initialised to it on the first
+ * render (lazy `useState`) and the `useEffect` reset is skipped — the typed
+ * character is already in the input when the `<input>` mounts.
  */
 export function EditableCell({
   value,
@@ -136,17 +161,37 @@ export function EditableCell({
   maxLength,
   align = 'left',
   stopPropagationOnKeyDown = false,
+  initialDraft,
 }: EditableCellProps): JSX.Element {
-  const [draft, setDraft] = useState<string>(String(value ?? ''));
+  // ADR-MOD-GRID-05-004 (G-005): initialDraft wins on first render.
+  // When the parent triggers editing via a keystroke, the typed character is
+  // passed as initialDraft so it is not lost during the remount cycle.
+  // We read initialDraft only in the lazy initialiser — subsequent prop changes
+  // are intentionally ignored (component owns its draft after mount).
+  const [draft, setDraft] = useState<string>(() => initialDraft ?? String(value ?? ''));
   const inputRef = useRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
     if (isEditing) {
-      setDraft(String(value ?? ''));
-      // Focus on next tick — React commits DOM before browser paint, ref is attached
-      inputRef.current?.focus();
+      // ADR-MOD-GRID-05-004: skip setDraft reset when initialDraft was provided —
+      // the lazy useState initialiser already set the correct starting value.
+      // Without this guard, setDraft(String(value ?? '')) would overwrite initialDraft.
+      if (initialDraft === undefined) {
+        setDraft(String(value ?? ''));
+      }
+      // Focus and move cursor to end so the user can continue typing naturally.
+      const el = inputRef.current;
+      if (el) {
+        el.focus();
+        // setSelectionRange is available on text/number/textarea inputs (not select).
+        if ('setSelectionRange' in el) {
+          const len = (el as HTMLInputElement).value.length;
+          (el as HTMLInputElement).setSelectionRange(len, len);
+        }
+      }
     }
-  }, [isEditing, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEditing]);
 
   const handleKey = useCallback(
     (e: KeyboardEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
