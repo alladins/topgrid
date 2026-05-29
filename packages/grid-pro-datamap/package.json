@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "type": "module",
   "license": "SEE LICENSE IN EULA",
-  "private": true,
+  "publishConfig": { "access": "public" },
   "description": "Pro: DataMap (foreign key display)",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",

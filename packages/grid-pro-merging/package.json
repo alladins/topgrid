@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "license": "SEE LICENSE IN EULA",
-  "private": true,
+  "publishConfig": { "access": "public" },
   "description": "Pro: Cell Merging (rowSpan) — column.mergeRows API + automatic rowSpan calculation",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",

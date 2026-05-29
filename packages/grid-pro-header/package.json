@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "license": "SEE LICENSE IN EULA",
-  "private": true,
+  "publishConfig": { "access": "public" },
   "description": "Pro: Multi-row Header (Column Groups)",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
