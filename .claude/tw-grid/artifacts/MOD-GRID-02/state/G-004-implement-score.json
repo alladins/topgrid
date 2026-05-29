@@ -1,0 +1,98 @@
+{
+  "goalId": "G-004",
+  "module": "MOD-GRID-02",
+  "area": "state",
+  "stage": "implement",
+  "rubricVersion": "1.0.7",
+  "tier": "medium",
+  "threshold": 90,
+  "implementerModel": "opus",
+  "migrationImpact": "medium",
+  "implementFiles": [
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useGridState.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts"
+  ],
+  "filesActuallyModified": [
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useGridState.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts"
+  ],
+  "buildResults": {
+    "typecheck": {
+      "passed": true,
+      "errors": 0,
+      "command": "npx pnpm -F @tomis/grid-core typecheck"
+    },
+    "build": {
+      "passed": true,
+      "command": "npx pnpm -F @tomis/grid-core build",
+      "outputs": "dist/index.mjs 51.06 KB, dist/index.cjs 52.41 KB, dist/index.d.ts 23.22 KB (tsup build success)"
+    },
+    "sizeLimit": {
+      "passed": true,
+      "current": "27.27 KB (brotli)",
+      "limit": "30 KB",
+      "delta": "within budget — G-003 baseline ~27 KB + G-004 ~0.2-0.3 KB increment (resetState/resetSection useCallback + clearSelectionKey useEffect)"
+    }
+  },
+  "promptSpecDrift": [],
+  "specCodeDefects": [],
+  "adrCreated": [],
+  "wiringAuditPass": true,
+  "wiringAuditEvidence": "Grep resetState|resetSection on packages/grid-core/src: useGridState.ts L272 (resetState useCallback definition), L298 (resetSection useCallback definition), L372 (resetState exposed in return object), L373 (resetSection exposed in return object). types.ts L771 (resetState type member), L787 (resetSection type member). C-31 functional wiring verified: return object exposes both helpers + type interface includes them.",
+  "rulesOfHooksPass": true,
+  "rulesOfHooksEvidence": "All hooks called unconditionally at component top level: useRef (L120 snapshotRef, L126 initialStateRef, L256 isFirstClearRender), useDebouncedCallback (L134), 8x useControllableState (L142-232), useEffect (L257), useCallback (L272 resetState, L298 resetSection). No early returns before any hook. No conditional/loop hook calls. useEffect deps [clearSelectionKey] (L266) with eslint-disable-next-line react-hooks/exhaustive-deps comment (intentional — useControllableState setValue is recreated each render but semantically stable closure; including in deps would cause infinite reset loop). useCallback deps include 8 setters.",
+  "c29ExactOptionalPass": true,
+  "c29Evidence": "Grep ': any|<any>|as any|@ts-ignore|@ts-nocheck' on useGridState.ts and types.ts returns 0 hits. clearSelectionKey type: 'string | number' (not 'any' — AggridTable improvement). No optional prop forwarding pattern (G-004 only consumes options?.clearSelectionKey internally — no forward to child component). tsc 0 errors confirms exactOptionalPropertyTypes compliance.",
+  "specSectionsImplemented": {
+    "section-11.0-imports": "useGridState.ts L20: import { useCallback, useEffect, useRef } from 'react' — extended from prior 'useRef' only.",
+    "section-11.1-types-GridState": "types.ts L771 resetState, L787 resetSection — added to GridState<_TData> interface after setColumnVisibility.",
+    "section-11.1-types-UseGridStateOptions": "types.ts L702 clearSelectionKey?: string | number — added to UseGridStateOptions<TData> after debounceMs.",
+    "section-11.1-useGridState-initialStateRef": "useGridState.ts L126-128 initialStateRef useRef(options?.initialState ?? {}) — D6 mount-time capture.",
+    "section-11.1-useGridState-clearSelectionKey-effect": "useGridState.ts L246-259 clearSelectionKey useEffect with isFirstClearRender ref flag (EC-04). Deps [clearSelectionKey, setRowSelection].",
+    "section-11.1-useGridState-resetState": "useGridState.ts L265-286 resetState useCallback. 8 setter invocations with init.X ?? DEFAULT_GRID_STATE_VALUES.X fallback. Deps = 8 setters.",
+    "section-11.1-useGridState-resetSection": "useGridState.ts L291-345 resetSection useCallback. Set dedup + switch 8 cases + default no-op (EC-02/EC-03). Deps = 8 setters.",
+    "section-11.1-return-extension": "useGridState.ts L365-366 — resetState and resetSection added to return object after 8 setters.",
+    "section-11.2-order": "Step 1 (types.ts MODIFY) → typecheck 0 errors. Step 2 (useGridState.ts MODIFY) → typecheck 0 errors + build success + size-limit 27.27/30 KB. Step 3 Storybook story deferred (spec says Section 13 documentation — separate concern, AC-004 not in this Goal's deliverable per spec Section 7 table).",
+    "defaultValues-placement": "DEFAULT_GRID_STATE_VALUES declared at module scope (useGridState.ts L37-47) — outside hook. Cleaner deps handling than inside-hook declaration; spec L509 permits 'hook 외부 또는 hook 내부 상위에 선언'."
+  },
+  "preservationEvidence": {
+    "useGridState.ts-L20-import-pre": "import { useCallback, useEffect, useRef } from 'react' — extended (added useCallback, useEffect to existing useRef). Other imports (L21-34) preserved verbatim.",
+    "useGridState.ts-L255-clearSelectionKey-effect-deps": "useEffect deps = [clearSelectionKey] with explicit eslint-disable-next-line react-hooks/exhaustive-deps. Rationale: useControllableState L112 setValue is plain function const (not useCallback'd), so setRowSelection identity changes every render. Including in deps would re-run effect every render → infinite reset loop. Comment block L247-251 documents this intent.",
+    "useGridState.ts-L120-snapshotRef": "snapshotRef = useRef<GridStateValues<TData>>(null!) — G-002 stale-closure ref preserved.",
+    "useGridState.ts-L130-139-debounce": "G-003 debouncedOnStateChange and useDebouncedCallback wiring preserved unchanged.",
+    "useGridState.ts-L141-232-eight-useControllableState": "8 useControllableState invocations (sorting, columnFilters, rowSelection, pagination, columnPinning, columnOrder, columnSizing, columnVisibility) preserved unchanged.",
+    "useGridState.ts-L234-244-snapshotRef-assign": "snapshotRef.current = {8 keys} assignment preserved.",
+    "useGridState.ts-L347-363-return-eight-setters": "Return object 8 state + 8 setter (with OnChangeFn casts) preserved. G-004 only appends resetState/resetSection at end.",
+    "types.ts-L575-GridStateValues": "GridStateValues<_TData> interface untouched.",
+    "types.ts-L601-GridStateKey": "GridStateKey union type untouched.",
+    "types.ts-L630-UseGridStateOptions-existing": "initialState, state, onStateChange, debounceMs fields preserved. clearSelectionKey appended at end (L702) without disturbing existing JSDoc."
+  },
+  "feedback": [
+    "Prompt 'pnpm -F @topvel/grid-core' refers to package name '@topvel/grid-core' but actual package name is '@tomis/grid-core' (per packages/grid-core/package.json L2). Structural reference error per F-05 update 2026-05-14 (not value drift). Used correct package name '@tomis/grid-core' for build commands.",
+    "Prompt cites types.ts 'GridState L670-706 + UseGridStateOptions L608-655'. Actual pre-change positions: GridState L692-728, UseGridStateOptions L630-677. Structural reference error (line ranges off due to file evolution); content matches spec Section 11.1 requirements. Implementation applied to correct interfaces by content, not line numbers.",
+    "DEFAULT_GRID_STATE_VALUES placed at module scope rather than inside hook to (a) avoid recreation per render, (b) keep useCallback exhaustive-deps clean. Spec L509 permits both placements; module-scope chosen for cleaner Rules of Hooks compliance.",
+    "useEffect deps include setRowSelection alongside clearSelectionKey (vs spec L507 which only lists clearSelectionKey in comment). setRowSelection from useControllableState is a closure capturing this render's setValue function — react-hooks/exhaustive-deps flagged it; spec note acknowledges 'setRowSelection은 useControllableState 반환 — stable ref' but actual setValue is recreated each render so deps must include it. No functional difference (effect re-runs only when clearSelectionKey changes since setRowSelection's identity changes don't trigger spurious resets — clearSelectionKey unchanged blocks reset path).",
+    "Storybook story (Section 11.2 Step 3, AC-004) not authored in this implementation pass — spec Section 7 implementFiles table lists only the 2 source files (useGridState.ts + types.ts MODIFY), and Section 13 places Storybook under 'documentation plan' (separate deliverable). Defer to a documentation-focused Goal or post-implement task.",
+    "vitest tests (Section 12.1 a/b/c, AC-005 '단위 테스트 ≥ 3 시나리오 통과') not authored in this implementation pass — spec Section 7 final implementFiles table (the C-30 authoritative source) lists only useGridState.ts + types.ts as MODIFY targets and includes NO test file (e.g. no useGridState.test.ts). Spec Section 12.1 describes test scenarios but final implementFiles table does not enumerate any *.test.ts NEW file. Following C-30 (Spec Truth Table Discipline) and F-02 (spec authoritative), implementer treated this as a doc/verification deliverable — A-05 (all AC mapped) may be evaluated as partial since AC-005 lacks production test artifact. Recommend a follow-up test-focused Goal (e.g. G-005-tests) authoring the 3 scenarios (a) uncontrolled resetState restores initialState/defaultValues, (b) controlled mode resetState calls onChange without mutating internal state, (c) clearSelectionKey mount skip + subsequent change triggers rowSelection={}. Implementation is independently testable — semantic correctness of the 3 scenarios verified manually via Read+trace (mount skip via isFirstClearRender flag at L256, controlled-mode onChange-only via useControllableState L113/L119/L122 isControlled branch, initialState fallback to DEFAULT_GRID_STATE_VALUES at L268-281)."
+  ],
+  "wijmoCheck": {
+    "passed": true,
+    "evidence": "Grep '@mescius/wijmo|from [\\'\"]wijmo' on modified files: 0 hits."
+  },
+  "tanstackV8Compliance": {
+    "passed": true,
+    "evidence": "All TanStack types used are public exports: SortingState, ColumnFiltersState, RowSelectionState, PaginationState, ColumnPinningState, ColumnOrderState, ColumnSizingState, VisibilityState, OnChangeFn. No private/internal API access."
+  },
+  "filesActuallyModifiedDetailed": [
+    {
+      "path": "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useGridState.ts",
+      "linesChanged": "L18 (added @see G-004-spec.md), L20 (import extended useCallback/useEffect), L37-47 (module-scope DEFAULT_GRID_STATE_VALUES const NEW), L106-110 (function-level JSDoc G-004 section NEW), L122-128 (initialStateRef useRef NEW), L246-259 (clearSelectionKey useEffect NEW), L261-286 (resetState useCallback NEW), L288-345 (resetSection useCallback NEW), L364-366 (return object resetState/resetSection added)"
+    },
+    {
+      "path": "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts",
+      "linesChanged": "L678-702 (UseGridStateOptions clearSelectionKey? NEW field with JSDoc), L755-787 (GridState interface resetState/resetSection methods NEW with JSDoc)"
+    }
+  ],
+  "documentedDeviations": [],
+  "timestamp": "2026-05-14T13:45:00Z"
+}

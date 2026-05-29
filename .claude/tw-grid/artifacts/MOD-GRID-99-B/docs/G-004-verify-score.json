@@ -1,0 +1,168 @@
+{
+  "goalId": "MOD-GRID-99-B/docs/G-004",
+  "module": "MOD-GRID-99-B",
+  "area": "docs",
+  "stage": "verify",
+  "rubricVersion": "1.0.3",
+  "migrationImpact": "low",
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85
+  },
+  "weights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "metaGates": {
+    "F-01": {
+      "result": "YES",
+      "evidence": ".claude/worktrees/tw-grid-mod99b-g001/.claude/tw-grid/artifacts/MOD-GRID-99-B/docs/G-004-implement-coverage-score.json L8-128 evidence sampling 5: (1) F-01 references 5 .md files at D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/migration/ — Read confirmed (8-variant-table.md 415 lines, dataTable-migration.md 410 lines, incremental-strategy.md 201 lines, live-demos.md 352 lines, deprecated-aliases.md 268 lines). (2) F-04 references 8-variant-table.md L19-29 '8 variants table' — Read confirmed L17-29 contains '전체 요약 테이블' with 8 rows. (3) F-04 references dataTable-migration.md L6 + 5 conversion items — Read confirmed L6 'DataTable → Grid mode=\"server\" 이전 가이드' + Sections 1-5 (L48, L122, L171, L230, L297). (4) F-04 references live-demos.md L18-24 stackblitz iframe — Read confirmed L18-24 iframe src=stackblitz.com/edit/tomis-grid-basic. (5) F-04 references deprecated-aliases.md L20-26 C-23 + 1 minor — Read confirmed L20-26 'C-23 원문 요약' + 'v1.1 이상'. spec.md L222-228 Section 7 implementFiles 5 paths Read confirmed. External monorepo path verified via Read (F-01 외부 디렉토리 evidence 규칙 적용)."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "categoryScores 산식 검증: A vacuous (YES=0,NO=0,N/A=3) → 100 (rubric vacuous truth allowed — Goal title '마이그레이션 가이드 + Live demo' contains no build/tsup/tsc/vite/rollup/size-limit/bundle keyword, vacuous A allowed). B vacuous (YES=0,NO=0,N/A=5) → 100. C vacuous (YES=0,NO=0,N/A=3) → 100. D vacuous (YES=0,NO=0,N/A=2) → 100. E vacuous (YES=0,NO=0,N/A=3) → 100. 카테고리 합계 A+B+C+D+E = 3+5+3+2+3 = 16 (rubric verify 총 16항목 일치 — C-26)."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore = 100*0.25 + 100*0.25 + 100*0.20 + 100*0.15 + 100*0.15 = 25+25+20+15+15 = 100.00. Σweight = 25+25+20+15+15 = 100. failedChecks 배열 empty (NO=0). N/A 항목 16개 failedChecks 미포함 확인."
+    }
+  },
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "Goal G-004 deliverables = 5 .md files at apps/docs/docs/migration/ (external monorepo). tw-framework-front FE 전용 — gradlew compileJava 무관. A-01 N/A per rubric '그리드 작업이 FE 전용일 때 대부분 N/A'."
+    },
+    "A-02": {
+      "result": "N/A",
+      "evidence": "5 deliverables = markdown 문서 only (no .ts/.tsx). tsc --noEmit 대상 없음. A-02 N/A. (참고: code fences 내 ```tsx 블록은 markdown 코드 표기, 컴파일 대상 아님.)"
+    },
+    "A-03": {
+      "result": "N/A",
+      "evidence": "Goal 제목 '마이그레이션 가이드 + Live demo' contains no build/tsup/tsc/vite/rollup/size-limit/bundle keyword (rubric Vacuous Truth Rule '적용 금지 조건' 해당 안 함). .md 파일은 Docusaurus apps/docs/ 사이트 콘텐츠일 뿐 패키지 dist에 미포함. vite build 또는 size-limit 검증 대상 없음. A-03 N/A."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "G-004 = 문서 only. 정렬 동작 검증 대상 코드 없음. B-01 N/A per rubric '정렬 무관 기능'."
+    },
+    "B-02": {
+      "result": "N/A",
+      "evidence": "필터 동작 검증 대상 없음 (docs only). B-02 N/A."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "페이지네이션 동작 검증 대상 없음 (docs only — pagination 패턴은 dataTable-migration.md 변환 예시로만 등장). B-03 N/A."
+    },
+    "B-04": {
+      "result": "N/A",
+      "evidence": "가상화 동작 검증 대상 없음. live-demos.md Demo 2가 1000행 가상화 패턴을 예시 코드로 보여주나, 이는 docs 콘텐츠일 뿐 실행 검증 대상 아님. B-04 N/A."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "인라인 편집 동작 검증 대상 없음. EditableGrid 이전 패턴이 8-variant-table.md L239-298에 예시로만 등장. B-05 N/A."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "spec Section 8 affectedUsageFiles = 0 (문서만 추가, 소스 파일 미변경). 본 Goal에서 마이그레이션한 사용처 없음. C-01 N/A per rubric '사용처 0개'."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "low tier + 사용처 0. C-17 시각 회귀 N/A 조건 충족. C-02 N/A per rubric 'low tier + 사용처 0'."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "런타임 사용처 없음 (.md 콘텐츠는 console warning 대상 아님). C-03 N/A."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "spec Section 8 affectedUsageFiles = 0. G-004는 docs-only Goal로 사용처 마이그레이션 비율 측정 무관. 실제 사용처 이전은 MOD-GRID-17 이하 Goals에서 처리 (spec D5 + incremental-strategy.md L37). D-01 N/A per rubric '사용처 0개'."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 0건 (Goal 자체가 affectedUsageFiles 0). D-02 N/A per rubric '잔여 0건'."
+    },
+    "E-01": {
+      "result": "N/A",
+      "evidence": "spec Section 8 번들 영향 = +0 KB ('.md 파일은 런타임 번들에 미포함'). C-21 size-limit 대상 패키지(grid-core/grid-renderers/pro) 미수정. E-01 N/A."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "G-004는 새 dependency 추가 없음 (docs only). 외부 라이브러리 ADR 의무 미발생. E-02 N/A per rubric '새 dep 없음'."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "package.json 변경 없는 Goal (docs only). 라이선스 명시 의무 미발생. E-03 N/A per rubric 'package.json 변경 없는 Goal'."
+    }
+  },
+  "weightedScore": 100,
+  "threshold": 85,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "summary": "G-004 (5 migration guide docs) 검증 완료. 5 .md files all created at D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/migration/ — 8-variant-table.md (8 variants Before/After tables + EC-05/EC-06 notes), dataTable-migration.md (5 conversion items: ColumnInfo/pageingInfo/ButtonInfo/RowActionInfo/listAction), incremental-strategy.md (C-19 rule + ≥27 pages reference + grouping criteria + 4 phases), live-demos.md (3 StackBlitz iframes + 3 details fallback static code blocks), deprecated-aliases.md (5 grid-core aliases verified vs monorepo packages/grid-core/src/index.ts L24-34 BaseGrid/VirtualGrid/ColumnPinGrid/GroupedHeaderGrid/TreeGrid match exactly + C-23 1-minor semver disclosure + EditableGrid/ChangeTrackingGrid/RangeSelectGrid 'no grid-core alias' section).",
+    "axisVacuousNotes": [
+      "A (build) vacuous — Goal 제목 build 키워드 없음, .md only, rubric vacuous truth 허용",
+      "B (behavior) vacuous — docs only, 실행 검증 대상 없음",
+      "C (compatibility) vacuous — affectedUsageFiles=0, low tier visual regression N/A",
+      "D (migration) vacuous — 사용처 0, 실제 이전은 MOD-GRID-17 이하 Goals 담당",
+      "E (bundle+license) vacuous — +0KB, package.json 미변경"
+    ],
+    "compatibilityCrossCheck": {
+      "deprecatedAliasesMatch": "deprecated-aliases.md 5 aliases (BaseGrid/VirtualGrid/ColumnPinGrid/GroupedHeaderGrid/TreeGrid) ↔ packages/grid-core/src/index.ts L24-34 G-002 wrapper exports — 정확히 일치"
+    },
+    "metaGatesStatus": "F-01:YES, F-02:YES, F-03:YES",
+    "migrationStatus": {
+      "totalAffected": 0,
+      "migrated": 0,
+      "remaining": [],
+      "rate": null,
+      "note": "Docs-only Goal — 사용처 이전 책임 없음. MOD-GRID-17 Goals 권위적 출처 (spec D5)."
+    },
+    "buildStatus": {
+      "tsc": "N/A (markdown only)",
+      "viteBuild": "N/A (docs site 빌드는 G-001 책임)",
+      "sizeLimit": "N/A (+0KB)"
+    },
+    "recommendedNextSteps": [
+      "5 .md files를 apps/docs/sidebars.ts에 등록 (spec D4 NOTE — G-001 책임 범위)",
+      "Docusaurus 사이트 빌드 시 onBrokenMarkdownLinks: 'warn' 정책 확인 — 5개 상호 링크 동작 검증 (G-001 CI)",
+      "MOD-GRID-17 이하 Goals에서 본 5 가이드를 참조 문서로 인용해 사용처 이전 진행"
+    ]
+  },
+  "moduleId": "MOD-GRID-99-B",
+  "tier": "low",
+  "yesCount": 0,
+  "noCount": 0,
+  "naCount": 16,
+  "denominator": 0,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "tier=low",
+      "yesCount=0",
+      "noCount=0",
+      "naCount=16",
+      "denominator=0",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

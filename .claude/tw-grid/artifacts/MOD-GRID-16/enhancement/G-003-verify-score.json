@@ -1,0 +1,232 @@
+{
+  "goalId": "MOD-GRID-16/enhancement/G-003",
+  "moduleId": "MOD-GRID-16",
+  "area": "enhancement",
+  "stage": "verify",
+  "tier": "medium",
+  "threshold": 90,
+  "rubricVersion": "1.0.3",
+  "migrationImpact": "medium",
+  "weights": {
+    "A": 15,
+    "B": 20,
+    "C": 30,
+    "D": 20,
+    "E": 15
+  },
+  "categoryScores": {
+    "A": {
+      "yesCount": 2,
+      "noCount": 0,
+      "naCount": 1,
+      "score": 100,
+      "weight": 15
+    },
+    "B": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 5,
+      "score": 100,
+      "weight": 20
+    },
+    "C": {
+      "yesCount": 1,
+      "noCount": 0,
+      "naCount": 2,
+      "score": 100,
+      "weight": 30
+    },
+    "D": {
+      "yesCount": 1,
+      "noCount": 0,
+      "naCount": 1,
+      "score": 100,
+      "weight": 20
+    },
+    "E": {
+      "yesCount": 1,
+      "noCount": 1,
+      "naCount": 1,
+      "score": 50,
+      "weight": 15
+    }
+  },
+  "checks": [
+    {
+      "category": "A",
+      "item": "A-01",
+      "title": "gradlew compileJava 0 errors",
+      "result": "N/A",
+      "evidence": "FE-only Goal — grid-pro-master + tw-framework-front 변경. Java/Spring 백엔드 무관."
+    },
+    {
+      "category": "A",
+      "item": "A-02",
+      "title": "npx tsc --noEmit 0 errors",
+      "result": "YES",
+      "evidence": "Bash 'cd D:/project/topvel_project/topvel-grid-monorepo && npx tsc --noEmit -p packages/grid-pro-master' → exit 0 no output (0 errors). Bash 'cd D:/project/topvel_project/TOMIS/tw-framework-front && npx tsc --noEmit' → exit 0 no output (0 errors). 양쪽 tsc 통과."
+    },
+    {
+      "category": "A",
+      "item": "A-03",
+      "title": "vite build 또는 tsup build + size-limit",
+      "result": "YES",
+      "evidence": "tsup 빌드 결과 packages/grid-pro-master/dist/ 6개 파일 생성 확인 (index.cjs 22.7 KB, index.mjs 21.32 KB raw, .d.ts/.d.cts 각각 12.6 KB, sourcemap 2개). Node zlib.brotliCompressSync 측정 own-code 4.59 KB < 20 KB 한도 PASS. size-limit 도구 raw 측정값 68.8 KB은 .size-limit.json 의 grid-pro-master 엔트리에 ignore 배열 누락 (peerDeps React/react-dom/@tanstack/react-table/@tomis/grid-core/@tomis/grid-license 측정 포함) 으로 인한 pre-existing infra defect — Goal 003 scope 외 (Section 7 implementFiles 에 .size-limit.json 미포함). implement-score documentedDeviations 명시 + C-21 brotli limitType 기준 PASS."
+    },
+    {
+      "category": "B",
+      "item": "B-01",
+      "title": "정렬 동작",
+      "result": "N/A",
+      "evidence": "Goal 범위: useExpandedPersistence + useRowKeyboardNav + alias re-export. 정렬 기능 직접 변경 없음. TreeGrid/ColumnPinGrid alias 는 grid-core (G-005) 위임이며 본 Goal 에서 정렬 wiring 추가 없음."
+    },
+    {
+      "category": "B",
+      "item": "B-02",
+      "title": "필터 동작",
+      "result": "N/A",
+      "evidence": "Goal 범위 외 — 필터 무관 (행 확장 영속화 + 키보드 + alias)."
+    },
+    {
+      "category": "B",
+      "item": "B-03",
+      "title": "페이지네이션 동작",
+      "result": "N/A",
+      "evidence": "Goal 범위 외 — 페이지네이션 무관."
+    },
+    {
+      "category": "B",
+      "item": "B-04",
+      "title": "가상화 동작",
+      "result": "N/A",
+      "evidence": "Goal 범위 외 — MasterDetailGrid 는 react-virtual 미통합 (G-004 grid-core scope per D8 imperative handle scrollTo no-op stub L258-260). 가상화 별도 모듈."
+    },
+    {
+      "category": "B",
+      "item": "B-05",
+      "title": "인라인 편집 동작",
+      "result": "N/A",
+      "evidence": "Goal 범위 외 — 편집 기능 없음 (Master-Detail / 키보드 / alias)."
+    },
+    {
+      "category": "C",
+      "item": "C-01",
+      "title": "영향 사용처 tsc 0",
+      "result": "N/A",
+      "evidence": "본 Goal 에서 마이그레이션한 사용처 0개. spec Section 8.1 명시 — TreeGrid.tsx/ColumnPinGrid.tsx 는 alias 제공만, 실제 import 마이그레이션은 MOD-GRID-17 scope (D-02 잔여 계획 명시). 전역 tw-framework-front tsc 통과 (A-02 증거) 는 환경 sanity check."
+    },
+    {
+      "category": "C",
+      "item": "C-02",
+      "title": "외관 보존",
+      "result": "N/A",
+      "evidence": "본 Goal 마이그레이션 사용처 0개. 외관 비교 대상 없음. MasterDetailGrid 내부 wiring (<tr tabIndex=0>) 은 G-001 산출물 내부 enhancement — Section 8.4 롤백 전략 + 11.3 위험 표에 focus-visible Tailwind 클래스 추가로 시각 회귀 완화 명시."
+    },
+    {
+      "category": "C",
+      "item": "C-03",
+      "title": "console warning 0 + React warning 0",
+      "result": "YES",
+      "evidence": "useExpandedPersistence.ts L106-110, L154-157, L173-177 — console.warn 은 isDev() 가드 (process.env.NODE_ENV !== 'production') 하에서만 출력. 프로덕션 빌드 0 warning. MasterDetailGrid.tsx MasterRow 모듈 스코프 hoist (L96-100, L120-170) 로 React reconciler 안정 — fresh function reference 마다 unmount/remount 회피 (D19 Rules-of-Hooks fix). useRowKeyboardNav useCallback deps [row] 정확."
+    },
+    {
+      "category": "D",
+      "item": "D-01",
+      "title": "마이그레이션 비율 ≥ 50%",
+      "result": "N/A",
+      "evidence": "본 Goal 마이그레이션 사용처 0개 (affectedUsageFiles 는 분석만, 실제 마이그레이션 X). spec Section 8.1 명시 — TreeGrid.tsx/ColumnPinGrid.tsx 는 alias 제공 단계, 실제 마이그레이션은 MOD-GRID-17 scope. 비율 계산 분모 0."
+    },
+    {
+      "category": "D",
+      "item": "D-02",
+      "title": "잔여 사용처 명시",
+      "result": "YES",
+      "evidence": "spec Section 8.1 (G-003-spec.md L404-407) — '`tw-framework-front/src/components/tomis/Grid/TreeGrid.tsx` ... alias 제공 후 별도 migration은 MOD-GRID-17 목적' 명시. Section 3 variant 대응표 L287-289 + decisions.md D18 G-005 deprecation lifecycle 명시. 잔여 사용처 + 후속 모듈 + deprecation 정책 모두 문서화."
+    },
+    {
+      "category": "E",
+      "item": "E-01",
+      "title": "번들 크기 변동",
+      "result": "YES",
+      "evidence": "grid-pro-master own-code brotli 4.59 KB / 20 KB 한도 PASS (Node zlib.brotliCompressSync 직접 측정). spec Section 8.5 예상 +1.6 KB 범위 내. G-001 + G-002 누적 후 G-003 추가 후에도 한도 여유 충분. raw measurement 68.8 KB 는 .size-limit.json grid-pro-master 엔트리 ignore 배열 누락으로 peerDeps 포함 inflation (grid-features L25-31 + grid-pro-tracking L35-41 패턴 미적용) — pre-existing infra defect, Goal scope 외 (implement-score documentedDeviations 명시, MOD-GRID-99-A follow-up). brotli limitType (C-21) 기준 PASS."
+    },
+    {
+      "category": "E",
+      "item": "E-02",
+      "title": "새 의존성 ADR",
+      "result": "N/A",
+      "evidence": "package.json L27-32 peerDependencies — @tanstack/react-table, @tomis/grid-core, @tomis/grid-license, react, react-dom — G-001/G-002 와 동일 4종, 신규 추가 없음. spec Section 9 L446-453 명시. ADR 의무 미발생."
+    },
+    {
+      "category": "E",
+      "item": "E-03",
+      "title": "라이선스 명시 (LICENSE/EULA + verifyLicense)",
+      "result": "NO",
+      "evidence": "package.json L5 `\"license\": \"SEE LICENSE IN EULA\"` 명시 ✓. MasterDetailGrid.tsx L48 `verifyLicense('@tomis/grid-pro-master')` 모듈 레벨 호출 유지 (D7) ✓. 그러나 C-24 의무 EULA.md 파일은 패키지 루트에 미존재 — Glob 'packages/grid-pro-master/EULA*' → No files found, Glob 'packages/grid-pro-master/LICENSE*' → No files found. C-24 명시 'Pro 패키지: \"license\": \"SEE LICENSE IN EULA\" + EULA.md + 라이선스 검증 매크로' — EULA.md 누락 → NO. G-001/G-002 와 동일 잔여 결함, 본 Goal 에서도 해소 X. (Note: package.json 변경 없는 Goal 의 N/A 적용 여부 — types.ts/index.ts/MasterDetailGrid.tsx 변경 있음 → package.json 변경 부재 단독으로 N/A 불충분. C-24 항구적 의무이므로 NO 적합.)"
+    }
+  ],
+  "weightedScore": 92.5,
+  "passed": true,
+  "failedChecks": [
+    "E-03"
+  ],
+  "feedback": [
+    "E-03 NO: @tomis/grid-pro-master 패키지에 EULA.md 또는 LICENSE 파일 미존재. C-24 Pro 패키지 라이선스 명시 의무 미충족 (license 필드 + verifyLicense 호출은 OK, EULA.md 파일만 누락). G-001/G-002 부터 누적된 잔여 결함이며 본 Goal scope 외이나 Pro 패키지 release 전 필수 — MOD-GRID-99-A 또는 후속 인프라 Goal 에서 EULA.md 작성 권고.",
+    "Pass margin: 92.5 / 90 (Δ +2.5). E-03 단일 NO 가 E 카테고리 weight 15% 절반 손실 (-7.5) 로 작용하나 A/B/C/D 100 으로 통과.",
+    "B 카테고리 전 항목 N/A — Goal 특성 (Pro 패키지 신규 hook 2개 + thin re-export, 5개 동작 항목 모두 무관) 으로 vacuous truth 적용. 'build/tsup/tsc/...' 키워드는 spec 본문에 있으나 A 카테고리에만 영향 (B vacuous 금지 조건 미해당).",
+    "C/D 카테고리 다수 N/A — affectedUsageFiles 분석만 명시 + 실제 마이그레이션 0개 (MOD-GRID-17 deferred). 본 Goal 은 alias provider 역할, 사용처 전환은 후속.",
+    "build 실재 검증: npx tsc --noEmit -p packages/grid-pro-master → 0 errors. tw-framework-front tsc → 0 errors. dist/ 6 artifact 생성 확인 (index.cjs/mjs/d.cts/d.ts + sourcemap). brotli 측정 4.59 KB / 20 KB PASS.",
+    "ADR D17-D20 확인 완료 (decisions.md L195-256): D17 Option B independent hook, D18 thin re-export from grid-core, D19 MasterRow sub-component 모듈 스코프 hoist + C-32 pure helper, D20 RowPinning types-only.",
+    "C-26 (grid-core 무수정) 검증: legacy/TreeGrid.tsx L40-57 + legacy/ColumnPinGrid.tsx L39-60 + legacy/index.ts L9-15 + src/index.ts L23-34 모두 G-005 산출물 그대로 보존, 본 Goal 에서 수정 0건. grid-pro-master/src/legacy/ 디렉토리 미생성 확인 (ls 결과).",
+    "C-30 Truth Table Authority 준수: spec Section 7 L370-394 6 파일 (NEW 2 + MODIFY 4) ↔ 실제 변경 파일 1:1 매칭. MasterRow 모듈 스코프 hoist 는 MasterDetailGrid.tsx MODIFY 범위 내 (Section 11 Step 3 wiring + D19 specCodeDefect F-06 자율 정정).",
+    "C-29 (exactOptionalPropertyTypes spread skip) 준수: MasterDetailGrid.tsx L226-227 `...(props.getSubRows !== undefined ? { getSubRows: props.getSubRows } : {})` 패턴 적용 (G-001 D7 와 동일). useExpandedPersistence/useRowKeyboardNav 는 optional forward 없음."
+  ],
+  "buildStatus": {
+    "tsc": "PASS (grid-pro-master 0 errors, tw-framework-front 0 errors)",
+    "tsup": "BUNDLED (index.cjs 22.7 KB, index.mjs 21.32 KB raw, .d.ts/.d.cts 12.6 KB each + 2 sourcemaps)",
+    "sizeLimit": "BROTLI PASS (own-code 4.59 KB / 20 KB). Raw size-limit 68.8 KB inflated by .size-limit.json ignore array missing — pre-existing infra defect, not Goal scope (implement-score documentedDeviations + MOD-GRID-99-A follow-up)"
+  },
+  "migrationStatus": {
+    "totalAffected": 2,
+    "migrated": 0,
+    "remaining": [
+      "tw-framework-front/src/components/tomis/Grid/TreeGrid.tsx",
+      "tw-framework-front/src/components/tomis/Grid/ColumnPinGrid.tsx"
+    ],
+    "rate": 0,
+    "note": "본 Goal 은 alias provider 단계 — TreeGrid/ColumnPinGrid 의 실제 import 전환은 MOD-GRID-17 scope (spec Section 8.1 L404-407 deferred). D-02 잔여 명시 충족."
+  },
+  "selfChecks": {
+    "categorySumEqualsRubricTotal": "A(3) + B(5) + C(3) + D(2) + E(3) = 16 == verify-rubric 항목 수 16 ✓",
+    "naDenominatorExclusion": "A: YES=2, NO=0 → 2/(2+0)=100. B: vacuous (0/0=100). C: YES=1, NO=0 → 1/(1+0)=100. D: YES=1, NO=0 → 1/(1+0)=100. E: YES=1, NO=1 → 1/(1+1)=50. N/A 분모 미포함 ✓",
+    "failedChecksContainsOnlyNo": "failedChecks = ['E-03'] — E-03 result NO 단독, N/A 미포함 ✓",
+    "weightedScoreFormula": "100×0.15 + 100×0.20 + 100×0.30 + 100×0.20 + 50×0.15 = 15.0 + 20.0 + 30.0 + 20.0 + 7.5 = 92.5 ✓",
+    "weightSumEquals100": "15 + 20 + 30 + 20 + 15 = 100 ✓",
+    "vacuousTruthCheck": "B 전 N/A vacuous 적용 — Goal 키워드 (행 확장 영속화/키보드/alias re-export) 에 'build/tsup/tsc/vite/rollup/size-limit/bundle' 미포함 (A 카테고리는 size-limit 키워드 있어 vacuous 금지지만 A 는 vacuous 미적용 — A-02/A-03 모두 YES 평가). B 카테고리는 정렬/필터/페이지/가상화/편집 키워드 부재 → vacuous 허용 ✓",
+    "thresholdCompare": "92.5 ≥ 90 → passed: true ✓",
+    "jsonParseCheck": "최종 JSON 디스크 쓰기 직전 자기 parse 검증 — 모든 따옴표 escape 확인"
+  },
+  "evaluatedAt": "2026-05-15T15:10:00Z",
+  "yesCount": 5,
+  "noCount": 1,
+  "naCount": 10,
+  "denominator": 6,
+  "score": 92.5,
+  "runAt": "2026-05-15T15:10:00Z",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-003→full",
+      "yesCount=5",
+      "noCount=1",
+      "naCount=10",
+      "denominator=6",
+      "score=weightedScore",
+      "runAt=2026-05-15T15:10:00Z",
+      "verifierModel=opus"
+    ]
+  }
+}

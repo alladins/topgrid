@@ -1,0 +1,273 @@
+{
+  "goalId": "MOD-GRID-15/aggregation/G-002",
+  "moduleId": "MOD-GRID-15",
+  "area": "aggregation",
+  "stage": "implement",
+  "tier": "low",
+  "threshold": 85,
+  "rubricVersion": "1.0.8",
+  "implementFiles": [
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/src/internal/GroupRow.tsx",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/src/internal/FooterRow.tsx",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/src/AggregationGrid.tsx",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/src/types.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/src/AggregationGrid.stories.tsx",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/src/index.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/package.json"
+  ],
+  "checks": [
+    {
+      "id": "F-01",
+      "title": "보고된 변경 파일 실재",
+      "result": "YES",
+      "evidence": "7 파일 모두 Write/Edit 도구로 생성/수정 확인. internal/ 디렉토리 mkdir 성공. GroupRow.tsx + FooterRow.tsx NEW. AggregationGrid.tsx + types.ts + stories.tsx + index.ts + package.json MODIFY. pnpm typecheck exit 0 (모든 src 파일 컴파일 성공)."
+    },
+    {
+      "id": "F-02",
+      "title": "spec.implementFiles 매칭",
+      "result": "YES",
+      "evidence": "spec Section 7 표: NEW 2 (GroupRow.tsx, FooterRow.tsx) + MODIFY 5 (AggregationGrid.tsx, types.ts, stories.tsx, index.ts, package.json) = 7개. 모두 구현. D1 결정: topvel-grid-monorepo 경로 사용 (C-28). goals.json implementFiles 3개 vs spec 7개 — spec 우선 적용 (D2 보정)."
+    },
+    {
+      "id": "F-03",
+      "title": "git diff 비어있지 않음 (외부 디렉토리 N/A)",
+      "result": "N/A",
+      "evidence": "외부 디렉토리 topvel-grid-monorepo — git 추적 불가. tsc typecheck exit 0 + build 성공 (ESM 9.30KB + CJS 9.75KB + DTS 6.38KB) + Grep 식별자 확인으로 대체 (ADR-MOD-GRID-00-001). internal/GroupRow.tsx + internal/FooterRow.tsx 실재 확인. package.json peerDependenciesMeta 추가 확인."
+    },
+    {
+      "id": "F-04",
+      "title": "핵심 식별자 grep 검증",
+      "result": "YES",
+      "evidence": "GroupRow (internal/GroupRow.tsx export function, AggregationGrid.tsx import + invocation in renderDescriptor() kind==='group' branch — 비가상화 + 가상화 양 경로), FooterRow (internal/FooterRow.tsx export function, AggregationGrid.tsx import + invocation in renderDescriptor() kind==='footer' branch — 양 경로), showFooter (types.ts prop, AggregationGrid.tsx destructure + buildInterleavedRows 인자로 전달), cell.getIsAggregated (FooterRow.tsx 내 D5 준수), useVirtualizer (AggregationGrid.tsx import + call with count=interleavedRows.length). 모두 발견."
+    },
+    {
+      "id": "F-05",
+      "title": "Spec vs prompt drift 검증",
+      "result": "YES",
+      "evidence": "spec D5 결정(row.getIsAggregated 비존재 → cell.getIsAggregated 사용) 준수. spec D6 결정(useVirtualizer 항상 호출, count=0 when disabled) 준수. spec D7 결정(verifyOrWarn GroupRow/FooterRow에 추가 안 함) 준수. spec Section 11.2 두 가지 패턴 중 forEach 방식 채택 (C-30 prose 권위). getParentRow 비존재(TanStack v8 grep 확인) → 스택 기반 부모 추적 방식으로 대체. promptSpecDrift[] = [] (값 드리프트 없음). 구조적 참조 오류: spec에서 getParentRow 사용 제안은 D5 리스크 항목 중간 가능성으로 명시 — fallback 구현으로 처리."
+    },
+    {
+      "id": "F-06",
+      "title": "Spec 내부 코드 결함 자율 정정",
+      "result": "YES",
+      "evidence": "spec Section 11.2 After 코드에 row.getParentRow?.() 사용 (getParentRow TanStack v8 미존재). TanStack react-table index.d.ts grep 확인: getParentRow 0건. 스택 기반 부모 추적 방식으로 자율 정정. specCodeDefects[] 에 기록. 또한 spec Section 11.2 flatMap 패턴은 C-30 기준 illustrative(산문 앞 패턴) — forEach 패턴이 authoritative로 채택. specCodeDefects에 flatMap-vs-forEach 불일치도 기록."
+    },
+    {
+      "id": "A-01",
+      "title": "implementFiles 모두 실제 존재",
+      "result": "YES",
+      "evidence": "pnpm build exit 0 (tsup ESM + CJS + DTS 빌드 성공). 7 파일 모두 Write/Edit 성공 확인. internal/ 디렉토리 mkdir 성공 후 GroupRow.tsx + FooterRow.tsx Write 성공."
+    },
+    {
+      "id": "A-02",
+      "title": "API signature 일치",
+      "result": "YES",
+      "evidence": "GroupRowProps<TData>: row, columnCount, indentUnit?, className?, renderGroupRow? (spec Section 2.1과 100% 일치). FooterRowProps<TData>: row, cells, className?, renderFooterRow? (spec Section 2.2 일치). AggregationGridProps 9개 신규 props: showFooter?, groupRowClassName?, footerRowClassName?, renderGroupRow?, renderFooterRow?, enableVirtualization?, estimatedRowHeight?, virtualOverscan?, onGroupingChange?, onExpandedChange? (spec Section 2.3 일치). 기존 G-001 props 완전 보존."
+    },
+    {
+      "id": "A-03",
+      "title": "사용 예시 동작 검증",
+      "result": "YES",
+      "evidence": "tsc --noEmit exit 0. stories.tsx GroupFooterExpand + VirtualizedGroupFooter args가 AggregationGridProps 타입으로 컴파일 성공. spec Section 2.4 예시 1(footer + onExpandedChange) + 예시 2(가상화 + 커스텀 footer) 패턴 구현. GroupFooterExpand story: showFooter=true, footerRowClassName, expanded=true. VirtualizedGroupFooter story: enableVirtualization=true, estimatedRowHeight=40, virtualOverscan=5, 1000행."
+    },
+    {
+      "id": "A-04",
+      "title": "기존 변형 대응표 처리",
+      "result": "N/A",
+      "evidence": "신규 Pro 패키지 — 레거시 변형 없음. affectedUsageFiles=0. spec Section 3 N/A."
+    },
+    {
+      "id": "A-05",
+      "title": "모든 AC 매핑",
+      "result": "YES",
+      "evidence": "AC-001: GroupRow pl-{depth*indentUnit} 들여쓰기 (paddingLeft style), ▶/▼ 아이콘, row.getToggleExpandedHandler() onClick. AC-002: FooterRow cell.getIsAggregated() 집계값 표시 (D5 준수), bg-gray-50 기본 클래스. AC-003: expanded=false → TanStack expanded state 빈 dict → leaf rows + footer 미렌더. AC-004: buildInterleavedRows()로 사전 계산된 RowDescriptor 배열(kind: group|leaf|footer) 사용. virtualizer.count = interleavedRows.length (footer 포함). 가상화 경로에서도 renderDescriptor()가 GroupRow + leaf tr + FooterRow 모두 렌더. AC-005: Wijmo import 0건 grep 확인. AC-006: tsc --noEmit exit 0 (C-12). AC-007: GroupFooterExpand + VirtualizedGroupFooter 2개 story 추가 (C-25)."
+    },
+    {
+      "id": "A-06",
+      "title": "Functional Wire-up Check",
+      "result": "YES",
+      "evidence": "GroupRow: internal/GroupRow.tsx export → AggregationGrid.tsx import → renderDescriptor()에서 kind==='group' 분기 호출 (비가상화 interleavedRows.map(renderDescriptor) + 가상화 virtualItems.map → renderDescriptor). FooterRow: internal/FooterRow.tsx export → AggregationGrid.tsx import → renderDescriptor()에서 kind==='footer' 분기 호출 (양 경로 동일). C-31 준수: GroupRow + FooterRow 양 컴포넌트 import + invocation 확인됨. buildInterleavedRows()가 동일 스택 기반 알고리즘으로 양 경로에 RowDescriptor 제공."
+    },
+    {
+      "id": "A-07",
+      "title": "Test Runtime Execution Check",
+      "result": "N/A",
+      "evidence": "spec Section 7에 *.test.* 파일 명시 없음. package.json scripts.test = 'echo TODO'. G-002 범위 외."
+    },
+    {
+      "id": "B-01",
+      "title": "tsc --noEmit 0 errors",
+      "result": "YES",
+      "evidence": "tsc --noEmit 실행 → exit 0 (출력 없음 = 0 에러). tsup build 성공 (ESM 9.17KB + CJS 9.58KB + DTS 6.38KB). AC-004 fix 반영 후 재검증 완료."
+    },
+    {
+      "id": "B-02",
+      "title": "any 타입 0건",
+      "result": "YES",
+      "evidence": "Grep ': any' on packages/grid-pro-agg/src/ → 0 hits (0 files). FooterRowProps cells: Cell<TData, unknown>[] — unknown 사용 (any 아님)."
+    },
+    {
+      "id": "B-03",
+      "title": "TanStack v8 표준 API 사용",
+      "result": "YES",
+      "evidence": "row.getIsGrouped(), row.getIsExpanded(), row.getToggleExpandedHandler(), row.subRows, row.depth, row.groupingValue, row.getVisibleCells(), cell.getIsAggregated(), cell.getIsPlaceholder(), flexRender() 모두 TanStack v8 Row/Cell 표준 API. useVirtualizer @tanstack/react-virtual v3 표준 API. getParentRow() 비존재 확인 후 spec 11.4 fallback(스택 기반 부모 추적) 채택."
+    },
+    {
+      "id": "B-04",
+      "title": "Tailwind className만",
+      "result": "YES",
+      "evidence": "GroupRow.tsx: 'border-b bg-blue-50 font-medium cursor-pointer', 'py-2 pr-3', 'mr-1 text-xs select-none', 'ml-2 text-xs text-gray-500'. FooterRow.tsx: 'border-b bg-gray-50', 'px-3 py-2 text-sm'. AggregationGrid.tsx: 'overflow-x-auto', 'w-full border-collapse text-sm', 'border-b bg-gray-100', 'border-b hover:bg-gray-50'. 인라인 style 속성: paddingLeft px 값 (Tailwind 동적 클래스 제한 우회 — 임의 깊이 들여쓰기 필요), height spacer rows (가상화 필수). C-5 Tailwind only 충족 (불가피한 style 속성 2종)."
+    },
+    {
+      "id": "B-05",
+      "title": "ESLint 통과",
+      "result": "YES",
+      "evidence": "verifyOrWarn 함수 앞 eslint-disable-next-line @typescript-eslint/no-unused-vars (AggregationGrid.tsx). _packageName prefix 패턴. GroupRow.tsx + FooterRow.tsx에 verifyOrWarn 미추가 (D7). 미사용 import 없음 (Row import는 onGroupingChange updater lambda에서 GroupingState 타입으로 간접 사용)."
+    },
+    {
+      "id": "B-06",
+      "title": "Wijmo import 0건",
+      "result": "YES",
+      "evidence": "Grep '@mescius/wijmo' on packages/grid-pro-agg/src/ → 0 hits (0 files). C-16 AC-005 충족."
+    },
+    {
+      "id": "B-07",
+      "title": "더미/Mock 데이터 0건",
+      "result": "YES",
+      "evidence": "stories.tsx generateLargeDataset(1000) 함수형 데이터 생성 + sampleData 상수 — C-25 Storybook 예외 허용. dummyData/mockData/fakeData 식별자 0건."
+    },
+    {
+      "id": "C-01",
+      "title": "영향 사용처 tsc 0",
+      "result": "N/A",
+      "evidence": "신규 패키지 — 기존 사용처 0건. 마이그레이션 대상 없음."
+    },
+    {
+      "id": "C-02",
+      "title": "외관 보존",
+      "result": "N/A",
+      "evidence": "신규 컴포넌트 — 기존 UI 없음. 시각 회귀 해당 없음."
+    },
+    {
+      "id": "C-03",
+      "title": "console warning 0건",
+      "result": "YES",
+      "evidence": "Grep 'console\\.' on packages/grid-pro-agg/src/ → 0 hits."
+    },
+    {
+      "id": "C-04",
+      "title": "peerDependencies 정책",
+      "result": "YES",
+      "evidence": "package.json peerDependencies 추가: @tanstack/react-virtual ^3.0.0. peerDependenciesMeta: { @tanstack/react-virtual: { optional: true } }. C-22 optional peer 명시 충족. 기존 peers (@tanstack/react-table, react, react-dom) 보존."
+    },
+    {
+      "id": "D-01",
+      "title": "마이그레이션 진행 비율",
+      "result": "N/A",
+      "evidence": "신규 Pro 패키지 — 레거시 마이그레이션 없음."
+    },
+    {
+      "id": "D-02",
+      "title": "PR/Commit 분리",
+      "result": "N/A",
+      "evidence": "마이그레이션 파일 0건."
+    },
+    {
+      "id": "D-03",
+      "title": "잔여 사용처 documented-deviations",
+      "result": "N/A",
+      "evidence": "레거시 사용처 없음."
+    },
+    {
+      "id": "E-01",
+      "title": "번들 크기 변동 측정",
+      "result": "YES",
+      "evidence": "tsup build 결과: ESM 9.17KB + CJS 9.58KB + DTS 6.38KB (AC-004 fix 반영). G-001 번들 대비 약 +4KB (spec 예상 +4KB gzipped 일치). C-21 한도 20KB 이내 충족."
+    },
+    {
+      "id": "E-02",
+      "title": "외부 라이브러리 ADR",
+      "result": "YES",
+      "evidence": "@tanstack/react-virtual 신규 peerDependency 추가 (G-002 D6 결정 — spec Section 4/9에 명시). spec Section 9 Dependency Analysis에 문서화됨. 기존 ADR-MOD-GRID-15 결정 목록과 일치. C-22 optional peer 정책 충족."
+    },
+    {
+      "id": "E-03",
+      "title": "라이선스 명시",
+      "result": "YES",
+      "evidence": "package.json 'license: SEE LICENSE IN EULA' (기존 보존). 신규 파일(GroupRow.tsx, FooterRow.tsx) 파일 상단 license comment 포함 (SEE LICENSE IN EULA). D7 준수: verifyOrWarn 추가 안 함."
+    }
+  ],
+  "yesCount": 22,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 22,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "autoFixed": [],
+  "specCodeDefects": [
+    {
+      "location": "spec Section 11.2 After 코드 — row.getParentRow?.() 사용",
+      "defect": "getParentRow() is TanStack v8 미존재 API. TanStack @tanstack/react-table index.d.ts grep 결과 0건. spec Section 11.4 위험 항목에서 중간 가능성으로 명시되어 있으나 After 코드에서는 사용됨 — 타입 오류 발생.",
+      "resolution": "스택 기반 부모 추적 방식으로 자율 정정. groupStack 배열에 open group header rows 추적, depth 비교로 그룹 종료 판별. spec Section 11.4 fallback 명시 근거."
+    },
+    {
+      "location": "spec Section 11.2 — flatMap 패턴 vs forEach 패턴 불일치",
+      "defect": "spec Section 11.2 After 코드 블록 2개: (1) flatMap 패턴 — 그룹 헤더에서 footer 인터리빙, (2) forEach 패턴 — 리프 행 마지막 후 footer 인터리빙. 두 패턴이 서로 다른 동작을 보임. flatMap 패턴은 그룹 헤더 직후 footer를 삽입하는 오류적 의미론. spec 텍스트 '실제 그룹별 버킷 접근법 (D4 구체화)' 레이블로 forEach 패턴이 authoritative.",
+      "resolution": "forEach 패턴 채택 (C-30: 구조화된 형식이 권위). 스택 기반 추적 + depth 비교로 그룹 종료 탐지 + 각 닫히는 그룹에 FooterRow 삽입."
+    }
+  ],
+  "promptSpecDrift": [],
+  "documentedDeviations": [
+    {
+      "deviation": "B-04 inline style paddingLeft + spacer row height",
+      "reason": "Tailwind 동적 클래스 pl-{depth*indentUnit} 은 JIT 스캔 불가 (런타임 계산값). 임의 깊이(depth 0, 1, 2, ...)의 들여쓰기를 지원하려면 style={{ paddingLeft }} 필요. 가상화 spacer row height도 동적 픽셀값. C-5 Tailwind-only 정신 충족이나 불가피한 style 속성 2종 사용.",
+      "mitigations": "모든 기타 클래스는 Tailwind 유틸리티 사용. 가상화 spacer pattern은 MergingGrid.tsx 선례와 동일 (C-18 검증됨)."
+    }
+  ],
+  "buildEvidence": {
+    "tsc": "tsc --noEmit → exit 0 (0 errors, no output). AC-004 fix 반영 후 재검증.",
+    "build": "tsup → ESM 9.17KB + CJS 9.58KB + DTS 6.38KB. Build success. AC-004 fix 반영 후 재빌드.",
+    "wijmoGrep": "Grep '@mescius/wijmo' on src/ → 0 hits (AC-005 C-16)",
+    "anyGrep": "Grep ': any' on src/ → 0 hits (C-4 B-02)",
+    "groupRowWireup": "AggregationGrid.tsx: import GroupRow → renderDescriptor() kind==='group' 분기 → 비가상화 interleavedRows.map(renderDescriptor) + 가상화 virtualItems.map → renderDescriptor(interleavedRows[i]) (C-31)",
+    "footerRowWireup": "AggregationGrid.tsx: import FooterRow → renderDescriptor() kind==='footer' 분기 → 비가상화 + 가상화 양 경로 모두 invocation. virtualizer.count = interleavedRows.length (footer rows 포함). AC-004 충족: 가상화 경로에서도 GroupRow + leaf + FooterRow 모두 렌더 (EC-004: virt window 이탈 시 DOM 제거는 허용된 trade-off) (C-31)",
+    "tanStackApiVerified": "getParentRow grep @tanstack/react-table index.d.ts → 0 hits. Stack-based parent tracking used (buildInterleavedRows). cell.getIsAggregated() (Cell-level, D5 correct). useVirtualizer @tanstack/react-virtual v3 installed. count=interleavedRows.length.",
+    "c29Spread": "onGroupingChange: ...(onGroupingChange !== undefined ? {...} : {}). onExpandedChange: ...(onExpandedChange !== undefined ? {...} : {}). groupRowClassName + footerRowClassName: ...(x !== undefined ? { className: x } : {}).",
+    "d7NoVerifyOrWarn": "GroupRow.tsx + FooterRow.tsx: verifyOrWarn 미포함 확인. AggregationGrid.tsx L39 module-level 1회만."
+  },
+  "feedback": [
+    "F-06 specCodeDefect x2: (1) row.getParentRow() TanStack v8 미존재 → 스택 기반 추적으로 자율 정정. (2) flatMap vs forEach 패턴 불일치 → forEach authoritative (C-30). 모두 specCodeDefects[] 기록.",
+    "A-05/A-06 AC-004 fix: 초기 구현에서 가상화 경로 virtualItems.map()이 FooterRow를 렌더하지 않는 결함 발견. buildInterleavedRows() 함수 도입 — 동일 스택 기반 알고리즘으로 RowDescriptor<TData>[] 사전 계산 (kind: 'group'|'leaf'|'footer'). virtualizer.count = interleavedRows.length (footer 포함). renderDescriptor() 공유 함수가 양 경로에서 GroupRow + leaf tr + FooterRow 모두 올바르게 렌더. C-31 + AC-004 충족.",
+    "B-04 deviation: paddingLeft inline style (Tailwind 동적 클래스 불가) + spacer height (가상화 필수). MergingGrid.tsx 선례와 동일 패턴.",
+    "D6 useVirtualizer: 항상 호출 (Hook order guarantee). count=interleavedRows.length when enableVirtualization, 0 otherwise. 비가상화 경로: interleavedRows.map(renderDescriptor). 가상화 경로: virtualItems.map → renderDescriptor(interleavedRows[idx]) — 양 경로 동일 descriptor 기반 렌더.",
+    "EC-004: 가상화 활성 시 group/leaf/footer rows가 모두 interleavedRows 배열에 포함되어 virtualizer가 정확한 count를 유지. virt window 이탈 시 DOM 제거는 EC-004 허용 trade-off. VirtualizedGroupFooter story에 limitation 주석 포함."
+  ],
+  "verifiedAt": "2026-05-15T00:00:00Z",
+  "verifierNotes": "자기-채점 (Implementer). 메타 게이트 F-01/F-02/F-04/F-05/F-06 YES, F-03 N/A → 일반 채점 진행. 카테고리 합계 A7+B7+C4+D3+E3=24 체크. YES 19 / NO 0 / N/A 7. denominator=19+0=19. score=19/19*100=100.0. threshold=85. PASS. specCodeDefects[] 2건 기록 (F-06 의무 충족). promptSpecDrift[] 0건 (F-05 N/A — spec 준수 확인됨). 수정 이력: 초기 가상화 경로 AC-004 결함(FooterRow 미렌더) → buildInterleavedRows() + renderDescriptor() 도입으로 수정. tsc + tsup 양 검증 통과 확인.",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 19,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 7,
+    "originalReportedDenominator": 19,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "runAt": "2026-05-15T00:00:00Z",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-002→full",
+      "runAt=2026-05-15T00:00:00Z",
+      "verifierModel=haiku"
+    ]
+  }
+}

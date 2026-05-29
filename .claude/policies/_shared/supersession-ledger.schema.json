@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://internal/policies/_shared/supersession-ledger.schema.json",
+  "title": "Cross-Module Supersession Ledger",
+  "description": "SHARED-SUPERSEDE 패턴의 ledger schema. tw-mail/tw-harness/tw-grid 3개 하네스 공통 적용. 각 하네스 .claude/<harness>/supersession-ledger.json 인스턴스가 본 schema 준수.",
+  "type": "object",
+  "required": ["version", "schemaNote", "createdAt", "lastUpdated", "entries", "indexes", "policy"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Schema version — append-only, breaking change 시 version bump"
+    },
+    "schemaNote": {
+      "type": "string",
+      "description": "ledger 목적 + cross-module write 회피 indirection 설명"
+    },
+    "createdAt": { "type": "string", "format": "date" },
+    "lastUpdated": { "type": "string", "format": "date" },
+    "lastUpdatedBy": { "type": "string", "description": "최근 변경 trigger source (ADR ref 또는 cycle 식별자)" },
+    "entries": {
+      "type": "object",
+      "description": "supersededGoalId 를 key 로 한 entry 맵. append-only.",
+      "patternProperties": {
+        "^G-[A-Z]+-[0-9]+-[0-9]+$": {
+          "type": "object",
+          "required": ["supersededBy", "supersededAt", "supersedeAdr", "ownerModule", "supersededModule", "acCoverage", "evidence"],
+          "properties": {
+            "supersededBy": { "type": "string", "pattern": "^G-[A-Z]+-[0-9]+-[0-9]+$" },
+            "supersededAt": { "type": "string", "format": "date" },
+            "supersedeAdr": { "type": "string", "description": "ADR reference (e.g. ADR-MAIL-18-037)" },
+            "ownerModule": { "type": "string", "description": "ownerModule ID (e.g. MAIL-19, MOD-08)" },
+            "supersededModule": { "type": "string", "description": "supersededModule ID" },
+            "ownerStage": { "type": "string", "description": "ownerGoal 완료 상태 + score 인용" },
+            "supersededTitle": { "type": "string" },
+            "ownerTitle": { "type": "string" },
+            "acCoverage": {
+              "type": "object",
+              "required": ["deployed", "equivalent", "dismissed"],
+              "properties": {
+                "deployed": { "type": "array", "items": { "type": "string" }, "description": "owner 가 deployed 산출물로 충족한 AC 목록" },
+                "equivalent": { "type": "array", "items": { "type": "string" }, "description": "다른 메커니즘으로 동등 outcome 달성한 AC 목록" },
+                "dismissed": { "type": "array", "items": { "type": "string" }, "description": "v1.0 dismiss + 사유" }
+              }
+            },
+            "evidence": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "deployed 산출물 file path 목록 (audit trail)"
+            },
+            "ownerNotification": { "type": "string", "description": "owner session 에 ack 권장 사항" },
+            "discoveredBy": { "type": "string", "description": "supersede 발견 cycle 식별자" },
+            "polDriftCompliance": {
+              "type": "object",
+              "description": "drift 정책 정합 증거"
+            },
+            "ownerAcknowledgedAt": {
+              "type": ["string", "null"],
+              "format": "date",
+              "description": "owner ack 시점 — null 이면 미완료"
+            },
+            "ownerAckAdr": { "type": ["string", "null"] },
+            "ownerAckCycle": { "type": ["string", "null"] },
+            "ownerAckArtifacts": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "reopenedAt": {
+              "type": ["string", "null"],
+              "description": "supersede 결정 뒤집힐 경우 (futureExtensions §1)"
+            },
+            "reopenAdr": { "type": ["string", "null"] }
+          }
+        }
+      }
+    },
+    "indexes": {
+      "type": "object",
+      "required": ["byOwnerModule", "bySupersededModule"],
+      "properties": {
+        "byOwnerModule": {
+          "type": "object",
+          "description": "ownerModule → superseded goalId 목록 (owner self-review 시 query)",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^G-[A-Z]+-[0-9]+-[0-9]+$" }
+          }
+        },
+        "bySupersededModule": {
+          "type": "object",
+          "description": "supersededModule → superseded goalId 목록",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^G-[A-Z]+-[0-9]+-[0-9]+$" }
+          }
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": ["writeAllowed", "writeForbidden", "ownerNotification", "polDriftCompliance"],
+      "properties": {
+        "writeAllowed": { "type": "string" },
+        "writeForbidden": { "type": "string" },
+        "ownerNotification": { "type": "string" },
+        "polDriftCompliance": { "type": "string" }
+      }
+    },
+    "futureExtensions": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

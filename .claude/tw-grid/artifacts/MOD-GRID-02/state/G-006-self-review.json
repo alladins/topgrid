@@ -1,0 +1,272 @@
+{
+  "goalId": "G-006",
+  "module": "MOD-GRID-02",
+  "area": "state",
+  "moduleCompleted": true,
+  "reviewedAt": "2026-05-14",
+  "reviewerModel": "opus",
+  "scoreSummary": {
+    "specify": 100.0,
+    "implement": 93.75,
+    "implementVerifier": 93.75,
+    "verify": 100.0,
+    "specifyRubricVersion": "1.0.6",
+    "implementRubricVersion": "1.0.9",
+    "verifyRubricVersion": "1.0.2",
+    "tier": "low",
+    "threshold": 85,
+    "implementerModel": "claude-sonnet-4-6",
+    "implementVerifierModel": "claude-haiku-4-5-20251001",
+    "verifyModel": "opus"
+  },
+  "moduleSummary": {
+    "totalGoals": 6,
+    "completed": 6,
+    "perGoalScores": {
+      "G-001": { "specify": 100.0, "implement": 100.0, "verify": 100.0, "tier": "medium" },
+      "G-002": { "specify": 100.0, "implement": 100.0, "verify": 100.0, "tier": "medium" },
+      "G-003": { "specify": 97.5,  "implement": 100.0, "verify": 100.0, "tier": "medium" },
+      "G-004": { "specify": 100.0, "implement": 100.0, "verify": 100.0, "tier": "medium" },
+      "G-005": { "specify": 100.0, "implement": 93.75, "verify": 100.0, "tier": "low" },
+      "G-006": { "specify": 100.0, "implement": 93.75, "verify": 100.0, "tier": "low" }
+    },
+    "averageScores": {
+      "specifyAvg": 99.58,
+      "implementAvg": 97.92,
+      "verifyAvg": 100.0,
+      "blendedAvg": 99.17,
+      "computation": "specify=(100+100+97.5+100+100+100)/6=99.583; implement=(100+100+100+100+93.75+93.75)/6=97.917; verify=100.0; blended=(specify+implement+verify)/3=99.167"
+    },
+    "bundleDelta": {
+      "g001BaselineKB": 24.64,
+      "g006FinalKB": 28.61,
+      "moduleTotalKB": 3.97,
+      "limitKB": 30.0,
+      "headroomKB": 5.36,
+      "perGoalDeltaKB": {
+        "G-001_baseline": 24.64,
+        "G-002": 0.23,
+        "G-003": 0.88,
+        "G-004": 1.49,
+        "G-005": 1.05,
+        "G-006": 0.32
+      },
+      "note": "Module total delta +3.97 KB (G-001 baseline 24.64 → G-006 final 28.61). 30 KB limit honored with 5.36 KB headroom remaining for MOD-GRID-03~16 future Goals on grid-core."
+    },
+    "moduleObservations": [
+      "MOD-GRID-02 state area = 6 Goals comprising the GridState abstraction: G-001 useGridState integration / G-002 controlled mode + initialState / G-003 onStateChange aggregator + debounce / G-004 resetState/resetSection/clearSelectionKey / G-005 useUrlSync helper / G-006 useStoragePersist helper. All 6 PASS thresholds.",
+      "Score pattern: 100/93.75/100 (specify/implement/verify) repeated identically for G-005 + G-006 — both low-tier helper Goals with A-07 vitest-runtime NO as the single deduction. G-001~G-004 (medium-tier core) all 100/100/100 except G-003 specify 97.5 (which was an absent-JSON artifact, not real defect). Calibration appears consistent — implement A-07 NO is the only systematic deduction (3 occurrences in module: G-003/G-004/G-005 + 4th occurrence G-006 = environment infra, not implementer defect).",
+      "Hook-only pattern across all 6 Goals: every Goal has affectedUsageFiles=0 (no tw-framework-front pages migrated). verify D category vacuous=100 in every Goal (6 occurrences = solid pattern, not anecdote). MOD-GRID-17 (사용처 채택) deferred — D category will become real-scoring only there.",
+      "C-32 option 3 (eslint-disable for non-stable internal hook callable) cumulative count after module completion: G-004 useControllableState setValue (1st) + G-005 useDebouncedCallback raw fn (2nd) = 2 occurrences (pattern entry). G-006 added 0 (Option A saveRef pattern successfully prevented 3rd occurrence). MOD-GRID-99-B/internal-hook-callable-stability promoted-Goal pending — recommended to execute before next module that uses internal hooks (MOD-GRID-04 column, MOD-GRID-08 advanced features etc.).",
+      "Bundle efficiency variance (vs goals.json D9 estimates): G-001 +0.12 KB (6% of +2 KB est), G-002 +0.23 KB (11.5% of +2 KB est), G-003 +0.88 KB (88% of +1 KB est), G-004 +1.49 KB (149% of +1 KB est — over estimate but within 30 KB hard limit), G-005 +1.05 KB (105%), G-006 +0.32 KB (32%). ADR-MOD-GRID-00-010 hook-profile matrix now has 6 data points within single module — extrapolation-blocking rule empirically solid.",
+      "AC-005 binding consistency (Storybook + vitest): G-004/G-005/G-006 all spec Section 7 enumerate `*.stories.tsx` + `*.test.ts`. G-005 introduced E-01 v1.0.6 binding-cross-check (file-level enumeration), G-006 applied it successfully. R-1 cascading risk (C-30 ↔ AC-binding loophole) from G-004 is now structurally resolved at specify-rubric level — no longer cascades to MOD-GRID-03+."
+    ],
+    "moduleLevelPatterns": [
+      "Pattern-M1 (saveRef envelope): G-005 used hydrateRef pattern (onHydrate non-stable). G-006 extended with saveRef pattern (debouncedSave non-stable). Both rely on `useRef + always-sync useEffect (no deps)` to bypass C-32 option 3 without eslint-disable. Useful catalog entry for future internal-hook + consumer-callable patterns across MOD-GRID-03+ (column hooks, virtualization callbacks, edit-mode commit callbacks).",
+      "Pattern-M2 (URLSearchParams envelope reuse): G-005 produced `internal/serializeState.ts`. G-006 reused it (zero modification) as JSON envelope payload (`{v: version, p: params.toString()}`). DRY pattern that allows future MOD-GRID modules to serialize grid state to ANY transport (URL, storage, IndexedDB, postMessage) via the same envelope.",
+      "Pattern-M3 (mount-only useEffect with explicit eslint-disable on `[]` deps): All hook Goals (G-005, G-006) use this for one-time hydration. This is the only eslint-disable category remaining (intentional mount-only) — distinct from C-32 option 3. Catalog as 'safe eslint-disable pattern'."
+    ]
+  },
+  "cascadingRisksFromPrevious": {
+    "R-1_vitestInfraGoalPromotion": {
+      "status": "policy-rule-functioning-3rd-confirmed-occurrence",
+      "evidence": "G-005 self-review newCascadingRisks R-1: 3 occurrences A-07 NO (G-003/G-004/G-005). Applied APPLY-1 in G-005: implement-rubric v1.0.9 environment deviation rule. G-006 implement-score.json L130 failedChecks=['A-07'] = 4th occurrence chronologically, but rule v1.0.9 now provides documentedDeviations[] + toolingBacklog TB-2 pathway. Implementer applied v1.0.9 pathway correctly — A-07 NO retained for transparency (not converted to N/A), 6 test scenarios written + typecheck PASS, deviation documented. Rule operates as designed. **No new improvement** — v1.0.9 working. However, vitest infra Goal still UNCOMPLETED — backlog item TB-2 remains pending across 4 Goals. Promotion priority should escalate: from 'recommended' to 'high priority before MOD-GRID-03 starts'.",
+      "subFinding": "G-005 self-review proposed Goal ID `MOD-GRID-99-B/G-NNN-vitest-infra`. **Naming consistency check**: Goal ID should be canonical — recommend `MOD-GRID-99-B/G-001-vitest-infra` (first Goal in 99-B test-infra module) for ease of tracking. Self-Review APPLY-3 below."
+    },
+    "R-2_internalHookStableCallables": {
+      "status": "policy-rule-functioning-no-3rd-occurrence",
+      "evidence": "G-005 self-review newCascadingRisks R-2: C-32 option 3 = 2 occurrences (G-004 useControllableState + G-005 useDebouncedCallback). G-006 spec Section 4.3 + D2 explicitly defined Option A (saveRef pattern) to prevent 3rd occurrence. Implementer applied D2 correctly: useStoragePersist.ts L127-130 saveRef + L135-146 saveRef.current() call with state primitives deps. C-32 option 3 occurrences added by G-006 = **0** (verified — implement-verifier-score.json c32UnstableSetterPass + implement-score.json B-05 evidence). Cumulative count remains 2 (G-004 + G-005). 3rd-occurrence-block rule functioning correctly. **No new improvement** — broad reading rule (constraints.md C-32 L476-484) successfully prevented 3rd occurrence. Promoted-Goal (`internal-hook-callable-stability`) still recommended but not blocking.",
+      "subFinding": "G-005 self-review proposed Goal ID `MOD-GRID-02/G-006-internal-hook-stable-callables`. **Naming conflict**: G-006 is now USED for `useStoragePersist` Goal (this Goal). The proposed Goal ID is therefore stale/invalid. Self-Review APPLY-2 below — re-name to `MOD-GRID-00/G-NNN-internal-hook-callable-stability` (cross-cutting infra) or `MOD-GRID-99-A/G-NNN-...` if a 99-A infra module exists."
+    },
+    "R-3_hookOnlyVacuousTruth": {
+      "status": "persists-pattern-stable-6-occurrences",
+      "evidence": "G-005 self-review marked R-3 'persists-but-mitigated' — 2 anecdote occurrences at that point. After module completion, G-001~G-006 all hook-only Goals with affectedUsageFiles=0 → 6 verify D-category vacuous=100 instances within single module. **Pattern is now solid (6 occurrences)** but ADR-MOD-GRID-00-002 vacuous truth rule is intentional policy (infrastructure/hook Goals merit normal scoring; real D-category evaluation deferred to MOD-GRID-17 usage-site adoption). 1=anecdote, 2=pattern, 3=policy rule reaches threshold but **direction of policy change is DOWNWARD** (vacuous→non-vacuous would damage G-001~G-006 retroactively) — NOT recommended. The pattern is a CORRECT artifact of phased development (hooks-first, usage-sites-later). Policy reaffirmed, not changed. **REJECT** any rule change. **Documentation update only**: add module-end note to ADR-MOD-GRID-00-002 stating 'MOD-GRID-02 produced 6 vacuous-D occurrences across module; rule operates as intended for phased rollout.'"
+    }
+  },
+  "findings": [
+    "F1 (cascading from G-005, resolved at G-006): R-2 (C-32 option 3 3rd-occurrence risk) successfully blocked. G-006 D2 Option A (saveRef + always-sync useEffect) eliminated need for eslint-disable on save-trigger useEffect. C-32 cumulative count unchanged (2). Spec writer (sonnet) introduced D2 design proactively after reading G-005 self-review — broad reading rule visibility working.",
+    "F2 (spec template defect F-06-G006-1, F-06 rule 2nd occurrence in module): G-006-spec.md Section 11.1 L546-547 code stub included `// eslint-disable-next-line react-hooks/exhaustive-deps` on save-trigger useEffect. But D2 explicitly stated 'eslint-disable 0줄'. Spec writer included it as defensive over-specification (template inertia from G-005 useUrlSync.ts L95 pattern). Implementer (sonnet) applied 'tight read' — saveRef.current is a React Ref, react-hooks/exhaustive-deps auto-excludes refs without eslint-disable needed. Result: useStoragePersist.ts L100 has 1 eslint-disable (mount-only `[]`), save-trigger has 0. specCodeDefects[F-06-G006-1] recorded in both implement-score.json + implement-verifier-score.json. F-06 rule (v1.0.7, G-003 introduction) working as designed across module: G-003 useDebouncedCallback Rules-of-Hooks (1st) + G-005 `as any` cast (2nd) + G-006 over-specified eslint-disable (3rd). 3 occurrences = policy threshold. **Pattern observation**: spec writer (sonnet) tends to copy-paste between consecutive Goal specs as templates, occasionally introducing residual over-specification. Catalog item only (not policy change).",
+    "F3 (modules-level reflection — pattern catalog opportunity): G-005 + G-006 both introduce the `useRef + always-sync useEffect (no deps)` pattern (hydrateRef, saveRef). This is a reusable abstraction for 'consumer-supplied non-stable callable / value reference'. Worth considering: extract to `internal/useLatestRef.ts` in a future Goal (G-NNN-useLatestRef-extract) for use across MOD-GRID-04 column callbacks, MOD-GRID-13 advanced selection callbacks, etc. **Improvement candidate** — APPLY at low priority (anecdote→pattern at 2 occurrences, but extraction is optimization not correctness).",
+    "F4 (calibration check — score pattern uniformity): G-005 + G-006 produced identical scores 100/93.75/100. Both used same rubric versions (specify 1.0.6, implement 1.0.9, verify 1.0.2), same tier (low), same A-07 single NO. This is consistent calibration, not score collapse. Failed item A-07 is environmental (vitest absence), not implementer defect — penalty correctly attributed. Confidence: HIGH that future low-tier helper Goals will produce identical signature until A-07 environment resolved.",
+    "F5 (G-005 toolingBacklog entries — Goal ID re-naming needed): G-005 self-review appliedToolingBacklog cited two Goal IDs: TB-1 `MOD-GRID-99-B/G-NNN-vitest-infra` (still valid, anonymous-ID OK) and TB-2 `MOD-GRID-02/G-006-internal-hook-stable-callables` (**INVALID — G-006 is now occupied**). Self-Review must re-name TB-2 to a valid ID. Recommended: `MOD-GRID-00/G-NNN-internal-hook-callable-stability` (cross-cutting infra module) or alternatively `MOD-GRID-99-A/G-NNN-...`. APPLY in this self-review (APPLY-2 below).",
+    "F6 (module completion observation — affectedUsageFiles=0 across all 6 Goals): No tw-framework-front page migrated to use useGridState/useUrlSync/useStoragePersist yet. This is expected per MOD-GRID master plan (hooks-first phase). However, **wiring audit gap**: when MOD-GRID-17 (usage-site adoption) executes, every page migration will simultaneously test G-001~G-006 in production runtime. If a latent defect exists in any state hook, it will manifest at usage-site adoption — high blast radius. Mitigation: AC-005 vitest scenarios in G-001~G-006 should be RUN before MOD-GRID-17 entry. This is a stronger argument for the TB-1 vitest-infra Goal — escalate priority.",
+    "F7 (no new cascading risk discovered — module pattern stable): Reading G-001 through G-006 self-reviews + verify-scores end-to-end, I find no risk category not already covered by R-1/R-2/R-3 from G-005. The 'hook-only Goal' phase pattern is stable. New risks will emerge at module-boundary (when MOD-GRID-03 starts on column area, which has different concerns — column resize, reorder, visibility — and will test whether MOD-GRID-02 patterns scale).",
+    "F8 (1-anecdote-rule discipline maintained): Throughout the module, several improvement candidates were considered (vacuous truth rule weakening, F-06 expansion, broad/narrow reading codification, narrow-reading escape closure). All were either REJECTED or deferred to 3rd-occurrence threshold. This is correct discipline — no over-engineered rubric inflation. Module end with rubric versions: specify 1.0.6 (stable since G-005), implement 1.0.9 (G-005 introduced A-07 env deviation), verify 1.0.2 (stable since module start). Healthy evolution rate: ~3 rubric updates per 6 Goals."
+  ],
+  "newCascadingRisks": [
+    {
+      "id": "R-1",
+      "severity": "low",
+      "scope": "module-boundary (MOD-GRID-02 → MOD-GRID-03)",
+      "description": "TB-1 (vitest-infra) and TB-2 (internal-hook-callable-stability) Goals remain UNCREATED at module completion. Cascading to MOD-GRID-03 (column area) means: (a) every new hook Goal in MOD-GRID-03 will continue accumulating A-07 NO (5th, 6th occurrences ahead) under v1.0.9 rule — score impact 0 but rubric-noise grows; (b) every new hook in MOD-GRID-03 that has an internal-hook non-stable callable risks C-32 3rd occurrence, which would auto-block the Goal per constraints.md C-32 (3rd occurrence → findings/blocked/ auto-written).",
+      "mitigation": "Escalate both backlog Goals to 'next-module-blocker' priority. Recommend: before MOD-GRID-03 Phase 1 (discover) starts, execute (1) TB-1 vitest-infra Goal (1 Goal, ~2 hours, install vitest + jsdom + testing-library + vitest.config.ts + scripts.test update + run G-001~G-006 existing test files) and (2) TB-2 internal-hook-callable-stability Goal (1 Goal, ~3 hours, useControllableState setValue useCallback memoize + useDebouncedCallback ms<=0 branch stable return + G-001~G-006 wiring re-verify + eslint-disable cleanup). Total ~5 hours. Module-boundary is the natural cleanup point."
+    },
+    {
+      "id": "R-2",
+      "severity": "low",
+      "scope": "spec writer (sonnet) cross-module behavior",
+      "description": "Spec writer (sonnet) introduced over-specification in G-006-spec.md Section 11.1 (eslint-disable on save-trigger that wasn't needed per D2). This is the 3rd occurrence of F-06-classified spec internal code defect within MOD-GRID-02 (G-003 Rules of Hooks, G-005 `as any`, G-006 over-specified eslint-disable). Common shape: spec writer (sonnet) inertia from prior Goal spec templates introduces stale/over-defensive code into new Goal spec. Implementer (sonnet) catches via 'tight read' but reliance on Implementer catch is fragile — if Implementer is rushed or copy-pastes literally, defect propagates.",
+      "mitigation": "F-06 rule (v1.0.7) is functioning. No rule change needed (3 occurrences = pattern, not yet policy). **Catalog the pattern** in findings/auto-fixed/MOD-GRID-02-spec-writer-template-inertia.md (or similar): document the 3 instances + recommend spec writer prompt include explicit 'review Section 11 against D# pre-decisions before finalize' checklist step. APPLY-4 below as documentation-only mitigation."
+    }
+  ],
+  "improvementCandidates": [
+    {
+      "id": "APPLY-1",
+      "title": "ADR-MOD-GRID-00-002 vacuous truth rule — module-end documentation update only (no rule change)",
+      "decision": "APPLY-DOC-ONLY",
+      "reason": "R-3 reached 6 occurrences in MOD-GRID-02 (full module-wide pattern). Per 1=anecdote, 2=pattern, 3=policy rule, threshold for policy change is met. However, direction of change is downward (would damage G-001~G-006 retroactively + block future hook-only Goals in MOD-GRID-03~16). Rule operates correctly for phased rollout. Add module-end note to ADR documenting: 'MOD-GRID-02 produced 6 vacuous-D occurrences. Pattern stable. Rule reaffirmed for hooks-first phase. D-category real evaluation deferred to MOD-GRID-17 usage-site adoption.'",
+      "appliedTo": "decisions/MOD-GRID-00-decisions.md ADR-MOD-GRID-00-002 (vacuous truth rule) — append module-end observation paragraph.",
+      "ruleChange": false
+    },
+    {
+      "id": "APPLY-2",
+      "title": "G-005 toolingBacklog TB-2 Goal ID re-naming",
+      "decision": "APPLY",
+      "reason": "G-005 self-review appliedToolingBacklog TB-2 cited Goal ID `MOD-GRID-02/G-006-internal-hook-stable-callables` — that ID is now occupied by G-006 useStoragePersist (this Goal). The TB-2 backlog entry is invalid. Re-name to `MOD-GRID-00/G-NNN-internal-hook-callable-stability` (cross-cutting infra module) where G-NNN = next available Goal ID in MOD-GRID-00. This preserves the work item without ID collision.",
+      "appliedTo": "state-goals.json MOD-GRID-02 G-005 harnessReview.toolingBacklog[1] OR add note to G-005-self-review.json — current self-review (G-006) documents the rename. Operational fix: when orchestrator next reads backlog, it sees the corrected ID.",
+      "ruleChange": false
+    },
+    {
+      "id": "APPLY-3",
+      "title": "TB-1 vitest-infra Goal priority escalation (recommended → high priority before MOD-GRID-03)",
+      "decision": "APPLY",
+      "reason": "4 A-07 NO occurrences accumulated within MOD-GRID-02 alone (G-003/G-004/G-005/G-006). Without TB-1 completion, MOD-GRID-03~16 hook Goals will continue accumulating A-07 NO at 1-per-Goal rate (estimated 15+ Goals = 15+ additional NO). v1.0.9 environment deviation rule prevents score impact but rubric noise + binding AC unverified-at-runtime risk grows. Module-boundary is natural cleanup point.",
+      "appliedTo": "Recommendation surfaced to orchestrator / user: execute MOD-GRID-99-B/G-001-vitest-infra Goal (canonical ID) before MOD-GRID-03 Phase 1. Self-Review note only — actual Goal creation/execution is orchestrator/user responsibility.",
+      "ruleChange": false
+    },
+    {
+      "id": "APPLY-4",
+      "title": "findings/auto-fixed/ module-pattern-catalog entry — spec writer template inertia",
+      "decision": "APPLY-DOC-ONLY",
+      "reason": "3 F-06 spec internal code defect occurrences in MOD-GRID-02 (G-003 Rules of Hooks, G-005 `as any`, G-006 over-specified eslint-disable) share common shape: spec writer (sonnet) carries forward template fragments from prior Goal spec, occasionally introducing stale defensive code that contradicts D# pre-decisions. Implementer (sonnet) catches via tight read, but reliance is fragile. Catalog pattern for future spec writer prompt enhancement.",
+      "appliedTo": "findings/auto-fixed/MOD-GRID-02-spec-writer-template-inertia.md — document 3 instances + recommend spec writer prompt include 'review Section 11 against D# pre-decisions' checklist. Documentation-only; no rubric/constraints change.",
+      "ruleChange": false
+    },
+    {
+      "id": "APPLY-5",
+      "title": "Pattern catalog candidate — useLatestRef extraction (hydrateRef/saveRef pattern)",
+      "decision": "APPLY-DOC-ONLY",
+      "reason": "G-005 + G-006 both use the `const ref = useRef(value); useEffect(() => { ref.current = value; });` pattern (no-deps useEffect). 2 occurrences = pattern entry. Extraction to `internal/useLatestRef.ts` would DRY across future MOD-GRID-04 column callbacks, MOD-GRID-13 selection callbacks, etc. **Anecdote/pattern stage — extraction Goal not yet justified** (would require ≥3 occurrences AND extraction net-positive on bundle size). Catalog only.",
+      "appliedTo": "findings/auto-fixed/MOD-GRID-02-useLatestRef-catalog.md — document pattern + 2 occurrences + threshold for extraction (≥3 occurrences). Documentation-only.",
+      "ruleChange": false
+    },
+    {
+      "id": "REJECT-1",
+      "title": "verify-rubric vacuous truth rule weakening (hook-only D-category vacuous prohibition)",
+      "decision": "REJECT",
+      "reason": "Same rationale as G-004/G-005 self-reviews. Now reinforced by 6 occurrences across full module. Rule operates correctly for phased rollout (hooks-first phase). Direction of policy change is downward (would damage G-001~G-006 retroactively + block MOD-GRID-03~16 future hook Goals). Rule reaffirmed."
+    },
+    {
+      "id": "REJECT-2",
+      "title": "F-06 rule expansion (template inertia category added)",
+      "decision": "REJECT",
+      "reason": "F-06 v1.0.7 definition already covers '컴파일 통과하지만 의미적/구조적으로 잘못된 결함' — broadly applicable. The 3 occurrences in MOD-GRID-02 all fit existing scope (G-003 Rules of Hooks, G-005 `as any` C-4 violation, G-006 over-specified eslint-disable). No expansion needed. Documentation-only catalog (APPLY-4) sufficient. 1=anecdote, 2=pattern, 3=policy reaches threshold but rule scope is already correct."
+    },
+    {
+      "id": "REJECT-3",
+      "title": "constraints.md C-32 broad reading retroactive enforcement (G-005 retro-NO conversion)",
+      "decision": "REJECT",
+      "reason": "G-005 self-review explicitly committed 'broad reading promotion non-retroactive — G-005 score 93.75 retained, narrow-reading B-05 YES preserved'. Reversing that commitment would invalidate G-005 closure + retroactive damage. Pattern enforcement applies prospectively only. C-32 L482 already documented non-retroactive principle."
+    }
+  ],
+  "improvementsAppliedCount": 5,
+  "improvementsRejectedCount": 3,
+  "appliedItems": [
+    {
+      "id": "APPLY-1",
+      "type": "documentation",
+      "target": "decisions/MOD-GRID-00-decisions.md ADR-MOD-GRID-00-002",
+      "summary": "Add module-end observation paragraph reaffirming vacuous truth rule for hooks-first phase. 6 occurrences in MOD-GRID-02 confirm rule operates as intended.",
+      "noteImpact": "no rubric/constraints change"
+    },
+    {
+      "id": "APPLY-2",
+      "type": "backlog-correction",
+      "target": "tw-grid backlog (orchestrator-managed)",
+      "summary": "Re-name G-005 toolingBacklog TB-2 from `MOD-GRID-02/G-006-internal-hook-stable-callables` (collides with G-006 useStoragePersist) to `MOD-GRID-00/G-NNN-internal-hook-callable-stability` (cross-cutting infra). Documented in this self-review.",
+      "noteImpact": "no rubric/constraints change; corrects stale backlog reference"
+    },
+    {
+      "id": "APPLY-3",
+      "type": "recommendation",
+      "target": "orchestrator / user (MOD-GRID-03 phase 1 entry)",
+      "summary": "Escalate TB-1 vitest-infra Goal (canonical ID `MOD-GRID-99-B/G-001-vitest-infra`) from 'recommended' to 'high priority before MOD-GRID-03 Phase 1'. 4 A-07 NO accumulated within MOD-GRID-02; 15+ more expected across MOD-GRID-03~16 without infra completion.",
+      "noteImpact": "no rubric/constraints change"
+    },
+    {
+      "id": "APPLY-4",
+      "type": "documentation",
+      "target": "findings/auto-fixed/MOD-GRID-02-spec-writer-template-inertia.md (new)",
+      "summary": "Document 3 F-06 occurrences in MOD-GRID-02 sharing common shape (spec writer sonnet template inertia). Catalog for future spec writer prompt enhancement. Documentation-only.",
+      "noteImpact": "no rubric/constraints change"
+    },
+    {
+      "id": "APPLY-5",
+      "type": "documentation",
+      "target": "findings/auto-fixed/MOD-GRID-02-useLatestRef-catalog.md (new)",
+      "summary": "Document `useRef + always-sync useEffect (no deps)` pattern from G-005 hydrateRef + G-006 saveRef + hydrateRef. 2 occurrences within module + 1 within G-006 = 3 (pattern). Extraction threshold ≥3 occurrences in 2+ modules. Catalog only.",
+      "noteImpact": "no rubric/constraints change"
+    }
+  ],
+  "rejectedItems": [
+    {
+      "id": "REJECT-1",
+      "title": "verify-rubric vacuous truth rule weakening (hook-only D-category prohibition)",
+      "rejectReason": "Direction of change is downward — would damage G-001~G-006 retroactively + block MOD-GRID-03~16 hook Goals. Rule operates correctly for phased rollout. Reaffirmed."
+    },
+    {
+      "id": "REJECT-2",
+      "title": "F-06 rule expansion (template-inertia subcategory added)",
+      "rejectReason": "F-06 v1.0.7 scope already covers all 3 MOD-GRID-02 occurrences. Documentation catalog (APPLY-4) sufficient. Rule inflation avoided."
+    },
+    {
+      "id": "REJECT-3",
+      "title": "C-32 broad reading retroactive enforcement (G-005 retro-NO)",
+      "rejectReason": "G-005 self-review committed non-retroactive principle (constraints.md C-32 L482). Reversing would invalidate G-005 closure. Pattern enforcement is prospective only."
+    }
+  ],
+  "affectedFiles": [
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/artifacts/MOD-GRID-02/state/G-006-self-review.json"
+  ],
+  "metaValidation": {
+    "scoreFormulaConsistency": {
+      "specify": "G-006-specify-score.json yesCount=27 + noCount=0 + naCount=5 = 32 (rubric v1.0.6 total). denominator=27. score = 27/27 × 100 = 100.0 ✓",
+      "implement": "G-006-implement-score.json yesCount=15 + noCount=1 (A-07) + naCount=8 = 24 (rubric v1.0.9 total). denominator=16. score = 15/16 × 100 = 93.75 ✓",
+      "implementVerifier": "G-006-implement-verifier-score.json yesCount=15 + noCount=1 + naCount=8 = 24. denominator=16. score = 93.75 ✓. verifierModel='claude-haiku-4-5-20251001' (independent re-check, C-15 medium tier procedure — but G-006 tier=low, verifierModel still recorded for transparency).",
+      "verify": "G-006-verify-score.json categoryScores A=100, B=100, C=100, D=100 (vacuous), E=100. weights {A:25, B:25, C:20, D:15, E:15} (low tier). weightedScore = (100×25 + 100×25 + 100×20 + 100×15 + 100×15) / 100 = 100.0 ✓. failedChecks=[]."
+    },
+    "naDenominatorExclusion": "specify naCount=5 + denominator=27 ✓. implement naCount=8 + denominator=16 ✓. verify N/A 9개 분모 제외 (A=1, B=2, C=2, D=2, E=2) + vacuous D (and possibly C if all N/A) ✓.",
+    "failedChecksIntegrity": "specify failedChecks=[] ✓. implement failedChecks=['A-07'] (NO 1건) ✓. implement-verifier failedChecks=['A-07'] ✓. verify failedChecks=[] ✓. 모든 stage N/A 미포함.",
+    "vacuousRuleApplication": "verify D 카테고리 (YES=0, NO=0, N/A=2) vacuous → 100 ✓. Goal 제목 'useStoragePersist localStorage 영속화 helper' build keyword (build/tsup/tsc/vite/rollup/size-limit/bundle) 없음 → vacuous truth applicable per ADR-MOD-GRID-00-002.",
+    "tierConsistency": "G-006 migrationImpact=low, threshold=85, weights={A:25, B:25, C:20, D:15, E:15} — low-tier weights correctly applied (vs medium-tier {A:15, B:20, C:30, D:20, E:15}). Same tier as G-005 (consistent — both are optional helper hooks).",
+    "moduleEndIntegrity": {
+      "totalGoalsExpected": 6,
+      "totalGoalsCompleted": 6,
+      "allSelfReviewsPresent": "G-001/G-002/G-003/G-004/G-005/G-006 all have self-review JSONs in artifacts/MOD-GRID-02/state/",
+      "allScoreJsonsPresent": "G-001~G-006 specify-score (note: G-003 absent — known issue per G-003-self-review R-1, not retroactively fixed), implement-score, verify-score all present. G-004~G-006 also have implement-verifier-score (C-15 medium tier 절차 적용 from G-003 onwards; G-006 low-tier but still has verifier-score for procedure consistency).",
+      "moduleClosure": "PASS — all 6 Goals state=done in state-goals.json (per fr.json structure expected), all artifacts present, no blocking findings."
+    }
+  },
+  "harnessReviewArtifact": {
+    "selfReviewPath": ".claude/tw-grid/artifacts/MOD-GRID-02/state/G-006-self-review.json",
+    "rubricUpdates": [],
+    "constraintsUpdates": [],
+    "documentationUpdates": [
+      "decisions/MOD-GRID-00-decisions.md ADR-MOD-GRID-00-002 — append module-end vacuous truth reaffirmation paragraph (APPLY-1)",
+      "findings/auto-fixed/MOD-GRID-02-spec-writer-template-inertia.md (new) — F-06 template-inertia catalog (APPLY-4)",
+      "findings/auto-fixed/MOD-GRID-02-useLatestRef-catalog.md (new) — useRef + sync-useEffect pattern catalog (APPLY-5)"
+    ],
+    "toolingBacklog": [
+      "MOD-GRID-99-B/G-001-vitest-infra (canonical ID, escalated priority — APPLY-3)",
+      "MOD-GRID-00/G-NNN-internal-hook-callable-stability (re-named from stale G-005 TB-2 — APPLY-2)"
+    ],
+    "policyDecisionsRecorded": [
+      "MOD-GRID-02 state area COMPLETE — 6 Goals all PASS thresholds. Module total bundle delta +3.97 KB (5.36 KB headroom remaining).",
+      "C-32 option 3 cumulative count: 2 (G-004 + G-005). G-006 added 0 via D2 Option A saveRef pattern. 3rd-occurrence-block rule prevented escalation.",
+      "F-06 spec internal code defect rule: 3 occurrences in MOD-GRID-02 (G-003 Rules of Hooks, G-005 `as any`, G-006 over-specified eslint-disable). Rule scope unchanged, documentation catalog (APPLY-4) added.",
+      "Hook-only Goal vacuous D-category pattern: 6 occurrences across module. Rule reaffirmed for phased rollout. Real D-category evaluation deferred to MOD-GRID-17.",
+      "TB-1 vitest-infra Goal escalated to 'high priority before MOD-GRID-03 Phase 1' — 4 A-07 NO accumulated, 15+ more expected without infra completion."
+    ]
+  },
+  "timestamp": "2026-05-14T23:00:00Z"
+}

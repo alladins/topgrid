@@ -1,0 +1,178 @@
+{
+  "moduleId": "MOD-GRID-99-B",
+  "completedAt": "2026-05-15",
+  "summary": "5 Goals all PASS 100/85 — Docusaurus + TypeDoc (G-001) + Storybook 8 (G-002) + Playwright visual regression (G-003) + Migration guide (G-004) + READMEs ko/en (G-005). 56 files / 7 ADRs. C-5 ↔ framework CSS 충돌 패턴(G-001) 이 G-002 spec 단계 D8 결정으로 사전 차단됨 — learning loop 1회전 실증. C-28 path prefix 정정이 G-001/G-003/G-004/G-005 spec D# 결정으로 4회 반복 — '3회 = policy' 임계 초과로 자동화 도구화 권고.",
+  "scores": {
+    "G-001": {"specify": 100, "implement": 100, "verify": 100},
+    "G-002": {"specify": 100, "implement": 100, "verify": 100},
+    "G-003": {"specify": 100, "implement": 100, "verify": 100},
+    "G-004": {"specify": 100, "implement": 100, "verify": 100},
+    "G-005": {"specify": 100, "implement": 100, "verify": 100}
+  },
+  "totalFiles": "G-001 6 + G-002 15 (implementer F-01; A-01은 decisions.md MODIFY 포함 16) + G-003 7 + G-004 5 + G-005 23 = 56 files",
+  "totalADRs": 7,
+  "patterns": [
+    {
+      "id": "P-99-B-001",
+      "title": "C-5 (CSS 신규 파일 금지) vs framework-required CSS option 충돌 — G-001 spec 미검출 / G-002 spec 사전 차단",
+      "occurrences": 2,
+      "evidenceLocations": [
+        "G-001 spec.md L75 customCss path + L202 Section 7 #6 + L377 Section 11 Step 7 + L445 메타-게이트 (4 hits, Verifier 미검출)",
+        "G-001 implement-coverage F-05: customCss: [] 빈 배열 drift + ADR-MOD-GRID-99-B-001",
+        "G-002 spec.md L26 D8: 'preview.ts에 .css import 없음 — C-5 준수'",
+        "G-002 spec.md L96-97 코드 스니펫 주석 'D8: CSS import 없음 — monorepo에 Tailwind 미설치, C-5 완전 준수'",
+        "G-002 spec.md L296 EC-07 + L308 Section 7 #2 + L479 Step 3 + L657 게이트 cross-check + L682 PSD-002",
+        "G-002 implement-coverage promptSpecDrift = [] (0 drift — D8 사전 차단 효과 검증됨)"
+      ],
+      "rootCause": "G-001: rubric C-05 ≠ constraints C-5 namespace 혼동 + Verifier `.css NEW` grep 게이트 부재로 spec 단계 미검출 → Implementer 자율 정정. G-002: G-001 self-review 학습이 spec writer 에게 전파되어 D8 결정(monorepo Tailwind 미설치 사실 인용 + CSS import 0 의무화)으로 사전 차단.",
+      "applies": "G-003 Playwright (baseline CSS 옵션 없음, 위험 0 — 실측), G-004 Migration Guide / G-005 README (markdown 중심, 위험 0 — 실측). 후속 모듈 중 Storybook/Docusaurus 외 framework CSS 옵션 보유 도구(Chromatic, Webpack DevServer 등) 도입 시 재발 위험.",
+      "improvement": "✅ 단기: G-002 가 spec 단계에서 자율 해결 — learning loop 1회전 성공. ⏭ 장기: rubric 자동 grep 게이트(B-06 신설) 로 spec writer 학습에 의존하지 않는 영구 차단 (G-001 self-review 권고 유지).",
+      "priority": "P2 (단기 위험 해소, 장기 자동화 잔존)"
+    },
+    {
+      "id": "P-99-B-002",
+      "title": "C-28 goals.json path prefix 오류 — spec D# 결정으로 4회 반복 정정 (정책 임계 초과)",
+      "occurrences": 4,
+      "evidenceLocations": [
+        "G-001 spec D2 — wrapper-goals.json TOMIS/packages/ → monorepo/packages/ 정정 (constraints.md C-28 근거 사례로 이미 등재)",
+        "G-003 implement-coverage promptSpecDrift PSD-007: decisions.md path 'topvel-grid-monorepo prefix' (prompt) vs 'TOMIS worktree path' (spec) — TOMIS path authoritative 정정",
+        "G-004 implement-coverage F-02 evidence: 'Spec D1 corrected path prefix: D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/migration/' (spec writer 정정)",
+        "G-005 specify-score H-02 evidence: 'D1 decision (L29-46) explicitly corrects prefix from TOMIS to monorepo'"
+      ],
+      "rootCause": "discover 단계 자동 생성된 goals.json 17개 모듈에 잘못된 prefix(TOMIS/packages/) 잔존. constraints.md C-28 (2026-05-14 신설) 이 메인 오케스트레이터 수동 검증 의무로 정의되어 있으나, 매 spec 단계마다 spec writer 가 D# 결정으로 정정하는 동일 노동 4회 반복. C-29 footnote 명시 '3 occurrences = policy' 임계 초과.",
+      "applies": "잔여 모듈(MOD-GRID-02 ~ 16 중 미진행분 + 99-A) 약 14개. 모든 후속 spec 단계에서 동일 D# 결정 반복 예상.",
+      "improvement": "자동화 도구화 권고 — `.claude/tw-grid/tools/validate-goals-prefix.{mjs|ps1}` 신설 또는 `tw-grid validate-goals --prefix-check` 명령 추가. discover 단계 종료 시 또는 specify Agent 호출 직전 hook 으로 prefix 검증 + 자동 sed 치환. 메인 의무를 자동 게이트로 이전.",
+      "priority": "P1 (정책 임계 초과 + 노동 반복)"
+    },
+    {
+      "id": "P-99-B-003",
+      "title": "Storybook 8 메타 JSON 포맷 변경 (index.json) — prompt vs 실 도구 API drift",
+      "occurrences": 1,
+      "evidenceLocations": [
+        "G-003 implement-coverage promptSpecDrift PSD-006: 'stories.json' (prompt) vs 'index.json (Storybook 8) + fallback stories.json' (spec)",
+        "G-003 storybook.spec.ts loadStoryIds() fallback 패턴 구현"
+      ],
+      "rootCause": "메인 prompt 가 Storybook 7 이전 stories.json 가정. Storybook 8 (G-002 채택 버전) 은 index.json 으로 변경. Spec writer 가 spec 단계에서 정정 → Implementer 가 fallback 패턴 구현으로 호환성 확보.",
+      "applies": "단일 occurrence — 향후 Storybook 9 이상 마이그레이션 시 동일 검증 의무. 일반화: 외부 도구 메이저 버전 변경 시 메타 포맷/명령어 명세는 spec writer 가 도구 공식 docs 인용 의무.",
+      "improvement": "spec writer 가 도구 메이저 버전 변경 시 공식 docs(context7 MCP) 1회 조회 의무 명시 권고. specify-rubric H-01 referenceEvidence 에 'external tool major version: 공식 docs URL or context7 query result 인용 의무' subsection 추가.",
+      "priority": "P3 (단일 occurrence, 패턴화 시기 상조)"
+    },
+    {
+      "id": "P-99-B-004",
+      "title": "spec C-1 (Read-before-guess) 효과 실증 — license model 추측 정정",
+      "occurrences": 1,
+      "evidenceLocations": [
+        "G-005 implement-coverage promptSpecDrift: prompt 'licenseModel.openPackages: 6 MIT (grid, grid-core, grid-features, grid-export, grid-renderers, grid-license)' vs spec '4 MIT + 2 EULA/private (grid meta, grid-license)' per Section 3-1",
+        "G-005 resolution: spec applied — grid and grid-license use EULA license section in README, not MIT (package.json 실측 인용)"
+      ],
+      "rootCause": "메인 prompt 가 open/Pro 분류를 추측. Spec writer 가 specify-rubric C-1/H-01 (package.json 실측 의무) 준수로 정정. promptSpecDrift 카운트 = 1 (정상 작동 증거).",
+      "applies": "Rubric C-1 / H-01 의 효과성 데이터 포인트 — 추측-기반 prompt 가 발생해도 spec 단계에서 차단됨을 실증.",
+      "improvement": "Rubric 변경 불필요 (현재 동작 양호). 회고 데이터로 보존. 향후 rubric 효과성 회의 시 사례 인용.",
+      "priority": "P3 (positive evidence — 변경 불필요)"
+    }
+  ],
+  "rubricImprovements": [
+    {
+      "file": "constraints.md",
+      "section": "C-5",
+      "type": "clarify",
+      "proposal": "C-5 본문 끝에 framework-required CSS 예외 명시: '예외(framework-required CSS option): Docusaurus customCss / Storybook preview CSS / Chromatic baseline 등 외부 도구가 CSS 옵션을 의무 요구하는 경우 — (1) 옵션 키는 유지하되 값은 빈 배열 `[]` 또는 빈 객체로 대체, (2) 신규 `.css` 파일 생성은 여전히 금지, (3) 본 예외 적용 시 ADR 작성 의무 (C-14). 사전 차단 권장 — spec writer 가 D# 결정으로 옵션 부재 또는 빈 배열 명시 시 ADR 면제.'",
+      "rationale": "G-001 ADR-MOD-GRID-99-B-001 + G-002 D8 결정 2건의 실증 패턴 형식화. spec writer 가 사전 차단할 수 있도록 hard rule 명시 + ADR vs D# 결정의 선택지 제공."
+    },
+    {
+      "file": "specify-rubric.md",
+      "section": "B 카테고리 신규 B-06 또는 H-04 메타게이트",
+      "type": "add",
+      "proposal": "신설: 'CSS 신규 파일 자동 grep 게이트 — Coverage Verifier 는 spec 본문 (Section 2 코드 블록 / Section 7 implementFiles / Section 11 Step) 에서 `\\.(css|scss|module\\.css)\\b.*NEW` 패턴 grep. hit ≥ 1 → 자동 NO (C-5 violation flag). 단, spec D# 결정에 (a) framework-required 도구명 + (b) 옵션값 빈 배열/빈 객체 처리 + (c) ADR 인용 3요소가 모두 명시되면 N/A 처리.'",
+      "rationale": "G-001 specify-score C-05 evidence 가 affectedUsageFiles=[] 만 보고 통과 — 실제 spec 본문 4곳에 `custom.css NEW` 가 존재했으나 Verifier 는 검출 못함. G-002 D8 결정 형식을 N/A 조건으로 명시하여 학습 패턴을 rubric 에 직접 인코딩."
+    },
+    {
+      "file": "implement-rubric.md",
+      "section": "F-05",
+      "type": "clarify",
+      "proposal": "F-05 본문에 'spec vs constraints drift 카탈로그' subsection 신설: 'spec 본문이 constraints.md hard constraint 와 충돌 시(예: spec `.css` NEW vs C-5 금지), Implementer 는 constraint 우선 적용 + promptSpecDrift[] 에 `{type: \"specVsConstraints\", constraintId, specViolation, resolution: \"constraint applied + ADR\"}` 기록 + ADR 작성 (C-14 의무). 본 케이스는 prompt vs spec drift 와 별도 분류.' Reference template 으로 ADR-MOD-GRID-99-B-001 인용.",
+      "rationale": "현 F-05 는 prompt vs spec drift 중심. spec vs constraints drift 는 G-001 이 최초 사례 — Implementer 자율 정정의 정당성 근거 명시 + 향후 동일 케이스 재현 시 검출 가능성 향상."
+    },
+    {
+      "file": "specify-rubric.md",
+      "section": "헤더 (Version 변경 사항)",
+      "type": "clarify",
+      "proposal": "rubric 항목명 namespace 경고 추가: 'rubric 의 C-01/C-02/.../C-NN 은 rubric 내부 일련번호. constraints.md 의 C-1/C-2/.../C-N (CSS/AG-Grid/Wijmo 등 제약) 과 별개 namespace. Coverage Verifier 는 두 namespace 를 혼동 금지 — rubric C-XX 평가 시 constraints C-Y 와 의미 일치 여부 별도 검증. 권고: 차기 rubric major version 에서 rubric 항목명에 `R-` prefix 도입 검토 (R-C-01, R-C-02 등).'",
+      "rationale": "G-001 specify-score C-05 evidence 가 constraints C-12 (build) 를 backward-compatibility proxy 로 인용 — rubric C-05 의 검사 대상은 backward-compatibility 인데 constraints C-5 (.css 금지) 와 혼동 위험. 명시화로 verifier 실수 사전 차단."
+    },
+    {
+      "file": "specify-rubric.md",
+      "section": "H-01 referenceEvidence",
+      "type": "clarify",
+      "proposal": "subsection 추가: 'external tool major version 변경 시 (Storybook 7→8, Docusaurus 2→3, Playwright 1.x major 등) — 공식 docs URL 또는 context7 MCP query result 인용 의무. spec referenceEvidence Section 1 L1 ~ L3 에 해당 인용 명시. 미인용 시 H-01 NO.'",
+      "rationale": "G-003 PSD-006 (Storybook 8 index.json vs 7 stories.json) 단일 사례 — 메인 prompt 추측 vs 실제 도구 API drift 방지. Storybook/Docusaurus 같이 빠르게 진화하는 도구에 대비."
+    }
+  ],
+  "constraintsImprovements": [
+    {
+      "file": "constraints.md",
+      "section": "C-28",
+      "type": "automate",
+      "proposal": "C-28 본문 끝에 'Automation Tool' subsection 추가: '메인 오케스트레이터 수동 검증 의무를 자동 도구로 보완 — `.claude/tw-grid/tools/validate-goals-prefix.mjs` 신설 권고. (a) goals.json 의 모든 implementFiles 경로 grep, (b) `TOMIS/packages/` 또는 `TOMIS/apps/` prefix hit 시 비-zero exit, (c) `--fix` 옵션으로 `topvel-grid-monorepo/` 일괄 치환. specify Agent 호출 직전 hook 또는 discover 종료 시 자동 실행.'",
+      "rationale": "G-001/G-003/G-004/G-005 spec D# 결정으로 4회 반복 정정 = 정책 임계('3 occurrences = policy', C-29 footnote 기준) 초과. spec writer 가 매번 정정하는 노동을 자동화로 이전하면 잔여 14개 모듈에서 동일 노동 0회 가능."
+    },
+    {
+      "file": "constraints.md",
+      "section": "C-5",
+      "type": "clarify",
+      "proposal": "rubricImprovements 항목 #1 (constraints.md C-5 framework 예외 명시) 와 동일. 본 항목은 중복 명시이나 rubric 권고와 별도로 constraints 명시도 필수.",
+      "rationale": "Implementer 자율 정정 부담을 spec 단계로 이전 + 후속 모듈에서 framework-required CSS 도구 도입 시 사전 차단 가능."
+    }
+  ],
+  "patternCatalogCandidates": [
+    {
+      "title": "constraint > spec drift 자율 정정 패턴 (framework-required option 충돌)",
+      "summary": "spec 이 framework-required 옵션으로 인해 hard constraint 위반 시 처리 절차: (1) Implementer 가 constraint 우선 적용, (2) 옵션 키는 유지하되 값을 빈 배열/빈 객체로 대체, (3) ADR 작성 + promptSpecDrift[] 기록 (type: specVsConstraints).",
+      "appliesTo": "Docusaurus customCss [], Storybook preview-head [], Chromatic baseline 옵션, Webpack/Vite plugin 자리표시자 등 framework 가 옵션 키를 의무 요구하지만 값은 비울 수 있는 모든 케이스",
+      "evidence": "ADR-MOD-GRID-99-B-001 (G-001 docusaurus.config.ts L22 customCss: []) + G-002 D8 사전 차단 (preview.ts CSS import 0)",
+      "promotionCandidate": "tw-grid 패턴 카탈로그 신설 — `.claude/tw-grid/patterns/constraint-spec-drift.md` 신규 디렉토리 + 본 파일. 또는 기존 references/ 디렉토리 내 patterns/ 서브 신설."
+    },
+    {
+      "title": "goals.json path prefix 자동 검증 도구 (C-28 보완)",
+      "summary": "discover 단계 산출 goals.json 의 implementFiles 경로 prefix 자동 검증 + 일괄 치환. 메인 오케스트레이터 수동 검증을 자동 도구로 대체.",
+      "appliesTo": "MOD-GRID-02 ~ 16 (15개) + MOD-GRID-99-A 등 잔여 모듈의 spec 단계 진입 직전",
+      "evidence": "constraints.md C-28 + G-001 D2 + G-003 PSD-007 + G-004 D1 + G-005 D1 (4 occurrences)",
+      "promotionCandidate": "`.claude/tw-grid/tools/validate-goals-prefix.mjs` 신설 (Node.js script). 또는 `.claude/tw-grid/tools/validate-goals-prefix.ps1` (PowerShell — Windows 환경). 둘 다 가능."
+    },
+    {
+      "title": "external tool major version 공식 docs 인용 의무 (specify-rubric H-01 보강)",
+      "summary": "Storybook/Docusaurus/Playwright 등 빠르게 진화하는 외부 도구의 메이저 버전 변경 시 spec writer 가 공식 docs 또는 context7 MCP query 결과를 referenceEvidence 에 명시 의무.",
+      "appliesTo": "후속 모듈 중 외부 도구 도입/업그레이드 Goal — 특히 G-003 류 CI 도구 또는 G-002 류 dev tool 도입",
+      "evidence": "G-003 PSD-006 (Storybook 8 index.json 메타 포맷 변경) 단일 사례",
+      "promotionCandidate": "단일 사례 — 카탈로그 등재 전 1~2회 추가 발생 관찰 권고. 임시 specify-rubric 클러스터 노트로 보존."
+    }
+  ],
+  "learningLoopEvidence": {
+    "p99B001Propagation": "G-001 self-review 가 식별한 C-5 vs framework CSS 패턴이 G-002 spec 단계 D8 결정으로 사전 차단 — preview.ts CSS import 0 + EC-07 + Section 11 게이트 cross-check + PSD-002 명시. G-002 implement-coverage promptSpecDrift = [] (0 drift) 로 효과 검증.",
+    "headlineFinding": "tw-grid learning loop 1회전이 실제로 작동했다. self-review 권고 → 다음 Goal spec 사전 차단 → drift 0. 단, 영구 차단은 rubric 자동 grep 게이트 도입 필요 (spec writer 학습 의존 vs 도구 강제).",
+    "negativeFinding": "C-28 path prefix 정정은 spec writer 학습으로 차단되지 않고 매번 D# 결정 반복(4회). 이유 추정: C-28 자체가 'spec writer D# 결정 허용' 을 명시하여 학습 인센티브 없음. 자동화 도구만이 해결책."
+  },
+  "scoreVerification": {
+    "fifteenStageScoresAllPass": "G-001/G-002/G-003/G-004/G-005 × specify/implement/verify = 15 stages 모두 score=100.0, threshold=85, passed=true 확인 (각 score JSON Grep 검증)",
+    "totalFiles": "6+15+7+5+23 = 56 ✓ (G-002 implementer F-01 evidence 기준; A-01 evidence 기준으로는 16, 차이는 decisions.md MODIFY 포함 여부)",
+    "totalADRs": "MOD-GRID-99-B-decisions.md grep `^## ADR-MOD-GRID-99-B-` = 7 hits ✓",
+    "patternCount": "4 (P-99-B-001 ~ 004) — G-001 self-review 의 2개 + G-003/G-005 신규 2개 통합",
+    "driftCount": "G-001 1 (constraintVsSpec) + G-002 0 + G-003 3 (PSD-006/007/008) + G-004 0 + G-005 1 (license model) = 5 total drift entries across 5 Goals"
+  },
+  "appliedAutomatically": false,
+  "userDecisionRequired": "다음 3 항목 메인 결정 영역 — (1) constraints.md C-5 framework 예외 조항 추가, (2) constraints.md C-28 'Automation Tool' subsection 추가 + `.claude/tw-grid/tools/validate-goals-prefix.{mjs|ps1}` 실제 구현, (3) specify-rubric.md B-06 (CSS grep 게이트) + 헤더 namespace 경고 + H-01 external tool major version 의무 추가. 추가로 `.claude/tw-grid/patterns/constraint-spec-drift.md` 신설 여부도 사용자 결정.",
+  "recommendationCount": {
+    "rubricImprovements": 5,
+    "constraintsImprovements": 2,
+    "patternCatalogCandidates": 3,
+    "totalRecommendations": 10
+  },
+  "selfCheckOnReview": {
+    "scoresMatchArtifacts": "15 stage score JSON Grep 결과 모두 score=100.0/passed=true ✓",
+    "patternEvidenceVerified": "P-99-B-001 G-002 D8 evidence 6개 location Grep 으로 실재 확인 (L26/L96-97/L296/L308/L479/L657/L682). P-99-B-002 C-28 4 occurrences 각 score JSON 에서 확인. P-99-B-003 G-003 PSD-006 확인. P-99-B-004 G-005 promptSpecDrift 확인 ✓",
+    "noNewClaims": "본 self-review 는 5 Goal stage 결과 + G-001 self-review 종합 + drift 패턴 통합 — 추가 검증 발견 없음 (claim 추가 X) ✓",
+    "userDecisionScope": "rubric/constraints/패턴 카탈로그 수정은 메인 결정 — 본 파일은 권고만 산출 (appliedAutomatically=false) ✓",
+    "totalFilesArithmetic": "6+15+7+5+23=56 ✓ (G-002 차이 16 vs 15 명시)",
+    "headlineFindingDistinct": "G-001 self-review 와 차별점 = G-002 학습 전파 실증 + C-28 정책 임계 초과 식별 + G-003/G-005 신규 drift 패턴 2개 통합 ✓"
+  }
+}

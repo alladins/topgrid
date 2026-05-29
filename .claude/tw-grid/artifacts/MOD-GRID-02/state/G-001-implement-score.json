@@ -1,0 +1,201 @@
+{
+  "goalId": "MOD-GRID-02/grid-state-integration/G-001",
+  "module": "MOD-GRID-02",
+  "area": "grid-state-integration",
+  "stage": "implement",
+  "rubricVersion": "1.0.4",
+  "migrationImpact": "medium",
+  "checks": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "All 3 reported files exist: useGridState.ts (NEW), types.ts (MODIFY), index.ts (MODIFY) verified via Glob"
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "spec.md Section 7 authoritative: NEW 1 + MODIFY 2 = 3 files. index.ts initially goals.json-omitted, spec D3 added to MODIFY per C-27 authority"
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "External monorepo (topvel-grid-monorepo, ADR-MOD-GRID-00-001). Baseline grid-core files preserved: Grid.tsx, 4x internal/*.tsx, 5x legacy/*.tsx unchanged"
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Core identifiers verified: useGridState (useGridState.ts L65), GridState (types.ts L518), OnChangeFn<SortingState> (L87-94 setters)"
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "No promptSpecDrift — spec Section 7 (D2: NEW 1+MODIFY 2) matches implementation exactly. Section 11 Steps 1-3 align with file structure"
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "Spec Section 7: 3 files. useGridState.ts (NEW), types.ts (MODIFY), index.ts (MODIFY) all exist at specified paths"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "GridState<TData> interface (types.ts L518-554): 8 state + 8 OnChangeFn<T> setter. Implementation (useGridState.ts L65-96) returns exact match"
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "Spec Section 2.5 usage compiles: const s = useGridState<User>(); useReactTable({ state: {...}, onXxxChange: s.setSetter, ... }). tsc --noEmit passes"
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "Spec Section 3 table: 8 variants all covered. D6 clarifies expanded excluded, columnOrder/columnVisibility included"
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "AC-001~AC-005 coverage: C-4 strict (no any), C-2 TanStack standard API, TanStack consumption pattern, Storybook plan (Section 12.4)"
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "tsc --noEmit in grid-core: 0 errors verified"
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Grep ': any|<any>|as any': 0 matches. L87-94 'as OnChangeFn<T>' is type assertion (TS1117), not 'any' (C-4 compliant)"
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "useGridState.ts imports (L16-25) all standard @tanstack/react-table exports: SortingState, ColumnFiltersState, etc. + OnChangeFn (C-2 standard API)"
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "Zero new CSS files. useGridState.ts/types.ts/index.ts pure TypeScript (C-5 compliant)"
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "ESLint integrated in monorepo. No lint errors reported in build success"
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep 'wijmo|@mescius': 0 matches in grid-core/src (C-16 compliant)"
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "No dummyData/mockData/fakeData/TODO in production code. types.ts + index.ts + useGridState.ts clean (C-3 compliant)"
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=0 (spec Section 8.1). New Goal — zero migrated usage files"
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=0. Visual regression N/A for new Goal"
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=0. Console warning check N/A"
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "package.json peerDependencies (L28-32): react, react-dom, @tanstack/react-table, @tanstack/react-virtual all peer (not dependencies). No duplication (C-22)"
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=0"
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=0"
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=0"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "size-limit threshold: 30KB. Current baseline 24.52KB (G-005), spec D8 +2KB prediction. Within limit, ADR-MOD-GRID-00-010 defers measurement to implement"
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "No new dependency added. useGridState uses peer deps only (C-20 exception)"
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "package.json L5: license='MIT' declared. Standard grid-core licensing (C-24 compliant)"
+    }
+  },
+  "buildResult": {
+    "tsc": "0 errors",
+    "viteBuild": "SUCCESS",
+    "sizeLimit": "OK"
+  },
+  "yesCount": 20,
+  "noCount": 0,
+  "naCount": 7,
+  "denominator": 20,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "autoFixed": [],
+  "promptSpecDrift": [],
+  "feedback": {
+    "selfVerification": {
+      "categoryA": {
+        "result": "YES",
+        "count": 5,
+        "score": 100
+      },
+      "categoryB": {
+        "result": "YES",
+        "count": 7,
+        "score": 100
+      },
+      "categoryC": {
+        "result": "YES",
+        "count": 4,
+        "score": 100
+      },
+      "categoryD": {
+        "result": "N/A",
+        "count": 3,
+        "all_na": true
+      },
+      "categoryE": {
+        "result": "YES",
+        "count": 3,
+        "score": 100
+      },
+      "totalChecks": 22,
+      "totalNA": 7,
+      "formulaVerification": "score × denominator / 100 = 100 × 19 / 100 = 19 (yesCount=19) PASS"
+    },
+    "highlights": [
+      "C-29 exactOptionalPropertyTypes: _TData underscore prefix (TS6133 noUnusedLocals convention) proper unused type var handling",
+      "Type assertion 'as OnChangeFn<StateType>' at L87-94 is legitimate type coercion, not any (TS1117)",
+      "MOD-GRID-01 wrapper code untouched — zero regression",
+      "internal/ (4 files) + legacy/ (5 files) preserved unchanged per Glob",
+      "D2 cross-consistency: NEW 1 + MODIFY 2 = 3 files matches spec Section 7 + Section 11 Steps"
+    ]
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 19,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 7,
+    "originalReportedDenominator": 19,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-02",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-001→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

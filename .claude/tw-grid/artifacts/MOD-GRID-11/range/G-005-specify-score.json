@@ -1,0 +1,204 @@
+{
+  "goalId": "MOD-GRID-11/range/G-005",
+  "module": "MOD-GRID-11",
+  "area": "range",
+  "stage": "specify",
+  "rubricVersion": "1.0.7",
+  "migrationImpact": "medium",
+  "checks": {
+    "H-01": {
+      "result": "YES",
+      "evidence": "All Section 1 referenceEvidence paths verified: L1 (range-goals.json), L2 (useKeyboardNav.ts, useClipboard.ts, types.ts), L3 (MOD-GRID-11-decisions.md), R-A (publish-aggrid-analysis.md), R-W (publish-wijmo-analysis.md). Glob/Read confirmation on all paths."
+    },
+    "H-02": {
+      "result": "YES",
+      "evidence": "Parent dir validation: packages/grid-pro-range/src/ exists, verified via `ls` output: useKeyboardNav.ts, useClipboard.ts, types.ts, index.ts present. File naming convention matches project standard (kebab-case hooks)."
+    },
+    "H-03": {
+      "result": "YES",
+      "evidence": "All 6 ACs tagged: AC-001 (C-4), AC-002 (L1), AC-003 (L1), AC-004 (C-16), AC-005 (C-12), AC-006 (C-25). All source tags cross-referenced in goals.json or constraints.md."
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "Section 1 confirms L0='N/A — affectedUsageFiles: []'. Section 1.3 cites L1 goals.json as AC source (AC-001 thru AC-006)."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Section 1.3 L2 references specify CellCoord, CellRange types from G-001/G-002 + cite both useKeyboardNav.ts and useClipboard.ts onKeyDown pattern reuse (D7 compository)."
+    },
+    "A-03": {
+      "result": "N/A",
+      "evidence": "New feature — no 8 variant migration required (new api, not variant improvement)."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles: [] (0 usage sites). Section 1.2 explicitly lists 'N/A' per goals.json L346."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "Section 1.3 R-A cites AG Grid Enterprise Range Delete pattern (publish-aggrid-analysis.md). R-W cites Wijmo startEditing concept (publish-wijmo-analysis.md §3). Both marked 'reference only' per C-16 compliance (no code adoption)."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "Section 3.1 defines UseKeyboardEditProps<TData, TCell> interface with selection, activeCell, isEditableColumn, onDeleteRange, onBulkEdit, onEditStart, table props (all typed, no any). UseKeyboardEditReturn = { onKeyDown: (e: React.KeyboardEvent) => void }."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Section 3.3 provides 1 usage example (spread-skip C-29 pattern). Section 10.1 provides developer journey with complete hook integration (editProps assembly). Two+ scenarios covered."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "Section 3.1 interface: isEditableColumn?: (colIndex: number) => boolean (optional). onDeleteRange?, onBulkEdit?, onEditStart?, table? — all optional. Section 3.2 resolvedIsEditable logic default (all cols editable if undefined)."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "Section 3.1 header: 'topvel-grid-monorepo/packages/grid-pro-range/src/types.ts'. Section 7 #3 row confirms same path. Section 13.4 documents JSDoc export intent."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "No imperative ref API required. Hook returns pure callback (onKeyDown). Purely declarative composition."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "Section 2 AC table: 6 criteria (AC-001 thru AC-006). Exceeds minimum 3 requirement."
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "All 6 ACs tagged: | AC# | 소스 | AC-001 C-4 ✓ | AC-002 L1 ✓ | AC-003 L1 ✓ | AC-004 C-16 ✓ | AC-005 C-12 ✓ | AC-006 C-25 ✓"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "All ACs objective: AC-001 'callback 호출' (verifiable). AC-002 'printable key: e.key.length === 1 && !e.ctrlKey...' (testable). AC-003 'onEditStart 호출' (verifiable). AC-004/005/006 'import 0건', '0 error', 'story 1개' (binary)."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "Section 1.1 table states migrationImpact='medium'. goals.json L309 authority source confirms 'migrationImpact': 'medium'. Rationale in Section 5.3: affectedUsageFiles=[] but keyboard API addition = medium-tier visual regression obligation (bundleImpact +2KB)."
+    },
+    "C-05": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] — new feature, 0 usage files. Per C-17 N/A condition: 'migrationImpact: low 또는 사용처 0개 Goal' → N/A. No compatibility check required for greenfield API."
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "Section 1.3 states affectedUsageFiles: [] (explicitly 0 files listed). Section 8.1 H-01 confirms L0=N/A."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "New feature (신규 기능). No 8 variant migration table required."
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "Section 4 explicitly: breaking='no'. Rationale: types.ts NEW only (no existing type modification), index.ts NEW export only (no removal), G-001/G-002/G-003/G-004 consumer code change NOT required (Section 4 concludes 'Breaking change 없음')."
+    },
+    "D-04": {
+      "result": "N/A",
+      "evidence": "No breaking change declared (breaking=no). Deprecation strategy N/A per Section 4."
+    },
+    "D-05": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] + migrationImpact=medium triggers C-17 N/A condition. Rollback strategy stated in Section 8.6: '롤백 | index.ts export 제거' (trivial, low operational impact)."
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "Section 5.3 bundleImpact analysis: '+2 KB (gzip)' explicit. Cumulative prediction: 'G-001(4) + G-002(2) + G-003(3) + G-004(2) + G-005(2) = 13 KB'. Limit: '≤ 20 KB per Pro'. Status: '✓ 준수'. G-006 buffer: '7 KB余裕'."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Section 7 final implementFiles table (4 files): #1 useKeyboardEdit.ts NEW, #2 useKeyboardEdit.stories.tsx NEW, #3 types.ts MODIFY, #4 index.ts MODIFY. Section 11 Before/After steps 1-4 ALL explicitly mapped to Section 7 rows. E-01 cross-check Section 7 ↔ Section 11: Step 1 (types.ts MODIFY) → row #3 ✓, Step 2 (useKeyboardEdit.ts NEW) → row #1 ✓, Step 3 (index.ts MODIFY) → row #4 ✓, Step 4 (stories.tsx NEW) → row #2 ✓. All Step files present, no omission."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "Section 11 provides Before/After for all 4 steps: L542-569 (types.ts), L573-591 (useKeyboardEdit.ts), L595-608 (index.ts), L612-615 (stories reference). Executable code snippets covering hook signature, internal helpers, exports."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "Section 11 four sequential steps with explicit dependencies: (1) types.ts MODIFY (foundation), (2) useKeyboardEdit.ts NEW (hook body), (3) index.ts MODIFY (export), (4) useKeyboardEdit.stories.tsx NEW (documentation). Step order respects type definitions before implementation."
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "Section 6 lists 9 edge cases: EC-001 (selection null), EC-002 (editable=0), EC-003 (activeCell null), EC-004 (Enter+range D5 fork), EC-005 (printable+Ctrl), EC-006 (F2+range), EC-007 (IME composition), EC-008 (undefined callbacks), EC-009 (single cell+printable). Section 6 final table maps AC↔EC: AC-002↔EC-007 (isComposing), AC-003↔EC-004 (Enter conflict), AC-001↔EC-002 (editable filter). Exceeds minimum 3."
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "Section 12 comprehensive verification plan: 12.1 Unit tests UT-001~UT-012 (12 scenarios: Delete + null/editable-0, F2 + null, Enter single/range, printable + Ctrl/composition/single-cell, undefined callbacks). 12.2 Self-review checklist 17 items. 12.3 Build: tsc+tsup+size-limit. 12.4 Visual: N/A (affectedUsageFiles=0)."
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "Section 7 re-decision check: Grep Section 7 body for keywords '재결정|변경|대체|수정함' → ZERO hits. Section 7 is pure final table without post-table contradiction. D# narrative (Section 0) provides decision context without reversal in Section 7. No spec-internal conflict between decision text and final table."
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "Section 13.1: '@tomis/grid-pro-range/useKeyboardEdit는 **Pro tier** 기능'. Section 1.1 Goal table Tier='Pro'. Package='@tomis/grid-pro-range' explicit."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "Section 13.1 specifies Pro license verification: '_verifyGridLicenseStub → MOD-GRID-99-A/G-002 완료 후 실제 EULA 라이선스 검증으로 교체'. Stub location (useKeyboardEdit.ts L149-150 inline function) + ADR-MOD-GRID-11-002 reference explicit. SPECIFY duty (describe location + phase) ✓ not IMPLEMENT duty."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "Section 13.4 documents: 'Docusaurus 페이지: @tomis/grid-pro-range/useKeyboardEdit API reference'. 'Storybook: useKeyboardEdit.stories.tsx — Delete + BulkEdit + EditStart 시나리오'. 'JSDoc: 모든 export 함수/타입에 JSDoc 의무'. '합성 순서 가이드: G-005 → G-002 → G-004 체인'. All C-25 requirements covered."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Section 5.1 peerDeps: 'react' (useCallback, useEffect), '@tanstack/react-table' (optional Table<TData> param). Section 3.1 imports state peerDep pattern. Both listed as peer, not dep."
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "Grep 'TBD|TODO|미정' → ZERO instances. All decisions explicit: D1-D8 in Section 0 (paths, stub pattern, dependency split, Enter conflict, printable key detection, onKeyDown composability, Storybook). No '추후 결정' or open-ended commitments. Spec Authority (C-27) established via ADR references (ADR-MOD-GRID-11-001/002/003/005)."
+    }
+  },
+  "yesCount": 28,
+  "noCount": 0,
+  "naCount": 7,
+  "denominator": 28,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "summary": "G-005 Specify stage PASS: 100.0/100 (28/28 items YES, 4 N/A excluded per C-26). All rubric categories satisfied: referenceEvidence paths verified, implementFiles parent dir exists, API contract fully typed, AC objectives binary-verifiable, edge cases enumerated, before/after code provided, section 7↔11 consistency cross-checked, no TBD/TODO, pro-tier commercialization plan complete. H-01/H-02/H-03 meta-gates all YES — proceed to IMPLEMENT.",
+    "metaGates": {
+      "H-01": "PASS — All L0/L1/L2/L3/R-A/R-W paths verified (7 sources)",
+      "H-02": "PASS — Parent dirs real + convention match (packages/grid-pro-range/src/)",
+      "H-03": "PASS — AC source tags complete + spec-internal"
+    },
+    "highlights": [
+      "D# decision table (Section 0) well-structured: 8 decisions with ADR mapping + trade-off rationale (D3/D4/D5 dependency split and Enter conflict resolution explicit)",
+      "E-06 re-decision consistency: Section 7 pure final table (no post-table contradiction), D# narrative clean without reversal",
+      "Section 11 executable code: 4 steps with Before/After snippets covering types/hook/exports/stories, dependency order clear",
+      "Edge case coverage comprehensive: 9 EC with AC↔EC mapping table (E-04 recommendation standard applied), EC-007 (IME composition) + EC-004 (Enter range) key scenarios explicit",
+      "Commercialization plan complete: Pro tier confirmation, license verification stub location, Docusaurus/Storybook/JSDoc checklist, bundle impact (+2KB within 20KB limit, G-006 buffer 5KB余裕)"
+    ],
+    "riskFlags": []
+  },
+  "verifierModel": "haiku",
+  "verifyAt": "2026-05-15T01:41:02Z",
+  "loopCount": 1,
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 28,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 4,
+    "originalReportedDenominator": 28,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-11",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-005→full",
+      "tier=medium",
+      "runAt=2026-05-27"
+    ]
+  }
+}

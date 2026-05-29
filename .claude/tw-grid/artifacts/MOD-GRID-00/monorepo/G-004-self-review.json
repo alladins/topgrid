@@ -1,0 +1,140 @@
+{
+  "goalKey": "MOD-GRID-00/monorepo/G-004",
+  "goalId": "G-004",
+  "module": "MOD-GRID-00",
+  "area": "monorepo",
+  "mode": "success-review",
+  "completedAt": "2026-05-14",
+  "reviewerModel": "opus",
+  "stageScores": {
+    "specify": { "score": 100, "loops": 1, "reVerified": false, "threshold": 90, "passed": true },
+    "implement": { "score": 100, "loops": 1, "reVerified": false, "threshold": 90, "passed": true, "promptSpecDrift": [] },
+    "verify": { "score": 100, "loops": 1, "threshold": 90, "passed": true, "weightedScore": 100 }
+  },
+  "context": {
+    "specifyTrigger": "1차 통과 (100/90 PASS). G-003 학습 누적 효과로 spec writer가 H-01 경로 segment 보존, AC 출처 태그, EC↔AC 매핑, ADR-006 초안 작성 모두 first-try 통과. Verifier H-01/H-02/H-03 메타게이트 모두 YES.",
+    "implementTrigger": "1차 통과 (100/90 PASS). Implementer가 spec.md 직접 Read + cross-check 의무 충실 이행 → promptSpecDrift: [] (G-003 학습 cascading 성공의 직접 증거). Section 11.6 nonexistent reference는 structural error로 분류, value drift 없음. spec 권위 우선 적용 (Section 7 16개 + Section 11.1 Step 1-2 추가 2개 = 총 18개 변경, goals.json implementFiles 3개와 충돌 시 spec 우선).",
+    "verifyTrigger": "1차 통과 (weighted 100/90 PASS). F-01~F-03 메타게이트 모두 YES (evidence 라인 인용, categoryScores 산식, weightedScore 가중 산식 모두 검증). vacuous keyword guard 정상 작동 — A 카테고리에 'vite' 키워드 있어 vacuous 금지, A-02 YES 평가."
+  },
+  "cascadingEffect": {
+    "g003LearningApplied": "G-003 self-review에서 신설된 C-27 (Spec 권위) + implement F-05 (prompt-spec drift 보고) + ADR-008 (peer 매트릭스) 모두 G-004에서 실효 작용 확인. 구체 증거:",
+    "evidence": [
+      "implement-score.json L157 promptSpecDrift: [] — spec 위반 재발 없음. G-003 1차 implement 실패 패턴 (A-02 + E-01 NO) cascading 차단 성공.",
+      "implement-score F-05.evidence: 'Implementer read spec.md directly before implementation. No value-level drift detected between prompt and spec.' — Implementer 의무(prompt 수신 직후 spec.md Read + cross-check) 충실 이행.",
+      "G-004는 새 peer 패키지 추가 없음 → ADR-008 매트릭스 직접 적용 사례는 없으나, ESLint 신규 5개 devDeps에 대해 라이선스 매트릭스 작성(ADR-006 라이선스 검증 표)으로 동일 패턴 확장."
+    ],
+    "verdict": "G-003 학습 cascading 성공 — 1차 100/100/100 통과는 우연이 아닌 학습 효과의 직접 증거."
+  },
+  "rootCauseAnalysis": {
+    "specifyLoop1Pass": {
+      "pattern": "Spec writer가 G-001~G-003 누적 학습 적용 충실 — first-try 통과",
+      "evidence": "spec.md L836-844 'G-003 학습 적용 확인' 표에서 C-27/H-01/H-02/ADR-003 모두 명시 적용. specify-score.json metaGates H-01/H-02/H-03 모두 YES + 라인 인용.",
+      "newFindings": "spec 자체가 첫 시도에 100점이었으나, 두 가지 spec-내부 일관성 결함 발견 (Implementer feedback): (1) D5 결정 표 헤더 '12 패키지' vs 본문/AC-002/Section 7 '13개'. (2) Section 7 16행 vs Section 11.1 Steps 1~2가 decisions.md + monorepo/package.json 추가 명시 (Section 7 누락). Implementer가 spec 우선 적용으로 잘 처리했으나 spec writer 단계에서 사전 차단 가능."
+    },
+    "implementLoop1Pass": {
+      "pattern": "C-27 (Spec 권위) + F-05 (drift 보고) 의무 충실 이행. Implementer가 spec 우선 적용.",
+      "evidence": "implement-score.json promptSpecDrift: [] (G-003 학습 cascading). feedback에 6건 spec-내부 inconsistency 보고 — Implementer가 spec 외부 출처(goals.json) 대신 spec.md를 single source of truth로 우선 채택.",
+      "newFindings": "(1) goals.json implementFiles(3개) vs spec Section 7(16개) 권위 충돌 — C-27 (메인 prompt-spec drift)이 명시적으로 커버하지 않는 새 패턴. spec.md authoritative 룰 필요. (2) prompt가 spec Section 11.6 (nonexistent) 참조 — structural reference error로 value drift와 구분 필요. (3) TOMIS 신규 무커밋 상태 → git diff 비어있음 정상, Read 기반 보존 검증으로 대체. F-03 disjunction 룰 필요."
+    },
+    "verifyLoop1Pass": {
+      "pattern": "Verifier F-01 evidence sampling + 라인 인용 + categoryScore/weightedScore 산식 검증 모두 충실. vacuous keyword guard 정상 작동.",
+      "evidence": "verify-score.json metaGates F-01/F-02/F-03 모두 YES, scoreFormulaVerification 4단계 검산 통과. surgicalChangeVerification 섹션이 vite.config.ts 5개 보존 항목 individually YES.",
+      "newFindings": "기존 룰 충실 적용. 신규 결함 없음."
+    }
+  },
+  "improvements": [
+    {
+      "file": "rubric/specify-rubric.md",
+      "section": "E-01 (Section 7 ↔ Section 11 일관성 cross-check 추가)",
+      "change": "Section 7 (NEW/MODIFY 표) ↔ Section 11 (구현 계획) 모든 Step 파일 일치 의무 추가. spec 작성 단계에서 sampling 검증 의무. Section 11 Step에 명시된 모든 변경 파일이 Section 7 표에 들어 있어야 함.",
+      "rubricCount": "31 유지 (E-01 내부 보강)"
+    },
+    {
+      "file": "rubric/specify-rubric.md",
+      "section": "G-01 (사전 결정 표(D#) ↔ 본문 cross-consistency 추가)",
+      "change": "spec 헤더 사전 결정 표(D#)의 수치/이름/카운트가 본문(Section 1~13), AC 표, Section 7 표와 100% 일치 의무. D5 typo '12 패키지' vs 본문 '13개' 사례 사전 차단.",
+      "rubricCount": "31 유지 (G-01 내부 보강)"
+    },
+    {
+      "file": "rubric/implement-rubric.md",
+      "section": "F-02 (goals.json implementFiles ↔ spec.md Section 7 권위 충돌 처리 룰 추가)",
+      "change": "goals.json implementFiles와 spec.md Section 7 불일치 시 spec.md authoritative (이유: goals.json은 discover 단계 자동 생성, spec.md는 specify 단계 사용자 검토 후 확정). Implementer는 Section 7+11 union 따름. feedback.goalsJsonImplementFiles 필드에 보고.",
+      "rubricCount": "22 + F=5 유지 (F-02 내부 보강)"
+    },
+    {
+      "file": "rubric/implement-rubric.md",
+      "section": "F-03 (TOMIS 내부 MODIFY 보존 증거 disjunction 추가)",
+      "change": "TOMIS 내부 기존 파일 MODIFY 시 보존 증거를 (a) git diff 라인 수 OR (b) Read 보존 섹션 + grep 키워드 인용 중 하나로 입증. TOMIS git 무커밋 상태(신규 프로젝트) 대응. C-1 자연 확장.",
+      "rubricCount": "22 + F=5 유지 (F-03 내부 보강)"
+    },
+    {
+      "file": "rubric/implement-rubric.md",
+      "section": "F-05 (Structural reference 오류 vs Value drift 구분 추가)",
+      "change": "prompt가 spec의 nonexistent 섹션 번호 참조하는 경우는 structural reference error — promptSpecDrift[]에 기록 안 함. 대신 feedback 1줄 보고. Value drift(파일 경로/버전/한도값 등 구체값 불일치)와 구분.",
+      "rubricCount": "22 + F=5 유지 (F-05 내부 보강)"
+    },
+    {
+      "file": "constraints.md",
+      "section": "C-1 확장 (C-28 신설 대신)",
+      "change": "C-1에 TOMIS 내부 기존 파일 MODIFY 시 보존 증거 의무 추가 (git diff OR Read disjunction). 검증 상세는 implement-rubric F-03 참조. 신규 constraint C-28 신설 회피 — C-1과 의미적 중복.",
+      "reasonForNotCreatingC28": "Advisor 권고: C-28을 standalone constraint로 만들면 C-1 (Read-then-Write) + C-6 (Backward Compatibility)와 의미적 중복. G-004 verify-score.json의 surgicalChangeVerification 섹션이 이미 5개 보존 항목 individually 검증 — verification-method clarification으로 충분. F-03 + C-1 확장으로 처리."
+    },
+    {
+      "file": "decisions/MOD-GRID-00-decisions.md",
+      "section": "ADR-MOD-GRID-00-009 (신설)",
+      "change": "환경 의존 deferred AC 일괄 검증 게이트 신설. G-001 EC-02 + G-003 EC-01+EC-02 + G-004 EC-01+EC-03 총 4건이 모두 pnpm install 미실행에 root-cause. G-005 (또는 첫 실 구현 Goal) implement 진입 전 일괄 환경 검증 게이트로 처리.",
+      "checklist": "Step 1 pnpm install / Step 2 changeset CLI / Step 3 size-limit CLI / Step 4 tw-framework-front HMR"
+    }
+  ],
+  "filesUpdated": [
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/rubric/specify-rubric.md",
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/rubric/implement-rubric.md",
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/constraints.md",
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-00-decisions.md"
+  ],
+  "constraintsAdded": [],
+  "constraintsExpanded": ["C-1 (TOMIS 내부 MODIFY 보존 의무 보강)"],
+  "metaGatesAdded": [],
+  "metaGatesExpanded": ["specify E-01 / specify G-01 / implement F-02 / implement F-03 / implement F-05"],
+  "adrsAdded": ["ADR-MOD-GRID-00-009"],
+  "rubricVersionBump": {
+    "specify": "1.0.2 → 1.0.3 (E-01 + G-01 내부 보강)",
+    "implement": "1.0.3 → 1.0.4 (F-02 + F-03 + F-05 내부 보강)",
+    "verify": "1.0.2 (no version bump — G-004 verify 단계는 기존 룰 충실 적용, 신규 결함 없음)"
+  },
+  "learningCatalog": {
+    "G-001": "finding 환각 후 사후 작성 / vacuous truth rule / 외부 디렉토리 정책 / EC↔AC 매핑 (ADR-001/003 + H-02 + F-03 N/A + specify-rubric E-04)",
+    "G-002": "Verifier 산식 false-fail / 자기-검산 의무 (C-26 + 4대 자기-검증 의무)",
+    "G-003": "(1) Verifier H-01 라인 인용 의무 / (2) 메인-Implementer prompt가 spec 위반 — Spec 권위 강제 (C-27 + implement F-05 + ADR-008 매트릭스)",
+    "G-004": "(1) Spec 내부 일관성 cross-check (Section 7↔11 + D# 표↔본문) / (2) goals.json↔spec.md 권위 충돌 — spec authoritative / (3) TOMIS 무커밋 신규 프로젝트 git diff 대체 — Read 보존 증거 disjunction / (4) Structural reference error vs Value drift 구분 / (5) 환경 의존 deferred AC 누적 4건 일괄 게이트 (ADR-009) — pnpm install bulk validation"
+  },
+  "rootCausePattern": "G-004는 1차 100/100/100 통과 — 표면적으로 실패 없음. 그러나 implement-score feedback에 6건 spec-내부 inconsistency가 정확히 보고됨. 이는 (1) Implementer 보고 의무 충실 이행 (C-27 cascading), (2) spec 자체의 미세 결함이 첫 시도 통과 score만으로는 검출 안 됨. 본 retrospective는 1차 통과한 Goal도 Implementer feedback을 통해 spec 작성 단계에서 차단 가능한 패턴을 발굴 → cascading 학습 강화. 또한 4건 deferred AC 누적이 G-005 implement risk를 가중 — ADR-009 bulk gate로 사전 차단.",
+  "cascadingEffect_summary": "다음 72 Goal 모두 영향. 특히 (1) specify 단계에서 Section 7↔11 + D# 표 내부 일관성 cross-check 의무 — Implementer feedback 부담 감소. (2) implement F-02 spec authoritative + F-03 보존 disjunction — TOMIS 신규 프로젝트 + goals.json discover 자동 생성 환경에서 false-fail 차단. (3) ADR-009 deferred bulk gate — G-005 implement risk 사전 차단. G-005부터는 실 코드 구현 단계 진입.",
+  "deferredAcBulkValidationPlan": {
+    "owner": "G-005 (또는 다음 첫 실 구현 Goal) Spec writer",
+    "blocking": true,
+    "checklist": [
+      "Step 1: cd topvel-grid-monorepo && pnpm install — workspace recognition 검증",
+      "Step 2: pnpm changeset --version → 2.27.x 확인 (G-004 EC-01 해소)",
+      "Step 3: pnpm -r --filter './packages/*' build && pnpm size-limit → exit 0 + 13 패키지 한도 통과 (G-003 EC-01+EC-02 해소)",
+      "Step 4: cd tw-framework-front && pnpm dev → port 5173 + @tomis/grid-core import 해석 + HMR 즉시 반영 (G-004 EC-03 해소)",
+      "Step 5: findings/resolved/MOD-GRID-00-deferred-bulk-2026-05-14.md 작성 또는 기존 4건 finding 파일에 'Resolved per ADR-009' 추가"
+    ],
+    "fallback": "검증 실패 시 해당 단계의 deferred AC는 영구 risk로 격상 — G-005 implement 진입 차단 + 사용자 알림"
+  },
+  "nextActions": "G-005 (또는 다음 첫 실 구현 Goal) spec 첫 Section에 'Pre-flight: deferred AC bulk validation' 필수 명시. ADR-009 checklist 통과 입증 finding을 spec referenceEvidence L0에 포함. Implementer는 spec 진입 전 게이트 통과 확인.",
+  "advisorConsulted": true,
+  "advisorKeyInsights": [
+    "1. git diff 의무를 strict로 쓰면 G-004 자신이 NO 됨 (TOMIS 무커밋 상태). disjunction (git diff OR Read 보존 증거)로 작성 → F-03 보강.",
+    "2. Implementer가 보고한 6건 feedback 중 'goalsJsonImplementFiles'는 C-27이 명시적으로 커버 안 하는 새 패턴 (메인-Implementer drift가 아니라 discover-spec drift). F-02에 spec authoritative 룰 추가가 가장 가치 있음.",
+    "3. C-28 standalone constraint는 C-1+C-6+verify surgicalChangeVerification와 의미적 중복. verification-method clarification이라면 C-1 확장 또는 F-03 보강이 적합.",
+    "4. ADR-009 (pnpm install bulk gate)가 가장 cascading 가치 높음 — 4건 deferred 공통 root cause 명시적 게이트화.",
+    "5. cascading 효과 입증을 위해 implement-score.promptSpecDrift: [] + F-05 evidence를 self-review JSON에 직접 인용 (G-003 학습 cascading 직접 증거)."
+  ],
+  "selfReviewDuty": {
+    "ruleAdditionsOnly": true,
+    "ruleDeletionsAvoided": true,
+    "noteOnRubricItemCount": "specify(31) + implement(22) + verify(16) 항목 수 모두 유지. 메타게이트 + 항목 내부 보강만 (specify E-01/G-01 cross-check / implement F-02/F-03/F-05 disjunction & 구분 룰).",
+    "noNewConstraintAddedReason": "C-28 신설 대신 C-1 확장 + implement F-03 보강. Advisor 권고 반영 — verification-method는 새 constraint 불필요."
+  }
+}

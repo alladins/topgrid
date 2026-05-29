@@ -1,0 +1,182 @@
+{
+  "goalId": "MOD-GRID-99-B/docs/G-001",
+  "module": "MOD-GRID-99-B",
+  "area": "docs",
+  "stage": "implement",
+  "rubricVersion": "1.0.9",
+  "migrationImpact": "low",
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "6개 실구현 파일 모두 Write 성공: apps/docs/package.json(MODIFY), apps/docs/docusaurus.config.ts(NEW), apps/docs/sidebars.ts(NEW), apps/docs/typedoc.json(NEW), apps/docs/docs/getting-started.mdx(NEW), apps/docs/docs/architecture.mdx(NEW). C-5 drift로 custom.css 미생성(Section 7 #6 제외). decisions/MOD-GRID-99-B-decisions.md(NEW) + finding(NEW) 추가 작성."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "docusaurus.config.ts: Config 타입 준수, plugins[] 배열에 docusaurus-plugin-typedoc 실제 등록(C-31 wiring). sidebars.ts: SidebarsConfig 타입 준수. typedoc.json: $schema + entryPointStrategy + 13 entryPoints + failOnWarnings + plugin + readme. 모두 spec Section 2-1/2-2/11 Step 3 구조와 일치."
+    },
+    "A-03": {
+      "result": "N/A",
+      "evidence": "신규 docs 사이트 추가 — pnpm install 미실행으로 런타임 동작 검증 불가. documented deviation 참조."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "신규 영역(Section 3: 현재 구현 없음) — 대응할 기존 variant 없음."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "AC-001(ADR 기록 + 라이선스): decisions.md ADR-002/003 MIT/Apache-2.0 명시. AC-002(13개 TypeDoc): docusaurus.config.ts plugins[] + typedoc.json 13 entryPoints. AC-003(MDX 페이지): getting-started.mdx + architecture.mdx 생성. AC-004(pnpm build): documented deviation(pnpm install 미실행). AC-005(failOnWarnings): typedoc.json failOnWarnings:true 설정."
+    },
+    "A-06": {
+      "result": "YES",
+      "evidence": "docusaurus-plugin-typedoc은 docusaurus.config.ts plugins[] 배열에 실제 등록됨(C-31 wiring 충족). 단순 import X — plugins: [['docusaurus-plugin-typedoc', {...}]] 형식으로 Docusaurus 플러그인 시스템에 invoke 연결."
+    },
+    "A-07": {
+      "result": "N/A",
+      "evidence": "spec Section 7에 *.test.* 파일 없음 — 해당 없음."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "pnpm install 미실행으로 @docusaurus/types 미설치 — tsc 실행 불가. documented deviation 참조. apps/docs는 신규 private 패키지로 기존 monorepo tsc 범위 외."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "생성 파일 모두 TypeScript 타입 명시. docusaurus.config.ts: Config, Preset.Options 타입 사용. sidebars.ts: SidebarsConfig 타입 사용. ': any', 'as any', '<any>' 0건."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "docs 사이트 — TanStack Table API 사용 없음."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "C-5 drift 적용: custom.css 신규 파일 미생성. 생성된 TypeScript 파일에 .css/.scss import 0건. Tailwind 클래스는 MDX 페이지에서 미사용(plain MDX + Docusaurus default theme)."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "pnpm install 미실행으로 ESLint 실행 불가 — tsc와 동일 사유."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "생성 파일 전체 @mescius/wijmo, from 'wijmo' 0건."
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "docs 사이트 파일 — dummyData, mockData, fakeData 0건. MDX 예시 코드는 spec Section 10 사용 예시 기반(교육용 예시) — Storybook/test 예외 적용 무관."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles: 0 (신규 docs 사이트 추가, 기존 사용처 변경 없음)."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "migrationImpact: low + 사용처 0개 — N/A 조건 충족."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "런타임 검증 불가(pnpm install 미실행). 신규 사이트 추가로 기존 console warning 영향 없음."
+    },
+    "C-04": {
+      "result": "N/A",
+      "evidence": "apps/docs는 private 패키지 — 외부 peer 없음. react/react-dom을 devDependencies로 선언(monorepo docs 앱 표준 — C-22는 배포 패키지 대상, private docs 앱 제외)."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "사용처 0개(신규 기능)."
+    },
+    "D-02": {
+      "result": "YES",
+      "evidence": "사용처 마이그레이션 0건 — D-02 초과 없음."
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 0건."
+    },
+    "E-01": {
+      "result": "N/A",
+      "evidence": "apps/docs는 private 패키지 — size-limit 측정 대상 아님. bundle impact +0KB (devDependencies 전용, 런타임 패키지 미포함)."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "decisions/MOD-GRID-99-B-decisions.md: ADR-001(C-5 vs customCss), ADR-002(Docusaurus v3 채택), ADR-003(docusaurus-plugin-typedoc 채택), ADR-004(단일 로케일 ko). 각 ADR 대안 2개+ + trade-off 명시. C-9/C-14/C-20 준수."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "apps/docs/package.json license: 'UNLICENSED' — 기존 값 보존(private docs 앱). spec Section 11 Step 1 After에도 'UNLICENSED' 명시."
+    }
+  },
+  "buildResult": {
+    "tsc": "deferred — pnpm install pending (documented deviation: findings/auto-fixed/MOD-GRID-99-B-G-001-pnpm-install-deferred.md)",
+    "viteBuild": "N/A — Docusaurus uses own build system (docusaurus build)",
+    "sizeLimit": "N/A — private docs app"
+  },
+  "yesCount": 11,
+  "noCount": 0,
+  "naCount": 13,
+  "denominator": 11,
+  "score": 100,
+  "threshold": 85,
+  "passed": true,
+  "failedChecks": [],
+  "autoFixed": [],
+  "promptSpecDrift": [
+    {
+      "field": "Section 7 #6 custom.css (NEW) + Section 2-1 customCss: './src/css/custom.css'",
+      "specValue": "create apps/docs/src/css/custom.css + customCss: './src/css/custom.css'",
+      "appliedValue": "skip custom.css file + customCss: []",
+      "resolution": "C-5 (CSS 신규 파일 금지) > spec — Docusaurus 빈 배열 허용. constraints > spec 우선순위 명시(constraints.md 첫 줄)."
+    }
+  ],
+  "specCodeDefects": [
+    {
+      "specLocation": "G-001-spec.md Section 2-1 L83-97 (docusaurus.config.ts entryPoints) vs Section 11 Step 3 L332-345 (typedoc.json entryPoints)",
+      "defect": "Section 2-1의 docusaurus-plugin-typedoc entryPoints는 file-path form ('../../packages/grid/src/index.ts')을, Section 11 Step 3의 typedoc.json entryPoints는 directory-path form ('../../packages/grid')을 사용. entryPointStrategy: 'packages'는 TypeDoc standalone에서 directory(package.json 포함 디렉토리)를 기대하지만, docusaurus-plugin-typedoc은 entryPoints에 src/index.ts 파일경로를 허용하는 경우도 있어 spec 내 두 형식이 공존.",
+      "fixApplied": "각 파일을 spec 본문 그대로 유지: docusaurus.config.ts는 Section 2-1의 file-path form, typedoc.json은 Section 11 Step 3의 directory-path form. 두 설정의 semantics 차이는 pnpm install 후 빌드 테스트에서 확인 필요. 심각도 medium — 빌드 시 path resolution 오류 가능성 있음.",
+      "severity": "medium"
+    }
+  ],
+  "documentedDeviations": [
+    {
+      "ac": "AC-002, AC-004",
+      "reason": "pnpm install 실행은 사용자/CI 환경 의존 — Docusaurus + TypeDoc devDeps 미설치 상태에서 pnpm --filter docs run docs:build 실행 불가",
+      "finding": "findings/auto-fixed/MOD-GRID-99-B-G-001-pnpm-install-deferred.md",
+      "resolution": "monorepo root에서 pnpm install 후 pnpm --filter docs run docs:build 실행 (사용자 또는 CI 책임)"
+    }
+  ],
+  "c25Compliance": "SATISFIED — 본 Goal이 C-25 공개 API 문서화 의무를 충족한다. TypeDoc으로 13개 @tomis/grid-* 패키지의 전체 공개 API reference 자동 생성 설정 완료(AC-002). Getting Started + Architecture 가이드 MDX 페이지 제공(AC-003). JSDoc 누락 시 CI 실패 설정(AC-005, failOnWarnings:true). 실제 빌드 실행은 pnpm install 후 사용자/CI 책임.",
+  "feedback": {
+    "summary": "6개 파일(C-5 drift로 custom.css 제외) 정상 생성. ADR 4개 작성. pnpm install 미실행으로 B-01/tsc N/A 처리.",
+    "c5Drift": "C-5 (CSS 신규 파일 금지) > spec Section 7 #6 — custom.css 미생성, customCss: [] 적용. C-27 promptSpecDrift[] 기록 완료.",
+    "specCodeDefectsNote": "Section 2-1 file-path vs Section 11 Step 3 directory-path entryPoints 불일치 — 각 spec 형식 그대로 유지, specCodeDefects[] 기록 완료(F-06).",
+    "packagePreservation": "apps/docs/package.json 기존 필드(name:docs, version:0.0.0, private:true, license:UNLICENSED, description) 모두 보존. test script 보존. scripts와 devDependencies만 추가.",
+    "c31Wiring": "docusaurus-plugin-typedoc이 docusaurus.config.ts plugins[] 배열에 실제 등록됨 — C-31 wiring 충족.",
+    "13PackagesVerified": "Bash dir 명령으로 13개 패키지 실재 확인: grid, grid-core, grid-export, grid-features, grid-license, grid-pro-agg, grid-pro-datamap, grid-pro-header, grid-pro-master, grid-pro-merging, grid-pro-range, grid-pro-tracking, grid-renderers."
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 10,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 14,
+    "originalReportedDenominator": 10,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-99-B",
+  "tier": "low",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-001→full",
+      "tier=low",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

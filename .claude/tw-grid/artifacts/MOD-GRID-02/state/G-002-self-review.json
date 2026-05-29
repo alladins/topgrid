@@ -1,0 +1,141 @@
+{
+  "goalId": "G-002",
+  "module": "MOD-GRID-02",
+  "area": "state",
+  "stage": "self-review",
+  "reviewedAt": "2026-05-14",
+  "reviewer": "opus",
+  "scoreSummary": {
+    "specify": { "score": 100.0, "yes": 26, "no": 0, "naCount": 5, "denominator": 26, "rubricVersion": "1.0.4", "metaGates": "H-01/H-02/H-03 ALL YES", "model": "sonnet", "tier": "medium" },
+    "implement": { "score": 100.0, "yes": 16, "no": 0, "naCount": 6, "denominator": 16, "rubricVersion": "1.0.4", "metaGates": "F-01..F-05 ALL YES", "drift": 2, "model": "sonnet", "tier": "medium" },
+    "verify": { "weightedScore": 100.0, "yes": 4, "no": 0, "naCount": 12, "rubricVersion": "1.0.2", "metaGates": "F-01/F-02/F-03 ALL YES", "categoryScores": { "A": 100, "B": 100, "C": 100, "D": 100, "E": 100 }, "vacuousCategories": ["B (hook-only)", "D (affectedUsageFiles=0)"], "model": "opus" }
+  },
+  "analysis": {
+    "repeatedRubricFailure": {
+      "found": false,
+      "note": "26/26 specify + 16/16 implement + 4/4 verify all YES, 0 NO across 3 stages — no rubric weakness exposed. 두 번째 연속 medium-tier 100/100/100."
+    },
+    "c29GenuineApplication": {
+      "occurrence": "first genuine C-29 application case in MOD-GRID-02 (cascading risk R-1 from G-001 self-review)",
+      "context": "G-001 self-review R-1 명시: 'G-002 controlled mode (initialState + state prop + onStateChange) introduces optional-prop pattern — 진짜 C-29 적용 case 발생 가능. spec writer 가 D4 의 \"C-29 해당 없음\" 을 G-002 에 무비판적 복사 위험.'",
+      "blockingMechanism": {
+        "specD4": "spec D4 본문 (line 20) 정확 명시: 'G-001 D4의 \"C-29 해당 없음\"과 달리 G-002는 진짜 적용 case (R-1 cascading risk 해소). 선례: ADR-MOD-GRID-01-004 EmptyStateProps `string | undefined` union 명시'",
+        "specSection23": "useControllableState UseControllableStateOptions.value: T | undefined (NOT value?: T) — JSDoc 인용 'exactOptionalPropertyTypes: true 환경 — optional이 아닌 T | undefined union 명시 (D4 C-29). 이유: caller가 options.state?.sorting (T | undefined)을 이 필드에 전달하므로 child의 value?: T (T만 허용)로의 직접 forwarding은 TS2375 발생.'",
+        "specEC07": "EC-07 explicit edge case — exactOptionalPropertyTypes union 명시 패턴",
+        "implementApplication": "useControllableState.ts L40 `value: T | undefined` 직접 적용. tsc --noEmit EXIT=0 (TS2375 0건). promptSpecDrift[0] field 'useControllableState.UseControllableStateOptions.value' resolution 'spec applied (D4 C-29 union 명시 pattern — exactOptionalPropertyTypes 환경 TS2375 방지)'"
+      },
+      "cascadingRiskOutcome": "R-1 차단 성공. spec writer (sonnet) 가 G-001 D4 ('C-29 해당 없음') 를 무비판 복사하지 않고 새로 검토 → 진짜 적용 case 인지 + ADR-MOD-GRID-01-004 선례 인용 + 2 패턴 옵션 중 'union 명시' 선택 (사용처가 helper hook params 라 가독성 우수). G-001 self-review mitigation 명시 'SPECIFY agent prompt에 explicit re-check 추가 권고' 가 별도 prompt 변경 없이도 spec writer 자율 적용으로 작동 — C-29 자체가 사후 정책으로 자리잡았음을 입증."
+    },
+    "drift": {
+      "occurrence": 2,
+      "drifts": [
+        {
+          "field": "useControllableState.UseControllableStateOptions.value",
+          "promptValue": "value?: T (optional)",
+          "specValue": "value: T | undefined (union 명시)",
+          "resolution": "spec applied (D4 C-29 union 명시 pattern)",
+          "rootCause": "메인 prompt 가 일반 React useControllableState 패턴 (`value?: T` shadcn/Radix 표준 시그니처) 으로 작성. spec D4 가 C-29 union 명시 패턴으로 정확 결정 — Implementer (sonnet) spec 우선 적용 + promptSpecDrift 보고 (C-27 절차)"
+        },
+        {
+          "field": "useControllableState return setter signature",
+          "promptValue": "(next: T) => void",
+          "specValue": "(updater: T | ((prev: T) => T)) => void",
+          "resolution": "spec applied (OnChangeFn<T> 호환 — functional update 지원)",
+          "rootCause": "메인 prompt 가 단순 setter 시그니처 작성. spec Section 2.3 + 11.2 Step 2 가 TanStack OnChangeFn<T> 호환 functional update 지원 명시 — useReactTable wiring 시 필수. Implementer spec 우선 적용 + promptSpecDrift 보고."
+        }
+      ],
+      "implementerHandling": "C-27 절차 정확 준수 — 두 drift 모두 implement-score JSON promptSpecDrift[] 배열 + feedback.promptSpecDriftSummary 1줄 보고. F-05 YES 처리 (spec applied resolution 명시).",
+      "catalogDecision": "DEFER — drift 2건 모두 spec writer 의 careful design 승리 (메인 prompt 의 일반 패턴 vs spec 의 C-29 인지 + TanStack 호환). 자동 보완 불가능한 도메인 지식 — Implementer 자율 spec 우선 적용으로 처리됨. 새 룰 promotion 불필요. C-27 절차 자체가 기능."
+    },
+    "modelTierExperiment": {
+      "secondMediumTierMixedModel": true,
+      "configuration": "SPECIFY=sonnet, IMPLEMENT=sonnet, VERIFY=opus, Self-Review=opus (C-15 medium tier 표 동일)",
+      "outcome": "sonnet SPECIFY: 26/26 + D# 7개 + H-01/H-02/H-03 ALL YES + G-01 v1.0.4 breakdown consistency 완벽 통과. sonnet IMPLEMENT: 16/16 + F-01..F-05 ALL YES + drift 2건 자율 처리 (C-27 절차) + tsc 0 errors + size-limit OK. opus VERIFY: 5축 100/100/100/100/100 + Σ=100 + F 메타게이트 ALL YES + evidence sampling 5건 Read 확인.",
+      "qualityIndistinguishable": true,
+      "evidence": "G-001 baseline (medium tier 1차) 과 동일 결과 — 27/27 vs 26/26 (G-002 는 H-02 외부 monorepo 5 N/A 차이로 분모 다름 — 둘 다 100점). 두 Goal 모두 drift 자율 처리 + spec 우선 적용. sonnet 의 D# breakdown consistency 새 v1.0.4 룰 (G-002 self-review 가 G-001 self-review 의 promotion 결과) 도 정확 충족.",
+      "datapointAccumulation": "ADR-MOD-GRID-00-011 본문 명시 '2nd medium tier Goal 종결 시 본 ADR 매트릭스 행 추가' — 본 G-002 가 2nd 데이터포인트. 3 데이터포인트 누적 시 정책 강화/약화 검토 trigger.",
+      "implication": "C-15 medium tier 표 empirical 검증 누적 2건 — 신뢰 형성 진행. 단, anecdote(1) → pattern(2) → policy(3) 룰에서 본 G-002 는 'pattern 단계'. 정책 변경은 3건 누적 후."
+    },
+    "bundleEfficiency": {
+      "predicted": "+2 KB (goals.json + spec D7)",
+      "actual": "+0.23 KB",
+      "efficiencyRatio": "11.5%",
+      "note": "G-001 +0.12 KB hook-only profile (8 useState pass-through, no JSX) 다음 2nd hook profile data point. G-002 는 sub-profile 다름: useControllableState NEW (121 LOC, snapshotRef 패턴, 8 wiring) — '*controlled-aware hook* sub-profile'. 단순 useState 변환보다 boilerplate 약간 큼 (+0.11 KB 차이).",
+      "datapointAccumulation": "ADR-MOD-GRID-00-010 hook profile 행에 G-002 데이터포인트 추가 — 'hook-only (+0.12 KB G-001) → controlled-aware hook (+0.23 KB G-002)' 2 sub-profile 등록. ADR-010 §결과 3 룰 ('신규 profile 데이터포인트 추가 — readonly catalog — 평균화 또는 trajectory 적용 금지') 일관 적용.",
+      "adrAction": "ADR-MOD-GRID-00-010 matrix 갱신 — hook profile 행에 2nd data point 추가 + sub-profile 구분 명시.",
+      "extrapolationBlocked": "G-003 (debounce hook) spec 작성 시 본 2 데이터포인트 (+0.12, +0.23) 평균 0.175 KB 추정 사용 금지. ADR-010 §결과 1 'spec 예상은 metric 참조용으로만 — 게이트 아님' 일관 적용."
+    },
+    "g001D4UncriticalCopyAvoidance": {
+      "atRisk": "G-001 self-review R-1 명시: 'spec writer 가 D4 의 C-29 해당 없음 을 G-002 에 무비판적 복사 위험'",
+      "actualHandling": "G-002 spec writer (sonnet) 가 D4 작성 시 G-001 D4 의 negative-case dismissal 을 그대로 복사하지 않고 — (a) optional prop forwarding 패턴 신규 발생 (`options?.state?.sorting → useControllableState.value`) 인지, (b) ADR-MOD-GRID-01-004 EmptyStateProps 선례 인용, (c) 2 패턴 (spread skip vs union 명시) 중 hook params 가독성 위해 union 명시 선택. spec D4 line 20 정확 명시.",
+      "outcomeMechanism": "C-29 정책 자체 (constraints.md L342-379 + 위반 시 처리 표 행) + Implementer prompt-spec drift 보고 (C-27) + spec authority (specify-rubric H-02/G-01 cross-check) 3 layers 가 cascading risk 차단. 별도 prompt 변경 없이 작동.",
+      "policyValidation": "G-005 self-review 가 C-29 promotion 결정한 직후 (2026-05-14 동일일자) 다른 모듈에서 첫 적용 — 신규 정책 discoverability 검증 통과 (G-001 cross-module ADR visibility 와 동일 패턴 — 신규 정책이 next-Goal spec writer 에 의해 별도 prompting 없이 인용됨)."
+    }
+  },
+  "improvementCandidates": [
+    {
+      "id": "A",
+      "title": "ADR-MOD-GRID-00-010 갱신 — hook profile 2nd data point 추가 (controlled-aware hook sub-profile)",
+      "decision": "APPLY",
+      "reason": "ADR-010 §결과 3 explicitly invites '신규 profile 발견 시 본 ADR 매트릭스에 데이터포인트 추가'. G-002 controlled-aware hook profile (+0.23 KB, 11.5% efficiency) 는 G-001 hook-only profile (+0.12 KB, 6% efficiency) 와 sub-profile 구분 — useControllableState NEW + snapshotRef + 8 wiring boilerplate 차이. 2 데이터포인트 누적으로 hook 카테고리 내부 efficiency 변동성 패턴 (~2배) 입증. ADR-010 own policy 가 데이터포인트 누적 invitation — 1 occurrence promotion 위반 아님.",
+      "appliedTo": "decisions/MOD-GRID-00-decisions.md ADR-MOD-GRID-00-010 matrix (hook 행 sub-profile 분리)"
+    },
+    {
+      "id": "B",
+      "title": "Pattern Catalog Note — C-29 union 명시 4th occurrence 입증 (pattern stable 인지)",
+      "decision": "REJECT",
+      "reason": "C-29 는 G-005 self-review 시점 3 occurrences (1=EmptyState anecdote, 2=useGridImperativeHandle pattern, 3=5-alias spread policy) 로 이미 constraints.md 정책 promotion 완료 (2026-05-14). G-002 useControllableState 는 4th occurrence — 이미 정책화된 룰의 적용 사례. 새로운 promotion 또는 catalog 갱신 불필요. C-29 본문이 이미 두 패턴 (spread skip + union 명시) 모두 명시 + hook params union 명시 use case 도 본문 covered. 추가 ADR 또는 constraint 변경은 over-documentation."
+    },
+    {
+      "id": "C",
+      "title": "specify-rubric S-XX 신설 — D# 표에 cascading risk 인지 명시 의무",
+      "decision": "REJECT",
+      "reason": "G-002 D4 가 G-001 self-review R-1 cascading risk 를 명시 차단한 사례 1건 = anecdote (1=anecdote, 2=pattern, 3=policy 룰). G-001 cross-module ADR visibility 와 G-002 C-29 진짜 적용 인지 모두 'spec writer (sonnet) 자율 처리 + 별도 prompt 없이 작동' 패턴 — 이는 기존 정책 (constraints + ADR + specify-rubric H-02/G-01 cross-check 3 layers) 가 작동한다는 입증. 새 rubric 항목 추가는 게이트 부풀림 + spec writer 부담 증가. 다음 Goal (G-003+) 에서 cascading risk 무시 사례가 발견되면 그때 promotion 검토."
+    },
+    {
+      "id": "D",
+      "title": "ADR-MOD-GRID-00-011 갱신 — 2nd medium tier sonnet data point 추가",
+      "decision": "APPLY",
+      "reason": "ADR-011 본문 명시 '2nd medium tier Goal 종결 시 본 ADR 매트릭스 행 추가 (data point 누적). 3 데이터포인트 누적 시 정책 강화/약화 검토 trigger.' G-002 가 정확히 2nd data point — ADR-011 own policy 적용. 1 데이터포인트 (G-001) → 2 데이터포인트 (G-002) → pattern 단계 진입. 단, 정책 변경 (sonnet 적용 범위 확대 등) 은 3건 누적 후 — 본 갱신은 단순 데이터포인트 등록.",
+      "appliedTo": "decisions/MOD-GRID-00-decisions.md ADR-MOD-GRID-00-011 (matrix 2nd row 추가 + data point status update)"
+    }
+  ],
+  "improvementsAppliedCount": 2,
+  "improvementsRejectedCount": 2,
+  "rejectionRationaleSummary": "B (C-29 4th occurrence): 이미 G-005 self-review 시점 promotion 완료된 정책의 적용 사례 — over-documentation 회피. C (specify-rubric cascading risk 인지 의무): 1=anecdote 룰 — 기존 3 layers (constraints+ADR+rubric) 가 작동 중. 새 게이트 부담 vs 검증된 효과 비교 부적절.",
+  "cascadingRisks": [
+    {
+      "id": "R-1",
+      "description": "G-003 (`onStateChange unified callback + debounce 옵션`) 의 useDebouncedCallback hook 이 hook profile 3rd data point. spec writer 가 G-001 (+0.12 KB) + G-002 (+0.23 KB) 평균 ~0.175 KB 추정 사용 위험. 두 데이터포인트는 sub-profile 다름 (단순 useState wiring vs controlled-aware boilerplate) — debounce hook 은 setTimeout + useRef + cleanup boilerplate 의 또 다른 sub-profile.",
+      "severity": "low",
+      "mitigation": "ADR-010 hook profile 행 update 시 'sub-profile 다양성 — 평균/trajectory 추정 금지' 강조. G-003 spec D# 표에 'measurement at implement time only' 1줄 의무 유지. ADR-010 §결과 1 정책이 이미 차단 — 본 mitigation 은 reinforcement."
+    },
+    {
+      "id": "R-2",
+      "description": "G-002 D4 가 G-001 cascading risk #1 을 명시 차단한 우수 패턴. G-003+ Goal spec writer 가 동일 cascading risk 명시 의무 없이 자율 적용 의존 — sonnet 가 self-review 분석을 직접 읽지 않을 수 있음. 정책화 (specify-rubric) 미적용 결정은 1=anecdote 근거 — 다음 occurrence 발생 시 promotion trigger.",
+      "severity": "low",
+      "mitigation": "메인 오케스트레이터가 후속 Goal SPECIFY agent prompt 작성 시 직전 Goal self-review cascadingRisks 섹션 references 의무화 권고 (별도 룰 변경 없이 운영 차원). 2nd cascading risk awareness occurrence 발생 시 specify-rubric S-XX 또는 G-01 사전 결정 표 cross-check 강화 검토."
+    },
+    {
+      "id": "R-3",
+      "description": "Sonnet medium tier 2건 연속 100/100/100 성공으로 신뢰 형성 → high tier 모듈 (MOD-GRID-09 filter UI, MOD-GRID-12 datamap) 또는 medium tier VERIFY 단계에 sonnet 시도 동기 발생. C-15 high tier=opus + medium tier VERIFY=opus + Self-Review=opus 정책 약화 위험.",
+      "severity": "low",
+      "mitigation": "ADR-011 갱신 시 '적용 한계' 섹션에 '2 데이터포인트 = pattern 단계 — 정책 변경 부적격, 3 데이터포인트 = policy trigger' 명시. C-15 high tier=opus 정책 변경 금지 명시 유지. 본 R-3 은 G-001 self-review R-3 와 동일 — 누적 위험 인지 + ADR-011 본문 'medium tier 한정 검증 — high tier 적용 금지' 차단 layer 활성."
+    }
+  ],
+  "metaValidation": {
+    "scoreFormulaConsistency": "All 3 stage scores recomputed: specify YES26/(26+0)×100=100, implement YES16/(16+0)×100=100, verify Σ(100×0.15)+(100×0.20)+(100×0.30)+(100×0.20)+(100×0.15)=100. All match reported scores.",
+    "naDenominatorExclusion": "specify naCount=5 (C-05/D-02/D-04/D-05/F-02), denominator=26. implement naCount=6 (A-04/C-02/D-01/D-03/E-02/E-03), denominator=16. verify naCount=12 (A-01/B-01..B-05/C-01/C-02/D-01/D-02/E-02/E-03), weighted via vacuous truth (B+D categories all-N/A → 100 per ADR-MOD-GRID-00-002 — verify-rubric vacuous rule). All formulas honored.",
+    "categorySumRubricMatch": "specify A5+B5+C5+D6+E5+F4+G1=31 ✓ rubric v1.0.4 (26 YES + 5 N/A = 31). implement A5+B7+C4+D3+E3=22 ✓ rubric v1.0.4 (16 YES + 6 N/A = 22). verify A3+B5+C3+D2+E3=16 ✓ rubric v1.0.2 (4 YES + 12 N/A = 16).",
+    "failedChecksIntegrity": "All 3 stages failedChecks=[]. No NO results. N/A correctly excluded from failedChecks per C-26.",
+    "vacuousRuleApplication": "verify B (hook-only Goal — Grid 본체 위임) + D (affectedUsageFiles=0) 카테고리 vacuous truth → 100 처리. ADR-MOD-GRID-00-002 + verify-rubric vacuous rule 정확 적용. A 카테고리 (build/tsup/tsc 키워드 미포함) 는 A-01 N/A + A-02 YES + A-03 YES → vacuous 금지 룰 회피 (실 채점)."
+  },
+  "harnessReviewArtifact": {
+    "selfReviewPath": ".claude/tw-grid/artifacts/MOD-GRID-02/state/G-002-self-review.json",
+    "adrUpdates": [
+      "decisions/MOD-GRID-00-decisions.md ADR-MOD-GRID-00-010 (hook profile 행 sub-profile 분리 + G-002 데이터포인트 추가)",
+      "decisions/MOD-GRID-00-decisions.md ADR-MOD-GRID-00-011 (medium tier 매트릭스 2nd data point 추가)"
+    ],
+    "stateGoalsUpdate": "goals/MOD-GRID-02/state-goals.json G-002.harnessReview field populated"
+  }
+}

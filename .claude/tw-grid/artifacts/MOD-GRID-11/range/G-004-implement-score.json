@@ -1,0 +1,229 @@
+{
+  "goalId": "MOD-GRID-11/range/G-004",
+  "module": "MOD-GRID-11",
+  "area": "range",
+  "stage": "implement",
+  "loop": 2,
+  "rubricVersion": "1.0.7",
+  "migrationImpact": "medium",
+  "checks": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "All 5 files verified: tsvUtils.ts (NEW), useClipboard.ts (NEW), useClipboard.stories.tsx (NEW), types.ts (MODIFY), index.ts (MODIFY) — Glob confirmed in topvel-grid-monorepo/packages/grid-pro-range/src/"
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "Changed files exactly match spec Section 7 (NEW 3 + MODIFY 2 = 5 files). tsup.config.ts MODIFY added in loop 2 (build config fix, not implementation file). goals.json implementFiles not read for implementation — spec Section 7 used as authority per C-27/F-02."
+    },
+    "F-03": {
+      "result": "N/A",
+      "evidence": "Target directory D:/project/topvel_project/topvel-grid-monorepo/ is external to TOMIS git (fatal: not a git repository). Glob confirms 5 target files created/modified: internal/tsvUtils.ts, useClipboard.ts, useClipboard.stories.tsx, types.ts, index.ts. ADR-MOD-GRID-00-001 N/A condition met."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Grep useClipboard|stringifyTsv|parseTsv|PasteResult in index.ts → all 4 identifiers found at lines 32-34. useClipboard.ts imports stringifyTsv+parseTsv from ./internal/tsvUtils (line 19), calls both (lines 57, 133)."
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "No prompt-spec drift detected. Spec Section 3.1/3.2/3.3 code templates followed. promptSpecDrift=[]."
+    },
+    "F-06": {
+      "result": "YES",
+      "evidence": "Spec code templates (Section 3.2 tsvUtils, Section 3.3 useClipboard) reviewed. No Rules of Hooks violations — _verifyGridLicenseStub called in useEffect (always, no conditional). No dead branches. specCodeDefects=[]."
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "All 5 spec Section 7 files exist on disk: (1) packages/grid-pro-range/src/internal/tsvUtils.ts, (2) packages/grid-pro-range/src/useClipboard.ts, (3) packages/grid-pro-range/src/useClipboard.stories.tsx, (4) packages/grid-pro-range/src/types.ts, (5) packages/grid-pro-range/src/index.ts — Glob confirmed."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "PasteResult<TCell>, UseClipboardProps<TData,TCell>, UseClipboardReturn all added to types.ts per spec Section 3.1. stringifyTsv(matrix: readonly (readonly unknown[])[]):string and parseTsv(tsv:string):string[][] match spec Section 3.2 exactly. useClipboard<TData,TCell>(props):UseClipboardReturn matches spec Section 3.3. tsc 0 errors confirms signature correctness."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "Spec Section 3.4 usage pattern compiles (UseClipboardProps spread-skip, onKeyDown composition). tsc --noEmit exits 0 — no compilation errors in any import path."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "No variant adaptation table — G-004 is new feature with no predecessor variants."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "AC-001 (copyToClipboard+navigator.clipboard.writeText+execCommand fallback): useClipboard.ts L47-80. AC-002 (pasteFromClipboard→PasteResult+onPaste callback): useClipboard.ts L86-144. AC-003 (RFC 4180 escapeTsvCell+stringifyTsv+parseTsv): tsvUtils.ts. AC-004 (grid-export role separation): D6 decision preserved — no dependency on grid-export. AC-005 (Wijmo 0): Grep @mescius/wijmo = 0 hits. AC-006 (tsc 0): confirmed. AC-007 (Storybook CopyStory+PasteStory): useClipboard.stories.tsx."
+    },
+    "A-06": {
+      "result": "YES",
+      "evidence": "C-31 wire-up verified: stringifyTsv imported at useClipboard.ts L19, called at L57. parseTsv imported at L19, called at L133. Both import+call confirmed by Grep."
+    },
+    "A-07": {
+      "result": "N/A",
+      "evidence": "Spec Section 7 lists no *.test.* files. G-004 spec has no test file requirement — AC-007 is Storybook story (useClipboard.stories.tsx), not test."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "npx tsc --noEmit in packages/grid-pro-range → empty output (0 errors). Run after loop 2 minify rebuild. Clean."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "No 'as any' or ': any' in production code. useClipboard.ts uses 'as unknown as TCell' (safe cast pattern, not any). tsvUtils.ts uses only unknown generic. stories.tsx uses Object.assign (no as any after fix)."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "useReactTable, getCoreRowModel, flexRender, createColumnHelper from @tanstack/react-table — all standard v8 public API. No internal API access."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "0 new .css/.scss files created. Production code (tsvUtils.ts, useClipboard.ts, types.ts, index.ts) has no style imports. Storybook stories use inline style only (C-5 story exception)."
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "eslint-disable @typescript-eslint/no-unused-vars placed on _verifyGridLicenseStub per B-06/stub-stage guideline. No other suppressions. No ESLint errors expected."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep @mescius/wijmo|wijmo in packages/grid-pro-range/src → 0 files matched. AC-005 confirmed."
+    },
+    "B-07": {
+      "result": "N/A",
+      "evidence": "Production code has no dummy/mock data. Storybook stories have INITIAL_DATA fixture (C-3 story exception per rubric B-07 N/A condition)."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] (goals.json L292). No tw-framework-front files affected. tsc --noEmit in grid-pro-range covers the package boundary."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "medium tier + affectedUsageFiles=0 → N/A per rubric C-02 condition."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "No affected runtime usage files to test."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "package.json peerDependencies unchanged: react ^18||^19, react-dom ^18||^19, @tanstack/react-table ^8.0.0. No new external dependencies added (navigator.clipboard is browser built-in API)."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] — no usage files to migrate."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "0 usage files migrated."
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "0 remaining usage files."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Loop 2 fix: tsup.config.ts minify:true added. Rebuild result: dist/index.mjs = 10.96 KB (minified). 10.96 KB < 20 KB limit (C-21). PASS. Prior loop 1: 23.28 KB unminified (NO). Root cause was tsup.config.ts minify:false — build config gap, not implementation defect. Minified output also < gzip threshold. Other packages (grid-core, grid-pro-tracking, etc.) tsup.config.ts unaffected — change is local to grid-pro-range only."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "No new external dependencies added. navigator.clipboard is browser built-in."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "package.json not modified."
+    }
+  },
+  "buildResult": {
+    "tsc": "0 errors",
+    "build": "tsup success (loop 2, minify:true) — dist/index.mjs 10.96 KB, dist/index.cjs 11.31 KB, dist/index.d.ts 9.28 KB",
+    "sizeLimit": "PASS — dist/index.mjs 10.96 KB < 20 KB (C-21). tsup.config.ts minify:true applied in loop 2."
+  },
+  "files": [
+    {
+      "path": "packages/grid-pro-range/src/internal/tsvUtils.ts",
+      "action": "NEW",
+      "loop": 1
+    },
+    {
+      "path": "packages/grid-pro-range/src/useClipboard.ts",
+      "action": "NEW",
+      "loop": 1
+    },
+    {
+      "path": "packages/grid-pro-range/src/useClipboard.stories.tsx",
+      "action": "NEW",
+      "loop": 1
+    },
+    {
+      "path": "packages/grid-pro-range/src/types.ts",
+      "action": "MODIFY",
+      "loop": 1
+    },
+    {
+      "path": "packages/grid-pro-range/src/index.ts",
+      "action": "MODIFY",
+      "loop": 1
+    },
+    {
+      "path": "packages/grid-pro-range/tsup.config.ts",
+      "action": "MODIFY",
+      "loop": 2,
+      "change": "minify: true added"
+    }
+  ],
+  "yesCount": 18,
+  "noCount": 0,
+  "naCount": 12,
+  "denominator": 18,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "specCodeDefects": [],
+  "promptSpecDrift": [],
+  "autoFixed": [],
+  "documentedDeviations": [],
+  "implementedFiles": [
+    "packages/grid-pro-range/src/internal/tsvUtils.ts",
+    "packages/grid-pro-range/src/useClipboard.ts",
+    "packages/grid-pro-range/src/useClipboard.stories.tsx",
+    "packages/grid-pro-range/src/types.ts",
+    "packages/grid-pro-range/src/index.ts"
+  ],
+  "feedback": {
+    "summary": "G-004 implemented: 5 files (NEW 3 + MODIFY 2). tsc 0 errors. Build success. RFC 4180 TSV utils + useClipboard hook + Storybook stories complete.",
+    "drift": "0 prompt-spec drifts. goals.json implementFiles not checked independently — spec Section 7 used as authority.",
+    "defects": "0 spec code defects. Spec Section 3.3 useClipboard template was clean (no Rules of Hooks violations). specCodeDefects=[].",
+    "items": [
+      "loop 1 E-01 NO (unminified 23.28 KB > 20 KB) → minify:true 적용 → loop 2 dist/index.mjs 10.96 KB → E-01 PASS.",
+      "C-31 wire-up confirmed: stringifyTsv+parseTsv both imported AND called in useClipboard.ts.",
+      "C-29 spread-skip pattern used in useClipboard.stories.tsx PasteDemo for onPaste optional prop.",
+      "B-02 fix: useClipboard.stories.tsx replaced 'as any' with Object.assign pattern.",
+      "tsup.config.ts minify:true is local to grid-pro-range — no other packages affected."
+    ]
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 13,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 11,
+    "originalReportedDenominator": 13,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-11",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

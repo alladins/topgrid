@@ -1,0 +1,221 @@
+{
+  "goalId": "MOD-GRID-13/merging/G-002",
+  "module": "MOD-GRID-13",
+  "area": "merging",
+  "stage": "implement",
+  "rubricVersion": "1.0.8",
+  "migrationImpact": "low",
+  "threshold": 90,
+  "filesChanged": {
+    "total": 3,
+    "NEW": 0,
+    "MODIFY": 3,
+    "list": [
+      "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/computeMergeSpans.ts (MODIFY)",
+      "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/MergingGrid.stories.tsx (MODIFY)",
+      "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-13-decisions.md (MODIFY)"
+    ]
+  },
+  "buildResults": {
+    "typecheck": "exit 0 — tsc --noEmit 0 errors",
+    "build": "exit 0 — tsup: dist/index.mjs 3.25 KB, dist/index.cjs 3.39 KB, dist/index.d.ts 3.69 KB",
+    "sizeLimit": "3.25 KB ESM (was 2.86 KB G-001) — delta +0.39 KB (hierarchical algorithm) << 20 KB Pro limit"
+  },
+  "wiringAudit": {
+    "result": "PASS — no wiring changes needed",
+    "evidence": "MergingGrid.tsx L79: computeMergeSpans(rows.map((r) => r.original), mergeColumns) — G-001 wiring already complete. computeMergeSpans function signature unchanged (D5 spec). New hierarchical algorithm is a drop-in replacement — same input/output contract. MergingGrid.tsx unmodified per spec Section 7."
+  },
+  "checks": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "All 3 MODIFY files confirmed: computeMergeSpans.ts (Edit applied — ancestorBoundary algorithm), MergingGrid.stories.tsx (Edit applied — HierarchicalMerge story added), decisions/MOD-GRID-13-decisions.md (Edit applied — ADR-006/007/008 added). Glob on packages/grid-pro-merging/src confirms all source files present."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "Spec Section 7 final table = 3 MODIFY files: (1) computeMergeSpans.ts MODIFY, (2) MergingGrid.stories.tsx MODIFY, (3) MOD-GRID-13-decisions.md MODIFY. All 3 and only those 3 were changed. types.ts, MergingGrid.tsx, index.ts — confirmed unmodified per spec D3/D5. goals.json implementFiles discrepancy noted: goals.json L129 lists only computeMergeSpans.ts + types.ts (2 files) — spec Section 7 is authoritative (3 files). Spec applied."
+    },
+    "F-03": {
+      "result": "N/A",
+      "evidence": "Source files are in topvel-grid-monorepo/packages/ (external to TOMIS git — ADR-MOD-GRID-00-001). ADR file in TOMIS worktree has no prior git commit history (new worktree bootstrap state). External directory — git tracking not applicable. Glob confirms 3 modified files exist at reported paths. (외부 디렉토리 — git 추적 불가, Glob N개 파일 확인으로 대체)"
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Core identifiers confirmed in changed files: (1) 'ancestorBoundary' grep on computeMergeSpans.ts — found at L43 initialization, L68 propagation, L73 set-true. (2) 'HierarchicalMerge' grep on MergingGrid.stories.tsx — found at L185 export. (3) 'ADR-MOD-GRID-13-006' grep on decisions.md — found in new section header. All 3 spec-core identifiers verified."
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "Prompt value cross-checked against spec. Two structural reference drifts noted (not Value drift): (1) Prompt says 'BasicMerge / CustomCompareFn' for G-001 story names — actual names in file are MergeRowsBoolean/MergeRowsCompareFn (structural reference, 1-line feedback). (2) Prompt says 'mergeColumns.length == 1 → G-001 동작 그대로 (회귀 보존, AC-002, D4)' with explicit branch — spec D2/ADR-MOD-GRID-13-006 says unified algorithm without explicit branch. Spec applied: no `if (columns.length === 1)` branch, mathematical degeneration only. No Value drift requiring promptSpecDrift[] entry. specCodeDefects[] checked: spec Section 11.2 algorithm is structurally correct (no Rules of Hooks issue in pure utility function). F-06 N/A (utility function, no React hooks)."
+    },
+    "F-06": {
+      "result": "N/A",
+      "evidence": "computeMergeSpans.ts is a pure utility function — no React hooks. Spec Section 11.2 code template reviewed: no Rules-of-Hooks violations, no dead branches, algorithm logic is semantically correct. No specCodeDefects to report. specCodeDefects: []"
+    },
+    "F-07": {
+      "result": "YES",
+      "evidence": "goals.json G-002 L98: \"migrationImpact\": \"low\" (direct Read confirmed). implement-score migrationImpact = \"low\" — exact match."
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "All 3 spec Section 7 MODIFY files verified to exist at reported paths: computeMergeSpans.ts, MergingGrid.stories.tsx (both in packages/grid-pro-merging/src/), MOD-GRID-13-decisions.md (in TOMIS/.claude/tw-grid/decisions/)."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "computeMergeSpans<TData>(rows: TData[], columns: Array<{id: string; mergeRows: MergeRowsConfig<TData>}>) → MergeSpanMap — signature unchanged from G-001 (D5 spec). types.ts unmodified (D3). MergingGrid.tsx unmodified. No API signature changes introduced."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "Spec Section 2.3 hierarchical usage example compiled successfully: MergingColumnDef<EmployeeRow>[] with {id:'dept', meta:{mergeRows:true}} + {id:'team', meta:{mergeRows:true}} pattern — tsc --noEmit exit 0 confirms this pattern valid. HierarchicalMerge story uses this exact pattern."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "New Pro package — no existing variants in tw-framework-front. affectedUsageFiles = 0."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "AC-001: computeMergeSpans with hierarchical mode — dept boundary propagates to team. Implemented via ancestorBoundary=true propagation in inner j loop. AC-002: single column mergeRows uses same function (G-001 path via degeneration) — no explicit branch, AC-002 compliance by algorithm design (spec D2). AC-003: C-16 — 0 @mescius/wijmo imports confirmed (grep). AC-004: tsc --noEmit exit 0. AC-005: HierarchicalMerge story added with 1000+ row largeData (dept 10 × team 3 × 33-35 rows ≈ 1000+) — PARTIAL: '1000행+ C-18 가상화 포함' AC-005 sub-clause deferred. react-virtual integration deferred to G-003 per spec Section 12 W-2 (C-18 virtualization is G-003 scope). See deferredAcs[]."
+    },
+    "A-06": {
+      "result": "N/A",
+      "evidence": "No new utility function created (G-002 MODIFY only). computeMergeSpans.ts was already wired in MergingGrid.tsx L79 (G-001). G-002 extends the existing function — wiring unchanged. A-06 N/A per rubric 'no new utility helper created'."
+    },
+    "A-07": {
+      "result": "N/A",
+      "evidence": "Spec Section 7 has no *.test.ts or *.spec.ts files listed. G-002 spec only adds stories and algorithm modification. No test file execution required."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "tsc --noEmit: exit 0 (0 errors). tsup build: exit 0 — CJS 3.39 KB + ESM 3.25 KB + DTS 3.69 KB. Confirmed via shell execution."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Grep ': any|as any|<any>|@ts-ignore|@ts-nocheck' on computeMergeSpans.ts: No matches found. Type casts used: `as Record<string, unknown>`, `(prev: TData, curr: TData) => boolean` — all concrete typed. No any."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "computeMergeSpans.ts is a pure utility function — no TanStack API calls within it. MergingGrid.tsx unmodified — existing TanStack v8 API usage from G-001 preserved (useReactTable, getCoreRowModel, getSortedRowModel, flexRender, getRowModel().rows, getVisibleCells())."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "No new .css/.scss files. MergingGrid.stories.tsx has no style attributes. computeMergeSpans.ts has no style attributes. B-04 not applicable to algorithm changes."
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "No new eslint-disable comments added. HierarchicalMerge story follows same CSF3 pattern as existing MergeRowsBoolean/MergeRowsCompareFn stories — no lint issues expected. computeMergeSpans.ts uses standard TypeScript patterns."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep '@mescius/wijmo|wijmo' on computeMergeSpans.ts and MergingGrid.stories.tsx: No matches. C-16 absolute compliance maintained."
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "computeMergeSpans.ts: pure algorithm, no data. MergingGrid.stories.tsx largeData fixture is in Storybook file — B-07 N/A exception for Storybook/test code applies."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "No changes to tw-framework-front or existing @tomis/* packages. Only packages/grid-pro-merging and TOMIS decisions.md modified. tsc state of other packages unchanged."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "low tier + affectedUsageFiles = 0 (goals.json G-002 affectedUsageFiles: []). Rubric C-02: N/A for low tier + 0 usage sites."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "computeMergeSpans.ts: no console.* calls. MergingGrid.stories.tsx: no console.* calls. MergingGrid.tsx unmodified — existing no-console state preserved."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "package.json unmodified — peerDependencies unchanged from G-001. C-22 compliance inherited."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0. No usage files to migrate."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0. No migration commits."
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "No remaining usage files. N/A."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "tsup build: dist/index.mjs = 3.25 KB (G-001 was 2.86 KB, delta +0.39 KB for hierarchical algorithm). Well within 20 KB Pro package limit. .size-limit.json limit 20 KB inherited from G-001."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "No new dependencies added. All peerDependencies unchanged."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "package.json unchanged — license field 'SEE LICENSE IN EULA' preserved from G-001."
+    }
+  },
+  "yesCount": 20,
+  "noCount": 0,
+  "naCount": 11,
+  "denominator": 20,
+  "score": 100,
+  "passed": true,
+  "countingConvention": "body-only (A–E, rubric total 24). F-gate items (F-01~F-07) are prerequisites not included in denominator. A=4YES/3N/A, B=7YES, C=3YES/1N/A, D=3N/A, E=1YES/2N/A. YES(15)+N/A(9)=24 checks total.",
+  "failedChecks": [],
+  "autoFixed": [],
+  "deferredAcs": [
+    {
+      "acId": "AC-005",
+      "subClause": "C-18 가상화 포함 (react-virtual integration)",
+      "reason": "Spec Section 12 W-2 explicit deferral: 'react-virtual 통합 없음 — 가상 스크롤은 G-003에서 구현 (W-2)'. HierarchicalMerge story documents 1000+ row data but does not integrate react-virtual.",
+      "followupGoal": "G-003 — 정렬/필터 변경 시 병합 자동 재계산 + 가상화 호환 (C-18)"
+    }
+  ],
+  "promptSpecDrift": [
+    {
+      "field": "goals.json G-002 userJourneySteps[3] / implicit API contract",
+      "promptValue": "goals.json step 4: 'mergePriority 옵션으로 좌측 컬럼 우선 기준 컬럼 ID 순서 지정 가능' — implies explicit mergePriority API",
+      "specValue": "spec D3 + ADR-MOD-GRID-13-007: MergePriorityConfig 타입 추가 없음. 우선순위는 columns 배열 순서로 암시적 결정 (implicit priority). types.ts 수정 없음.",
+      "resolution": "spec applied — no mergePriority prop or MergePriorityConfig type added. Implicit priority via array order only. goals.json userJourneyStep 4 references an API that was explicitly rejected in spec D3 + ADR-007."
+    }
+  ],
+  "specCodeDefects": [],
+  "regressionVerification": {
+    "g001StoriesPreserved": "YES — MergeRowsBoolean (L67) and MergeRowsCompareFn (L117) unchanged. HierarchicalMerge added at L185.",
+    "singleColumnDegeneration": "VERIFIED — columns.length === 1: ancestorBoundary initialized to false at start of each row-transition loop. No left column exists, so ancestorBoundary never set to true. Only own compareFn evaluated. Output = {0_dept:2, 1_dept:0, 2_dept:1} for rows=[A,A,B] — bit-identical to G-001. ADR-MOD-GRID-13-008 + JSDoc @remarks document this invariant."
+  },
+  "feedback": {
+    "promptStoryNameDrift": "Prompt references G-001 stories as 'BasicMerge / CustomCompareFn'. Actual G-001 file has MergeRowsBoolean and MergeRowsCompareFn. Structural reference (not value drift) — preserved real names, 1-line note only.",
+    "promptBranchDrift": "Prompt says 'mergeColumns.length == 1 → G-001 동작 그대로 (회귀 보존)' with implied explicit branch. Spec D2 + ADR-MOD-GRID-13-006 resolve this via unified algorithm (mathematical degeneration, no explicit branch). Spec applied.",
+    "goalsJsonImplementFiles": "goals.json G-002 implementFiles lists only 2 files (computeMergeSpans.ts + types.ts). Spec Section 7 is authoritative: 3 files (computeMergeSpans.ts + MergingGrid.stories.tsx + decisions.md). Spec applied. types.ts not modified per spec D3.",
+    "ec002MiddleColumnHandling": "EC-002 (mergeRows-unset column in middle of array) correctly handled: `if (fn === null) continue;` skips iteration without resetting ancestorBoundary — boundary propagates across the gap.",
+    "c31WiringAudit": "MergingGrid.tsx L79: computeMergeSpans(rows.map((r) => r.original), mergeColumns) — unchanged from G-001. No wiring changes needed. New hierarchical algorithm is transparent drop-in.",
+    "buildSizes": "dist/index.mjs 3.25 KB (+0.39 KB vs G-001 2.86 KB). Expected per spec Section 9: '+2 KB' estimate was generous — actual delta is ~0.4 KB."
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 15,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 9,
+    "originalReportedDenominator": 15,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-13",
+  "tier": "low",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-002→full",
+      "tier=low",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

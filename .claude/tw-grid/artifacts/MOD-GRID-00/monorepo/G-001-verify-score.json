@@ -1,0 +1,156 @@
+{
+  "goalId": "MOD-GRID-00/monorepo/G-001",
+  "module": "MOD-GRID-00",
+  "area": "monorepo",
+  "stage": "verify",
+  "rubricVersion": "1.0.1",
+  "migrationImpact": "low",
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85
+  },
+  "weights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "hallucinationGate": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "5건 sampling 실재 검증 완료: (1) pnpm-workspace.yaml — Read 결과 'packages:\\n  - packages/*\\n  - apps/*' 정확 일치. (2) 루트 package.json — name='topvel-grid-monorepo', private=true, engines.pnpm='>=8.0.0' 확인. (3) packages/grid-core/package.json — name='@tomis/grid-core', license='MIT' 확인. (4) packages/grid-pro-tracking/package.json — name='@tomis/grid-pro-tracking', license='SEE LICENSE IN EULA' 확인. (5) apps/docs/package.json — name='docs', license='UNLICENSED', private=true 확인. Glob 결과 15개 package.json + 1개 pnpm-workspace.yaml = Spec Section 7 implementFiles 16개 일치."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "categoryScores 산식 검증: A(YES=0, NO=0, N/A=3) → 인프라 Goal 규칙(전부 N/A → 100)으로 100.0. B(YES=0, NO=0, N/A=5) → 100.0. C(YES=0, NO=0, N/A=3) → 100.0. D(YES=0, NO=0, N/A=2) → 100.0. E(YES=2, NO=0, N/A=1) → 2/(2+0)×100 = 100.0. 모든 카테고리 산식 정확. 부풀림 없음."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore 산식 검산: (100.0×25 + 100.0×25 + 100.0×20 + 100.0×15 + 100.0×15) / 100 = (2500+2500+2000+1500+1500)/100 = 10000/100 = 100.0. 보고된 weightedScore 100.0과 일치. 차이 0."
+    },
+    "passed": true
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "rubric A-01 'gradlew compileJava 0 errors'. Spec Goal은 FE 전용 monorepo 스캐폴딩(외부 디렉토리 topvel-grid-monorepo). tvcom_back 무관. Spec Section 8.2: 'TOMIS 기존 빌드(tvcom_back + tw-framework-front) 영향 없음'. rubric A-01 N/A 조건 'FE 전용일 때' 충족."
+    },
+    "A-02": {
+      "result": "N/A",
+      "evidence": "rubric A-02 'npx tsc --noEmit 0 errors'. 이 Goal 생성 파일은 JSON(15개 package.json) + YAML(pnpm-workspace.yaml)만. .ts/.tsx 파일 0건. Spec Section 2.2: 'main/module/types/exports는 빈 값 초기화 (G-003 빌드 파이프라인에서 채움)'. TypeScript 컴파일 대상 없음."
+    },
+    "A-03": {
+      "result": "N/A",
+      "evidence": "rubric A-03 'vite build 또는 tsup build + size-limit'. Spec Section 8.5: '+0 KB — 런타임 코드 없음 (package.json + yaml만)'. 각 패키지 scripts.build='echo TODO (G-003에서 tsup 적용)' — Spec Section 1 L1 'F-00-03 size-limit, F-00-05 tsup/vite 빌드'는 G-001 범위 외(별도 Goal) 명시. size-limit/빌드 검증은 G-003 대상."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "rubric B-01 '정렬 동작'. G-001은 패키지 디렉토리 + package.json 스캐폴딩. 그리드 컴포넌트 구현 없음(G-003+). 정렬 기능 대상 코드 없음."
+    },
+    "B-02": {
+      "result": "N/A",
+      "evidence": "rubric B-02 '필터 동작'. G-001은 인프라 스캐폴딩. column filter 구현 대상 컴포넌트 없음. Spec Section 1 L1: F-00-02 'packages/grid-* 13개 + apps/docs 폴더 생성'만 이 Goal 범위."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "rubric B-03 '페이지네이션 동작'. G-001 생성 파일은 package.json + yaml. 페이지네이션 구현 코드 없음."
+    },
+    "B-04": {
+      "result": "N/A",
+      "evidence": "rubric B-04 '가상화 동작 (1000행+ 시나리오)'. C-18 가상화 호환성은 G-003+ 컴포넌트 구현 Goal 대상. G-001은 디렉토리 구조 + package.json만."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "rubric B-05 '인라인 편집 동작'. EditableGrid/ChangeTrackingGrid는 MOD-GRID-04(grid-pro-tracking) 구현 대상. G-001 범위 외."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "rubric C-01 N/A 조건 '사용처 0개' 충족. Spec Section 8.1: 'affectedUsageFiles=[] (0개)'. canonical-modules.json MOD-GRID-00.affectedUsageFiles 빈 배열. 마이그레이션 사용처 없음."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "rubric C-02 N/A 조건 'low tier + 사용처 0' 충족. migrationImpact=low (Spec Goal 헤더). affectedUsageFiles=0. C-17 시각 회귀 의무는 high/medium 대상 — low는 권장. Spec Section 12: '시각 회귀 N/A — migrationImpact: low + 사용처 0개 (C-17 N/A 조건 해당)' 명시."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "rubric C-03 'console warning 0 + React warning 0'. G-001 생성 파일은 JSON + YAML — 런타임 실행 없음. console/React warning 발생 가능 대상 없음. 영향 사용처 0이므로 사용처 실행 시 warning 검증 대상 없음."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "rubric D-01 N/A 조건 '사용처 0개' 충족. Spec Section 8.1 + 3: '이 Goal은 인프라 스캐폴딩이므로 영향 사용처 0개'. 마이그레이션 비율 계산 대상 없음."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "rubric D-02 N/A 조건 '잔여 0건' 충족. 영향 사용처 0이므로 마이그레이션 잔여 0. Spec Section 3: 향후 의존 패턴(G-004, MOD-GRID-17)은 사전 기록 — 이 Goal의 잔여가 아님."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Spec Section 8.5: '+0 KB — 런타임 코드 없음 (package.json + yaml만). tw-framework-front 번들 변화 없음'. 16 파일 sampling 직접 확인: 모두 JSON 메타데이터(name/version/license/scripts 등)만 포함, JavaScript/TypeScript 런타임 코드 0건. C-21 번들 한도(grid-core 30KB, pro 20KB, 메타 150KB) 모두 한도 내(+0 KB << 한도)."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "rubric E-02 N/A 조건 '새 dep 없음' 충족. Spec Section 9: '외부 라이브러리 신규 추가 없음 (pnpm은 CLI 도구, 패키지가 아님) — ADR 불필요'. 각 package.json sampling 결과 dependencies/peerDependencies 필드 없음(빈 객체 또는 미포함) — Spec Section 2.2 'dependencies: 빈 객체 (G-003 peerDependencies 설정에서 채움)' 일치. C-20 ADR 의무 트리거 없음."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "5건 직접 Read 확인: grid-core 'license: MIT', grid-renderers 'license: MIT', grid-export 'license: MIT', grid-features 'license: MIT', grid-pro-tracking 'license: SEE LICENSE IN EULA', grid-pro-master/header/agg/merging/datamap/range 'SEE LICENSE IN EULA' (Spec Section 2.2 스키마 + implementer 보고 일치), grid-license 'SEE LICENSE IN EULA', grid(메타) 'SEE LICENSE IN EULA', apps/docs 'UNLICENSED'. 15개 package.json 모두 license 필드 명시 — C-24 라이선스 명시 의무 충족. LICENSE/EULA 파일 자체 추가는 G-002 대상(Spec Section 13)이며 E-03은 license 필드 단계만 검증."
+    }
+  },
+  "weightedScore": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "note": "G-001 인프라 스캐폴딩 Goal — 16 rubric 항목 중 13개 N/A (정상). YES 2건(E-01 번들 +0KB, E-03 라이선스 명시 15/15). NO 0건. 모든 카테고리 100.0 → weightedScore 100.0 (threshold 90 초과 합격).",
+    "AC-005": "pnpm install 미실행은 운영 환경 deviation(EC-02 pnpm 미설치)으로 documented-deviations 처리. rubric 16항목 중 직접 매핑되는 항목 없음(A-03은 G-003 size-limit/tsup 대상). 점수에 영향 없음. 다음 Goal(G-002) 착수 전 개발자가 pnpm 설치 + pnpm install --recursive 필수 실행 권장."
+  },
+  "buildStatus": {
+    "tsc": "N/A (G-001 infra scaffolding, .ts/.tsx 파일 0건)",
+    "viteBuild": "N/A (빌드 설정은 G-003 tsup 대상)",
+    "sizeLimit": "N/A (G-003 size-limit 적용 — 현재 런타임 코드 0, +0 KB)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": "N/A (인프라 Goal — 영향 사용처 0개. canonical-modules.json affectedUsageFiles=[])"
+  },
+  "documentedDeviationsAcknowledged": [
+    "AC-005: pnpm install --recursive skipped (EC-02 pnpm CLI 미설치 환경). 다음 Goal(G-002) 착수 전 개발자가 'npm install -g pnpm@latest' 또는 corepack 사용 후 'pnpm install' 실행 필수. 구조 생성(16개 파일)은 100% 완료. findings/auto-fixed/MOD-GRID-00-G-001-pnpm-install-skipped.md 기록 확인."
+  ],
+  "moduleId": "MOD-GRID-00",
+  "tier": "low",
+  "yesCount": 2,
+  "noCount": 0,
+  "naCount": 14,
+  "denominator": 2,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-001→full",
+      "tier=low",
+      "yesCount=2",
+      "noCount=0",
+      "naCount=14",
+      "denominator=2",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

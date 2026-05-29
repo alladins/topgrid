@@ -1,0 +1,222 @@
+{
+  "stage": "specify",
+  "goalId": "MOD-GRID-99-A/license/G-001",
+  "moduleId": "MOD-GRID-99-A",
+  "area": "license",
+  "threshold": 90,
+  "verifierIteration": 2,
+  "previousVerifierIssue": "1차 H-02 환각 — 부모 디렉토리 생성 명시를 'Section 8.2 absent'로 오판. spec.md L486-492 D1 정정에 이미 '외부 저장소' 명시. 조부모 실재 미검증 + 외부 디렉토리 예외 오적용.",
+  "metaGates": {
+    "H-01": {
+      "result": "N/A",
+      "evidence": "spec.md L35-42 referenceEvidence: L0='신규 패키지', L1='Web Crypto API', L2='N/A', L3='Pro 패키지 진입점'. 신규 패키지이므로 existing reference 경로 없음 (정상)."
+    },
+    "H-02": {
+      "result": "YES",
+      "evidence": "외부 디렉토리 예외 조건 3개 모두 충족: (1) 조부모 D:\\project\\topvel_project 실재 확인 (Bash), (2) spec.md L486-492 D1 정정에서 '외부 저장소' 명시 ('TOMIS 리포지토리와 별도의 외부 저장소'), (3) 명명 컨벤션 topvel-grid-monorepo = topvel- prefix + kebab-case 기존 패턴 일치. ADR-MOD-GRID-00-001 참조 (L492)."
+    },
+    "H-03": {
+      "result": "YES",
+      "evidence": "spec.md Section 3 (AC table L86-98): AC-001~AC-006 모두 source 태그 존재 (C-25, C-4, C-14, L1, R-A, C-4). 출처 태그들이 spec 다른 섹션에서 인용됨: C-4 (§8 L519-549), C-25 (§8 L551-560), L1 (§5.1~5.5), R-A (§5.1 L104~110, §1 L62)."
+    }
+  },
+  "metaGatesPass": true,
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "spec.md L51-52: '신규 패키지. 목적: 전역 API 제공'. 새 영역이므로 현 구현 없음 명시됨 (rubric L91 N/A 충족)."
+    },
+    "A-02": {
+      "result": "N/A",
+      "evidence": "spec.md L65-69: Web Crypto API SubtleCrypto 사용. TanStack 불필요 (본 Goal은 순수 TS 라이선스 검증, React 불포함). Rubric L95 TanStack API 인용 불필요."
+    },
+    "A-03": {
+      "result": "N/A",
+      "evidence": "spec.md L38: L2 (N/A). 신규 패키지이므로 공통 컴포넌트 분석 대상 없음."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "spec.md L56 (goals.json): affectedUsageFiles: [] (사용처 0개). 신규 기능이므로 영향 사용처 카운트 미필요 (rubric L105 N/A 조건)."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "spec.md L66-67: 'AG Grid Enterprise LicenseManager.setLicenseKey() — domain + expiry 검증 패턴', 'Wijmo setLicenseKey(domainKey) — per-domain HMAC 패턴'. 참조 명시됨."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "spec.md L213-226 (§5.3 types.ts): LicenseStatus, LicenseReason, LicenseState 인터페이스 전체 정의. L222-226 모든 필드 타입 명시 (reason?: 'invalid'|'expired'|'domain-mismatch', expiresAt?: Date, domain?: string)."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "spec.md L623-647 (§11 Before/After): Before stub (L623-631), After 실제 구현 (L636-647 main.tsx 사용), 2개 이상 예시 제시."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "spec.md L222-226: 'valid: boolean' (required), 'reason?:', 'expiresAt?:', 'domain?: string' (모두 optional). C-29 spread-skip 패턴 명시 (L236-245)."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "spec.md L436-445 (index.ts export 경로 명시), L571-578 (패키지 위치 명시), goals.json L49-54 (implementFiles 경로 모두 topvel-grid-monorepo/packages/grid-license/src/). 외부 디렉토리 예외도 명시 (L486-492 D1). Rubric L132-145 B-04 사용처 마이그레이션 dep 해결 경로: 신규 패키지이므로 사용처 미존재 (affectedUsageFiles: [])."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "grid-license는 순수 TypeScript 패키지, React 컴포넌트 없음. L549 확인: '패키지 자체에 React 의존 없음'. ref/useImperativeHandle 불필요 (rubric L149 N/A)."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "spec.md L86-98 (§3 AC table): AC-001~AC-006 6개 (3개 이상, rubric L155)."
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "spec.md L89-98: 모든 AC에 source 태그 존재: AC-001(C-25), AC-002(C-4), AC-003(C-14), AC-004(L1), AC-005(R-A), AC-006(C-4)."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "spec.md L89-98: AC 모두 객관 검증 가능 ('export', 'interface {...}', 'ADR 작성', 'code 구현', 'hostname match', 'no any'). 주관 표현('잘 동작') 없음."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "spec.md L48: 'Migration Impact: low'. goals.json L17: migrationImpact='low'. threshold 90 (low tier, rubric L37)."
+    },
+    "C-05": {
+      "result": "YES",
+      "evidence": "spec.md L98 AC-006: 'C-4: any 사용 없음, 모든 인수/반환 타입 명시' — 호환성 검증 항목 포함 (rubric L172)."
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "spec.md L56 (goals.json affectedUsageFiles): [] (0개 명시). 신규 패키지이므로 사용처 미존재 명확."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "신규 패키지, 기존 variant 없음. rubric L186 N/A 조건."
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "spec.md L610 (§10): 'Breaking change: 없음'. goals.json L44 compatibilityPolicy.breaking=false."
+    },
+    "D-04": {
+      "result": "N/A",
+      "evidence": "breaking change 없음 → deprecation 불필요. rubric L194 N/A."
+    },
+    "D-05": {
+      "result": "YES",
+      "evidence": "spec.md L610-614: 신규 API, soft-enforcement (console.warn + watermark, block 없음). 무효 라이선스 → {valid:false, reason:...} 반환 (block 불가, rollback 불필요)."
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "spec.md L447-449 (§5.4): '추가 외부 패키지 없음 (0개). +4 KB 예상치'. goals.json L57-60 bundleImpact: expected='+4 KB', limit='20 KB'."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "spec.md L494-505 (§7 Truth Table): 6개 파일 (NEW 5 + MODIFY 1) 명시. L623-647 (§11 Before/After) 변경 범위 명확. Section 7 ↔ Section 11 일관성 확인 (rubric L213-222)."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "spec.md L620-647: Before stub (L623-631), After 실제 (L636-647) 둘 다 명시 (rubric L223)."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "spec.md L213-234 (§5.3): 5개 파일별 설계 순서 명시 (types.ts → state.ts → verifySignature.ts → setLicenseKey.ts → index.ts). 의존성 고려 2단계 이상 (rubric L227)."
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "spec.md L464-478 (§6 Edge Cases): EC-01~EC-11 11개 (3개 이상, rubric L231). 각 EC에 시나리오 + 처리 결과."
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "spec.md L660-685 (§12 Test Plan): 단위 테스트 계획(vitest), 수동 검증 (pnpm build, dist/ 확인, tsc no-emit, bundle size), Storybook 계획 (D8 이연 명시). rubric L244 E-05 충족."
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "spec.md L486-492 (D1 재결정): 'goals.json prefix 정정 — TOMIS/packages/ → topvel-grid-monorepo/packages/'. 직후 L494-505 Section 7 Truth Table이 100% 반영 (모든 5개 NEW 파일이 topvel-grid-monorepo/packages/grid-license/src/ prefix). 재결정 ↔ 최종 표 일관성 확인 (rubric L248-256)."
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "spec.md L10: '@tomis/grid-license'. spec.md L47: 'Pro 패키지'. goals.json L7: packageTarget='packages/grid-license'. Rubric L301-309 anchor 유연성 충족 (header L10 + goals.json + spec 본문)."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "spec.md L4-9, L53, L109: setLicenseKey public API 호출 위치 명시 (main.tsx entry). rubric L312-316 구현 위치 + 교체 계획 명시 ('verifyLicense stub 제거' L109)."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "spec.md L8 (D8): 'F-03 N/A — Storybook = G-002 scope (Watermark UI 없음); Docusaurus = MOD-GRID-99-B 예정'. L684-687 반복 명시. 이연 결정(Docusaurus→MOD-GRID-99-B) + Storybook story scope(G-002) 명시. rubric L321-328 N/A sub-condition 충족 (이연 결정 명시 + Storybook 시나리오 정의)."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "spec.md L549: 'grid-license 패키지 자체에 React 의존 없음 확인 (peerDependencies: 없음)'. rubric L330-332 peer 정책 명시."
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "spec.md L12-23 (D# 표): D1~D8 8개 사전 결정 모두 명시. L486-492 (D1 재결정) vs L494-505 (Section 7 최종 표) 일관성 확인 — 재결정 결과 100% 반영. Spec 전체 TBD/TODO/미정 표현 없음 (모든 결정 확정). rubric L342-368 G-01 검증: D# ↔ 본문 cross-consistency + goals.json 데이터 일관성 모두 확인."
+    }
+  },
+  "yesCount": 26,
+  "noCount": 0,
+  "naCount": 6,
+  "denominator": 26,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [
+    "2차 Verifier: 1차 H-02 환각 정정 완료. 외부 디렉토리 예외 조건 3개 모두 충족 확인.",
+    "rubric v1.0.8 준수: metaGates H-01/H-02/H-03 모두 YES 또는 N/A → 32개 항목 점수 계산 진행.",
+    "A 카테고리: 신규 패키지이므로 A-02~A-04 N/A (참조 기반 분석 불필요). A-01(신규 명시), A-05(참조) YES.",
+    "B 카테고리: TypeScript interface, 사용 예시, optional 명시, export 경로 명시 모두 완비. B-05 N/A (React 불필요).",
+    "C 카테고리: AC 6개, 출처 태그 완비, binary 검증 가능, impact/threshold 명시, 호환성 검증 포함.",
+    "D 카테고리: 사용처 0개 명시, breaking=false, soft-enforcement, 번들 영향 (+4KB) 명시.",
+    "E 카테고리: 파일 변경 명세(NEW 5+MODIFY 1), Before/After, 순서(5단계), EC(11개), 테스트 계획, E-06 재결정 일관성 모두 YES.",
+    "F 카테고리: 패키지(@tomis/grid-license) 명시, setLicenseKey 호출 위치, F-03 N/A 정당화(이연+시나리오), peerDependencies 정책.",
+    "G-01: D# 8개 사전 결정 + Section 7 최종 표 일관성 확인. goals.json 데이터(implementFiles 경로, 카운트) 모두 spec과 일치.",
+    "자기-검산: yesCount(28) + noCount(0) + naCount(6) = 34 ≠ 32 rubric total? 검산: 카테고리합 A(2YES+3NA) + B(4YES+1NA) + C(5YES) + D(4YES+2NA) + E(6YES) + F(4YES) + G(1YES) = (2+4+5+4+6+4+1) YES + (3+1+2) NA = 26 YES + 6 NA. 재검증: H-02/H-03 YES → 28 + 3 = 31? spec 다시 읽음. A-01 YES = 1, A-05 YES = 1. B-01~B-04 YES = 4, B-05 N/A = 0. C-01~C-05 YES = 5. D-01 YES = 1, D-03/D-05/D-06 YES = 3. E-01~E-06 YES = 6. F-01~F-04 YES = 4. G-01 YES = 1. H-02/H-03 YES = 2. 소계: (1+1+4+5+1+3+6+4+1+2) = 28 YES. N/A: A-02/A-03/A-04 + B-05 + D-02/D-04 = 6. 합계: 28+0+6=34... 아, H 메타는 분모 밖. rubric 항목 = A~G 32개 only. H는 gate. 따라서: denominator = 28 (rubric 중 YES+NO), naCount = 6 (rubric 중 N/A), rubricTotal = 34는 오류 계산. 정정: rubric항목 = A(5) + B(5) + C(5) + D(6) + E(6) + F(4) + G(1) = 32. 맞음. H는 별도. 따라서 naCount=6, denominator=28, rubricTotal=32 맞음.",
+    "점수: 28/28 × 100 = 100.0 (threshold 90, low impact). passed=true."
+  ],
+  "categoryTotals": {
+    "A": 2,
+    "B": 4,
+    "C": 5,
+    "D": 4,
+    "E": 6,
+    "F": 4,
+    "G": 1,
+    "rubricSubtotal": 26
+  },
+  "rubricTotal": 32,
+  "categoryCheckOK": true,
+  "scoreFormulaOK": true,
+  "formulaValidation": {
+    "yesCount": 28,
+    "denominator": 28,
+    "score": 100,
+    "check": "28 / 28 * 100 = 100.0 ✓"
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 28,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 6,
+    "originalReportedDenominator": 28,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "tier": "low",
+  "rubricVersion": "1.0.10",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "tier=low",
+      "rubricVersion=1.0.10",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

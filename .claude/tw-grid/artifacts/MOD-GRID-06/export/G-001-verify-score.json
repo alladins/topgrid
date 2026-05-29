@@ -1,0 +1,219 @@
+{
+  "moduleId": "MOD-GRID-06",
+  "area": "export",
+  "goalId": "MOD-GRID-06/export/G-001",
+  "stage": "verify",
+  "tier": "medium",
+  "threshold": 90,
+  "ranAt": "2026-05-14T15:10:00Z",
+  "rubricVersion": "1.0",
+  "loops": 1,
+  "migrationImpact": "medium",
+  "weights": {
+    "A": 0.15,
+    "B": 0.2,
+    "C": 0.3,
+    "D": 0.2,
+    "E": 0.15
+  },
+  "checks": [
+    {
+      "id": "A-01",
+      "category": "A",
+      "title": "tsc --noEmit 0 errors (grid-export + tw-framework-front)",
+      "result": "YES",
+      "evidence": "Ran `npx tsc --noEmit` at `D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export` -> exit 0, no output (0 errors). Ran `npx tsc --noEmit` at `D:/project/topvel_project/TOMIS/tw-framework-front` -> exit 0, no output. Both pass. (AC-007, C-12)"
+    },
+    {
+      "id": "A-02",
+      "category": "A",
+      "title": "tsup build 통과 (CJS + ESM dual)",
+      "result": "YES",
+      "evidence": "`npx tsup` exit 0 at packages/grid-export. Output: dist/index.mjs 2.84 KB + dist/index.cjs 3.40 KB + dist/legacy/downloadExcel.mjs 2.97 KB + dist/legacy/downloadExcel.cjs 3.52 KB. DTS generation success (1188ms). tsup.config.ts external: ['xlsx', '@tanstack/react-table', 'react', 'react-dom', ...]. xlsx correctly externalized."
+    },
+    {
+      "id": "A-03",
+      "category": "A",
+      "title": "size-limit 한도 내",
+      "result": "NO",
+      "evidence": "monorepo `.size-limit.json` L14-19 sets @tomis/grid-export limit=20 KB (brotli). `npx size-limit --json` reports: { name: '@tomis/grid-export', passed: false, size: 80931, sizeLimit: 20000 } -> 80,931 brotli bytes vs 20,000 limit. Root cause: size-limit config lacks `ignore: ['xlsx']`. xlsx is correctly listed as peer in package.json L37 and externalized in tsup.config.ts L22, but size-limit (@size-limit/preset-small-lib) bundles peers by default unless ignored. This is a size-limit infrastructure misconfiguration, not a code defect. Raw `dist/index.mjs` is 2,913 bytes (2.84 KB) which matches Spec Section 8.5 '+5 KB gzipped' methodology. Recommended fix: add `ignore: ['xlsx', '@tanstack/react-table', 'react', 'react-dom', 'jspdf', 'jspdf-autotable']` to size-limit entry for grid-export. Surfaced to feedback for downstream Implementer/Specify track."
+    },
+    {
+      "id": "B-01",
+      "category": "B",
+      "title": "정렬 동작",
+      "result": "N/A",
+      "evidence": "G-001 scope is Excel export only. Sort/filter/pagination/virtual/edit behavior is unaffected (exportToExcel is a pure read-after-render side-effect, no UI state mutation). Spec Section 1 confirms export-only scope. (Note: scope='filtered' relies on TanStack getFilteredRowModel — which preserves whatever sort/filter the consumer has already set; export doesn't drive sort/filter itself.)"
+    },
+    {
+      "id": "B-02",
+      "category": "B",
+      "title": "필터 동작",
+      "result": "N/A",
+      "evidence": "Export-only Goal. No filter feature introduced or modified. exportToExcel consumes table.getFilteredRowModel().rows (already filtered state); does not implement filter UI."
+    },
+    {
+      "id": "B-03",
+      "category": "B",
+      "title": "페이지네이션 동작",
+      "result": "N/A",
+      "evidence": "Export-only Goal. No pagination feature in G-001 scope."
+    },
+    {
+      "id": "B-04",
+      "category": "B",
+      "title": "가상화 동작 (C-18)",
+      "result": "N/A",
+      "evidence": "Export-only Goal. No virtualization concern for export function — exportToExcel reads RowModel rows which are virtualization-agnostic at the data layer. Spec EC-05 notes large dataset (>10K rows) is documented async/Worker future-extension scope, not virtualization."
+    },
+    {
+      "id": "B-05",
+      "category": "B",
+      "title": "인라인 편집 동작",
+      "result": "N/A",
+      "evidence": "G-001 is export-only. No editable grid features in scope."
+    },
+    {
+      "id": "C-01",
+      "category": "C",
+      "title": "영향 사용처 tsc 0 (마이그레이션 후)",
+      "result": "YES",
+      "evidence": "Affected usage file: tw-framework-front/src/components/DataTable/data-table.tsx (Spec Section 8.1, 1 file). `git diff --stat HEAD -- ...data-table.tsx` returns empty (file unmodified). `npx tsc --noEmit` on tw-framework-front exits 0. No new imports added to data-table.tsx in G-001 (alias wire-up deferred to MOD-GRID-17 per Spec Section 8.3)."
+    },
+    {
+      "id": "C-02",
+      "category": "C",
+      "title": "외관 보존 (시각 회귀 — C-17)",
+      "result": "YES",
+      "evidence": "data-table.tsx L487-495 read confirms unchanged (downloadAction button + FaDownload icon + bg-purple-600 styling identical to baseline). `git diff` empty for this file. No visual regression risk because G-001 produces a new library package only; UI surface untouched. Spec Section 12.2 acknowledges medium tier visual-regression requirement is satisfied by 'data-table.tsx 수정 없으므로 외관 회귀 위험 없음'."
+    },
+    {
+      "id": "C-03",
+      "category": "C",
+      "title": "console warning 0건 (런타임)",
+      "result": "YES",
+      "evidence": "Grep `console\\.(log|warn|error|debug|info)` on grid-export/src returns exactly 1 hit: exportToExcel.ts L152 `console.warn('[grid-export] exportToExcel: 내보낼 데이터가 없습니다.')` — this is a deliberate, spec-mandated empty-data notification (EC-01) gated by `rows.length === 0 && emptyBehavior === 'skip'`. Not a spurious or React deprecation warning. Per rubric C-03 deprecation/intentional warnings are excluded. Zero unsolicited warnings in normal export path."
+    },
+    {
+      "id": "D-01",
+      "category": "D",
+      "title": "마이그레이션 비율",
+      "result": "YES",
+      "evidence": "Affected usage = 1 (data-table.tsx). G-001 deliberately ships the legacy `downloadExcel` alias as the migration vehicle (Spec D5 + AC-005); actual call-site swap is explicitly deferred to MOD-GRID-17 (Spec Section 8.3, Section 4 deprecation table step 2). Migration ratio for G-001 itself is 0/1, but the pattern is the spec-sanctioned 'expose alias first, swap callers in later Goal' pattern (C-6 호환성 점진). Spec authoritatively designates this as the intended scope — D-01 'YES + 잔여 처리 계획 명시' is satisfied via the alias + Section 8.3 schedule. Documented migration path through 3 steps (G-001 -> MOD-GRID-17 -> deprecate alias)."
+    },
+    {
+      "id": "D-02",
+      "category": "D",
+      "title": "잔여 사용처 명시",
+      "result": "YES",
+      "evidence": "Spec Section 8.3 (L378-381) explicitly enumerates remaining work: 'data-table.tsx 실제 코드 변경은 이번 Goal 범위 밖 (MOD-GRID-17 트랙)'. Section 4 (L281-286) breaks deprecation into 3-step table with explicit Goal IDs. The single 잔여 사용처 (data-table.tsx) is named and routed to MOD-GRID-17. Changeset file grid-export-g001-excel.md documents launch scope per implement-score F-02."
+    },
+    {
+      "id": "E-01",
+      "category": "E",
+      "title": "번들 크기 변동 (C-21)",
+      "result": "YES",
+      "evidence": "Raw `dist/index.mjs` after tsup = 2,913 bytes (2.84 KB). Spec Section 8.5 documented methodology: '+5 KB (gzipped) — xlsx는 peerDependency → grid-export 번들에 포함 안 됨'. tsup.config.ts L17-26 confirms xlsx + react + @tanstack/react-table all in `external` list — xlsx is NOT bundled. Implementation matches spec methodology. (Note: A-03 NO is about size-limit's measurement which incorrectly bundles peers; that is a tooling-config issue separate from this E-01 spec-methodology evaluation. Not double-counted.)"
+    },
+    {
+      "id": "E-02",
+      "category": "E",
+      "title": "새 의존성 ADR (C-20)",
+      "result": "YES",
+      "evidence": "ADR file exists at canonical location: `D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-06-decisions.md` (copied from worktree during verify preamble). Read confirms: ADR-MOD-GRID-06-001 covers xlsx ^0.18.5 peerDependency adoption with (a) decision statement, (b) 5 reasons, (c) 4-row alternatives comparison table (xlsx CE / exceljs / sheetjs-ce fork / native CSV), (d) 2 explicit trade-offs (peer mandatory + sync writeFile), (e) license confirmation Apache-2.0 (C-9 compliant), (f) bundle impact note (+5 KB grid-export, 0 KB tw-framework-front). C-9, C-14, C-20 all satisfied."
+    },
+    {
+      "id": "E-03",
+      "category": "E",
+      "title": "라이선스 명시 (C-24)",
+      "result": "YES",
+      "evidence": "package.json L5: `\"license\": \"MIT\"` confirmed via Read. Spec licenseTier: 'MIT' (L8). Open-tier package, no EULA/Pro license verification required (Spec Section 13). C-24 의무 (license field) 충족. LICENSE 파일 별도 생성은 monorepo-level concern (workspace root may carry single LICENSE) — package-level license field declaration satisfies the immediate rubric criterion."
+    }
+  ],
+  "categoryScores": {
+    "A": {
+      "yes": 2,
+      "no": 1,
+      "na": 0,
+      "score": 66.67
+    },
+    "B": {
+      "yes": 0,
+      "no": 0,
+      "na": 5,
+      "score": 100
+    },
+    "C": {
+      "yes": 3,
+      "no": 0,
+      "na": 0,
+      "score": 100
+    },
+    "D": {
+      "yes": 2,
+      "no": 0,
+      "na": 0,
+      "score": 100
+    },
+    "E": {
+      "yes": 3,
+      "no": 0,
+      "na": 0,
+      "score": 100
+    }
+  },
+  "weightedScore": 95,
+  "passed": true,
+  "failedChecks": [
+    "A-03"
+  ],
+  "feedback": {
+    "summary": "Implementation is structurally and behaviorally correct. Single non-blocking finding: size-limit infrastructure mis-configuration causes false-positive 80 KB measurement despite xlsx being correctly externalized in tsup. Spec-documented +5 KB methodology is satisfied (raw dist/index.mjs = 2.84 KB).",
+    "strengths": [
+      "TanStack v8 standard API only (getCoreRowModel / getFilteredRowModel / getSelectedRowModel / getHeaderGroups) — C-2 fully respected.",
+      "GroupColumnDef multi-row header handling with both horizontal (colSpan) and vertical (rowspan via merges) merge cells — AC-003 complete.",
+      "Korean UTF-8 support via aoa_to_sheet — AC-004 verified.",
+      "Legacy alias `downloadExcel` cleanly delegates to exportToExcel with C-29 exactOptionalPropertyTypes-safe spread pattern.",
+      "data-table.tsx untouched — zero visual regression, C-19 incremental migration policy preserved.",
+      "tsc 0 errors on both grid-export package and tw-framework-front integration.",
+      "ADR-MOD-GRID-06-001 properly captures decision, alternatives, trade-offs, license, bundle impact.",
+      "exports map declares `./legacy` sub-entry consistent with D5 + AC-005.",
+      "peerDependencies (xlsx, @tanstack/react-table, react, react-dom) correctly externalized via tsup; package contributes 2.84 KB raw, well below spec's +5 KB methodology."
+    ],
+    "findings": [
+      "A-03 NO: monorepo `.size-limit.json` measures @tomis/grid-export at 80,931 brotli bytes against 20,000 limit. Root cause: missing `ignore: ['xlsx', ...]` configuration. The package source itself is 2.84 KB raw — xlsx peer is what inflates the measurement. Recommended fix (out-of-scope for G-001 verify, surface to harness): update `.size-limit.json` grid-export entry to `{ ..., \"ignore\": [\"xlsx\", \"@tanstack/react-table\", \"react\", \"react-dom\", \"jspdf\", \"jspdf-autotable\"] }` so size-limit reflects shipped bundle, not transitively-resolved peers."
+    ],
+    "verifierSelfCheck": {
+      "categoryItemCount": "A(3) + B(5) + C(3) + D(2) + E(3) = 16. Actual checks array length = 16. ✓ (C-26 #3)",
+      "naExcludedFromDenominator": "A: denom=3 (2 YES + 1 NO + 0 N/A); B: vacuous (0 YES + 0 NO + 5 N/A) → 100 per rubric Vacuous Truth Rule; C: denom=3; D: denom=2; E: denom=3. ✓ (C-26 #1)",
+      "vacuousValidity": "B vacuous truth is allowed: Goal title 'Excel(.xlsx) export' contains no build/tsup/tsc/vite/rollup/size-limit/bundle keyword — vacuous permitted for B. A is non-vacuous (1 YES, 1 NO, 1 not present — 2 YES + 1 NO). Build keywords would trigger A vacuous prohibition; here A has real measurements. ✓",
+      "categoryScoreFormula": "A: 2/(2+1)×100 = 66.67 ✓. B: vacuous → 100 ✓. C: 3/(3+0)×100 = 100 ✓. D: 2/(2+0)×100 = 100 ✓. E: 3/(3+0)×100 = 100 ✓. (C-26 #4)",
+      "weightedScoreFormula": "66.67×0.15 + 100×0.20 + 100×0.30 + 100×0.20 + 100×0.15 = 10.0005 + 20 + 30 + 20 + 15 = 95.0005 → 95.00. ✓ (C-26 #4)",
+      "weightsSum": "0.15 + 0.20 + 0.30 + 0.20 + 0.15 = 1.00. ✓ (C-26 #4)",
+      "failedChecksIntegrity": "failedChecks = ['A-03'] — only NO results. N/A items (B-01..B-05) NOT included. ✓ (C-26 #2)",
+      "passLogic": "95.00 >= 90 (medium threshold) → passed=true. ✓"
+    }
+  },
+  "yesCount": 10,
+  "noCount": 1,
+  "naCount": 5,
+  "denominator": 11,
+  "score": 95,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "yesCount=10",
+      "noCount=1",
+      "naCount=5",
+      "denominator=11",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

@@ -1,0 +1,274 @@
+{
+  "goalId": "MOD-GRID-01/wrapper/G-004",
+  "module": "MOD-GRID-01",
+  "area": "wrapper",
+  "stage": "verify",
+  "rubricVersion": "1.0.2",
+  "migrationImpact": "high",
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85
+  },
+  "weights": {
+    "A": 10,
+    "B": 15,
+    "C": 40,
+    "D": 25,
+    "E": 10
+  },
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "metaGates": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "implement-score evidence sampling 5건 모두 실재. (1) Grid.tsx L432-434 'export const Grid = forwardRef(GridInner) as <TData>...' 직접 Read 확인 (forwardRef + generic cast 패턴). (2) types.ts L65-116 GridHandle interface 7 method 직접 Read 확인 (addRow/deleteRow/updateRow/scrollTo/getSelection/clearSelection/refresh). (3) useGridVirtualizer.ts L58-77 useVirtualizer({count, getScrollElement, estimateSize, overscan}) wiring 직접 Read 확인 + DEFAULT_ESTIMATE_SIZE=36 / DEFAULT_OVERSCAN=10 (D8). (4) useGridImperativeHandle.ts L67-156 useImperativeHandle + scrollTo clamp + virtualizer 우선 + DOM fallback 직접 Read 확인. (5) decisions.md L223-298 ADR-MOD-GRID-01-005 직접 Read 확인 (Alternatives 5개, Trade-off Pro/Con ≥2, MIT license). 외부 monorepo 경로 → Glob/Read 검증 (TOMIS git 무관 — F-01 외부 디렉토리 예외). documentedDeviations=[] 이므로 finding 파일 검증 불필요. promptSpecDrift=[] 일치 (spec 본문 권위 적용)."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "산식 재검산 통과. A: YES=2, NO=0, N/A=1 → 2/(2+0)×100=100.0 ✓. B: YES=4, NO=0, N/A=1 → 4/(4+0)×100=100.0 ✓. C: YES=1, NO=0, N/A=2 → 1/(1+0)×100=100.0 ✓. D: YES=0, NO=0, N/A=2 → vacuous truth (Goal 제목 '가상화/imperative API'에 build/tsup/tsc/vite/rollup/size-limit/bundle 키워드 없음 → A 카테고리는 vacuous 금지 비적용. D 카테고리는 keyword 무관 → vacuous 허용) = 100.0 ✓. E: YES=3, NO=0, N/A=0 → 3/(3+0)×100=100.0 ✓. failedChecks 배열 [] (NO 0건). 카테고리 합계 A(3)+B(5)+C(3)+D(2)+E(3)=16 ✓ rubric verify 16항목 일치 (C-26)."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore = (100.0×10 + 100.0×15 + 100.0×40 + 100.0×25 + 100.0×10) / 100 = (1000+1500+4000+2500+1000)/100 = 10000/100 = 100.0. Σweight = 10+15+40+25+10 = 100 ✓. weightedScore 100.0 vs threshold 95 → passed=true."
+    }
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "FE-only Goal — gradlew compileJava 무관 (tw-framework-front + monorepo 별개). Spec Section 8.2 'TOMIS 내부 0 변경'. tvcom_back 영향 0."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "`cd D:\\project\\topvel_project\\topvel-grid-monorepo && npx tsc --noEmit -p packages/grid-core` EXIT=0 (output 0줄). G-004 신규 + MODIFY 5 파일 모두 strict tsc 통과. forwardRef + generic cast (Grid.tsx L432-434), GridHandle interface (types.ts L65-116), useGridVirtualizer return type 'Virtualizer<HTMLDivElement, HTMLTableRowElement> | null' (useGridVirtualizer.ts L63-77), useImperativeHandle deps individual fields (useGridImperativeHandle.ts L146-154) 모두 타입 에러 0."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "(1) tsup build 성공: ESM 24.19 KB, CJS 24.69 KB, DTS 14.20 KB, all '⚡️ Build success' (npx pnpm --filter @tomis/grid-core build 출력). (2) size-limit JSON: @tomis/grid-core size=24207 bytes (24.207 KB), sizeLimit=30000, passed=true. 한도 30 KB 이내 80.7% 사용, 여유 5.79 KB. ADR-005 Consequences L266-268 실측 trajectory와 일치 (G-001 17.44 + G-002+G-003 +0.91 + G-004 +5.86 = 24.21 KB)."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "정렬 wiring (G-001 보존). Grid.tsx L70 sorting state, L85-100 buildTableOptions 호출에서 sorting/setSorting 전달. buildTableOptions.ts L20 getSortedRowModel import. Grid.tsx L204-217 thead canSort/sortGlyph 마크업 + onSortClick 모두 보존 (G-004 forwardRef 변환에도 무손상). G-004 신규 분기는 tbody only — 정렬 기능 무관."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "필터 wiring (G-001 보존). Grid.tsx L71 columnFilters state, L87-88 buildTableOptions 전달. buildTableOptions.ts L18 getFilteredRowModel import. enableFilter prop 보존 (types.ts L222). G-004 변경 미적용 (G-001 markup 그대로)."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "페이지네이션 wiring (G-001 보존). Grid.tsx L73-76 pagination state, L92-93 buildTableOptions 전달. buildTableOptions.ts L19 getPaginationRowModel import. Grid.tsx L152-158 totalRows + L357-417 pagination footer markup 모두 보존. manual pagination + totalCount 분기 (L154-156) 보존. G-004 변경 미적용."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "★ B-04 가상화 첫 실 평가 — 실 적용 검증 통과. (1) useVirtualizer wiring 정확 (useGridVirtualizer.ts L69-74): {count: enabled ? rows.length : 0, getScrollElement: () => scrollContainerRef.current, estimateSize: () => estimate, overscan} — VirtualGrid.tsx:98-103 4-옵션 패턴 동일. rules-of-hooks 준수 (L68 주석 'useVirtualizer 항상 호출, count로 비활성화'). (2) Single-table padding-row 패턴 (Grid.tsx L260-318, D5): paddingTop tr (L265-269) + virtualItems.map (L270-312) + paddingBottom tr (L313-317) 모두 single <table> 내 <tbody> 자식. paddingTop = virtualItems[0]?.start (L177-178), paddingBottom = totalSize - virtualItems[last]?.end (L179-182) 산식 정확. (3) measureElement 동적 행 높이: Grid.tsx L277 ref={virtualizer!.measureElement}. (4) virtualRow.index 매핑: Grid.tsx L271 const row = table.getRowModel().rows[virtualRow.index] (VirtualGrid.tsx:165 패턴 흡수). (5) sticky thead 호환 (G-002 보존): L200 thead 'sticky top-0 z-10' 클래스, virtual 분기에서도 동일 thead 그대로 (single <table> 자식이라 sticky 동작). (6) pinning 호환: virtual tr cell L292-294 getPinnedCellStyle(cell.column, table, 'tbody') 호출 → G-002 sticky pinned column CSS padding tr까지 미치적용 (정상, padding tr는 빈 td 1개 colSpan=leafColCount만). (7) data-index attr (L276) 비-virtual 분기에도 추가 (L323) → ref.scrollTo() DOM fallback querySelector 기반 안전. (8) padding tr는 aria-hidden='true' (L266, L314) → 시각/스크린리더 영향 0. EC-01 (data=0 → EmptyState L249-259), EC-02 (loading=true → SkeletonRows L242-248), EC-05 (pinning 호환), EC-07 (default 400 + dev warn L137-150) 모두 구현 확인."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "편집 기능 없는 Goal. D3 정책 'controlled data + callback delegating': addRow/deleteRow/updateRow는 ref imperative API이지 인라인 편집(EditableGrid/ChangeTrackingGrid)이 아님. Spec Section 2.6 Example 2 onAddRow/onDeleteRow/onUpdateRow가 parent setState로 위임 — 본 G-004는 인라인 셀 에디터 미도입. EditableGrid 통합은 별도 Goal."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] (spec Section 8.1, wrapper-goals.json L233 일치). Spec Section 8.2 'TOMIS 내부 0 변경'. tw-framework-front/src/components/tomis/Grid/*.tsx, src/types/tomis/grid.ts, src/pages/** 모두 무수정. 마이그레이션한 사용처 0개 → N/A."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "영향 사용처 0개 (Spec Section 8.1). 단, surgical preservation 검증으로 외관 회귀 위험 차단: (1) Grid.tsx L36-43 G-001~G-003 internal import 6개 모두 보존 (Read 확인). (2) Grid.tsx L46-48 DEFAULT_PAGE_SIZE/DEFAULT_PAGE_SIZE_OPTIONS/DEFAULT_EMPTY_TEXT G-001~G-003 상수 보존. (3) Grid.tsx L319-352 비-virtual tbody 분기 G-001~G-003 markup 100% 보존 (enableVirtualization=false default 경로). (4) computePinnedOffset.ts/CheckboxColumn.tsx/ResizeHandle.tsx/Skeleton.tsx/EmptyState.tsx/useAutoSelectFirstRow.ts/buildTableOptions.ts 7개 internal 모듈 무수정 (Read 확인). 외관 회귀 표면 자체 부재. 본 G-004 자체는 사용처 0이므로 마이그레이션 후 외관 비교 불가 — N/A 적합. Storybook baseline은 G-005/MOD-GRID-17에서 활용."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "console warning 검증. Grep 'console\\.' 결과 실제 호출 2건만: (1) Grid.tsx L144 console.warn — process.env.NODE_ENV !== 'production' 가드 (L142, useEffect 내 mount 시 1회, virtualScrollHeight 미지정 시 dev 경고). (2) useGridImperativeHandle.ts L51 console.warn — devWarn 헬퍼 내부에 typeof process !== 'undefined' && process?.env?.NODE_ENV !== 'production' 가드 (L50). 나머지 4건 (types.ts L59/L68/L90, useGridImperativeHandle.ts L47)는 모두 JSDoc 코멘트 (실제 코드 호출 X). production silent 정책 완벽 준수 — runtime warning 0건. React warning도 rules-of-hooks 준수 (useVirtualizer 항상 호출 + useImperativeHandle deps individual fields)."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "사용처 0개 (Spec Section 8.1 affectedUsageFiles=[], wrapper-goals.json L233). 마이그레이션 비율 ≥50% 한도 무관. 본 G-004는 신규 surface 추가 — 마이그레이션 영향도가 후속 G-005/MOD-GRID-10/MOD-GRID-17으로 이연."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 0건. 잠재 후속 영향 (참고 — 본 Goal 범위 외, Spec Section 8.1): G-005 legacy alias 5종 (enableVirtualization 매핑 진입점), MOD-GRID-10 ChangeTrackingGrid alias (자체 handle 유지), MOD-GRID-17 페이지 27개 (직접 ref 활용 가능). 모두 후속 Goal에서 처리 — documented-deviations 기록 불필요."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "size-limit 측정 통과. JSON: @tomis/grid-core size=24207 bytes (24.207 KB), sizeLimit=30000 bytes (30 KB), passed=true. 누적 추세 (ADR-005 Consequences): G-001 17.44 + G-002+G-003 +0.91 + G-004 +5.86 = 24.21 KB / 30 KB (80.7%, 여유 5.79 KB). C-21 사용자 승인 불필요 (100 KB 미만 변동). D13 게이트 통과. G-005 분리 트리거(누적 25 KB) 미달 — grid-core 내부 alias OK 권고 (ADR-005 Consequences)."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "ADR-MOD-GRID-01-005 작성 (decisions.md L223-298). C-20 의무 충족: (1) Title 'G-004 — @tanstack/react-virtual 첫 runtime wiring + Step 0 workspace devDep 설치'. (2) Context (L229-231) — peer는 G-001 시점 선언, G-004가 첫 runtime wiring + workspace devDep 보강. (3) Decision 5개 (D2/D5/D6/D7/D9/D10, L233-240). (4) Alternatives Considered 5개 (L242-250): react-window / virtua / 자체 가상화 / 두-<table> absolute / 자동 임계값. (5) Trade-off Pro 4개 + Con 3개 (L252-263, ≥2 충족). (6) Consequences (L264-272) — 번들 24.21 KB, peer 변경 0, GridHandle 7 method, MOD-GRID-99-B 후속 의무. (7) License MIT 명기 (L255). (8) Pattern Catalog Note 2건 (process global declare 패턴 + exactOptionalPropertyTypes union 패턴, 각각 retro promotion 트리거 명시). C-22 peerDependencies 정책 부합. C-9 라이선스 MIT 부합."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "라이선스 명시 (C-24 의무). grid-core/package.json L5: '\"license\": \"MIT\"'. peerDependencies 4종 (L23-28: @tanstack/react-table ^8.0.0, @tanstack/react-virtual ^3.0.0, react ^18 || ^19, react-dom ^18 || ^19) 모두 MIT 호환. C-22 peerDependencies 정책 (peer만, dep 중복 선언 0건) 완벽 준수. tsup.config.ts external 배열에 react-virtual 포함 → 번들 dist 무영향."
+    }
+  },
+  "weightedScore": 100,
+  "threshold": 95,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "overall": "G-004 VERIFY 만점 통과 (100.0/95). B-04 가상화 첫 실 평가 — useVirtualizer 4-옵션 wiring + single-table padding-row 패턴(D5) + measureElement 동적 행 높이 + virtualRow.index 매핑 + G-002 sticky thead/pinning 호환 모두 코드 정적 검증 PASS. forwardRef + GridHandle 7 method imperative API (D3/D9/D11/D12) + ADR-005 trade-off ≥2 + 라이선스 MIT 모두 충족.",
+    "buildResults": "tsc --noEmit EXIT=0, tsup build SUCCESS (ESM 24.19 KB / CJS 24.69 KB / DTS 14.20 KB), size-limit @tomis/grid-core 24207 B / 30000 B PASS (80.7%, 여유 5.79 KB).",
+    "preservation": "G-001/G-002/G-003 surgical preservation 완벽: Grid.tsx L36-43 import + L46-48 상수 + L319-352 비-virtual tbody + 7 internal 모듈(computePinnedOffset/CheckboxColumn/ResizeHandle/Skeleton/EmptyState/useAutoSelectFirstRow/buildTableOptions) 모두 무수정 Read 확인.",
+    "noFailures": "failedChecks=[] (NO 0건). N/A 5건: A-01(FE-only), B-05(편집 무관), C-01(사용처 0), C-02(사용처 0), D-01(사용처 0), D-02(잔여 0). C-26 산식 자기-검증 통과 (16항목 합계 일치, weight 합 100, weightedScore 산식 정확)."
+  },
+  "buildStatus": {
+    "tsc": "PASS (EXIT=0)",
+    "tsupBuild": "PASS (ESM 24.19 KB, CJS 24.69 KB, DTS 14.20 KB)",
+    "sizeLimit": "PASS (24207 B / 30000 B = 80.7%)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": null,
+    "note": "사용처 0개 (Spec Section 8.1, wrapper-goals.json L233 일치). 신규 surface(forwardRef + GridHandle + virtualization wiring) 추가 Goal — 마이그레이션 영향도 G-005(legacy alias)/MOD-GRID-10(ChangeTrackingGrid)/MOD-GRID-17(페이지 27개) 후속 이연."
+  },
+  "compatibilityVerification": {
+    "G-001_preserved": [
+      {
+        "section": "Grid.tsx L36-43 internal imports (6 modules)",
+        "evidence": "Read 확인 — buildTableOptions/getPinnedCellStyle/EmptyState/ResizeHandle/SkeletonRows/useAutoSelectFirstRow 모두 보존"
+      },
+      {
+        "section": "Grid.tsx L46-48 DEFAULT_PAGE_SIZE/DEFAULT_PAGE_SIZE_OPTIONS/DEFAULT_EMPTY_TEXT",
+        "evidence": "Read 확인 — G-001 상수 보존"
+      },
+      {
+        "section": "Grid.tsx L319-352 비-virtual tbody normal row map",
+        "evidence": "Read 확인 — enableVirtualization=false 경로 100% 보존, data-index attr만 추가(L323, fallback DOM scroll용)"
+      },
+      {
+        "section": "buildTableOptions.ts (G-001 unchanged)",
+        "evidence": "L1-50 Read 확인 — getCoreRowModel/getSortedRowModel/getFilteredRowModel/getPaginationRowModel/getExpandedRowModel + GridStateBag interface 모두 보존"
+      },
+      {
+        "section": "CheckboxColumn.tsx (G-001 unchanged)",
+        "evidence": "L1-58 Read 확인 — createCheckboxColumn 함수 + multi/single 분기 + onClick stopPropagation 모두 보존"
+      }
+    ],
+    "G-002_preserved": [
+      {
+        "section": "Grid.tsx L161-171 usePinning + useResizing + tableClassName/tbodyClassName/rowBorderClassName 분기",
+        "evidence": "Read 확인 — border-separate × position:sticky 호환 분기 보존"
+      },
+      {
+        "section": "Grid.tsx L200 thead 'sticky top-0 z-10' + L211-213 getPinnedCellStyle('thead')",
+        "evidence": "Read 확인 — sticky thead + pinned 헤더 셀 z-30 보존"
+      },
+      {
+        "section": "Grid.tsx L292-294 + L334-337 virtual/normal 양쪽 tbody 셀 getPinnedCellStyle('tbody')",
+        "evidence": "Read 확인 — pinned column body 셀 sticky CSS 보존 (양쪽 분기 동일 호출)"
+      },
+      {
+        "section": "Grid.tsx L234 ResizeHandle 호출",
+        "evidence": "Read 확인 — useResizing=true 시 thead 우측 4px 핸들 보존"
+      },
+      {
+        "section": "computePinnedOffset.ts + ResizeHandle.tsx (G-002 unchanged)",
+        "evidence": "L1-117 + L1-65 Read 확인 — 모든 함수/컴포넌트 무수정"
+      }
+    ],
+    "G-003_preserved": [
+      {
+        "section": "Grid.tsx L242-248 SkeletonRows 분기 (loading=true)",
+        "evidence": "Read 확인 — virtual 분기 우선순위(L260)보다 먼저 평가, EC-02 충족"
+      },
+      {
+        "section": "Grid.tsx L249-259 EmptyState 분기 (data.length=0)",
+        "evidence": "Read 확인 — virtual 분기 우선순위(L260)보다 먼저 평가, EC-01 충족"
+      },
+      {
+        "section": "Grid.tsx L109-114 useAutoSelectFirstRow 호출",
+        "evidence": "Read 확인 — autoSelectFirstRow + dataLength + selectionMode deps 보존"
+      },
+      {
+        "section": "Skeleton.tsx + EmptyState.tsx + useAutoSelectFirstRow.ts (G-003 unchanged)",
+        "evidence": "L1-60 + L1-66 + L1-57 Read 확인 — 모든 컴포넌트/훅 무수정"
+      }
+    ],
+    "G-004_new_only": [
+      {
+        "section": "Grid.tsx L15-23 forwardRef/useRef/Ref import 추가",
+        "evidence": "Read 확인 — G-001~G-003 import 미손상"
+      },
+      {
+        "section": "Grid.tsx L42-44 useGridImperativeHandle/useGridVirtualizer + GridHandle import 추가",
+        "evidence": "Read 확인 — 신규 internal 2 hook + types import"
+      },
+      {
+        "section": "Grid.tsx L66-69 GridInner forwardRef inner + ref param",
+        "evidence": "Read 확인 — D4 forwardRef 변환"
+      },
+      {
+        "section": "Grid.tsx L116-134 scrollContainerRef + useGridVirtualizer + useGridImperativeHandle 호출",
+        "evidence": "Read 확인 — virtualization wiring 첫 도입 (D2/D5/D8)"
+      },
+      {
+        "section": "Grid.tsx L260-318 isVirtual padding-row 분기",
+        "evidence": "Read 확인 — single-table padding-row 패턴 (D5), measureElement(L277) + virtualRow.index 매핑(L271)"
+      },
+      {
+        "section": "Grid.tsx L432-434 export const Grid = forwardRef(GridInner) as <TData>",
+        "evidence": "Read 확인 — D4 generic cast 패턴 (ChangeTrackingGrid:215-217 차용)"
+      },
+      {
+        "section": "types.ts L19 ScrollToOptions import + L31 GridScrollToOptions + L65-116 GridHandle + L388-458 GridProps 6 신규 prop",
+        "evidence": "Read 확인 — D2/D3/D6/D7/D8/D9 명시 구현"
+      },
+      {
+        "section": "useGridVirtualizer.ts NEW (77 lines)",
+        "evidence": "Read 확인 — useVirtualizer 4-옵션 wiring + DEFAULT_ESTIMATE_SIZE=36 + DEFAULT_OVERSCAN=10 + rules-of-hooks 준수 (count=0 비활성화)"
+      },
+      {
+        "section": "useGridImperativeHandle.ts NEW (156 lines)",
+        "evidence": "Read 확인 — 7 method useImperativeHandle + scrollTo clamp + virtualizer 우선 + DOM fallback + devWarn dev mode 가드"
+      },
+      {
+        "section": "index.ts L9-10 GridHandle/GridScrollToOptions type export 추가",
+        "evidence": "Read 확인 — 기존 5 type export 보존"
+      }
+    ]
+  },
+  "selfChecksum": {
+    "categoryItemTotals": "A=3 + B=5 + C=3 + D=2 + E=3 = 16 ✓ (rubric verify 16항목 일치)",
+    "weightSum": "10 + 15 + 40 + 25 + 10 = 100 ✓",
+    "categoryScoreFormula": {
+      "A": "YES=2, NO=0, N/A=1 → 2/(2+0)*100 = 100.0",
+      "B": "YES=4, NO=0, N/A=1 → 4/(4+0)*100 = 100.0",
+      "C": "YES=1, NO=0, N/A=2 → 1/(1+0)*100 = 100.0",
+      "D": "YES=0, NO=0, N/A=2 → vacuous truth = 100.0 (Goal 제목 'react-virtual + imperative API'에 build/tsup/tsc 키워드 없음 → vacuous 금지 비적용)",
+      "E": "YES=3, NO=0, N/A=0 → 3/(3+0)*100 = 100.0"
+    },
+    "weightedScoreFormula": "(100.0*10 + 100.0*15 + 100.0*40 + 100.0*25 + 100.0*10) / 100 = 10000/100 = 100.0",
+    "failedChecksOnlyContainsNO": "[] — NO 0건이므로 빈 배열 (N/A 5건은 미포함, C-26 준수)"
+  },
+  "moduleId": "MOD-GRID-01",
+  "tier": "high",
+  "yesCount": 10,
+  "noCount": 0,
+  "naCount": 6,
+  "denominator": 10,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "tier=high",
+      "yesCount=10",
+      "noCount=0",
+      "naCount=6",
+      "denominator=10",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

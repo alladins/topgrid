@@ -1,0 +1,87 @@
+{
+  "goalId": "G-002",
+  "module": "MOD-GRID-11",
+  "package": "grid-pro-range",
+  "implementedAt": "2026-05-14",
+  "specVersion": "v1.0.0",
+  "files": [
+    {
+      "path": "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useKeyboardNav.ts",
+      "action": "NEW",
+      "linesChanged": 163
+    },
+    {
+      "path": "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useKeyboardNav.stories.tsx",
+      "action": "NEW",
+      "linesChanged": 121
+    },
+    {
+      "path": "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/types.ts",
+      "action": "MODIFY",
+      "linesChanged": 0,
+      "note": "spec Section 6.4: UseKeyboardNavOptions/UseKeyboardNavReturn은 useKeyboardNav.ts에서 직접 export. types.ts 내용 변경 없음."
+    },
+    {
+      "path": "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/index.ts",
+      "action": "MODIFY",
+      "linesChanged": 4,
+      "note": "useKeyboardNav + UseKeyboardNavOptions + UseKeyboardNavReturn re-export 추가 (spec Section 6.5)"
+    }
+  ],
+  "buildResult": {
+    "tsc": {
+      "command": "npx tsc --noEmit",
+      "errors": 0,
+      "status": "PASS"
+    },
+    "tsup": {
+      "command": "npm run build",
+      "status": "PASS",
+      "timeMs": 98
+    },
+    "sizeLimit": {
+      "distIndexMjs": "9.86 KB",
+      "threshold": "7.5 KB (권장)",
+      "status": "EXCEED_SOFT",
+      "note": "G-001 baseline 5.58 KB + G-002 추가분 ~4.28 KB = 9.86 KB. 하드 제한 없음. 소프트 권장치 초과이나 stories 파일은 번들에서 제외됨 (tsconfig exclude). 실 구현 코드만 포함."
+    }
+  },
+  "wijmoCheck": {
+    "pattern": "@mescius/wijmo",
+    "matches": 0,
+    "status": "PASS"
+  },
+  "identifierGrep": {
+    "pattern": "useKeyboardNav|activeCellRef|ActiveCell|onKeyDown|anchorCellRef",
+    "matches": 20,
+    "files": ["useKeyboardNav.ts"],
+    "status": "PASS"
+  },
+  "normalizeRangeCallCheck": {
+    "imported": true,
+    "calledAt": "useKeyboardNav.ts:112 — normalizeRange({ start: anchor, end: nextCursor })",
+    "status": "PASS"
+  },
+  "promptSpecDrift": [],
+  "deferredAcs": [],
+  "specCodeDefects": [
+    {
+      "id": "SCD-001",
+      "location": "spec Section 6.2 findDataEdge — switch without default branch",
+      "issue": "switch(key) has no default case — TypeScript noFallthroughCasesInSwitch 경고 가능성 + getCellValue 제공 시 unknown key에 대해 start 반환 필요",
+      "resolution": "findDataEdge 내 switch에 default: return start; 추가하여 명시적 처리"
+    }
+  ],
+  "feedback": [
+    "AC-001~AC-008 전체 구현 완료",
+    "D4 controlled 패턴: useCellRange.ts 수정 없음 — useKeyboardNav가 { range, onRangeChange } 수신",
+    "ADR-MOD-GRID-11-006 normalize-on-extend + anchor 유지 패턴 적용: anchorCellRef + normalizeRange 호출",
+    "D3 handleKeyDown: Grid container <div tabIndex={0}> 부착 패턴 (Storybook story 예시 포함)",
+    "C-29 exactOptionalPropertyTypes: getCellValue 옵셔널 prop — undefined 비교 패턴 사용 (getCellValue === undefined)",
+    "C-31: normalizeRange 실제 호출 확인 (line 112)",
+    "dist/index.mjs 9.86 KB — 소프트 권장치(7.5 KB) 초과. 하드 제한 없음. 향후 트리셰이킹 최적화 가능",
+    "stories 파일은 tsconfig exclude에 포함되어 typecheck 대상 외"
+  ],
+  "migrationImpact": "medium",
+  "migrationImpactNote": "goals.json L135 + spec Section 8.4 권위값. affectedUsageFiles=[] — 현재 마이그레이션 파일 직접 영향 없음. 향후 G-006에서 RangeSelectGrid.tsx 통합 예정."
+}

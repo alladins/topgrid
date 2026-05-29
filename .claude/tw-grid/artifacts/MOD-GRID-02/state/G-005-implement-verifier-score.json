@@ -1,0 +1,223 @@
+{
+  "goalId": "MOD-GRID-02/state/G-005",
+  "module": "MOD-GRID-02",
+  "area": "state",
+  "stage": "implement",
+  "tier": "low",
+  "threshold": 85,
+  "verifierModel": "claude-haiku-4-5-20251001",
+  "rubricVersion": "1.0.8",
+  "implementerSelfScore": 93.75,
+  "implementerModel": "claude-sonnet-4-6",
+  "implementFilesActual": [
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useUrlSync.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/internal/serializeState.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useUrlSync.stories.tsx",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useUrlSync.test.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/index.ts"
+  ],
+  "implementFilesSpec": [
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useUrlSync.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/internal/serializeState.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useUrlSync.stories.tsx",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useUrlSync.test.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/index.ts"
+  ],
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "All 6 files verified on disk via Glob. useUrlSync.ts (NEW), internal/serializeState.ts (NEW), useUrlSync.stories.tsx (NEW), useUrlSync.test.ts (NEW), types.ts (MODIFY, L804-859 UseUrlSyncOptions added), index.ts (MODIFY, L4 useUrlSync export + L18 UseUrlSyncOptions type export added)."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "useUrlSync<TData>(state: GridStateValues<TData>, options?: UseUrlSyncOptions<TData>): void matches spec Section 2.2 exactly. UseUrlSyncOptions interface (types.ts L826-859) has keys?, debounceMs?, onHydrate?, prefix? — all optional with correct types. serializeGridState/deserializeGridState/isDefaultState signatures match spec Section 5.1 templates."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "tsc --noEmit 0 errors on grid-core package. tsup build passes (ESM 55.87KB + CJS 57.30KB, DTS 24.50KB). useUrlSync.ts JSDoc @example block (L39-49) compiles clean."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "G-005 introduces new hook — no prior variants to map."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "All 5 ACs implemented: AC-001 (sorting→URL syncToUrl L82-88), AC-002 (ALL_KEYS fallback L57), AC-003 (isDefaultState + delete L82-83), AC-004 (hydrateRef + mount effect L63-77 + onHydrate callback), AC-005 (1 Storybook story SortingUrlSync + 5 vitest scenarios S1-S5 in useUrlSync.test.ts, all covering spec Section 6.1). No deferredAcs[] present — all ACs directly implemented."
+    },
+    "A-06": {
+      "result": "YES",
+      "evidence": "C-31 wiring verified: Grep 'serializeState' returns 3 hits: (1) useUrlSync.ts L12 import, (2) useUrlSync.ts L72 deserializeGridState call, (3) useUrlSync.ts L82 serializeGridState call. Both functions actively invoked inside syncToUrl closure and mount useEffect. No dead code."
+    },
+    "A-07": {
+      "result": "NO",
+      "evidence": "spec Section 7 lists useUrlSync.test.ts (NEW). Attempted vitest execution: package.json test script = 'echo TODO'. vitest not installed in monorepo. Test file written with 5 scenarios (S1-S5) covering AC-001 through AC-005 and R-1, but runtime execution blocked. Same environment constraint as G-003/G-004 per documentedDeviations[]."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "pnpm -F @tomis/grid-core typecheck runs tsc --noEmit → exit 0. All 6 files (4 NEW + 2 MODIFY) typecheck clean."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Grep 'as any' across all 6 files returns 0 hits in production code. Only mention is in serializeState.ts JSDoc comment (L103-106) explaining spec F-06 defect fix — not an actual cast in code."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "useUrlSync uses only React (useEffect, useRef) + internal useDebouncedCallback. No TanStack internal APIs. serializeState uses URLSearchParams (Web standard) + JSON.stringify/parse only."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "No new .css/.scss files created. useUrlSync.stories.tsx uses inline style={{}} for Storybook demo layout only — acceptable per rule. No static inline styles in production hook code."
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "ESLint on all new files → 0 errors. The 2 eslint-disable-next-line comments in useUrlSync.ts (L76, L95) are for: (1) mount-only [] effect (intentional, no-deps AC-004), (2) 8-primitive deps array (syncToUrl unstability when debounceMs=0). Neither is a C-32 unstable-setter case — onHydrate handled via useRef (hydrateRef, option 2 per D5)."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep '@mescius/wijmo|wijmo' across all 6 files → 0 hits."
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "No dummyData/mockData/fakeData/TODO in production code (useUrlSync.ts, serializeState.ts, types.ts additions, index.ts additions). Test/story files contain mock data per rule exception."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "tsc --noEmit globally 0 errors. useUrlSync + UseUrlSyncOptions are NEW exports — no breaking changes to existing APIs. affectedUsageFiles = 0 (spec Section 8.1)."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "low tier + affectedUsageFiles = 0. No UI component migration impact."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0. No existing usage sites affected."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "package.json unchanged. react/@tanstack/react-table remain peerDependencies. No new dependencies added. useDebouncedCallback reused from internal/, URLSearchParams is Web standard."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0 (spec Section 8.1). useUrlSync is optional new hook."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "No usage site migrations."
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "No residual usage sites (affectedUsageFiles = 0)."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "size-limit run: @tomis/grid-core = 28.29 KB brotli (limit: 30 KB). G-004 baseline 27.27 KB → G-005 delta = +1.02 KB. Within spec D9 estimate of +2 KB. PASS."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "No new external dependencies. URLSearchParams is Web standard. useDebouncedCallback internal reuse."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "package.json not modified."
+    }
+  },
+  "yesCount": 15,
+  "noCount": 1,
+  "naCount": 8,
+  "denominator": 16,
+  "score": 93.75,
+  "passed": true,
+  "failedChecks": [
+    "A-07"
+  ],
+  "c26SelfVerification": {
+    "categoryCheck": {
+      "a_count": 7,
+      "b_count": 7,
+      "c_count": 4,
+      "d_count": 3,
+      "e_count": 3,
+      "total": 24,
+      "formula_integrity": "PASS"
+    },
+    "denominatorCheck": {
+      "yesCount": 15,
+      "noCount": 1,
+      "naCount": 8,
+      "denominator_computed": 16,
+      "check_formula": "15 / 16 × 100 = 93.75",
+      "formula_integrity": "PASS"
+    },
+    "failedChecksNaConsistency": {
+      "failedChecks_count": 1,
+      "containsNa": false,
+      "integrity": "PASS"
+    }
+  },
+  "c27DriftCrossCheck": {
+    "promptSpecDrift": [],
+    "note": "No value drifts detected between Implementer prompt and spec.md. Spec authority fully applied."
+  },
+  "c29ExactOptionalPass": {
+    "result": true,
+    "evidence": "UseUrlSyncOptions fields use nullish coalescing (options?.keys ?? ALL_KEYS, etc.) in useUrlSync.ts L57-59. No direct undefined forwarding. No 'as any' casts."
+  },
+  "c30SpecTableMatch": {
+    "result": true,
+    "evidence": "spec Section 7 table lists 6 files (NEW 4 + MODIFY 2). Implementer changed exactly 6 files. D7 matches Section 7 exactly. No contradictions."
+  },
+  "c31WiringAuditPass": {
+    "result": true,
+    "evidence": "serializeState.ts call-site = useUrlSync.ts only. Import L12 verified. Calls: deserializeGridState L72, serializeGridState L82 — both active, not dead code. No index.ts re-export (D8)."
+  },
+  "c32UnstableSetterPass": {
+    "result": true,
+    "evidence": "onHydrate callback (non-stable) handled via useRef (hydrateRef) — option 2 per D5. No option 3 (eslint-disable) used for this. The 2 eslint-disable comments are for effect deps (L76 mount-only [], L95 8-primitive deps), not unstable setter."
+  },
+  "a05DeferralDiscipline": {
+    "deferredAcsCount": 0,
+    "deferralReportedInImplementerScore": false,
+    "deferralAcceptable": true,
+    "note": "All 5 ACs directly implemented. No deferred ACs. A-05 = YES (not PARTIAL/NO)."
+  },
+  "f06SpecCodeDefectFix": {
+    "defect_found": true,
+    "defectLocation": "G-005-spec.md Section 5.1 L234-235",
+    "defectDescription": "spec template uses '(result as any)[key] = JSON.parse(raw)' — violates C-4 (no 'any')",
+    "fixApplied": true,
+    "fixAppliedLocation": "serializeState.ts L113-124",
+    "fixDescription": "Changed to 'const result = {} as Record<GridStateKey, unknown>' + key-by-key assign + cast return. No 'as any' in production code.",
+    "fixRecorded": true,
+    "specCodeDefects_field": "present in implementer-score.json"
+  },
+  "documentedDeviations": [
+    {
+      "ac": "A-07 (vitest runtime execution)",
+      "reason": "vitest not installed in monorepo (package.json test script = 'echo TODO'). Environment constraint.",
+      "finding": "Test file useUrlSync.test.ts authored with 5 scenarios (S1-S5) covering spec Section 6.1. Typecheck clean.",
+      "resolution": "Developer action: pnpm add -D vitest @testing-library/react jsdom + pnpm vitest run"
+    }
+  ],
+  "feedback": [
+    "C-32 compliance (D5): onHydrate handled via useRef (hydrateRef) — option 2. No option 3 (eslint-disable) for unstable setter.",
+    "F-06 spec code defect fixed: spec Section 5.1 L234-235 'as any' pattern replaced with Record<GridStateKey, unknown> cast pattern.",
+    "F-05 structural reference note: user prompt references 'spec Section 11' — actual implementation guide is Section 10. Section 11 = Open Questions. No value drift.",
+    "A-07 deviation: vitest not installed (same environment as G-003/G-004). 5 test scenarios written covering all ACs + R-1. Typecheck passes.",
+    "Size: 28.29 KB brotli, limit 30 KB. G-005 adds +1.02 KB from G-004 baseline, within spec D9 +2 KB estimate.",
+    "C-31 wiring: serializeState.ts sole call-site = useUrlSync.ts (import + 2 function calls). No dead code."
+  ],
+  "moduleId": "MOD-GRID-02",
+  "runAt": "2026-05-27",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-005→full",
+      "runAt=2026-05-27"
+    ]
+  }
+}

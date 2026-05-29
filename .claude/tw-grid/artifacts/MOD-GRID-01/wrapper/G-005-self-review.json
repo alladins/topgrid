@@ -1,0 +1,121 @@
+{
+  "goalId": "G-005",
+  "moduleId": "MOD-GRID-01",
+  "stage": "self-review",
+  "scoresAnalysis": {
+    "specify": 100,
+    "implement": 100,
+    "verify": 100,
+    "weakSignals": [
+      "5개 stage 연속 100/100/100 (G-001~G-005). G-005 가 첫 실 사용처 마이그레이션 + D-01/C-02/C-13 첫 활성 surface 였음에도 100점. 단, C-02/C-13 은 정적 1차 보증 (props 시그니처 동치 + AS-IS defaults 보존) 으로 YES 처리, 동적 시각 회귀 baseline 은 environment-deferred (Storybook 미설치, EC-10 패턴 — implementer findings #8). 향후 MOD-GRID-17 27 페이지 마이그레이션 시 동적 baseline 부재가 리스크 — 본 self-review 는 cascading risk 로 surface.",
+      "G-005 promptSpecDrift 1건 (tsconfig.app.json paths) — 본문상 spec-implicit dependency 충족 (AC-007 사용처 tsc 0 의무 위해 vite alias 와 1:1 mirror). spec Section 7 표 14행 manifest 와 별도 1행 (15번째) 으로 보고 — F-05 v1.0.4 structural reference 정확 적용. C-27 (Spec 권위) 정책 작동 입증 (spec-implicit 의존성을 spec.value drift 로 잘못 분류하지 않음 — 단순 빌드 환경 보강).",
+      "★ alias-wrapper bundle profile (3rd profile data point) — spec 예상 +5 KB → 실측 +0.31 KB (efficiency ≈94%). G-001~G-003 same-profile (≈10-15%) + G-004 different-profile (≈84%) + G-005 alias-wrapper (≈94%) = 3 profile 데이터포인트 입증. ADR-MOD-GRID-01-005 + ADR-MOD-GRID-01-006 의 1=anecdote 2=pattern 3=policy 기준 policy 단계 명확 진입. cross-module 정책 promote 트리거 도달.",
+      "★ exactOptionalPropertyTypes spread 패턴 3rd occurrence — G-003 EmptyStateProps (1) + G-004 UseGridImperativeHandleParams (2) + G-005 5-alias spread (3, 단일 ADR 내 5x 적용) = policy 단계 명확 진입. ADR-MOD-GRID-01-006 explicitly 'elevation 강력 권장' 명시.",
+      "D10 nominal vs actual (5 vs 3) 정정 — 메인 wrapper-goals.json affectedUsageFiles 5 vs Grep 검증 actual 3 차이를 spec writer 가 D10 결정으로 사전 정정. Implementer findings #1 에 2 nominal-only no-op (DailyAttendance/AnnualLeaveStatus = raw TanStack 사용 → MOD-GRID-17 영역) 명시. C-19 점진 한도 (≤5 사용처 + 트리비얼 ≤10) 충족.",
+      "본 5/5 모듈 회고 차원 누적 drift: G-001 2 (TomCdkNotInstalled + index.ts paths) → G-002 1 (D# 표 breakdown enumeration) → G-003 0 → G-004 0 → G-005 3 (D2 dist 구조 정정 + tsconfig.app.json paths + defaultExpanded narrowing) = 6 drift / 5 Goal. 모두 spec authority + finding 으로 처리, 0 cascade. drift 재증가 (G-005) 는 첫 cross-package change (사용처 마이그레이션 + tsconfig path 추가) 에 따른 자연 surface — pattern 변화로 설명 가능."
+    ]
+  },
+  "improvementsApplied": [
+    {
+      "type": "cross-module-adr-promote",
+      "file": "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-00-decisions.md",
+      "diff-summary": "ADR-MOD-GRID-00-010 신설 — Cross-module bundle estimation policy. 3 profile data points (same/different/alias-wrapper, efficiency 10~94% 9배 차이) 입증으로 ADR-MOD-GRID-01-005/006 의 Pattern Catalog Note 를 cross-module ADR 로 promote. 모든 후속 모듈 (MOD-GRID-02~16, MOD-GRID-99-A/B) spec 작성 시 본 ADR 인용 의무 + spec 예상은 metric 참조용으로만 + 모든 게이트 결정은 IMPLEMENT 직후 size-limit 실측 의무. 신규 profile 발견 시 본 ADR 매트릭스에 행 추가. ADR-MOD-GRID-01-005 + ADR-MOD-GRID-01-006 본문에 'Promoted to ADR-MOD-GRID-00-010' 백참조 추가."
+    },
+    {
+      "type": "constraint-add",
+      "file": "D:/project/topvel_project/TOMIS/.claude/tw-grid/constraints.md",
+      "diff-summary": "C-29 신설 — exactOptionalPropertyTypes 환경 optional prop forwarding 패턴. 3 occurrences (EmptyStateProps + UseGridImperativeHandleParams + 5-alias spread) 입증으로 enforceable code style 정책 진입. (1) Spread skip pattern 또는 (2) Union 명시 pattern 두 가지 중 하나 의무 사용 + undefined literal 직접 할당 금지 + Verifier B-02 또는 별도 NO 처리 + tsc TS2375 자동 fail. ADR-MOD-GRID-01-006 explicit 'elevation 강력 권장' 채택. 위반 시 처리 표에 C-29 행 추가. wrapper 외 모든 신규 컴포넌트에 일관 적용."
+    },
+    {
+      "type": "adr-back-reference",
+      "file": "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-01-decisions.md",
+      "diff-summary": "ADR-MOD-GRID-01-005 (G-004 self-review Pattern Catalog Note — 번들 efficiency 는 size profile 의존) + ADR-MOD-GRID-01-006 (G-005 implement Pattern Catalog Note — alias-wrapper profile + exactOptionalPropertyTypes 3rd occurrence) 두 곳에 promotion 결과 백참조 라인 추가 (3 위치). cross-module ADR-00-010 + constraints C-29 로 promote 완료 명시. 후속 모듈 spec writer 가 wrapper-module ADR 까지 거슬러 읽지 않아도 cross-module 위치에서 발견 가능 (discoverability 강화)."
+    }
+  ],
+  "improvementsRejected": [
+    {
+      "candidate": "C — specify-rubric S-XX 추가: wrapper-goals.json affectedUsageFiles 는 nominal — Spec Writer 가 Grep 검증 후 D# 표에 actual 명시 의무 (G-005 D10 일반화)",
+      "reason": "Single occurrence (G-005 D10 only). G-001~G-004 모두 affectedUsageFiles=0 이었음 → nominal vs actual 검증할 surface 자체 부재. MOD-GRID-17 27 페이지 nominal vs actual 위험 framing 은 anticipatory (가설성) — empirical 입증 부재. G-002/G-003/G-004 self-review 의 1=anecdote 룰 일관 적용 (G-002 candidate B + G-003 candidate A/B/C + G-004 candidate A/B/C 모두 1 occurrence 거부). 대신 cascadingRisks 로 MOD-GRID-17 진입 위험 명시. (advisor 권고 반영)"
+    },
+    {
+      "candidate": "D — 모듈 회고 ADR-MOD-GRID-01-008 wrapper-module-summary 신설 (5 Goal 패턴 + 누적 번들 + drift 처리 + Pattern Catalog promote 시점)",
+      "reason": "본 self-review JSON 의 moduleReview 필드 (prompt 의무) 가 5-Goal cumulative 데이터의 적합한 home. ADR-MOD-GRID-01-006 본문이 이미 누적 번들 + drift 처리 + Pattern Catalog promote 시점을 기록 + ADR-MOD-GRID-00-010 가 cross-module bundle 정책 통합. 별도 'wrapper-module-summary' ADR 신설은 gold-plating — 기존 산출물 (self-review moduleReview + ADR-006 + ADR-00-010) 와 redundant. tw-harness retrospective principle (가설성/단발성 거부) 일관 적용. (advisor 권고 반영)"
+    }
+  ],
+  "moduleReview": {
+    "moduleId": "MOD-GRID-01",
+    "area": "wrapper",
+    "completionDate": "2026-05-14",
+    "totalGoals": 5,
+    "completedGoals": 5,
+    "completionRate": "5/5 (100%)",
+    "totalStages": 75,
+    "stagesPassedFirstAttempt": 75,
+    "scoreDistribution": {
+      "G-001": { "specify": 100, "implement": 100, "verify": 100 },
+      "G-002": { "specify": 100, "implement": 100, "verify": 100 },
+      "G-003": { "specify": 100, "implement": 100, "verify": 100 },
+      "G-004": { "specify": 100, "implement": 100, "verify": 100 },
+      "G-005": { "specify": 100, "implement": 100, "verify": 100 },
+      "perfectScoreCount": "75/75",
+      "loops": 0
+    },
+    "bundleTrajectory": {
+      "limit": "30 KB (brotli)",
+      "G-001": "17.44 KB (baseline)",
+      "G-002": "18.04 KB (+0.60)",
+      "G-003": "18.35 KB (+0.31)",
+      "G-004": "24.21 KB (+5.86)",
+      "G-005": "24.52 KB (+0.31)",
+      "totalIncrement": "+7.08 KB / 30 KB limit (실제 사용 24.52 KB / 81.7%)",
+      "remainingBudget": "5.48 KB for MOD-GRID-02~16 (15 모듈 공유)"
+    },
+    "bundleProfilesIdentified": [
+      { "profile": "same-profile (CSS class + props + hooks)", "goals": "G-001/G-002/G-003", "specEstimate": "+13 KB", "actual": "+0.91 KB", "efficiency": "≈10-15%" },
+      { "profile": "different-profile (forwardRef + virtual hooks + handle 함수 + tbody 분기 boilerplate)", "goals": "G-004", "specEstimate": "+7 KB", "actual": "+5.86 KB", "efficiency": "≈84%" },
+      { "profile": "alias-wrapper (props 위임 컴포넌트 N개 + dedupe)", "goals": "G-005", "specEstimate": "+5 KB", "actual": "+0.31 KB", "efficiency": "≈94%" }
+    ],
+    "driftPattern": {
+      "G-001": 2,
+      "G-002": 1,
+      "G-003": 0,
+      "G-004": 0,
+      "G-005": 3,
+      "totalDrift": 6,
+      "interpretation": "G-001 (스캐폴딩 - 신규 환경) 초기 2건 + G-002 (D# 표 breakdown enumeration) → spec authority cascade 차단 + G-003/G-004 (반복 패턴 학습) → 0건 → G-005 (첫 cross-package change: 사용처 마이그레이션 + tsconfig path) 3건. 모두 spec authority (C-27) + findings 로 처리, cascade 0건. spec writer 가 prompt 검토 단계에서 사전 정정 결정 (D# 표 추가) 으로 promptSpecDrift=[] 결과 5/5 IMPLEMENT 단계 도달."
+    },
+    "cascadingLearningTimeline": [
+      { "trigger": "G-001 self-review", "improvement": "C-28 (constraints) — goals.json implementFiles 경로 prefix 정합성", "result": "G-002~G-005 0 cascade (17개 다른 모듈 잠재 위험 사전 차단)" },
+      { "trigger": "G-002 self-review", "improvement": "specify-rubric v1.0.4 G-01 강화 — D# 표 ↔ 본문 breakdown 일치 의무", "result": "G-003~G-005 0 미스 (3개 Goal 연속 합계 + 분류 + 항목명 1:1 매칭 통과)" },
+      { "trigger": "G-003 self-review", "improvement": "ADR-MOD-GRID-01-004 Pattern Catalog Note (D12 — TanStack column count API 미세 차이)", "result": "1 occurrence 보류 (anecdote 룰), MOD-GRID-14 multi-row header 도입 시 promote 트리거 명시" },
+      { "trigger": "G-004 self-review", "improvement": "ADR-MOD-GRID-01-005 Pattern Catalog Note (번들 efficiency profile 의존성, exactOptionalPropertyTypes union)", "result": "2 occurrences (process global + exactOptional union) — pattern 단계 진입, 3rd occurrence 발생 시 promote 트리거" },
+      { "trigger": "G-005 self-review (본 회고)", "improvement": "ADR-MOD-GRID-00-010 (cross-module bundle estimation policy) + constraints C-29 (exactOptionalPropertyTypes spread 패턴) + ADR-005/006 백참조", "result": "3 profile data points + 3 occurrences 모두 policy 단계 진입 → cross-module promote 완료. MOD-GRID-02+ spec writer 가 wrapper-module ADR 까지 거슬러 읽지 않아도 cross-module 위치에서 발견 가능" }
+    ],
+    "wrapperModuleZeroRegressionVerification": {
+      "G-001_after_G-005": "Grid.tsx 본체 markup 보존 (D5 narrowing 1줄 변경만), types.ts BaseGridProps 신규 추가 + defaultExpanded prop 추가 (기존 30 prop 보존), index.ts 5 alias re-export 추가 (기존 7 export 보존). 모든 G-001 산출물 backward-compatible.",
+      "G-002_after_G-005": "Sticky CSS × border-collapse 분기 (usePinning) 보존, computePinnedOffset.ts + ResizeHandle.tsx 무수정. G-002 sticky thead + pinned column 모델 보존 — alias 5개 모두 G-001 Grid 위임으로 동작.",
+      "G-003_after_G-005": "Loading skeleton + EmptyState slot + autoSelectFirstRow + onCellClick 보존. Grid.tsx D12 정정 (`getAllLeafColumns().length`) 보존.",
+      "G-004_after_G-005": "forwardRef + GridHandle 7 method 보존, react-virtual peer wiring 보존. VirtualGrid alias 가 G-004 Grid 의 `enableVirtualization + virtualScrollHeight + virtualizerOptions` 그대로 위임. AS-IS defaults `40/500` 보존 (Grid 기본 `36/400` 와 다름 — C-13 의무).",
+      "summary": "5 stage × 15 stage 누적 = 75 stage 모두 100점 + 회귀 0건. 사용처 3 파일 (SlipListPage + AdminSlipEditPage + MenuManagePage) 마이그레이션 후 JSX 무수정 + import path 만 변경. wrapper 모듈 5/5 변경 안전성 입증."
+    },
+    "patternCatalogPromotions": [
+      { "pattern": "alias-wrapper bundle profile (cross-module bundle estimation policy)", "occurrences": 3, "promotedTo": "ADR-MOD-GRID-00-010 (decisions/MOD-GRID-00-decisions.md)", "reason": "3 profile data points (same/different/alias-wrapper) policy 단계 진입" },
+      { "pattern": "exactOptionalPropertyTypes spread (TypeScript 코드 의무)", "occurrences": 3, "promotedTo": "constraints.md C-29", "reason": "3 occurrences (EmptyStateProps + UseGridImperativeHandleParams + 5-alias spread) 단일 ADR 내 5x 대량 적용으로 policy 단계 진입" }
+    ],
+    "patternCatalogPending": [
+      { "pattern": "Sticky CSS × border-collapse 분기 (D2)", "occurrences": 1, "trigger": "MOD-GRID-04/13/14 sticky 재적용 시 promote", "currentRef": "ADR-MOD-GRID-01-003 D2" },
+      { "pattern": "TanStack v8 column count API 미세 차이 (`getAllColumns` vs `getAllLeafColumns`)", "occurrences": 1, "trigger": "MOD-GRID-14 multi-row header 도입 시 또는 다른 TanStack API 미세 차이 발견 시 promote", "currentRef": "ADR-MOD-GRID-01-004 D12" },
+      { "pattern": "single-table padding-row virtualization", "occurrences": 1, "trigger": "MOD-GRID-13 cell merging / MOD-GRID-15 aggregation 재적용 시 promote", "currentRef": "ADR-MOD-GRID-01-005 D5" },
+      { "pattern": "process global minimal local declare (`declare const process`)", "occurrences": 2, "trigger": "G-005 또는 다른 internal/ 헬퍼에서 3번째 발생 시 internal/devMode.ts 헬퍼로 promote", "currentRef": "ADR-MOD-GRID-01-005 Pattern Catalog Note (G-004 implement)" },
+      { "pattern": "forwardRef + generic cast", "occurrences": 1, "trigger": "G-005 BaseGrid alias 5종 또는 MOD-GRID-09 EditableGrid 가 ref API 도입 시 promote (현재 1 occurrence — wrapper alias 미도입)", "currentRef": "ADR-MOD-GRID-01-005 D4" }
+    ],
+    "moduleSummary": "MOD-GRID-01 wrapper 5/5 완료, 75 stage 모두 100점, 누적 번들 24.52 KB / 30 KB (5.48 KB 여유), drift 6건 모두 spec authority + findings 처리 (cascade 0), Pattern Catalog 2건 cross-module promote (ADR-00-010 + C-29), Pattern Catalog Pending 5건 (anecdote/pattern 단계 — 후속 모듈 재발 시 promote 트리거)."
+  },
+  "cascadingRisks": [
+    "★ Rubric blind-spot 지속 위험: 5 Goal × 15 stage = 75 stage 모두 100점 + drift 6건 모두 spec authority 사전 처리. G-005 가 첫 실 사용처 마이그레이션 + D-01/C-02/C-13 첫 활성 surface 였음에도 100점 — 단, C-02/C-13 은 정적 1차 보증 (props 시그니처 동치 + AS-IS defaults 보존) + 동적 baseline 은 environment-deferred (Storybook 미설치, EC-10). MOD-GRID-02 state 모듈 진입 시 새 rubric surface (state persistence, hydration, 비동기 동작) 활성화 — 첫 NO trigger 가 overdue. 메인 오케스트레이터가 MOD-GRID-02 specify 시작 전 'rubric blind-spot 누적 5 Goal 100점 + 동적 검증 surface 과거 deferred 다수 — MOD-GRID-02 에서 첫 NO 가능성 높음, spec writer 가 미적용 surface 활성 항목 명시 권장' 1줄 인지 필수.",
+    "★ MOD-GRID-17 27 페이지 baseline 부재: C-13 시각 회귀 baseline 5 Goal 동안 environment-deferred (Storybook 미설치, EC-10 패턴). MOD-GRID-17 사용처 27 페이지 본격 마이그레이션 시 정적 props 시그니처 동치만으로 보증 곤란 — 동적 회귀 baseline 부재가 risk. 또한 affectedUsageFiles nominal vs actual 차이 (G-005 5 vs 3) 는 single-occurrence 거부됐지만 MOD-GRID-17 27 페이지 일괄 처리 시 nominal/actual 검증 의무가 더 심각. MOD-GRID-17 spec writer 사전 의무: (a) Storybook + Chromatic 환경 셋업 baseline Goal 우선 도입, (b) 27 페이지 nominal vs Grep 검증 actual 차이 spec D# 표에 명시.",
+    "★ Cross-module ADR 가시성: ADR-MOD-GRID-00-010 (bundle estimation policy) + constraints C-29 (exactOptionalPropertyTypes spread) 가 cross-module 위치 (decisions/MOD-GRID-00 + constraints) 에 promote 됐지만 MOD-GRID-02+ spec writer 가 자동으로 인지하리란 보장 없음. 메인 오케스트레이터가 MOD-GRID-02~16 specify prompt 작성 시 'ADR-MOD-GRID-00-010 + C-29 인용 의무 (1줄씩)' 1회 명시 권장. tooling 차원에서 `tw-grid loop specify` 명령이 prompt 생성 시 cross-module ADR + C-29 자동 seed 검토 (후속 tooling 작업 — 본 self-review 범위 외)."
+  ],
+  "reviewedAt": "2026-05-14",
+  "reviewerModel": "opus"
+}

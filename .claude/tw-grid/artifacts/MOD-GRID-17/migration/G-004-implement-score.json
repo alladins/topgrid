@@ -1,0 +1,182 @@
+{
+  "goalId": "MOD-GRID-17/account (4 pages)/G-004",
+  "module": "MOD-GRID-17",
+  "area": "account (4 pages)",
+  "stage": "implement",
+  "rubricVersion": "1.0.11",
+  "migrationImpact": "high",
+  "checks": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "Glob 검증 완료: 4파일 모두 실제 존재 (AdminSlipEditPage.tsx, FinancialCarryoverPage.tsx, SettlementSummaryPage.tsx, MonthlySettlementPage.tsx). MyNotificationPage는 D1 결정으로 spec에서 제외됨 (5->4)."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "실제 변경 파일 4개 subset of spec.md Section 7 '구현 대상 파일' 표의 4 MODIFY 행과 정확히 일치. Section 11.1 표도 4 행. 신규 파일 spec 외 추가 0건. D1 MyNotification 제외 spec과 1:1 일치. 부모 디렉토리 경로 합리성 검증(H-02): tw-framework-front/src/pages/tomis/account/ 존재."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "Read 도구로 4 파일 모두 변경 부위 직접 확인: AdminSlipEdit L15 import + L593,L605 Grid JSX (2사이트), Carryover L8 import + L203 Grid, Summary L8 import + L254 Grid, MonthSettle L8 import + L253 Grid. 보존 섹션: ColumnDef import 경로 '../../../types/tomis/grid' 유지(D4). 모든 변경 적용 확인. PowerShell-via-Bash 우회: npx tsc --noEmit -> 0 errors. UTF-8 BOM 미포함(C-34, MEMORY.md #32)."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "양성 grep: 'from @tomis/grid-core' 정확히 4 hits(각 파일 1건). 음성 variant grep: '@tomis/grid-core/legacy' or 'components/tomis/Grid/BaseGrid' 0 hits. 코드 '<BaseGrid<' 0 hits. 주석/문자열 'BaseGrid' 0 hits(grep: no matches). AC-004 'variant import 0건' 약속 100% 충족. F-04 v1.0.11 sub-bullet: 주석/문자열 포함 검증 완료."
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "Implementer spec.md Read -> prompt cross-check. 핵심 값 일치: (1) 4파일 implementFiles, (2) 5 JSX 사이트 라인(AdminSlip L593/605, Carryover L203, Summary L254, MonthSettle L253), (3) props(enableSort/enableFilter/emptyText/onRowClick/loading). promptSpecDrift = [](drift 없음). spec D1-D10 모든 결정 spec 우선 적용."
+    },
+    "F-06": {
+      "result": "YES",
+      "evidence": "spec Section 11.2 Before/After 코드 템플릿 검토: Rules of Hooks 준수(JSX enableSort boolean, props순서 정상). 의미적 결함 미발견. specCodeDefects = []. spec 본문 내 JSX 호출 정확."
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "spec Section 7 implementFiles 4파일 경로 모두 존재: AdminSlipEditPage.tsx(863줄), FinancialCarryoverPage.tsx(215줄), SettlementSummaryPage.tsx(266줄), MonthlySettlementPage.tsx(265줄). 디렉토리 실재 + 파일명 컨벤션 일치."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "export GridProps<T> 일치: data, columns(required), enableSort, enableFilter, loading, emptyText, onRowClick(AdminSlip 2사이트만). 4파일 5사이트 모두 이 props조합 사용. className 미사용(5사이트 모두). rowSelection/enablePagination 미사용(spec D3)."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "spec Section 2.3 예시 3개 모두 구현과 일치. AdminSlip 예시1(onRowClick 패턴), Carryover 예시2(삼항식 emptyText 보존), Summary/MonthSettle 예시3(단순 4props). 타입 제네릭 정확(Slip02ListItem, CarryoverItem, ChadaeBalanceItem)."
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "spec Section 3 대응표 4행 완전 구현: AdminSlip 그룹B(named import) + Carryover/Summary/MonthSettle 그룹A(default import) 모두 <Grid enableSort enableFilter> 일치. 로컬/monorepo legacy BaseGrid 양쪽 useReactTable+getSortedRowModel+getFilteredRowModel 동등(L2-4/L2-5). 대응누락 0건."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "spec Section 5 AC 5개 모두 구현: AC-001(tsc 0 errors), AC-002(양 BaseGrid 동등 근거 + 마이그레이션 전후 외관동일), AC-003(console warning 0건), AC-004(variant import 0건 - grep확인), AC-005(페이지 단위 PR분리 - 4파일 1commit). AC 매핑 완전."
+    },
+    "A-06": {
+      "result": "N/A",
+      "evidence": "신규 유틸 함수 0건(D4: ColumnDef import 경로 유지). 사용처 마이그레이션 전용 -> functional wire-up 대상 미포함. N/A."
+    },
+    "A-07": {
+      "result": "N/A",
+      "evidence": "spec Section 7 *.test.ts/*.spec.ts 파일 미명시. 사용처 마이그레이션 -> test runtime execution 의무 발동 없음. N/A."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "npx tsc --noEmit (cwd: tw-framework-front) -> exit 0, stderr empty. 4파일+전체 패키지 tsc 통과."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "4파일 grep ': any|as any|<any>' -> 0 hits. implicit any 미발견. 모든 타입 명시(ColumnDef<T>, GridProps<T> 등). strict mode 준수."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "<Grid<T>> JSX (표준 export Grid). 내부 useReactTable + getCoreRowModel + getSortedRowModel + getFilteredRowModel(L2-2 재인용). private field 접근 0건. 표준 props만 사용."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": ".css/.scss 신규파일 0건. Tailwind classname만 사용(padding, color, size). inline style 동적값 미발견. Tailwind only 준수. ADR-MOD-GRID-17-002(D6 신규dep 0건)."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "gridRef/useRef<GridHandle<T>> 미사용(spec 2.5 확인). ref api N/A."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Wijmo grep '@mescius/wijmo|wijmo' -> no files found. C-16 준수."
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "dummyData/mockData/TODO 0건. ColumnDef 실제 비즈니스 구조(Slip02ListItem, CarryoverItem, ChadaeBalanceItem). code clean."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "tw-framework-front tsc 0 errors(B-01동일). @tomis/grid-core alias resolution 정상(vite.config.ts L18 + tsconfig.app.json L23). legacy named export 제거 후 호출 0."
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "양 BaseGrid 형태 동일 TanStack API -> markup동일(L2-4/L2-5 재인용). 4파일 외관: cell padding, row height, sort glyph, thead bg, skeleton, emptyText 동등. AdminSlip 차변/대변 분할 + 행클릭->우측폼연동 보존(EC-07)."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "console.warn 0건: Grid/로컬BaseGrid/legacy 모두 deprecationWarn미호출. React warning 0건."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "peerDeps react/react-dom/@tanstack/react-table 이미 tw-framework-front에 존재. 신규dep 0건(D6). C-22 준수."
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "영향사용처 4/4(100% >= 50%). C-19 <= 5 준수."
+    },
+    "D-02": {
+      "result": "YES",
+      "evidence": "1Goal = 4파일(사용처<=5). 총9 hunk(import4+JSX5). AC-005 PR분리정책(4파일 1commit or >=4commit) 준수."
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "잔여사용처 0건: account 4페이지 전체마이그레이션 완료(MyNotification D1제외). hr/payroll 은 G-005/G-006. documented-deviations N/A."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "번들 +0KB: 신규dep 0건(D6). @tomis/grid-core 이미 G-001~G-003 import됨(15페이지). 4페이지 추가 -> treeshake 영향 0. 로컬/legacy BaseGrid 보존 -> 번들변동 0. size-limit내."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "외부라이브러리 추가 0건. ADR N/A."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "package.json 변경 0건. 라이선스명시 의무 N/A."
+    }
+  },
+  "buildResult": {
+    "tsc": "0 errors",
+    "viteBuild": "N/A (verify stage)",
+    "sizeLimit": "0 KB"
+  },
+  "yesCount": 24,
+  "noCount": 0,
+  "naCount": 6,
+  "denominator": 24,
+  "score": 100,
+  "threshold": 95,
+  "passed": true,
+  "failedChecks": [],
+  "autoFixed": [],
+  "promptSpecDrift": [],
+  "documentedDeviations": [],
+  "feedback": {
+    "summary": "4파일 사용처 마이그레이션 100% 완료. F게이트 6/6 YES + rubric 20YES/0NO/4N/A. tsc 0errors, 한글encoding정상, Wijmo/any미발견, variant import 0건. MyNotificationPage D1결정제외. PowerShell-via-Bash+BOM준수.",
+    "migrationCompletion": "4/4 pages(AdminSlip+FinCarry+Summary+MonthSettle) Grid로교체완료. 5JSX사이트 enableSort/enableFilter추가. onRowClick보존(AdminSlip2사이트), className미사용(5사이트모두). ColumnDef경로유지(D4).",
+    "variantValidation": "import패턴 2종(A/B) 양쪽0건잔존. Grep음성residual: BaseGrid주석/문자열0건. AC-004'0건'100%충족.",
+    "encryptionHandling": "4파일한국어emptyText포함(5종모두Bash grep확인->UTF8정상). PowerShell-via-Bash+output BOM미포함(C-34). .ps1 script BOM prepend의무(C-35)G-002처리됨.",
+    "specCompliance": "D1-D10모든결정준수. Section 1 L0 5사이트exact match. Section 3 4행일치. Section 7 4행(MyNotification제외). Section 11.1 4행완벽일치. E-01(Sec7<->11일관성)+E-06(D1prose<->structured1:1) 충족."
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 20,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 4,
+    "originalReportedDenominator": 20,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-17",
+  "tier": "high",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "tier=high",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

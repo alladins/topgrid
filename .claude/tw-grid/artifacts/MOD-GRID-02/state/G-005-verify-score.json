@@ -1,0 +1,231 @@
+{
+  "goalId": "MOD-GRID-02/state/G-005",
+  "module": "MOD-GRID-02",
+  "area": "state",
+  "stage": "verify",
+  "rubricVersion": "1.0.2",
+  "migrationImpact": "low",
+  "tier": "low",
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85
+  },
+  "threshold": 85,
+  "verifierModel": "opus",
+  "verifiedAt": "2026-05-14",
+  "weights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "categoryWeights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "buildResults": {
+    "typecheck": {
+      "passed": true,
+      "command": "pnpm -F @tomis/grid-core typecheck",
+      "output": "> @tomis/grid-core@0.0.0 typecheck D:\\project\\topvel_project\\topvel-grid-monorepo\\packages\\grid-core\n> tsc --noEmit\n(exit 0, no errors)"
+    },
+    "build": {
+      "passed": true,
+      "command": "pnpm -F @tomis/grid-core build",
+      "output": "tsup v8.5.1. CJS dist\\index.cjs 57.30 KB Build success in 303ms. ESM dist\\index.mjs 55.87 KB Build success in 303ms. DTS dist\\index.d.cts 24.50 KB Build success in 1554ms."
+    },
+    "sizeLimit": {
+      "passed": true,
+      "currentKB": 28.29,
+      "limitKB": 30,
+      "deltaKB": 1.02,
+      "baselineKB": 27.27,
+      "output": "@tomis/grid-core Size limit: 30 kB / Size: 28.29 kB with all dependencies, minified and brotlied. PASS."
+    }
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "category": "A",
+      "criterion": "gradlew compileJava 0 errors",
+      "evidence": "G-005 is FE-only (grid-core package). tw-framework-front integration build N/A — spec Section 8.1 affectedUsageFiles=0."
+    },
+    "A-02": {
+      "result": "YES",
+      "category": "A",
+      "criterion": "npx tsc --noEmit 0 errors",
+      "evidence": "Executed `cd D:/project/topvel_project/topvel-grid-monorepo && pnpm -F @tomis/grid-core typecheck` — output: '> tsc --noEmit' followed by exit 0 (no errors emitted). 6 files (4 NEW + 2 MODIFY) typecheck clean. types.ts L826 UseUrlSyncOptions, useUrlSync.ts L53 hook signature, internal/serializeState.ts L24/L72/L108 utilities — all typed strict (no `any`)."
+    },
+    "A-03": {
+      "result": "YES",
+      "category": "A",
+      "criterion": "tsup build + size-limit",
+      "evidence": "Executed `pnpm -F @tomis/grid-core build` — tsup v8.5.1 CJS 57.30 KB + ESM 55.87 KB + DTS 24.50 KB all success. Executed `npx size-limit` — '@tomis/grid-core Size limit: 30 kB / Size: 28.29 kB'. Within 30 KB limit. grid-export 282.65/20 kB exceedance is unrelated pre-existing infra defect (xlsx peer measurement — A-03 'infra-defect' clause from G-001 verify ruling, scope outside G-005)."
+    },
+    "B-01": {
+      "result": "YES",
+      "category": "B",
+      "criterion": "정렬 동작 (URL 직렬화 + hydration)",
+      "evidence": "useUrlSync.ts L80-88: syncToUrl closure calls `serializeGridState(state, keys, prefix, params)` which includes sorting in URL (serializeState.ts L72-89). L69-77 mount effect deserializes sorting from URL → calls hydrateRef.current(partial). Storybook story SortingUrlSync (useUrlSync.stories.tsx L26-113) demonstrates sort toggle button → URL update. vitest S1 (useUrlSync.test.ts L60-78) asserts `url.toContain('sorting=')` after sort change. S4 (L130-153) asserts `onHydrate` called with `{sorting}` partial on mount."
+    },
+    "B-02": {
+      "result": "YES",
+      "category": "B",
+      "criterion": "필터 동작",
+      "evidence": "useUrlSync.ts L16-25 ALL_KEYS includes 'columnFilters'. Default `keys` covers filter serialization. Storybook (stories.tsx L67-73) toggleFilter button demonstrates `?columnFilters=…` URL reflection. vitest S2 (test.ts L86-99) asserts `url.toContain('columnFilters=')` when both sorting + filter present. S5 (L161-188) asserts filter parsing works even when sibling key (sorting) corrupted."
+    },
+    "B-03": {
+      "result": "YES",
+      "category": "B",
+      "criterion": "페이지네이션 동작",
+      "evidence": "useUrlSync.ts L16-25 ALL_KEYS includes 'pagination'. serializeState.ts L42-52 isDefaultState handles pagination default `{pageIndex:0, pageSize:10}` correctly (returns true to delete key when default). Non-default pagination state is JSON-serialized into URL via L85 `next.set(paramKey, JSON.stringify(value))`. Pagination flows through same state→URL pipeline as sorting (B-01 path) — no special handling required."
+    },
+    "B-04": {
+      "result": "N/A",
+      "category": "B",
+      "criterion": "가상화 동작 (C-18)",
+      "evidence": "G-005 is a hook-only utility (no DOM rendering). react-virtual integration unaffected. Spec Section 2.2 confirms `useUrlSync(state, options): void` return type — no UI/DOM component."
+    },
+    "B-05": {
+      "result": "N/A",
+      "category": "B",
+      "criterion": "인라인 편집 동작",
+      "evidence": "G-005 scope is URL sync only. No editing functionality. Spec Section 2.1 userJourney has 5 steps all related to URL state sync. EditableGrid/ChangeTrackingGrid are separate modules."
+    },
+    "C-01": {
+      "result": "N/A",
+      "category": "C",
+      "criterion": "영향 사용처 tsc 0 (마이그레이션 후)",
+      "evidence": "spec Section 8.1 L390-394: `**0개** (goals.json affectedUsageFiles: [] 직접 확인). useUrlSync는 신규 optional hook — 기존 파일 수정 불필요.` goals.json G-005 L291: `affectedUsageFiles: []`. No usage sites to migrate → C-01 N/A."
+    },
+    "C-02": {
+      "result": "N/A",
+      "category": "C",
+      "criterion": "외관 보존 (시각 회귀 — C-17)",
+      "evidence": "low tier (migrationImpact: low — goals.json L256) + affectedUsageFiles = 0. C-17 N/A 조건 충족 (low tier 또는 사용처 0개)."
+    },
+    "C-03": {
+      "result": "YES",
+      "category": "C",
+      "criterion": "console warning 0 + React warning 0",
+      "evidence": "useUrlSync.ts: no `console.*` calls in production hook code. serializeState.ts L118-122: JSON.parse failure → silent skip via try-catch (no console.warn/error). React hooks usage: useEffect + useRef only — no conditional hooks (SSR guard inside useEffect body per D3, L70). No deprecated React APIs. Storybook demo (stories.tsx) uses React.useState/useCallback standard patterns — no warnings."
+    },
+    "D-01": {
+      "result": "N/A",
+      "category": "D",
+      "criterion": "마이그레이션 비율",
+      "evidence": "spec Section 8.1 affectedUsageFiles = 0개 명시. goals.json L291 affectedUsageFiles=[]. 마이그레이션 대상 사용처 없음 → 비율 산정 불가, N/A."
+    },
+    "D-02": {
+      "result": "N/A",
+      "category": "D",
+      "criterion": "잔여 사용처 명시",
+      "evidence": "잔여 0건 (affectedUsageFiles = 0). spec Section 8.1: '미래: tw-framework-front/src/pages/ 내 27개 그리드 페이지는 향후 자발적으로 useUrlSync 적용 가능 (G-005 scope 외)' — 미래 자발적 적용은 G-005 잔여 아닌 다음 MOD-GRID-17 단계 영역."
+    },
+    "E-01": {
+      "result": "YES",
+      "category": "E",
+      "criterion": "번들 크기 변동 (C-21)",
+      "evidence": "size-limit 실측: @tomis/grid-core = 28.29 kB brotli / 30 kB limit = PASS. G-004 baseline 27.27 kB → G-005 delta +1.02 kB. 30 kB 한도 내 + spec D9 명시 +2 kB 추정치 이내 (1.02 < 2). 사용자 승인 불필요."
+    },
+    "E-02": {
+      "result": "N/A",
+      "category": "E",
+      "criterion": "새 의존성 ADR (C-20)",
+      "evidence": "package.json 변경 없음 (Glob 확인: dependencies = `@tomis/grid-features: workspace:*` 변경 없음, peerDependencies = `@tanstack/react-table`, `@tanstack/react-virtual`, `react`, `react-dom` 변경 없음). URLSearchParams는 Web 표준 (외부 dep 아님). useDebouncedCallback는 G-003에서 도입된 internal helper 재사용. 신규 dep 0건 → ADR 불필요."
+    },
+    "E-03": {
+      "result": "YES",
+      "category": "E",
+      "criterion": "라이선스 명시 (C-24)",
+      "evidence": "packages/grid-core/package.json L4: `\"license\": \"MIT\"` 명시. 패키지 license 필드 존재. MIT tier (Pro 아님 — 라이선스 검증 호출 불필요). G-005가 grid-core 내부 신규 hook 추가 — 라이선스 변경 없음."
+    }
+  },
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "weightedScore": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [
+    "All 16 checks across 5 categories evaluated. Vacuous categories: None (A has 2 YES + 1 N/A actual evaluation; B has 3 YES + 2 N/A; C has 1 YES + 2 N/A; D has 0 YES + 2 N/A → vacuous truth = 100; E has 2 YES + 1 N/A).",
+    "D category is vacuous (YES=0, NO=0, N/A=2): affectedUsageFiles=0 → migration ratio + residual sites both N/A. Per rubric vacuous truth rule → categoryScore = 100.",
+    "Build/typecheck/size-limit all PASS empirically (executed in monorepo): tsc --noEmit 0 errors, tsup build success (CJS 57.30KB + ESM 55.87KB + DTS 24.50KB), size-limit 28.29 KB / 30 KB (+1.02 KB delta within spec D9 +2 KB).",
+    "C-32 compliance (D5): onHydrate handled via useRef (hydrateRef, useUrlSync.ts L63-66) — option 2. The 2 eslint-disable-next-line comments in useUrlSync.ts (L76 mount-only effect, L95 8-primitive deps) are for legitimate non-C-32 cases (intentional empty deps + syncToUrl raw fn instability when ms<=0). No 2nd C-32 occurrence trigger.",
+    "F-06 spec code defect handled correctly: serializeState.ts L113 uses `Record<GridStateKey, unknown>` cast instead of spec L234-235 `(result as any)[key]` pattern. No `as any` in production code (Grep verified 0 hits, only JSDoc explanation in serializeState.ts L103-106).",
+    "C-31 wiring audit PASS: serializeGridState/deserializeGridState defined in internal/serializeState.ts L72/L108, sole call-site = useUrlSync.ts L12 (import) + L72 (deserialize) + L82 (serialize). No dead code. internal/ not re-exported from index.ts (D8 enforced).",
+    "A-07 (implement test runtime) was the only NO in implement stage — vitest not installed in monorepo. This is environment constraint shared with G-003/G-004; verify rubric does not penalize test execution (test file authored cleanly + typechecks). Test scenarios S1-S5 cover all 5 ACs + R-1."
+  ],
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": null,
+    "note": "Spec Section 8.1 affectedUsageFiles=0. Future adoption by 27 grid pages in tw-framework-front is out of G-005 scope (deferred to future MOD-GRID-17 adoption Goal)."
+  },
+  "buildStatus": {
+    "tsc": "PASS",
+    "viteBuild": "PASS (tsup)",
+    "sizeLimit": "PASS (28.29/30 KB)"
+  },
+  "metaGateF": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "Sampling 5 evidence references verified via Read/Glob/Bash: (a) useUrlSync.ts L53 hook signature confirmed via Read L53-56. (b) useUrlSync.ts L63-66 hydrateRef pattern confirmed via Read. (c) serializeState.ts L72-89 serializeGridState confirmed via Read. (d) types.ts L826 UseUrlSyncOptions confirmed via Grep. (e) index.ts L4 + L18 exports confirmed via Grep. (f) size-limit 28.29 KB confirmed via npx size-limit execution. All 6 implementFiles exist on disk (Bash ls -la confirmed: serializeState.ts 4307b, useUrlSync.stories.tsx 5460b, useUrlSync.test.ts 6899b, useUrlSync.ts 4146b). No phantom evidence."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "Category formula verification: A: YES=2 (A-02, A-03), NO=0, N/A=1 (A-01) → 2/2 × 100 = 100.0 ✓. B: YES=3 (B-01, B-02, B-03), NO=0, N/A=2 (B-04, B-05) → 3/3 × 100 = 100.0 ✓. C: YES=1 (C-03), NO=0, N/A=2 (C-01, C-02) → 1/1 × 100 = 100.0 ✓. D: YES=0, NO=0, N/A=2 (D-01, D-02) → vacuous truth = 100.0 ✓ (D category has no build/tsup/tsc/vite/rollup/size-limit/bundle keyword → vacuous allowed). E: YES=2 (E-01, E-03), NO=0, N/A=1 (E-02) → 2/2 × 100 = 100.0 ✓. All categories verified."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore formula: Σ(categoryScore × weight) / 100 = (100×25 + 100×25 + 100×20 + 100×15 + 100×15) / 100 = (2500 + 2500 + 2000 + 1500 + 1500) / 100 = 10000 / 100 = 100.0 ✓. Σweight = 25+25+20+15+15 = 100 ✓. weightedScore 100.0 vs threshold 85 (low tier) → passed=true."
+    }
+  },
+  "c26SelfVerification": {
+    "naExclusionCheck": "PASS — N/A items excluded from category denominators. A: denominator=2 (excludes A-01 N/A). B: denominator=3 (excludes B-04, B-05 N/A). C: denominator=1 (excludes C-01, C-02 N/A). D: denominator=0 (vacuous truth applied → 100). E: denominator=2 (excludes E-02 N/A).",
+    "failedChecksIntegrity": "PASS — failedChecks array is empty (no NO results). N/A items (A-01, B-04, B-05, C-01, C-02, D-01, D-02, E-02) absent from failedChecks ✓.",
+    "categoryTotals": {
+      "A": 3,
+      "B": 5,
+      "C": 3,
+      "D": 2,
+      "E": 3
+    },
+    "categoryTotalsCheck": "PASS — A(3) + B(5) + C(3) + D(2) + E(3) = 16, matches verify-rubric.md L3 total count.",
+    "weightedScoreCheck": "PASS — Σweight = 25+25+20+15+15 = 100. weightedScore = 100.0 = Σ(categoryScore × weight)/100 verified in F-03.",
+    "vacuousTruthApplied": "D category: YES=0, NO=0, N/A=2 → vacuous truth rule (categoryScore=100). Per verify-rubric vacuous prohibition list (build/tsup/tsc/vite/rollup/size-limit/bundle), D category title is 'migration' — no build keyword → vacuous allowed.",
+    "c26AllPassed": true
+  },
+  "moduleId": "MOD-GRID-02",
+  "yesCount": 8,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 8,
+  "score": 100,
+  "runAt": "2026-05-14",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-005→full",
+      "yesCount=8",
+      "noCount=0",
+      "naCount=8",
+      "denominator=8",
+      "score=weightedScore",
+      "runAt=2026-05-14"
+    ]
+  }
+}

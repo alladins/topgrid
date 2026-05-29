@@ -1,0 +1,173 @@
+{
+  "goalId": "MOD-GRID-13/merging/G-003",
+  "module": "MOD-GRID-13",
+  "area": "merging",
+  "stage": "verify",
+  "rubricVersion": "1.0.2",
+  "migrationImpact": "low",
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85
+  },
+  "weights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "FE-only grid work. gradlew/Spring Boot build not applicable. N/A per rubric."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "tsc --noEmit in packages/grid-pro-merging: exit 0, 0 errors confirmed. tw-framework-front not impacted (affectedUsageFiles=0, no imports of @tomis/grid-pro-merging in tw-framework-front). Typecheck PASS."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "tsup build: exit 0. dist/index.mjs = 5.70 KB, dist/index.cjs = 5.99 KB, dist/index.d.ts+d.cts = 4.54 KB each. All within 20 KB Pro package size limit (C-21). Build PASS."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "getSortedRowModel() confirmed in useReactTable options (MergingGrid.tsx L7 import + L65 option). table.getRowModel().rows reflects sort result. useMemo([rows, mergeColumns, enableMerging]) dep array means sort-triggered rows reference change → computeMergeSpans recompute. SortAndRecompute story uses enableSorting:true on dept/team columns with largeData (1000+ rows). Sort re-computation path verified via code analysis. D3 decision logic confirmed correct."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "getFilteredRowModel() confirmed in useReactTable options (MergingGrid.tsx L5 import + L68 option). Filter changes → rows reference change → useMemo re-execution → computeMergeSpans recompute (AC-001 fulfilled). EC-002 (filter result 0 rows): computeMergeSpans([]) returns empty Map → empty tbody rendering, no errors."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "Pagination not part of G-003 scope. No pagination features added or modified."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "useVirtualizer confirmed: import at MergingGrid.tsx L9 (@tanstack/react-virtual), invoked at L103 with count=rows.length when enableVirtualization=true. getVirtualItems() used at L140, getTotalSize() at L141. Flow layout spacer: top <tr style={{height:startOffset}}> at L185-188, bottom <tr style={{height:endOffset}}> at L194-197. position:absolute 0 instances in code (comments only). SortAndRecompute story uses enableVirtualization:true + 1000+ row largeData + virtualOverscan:10. C-18 compliance confirmed. G-002 deferred AC-005 C-18 sub-clause fulfilled."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "Inline editing not part of G-003 scope. No EditableGrid or ChangeTrackingGrid functionality."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0. No usage sites to verify tsc for."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "low tier + affectedUsageFiles = 0. Rubric C-02: N/A for low tier + 0 usage sites."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "MergingGrid.tsx: no console.* calls added. verifyOrWarn inline stub has no console output. G-001/G-002 existing stories (MergeRowsBoolean, MergeRowsCompareFn, HierarchicalMerge) unchanged — no new React warnings introduced. enableVirtualization=false (default) path fully preserved — EC-003 compliance. New SortAndRecompute story uses standard React patterns."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0. No usage sites to migrate."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "Residual 0 usage files. N/A per rubric."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "tsup ESM output: 5.70 KB (G-002 was 3.25 KB, delta +2.45 KB). Well within 20 KB Pro package limit. @tanstack/react-virtual is peerDep (optional) — not included in bundle. Cumulative: G-001+G-002+G-003 all individually within 20 KB limit."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "ADR-MOD-GRID-13-010 added to decisions/MOD-GRID-13-decisions.md documenting @tanstack/react-virtual ^3.0.0 peerDep addition. ADR includes: rationale (MIT license, optional peer, C-22 compliance), alternatives (non-peer dep rejected, limitation-only rejected), trade-offs (v2/v3 API difference, optional install), result. C-20 compliance confirmed."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "package.json license: \"SEE LICENSE IN EULA\" preserved. EULA.md exists in package (G-001 created). MergingGrid.tsx verifyOrWarn inline stub preserved at L17-24 (grid-license runtime check, ADR-002 canonical). C-24 compliance maintained."
+    }
+  },
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "categoryBreakdown": {
+    "A": "YES=2, NO=0, N/A=1 — denominator=2, score=2/2*100=100.0",
+    "B": "YES=3, NO=0, N/A=2 — denominator=3, score=3/3*100=100.0",
+    "C": "YES=1, NO=0, N/A=2 — denominator=1, score=1/1*100=100.0",
+    "D": "N/A=2 — denominator=0, vacuous truth = 100.0 (no usage files)",
+    "E": "YES=3, NO=0, N/A=0 — denominator=3, score=3/3*100=100.0"
+  },
+  "weightedScore": 100,
+  "weightedScoreCalc": "100.0*0.25 + 100.0*0.25 + 100.0*0.20 + 100.0*0.15 + 100.0*0.15 = 25+25+20+15+15 = 100.0",
+  "threshold": 85,
+  "passed": true,
+  "failedChecks": [],
+  "selfVerification": {
+    "totalChecks": "A(3) + B(5) + C(3) + D(2) + E(3) = 16 (matches rubric total 16)",
+    "yesCount": 9,
+    "noCount": 0,
+    "naCount": 7,
+    "denominatorTotal": 9,
+    "overallScore": "9/9 = 100.0",
+    "weightSumCheck": "25+25+20+15+15 = 100 (correct)",
+    "failedChecksNAExcluded": "failedChecks=[] contains only NO results (0 items)"
+  },
+  "metaGate": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "Evidence sampling 5 checks verified: (1) A-02: tsc --noEmit confirmed via shell execution. (2) A-03: tsup build output sizes confirmed (5.70 KB ESM). (3) B-04: MergingGrid.tsx L9 useVirtualizer import confirmed, L103 invocation confirmed, L185-188 spacer tr confirmed. (4) E-02: decisions.md ADR-MOD-GRID-13-010 section confirmed appended. (5) B-01: getSortedRowModel at L7 import + L65 option in MergingGrid.tsx confirmed. All evidence references real file locations."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "A: 2/2=100.0 CHECK. B: 3/3=100.0 CHECK. C: 1/1=100.0 CHECK. D: 0/0=vacuous=100.0 CHECK (no usage files). E: 3/3=100.0 CHECK. All category scores verified by self-calculation."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore = 100*0.25 + 100*0.25 + 100*0.20 + 100*0.15 + 100*0.15 = 25+25+20+15+15 = 100.0. Verified correct."
+    }
+  },
+  "buildStatus": {
+    "tsc": "PASS (exit 0, 0 errors)",
+    "tsupBuild": "PASS (ESM 5.70 KB, CJS 5.99 KB, DTS 4.54 KB)",
+    "sizeLimit": "PASS (5.70 KB < 20 KB Pro limit)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": 1
+  },
+  "feedback": {
+    "g002DeferredAcFulfilled": "G-002 AC-005 C-18 sub-clause (react-virtual integration) fully fulfilled by G-003. B-04 verified: useVirtualizer integrated with flow layout spacer pattern (C-18 compliant).",
+    "migrationImpact": "goals.json G-003 L164: migrationImpact=low. verify-score migrationImpact=low. Exact match confirmed.",
+    "buildDelta": "ESM +2.45 KB (3.25 KB → 5.70 KB) for useVirtualizer integration. Within spec estimate of +2 KB. Pro limit 20 KB maintained.",
+    "c18PositionAbsolute": "position:absolute 0 instances in production code. Flow layout spacer <tr style={{height:N}}> pattern used exclusively. C-18 fully compliant.",
+    "inlineStubPreserved": "verifyOrWarn inline stub at MergingGrid.tsx L17-24 preserved verbatim from ADR-002 canonical. D2 decision maintained. No namespace import patterns."
+  },
+  "moduleId": "MOD-GRID-13",
+  "tier": "low",
+  "yesCount": 9,
+  "noCount": 0,
+  "naCount": 7,
+  "denominator": 9,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-003→full",
+      "tier=low",
+      "yesCount=9",
+      "noCount=0",
+      "naCount=7",
+      "denominator=9",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

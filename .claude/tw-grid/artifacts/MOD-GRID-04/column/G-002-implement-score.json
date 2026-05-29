@@ -1,0 +1,120 @@
+{
+  "goal": "MOD-GRID-04/column/G-002",
+  "stage": "IMPLEMENT",
+  "model": "sonnet",
+  "date": "2026-05-14",
+  "specAuthority": "G-002-spec.md (C-27)",
+  "specifyScore": 100,
+  "specifyThreshold": 90,
+  "migrationImpact": "low",
+  "implementThreshold": 85,
+
+  "tscResult": {
+    "command": "npx tsc --noEmit",
+    "exitCode": 0,
+    "errors": 0
+  },
+
+  "vitestResult": {
+    "command": "npx vitest run packages/grid-core/src/column/createGroupedColumns.test.ts",
+    "exitCode": 0,
+    "testFiles": 1,
+    "tests": 6,
+    "passed": 6,
+    "failed": 0,
+    "tcCoverage": ["TC-01", "TC-02", "TC-03", "TC-04", "TC-05", "TC-06"]
+  },
+
+  "filesChanged": [
+    {
+      "action": "NEW",
+      "path": "packages/grid-core/src/column/createGroupedColumns.ts"
+    },
+    {
+      "action": "NEW",
+      "path": "packages/grid-core/src/column/createGroupedColumns.test.ts"
+    },
+    {
+      "action": "NEW",
+      "path": "packages/grid-core/src/column/createGroupedColumns.stories.tsx"
+    },
+    {
+      "action": "MODIFY",
+      "path": "packages/grid-core/src/index.ts",
+      "linesAdded": 2
+    }
+  ],
+
+  "promptSpecDrift": [
+    {
+      "item": "stories.count",
+      "prompt": "Storybook ≥1 story",
+      "spec": "3 explicit stories: TwoLevelGroupHeader / MultipleGroups / EmptyGroup (Section 6, D5)",
+      "applied": "spec — 3 stories implemented"
+    },
+    {
+      "item": "vitest.execution",
+      "prompt": "G-001 tsconfig exclude 패턴 참고 (vitest skip 가능 암시)",
+      "spec": "A-07 의무: 이 테스트 파일은 Vitest(vitest run)로 실행. typetest-only 금지 (Section 6 line 162)",
+      "applied": "spec — vitest run 실행 완료, 6/6 통과"
+    },
+    {
+      "item": "migrationImpact.threshold",
+      "prompt": "threshold 90 (medium tier)",
+      "spec": "Section 1.5 migrationImpact: low → threshold 85",
+      "applied": "spec — threshold 85 적용"
+    }
+  ],
+
+  "rubric": {
+    "A": [
+      { "id": "A-01", "desc": "createGroupedColumns.ts 생성", "pass": true },
+      { "id": "A-02", "desc": "TomisColumnGroup<TData> 인터페이스 정의", "pass": true },
+      { "id": "A-03", "desc": "rest args 시그니처 (...groups: Array<TomisColumnGroup<TData>>)", "pass": true },
+      { "id": "A-04", "desc": "단일 캐스팅 return groups as ColumnDef<TData>[] (D1)", "pass": true },
+      { "id": "A-05", "desc": "index.ts G-002 export 2줄 추가 (Section 8.4)", "pass": true },
+      { "id": "A-06", "desc": "tsc --noEmit 0 errors (C-12)", "pass": true },
+      { "id": "A-07", "desc": "vitest run 실행 TC-01~TC-06 모두 통과 (A-07 의무)", "pass": true }
+    ],
+    "B": [
+      { "id": "B-01", "desc": "TC-01: empty columns → length 1, header correct", "pass": true },
+      { "id": "B-02", "desc": "TC-02: result[0].columns === leafCols (reference equality)", "pass": true },
+      { "id": "B-03", "desc": "TC-03: 2 groups → length 2", "pass": true },
+      { "id": "B-04", "desc": "TC-04: deep-equal fixture GroupedHeaderGrid.tsx L166-184 패턴", "pass": true },
+      { "id": "B-05", "desc": "TC-05: empty string header 통과", "pass": true },
+      { "id": "B-06", "desc": "TC-06: N=5 → length 5, order preserved", "pass": true },
+      { "id": "B-07", "desc": "isGroupColumn() type guard 없음 (spec D1 금지)", "pass": true }
+    ],
+    "C": [
+      { "id": "C-01", "desc": "no any (C-4 준수)", "pass": true },
+      { "id": "C-02", "desc": "import type { ColumnDef } from @tanstack/react-table", "pass": true },
+      { "id": "C-03", "desc": "JSDoc @example, @see, @typeParam 포함 (C-25)", "pass": true },
+      { "id": "C-04", "desc": "Storybook 3 stories: TwoLevelGroupHeader / MultipleGroups / EmptyGroup", "pass": true }
+    ],
+    "D": [
+      { "id": "D-01", "desc": "TomisColumnGroup.columns: ColumnDef<TData>[] (리프+중첩 모두 수용)", "pass": true },
+      { "id": "D-02", "desc": "내부 변환/정규화 없음 (thin wrapper)", "pass": true },
+      { "id": "D-03", "desc": "affectedUsageFiles: [] (GroupedHeaderGrid.tsx 실 마이그레이션은 MOD-GRID-14)", "pass": true }
+    ],
+    "E": [
+      { "id": "E-01", "desc": "D5 Storybook 지급항목 + basePay/bonus/totalPay 2-level 데모", "pass": true },
+      { "id": "E-02", "desc": "TC-04 deep-equal GroupedHeaderGrid.tsx 호환 패턴", "pass": true },
+      { "id": "E-03", "desc": "promptSpecDrift 3건 정확히 기록", "pass": true }
+    ],
+    "F": [
+      { "id": "F-01", "desc": "spec Section 8.1 TomisColumnGroup 인터페이스 완전 일치", "pass": true },
+      { "id": "F-02", "desc": "spec Section 8.2 함수 시그니처 완전 일치", "pass": true },
+      { "id": "F-03", "desc": "spec Section 8.4 index.ts exports 완전 일치", "pass": true },
+      { "id": "F-04", "desc": "A-07 vitest run 실제 실행 (skip 없음)", "pass": true },
+      { "id": "F-05", "desc": "promptSpecDrift[] 필드 기록됨", "pass": true }
+    ]
+  },
+
+  "yesCount": 24,
+  "naCount": 0,
+  "noCount": 0,
+  "rawScore": 100,
+  "threshold": 85,
+  "pass": true,
+  "verdict": "PASS"
+}

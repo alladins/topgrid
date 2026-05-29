@@ -1,0 +1,176 @@
+{
+  "goalId": "MOD-GRID-10/tracking/G-004",
+  "module": "MOD-GRID-10",
+  "area": "tracking",
+  "stage": "verify",
+  "rubricVersion": "1.0.x",
+  "migrationImpact": "medium",
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85
+  },
+  "weights": {
+    "A": 15,
+    "B": 20,
+    "C": 30,
+    "D": 20,
+    "E": 15
+  },
+  "checks": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "Implement-score evidence verified via direct Read of all 6 spec Section 7 files in monorepo (external — ADR-MOD-GRID-00-001, F-01 exception). (1) rowStatusStyle.ts L1-39 confirmed: defaultRowStatusClassNames L13-17 + getRowStatusClassName L30-37. (2) changeMap.ts L328-410 confirmed: applyUndo with 4 branches (prevStatus===undefined warn L352-355, 'added' net-zero L357-373, 'edited' restore L375-395, 'deleted' un-mark + originalMap.delete L397-410). (3) useChangeTracking.ts confirmed: Action union L33-39 includes 'UNDO' L37; reducer case 'UNDO' L52-53 calls applyUndo; undoRow dispatch L170-172; editedCellsMap stub L199-201. (4) types.ts L80-84 RowStatusClassNames interface + L100-101 editedCells?: boolean + L146-148 editedCellsMap. (5) index.ts L23 barrel export of getRowStatusClassName + defaultRowStatusClassNames; L19 export * from './types' covers RowStatusClassNames. (6) decisions.md L227-281 ADR-MOD-GRID-10-007 with D7/D8/D9 + Alternatives + Trade-offs + Consequences + References. No documentedDeviations findings/ references in implement-score (specCodeDefects is inline, not findings/). External directory evidence per F-01 exception."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "categoryScores re-derived from checks: A=YES2/NO0/N1 → 100.0, B=YES1/NO0/N4 → 100.0, C=YES1/NO0/N2 → 100.0, D=YES1/NO0/N1 → 100.0, E=YES2/NO0/N1 → 100.0. All N/A excluded from denominators (C-26). No vacuous categories required (every category has ≥1 YES). A-category build keyword 'tsup/tsc/size-limit' present in spec — but A is non-vacuous (A-02/A-03 both YES with concrete build evidence). Formula verified per category."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore = 100.0×0.15 + 100.0×0.20 + 100.0×0.30 + 100.0×0.20 + 100.0×0.15 = 15 + 20 + 30 + 20 + 15 = 100.0. Σweight = 100. Threshold 90 (medium) → passed: true. failedChecks=[] (no NO results). N/A items excluded per C-26."
+    },
+    "A-01": {
+      "result": "N/A",
+      "evidence": "tw-framework-front 통합 빌드 (gradlew compileJava) N/A per rubric A-01 — Goal is FE-only Pro package (grid-pro-tracking). No Java backend touched."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Bash `cd D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking && npx tsc --noEmit` returned silent (exit 0) — 0 errors. C-12 satisfied. tsconfig.base.json exactOptionalPropertyTypes: true applies; getRowStatusClassName uses correct C-29 spread pattern (rowStatusStyle.ts L34: classNames ? { ...defaultRowStatusClassNames, ...classNames } : defaultRowStatusClassNames)."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "tsup build success (Bash verified): ESM dist/index.mjs 13.37 KB + CJS dist/index.cjs 13.54 KB + DTS dist/index.d.ts 10.45 KB. Build time ESM 117ms, CJS 117ms, DTS 666ms. Bundle gzip/brotli measured via node zlib: raw=13690B, gz=3038B, brotli=2707B. C-21 Pro 20 KB (gzipped) limit — 3.04 KB gzipped is 15.2% of limit. .size-limit.json not configured for this package (deferred to later Goal per G-001 cascade), but C-21 limit verified manually."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "Sorting behavior N/A — G-004 delivers row-status visual helper + undo + cell-marker structural surface. Sort feature lives in MOD-GRID-04 (separate module)."
+    },
+    "B-02": {
+      "result": "N/A",
+      "evidence": "Filter behavior N/A — G-004 has no filter feature. Filter feature lives in MOD-GRID-05."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "Pagination behavior N/A — G-004 has no pagination feature. Pagination feature lives in MOD-GRID-01/G-001."
+    },
+    "B-04": {
+      "result": "N/A",
+      "evidence": "Virtualization behavior N/A — G-004 is hook/helper code, no DOM rendering layer. Virtualization integration is grid-virtual package's scope."
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "Inline editing behavior verified by code-flow trace: (1) applyUndo 4-branch semantics correct — Read of changeMap.ts L346-410: 'added' branch L357-373 scrubs all 4 state maps + insertionOrder filter; 'edited' branch L375-395 restores originalMap[key] to currentMap[key] + deletes from statusMap/originalMap; 'deleted' branch L397-410 deletes from statusMap + originalMap (D5 leak fix verified); undefined branch L352-355 console.warn + return state unchanged (no throw). (2) undoRow dispatch wiring — useChangeTracking.ts L170-172 useCallback dispatching {type:'UNDO',key}; reducer L52-53 maps to applyUndo. (3) getRowStatusClassName helper — rowStatusStyle.ts L30-37 returns Tailwind className per RowStatus; default values match spec AC-002 (rowStatusStyle.ts L14-16 exact match to spec L140-142). (4) __rowStatus attach preserved from G-002 materialize() — verified rows still typed as `ReadonlyArray<TData & { __rowStatus?: RowStatus }>` in types.ts L122-123. (5) editedCellsMap stub view — useChangeTracking.ts L201 useMemo returns new Map<string, boolean>() with empty deps array (stable ref). G-005 wires runtime. All 5 deliverables (applyUndo 4-branch + undoRow dispatch + getRowStatusClassName + __rowStatus preservation + editedCellsMap stub) verified."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "Affected usage files = 0 (goals.json affectedUsageFiles: []). No usage to tsc-validate post-migration. C-01 N/A per rubric (사용처 0개)."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "Visual regression N/A — G-004 produces hook/helper APIs only, no UI component. affectedUsageFiles=0 means no migrated usage to screenshot. C-17 obligation deferred to G-005 when ChangeTrackingGrid integrates rowStatusStyle + undoRow."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "console warning audit: only one warn in new code — applyUndo prevStatus===undefined branch (changeMap.ts L353): `console.warn('[grid-pro-tracking] undoRow: no tracked change for key ${key}')`. This is intended per spec D6 + EC-04/EC-05 + ADR-MOD-GRID-10-004 parity with applyUpdate L157-159 warn pattern. No other new warns introduced. Existing REBUILD warn (useChangeTracking.ts L62) preserved. No React warning sources (no setState during render, no key prop issues — pure helper).",
+      "intendedDeprecationOrWarn": "applyUndo unknown-key warn (changeMap.ts L353) is intentional defensive UX — documented in spec D6 + EC-04/EC-05."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "Migration ratio N/A — goals.json affectedUsageFiles: []. No usage files to migrate. D-01 N/A per rubric (사용처 0개)."
+    },
+    "D-02": {
+      "result": "YES",
+      "evidence": "Residual usage explicitly documented in spec Section 13.2 'editedCells G-005 cascade': editedCells runtime wiring (Map<rowKey+'_'+columnId, boolean> + cellClassName callback) deferred to G-005. ADR-MOD-GRID-10-007 D9 also documents this defer with rationale (G-005 commit reducer changes consolidated). Spec Section 7 #4 + Section 11.3 Step 4 + Section 2.3 mark stub status. ChangeTrackingGrid + PayrollEditablePage integration also deferred to G-005 (spec Section 8.1). All residuals tracked in next-Goal cascade, not orphaned."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Bundle delta: G-003 ESM ~12.84 KB raw (G-003 implement-score buildResults — '12.84 KB ESM' historical context); G-004 ESM 13.37 KB raw (+0.53 KB; +4.1%). Brotli measured 2.71 KB gzipped 3.04 KB. C-21 Pro 20 KB limit — current 3.04 KB gz is 15.2% of limit (well within). Spec Section 8.2 expected +1 KB; actual +0.53 KB (under expected — favorable). No size-limit JSON file in this package yet (G-001 cascade — deferred until cross-package size-limit config Goal), but raw build output + manual measurement satisfies C-21 verification."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "Zero new dependencies introduced in G-004. package.json peerDependencies unchanged from G-001 (react/react-dom/@tanstack/react-table). applyUndo + getRowStatusClassName are pure TypeScript stdlib (Map, structuredClone reused from G-002 changeMap.ts). No ADR required for new deps. E-02 N/A."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "package.json L5 `\"license\": \"SEE LICENSE IN EULA\"` — Pro tier license disclosure per C-24. G-001 cascade established EULA.md + verifyOrWarn() inline stub in index.ts L13-17 (MOD-GRID-99-A/G-002 will replace with real grid-license import). E-03 YES (license field present, EULA referenced, verifyOrWarn called at module load)."
+    }
+  },
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "weightedScore": 100,
+  "threshold": 90,
+  "passed": true,
+  "selfCheck": {
+    "weightSumIs100": true,
+    "scoreFormula": true,
+    "naExcludedFromDenominator": true,
+    "failedChecksOnlyNo": true,
+    "categoryItemCountMatchesRubric": "A=3 B=5 C=3 D=2 E=3 sum=16 — matches verify-rubric.md '16+F'"
+  },
+  "buildResults": {
+    "tsc": "0 errors (Bash `npx tsc --noEmit` exit 0, silent)",
+    "tsup": "ESM 13.37 KB / CJS 13.54 KB / DTS 10.45 KB — build success (117ms ESM/CJS, 666ms DTS)",
+    "sizeLimit": "raw 13.69 KB / gzip 3.04 KB / brotli 2.71 KB — 15.2% of 20 KB Pro limit (C-21)",
+    "wijmoHits": 0,
+    "anyHits": 0
+  },
+  "bundleProjection": {
+    "before": "~12.84 KB ESM (G-003 baseline raw)",
+    "after": "13.37 KB ESM raw / 3.04 KB gz",
+    "delta": "+0.53 KB raw (spec Section 8.2 expected +1 KB — under expected, favorable)",
+    "limitUsedPercent": 15.2
+  },
+  "failedChecks": [],
+  "feedback": {
+    "summary": "G-004 implementation fully satisfies all 5 axes at 100.0/100 weighted score against threshold 90 (medium tier). No failures; 9 N/A items correctly excluded from denominators per C-26. Pure-helper/React-shell separation (C-32) preserved: rowStatusStyle.ts + applyUndo are React-free; useChangeTracking.ts wraps with useReducer + useCallback. C-30 spec truth table discipline correctly resolved — 'deleted' branch follows D5/EC-06/branch table/Section 11.2 authority over EC-03 prose, with originalMap.delete(key) leak fix in place.",
+    "specCompliance": "All 6 spec Section 7 files modified exactly as enumerated. F-01 (file existence), F-02 (Section 7 1:1 match), F-04 (API signatures), F-05 (no prompt-spec drift), F-06 (EC-03 vs D5 deviation documented) all YES in implement-score and verified independently here.",
+    "leakFixVerification": "applyUndo 'deleted' branch (changeMap.ts L397-410) correctly calls both statusMap.delete(key) AND originalMap.delete(key). This prevents the EC-06 originalMap leak in the unchanged→update→delete→undo→update sequence. Verified by direct Read.",
+    "structuralSurfaceVerification": "AC-004 structural/functional split delivered: ChangeTrackingConfig.editedCells?: boolean (types.ts L101) + ChangeTrackingAPI.editedCellsMap: ReadonlyMap<string, boolean> (types.ts L148) + stub useMemo in hook (useChangeTracking.ts L201). G-005 runtime wiring deferred — documented in ADR-007 D9 + spec Section 13.2.",
+    "nextGoal": "G-005 will: (1) integrate getRowStatusClassName + undoRow into ChangeTrackingGrid component, (2) wire editedCellsMap runtime via reducer, (3) implement commitChanges, (4) update PayrollEditablePage to expose undoRow per-row UX. Residuals tracked, no orphan API."
+  },
+  "buildStatus": {
+    "tsc": "PASS",
+    "viteBuild": "N/A",
+    "tsupBuild": "PASS",
+    "sizeLimit": "PASS (manual; .size-limit.json deferred)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": "N/A (affectedUsageFiles=[]; G-005 integrates ChangeTrackingGrid + PayrollEditablePage)"
+  },
+  "timestamp": "2026-05-15T00:00:00Z",
+  "moduleId": "MOD-GRID-10",
+  "tier": "medium",
+  "yesCount": 10,
+  "noCount": 0,
+  "naCount": 9,
+  "denominator": 10,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "tier=medium",
+      "yesCount=10",
+      "noCount=0",
+      "naCount=9",
+      "denominator=10",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

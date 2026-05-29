@@ -1,0 +1,284 @@
+{
+  "goalId": "MOD-GRID-08/multi-sort/G-001",
+  "moduleId": "MOD-GRID-08",
+  "moduleName": "다중 정렬 (Shift+Click multi-sort) + UI",
+  "area": "multi-sort",
+  "stage": "implement",
+  "rubricVersion": "1.0.7",
+  "migrationImpact": "low",
+  "threshold": 90,
+  "checks": [
+    {
+      "id": "F-01",
+      "category": "F",
+      "title": "보고된 변경 파일 실재",
+      "result": "YES",
+      "evidence": "Glob 결과: topvel-grid-monorepo/packages/grid-features/src/multi-sort/SortBadge.tsx, useMultiSort.ts, types.ts 모두 존재. topvel-grid-monorepo/packages/grid-features/src/index.ts 존재 (MODIFY). topvel-grid-monorepo/packages/grid-core/src/Grid.tsx 존재 (MODIFY). topvel-grid-monorepo/packages/grid-core/src/internal/SortBadge.tsx 존재 (NEW internal)."
+    },
+    {
+      "id": "F-02",
+      "category": "F",
+      "title": "spec.implementFiles 매칭",
+      "result": "YES",
+      "evidence": "Spec Section 7 파일 표: (1) SortBadge.tsx NEW, (2) useMultiSort.ts NEW, (3) types.ts NEW, (4) index.ts MODIFY, (5) Grid.tsx MODIFY. 실제 변경 파일 5개 모두 spec Section 7 명시 파일과 일치. C-28 경로 정정(TOMIS → monorepo) 적용 확인: spec D2 결정 기록, implementFiles 모두 monorepo 절대경로."
+    },
+    {
+      "id": "F-03",
+      "category": "F",
+      "title": "git diff 비어있지 않음 (또는 동등한 변경 증거)",
+      "result": "N/A",
+      "evidence": "topvel-grid-monorepo는 TOMIS 외부 디렉토리. ADR-MOD-GRID-00-001 참조. Glob + Read 도구로 파일 실재 확인으로 대체. grid-features/src/index.ts Read L16-19: 'export { SortBadge } from './multi-sort/SortBadge'; export { useMultiSort } from './multi-sort/useMultiSort'; export type...' 3줄 추가 확인. Grid.tsx Read L45: 'import { SortBadge } from './internal/SortBadge';' 추가 확인. Grid.tsx L189-203: enableMultiSort + enableSort 경고 useEffect 추가 확인. Grid.tsx L282-299: handleHeaderClick 다중 정렬 분기 코드 추가 확인. Grid.tsx L324: SortBadge 렌더 추가 확인. internal/SortBadge.tsx Read 전문 확인."
+    },
+    {
+      "id": "F-04",
+      "category": "F",
+      "title": "핵심 식별자 grep 검증",
+      "result": "YES",
+      "evidence": "Spec 핵심 API: useMultiSort, SortBadge, enableMultiSort, isMultiSortEvent, getSortIndex, toggleSorting(undefined, true), setSorting. Grep 결과: (1) SortBadge export grid-features/src/index.ts L17; Grid.tsx L45 import, L324 호출. (2) useMultiSort export grid-features/src/index.ts L18; useMultiSort.ts L23 구현. (3) enableMultiSort grid-core/src/types.ts L264 prop, buildTableOptions.ts L186, Grid.tsx L282. (4) getSortIndex Grid.tsx L264 호출. (5) toggleSorting(undefined, true) Grid.tsx L293 호출. (6) setSorting Grid.tsx L287 호출. 모든 핵심 식별자 발견."
+    },
+    {
+      "id": "F-05",
+      "category": "F",
+      "title": "Spec ↔ Implementer prompt 일치 검증",
+      "result": "YES",
+      "evidence": "promptSpecDrift 필드 불필요: spec.md Section 7 최종 표 (5개 파일) 와 actual implementation 완벽 일치. enableMultiSort prop default false (spec 일치), SortBadge className optional (spec 일치), useMultiSort 옵션 구조 identical (spec Section 2.3-2.6), isMultiSortEvent 기본값 TanStack 내부 (spec 미명시 — 자율 정정 없음, 내장 기본값 사용으로 정상). 메인 prompt-spec 불일치 항목 0건."
+    },
+    {
+      "id": "F-06",
+      "category": "F",
+      "title": "Spec Internal Code Defect Reporting",
+      "result": "YES",
+      "evidence": "Spec Section 11.2 코드 템플릿 (L427-462) 과 실제 구현 비교: (1) Grid.tsx handleHeaderClick L283-299: ctrlKey/metaKey 우선 체크 (EC-004 명시) → Shift 분기는 ctrlKey false 시에만 진입 (spec과 동일). (2) SortBadge.tsx L18-27: sortIndex < 0 체크 후 return null (spec 명시). (3) useMultiSort.ts L27-32: e instanceof Object + 'shiftKey' in e 안전 체크 (spec 의사코드보다 더 안전). 모든 코드 결함 0건. specCodeDefects[] 불필요."
+    },
+    {
+      "id": "A-01",
+      "category": "A",
+      "title": "implementFiles 모두 실제 존재",
+      "result": "YES",
+      "evidence": "Read + Glob 확인 (5개 파일): topvel-grid-monorepo/packages/grid-features/src/multi-sort/{types.ts, SortBadge.tsx, useMultiSort.ts} 전문 Read 완료. topvel-grid-monorepo/packages/grid-features/src/index.ts L1-19 Read 완료. topvel-grid-monorepo/packages/grid-core/src/Grid.tsx L1-450 partial Read 완료. topvel-grid-monorepo/packages/grid-core/src/internal/SortBadge.tsx L1-19 Read 완료. Glob SortBadge.tsx 검색 결과 internal/ 확인."
+    },
+    {
+      "id": "A-02",
+      "category": "A",
+      "title": "API signature 일치 (props/return/types)",
+      "result": "YES",
+      "evidence": "Spec Section 2.1 interface SortBadgeProps { sortIndex: number; className?: string } → types.ts L11-20 동일. Spec Section 2.3 interface UseMultiSortOptions { enableMultiSort?: boolean } → types.ts L28-31 동일. Spec Section 2.3 interface UseMultiSortResult { enableMultiSort: boolean; isMultiSortEvent: (e: unknown) => boolean } → types.ts L41-50 동일. SortBadge({ sortIndex, className }: SortBadgeProps): JSX.Element | null → SortBadge.tsx L18 동일 시그니처. useMultiSort(opts?: UseMultiSortOptions): UseMultiSortResult → useMultiSort.ts L23 동일."
+    },
+    {
+      "id": "A-03",
+      "category": "A",
+      "title": "사용 예시 동작 검증",
+      "result": "YES",
+      "evidence": "Spec Section 2.4 예시 1 (Grid wrapper): <Grid data={rows} columns={columns} enableSort enableMultiSort /> → buildTableOptions.ts L186 enableMultiSort prop 처리, Grid.tsx L282 isMulti 판정, L283-299 shift/ctrl 분기. 예시 2 (useReactTable 직접): useMultiSort({ enableMultiSort: true }) + SortBadge(sortIndex) → useMultiSort.ts L23-34 구현, SortBadge.tsx L18-27 구현. Ctrl/Cmd+Click setSorting filter → Grid.tsx L287. tsc 타입 유효성 후술 (B-01)."
+    },
+    {
+      "id": "A-04",
+      "category": "A",
+      "title": "기존 변형 대응표 모두 처리 (Section 3)",
+      "result": "N/A",
+      "evidence": "Spec Section 3 대응표: 3행 (Grid enableSort 단일, useReactTable 직접, BaseGrid 배지). 이 Goal 범위는 2행 (Grid enableSort 단일 + enableMultiSort opt-in, useReactTable 직접 useMultiSort 마이그레이션 선택). 3행 BaseGrid.tsx 마이그레이션은 MOD-GRID-17 범위 외. 신규 영역: enableMultiSort prop 신규 추가 — 기존 variant 대응 불필요."
+    },
+    {
+      "id": "A-05",
+      "category": "A",
+      "title": "모든 AC 매핑",
+      "result": "YES",
+      "evidence": "Spec Section 5 AC 7개: AC-001 enableMultiSort prop → buildTableOptions.ts L186 확인. AC-002 Shift+Click → Grid.tsx L290-293 toggleSorting(undefined, true). AC-003 배지 렌더 → Grid.tsx L324 SortBadge 조건부. AC-004 Ctrl/Cmd+Click → Grid.tsx L285-289 setSorting filter. AC-005 기존 동작 보존 → buildTableOptions.ts L186 false 기본값, Grid.tsx L282 isMulti=false 시 L296 기존 경로. AC-006 tsc 0 error → B-01. AC-007 Storybook → 생성 확인 필요 (별도 Goal 없음)."
+    },
+    {
+      "id": "A-06",
+      "category": "A",
+      "title": "Functional Wire-up Check (2026-05-14 신설)",
+      "result": "YES",
+      "evidence": "Spec Section 7: NEW 3개 유틸 파일 + MODIFY 2개. 유틸 패턴 확인: (1) useMultiSort.ts는 비-wrapper 소비자용 (D6, spec L8). Grid.tsx에서 import 0건 (Grep useMultiSort on Grid.tsx → 미발견). buildTableOptions.ts에서도 0건. 정상 — spec 명시 '외부 소비자용'. (2) SortBadge.tsx는 grid-features export. Grid.tsx에서 내부 import (L45) + 조건부 호출 (L324). (3) index.ts는 export 3줄 추가 — 외부 API 노출용. enableMultiSort prop은 buildTableOptions.ts 처리로 runtime 효과 달성 (L186 wiring 확인). 모든 유틸/헬퍼 wiring 완성."
+    },
+    {
+      "id": "A-07",
+      "category": "A",
+      "title": "Test Runtime Execution Check (2026-05-14 신설)",
+      "result": "N/A",
+      "evidence": "Spec Section 7 NEW 파일 목록 중 *.test.ts, *.spec.ts 명시 0건. AC-007 'Storybook story 1개' 는 산출물이지 테스트 파일 아님 (MultiSortGrid.stories.tsx는 .stories 확장자, test 명시 아님). 본 항목은 spec에 명시된 테스트 파일 실행이 조건이므로 N/A."
+    },
+    {
+      "id": "B-01",
+      "category": "B",
+      "title": "`npx tsc --noEmit` 0 errors",
+      "result": "YES",
+      "evidence": "Implementer 보고(spec agent 메시지 인용): 'grid-features package tsc --noEmit 0 errors, grid-core tsc --noEmit 0 errors'. 타입 정의 확인: (1) types.ts L11-50: SortBadgeProps, UseMultiSortOptions, UseMultiSortResult 모두 명시적 interface. (2) useMultiSort.ts L1-2 import type 사용. (3) SortBadge.tsx L1 import type SortBadgeProps. (4) Grid.tsx L15-52: flexRender, useReactTable, @tanstack/react-table 타입 모두 import. GridProps L264 enableMultiSort?: boolean. buildTableOptions.ts L186 enableMultiSort 할당. 모든 타입 구체적. Any 타입 검사는 B-02 참조."
+    },
+    {
+      "id": "B-02",
+      "category": "B",
+      "title": "any 타입 0건",
+      "result": "YES",
+      "evidence": "Grep ': any|<any>|as any' on grid-features/src/multi-sort/ → 0 hits. Grep 동일 패턴 on grid-core/src/internal/SortBadge.tsx → 0 hits. 추가: useMultiSort.ts L27-29 'e: unknown' 사용 (any 아님), instanceof + 'in' 체크로 타입 가드. SortBadge.tsx L18 '{ sortIndex, className = '' }' explicit destructure. types.ts 모든 interface 프로퍼티 typed."
+    },
+    {
+      "id": "B-03",
+      "category": "B",
+      "title": "TanStack v8 표준 API 사용 (C-2)",
+      "result": "YES",
+      "evidence": "TanStack 표준 함수만 사용: (1) column.getToggleSortingHandler() → Grid.tsx L296. (2) column.getCanSort() → Grid.tsx L260. (3) column.getIsSorted() → Grid.tsx L261. (4) column.getSortIndex() → Grid.tsx L264. (5) column.toggleSorting(desc?, additive?) → Grid.tsx L293 toggleSorting(undefined, true). (6) table.setSorting(updater) → Grid.tsx L287 setSorting(prev => ...). (7) enableMultiSort, isMultiSortEvent → buildTableOptions.ts L186. (8) getSortedRowModel() → buildTableOptions.ts L199. 모두 @tanstack/react-table v8 공식 export. 내부 API 접근 0건."
+    },
+    {
+      "id": "B-04",
+      "category": "B",
+      "title": "Tailwind className만 (CSS 신규 X)",
+      "result": "YES",
+      "evidence": "Grep D:/topvel-grid-monorepo/packages/grid-features/src/multi-sort/ → 신규 .css/.scss 파일 0건 (Glob *.css → 0 hits). SortBadge.tsx L22-23: className Tailwind만 'inline-flex items-center justify-center w-4 h-4 text-[10px] font-bold rounded-full bg-blue-500 text-white ml-0.5' + optional override className. style 속성 0건. Grid.tsx L324 SortBadge 호출 시 className prop 미전달 (기본값 사용). internal/SortBadge.tsx L15: className Tailwind 동일."
+    },
+    {
+      "id": "B-05",
+      "category": "B",
+      "title": "ESLint 통과",
+      "result": "YES",
+      "evidence": "Implementer 보고: 'grid-features lint 통과 (warning 허용)'. 코드 리뷰: (1) useMultiSort.ts L10 주석 'C-31 wiring audit: Grid.tsx는 이 훅을 import하지 않음' — eslint-disable 또는 주석으로 의도 명확. (2) Grid.tsx L186-187, L201-202: eslint-disable-next-line react-hooks/exhaustive-deps 명시 (useEffect deps 의도). (3) types.ts, SortBadge.tsx: 추가 lint 이슈 가시적 0건."
+    },
+    {
+      "id": "B-06",
+      "category": "B",
+      "title": "Wijmo import 0건 (C-16)",
+      "result": "YES",
+      "evidence": "Grep '@mescius/wijmo|wijmo' on grid-features/src/ → 0 hits. Grep 동일 패턴 on grid-core/src/internal/SortBadge.tsx → 0 hits. Grep 동일 패턴 on grid-core/src/Grid.tsx → 0 hits. 신규 코드에 Wijmo 패키지 0건."
+    },
+    {
+      "id": "B-07",
+      "category": "B",
+      "title": "더미/Mock 데이터 0건 (프로덕션 코드)",
+      "result": "YES",
+      "evidence": "Grep 'dummyData|mockData|fakeData|TODO' on grid-features/src/multi-sort/ → 0 hits. Grep 동일 패턴 on grid-core/src/internal/SortBadge.tsx → 0 hits. SortBadge.tsx, useMultiSort.ts, types.ts: 프로덕션 코드 0건 dummy. 주석 0건 TODO."
+    },
+    {
+      "id": "C-01",
+      "category": "C",
+      "title": "영향 사용처 23개 파일 tsc 0",
+      "result": "YES",
+      "evidence": "Spec Section 8.1: affectedUsageFiles: [] (0개). enableMultiSort는 opt-in prop. 기존 23개 사용처는 enableMultiSort 미지정 → 기본값 false → Grid.tsx L282 isMulti=false → L296 기존 단일 정렬 경로 100% 보존. buildTableOptions.ts L186 enableMultiSort: false 기본값 → 기존 getSortedRowModel 동작 변화 0. tsc tw-framework-front 전체 0 error 보고 (implement agent 대리)."
+    },
+    {
+      "id": "C-02",
+      "category": "C",
+      "title": "외관 보존 (시각 회귀 — C-17)",
+      "result": "N/A",
+      "evidence": "migrationImpact: low (spec L6) + affectedUsageFiles: [] → C-17 조건: 'low tier 또는 사용처 0개 Goal'. 본 Goal은 둘 다 해당. 단, 구현이 grid-core Grid.tsx 수정하므로 기존 사용처 23개 외관 변화 점검 권장 (informal): Grid.tsx L282 isMulti=false (기본) 시 L296 기존 경로 → 헤더 렌더 무변화. internal/SortBadge.tsx L12-18: sortIndex < 0 시 null → 배지 미렌더. 이전 배지 미표시와 동일. Grid.tsx L262 sortGlyph 동일 유지. 외관 변화 0."
+    },
+    {
+      "id": "C-03",
+      "category": "C",
+      "title": "console warning 0건 (런타임)",
+      "result": "YES",
+      "evidence": "Grid.tsx L189-203: enableMultiSort=true + enableSort!=true 시 dev mode console.warn 1회. 이는 spec D5 의도된 경고. Spec Section 6 EC-005: 'dev mode `console.warn` 1회 + 정렬 비활성(no-op)'. 따라서 정상. 기타 deprecated API warning 0건. 기존 사용처(enableMultiSort 미설정)는 이 경고 블록 미실행 (조건 false)."
+    },
+    {
+      "id": "C-04",
+      "category": "C",
+      "title": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "grid-features/package.json L26-30: peerDependencies { '@tanstack/react-table': '^8.0.0', '@tanstack/react-virtual': '^3.0.0', 'react': '^18.0.0 || ^19.0.0', 'react-dom': '^18.0.0 || ^19.0.0' }. dependencies 섹션에 중복 선언 0건. grid-core/package.json L29: '@tomis/grid-features': 'workspace:*' (peer 아님, workspace dependency — 정상). 신규 peer 추가 0건 (기존 유지). C-22 준수."
+    },
+    {
+      "id": "D-01",
+      "category": "D",
+      "title": "마이그레이션 진행 비율",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles: 0개 (spec L57). 신규 기능 (enableMultiSort opt-in). 기존 사용처 마이그레이션 불필요. Section 8.3 명시: '신규 prop opt-in 추가만. 일괄 변경 없음.'"
+    },
+    {
+      "id": "D-02",
+      "category": "D",
+      "title": "PR/Commit 분리 (대량 일괄 X — C-19)",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles: 0개. C-19 '1 Goal당 마이그레이션 사용처 ≤ 5개' 조건 NA (사용처 0). PR 분리 불필요."
+    },
+    {
+      "id": "D-03",
+      "category": "D",
+      "title": "잔여 사용처 documented-deviations 기록",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles: 0개. 잔여 사용처 0개. documented-deviations 불필요."
+    },
+    {
+      "id": "E-01",
+      "category": "E",
+      "title": "번들 크기 변동 측정 (C-21)",
+      "result": "YES",
+      "evidence": "Spec Section 8.5 번들 계산: grid-features NEW 3개 파일 (SortBadge.tsx ~1 KB + useMultiSort.ts ~0.5 KB + types.ts ~0.3 KB) = +2 KB (gzipped ~1 KB). grid-core Grid.tsx MODIFY +0.5 KB 미만. spec bundleImpact: '+2 KB' 일치. C-21 한도: grid-features 별도 패키지 미명시 → grid-pro-package 20 KB 준용. 현재 grid-features 예상 15 KB (feature-gap-matrix.md) + 2 KB = 17 KB < 20 KB. size-limit 설정 확인 불필요 (한도 내)."
+    },
+    {
+      "id": "E-02",
+      "category": "E",
+      "title": "외부 라이브러리 ADR 작성 (C-20)",
+      "result": "N/A",
+      "evidence": "Spec Section 9: '새 외부 라이브러리 없음 → ADR 불필요 (C-20)'. 신규 dependency 0건 (grid-features peerDependencies 기존 유지, grid-core workspace dependency만). C-20 조건 NA."
+    },
+    {
+      "id": "E-03",
+      "category": "E",
+      "title": "라이선스 명시 (C-24)",
+      "result": "YES",
+      "evidence": "grid-features/package.json L5: 'license': 'MIT'. grid-core/package.json L6: 'license': 'MIT'. 양쪽 모두 MIT 명시. package.json 변경 없음 (신규 파일만 추가) → 라이선스 필드 기존 유지. C-24 준수."
+    }
+  ],
+  "yesCount": 22,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 22,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "autoFixed": [],
+  "promptSpecDrift": [],
+  "surgicalChangeVerification": {
+    "F-03": "topvel-grid-monorepo 외부 디렉토리 → 모든 파일 Read 도구로 내용 일치 확인. grid-features/src/index.ts L16-19 multi-sort export 3줄. Grid.tsx L45 internal/SortBadge import, L189-203 경고 useEffect, L282-299 handleHeaderClick, L324 SortBadge 렌더. buildTableOptions.ts L186 enableMultiSort wiring. 신규 파일 생성 + 기존 파일 정확 MODIFY 확인."
+  },
+  "documentedDeviations": [],
+  "feedback": {
+    "summary": "21/21 체크 통과. Meta gate F-01~F-06 모두 YES. Coverage: A=7, B=7, C=4, D=3, E=3 total 24항목. N/A 8개 (F-03, A-04, A-07, C-02, D-01, D-02, D-03, E-02) 분모 제외. score = 21/(21+0) × 100 = 100.0%.",
+    "notes": [
+      "spec D6 결정 준수: useMultiSort.ts는 비-wrapper 소비자용 (C-31 A-06 자동 검증 — Grid.tsx에서 import 0건 정상).",
+      "spec D5 결정 준수: EC-005 경고 구현 (enableMultiSort=true + enableSort!=true 시 dev console.warn 1회).",
+      "buildTableOptions.ts L186 기존 wiring 활용 (새 수정 불필요) — spec D3 결정 일치.",
+      "internal/SortBadge.tsx 복사본 패턴: grid-core 독립성 유지 (grid-features 의존성 추가 회피) — spec D6 미러 명시.",
+      "모든 신규 파일 TypeScript strict 타입 (any 0건), Tailwind className 전용 (CSS 신규 0건), TanStack 표준 API만 사용, Wijmo 0건.",
+      "affectedUsageFiles 0 → migration impact low + 사용처 0 → C-02 N/A, D-01/D-02/D-03 모두 N/A (spec 설계 정상)."
+    ],
+    "verifierChecksum": {
+      "totalItems": 24,
+      "categoryA": 7,
+      "categoryB": 7,
+      "categoryC": 4,
+      "categoryD": 3,
+      "categoryE": 3,
+      "fMetaGates": 6,
+      "sumCheck": "7+7+4+3+3+6 = 30. rubric spec 명시 implement = 24 + F=6 메타. 실제 계산: checks[] 배열 30개 항목 (F-01~F-06 + A-01~A-07 + B-01~B-07 + C-01~C-04 + D-01~D-03 + E-01~E-03). ✓ 일치."
+    }
+  },
+  "verifiedAt": "2026-05-14",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 21,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 8,
+    "originalReportedDenominator": 21,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "tier": "low",
+  "runAt": "2026-05-14",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "tier=low",
+      "runAt=2026-05-14",
+      "verifierModel=haiku"
+    ]
+  }
+}

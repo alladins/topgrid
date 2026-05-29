@@ -1,0 +1,244 @@
+{
+  "moduleId": "MOD-GRID-06",
+  "area": "export",
+  "goalId": "MOD-GRID-06/export/G-004",
+  "stage": "verify",
+  "tier": "medium",
+  "threshold": 90,
+  "ranAt": "2026-05-14T20:00:00Z",
+  "rubricVersion": "1.0.2",
+  "loops": 1,
+  "migrationImpact": "medium",
+  "weights": {
+    "A": 0.15,
+    "B": 0.2,
+    "C": 0.3,
+    "D": 0.2,
+    "E": 0.15
+  },
+  "checks": [
+    {
+      "id": "A-01",
+      "category": "A",
+      "title": "gradlew compileJava 0 errors",
+      "result": "N/A",
+      "evidence": "G-004 is FE-only (grid-export TypeScript package, copyToClipboard + printGrid Web API). tvcom_back compileJava 무관 — A-01 N/A condition '그리드 작업이 FE 전용일 때' 충족 (rubric L82-83). G-001/G-002/G-003 verify A-01 동일 처리."
+    },
+    {
+      "id": "A-02",
+      "category": "A",
+      "title": "npx tsc --noEmit 0 errors",
+      "result": "YES",
+      "evidence": "Verifier re-ran `npx tsc --noEmit` at D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export → EXIT=0, no output (0 errors). copyToClipboard.ts (L1-100), printGrid.ts (L1-117), copyToClipboard.stories.tsx (L1-220), types.ts L140-204 ClipboardOptions/PrintOptions, index.ts L9/L10/L22 모두 strict 통과. tsc explicitly verified at verify stage (not relying on implement-score self-report). tw-framework-front 영향 0 (사용처 0개)."
+    },
+    {
+      "id": "A-03",
+      "category": "A",
+      "title": "tsup build + size-limit (infra-defect 분류 — G-001/G-002/G-003 동일 패턴)",
+      "result": "YES",
+      "evidence": "A-03 sub-clause (rubric L90-100) infra-defect 분류 적용. (1) tsup.config.ts L17-26 external 배열 Read 확인: ['react','react-dom','@tanstack/react-table','@tanstack/react-virtual','xlsx','jspdf','@dnd-kit/core','@tanstack/react-query'] — peer 모두 정확 명시 (Web API navigator.clipboard/window.open/window.print는 브라우저 전역 — 번들 영향 0). (2) tsup build 성공 (Verifier 직접 실행, EXIT=0): dist/index.mjs raw = 11.11 KB (G-003 7.36 KB → +3.75 KB raw, spec Section 8.5 '+2 KB gzipped' 일치 — brotli/gzip 압축 후 +1~2 KB 추정). spec C-21 grid-export ≤ 20 KB 한도 내 (raw 11.11 KB ≪ 20 KB). (3) monorepo `.size-limit.json` L14-19 grid-export entry `ignore` 미설정 → size-limit 283,413 brotli bytes false-positive (peer 측정 포함, G-003 282,652 → +761 bytes 증분 = G-004 자체 코드 추가 분). G-001/G-002/G-003 verify A-03 동일 패턴 — measurement-tool 설정 누락 = infra-defect, 코드 결함 아님. A-03 YES + feedback 'infra-defect: size-limit ignore peer 미설정 — 후속 트랙(MOD-GRID-99-B 등) 이관' 기록."
+    },
+    {
+      "id": "B-01",
+      "category": "B",
+      "title": "정렬 동작",
+      "result": "N/A",
+      "evidence": "G-004 scope is clipboard + print export only. 정렬은 consumer 상태 — copyToClipboard/printGrid 둘 다 `getRowsByScope(table, scope)` (copyToClipboard.ts L45, printGrid.ts L34)로 이미 정렬된 RowModel 행을 읽기만. spec Section 1 + AC-001/AC-003 'export-only scope' confirms. G-001/G-002/G-003 동일 처리."
+    },
+    {
+      "id": "B-02",
+      "category": "B",
+      "title": "필터 동작",
+      "result": "N/A",
+      "evidence": "Export-only Goal. copyToClipboard/printGrid은 `table.getFilteredRowModel()` 결과만 소비 (scope='filtered' default). 필터 UI 미구현. spec Section 2.3 default scope='filtered' 참조."
+    },
+    {
+      "id": "B-03",
+      "category": "B",
+      "title": "페이지네이션 동작",
+      "result": "N/A",
+      "evidence": "Export-only Goal. G-004 scope 에 페이지네이션 도입 없음 (spec Section 1)."
+    },
+    {
+      "id": "B-04",
+      "category": "B",
+      "title": "가상화 동작 (C-18)",
+      "result": "N/A",
+      "evidence": "Export-only Goal. copyToClipboard/printGrid 는 RowModel 행 데이터 layer만 사용 (virtualization-agnostic). spec Section 11 W3 popup.onload 타이밍 외 대용량 처리 후속 확장 — virtualization 무관."
+    },
+    {
+      "id": "B-05",
+      "category": "B",
+      "title": "인라인 편집 동작",
+      "result": "N/A",
+      "evidence": "G-004 export-only — editable grid 기능 미도입 (spec Section 1)."
+    },
+    {
+      "id": "C-01",
+      "category": "C",
+      "title": "영향 사용처 tsc 0 (마이그레이션 후)",
+      "result": "YES",
+      "evidence": "spec Section 1 L96-99 + Section 3: '영향 사용처: 0개 — copyToClipboard/printGrid는 신규 export. tw-framework-front에 navigator.clipboard 사용처 0 (L0 Grep 확인).' Verifier 독립 검증: `Grep copyToClipboard|printGrid on D:/project/topvel_project/TOMIS/tw-framework-front/src` → 0 files matched ✓. tw-framework-front 코드 변경 0. vacuously YES (사용처 0 → 영향 0 trivially 충족). C-19 준수: 0 ≤ 5. G-001(exportToExcel.ts) + G-002(exportToCSV.ts) + G-003(exportToPdf.ts) import 미변경 회귀 확인 — index.ts L4-6 기존 4 export 보존 (Read 확인 L1-25), dist/index.d.ts L19-83 exportToExcel/CSV/Pdf signatures 그대로 유지. G-001/G-002/G-003 verify C-01 동일 처리."
+    },
+    {
+      "id": "C-02",
+      "category": "C",
+      "title": "외관 보존 (시각 회귀 — C-17)",
+      "result": "N/A",
+      "evidence": "migrationImpact: medium 이나 사용처 0개 → C-17 N/A 조건 ('migrationImpact: low 또는 사용처 0개 Goal') 충족. Storybook story 4개 (CopyFiltered L100, CopySelected L123, PrintGridDefault L154, PrintGridLandscape L177) 코드 형식 정상 — 신규 API 시나리오로 마이그레이션 영향 없음. 추후 G-005 통합 시 visual regression 재검증. G-003 verify C-02 동일 처리."
+    },
+    {
+      "id": "C-03",
+      "category": "C",
+      "title": "console warning 0건 (런타임)",
+      "result": "YES",
+      "evidence": "Grep `console\\.warn` on grid-export src (Verifier 직접 sampling): copyToClipboard.ts L49 (emptyBehavior='skip' + 0행 의도된 spec EC-03 알림, gated by `rows.length === 0 && emptyBehavior === 'skip'`), printGrid.ts L38 (동일 EC-03 패턴), printGrid.ts L100-102 (window.open null = 팝업 차단 의도된 D7 EC-05 알림). 모두 spec에 명시된 의도된 동작 (rubric C-03 'deprecation/intentional warnings 제외' 적용). 정상 export path warning 0건. React deprecation warning 0건 (외부 dep 0 + 순수 함수, hooks 미사용). copyToClipboard.stories.tsx L60-72 React state hook 정상 사용 — warning 없음."
+    },
+    {
+      "id": "D-01",
+      "category": "D",
+      "title": "마이그레이션 비율",
+      "result": "N/A",
+      "evidence": "spec Section 1 L96-99 + Section 8.1: 영향 사용처 0개 (신규 API). rubric D-01 N/A 조건 ('사용처 0개') 충족. copyToClipboard/printGrid는 신규 export — 마이그레이션 비율 분모 없음."
+    },
+    {
+      "id": "D-02",
+      "category": "D",
+      "title": "잔여 사용처 명시",
+      "result": "N/A",
+      "evidence": "spec Section 3 + 8.1: 신규 export 기능. 잔여 사용처 0개 → rubric D-02 N/A 조건 ('잔여 0건') 충족. G-005 통합 트랙은 separate Goal로 spec Section 12 V1/V2/V3 명시 (Storybook + tsc + 단위 테스트)."
+    },
+    {
+      "id": "E-01",
+      "category": "E",
+      "title": "번들 크기 변동 (C-21)",
+      "result": "YES",
+      "evidence": "tsup output 직접 측정 (Verifier Bash 실행): dist/index.mjs raw = 11.11 KB (G-003 7.36 KB → G-004 11.11 KB = +3.75 KB raw, gzipped 예상 +1.5~2 KB 범위 — spec Section 8.5 '+2 KB 이내' 일치). C-21 grid-export ≤ 20 KB 한도 내 (raw 11.11 KB ≪ 20 KB). copyToClipboard.ts (100줄) + printGrid.ts (117줄) 합 ~217줄 TS 코드, navigator.clipboard + window.open Web API 외부 dep 0 → 번들 추가는 자체 함수 본체만. tsup.config.ts L17-26 external 배열 peer 모두 externalized → peer 번들 포함 없음. size-limit 283,413 brotli bytes false-positive는 infra-defect (A-03 참조)."
+    },
+    {
+      "id": "E-02",
+      "category": "E",
+      "title": "새 의존성 ADR (C-20)",
+      "result": "N/A",
+      "evidence": "spec D8 (L27): '외부 dependency 추가 없음 → ADR 불필요'. Verifier Read MOD-GRID-06-decisions.md 확인 — Grep 'G-004|copyToClipboard|printGrid' → 0 hits (신규 ADR 항목 추가 없음). 구현 검증: copyToClipboard.ts L1-3 import만 ['@tanstack/react-table', './types', './internal/getRowsByScope'] — 전부 기존 dep. printGrid.ts L1-3 동일. package.json peerDependencies (Verifier Read L31-38) 변경 없음 (jspdf/jspdf-autotable/xlsx/react/react-table 기존 유지). Web API 전용 구현 (navigator.clipboard, document.execCommand, window.open, window.print, document.createElement) → C-9/C-20 N/A 조건 충족. rubric E-02 N/A: '새 dep 없음'."
+    },
+    {
+      "id": "E-03",
+      "category": "E",
+      "title": "라이선스 명시 (C-24)",
+      "result": "YES",
+      "evidence": "Verifier Read packages/grid-export/package.json L5 `\"license\": \"MIT\"` 확인. spec L8 licenseTier: 'MIT' (Open Tier). package.json L22-25 `files: ['dist','README.md']`. C-24 license field 의무 충족. G-001/G-002/G-003 에서 이미 설정된 MIT license 그대로 유지 (G-004 package.json 변경 없음 — 신규 5파일 모두 src/만 변경). Pro 패키지 아니므로 EULA + 라이선스 검증 호출 N/A."
+    }
+  ],
+  "categoryScores": {
+    "A": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "score": 100
+    },
+    "B": {
+      "yes": 0,
+      "no": 0,
+      "na": 5,
+      "score": 100
+    },
+    "C": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "score": 100
+    },
+    "D": {
+      "yes": 0,
+      "no": 0,
+      "na": 2,
+      "score": 100
+    },
+    "E": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "score": 100
+    }
+  },
+  "weightedScore": 100,
+  "passed": true,
+  "failedChecks": [],
+  "buildStatus": {
+    "tsc": "PASS (Verifier re-ran npx tsc --noEmit, EXIT=0)",
+    "tsupBuild": "PASS (Verifier re-ran npx tsup, EXIT=0, dist/index.mjs 11.11 KB raw)",
+    "sizeLimit": "INFRA-DEFECT (peer 측정 포함 false-positive 283,413 brotli bytes — A-03 sub-clause infra-defect 분류, G-001/G-002/G-003 동일 패턴, 후속 트랙 MOD-GRID-99-B 이관)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": null,
+    "note": "신규 API (copyToClipboard + printGrid) — 영향 사용처 0개. G-005 통합 트랙에서 사용처 추가 예정."
+  },
+  "feedback": {
+    "summary": "MOD-GRID-06/export/G-004 clipboard + print verify PASS (100/90). copyToClipboard (TSV + navigator.clipboard + execCommand fallback) + printGrid (HTML table + window.open + onload print) 신규 API + Storybook 4 stories + types.ts/index.ts additive MODIFY. 5축 모두 100점 — 무파괴 신규 도입 완벽.",
+    "strengths": [
+      "tsc 0 errors (Verifier re-ran `npx tsc --noEmit` 직접 검증, EXIT=0).",
+      "tsup CJS+ESM dual build 성공: dist/index.mjs 11.11 KB raw (+3.75 KB vs G-003), peer 모두 externalized — gzipped 추정 +1.5~2 KB 일치 (spec Section 8.5 '+2 KB 이내').",
+      "getRowsByScope 재사용 (D1) — copyToClipboard.ts L3 import + L45 호출, printGrid.ts L3 import + L34 호출 (functional wiring 완성, C-31). 동일 헬퍼 4번째 복사 0건.",
+      "TSV 이스케이프 정확 (EC-01/EC-02/D5): escapeTsvValue (L13-15) `[\\t\\r\\n]/g → ' '` 공백 치환 — Excel 붙여넣기 호환 최우선.",
+      "navigator.clipboard + execCommand fallback 정확 (D6/EC-04): L79-83 typeof guard + L84 await writeText, L86-97 textarea fallback + success check + Error throw. HTTP 개발 환경 호환.",
+      "printGrid onload 등록 타이밍 정확 (EC-06/D7): L106-108 EC-06 주석 + L109-112 popup.onload 등록 *document.write 이전* — Firefox/Safari 호환 위험 차단.",
+      "popup null 처리 정확 (EC-05/D7): L98-104 console.warn + 즉시 return — void 함수에서 throw 회피로 caller try/catch 부담 없음.",
+      "헤더 그룹 처리 정확: table.getLeafHeaders() (copyToClipboard.ts L54, printGrid.ts L43) + columnDef.header function/string 분기 + column.id fallback (L57-58, L46-47). 리프 헤더 기반 단일행 구조.",
+      "null/undefined → 빈 문자열 처리 (EC-07): copyToClipboard.ts L68-69 + printGrid.ts L58-59 동일 패턴 (G-002 exportToCSV.ts L82 일관).",
+      "ESM + CJS dual export 정상: dist/index.d.ts L102 copyToClipboard + L121 printGrid + L123 ClipboardOptions/PrintOptions all-in-one barrel.",
+      "기존 4 export 회귀 0: exportToExcel/CSV/Pdf + types 모두 dist/index.d.ts L30/L51/L83에 그대로 유지.",
+      "Storybook story 4개 (CopyFiltered/CopySelected/PrintGridDefault/PrintGridLandscape) — AC-006 충족.",
+      "package.json license MIT 유지 (G-003 baseline 불변, G-004 package.json 변경 0).",
+      "신규 peerDependency 0 (D8): Web API 전용 구현. C-9/C-20 ADR N/A 정당.",
+      "영향 사용처 0개 — 기존 코드 무파괴 완벽 (C-6, C-19). G-001/G-002/G-003 import 회귀 0.",
+      "implement-score 100/90 PASS + specify-score 100/90 PASS — 1 loop 완료.",
+      "C-4 strict TypeScript: Grep `: any|<any>|as any` on copyToClipboard.ts/printGrid.ts → 0 hits ✓.",
+      "C-16 Wijmo 비도입: Grep `wijmo|@mescius` → 0 hits ✓."
+    ],
+    "findings": [],
+    "infraDefects": [
+      "size-limit ignore peer 미설정 — G-001/G-002/G-003 동일 패턴. A-03 sub-clause 적용 infra-defect 분류 (코드 결함 아님). monorepo `.size-limit.json` L14-19 grid-export entry → 283,413 brotli bytes false-positive (peer 측정 포함). G-003 282,652 → G-004 283,413 = +761 bytes 증분이 G-004 자체 코드 추가 분 (gzipped/brotli 압축 후). 후속 트랙(MOD-GRID-99-B 등) 으로 일괄 이관 권장: `ignore: ['xlsx','@tanstack/react-table','react','react-dom','jspdf','jspdf-autotable']` 추가."
+    ],
+    "verifierSelfCheck": {
+      "categoryItemCount": "A(3) + B(5) + C(3) + D(2) + E(3) = 16. Actual checks array length = 16. ✓ (C-26 #3)",
+      "naExcludedFromDenominator": "A: denom=2 (2 YES + 0 NO, 1 N/A excluded); B: vacuous (0 YES + 0 NO + 5 N/A) → 100; C: denom=2 (2 YES + 0 NO, 1 N/A excluded); D: vacuous (0 YES + 0 NO + 2 N/A) → 100; E: denom=2 (2 YES + 0 NO, 1 N/A excluded for E-02 신규 dep 없음). ✓ (C-26 #1)",
+      "vacuousValidity": "B vacuous OK: Goal title '클립보드 복사 + 인쇄 — copyToClipboard / printGrid' 에 build/tsup/tsc/vite/rollup/size-limit/bundle 키워드 없음 → B vacuous 허용 (rubric L66-72). A는 vacuous 금지 (A 카테고리는 항상 build/tsup 의무) — 실제 측정 (A-02 YES + A-03 YES, A-01 만 FE-only N/A) 으로 non-vacuous ✓. D vacuous OK: 사용처 0 신규 API 의도된 0/0 (spec Section 1 L96-99 + Section 8.1).",
+      "categoryScoreFormula": "A: 2/(2+0)×100 = 100 ✓. B: vacuous → 100 ✓. C: 2/(2+0)×100 = 100 ✓. D: vacuous → 100 ✓. E: 2/(2+0)×100 = 100 ✓. (C-26 #4)",
+      "weightedScoreFormula": "100×0.15 + 100×0.20 + 100×0.30 + 100×0.20 + 100×0.15 = 15 + 20 + 30 + 20 + 15 = 100.00. ✓ (C-26 #4)",
+      "weightsSum": "0.15 + 0.20 + 0.30 + 0.20 + 0.15 = 1.00. ✓ (C-26 #4)",
+      "failedChecksIntegrity": "failedChecks = [] — NO 결과 0건. N/A 항목 (A-01, B-01..B-05, C-02, D-01, D-02, E-02) 미포함 ✓ (C-26 #2)",
+      "passLogic": "100.00 >= 90 (medium threshold) → passed=true ✓",
+      "fMetaGate": {
+        "F-01": "evidence 실재 sampling: (a) copyToClipboard.ts L13-15 escapeTsvValue + L38-99 함수 본체 Read 확인 ✓. (b) printGrid.ts L22-116 함수 본체 + L106-108 EC-06 주석 + L109-112 onload 등록 Read 확인 ✓. (c) types.ts L140-204 ClipboardOptions + PrintOptions Read 확인 ✓. (d) index.ts L9 copyToClipboard + L10 printGrid + L22 type export Read 확인 ✓. (e) copyToClipboard.stories.tsx 4 stories (L100/L123/L154/L177) Read 확인 ✓. (f) package.json L5 license MIT + L31-38 peerDependencies Read 확인 ✓. (g) tsup.config.ts L17-26 external 배열 Read 확인 ✓. (h) .size-limit.json grid-export entry ignore 미설정 Read 확인 ✓. (i) tsup build dist/index.mjs 11.11 KB Bash 실행 확인 ✓. (j) tsc --noEmit EXIT=0 Bash 실행 확인 ✓. (k) size-limit JSON 283,413 brotli bytes false-positive Bash 실행 확인 ✓. (l) dist/index.d.ts L102/L121/L123 exports 검증 Grep 확인 ✓. (m) Grep 'copyToClipboard|printGrid' on tw-framework-front/src → 0 files matched (사용처 0개) ✓. (n) Grep ': any|<any>|as any' on copyToClipboard.ts/printGrid.ts → 0 hits ✓. (o) Grep 'G-004|copyToClipboard|printGrid' on decisions/MOD-GRID-06-decisions.md → 0 hits (ADR 신규 항목 없음 = D8 일치) ✓. 외부 디렉토리 (topvel-grid-monorepo) git 무관 경로 — Glob/Read 대체 확인 (rubric F-01 외부 디렉토리 evidence 조건 충족, ADR-MOD-GRID-00-001 참조). ✓",
+        "F-02": "categoryScores 산식 정확: A 2/2×100=100, B vacuous→100, C 2/2×100=100, D vacuous→100, E 2/2×100=100. 모두 100.0 일치. N/A 분모 미포함 확인. ✓",
+        "F-03": "weightedScore = 100×0.15 + 100×0.20 + 100×0.30 + 100×0.20 + 100×0.15 = 100.00. weights 합 = 1.00. JSON weightedScore=100.00 일치. ✓"
+      }
+    }
+  },
+  "yesCount": 6,
+  "noCount": 0,
+  "naCount": 10,
+  "denominator": 6,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-004→full",
+      "yesCount=6",
+      "noCount=0",
+      "naCount=10",
+      "denominator=6",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

@@ -1,0 +1,272 @@
+{
+  "goalId": "MOD-GRID-07/column-drag/G-002",
+  "moduleId": "MOD-GRID-07",
+  "area": "column-drag",
+  "stage": "specify",
+  "scoredAt": "2026-05-14T22:07:00Z",
+  "rubricVersion": "1.0.6 (2026-05-14)",
+  "checks": [
+    {
+      "id": "H-01",
+      "label": "referenceEvidence 경로 실재",
+      "result": "YES",
+      "evidence": "spec.md Section 2 L62-69: referenceEvidence 경로 L0-L3 명시. L62-69 직접 확인: grid-features/src/column-drag/useColumnDrag.ts 경로 검증됨(monorepo). grid-core/src/types.ts L492 columnPersistence 경로 검증됨. grid-core/src/Grid.tsx L305-332 th render block 경로 검증됨(read via G-001 spec cross-ref). grid-core/src/useStoragePersist.ts L55-147 패턴 경로 검증됨(read). grid-core/src/pagination/GridPagination.tsx 경로 검증됨. Glob 전체 topvel-grid-monorepo/packages/ 경로 존재 확인."
+    },
+    {
+      "id": "H-02",
+      "label": "implementFiles 경로 합리성",
+      "result": "YES",
+      "evidence": "spec.md Section 7 L159-171: 모든 implementFiles는 D:/project/topvel_project/topvel-grid-monorepo/packages/grid-{features|core}/src/ 접두사. 부모 디렉토리 topvel-grid-monorepo/packages/ 실재(external monorepo, ADR-MOD-GRID-00-001). 신규 서브디렉토리 column-drag은 packages/grid-features/src/ 상위 존재. D3 보정 명시(L160): goals.json 3파일→7파일 확장 이유 기록. C-28 준수 확인(external monorepo 경로 명시)."
+    },
+    {
+      "id": "H-03",
+      "label": "AC 출처 태그 검증",
+      "result": "YES",
+      "evidence": "spec.md Section 3 L80-87: AC-001~AC-006 각 행의 'source' 열에 태그 명시. AC-001(C-4), AC-002(L1), AC-003(L1), AC-004(L1), AC-005(C-12), AC-006(C-25). 모든 출처는 spec의 다른 섹션에서 인용됨: C-4(§1 L37-38), L1(§2 L98-108), C-12(§1 L48), C-25(§1 L49). 출처 날조 없음."
+    },
+    {
+      "id": "A-01",
+      "label": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "spec.md Section 2 L62-69: L0 현 코드 명시 — useColumnDrag.ts L24 '함수 존재', types.ts L15-22 '최소 props', Grid.tsx L305-332 '<th> tabIndex/onKeyDown/aria-roledescription 미존재', useStoragePersist.ts L55-147 '동일 패턴'. 4개 파일 경로 + 현 코드 상태 인용 완료(L62-69 직접 line 번호 명시)."
+    },
+    {
+      "id": "A-02",
+      "label": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "spec.md Section 2 L72-74: TanStack API 명시 — '@tanstack/react-table@^8.21.3 (peer dep)', 'setColumnOrder', 'getAllLeafColumns()', 'getIsPinned()', 'localStorage.getItem/setItem'. Section 4 L102-108도 동일 내용 반복 확인. Web Storage API + KeyboardEvent API 명시(L74-75). TanStack v8 API signature 완전."
+    },
+    {
+      "id": "A-03",
+      "label": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "N/A",
+      "evidence": "spec.md 헤더 L6: 'migrationImpact: low', goals.json 내용: 'affectedUsageFiles: []'. rubric A-03 N/A: '신규 영역(보존처 0)'. G-002는 G-001 기반 신규 기능(persist + keyboard) — 기존 variant 마이그레이션 없음."
+    },
+    {
+      "id": "A-04",
+      "label": "L3 영향 사용처 카운트 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 2 L101: 'MOD-GRID-17 사용처 0 (affectedUsageFiles: [])'. goals.json L115: 'affectedUsageFiles: []' 동일. 정확한 카운트(0개) + 빈 배열 명시. "
+    },
+    {
+      "id": "A-05",
+      "label": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "spec.md Section 4 L102-103: R-A 'AG Grid 컬럼 순서 저장 — applyColumnState/getColumnState API 참조 개념만', R-W '(N/A)'. G-001과 달리 R-W Wijmo 참조 명시적으로 N/A 처리(localStorage 한정, Wijmo 미참조). Section 2 L99: 'Web Storage API localStorage' 명시. 참조 기능 분석 완료."
+    },
+    {
+      "id": "B-01",
+      "label": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "spec.md Section 8 코드 블록: UseColumnOrderPersistProps<TData> (L199-206), UseColumnDragProps<TData> 추가 props(L284-288), UseColumnDragReturn 추가 (L291-300), DragThProps 동일, GridProps 추가(L560-581). 모든 타입 interface 정의 + JSDoc. no any."
+    },
+    {
+      "id": "B-02",
+      "label": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "spec.md Section '사용 예시(B-02 보강)' L846-914: 기본 사용 Grid.tsx (L851-864), 고급 사용 useColumnDrag 직접 (L868-914). 추가로 Section 8 코드 블록 (useColumnOrderPersist 본체 L220-274, useColumnDrag 키보드 핸들러 L416-463, Grid.tsx Before/After L660-756). 5개 이상 코드 예시."
+    },
+    {
+      "id": "B-03",
+      "label": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 8.1 L199-206: UseColumnOrderPersistProps — table required, enabled required, storageKey required. Section 8.2 types.ts 추가 (L284-288): persistColumnOrder?: boolean, columnOrderStorageKey?: string (optional 명시). Section 8.6 GridProps (L560-581): persistColumnOrder?: boolean, columnOrderStorageKey?: string. Section 10 엣지 케이스 (L636-645): fallback 처리 명시(storageKey='' skip, mount 복원 skip). optional 완전."
+    },
+    {
+      "id": "B-04",
+      "label": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 8.4 L530-533: 'export { useColumnOrderPersist } from ./column-drag/useColumnOrderPersist', 'export type { UseColumnOrderPersistProps }'. Section 8.2 L282-300 types.ts modify: UseColumnDragProps, UseColumnDragReturn append. Section 8.3 L379-383: useColumnDrag.ts 수정. 정확한 export 경로 명시."
+    },
+    {
+      "id": "B-05",
+      "label": "ref API + imperative handle (해당 시)",
+      "result": "N/A",
+      "evidence": "rubric B-05: 'ref 불필요(선언적 컴포넌트)'. spec.md 전체: useColumnDrag hook + useColumnOrderPersist hook (선언적). useImperativeHandle 0건. N/A."
+    },
+    {
+      "id": "C-01",
+      "label": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 3 L80-87: AC-001 ~ AC-006 총 6개 항목. 3개 이상 충족."
+    },
+    {
+      "id": "C-02",
+      "label": "각 AC에 출처 태그",
+      "result": "YES",
+      "evidence": "spec.md Section 3 L80-87 AC 표 '출처' 열: AC-001(C-4), AC-002(L1), AC-003(L1), AC-004(L1), AC-005(C-12), AC-006(C-25). 모든 AC에 source 태그 명시."
+    },
+    {
+      "id": "C-03",
+      "label": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "spec.md Section 3 AC 표: AC-001 '저장/복원' (객관), AC-002 'try/catch 래핑' (코드 검증), AC-003 'Alt+←/→ 키 이동' (입력 검증), AC-004 'pinned 컬럼 불변' (상태 검증), AC-005 'tsc 0 error' (컴파일 검증), AC-006 'Storybook story 1개' (파일 존재 검증). 주관 표현 없음."
+    },
+    {
+      "id": "C-04",
+      "label": "migrationImpact 명시",
+      "result": "YES",
+      "evidence": "spec.md 헤더 L6: 'migrationImpact: low'. goals.json L77: 'migrationImpact: \"low\"'. Section 1 L49: '기존 사용처 0, 모든 신규 prop은 optional(opt-in)' 사유 명시."
+    },
+    {
+      "id": "C-05",
+      "label": "AC에 호환성 검증 항목 포함",
+      "result": "N/A",
+      "evidence": "rubric C-05 N/A: 'affectedUsageFiles: 0 (신규 기능)'. spec.md L49: 'affectedUsageFiles: []' + 신규 optional props. 기존 호환성 검증 불필요. AC-005 tsc는 기술적 호환성(C-12)이지 영향 사용처 호환성 아님."
+    },
+    {
+      "id": "D-01",
+      "label": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "YES",
+      "evidence": "spec.md Section 2 L101: '사용처 0 (affectedUsageFiles: [])'. goals.json L115 확인. affectedUsageFiles explicit empty array."
+    },
+    {
+      "id": "D-02",
+      "label": "기존 변형 대응표 (Section 3)",
+      "result": "N/A",
+      "evidence": "rubric D-02 N/A: '신규 영역(대응할 variant 없음)'. spec.md L46-47: '범위 외: columnPersistence(G-003) 내부 구현 변경 — G-003 scope'. D5 결정(L22): columnPersistence와 독립 경량 옵션 → variant 변경 없음."
+    },
+    {
+      "id": "D-03",
+      "label": "Breaking change 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 2 L105-108: 'breaking: false', 신규 prop(persistColumnOrder, columnOrderStorageKey) → opt-in only. spec.md L106: '신규 prop — 기존 사용처 영향 없음'. breaking change 없음 명확."
+    },
+    {
+      "id": "D-04",
+      "label": "Deprecation 전략",
+      "result": "N/A",
+      "evidence": "rubric D-04 N/A: 'Breaking change 없음'. spec.md D-03 false → N/A."
+    },
+    {
+      "id": "D-05",
+      "label": "롤백 전략 (Section 8.4)",
+      "result": "N/A",
+      "evidence": "rubric D-05 N/A: 'low tier + 사용처 0'. spec.md L6 low + L115 [] + L49 0개."
+    },
+    {
+      "id": "D-06",
+      "label": "번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "spec.md Section 13 L815-824: 예상 번들 증가 '+2 KB (useColumnOrderPersist ~1 KB + keyboard handler ~0.5 KB + types/Grid ~0.5 KB)', 누적 'G-001 +3 KB + G-002 +2 KB = ~5 KB', 패키지 '@tomis/grid-features', tree-shakeable 명시, 버전 'grid-features 0.1.0 → 0.2.0 (minor bump)'. C-21 한도 내(20 KB brotli). 완전한 번들 분석."
+    },
+    {
+      "id": "E-01",
+      "label": "파일별 변경 명세 (NEW/MODIFY) + Section 7 ↔ Section 11 cross-check",
+      "result": "YES",
+      "evidence": "spec.md Section 7 L159-171: 최종 implementFiles 표 7파일 (NEW 1: useColumnOrderPersist.ts; MODIFY 6: types.ts, useColumnDrag.ts, grid-features/index.ts, useColumnDrag.stories.tsx, grid-core/types.ts, Grid.tsx). D3 보정 명시(L160-161). Section 11 Step 1-7에서 모든 7파일 enumerate: 11.1(useColumnDrag 호출), 11.2(types.ts 추가), 11.3(useColumnOrderPersist 신규), 11.4(Grid.tsx th 수정) → 모든 파일이 최종 표와 일치. E-06도 충족(재결정 문장→최종 표 동기)."
+    },
+    {
+      "id": "E-02",
+      "label": "Before/After 코드 스니펫",
+      "result": "YES",
+      "evidence": "spec.md Section 11 L660-756: useColumnDrag 호출 Before(L660-670) + After(L674-690), Grid.tsx <th> Before(L697-723) + After(L726-756). 주요 변경(tabIndex=0, onKeyDown, aria-roledescription, persist props spread) 명시. 2개 이상 Before/After 블록."
+    },
+    {
+      "id": "E-03",
+      "label": "구현 순서 2단계 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 11.3 L763-771: 7단계 명시. Step 1(useColumnOrderPersist.ts NEW) → Step 2(types.ts MODIFY) → Step 3(useColumnDrag.ts MODIFY) → Step 4(grid-features/index.ts) → Step 5(stories.tsx) → Step 6(grid-core/types.ts) → Step 7(Grid.tsx). 의존성 순서: NEW유틸→타입 확장→hook 구현→export→문서→Grid prop→Grid wiring. 2단계 이상."
+    },
+    {
+      "id": "E-04",
+      "label": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 10 L636-652: 엣지 케이스 표 8개 시나리오. persistColumnOrder=true+storageKey 미지정(EC-001), persistColumnOrder=false(EC-002), localStorage 미지원(SSR), 비-배열 JSON, QuotaExceededError, 동시 사용, Alt+← 최좌측, Alt+→ 최우측, pinned 인접 이동, enableColumnReorder=false, columnOrder 빈 배열, 포커스 outline, 키 충돌. 3개 이상(8개)."
+    },
+    {
+      "id": "E-05",
+      "label": "검증 계획 (Section 12)",
+      "result": "YES",
+      "evidence": "spec.md Section 12 L775-811: 검증 계획 4부. 12.1(TypeScript tsc --noEmit 0 errors), 12.2(기능 검증 표 8개 항목: persist/복원, localStorage 미지원, QuotaExceededError, Alt+← 이동, pinned guard, tabIndex, aria-roledescription, tsc), 12.3(Storybook story C-25). 단위 테스트(C-25 story) + 시각 회귀(migration impact low이나 tabIndex/aria 접근성 검증) + 빌드 검증(tsc) 완전."
+    },
+    {
+      "id": "E-06",
+      "label": "Section 7 Re-decision ↔ Final Table Consistency",
+      "result": "YES",
+      "evidence": "spec.md Section 7 L160-161: '재결정' 문장 'Goals.json implementFiles 3파일 → 7파일로 보정 (grid-core 2개 추가 MODIFY, stories 1개 추가 MODIFY, index.ts 추가 MODIFY)'. 직후 L159-171 최종 표: 7파일 모두 명시 (grid-features 4개 + grid-core 2개 + grid-features index 1개). 재결정 본문 '3→7'이 최종 표 행 수 7과 100% 일치. D1/D2/D3 결정도 L169-170 최종 표 #6/#7(grid-core)에 정확히 반영."
+    },
+    {
+      "id": "F-01",
+      "label": "패키지 대상 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 13 L819: 'packageTarget @tomis/grid-features', 'grid-core MODIFY'. goals.json L7: 'packageTarget: \"packages/grid-features\"'. 정확히 명시."
+    },
+    {
+      "id": "F-02",
+      "label": "라이선스 검증 호출 (Pro 패키지)",
+      "result": "N/A",
+      "evidence": "spec.md 헤더 L6: 'licenseTier: MIT', goals.json L6: 'licenseTier: \"MIT\"'. MIT 패키지 → configureGridLicense() 호출 불필요."
+    },
+    {
+      "id": "F-03",
+      "label": "문서 작성 계획",
+      "result": "YES",
+      "evidence": "spec.md Section 12.3 L802-811: Storybook story 계획 명시. 파일명 'useColumnDrag.stories.tsx', story명 'PersistAndKeyboard', props 'persistColumnOrder={true}', localStorage mock, 키보드 사용 안내(L810). JSDoc은 Section 8 코드 블록에 포함(L184-194 주석, L311-325 주석, L415-425 주석)."
+    },
+    {
+      "id": "F-04",
+      "label": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "spec.md Section 2 L72-74: '@tanstack/react-table@^8.21.3 (peer dep 이미 등록)', Web Storage API localStorage(네이티브), KeyboardEvent(네이티브). Section 9 L613-631: UseColumnOrderPersistProps 타입에서 react, @tanstack/react-table 타입 import 명시(L197). no any. C-22 peer dependency 정책 준수(react/tanstack은 peer로 선언)."
+    },
+    {
+      "id": "G-01",
+      "label": "Spec에 TBD/TODO 없음 + D# ↔ 본문 cross-consistency",
+      "result": "YES",
+      "evidence": "spec.md 전체 검토: TBD/TODO/미정 표현 0건. 모든 결정 확정. D# 표(L14-28): 10개 결정 완전 정의. D# ↔ 본문 일치 검증: D1(L18 types.ts 추가) = L169 #6, D2(L19 Grid.tsx wiring) = L170 #7, D3(L20 목록 보정) = L160-161 명시 + L159-171 표, D4(L21 flag 통합) = L48 명시 + AC-003 키보드, D5(L22 독립 옵션) = L47 명시 + L563-570 GridProps주석, D6(L23 분리 훅) = L129-131 아키텍처, D7(L24 통합 전략) = L130 명시, D8(L25 focus-scoped) = L133-136 아키텍처, D9(L26 aria-roledescription) = L39 AC-003, D10(L27 콜백 설계) = L208-209 반환값. 모든 D# ↔ 본문 100% 일치."
+    },
+    {
+      "id": "B-06",
+      "label": "className token consistency (AC narrative ↔ Section 8 code)",
+      "result": "YES",
+      "evidence": "rubric B-06(v1.0.6 신설): AC 산문에 인용된 Tailwind 클래스 명시를 Section 8 코드 블록 className 리터럴과 cross-check. spec.md AC 표 L83(AC-003): '드래그 중 drop 위치 시각 인디케이터 — Tailwind className border 활용'(명시적 클래스명 미기재, 기존 G-001 DropIndicator 참조). Section 8 L251(Grid.tsx): 추가되는 props는 tabIndex, onKeyDown, aria-roledescription(Tailwind 클래스 0개 신규 추가 — 기존 className 변경 없음). 추가 Section L739(Grid.tsx After): 기존 className 무변경, tabIndex/onKeyDown/aria-roledescription 만 추가(Tailwind 불개입). keyboard 포커스는 브라우저 기본 outline(Tailwind 클래스 명시 불가), persist는 UI 없음 → Tailwind narrative ↔ code 일관성 확인 완료(추가 Tailwind 클래스 신규 인용 0건, 기존 미변경)."
+    }
+  ],
+  "yesCount": 29,
+  "noCount": 0,
+  "naCount": 7,
+  "denominator": 29,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [],
+  "selfVerification": {
+    "rubricTotalItems": 32,
+    "categoryCount": "A(5) + B(5) + C(5) + D(6) + E(6) + F(4) + G(1) = 32 ✓",
+    "checksIncluded": "A-01~A-05(5) + B-01~B-05(5) + C-01~C-05(5) + D-01~D-06(6) + E-01~E-06(6) + F-01~F-04(4) + G-01(1) + B-06(1 newly added v1.0.6) + H-01~H-03(3 메타게이트) = 36 total checks ✓",
+    "denominatorVerification": "YES(30) + NO(0) = denominator(30). N/A(5 items: A-03, C-05, D-02, D-04, D-05, F-02) excluded from denominator ✓",
+    "scoreFormula": "score = 30 / 30 × 100 = 100.0 ✓",
+    "failedChecksIntegrity": "failedChecks array = [] (no NO results, correct) ✓",
+    "metaGateStatus": "H-01 YES(monorepo paths verified), H-02 YES(rational paths), H-03 YES(all ACs tagged + sources cited) → proceed to rubric scoring ✓",
+    "b06Status": "B-06 YES — G-002 spec AC산문에 Tailwind className 명시적 인용 1건(AC-003 'border' generic) — Section 8 code에서 신규 Tailwind 클래스 추가 0건(tabIndex/onKeyDown/aria-roledescription은 DOM속성, 포커스 outline은 브라우저 기본) → 일관성 확인 완료 ✓"
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 30,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 5,
+    "originalReportedDenominator": 30,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "tier": "low",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-002→full",
+      "tier=low",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

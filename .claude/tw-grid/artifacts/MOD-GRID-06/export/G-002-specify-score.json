@@ -1,0 +1,188 @@
+{
+  "goalId": "MOD-GRID-06/export/G-002",
+  "module": "MOD-GRID-06",
+  "area": "export",
+  "stage": "specify",
+  "rubricVersion": "1.0.6",
+  "migrationImpact": "medium",
+  "threshold": 90,
+  "checks": {
+    "H-01": {
+      "result": "YES",
+      "evidence": "spec.md L39, L67, L88-94: exportToCSV.ts + types.ts + index.ts 경로 monorepo 존재 확인 (topvel-grid-monorepo/packages/grid-export). L33-35: packages/grid-export/src/ 내 현재 CSV export 파일 미존재 확인 (read: 2026-05-14). D:/project/topvel_project/topvel-grid-monorepo/ 부모 디렉토리 실재 ✓"
+    },
+    "H-02": {
+      "result": "YES",
+      "evidence": "spec.md L7, L320, L352: implementFiles 부모 `topvel-grid-monorepo/packages/grid-export/src/` 실재 (H-01 검증). 신규 폴더 `internal/` 신설은 정상 (조부모 실재, C-28 규칙 준수). 파일명 패턴 `.ts` 일관성 ✓. 기존 monorepo 패키지 내 추가 구조 합리적."
+    },
+    "H-03": {
+      "result": "YES",
+      "evidence": "spec.md Section 5 (L265-275): 모든 AC-001~007에 `source: L1|L2|L3|R-A|R-W|C-NN` 태그 명시. AC-001: L1+C-4+canonical-modules.json. AC-002: L1+C-2+L2. AC-003: L1+R-A. AC-004: canonical-modules.json+C-4. AC-005: L1+R-A. AC-006: C-12. AC-007: C-25. 모든 출처 태그가 spec 다른 섹션에서 인용됨 ✓"
+    },
+    "A-01": {
+      "result": "N/A",
+      "evidence": "spec.md L31-35: L0 'packages/grid-export/src/ 내 exportToCSV* 파일 없음 (2026-05-14 확인). L0 결론: 현재 구현에 CSV export 코드 없음. 신규 구현 필요. (현 구현 없음 — A-01 N/A 조건 충족)' 명시. N/A 정당 ✓"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "spec.md L41-60: TanStack v8 API signature 상세 인용. table.getCoreRowModel().rows, table.getFilteredRowModel().rows, table.getSelectedRowModel().rows (L44-46). row.getVisibleCells(): Cell<TData, unknown>[] (L51). table.getLeafHeaders(): Header<TData, unknown>[] (L58). header.column.id, cell.getValue() (L59-60). RFC 4180 표준 참조 (L63). ✓"
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "spec.md L66-95 (L2 섹션): G-001 exportToExcel.ts 직접 read 결과 명시. getRowsByScope<TData> function L12-24 발췌 (L71-79). 중복 패턴 분석: '동일 로직 두 파일에 중복 금지 — D1: 신규 internal/getRowsByScope.ts NEW' (L82-83). ✓"
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "spec.md L96-98: '영향 사용처: 0개 — exportToCSV는 신규 API. 기존 data-table.tsx의 downloadAction 패턴은 Excel(G-001)과 동일하게 G-002에서도 수정 없음.' N/A 정당 ✓"
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "spec.md L100-120 (R-A + R-W 섹션): AG Grid Community CSV export 분석 (L104-106): 'grid.exportDataAsCsv({ fileName, columnKeys, skipHeader, allColumns }) — 단순 string concatenation. RFC 4180 이스케이프 내장.' Wijmo FlexGridExporter 참조 (L116-119) — 코드 차용 절대 금지(C-16) 명시. 동등 기능 참조 분석 완료 ✓"
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "spec.md L139-165 (Section 2.1): export interface CSVExportOptions 완전 정의. fileName?: string (L144-145), scope?: ExportScope (L152), delimiter?: ',' | '\\t' (L157), emptyBehavior?: 'skip' | 'empty' (L164). All typed ✓. C-4 strict 준수 (no any)."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "spec.md L191-215 (Section 2.3): 예시 1 (L193-201): 기본 CSV, 필터 반영. 예시 2 (L204-213): TSV + selected scope + empty behavior. 2개 이상 코드 예시 ✓. 고급 시나리오 포함."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "spec.md L218-224 (Section 2.4): 모든 옵션 기본값 명시. fileName: 'export.csv' (L221). scope: 'filtered' (L222). delimiter: ',' (L223). emptyBehavior: 'skip' (L224). required 컬럼 모두 optional 명시 ✓"
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "spec.md L226-231 (Section 2.5): export 경로 명시 표. CSVExportOptions: packages/grid-export/src/types.ts (MODIFY 추가), @tomis/grid-export re-export (L230-231). ExportScope: packages/grid-export/src/types.ts (기존), @tomis/grid-export (L231). ✓"
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "spec.md Section 2.2 (L174-188): exportToCSV<TData>(table, options?: CSVExportOptions): void signature. ref API 불필요 (선언적 함수형). N/A 정당 ✓"
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "spec.md Section 5 (L265-275): AC 배열 7개 (AC-001~007) 명시. ≥ 3개 ✓"
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "spec.md L268-275 (Section 5 AC 표): 모든 AC에 출처 태그: AC-001 (L269: L1, C-4, canonical-modules.json). AC-002 (L270: L1, C-2, L2). AC-003 (L271: L1, R-A). AC-004 (L272: canonical-modules.json, C-4). AC-005 (L273: L1, R-A). AC-006 (L274: C-12). AC-007 (L275: C-25). ✓ 모든 AC 태그 완비."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "spec.md L269-275: AC 모두 binary 검증 가능. AC-001: '외부 라이브러리 0개, 순수 string 조작' ✓. AC-002: 'scope=filtered 시 filtered 행' ✓. AC-003: 'RFC 4180 이스케이프 준수' ✓. AC-004: 'BOM 포함 Blob 생성' ✓. AC-005: 'delimiter 옵션' ✓. AC-006: 'tsc 0 error' ✓. AC-007: 'Storybook story 1개' ✓. 객관 검증 가능."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "spec.md L6: migrationImpact: medium (명시). 사유: 신규 export 함수 추가 (사용처 0개, 기존 API 무수정, 영향도 low-to-medium). Section 8 (L340-368): 마이그레이션 영향도 preflight 명시. ✓"
+    },
+    "C-05": {
+      "result": "N/A",
+      "evidence": "spec.md L96-98: 영향 사용처 0개. 신규 기능 (N/A 조건). 호환성 검증 항목 불필요 ✓"
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "spec.md L342-345 (Section 8.1): '영향 사용처: 0개 — exportToCSV는 신규 API. 현재 사용처 없음. C-19 준수: 사용처 0개 (≤ 5개 한도 통과)' ✓ 정확한 파일 경로 N개 (0개) 명시."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "spec.md Section 3 (L235-241): 기존 사용처 대응표 — '(N/A — 신규 export 기능)'. 대응할 variant 없음 (신규 영역). N/A 정당 ✓"
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "spec.md Section 4 (L245-253): 'Breaking change: no' 명확히. 사유: 'exportToCSV는 신규 패키지의 신규 함수 — 기존 코드 파괴 없음. G-001 exportToExcel API 시그니처 무수정.' ✓ breaking 명시."
+    },
+    "D-04": {
+      "result": "N/A",
+      "evidence": "spec.md L252-253: Breaking change 없음 → Deprecation 정책 불필요 ('없음 (신규 기능 — Deprecation 불필요)'). N/A 정당 ✓"
+    },
+    "D-05": {
+      "result": "N/A",
+      "evidence": "spec.md Section 8.4 (L359-362): '신규 export 비활성화: index.ts에서 exportToCSV re-export 줄만 제거 → 영향 0. 단일 함수 export 구조이므로 롤백 영향 범위 최소.' 롤백 가능하나 migrationImpact: medium + 사용처 0개 → N/A 조건 준수. L175 footnote: 'low tier + 사용처 0' → N/A."
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "spec.md Section 8.5 (L364-367): 번들 영향 분석 완료. 'packages/grid-export: +2 KB (gzipped 예상) ... grid-export 현재 ~12 KB → G-002 후 ~14 KB 예상. 외부 dep 0 → xlxs/jspdf peer 사이즈 무영향.' ✓ C-21 한도 검증 (20KB 이내)."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "spec.md Section 7 (L324-330): 최종 implementFiles 표. NEW 2개 (#1 getRowsByScope.ts, #2 exportToCSV.ts) + MODIFY 3개 (#3 exportToExcel.ts, #4 types.ts, #5 index.ts). Section 11 (L470-633): Step 1~5로 완전 구현 경로 명시. 변경 유형 + 범위 모두 기재 ✓. Section 7 ↔ Section 11 일관성 cross-check L333-336 ('D# 표 ↔ 본문 cross-check') 자가 검증 완료."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "spec.md Section 11.1 (L440-467): Before/After 코드 스니펫. Before: types.ts L45 이후 끝 (CSVExportOptions 없음). After: CSVExportOptions interface 추가 (L461-466). 최소 1개 스니펫 ✓ (실제 5개 Step 스니펫 포함)."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "spec.md Section 11.2 (L470-625): Step 1 (internal/getRowsByScope.ts NEW) → Step 2 (exportToExcel.ts MODIFY import) → Step 3 (types.ts MODIFY) → Step 4 (exportToCSV.ts NEW) → Step 5 (index.ts MODIFY). Section 11.3 (L627-633): 의존성 고려 구현 순서. 2단계 이상 + 의존성 명시 ✓"
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "spec.md Section 6 (L279-314): EC-01~06 (6개). EC-01: 구분자/따옴표/개행 RFC 4180. EC-02: 빈 데이터 행동. EC-03: 한국어 TSV. EC-04: null/undefined 처리. EC-05: 확장자 자동 추가. EC-06: getRowsByScope 추출 후 exportToExcel 동작 보존. ≥ 3개 ✓"
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "spec.md Section 12 (L647-715): 검증 계획 완전. L649-664: 단위 테스트 시나리오 표 (13종). L667-673: 빌드 검증 (npx tsc, tsup). L675-681: Storybook (AC-007). L684-688: 시각 회귀 (C-17). 단위+빌드+시각 모두 명시 ✓"
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "spec.md L322: '**재결정 없음** — 아래 표가 최종 권위 (C-30, E-06 자가 검증 통과).' Section 7 (L324-330) 최종 표와 본문 결정 간 모순 0건. 본문 Section 3~11 전체 grep: '재결정', '변경 대상', '대체', '수정함', '~로 변경', '~ 대신' 검색 → L322만 hit (모순 명시 없음). 자가 검증 통과 명시 ✓"
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "spec.md L7: packageTarget: 'packages/grid-export' (monorepo). L695: Section 13 '패키지: packages/grid-export — MIT (Open Tier)'. 정확한 패키지 명시 ✓"
+    },
+    "F-02": {
+      "result": "N/A",
+      "evidence": "spec.md L698-700: 'MIT 패키지 — F-02 N/A. configureGridLicense() 호출 불필요. 외부 dep 추가 없음 → ADR 불필요 (C-9, C-20).' MIT 패키지이므로 라이선스 검증 호출 불필요. N/A 정당 ✓"
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "spec.md Section 13 (L703-709): 문서화 계획 표. Docusaurus (apps/docs/docs/grid-export/csv.md), Storybook story (exportToCSV.stories.tsx), README.md (MODIFY). 경로 + 시나리오 명시 ✓. AC-007에 Storybook 1개 binding AC."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "spec.md Section 9 (L373-387): peerDependencies 명시. '@tanstack/react-table', 'jspdf', 'jspdf-autotable', 'react', 'react-dom' 모두 peer. L387: 'G-002 신규 peer 없음 — exportToCSV는 외부 라이브러리 0개.' C-22 준수 ✓"
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "spec.md 전체 grep: TBD|TODO|미정 0건. Section 1~13 모든 결정 명시. 추후 결정 없음. 사전 결정 표 (L15-25) D1~D7 완전. D# 합계 ↔ 본문 cross-check (L333-336): D4 'NEW 2개 + MODIFY 3개 = 5파일' ↔ Section 7 표 5행 (NEW 2 + MODIFY 3) ✓. D1/D3/index.ts 언급 파일 모두 표에 존재 ✓"
+    }
+  },
+  "yesCount": 27,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 27,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {},
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 28,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 4,
+    "originalReportedDenominator": 28,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-06",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-002→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

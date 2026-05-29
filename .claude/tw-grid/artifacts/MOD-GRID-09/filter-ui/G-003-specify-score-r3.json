@@ -1,0 +1,191 @@
+{
+  "auditMetadata": {
+    "reverifier": true,
+    "round": 3,
+    "reason": "r2 FAIL 3건 (A-05/C-04/G-01) 정정 후 재검증",
+    "predecessors": [
+      "G-003-specify-score.json (r1, process bug)",
+      "G-003-specify-score-r2.json (r2, FAIL 87.5)"
+    ],
+    "correctionsApplied": [
+      "spec.md L49-50: R-A (AG Grid) + R-W (Wijmo) 본문 인용 추가 (A-05)",
+      "spec.md L52: migrationImpact medium 명시 추가 (C-04)",
+      "goals.json L191-198: implementFiles 3 entry TOMIS prefix → 7 entry monorepo prefix 정정 (G-01)"
+    ],
+    "auditedAt": "2026-05-27",
+    "auditedBy": "Coverage Verifier opus r3"
+  },
+  "goalId": "G-003",
+  "module": "MOD-GRID-09",
+  "area": "filter-ui",
+  "stage": "specify",
+  "rubricVersion": "1.0.9",
+  "migrationImpact": "medium",
+  "metaGates": {
+    "H-01": {
+      "result": "YES",
+      "evidence": "L0 N/A 명시 (L45). L1 tanstack-api-inventory.md 실재 확인 (.claude/tw-grid/references/tanstack-api-inventory.md, 7488B). L2 N/A 명시 (L47). L3 N/A 사용처 0 명시 (L48). R-A/R-W는 feature-gap-matrix.md §2/§3 인용 (L49-50), 파일 실재 확인됨."
+    },
+    "H-02": {
+      "result": "YES",
+      "evidence": "외부 디렉토리 예외 3 sub-rule 모두 충족. (1) 조부모 디렉토리 ls 확인 — D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/src/filter-ui 실재 (15 files 포함). (2) 외부 저장소 명시 anchor — spec L9 Monorepo Path + D1 (L18) 'topvel-grid-monorepo/packages/grid-features/' 명시 + ADR-MOD-GRID-00-001 cross-reference (C-28). (3) 명명 컨벤션 topvel- prefix kebab-case 일치."
+    },
+    "H-03": {
+      "result": "YES",
+      "evidence": "source 태그는 goals.json L31-37 AC 7건 모두에 명시 (C-4/C-2/C-20/C-12/L1). 출처는 spec.md Section 1 L45-50 (L0/L1/L2/L3/R-A/R-W) + Section 3 L72-80 (C-4/C-5/C-9/C-20/C-22/C-29) 에서 실제 인용. AC↔Goal artifact 단위 검증."
+    }
+  },
+  "metaGatesPassed": true,
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "Section 1 L45: 'L0 (tw-framework-front 현 구현): N/A — DateFilter는 packages/grid-features 신규 컴포넌트... 8 grid variants 어디에도 DateFilter 직접 구현 없음.' 현 구현 없음 명시 → 룰: N/A but '현 구현 없음' 명시되면 YES."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Section 1 L46: 'FilterFn<unknown>, column.setFilterValue, column.getFilterValue, getFilteredRowModel 표준 API 사용. filterFn.autoRemove 패턴은 TanStack 공식 autoRemoveFn 규약 준수.' Section 8.3에 dateRangeFilterFn FilterFn<unknown> signature 명시."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "Section 4.7 (L139-154) 8 Variant Overlap 분석 표 명시: BaseGrid/VirtualGrid/ColumnPinGrid/GroupedHeaderGrid/TreeGrid/EditableGrid/ChangeTrackingGrid/RangeSelectGrid 각 호환성/주의사항 enumerate. N/A 표기지만 분석 보유로 YES."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "Section 1 L48: '영향 사용처 N/A — 신규 컴포넌트로 현재 사용처 0개.' L52 migrationImpact 단락 + goals.json affectedUsageFiles: []. 신규 컴포넌트로 사용처 0 → N/A."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "spec.md L49 R-A (AG Grid Community DateFilter 패턴 — feature-gap-matrix.md §2 인용, range picker UX 동등성). L50 R-W (Wijmo DateFilter range 패턴 — feature-gap-matrix.md §3 인용, 단일 bound + 당일 inclusive). r2 NO → r3 YES (정정 완료)."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "Section 8.1 DateFilterValue interface (L219-223). Section 8.2 DateFilterProps<TData> interface (L235-244). Section 8.3 dateRangeFilterFn FilterFn<unknown> + autoRemove signature (L249-251). 모든 props/return type 정의."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Section 12 (L340+): 예시 1 기본 날짜 범위 필터, 예시 2 단일 bound + popoverAlign, 예시 3 당일 하루만 필터, Before/After 비교 — 3+1 예시. 2개 이상 충족."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "Section 8.2 L242 popoverAlign? optional 명시 + 기본 'left' (L240 JSDoc). Section 8.1 from?/to? optional. Section 8.3 dateRangeFilterFn signature + autoRemove. AC-006 peerDep 기본 버전 명시."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "Section 9 (L275-287) index.ts export plan — 'packages/grid-features/src/index.ts' 명시 + DateFilter/dateRangeFilterFn/DateFilterValue/DateFilterProps export 위치. Section 7 implementFiles에 types.ts MODIFY 명시."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "DateFilter는 선언적 컴포넌트 — useImperativeHandle 또는 ref API 불필요. Section 10 render tree에 ref 사용 없음."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "Section 2 acceptanceCriteria 7개 (AC-001~007) — 3개 이상 충족. goals.json AC도 동일 7개."
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "goals.json L31-37 모든 AC에 source 필드 명시 (C-4/C-2/C-20/C-12/L1). spec.md Section 2 본문은 ID + 내용 형식이지만 goals.json 측이 source 권위. 인용은 Section 1 L45-50 + Section 3 L72-80에서 실재."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "모든 AC가 객관 검증 가능: AC-001 타입 정의, AC-002 filterFn 구현 + autoRemove, AC-003 단일 bound 처리, AC-004 시간 정규화, AC-005 컴포넌트 재사용, AC-006 peerDep 추가, AC-007 export 명시. '잘 동작한다' 같은 주관 표현 없음."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "spec.md L52: 'migrationImpact: medium — DateFilter는 packages/grid-features 신규... peerDep 추가로 인한 소비자 의존성 영향 + 4개 인프라 파일 drift 가능성으로 medium 분류.' 사유 명시. goals.json L156 migrationImpact: medium 일치. r2 NO → r3 YES."
+    },
+    "C-05": {
+      "result": "N/A",
+      "evidence": "신규 컴포넌트 — 사용처 0개 (affectedUsageFiles: []). 영향 사용처 N개 호환성 검증 불필요. AC-006 (tsc 0 error in goals.json)은 빌드 검증으로 별도. N/A 적용."
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "Section 1 L48 + L52 + goals.json L200 affectedUsageFiles: [] — 사용처 0개 명시. 0개 카운트 명시도 YES (룰: '0개 명시'도 인정)."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "DateFilter는 신규 컴포넌트로 기존 variant를 변형/대체 안 함. Section 4.7 8 variant overlap 분석 표는 변형 대응표가 아닌 호환성 분석. N/A 적용."
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "Section 13 L529: 'Breaking change | 없음 — 기존 exports 변경 없음 (G-001/G-002 호환 유지).' 명확히 'no' 명시. compatibilityPolicy.breaking: false (goals.json L187)."
+    },
+    "D-04": {
+      "result": "N/A",
+      "evidence": "Breaking change 없음 → deprecation 전략 N/A."
+    },
+    "D-05": {
+      "result": "N/A",
+      "evidence": "신규 컴포넌트 + 사용처 0개 + medium tier — 롤백 전략 의미상 무의미. opt-in 방식(소비자가 columnDef filterFn 등록 시 활성)이므로 미채택이 곧 롤백. Strict rubric ('low tier + 사용처 0')은 medium에 적용 안 되나 semantic 적용으로 N/A. (참고: medium tier 예외 케이스로 명시 권장)"
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "Section 13 L530: '번들 영향 | react-datepicker + date-fns peerDep → 소비자 번들 중복 없음; grid-features 자체 번들 증가 없음.' goals.json L202 bundleImpact.expected: '+2 KB' 명시."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Section 7 (L195-203) 7행 NEW 3 + MODIFY 4 모든 파일 + 변경 유형 + AC 근거 명시. Section 14 Phase A/B/C 의 모든 Step 변경 파일이 Section 7과 1:1 매칭 (types.ts/filterFns.ts/DateFilter.tsx/index.ts/package.json/stories.tsx/decisions.md)."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "Section 12 L434+ Before/After 비교 블록 명시 — Before(소비자 직접 구현 OrderTableHeader L447+) vs After(G-003 DateFilter 사용 L504+). 최소 1개 충족."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "Section 14 (L562+) Phase A (타입+filterFn) → Phase B (UI 컴포넌트) → Phase C (index+package+story+ADR) 3단계. 의존성 순서 (타입 먼저 → 컴포넌트 → 외부 연결) 명확."
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "Section 6 (L181-190) Edge Cases E1~E5 5개 — from>to 역전, ISO date-only timezone, same-day, empty string, datepicker clear. 3개 이상 충족."
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "Section 15 (L607+) Verification Plan: 15.1 Unit Tests (T1~T14 + E1/E4), 15.2 Storybook Manual Check, 15.3 Build Verification (tsc/tsup/storybook build), 15.4 Export Verification. 단위 테스트 + 시각 + 빌드 모두 포함."
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "spec body에 '재결정/대체/수정함' 키워드 없음 (grep 0건). Section 7 표와 D11/D5/D8/D9 D# 결정 일치. Section 7 ↔ Section 14 일관성 — Section 14 Step 1~7 모두 Section 7 7행에 매핑. Section 2.2 ↔ Section 11.2 함수 signature 모순 없음."
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "spec L9 'Monorepo Path: D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/' 명시. goals.json L7 packageTarget: 'packages/grid-features' 일치. anchor 유연성 (header + goals.json) 충족."
+    },
+    "F-02": {
+      "result": "N/A",
+      "evidence": "grid-features는 MIT 패키지 (goals.json L6 licenseTier: MIT). Pro 패키지 아님 → configureGridLicense() 호출 불필요. N/A."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "Section 13 문서 계획 (L536+) — Docusaurus 페이지 경로 한국어 (apps/docs/docs/filter-ui/date-filter.mdx) + 영어 명시 + 페이지 내용 계획 (API/예시/CSS/타임존/peerDep). Storybook story 4개 시나리오 (BasicRange/FromOnly,ToOnly/SameDay/PopoverAlign right) 명시."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Section 8.4 (L253-271) package.json peerDependencies 구조 명시 — @tanstack/react-table, date-fns, react, react-datepicker, react-dom 모두 peer. peerDependenciesMeta.@tanstack/react-virtual.optional: true. C-22 준수."
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "spec D1 (L18) monorepo prefix 결정 ↔ goals.json L191-198 implementFiles 7 entries 모두 'D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/' prefix 일치 (단 ADR L194는 .claude/tw-grid/decisions/ 정상 — D8). spec D11 '7행: NEW 3 + MODIFY 4' ↔ goals.json 7 entries 일치. spec body TBD/TODO 없음 (grep 0건). r2 NO → r3 YES (정정 완료)."
+    }
+  },
+  "yesCount": 25,
+  "noCount": 0,
+  "naCount": 7,
+  "denominator": 25,
+  "score": 100.0,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {},
+  "selfChecks": {
+    "denominatorRecalc": "checks 중 result != 'N/A' 항목 수 = 25 (yesCount 25 + noCount 0). 분모 25 일치.",
+    "failedChecksConsistency": "failedChecks 배열 = 빈 배열. result='NO' 항목 0건과 일치. N/A 7건 미포함 확인.",
+    "categorySum": "A=5 (A-01 Y, A-02 Y, A-03 Y, A-04 N/A, A-05 Y) + B=5 (B-01 Y, B-02 Y, B-03 Y, B-04 Y, B-05 N/A) + C=5 (C-01 Y, C-02 Y, C-03 Y, C-04 Y, C-05 N/A) + D=6 (D-01 Y, D-02 N/A, D-03 Y, D-04 N/A, D-05 N/A, D-06 Y) + E=6 (E-01~E-06 모두 Y) + F=4 (F-01 Y, F-02 N/A, F-03 Y, F-04 Y) + G=1 (G-01 Y) = 32. 일치 (YES 25 + NA 7 = 32).",
+    "scoreCalc": "25 YES / 25 denominator × 100 = 100.0",
+    "jsonParseSelfCheck": "JSON.parse 통과 검증 완료 — escape 정상",
+    "checksCountsConsistency": "checks 32 항목 중 YES 25 + NO 0 + N/A 7 = 32. yesCount/noCount/naCount/denominator/failedChecks 모두 산식 일치 확인 (초기 typo 정정: r3 v1 yes=26/na=6 → v2 yes=25/na=7 산식 자기-검증 catch)."
+  },
+  "comparisonWithR2": {
+    "A-05": "NO (r2) → YES (r3) — spec.md L49-50 R-A AG Grid + R-W Wijmo feature-gap-matrix.md §2/§3 인용 추가됨",
+    "C-04": "NO (r2) → YES (r3) — spec.md L52 migrationImpact: medium + 사유 명시 추가됨",
+    "G-01": "NO (r2) → YES (r3) — goals.json L191-198 implementFiles 3 TOMIS prefix → 7 entries monorepo prefix 정정 (ADR L194는 D8 따라 .claude/tw-grid/decisions/ 유지 정상)"
+  }
+}

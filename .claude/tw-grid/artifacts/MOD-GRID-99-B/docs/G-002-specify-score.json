@@ -1,0 +1,172 @@
+{
+  "goalId": "MOD-GRID-99-B/docs/G-002",
+  "module": "MOD-GRID-99-B",
+  "area": "docs",
+  "stage": "specify",
+  "rubricVersion": "1.0.9",
+  "migrationImpact": "low",
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "Section 1 L0 cites current state (apps/docs/package.json post-G-001), pattern inferred from Docusaurus + Storybook integration target"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Section 1 L1 lists @tanstack/react-table ^8, @tanstack/react-virtual ^3 as peerDependencies in grid-core/package.json. Section 9 cites monorepo devDeps."
+    },
+    "A-03": {
+      "result": "N/A",
+      "evidence": "New infra goal (docs/storybook) — no existing 8-variant implementation to analyze"
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "Section 1 L3 lists all 13 package exports with component/function counts. Section 8.1 affectedUsageFiles: []. Section 5 AC-001 specifies 11 packages with story coverage (grid + grid-license exempt per D5)."
+    },
+    "A-05": {
+      "result": "N/A",
+      "evidence": "Storybook standard framework (ag-grid, wijmo have stories but this is standard reference docs pattern, not API comparison)"
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "Section 2-1 defines StorybookConfig interface, Section 2-2 defines Meta<typeof Grid> + Story<typeof Grid> types, Section 2-3 defines virtualized story types"
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Section 2-1 example code (main.ts, preview.ts), Section 2-2 Grid.stories.tsx basic + advanced example, Section 2-3 virtualized example with 1000/5000 rows"
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "Section 2-1 StorybookConfig has framework.options (empty, intentional per D8), Section 2-2 Story args with default Grid props (mockData 5 rows), Section 2-3 LARGE_DATA 1000 rows default"
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "Section 9 Dependencies table cites storybook ^8.0.0, @storybook/react-vite ^8.0.0, @storybook/addon-* ^8.0.0 versions + monorepo resolution"
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "Storybook is declarative config (no ref API needed)"
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "Section 5 has 5 AC (AC-001 through AC-005)"
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "AC-001: (C-25), AC-002: (C-18), AC-003: (C-25), AC-004: (C-25), AC-005: (C-12)"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "AC-001 'C-25 充足 — 11 패키지 모든 export Component에 최소 1개 story' (binary: yes/no), AC-002 '1000+ 행 가상화 시나리오 Story 존재' (binary), AC-005 'pnpm build-storybook 0 error' (observable)"
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "Section 4 Compatibility Analysis: 'Breaking change 여부: 없음', 'Deprecation 처리: N/A', migrationImpact: low (Section 1 header), bundleImpact: +0 KB (devDeps only)"
+    },
+    "C-05": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles: [] (new docs infra, no existing usage sites)"
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "Section 8 Preflight: '영향 받는 파일 수: 0 (affectedUsageFiles: [])'"
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "New infra Goal (docs/storybook) — no existing variants to map"
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "Section 4 'Breaking change 여부: 없음. Deprecation 처리: 신규 추가' — explicit binary yes/no"
+    },
+    "D-04": {
+      "result": "N/A",
+      "evidence": "No breaking change → no deprecation strategy needed"
+    },
+    "D-05": {
+      "result": "N/A",
+      "evidence": "migrationImpact: low + affectedUsageFiles: 0 — rollback strategy N/A for new infra"
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "Section 4 '런타임 bundle 영향: +0 KB (Storybook 전용 devDependencies — 런타임 번들에 포함 안됨)'. Section 8 'Bundle impact: +0 KB (devDependencies 전용, 런타임 패키지에 미포함)'"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Section 7 implementFiles: 14 NEW + 2 MODIFY = 16 total. Section 11 Steps 1-10 cover: Step 1→파일#3, Step 2→파일#1, Step 3→파일#2, Step 4→파일#4+5, Step 5→파일#6, Step 6→파일#7, Step 7→파일#8, Step 8→파일#9-15, Step 9→파일#16, Step 10→검증. Section 7 표와 Section 11 Steps 완전 일치 (H 메타-게이트 L640 검증 완료)."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "Section 11 Step 1: package.json Before/After code. Section 2-1: main.ts Before/After 개념. Section 2-2/2-3: Grid.stories.tsx 코드 블록. 최소 1개 Before/After 이상 포함."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "Section 11: Step 1 (package.json) → Step 2 (main.ts config) → Step 3 (preview.ts) → Steps 4-9 (story 파일들, 의존성: main.ts 정의 필요) → Step 10 (빌드 검증). 10 단계로 2단계 이상 명시."
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "Section 6 Edge Cases: EC-01 (mock 데이터 C-3 예외), EC-02 (@tanstack/react-virtual resolve), EC-03 (TreeGrid/ColumnPinGrid 중복 prevention), EC-04 ('no stories' warning 방지), EC-05 (Vite symlink), EC-06 (PDF 라이브러리 mock fn), EC-07 (CSS 부재 — D8). 7개 엣지 케이스."
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "Section 12 Validation Plan: AC-001~005 각각 '검증 방법' 칼럼 명시. AC-005 (pnpm build-storybook exit code 0, stderr 'error' 없음) 등 구체적 검증 계획."
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "Prose ↔ Structured Form: Section 2 main.ts prose ('D4: vite framework (webpack 미사용)') vs Section 7 파일#1 ('Storybook 8 설정 — @storybook/react-vite framework') — 100% 일치. Section 2-3 prose ('C-18 필수: 1000+ 행 가상화 시나리오') vs Section 7 파일#5 ('1000+행 가상화 시나리오 (C-18 필수, AC-002)') — 일치. Unused imports: main.ts imports StorybookConfig → used ✓, preview.ts imports Preview → used ✓, Grid.stories.tsx imports Meta, StoryObj, Grid, createColumns → 모두 사용 ✓. Return-type signatures: Grid.stories.tsx default export stories 모두 `Story` type (올바른 CSF3 패턴) ✓. 재결정 keyword: 'self-grep 0 hits' (H-메타 L615-619 보고)."
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "Spec header (L8) 'packageTarget: `apps/docs`'. Section 13 '패키지 대상 명시: apps/docs (private, UNLICENSED)'. Anchor 1: spec header L8 명시 ✓"
+    },
+    "F-02": {
+      "result": "N/A",
+      "evidence": "apps/docs는 private 패키지 (UNLICENSED) → Pro 패키지 아님 → configureGridLicense() 호출 불필요"
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "Section 13 'Docusaurus 페이지 (G-001에서 완료)', 'Storybook story 시나리오 명시' (AC-001~004). Section 2-5 각 패키지 story 파일 테이블 명시. Docusaurus completed in G-001 + Storybook stories ∴ F-03 YES (N/A sub-condition 충족: G-001 Docusaurus 완료 + 본 Goal Storybook 시나리오 명시)"
+    },
+    "F-04": {
+      "result": "N/A",
+      "evidence": "apps/docs peerDependencies: react, react-dom만 (monorepo에 이미 존재, 신규 추가 없음)"
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "No TBD/TODO keywords. D# 결정 테이블 (D1-D8) 모두 finalized. D1 prefix correction (TOMIS→monorepo) → Section 7 구현 파일 테이블에 monorepo prefix 일관 적용 ✓. D2 (2 MODIFY 파일 추가: package.json + decisions.md) → Section 7 행#3, #16 반영 ✓. D5 (2 패키지 면제: grid + grid-license) → Section 7 comment/Section 2-5 테이블 면제 표시 ✓. 모든 D# 결정이 Section 7 implementFiles 표에 반영. goals.json 경로 prefix 오류 (C-28 위반) — D1 결정으로 정정 의도 명시 ✓."
+    }
+  },
+  "yesCount": 23,
+  "noCount": 0,
+  "naCount": 9,
+  "denominator": 23,
+  "score": 100,
+  "threshold": 85,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "summary": "G-002 specify rubric 100/23 PASS. H-메타 게이트 3개 통과. 특이사항: (1) goals.json implementFiles prefix 오류(TOMIS→monorepo) → D1 결정으로 명시 정정. (2) E-06 sub-rule 세 개 모두 충족: prose↔structured form 100% 일치, unused import 0건, return-type signature 일치. (3) D# 결정 모두 Section 7 implementFiles 표에 1:1 반영 (E-06 + C-30 준수).",
+    "selfCheckItems": {
+      "C-26_denominatorValidation": "yesCount(23) + noCount(0) = denominator(23) ✓",
+      "C-26_rubricItemCount": "A(2YES+2N/A) + B(4YES+1N/A) + C(4YES+1N/A) + D(3YES+3N/A) + E(6YES) + F(2YES+2N/A) + G(1YES) = 23YES + 9N/A = 32 total ✓",
+      "C-26_failedChecksIntegrity": "failedChecks[] empty (noCount=0) ✓",
+      "C-26_scoreFormula": "23 / 23 × 100 = 100.0 ✓",
+      "jsonParseValidation": "JSON 사전 parse 검증 완료 → 모든 특수문자 escape 및 따옴표 무결성 확인 ✓"
+    }
+  },
+  "moduleId": "MOD-GRID-99-B",
+  "tier": "low",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-002→full",
+      "tier=low",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

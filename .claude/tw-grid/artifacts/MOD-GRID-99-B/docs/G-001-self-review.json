@@ -1,0 +1,124 @@
+{
+  "goalId": "MOD-GRID-99-B/G-001",
+  "completedAt": "2026-05-15",
+  "summary": "Docusaurus + TypeDoc 13-package API reference 자동화 인프라 — specify 100 / implement 100 / verify 100 PASS. C-5 vs framework-required CSS 충돌이 spec 단계에서 미검출 → Implementer 자율 drift 적용으로 사후 정정된 패턴 식별.",
+  "scores": {
+    "specify": 100.0,
+    "implement": 100.0,
+    "verify": 100.0
+  },
+  "stagesSummary": {
+    "specify": {
+      "rubricVersion": "1.0.8",
+      "denominator": 22,
+      "yesCount": 22,
+      "noCount": 0,
+      "naCount": 10,
+      "passed": true,
+      "note": "C-5 위반 spec (Section 7 #6 custom.css NEW + Section 2-1 L75 customCss path + Section 11 Step 7 custom.css NEW + L445 메타-게이트 cross-check) 이 22/22 YES 로 통과. Coverage Verifier 가 .css NEW 파일 hit 를 C-5 violation 으로 분류하지 못함."
+    },
+    "implement": {
+      "rubricVersion": "1.0.9",
+      "denominator": 11,
+      "yesCount": 11,
+      "noCount": 0,
+      "naCount": 13,
+      "passed": true,
+      "note": "Implementer 가 C-5 constraint > spec 우선 적용 — custom.css 미생성 + docusaurus.config.ts L22 customCss: [] 빈 배열로 대체. ADR-MOD-GRID-99-B-001 작성 + F-05 promptSpecDrift 보고 1건. drift 정상 처리."
+    },
+    "verify": {
+      "rubricVersion": "1.0.3",
+      "weightedScore": 100.0,
+      "passed": true,
+      "note": "A/B/C/D 카테고리 모두 vacuous (docs 인프라 Goal — 그리드 기능 표면 0). E 카테고리만 실질 평가 — bundle 0KB + 4 ADR + license MIT/Apache-2.0 검증."
+    }
+  },
+  "patterns": [
+    {
+      "id": "P-99-B-001",
+      "title": "C-5 (CSS 신규 파일 금지) vs framework-required CSS option 충돌 — spec 단계 미검출",
+      "occurrences": 1,
+      "evidenceLocations": [
+        "spec.md L75: theme.customCss: './src/css/custom.css'",
+        "spec.md L202 Section 7 implementFiles #6: custom.css NEW",
+        "spec.md L377 Section 11 Step 7: custom.css NEW",
+        "spec.md L445 메타-게이트: 'Step 7 → 파일 #6 (custom.css NEW) ✓'",
+        "specify-score.json C-05 YES (N/A 조건 — affectedUsageFiles=[] 만 보고 C-5 .css NEW 검사 누락)",
+        "implement-coverage-score.json F-05: customCss: [] 빈 배열 drift + ADR-001 사후 정정"
+      ],
+      "rootCause": "specify-rubric C-05 항목이 'compatibility' 의미로 (C-12 build proxy) 해석되어 평가됨. 실제 constraints.md C-5 의 '.css/.scss/.module.css 신규 파일 금지' 와 rubric C-05 의 명칭이 의미적으로 불일치 (rubric C-05 는 backward-compatibility 검사). Coverage Verifier 가 spec 본문에서 `.css` NEW 행 4개를 grep 하여 자동 NO 처리하는 게이트가 부재.",
+      "applies": "후속 G-002 Storybook (preview-head.html, preview.tsx → preview.css framework-required) + G-003 visual-regression (Chromatic/Playwright baseline CSS) 에서 동일 패턴 재발 위험 높음. G-004 Migration Guide / G-005 README 는 위험도 낮음 (CSS 옵션 없는 markdown 중심).",
+      "improvement": "constraints.md C-5 본문에 framework-tooling 예외 명시 + specify-rubric B 카테고리에 자동 .css NEW grep 게이트 추가 + implement-rubric F-05 에 constraint > spec 충돌 케이스 카탈로그화",
+      "priority": "P1"
+    },
+    {
+      "id": "P-99-B-002",
+      "title": "rubric C-05 항목 명칭 ↔ constraints.md C-5 항목 명칭 의미 불일치",
+      "occurrences": 1,
+      "evidenceLocations": [
+        "constraints.md L43 C-5: CSS 신규 파일 생성 금지 (Tailwind Only)",
+        "specify-rubric.md C-05: backward-compatibility 검사 (실제로 C-6 호환성 절대 와 연관 의미)",
+        "specify-score.json C-05 evidence: 'C-12 build zero-error intent as proxy for compatibility' — CSS 와 무관"
+      ],
+      "rootCause": "rubric 항목 번호 (C-01, C-02 ...) 가 constraints.md 의 C-숫자 (C-1, C-2 ...) 와 별도 namespace 인데, 의미 충돌 발생. Coverage Verifier 가 두 namespace 를 혼동하지 않도록 명시 또는 rubric 항목명 prefix (R-C-05 등) 로 분리 필요.",
+      "applies": "전체 후속 Goal — rubric ↔ constraints namespace 충돌은 모든 모듈에 영향",
+      "improvement": "rubric 항목명에 'R-' prefix 부여 또는 constraints C-숫자 와 명시적 cross-reference. specify-rubric 헤더에 'rubric C-NN ≠ constraints C-N' 경고 명시",
+      "priority": "P2"
+    }
+  ],
+  "rubricImprovements": [
+    {
+      "file": "constraints.md",
+      "section": "C-5",
+      "type": "clarify",
+      "proposal": "C-5 본문 끝에 다음 예외 조항 추가 권고: '예외(framework-required CSS): Docusaurus customCss / Storybook preview CSS / Chromatic baseline 등 외부 도구가 CSS 옵션을 의무 요구하는 경우, 옵션은 유지하되 값은 빈 배열 `[]` 또는 빈 객체 로 대체한다. 신규 `.css` 파일은 여전히 금지. 본 예외 적용 시 ADR 작성 의무 (C-14).' — G-001 implementer 가 이미 ADR-MOD-GRID-99-B-001 로 실증한 패턴 형식화",
+      "rationale": "현 C-5 텍스트 'Tailwind className만' 은 docs/Storybook 등 React component 외 영역에 적용 시 ambiguous. Spec writer 가 framework 의무 요건과 충돌 시 어느 쪽 우선인지 결정 가능하도록 명시화 필요. Implementer 자율 정정 부담을 spec 단계로 이전."
+    },
+    {
+      "file": "specify-rubric.md",
+      "section": "B 카테고리 또는 신규 B-06",
+      "type": "add",
+      "proposal": "B-06 (또는 별도 메타-게이트 H-04) 신설 제안: 'CSS 신규 파일 자동 grep 게이트 — Coverage Verifier 는 spec 본문 (Section 2 코드 블록 / Section 7 implementFiles / Section 11 Step) 에서 `\\.(css|scss|module\\.css)\\b.*NEW` 패턴을 grep. hit 1건 이상이면 자동 NO (C-5 violation flag). framework-required 예외 적용 시 spec D# 결정에 ADR 인용 + 옵션값 빈 배열 처리 명시 시 N/A.'",
+      "rationale": "G-001 specify-score.json C-05 evidence 가 affectedUsageFiles=[] 만 보고 통과 — 실제 spec 본문 4곳에 `custom.css NEW` 가 존재했으나 Verifier 는 검출 못함. 자동 grep 게이트로 인간 (Agent) 판단 우회 차단."
+    },
+    {
+      "file": "implement-rubric.md",
+      "section": "F-05",
+      "type": "clarify",
+      "proposal": "F-05 본문에 '★ constraint > spec drift 케이스 (2026-05-15 G-001 추가)' subsection 신설 권고: 'spec 본문이 constraints.md 의 hard constraint 와 충돌하는 경우 (예: spec 이 `.css` NEW 를 명시하지만 C-5 가 금지), Implementer 는 constraint 우선 적용 + promptSpecDrift[] 에 `{constraintId, specViolation, resolution: \"constraint applied + ADR\"}` 기록 + ADR 작성 (C-14 의무). 본 케이스는 메인 prompt vs spec drift 가 아닌 **spec vs constraints drift** 이므로 별도 카테고리 카탈로그화.' G-001 implementer 가 ADR-MOD-GRID-99-B-001 로 정정한 패턴 형식화.",
+      "rationale": "현 F-05 는 prompt vs spec drift 중심. spec vs constraints drift 케이스는 G-001 이 최초 사례 — 향후 G-002/G-003 에서 재발 시 명확한 처리 방침 필요. Implementer 자율 정정의 정당성 근거 명시화."
+    },
+    {
+      "file": "specify-rubric.md",
+      "section": "헤더 (v1.0.9 변경 사항)",
+      "type": "clarify",
+      "proposal": "rubric 항목명 namespace 경고 추가: 'rubric 의 C-01/C-02/.../C-NN 은 rubric 내부 일련번호. constraints.md 의 C-1/C-2/.../C-N (CSS/AG-Grid/Wijmo 등 제약) 과 별개 namespace. Coverage Verifier 는 두 namespace 를 혼동 금지 — rubric C-XX 평가 시 constraints C-Y 와 의미 일치 여부 별도 검증.'",
+      "rationale": "G-001 specify-score.json C-05 evidence 가 constraints C-12 (build) 를 인용 — rubric C-05 의 검사 대상은 backward-compatibility (C-6 연관) 인데 constraints C-5 (.css 금지) 와 혼동 가능성. namespace 분리 명시화로 verifier 실수 사전 차단."
+    }
+  ],
+  "patternCatalogCandidates": [
+    {
+      "title": "constraint > spec drift 자율 정정 패턴",
+      "summary": "spec 이 framework-required 옵션으로 인해 hard constraint 위반 시: (1) Implementer 가 constraint 우선 적용, (2) 옵션값을 빈 배열/빈 객체 로 대체 (옵션 키는 유지), (3) ADR 작성 + promptSpecDrift[] 기록.",
+      "appliesTo": "Docusaurus customCss [], Storybook preview-head [], Webpack/Vite plugin 자리표시자 등 framework 가 옵션 키를 의무 요구하지만 값은 비울 수 있는 모든 케이스",
+      "evidence": "ADR-MOD-GRID-99-B-001 (G-001 docusaurus.config.ts L22 customCss: [])",
+      "promotionCandidate": "tw-grid 패턴 카탈로그 신설 권고 — `.claude/tw-grid/patterns/constraint-spec-drift.md` 또는 기존 references/ 디렉토리 내 신규 항목"
+    }
+  ],
+  "scoreVerification": {
+    "specifyArithmetic": "yesCount=22, noCount=0, denominator=22, score = 22/22 × 100 = 100.0 ✓",
+    "implementArithmetic": "yesCount=11, noCount=0, denominator=11, score = 11/11 × 100 = 100.0 ✓",
+    "verifyArithmetic": "weightedScore = (100×25 + 100×25 + 100×20 + 100×15 + 100×15)/100 = 10000/100 = 100.0 ✓",
+    "thresholdCheck": "all 3 stages >= 85 (low tier) → passed ✓",
+    "naCorrectness": "specify N/A=10, implement N/A=13, verify A/B/C/D vacuous + E 3 YES — denominator 에서 N/A 정상 제외 (C-26) ✓",
+    "failedChecksEmpty": "3 stages 모두 failedChecks = [] (N/A 미포함) ✓"
+  },
+  "appliedAutomatically": false,
+  "userDecisionRequired": "constraints.md / specify-rubric.md / implement-rubric.md 본문 수정은 메인 사용자 결정 영역. Self-Review 는 권고만 제시. 패턴 카탈로그(`.claude/tw-grid/patterns/`) 신설 여부도 사용자 결정.",
+  "selfCheckOnReview": {
+    "scoresMatch": "specify 100 + implement 100 + verify 100 — 3 stage score 파일과 동일 ✓",
+    "patternEvidenceVerified": "P-99-B-001 4개 evidence location 모두 Read/Grep 으로 실재 확인 (spec.md L75/L202/L377/L445) ✓",
+    "noNewClaims": "본 self-review 는 3 stage 결과 종합 + rubric/constraints 개선 권고 — 추가 검증 발견 없음 (claim 추가 X) ✓",
+    "userDecisionScope": "rubric/constraints 수정은 메인 결정 — 본 파일은 적용 없이 권고 산출만 (appliedAutomatically=false) ✓"
+  }
+}

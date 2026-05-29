@@ -1,0 +1,278 @@
+{
+  "goalId": "MOD-GRID-02/state/G-004",
+  "module": "MOD-GRID-02",
+  "area": "state",
+  "stage": "specify",
+  "rubricVersion": "1.0.5",
+  "migrationImpact": "medium",
+  "tier": "medium",
+  "threshold": 90,
+  "verifierModel": "haiku",
+  "specPath": "D:/project/topvel_project/TOMIS/.claude/tw-grid/artifacts/MOD-GRID-02/state/G-004-spec.md",
+  "checks": [
+    {
+      "id": "A-01",
+      "category": "A",
+      "name": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "spec.md L30-56: L0 파일 경로 `D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useGridState.ts` + 코드 발췌 (L216-234 현 return 객체 resetState/resetSection 미구현)"
+    },
+    {
+      "id": "A-02",
+      "category": "A",
+      "name": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "spec.md L73-77: TanStack v8 useReactTable state reset 관련 표준 API 언급. table.resetSorting() 등 메서드 존재하나 useGridState는 독립 hook — setter 직접 호출 방식 명시"
+    },
+    {
+      "id": "A-03",
+      "category": "A",
+      "name": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "YES",
+      "evidence": "spec.md L79-110: 8 variant 공통 패턴 분석 (GridStateKey union L579-587, GridStateValues interface L553-570) — 8개 state 키 중복 관리 패턴 명시"
+    },
+    {
+      "id": "A-04",
+      "category": "A",
+      "name": "L3 영향 사용처 카운트 명시 (A-04 강화 의무)",
+      "result": "YES",
+      "evidence": "spec.md L112-116 + D8: affectedUsageFiles = 0개 literal 명시. goals.json 직접 확인 명시. Section 8.1 (L352-358) 반복 확인"
+    },
+    {
+      "id": "A-05",
+      "category": "A",
+      "name": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "spec.md L118-138: R-A AggridTable.tsx L88-92 clearSelectionKey 패턴 (외부 트리거로 선택 해제) + R-W Wijmo CollectionView.refresh() 개념 유사성 명시"
+    },
+    {
+      "id": "B-01",
+      "category": "B",
+      "name": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "spec.md L144-181: GridState<TData> 추가 멤버 (`resetState: () => void`, `resetSection: (key: GridStateKey | GridStateKey[]) => void`) + UseGridStateOptions<TData> 추가 필드 (`clearSelectionKey?: string | number`) 완전 정의"
+    },
+    {
+      "id": "B-02",
+      "category": "B",
+      "name": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "spec.md L216-258: 3개 사용 예시 (예시 1: 검색 버튼 resetState, 예시 2: 필터 클리어 resetSection, 예시 3: clearSelectionKey 트리거) — 기본 + 고급 시나리오 포함"
+    },
+    {
+      "id": "B-03",
+      "category": "B",
+      "name": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "spec.md L211-213: clearSelectionKey는 `?: string | number` optional 명시. resetState/resetSection은 required return members (L146, L179). undefined 초기값 동작 L309 (EC-04) 명시"
+    },
+    {
+      "id": "B-04",
+      "category": "B",
+      "name": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "spec.md L31-32, L57-58: export 위치 명시 `D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts` — GridState, UseGridStateOptions, GridStateKey 모두 이 파일에 정의"
+    },
+    {
+      "id": "B-05",
+      "category": "B",
+      "name": "ref API + imperative handle 명시 (해당 시)",
+      "result": "N/A",
+      "evidence": "spec 내 ref API 요구 없음. resetState/resetSection은 useCallback 기반 — useImperativeHandle 불필요. 선언적 컴포넌트 패턴"
+    },
+    {
+      "id": "C-01",
+      "category": "C",
+      "name": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md L281-290: AC-001~AC-005 = 5개 (3개 초과)"
+    },
+    {
+      "id": "C-02",
+      "category": "C",
+      "name": "각 AC에 출처 태그 (L0/L1/L2/L3/R-A/R-W)",
+      "result": "YES",
+      "evidence": "spec.md L281-290 AC 표: AC-001 (C-4, L0), AC-002 (C-4, L2), AC-003 (R-A), AC-004 (C-25), AC-005 (C-12, L2) — 모두 출처 태그 명시"
+    },
+    {
+      "id": "C-03",
+      "category": "C",
+      "name": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "spec.md L281-290: \"resetState(): void\", \"resetSection(key: ...): void\", \"rowSelection: {} reset\", \"Storybook story\", \"vitest 3 시나리오\" — 모두 객관적 검증 가능 (주관 표현 없음)"
+    },
+    {
+      "id": "C-04",
+      "category": "C",
+      "name": "migrationImpact 명시 (high/medium/low)",
+      "result": "YES",
+      "evidence": "spec.md L140: `migrationImpact: medium` (goals.json 기준 확인). L206-207 또한 동일 명시"
+    },
+    {
+      "id": "C-05",
+      "category": "C",
+      "name": "AC에 호환성 검증 항목 포함",
+      "result": "N/A",
+      "evidence": "spec.md L354: 사용처 0개. AC-005는 vitest 단위 테스트이지 사용처 외관 보존 검증 아님. C-5 조건 (사용처 0개) 충족 → N/A"
+    },
+    {
+      "id": "D-01",
+      "category": "D",
+      "name": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "YES",
+      "evidence": "spec.md L352-358 (Section 8.1): 영향 사용처 0개 literal 명시 + goals.json G-004 `\"affectedUsageFiles\": []` 직접 확인 + A-04 강화 의무 충족"
+    },
+    {
+      "id": "D-02",
+      "category": "D",
+      "name": "기존 변형 대응표 (Section 3)",
+      "result": "N/A",
+      "evidence": "spec.md L262-268: Section 3 기존 사용처 대응표 존재하나, 대응할 기존 8 variant 마이그레이션 패턴 없음 (신규 기능 추가만). D-02 rubric: \"신규 영역 (대응할 variant 없음)\" 조건 충족"
+    },
+    {
+      "id": "D-03",
+      "category": "D",
+      "name": "Breaking change 명시 (Section 4)",
+      "result": "YES",
+      "evidence": "spec.md L272-277 (Section 4): breaking: false 명확히 명시. clearSelectionKey는 UseGridStateOptions 선택적 옵션 추가 (무파괴). resetState/resetSection은 GridState 추가 멤버만"
+    },
+    {
+      "id": "D-04",
+      "category": "D",
+      "name": "Deprecation 전략 (Section 4)",
+      "result": "N/A",
+      "evidence": "spec.md L276: breaking false → deprecation 불필요 (신규 API 추가만)"
+    },
+    {
+      "id": "D-05",
+      "category": "D",
+      "name": "롤백 전략 (Section 8.4)",
+      "result": "YES",
+      "evidence": "spec.md L368-370 (Section 8.4): 롤백 전략 명시 — git revert 1 commit → G-001~G-003 상태 복원. 추가 멤버이므로 삭제 시 breaking 없음"
+    },
+    {
+      "id": "D-06",
+      "category": "D",
+      "name": "번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "spec.md L372-376 (Section 8.5): 예상 번들 크기 \"+1 KB gzipped\", 분할 불필요. D7 실측 의무 명시 + size-limit 게이트 (Section 12.3)"
+    },
+    {
+      "id": "E-01",
+      "category": "E",
+      "name": "파일별 변경 명세 (NEW/MODIFY) + Section 7 ↔ Section 11 일관성",
+      "result": "YES",
+      "evidence": "spec.md L339-344 (Section 7): 최종 implementFiles 표 2파일 MODIFY (useGridState.ts, types.ts). L569-574 (Section 11.2): Step 1 (types.ts), Step 2 (useGridState.ts), Step 3 (Storybook) — 일관성 확인 ✓. L346 E-06 cross-check: 재결정 키워드 없음 ✓"
+    },
+    {
+      "id": "E-02",
+      "category": "E",
+      "name": "Before/After 코드 스니펫 (최소 1개)",
+      "result": "YES",
+      "evidence": "spec.md L417-465 (Section 11.1): Before/After 3개 (types.ts GridState 2개, useGridState.ts 1개)"
+    },
+    {
+      "id": "E-03",
+      "category": "E",
+      "name": "구현 순서 2단계 이상 (의존성 고려)",
+      "result": "YES",
+      "evidence": "spec.md L569-574: 3단계 구현 순서 (1. types.ts → 2. useGridState.ts → 3. Storybook). 의존성 명시 (types 먼저 → useGridState 타입 참조)"
+    },
+    {
+      "id": "E-04",
+      "category": "E",
+      "name": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md L293-330 (Section 6): EC 6개 (EC-01 initialState 미제공, EC-02 존재 X key, EC-03 중복 key, EC-04 mount 시 트리거 방지, EC-05 controlled mode, EC-06 빠른 연속 변경) — 최소 3개 요구 충족"
+    },
+    {
+      "id": "E-05",
+      "category": "E",
+      "name": "검증 계획 (Section 12)",
+      "result": "YES",
+      "evidence": "spec.md L591-612 (Section 12): vitest 단위 테스트 (AC-005 게이트 a/b/c) + 시각 회귀 (Chromatic) + 빌드 검증 (tsc, tsup, size-limit) 명시"
+    },
+    {
+      "id": "E-06",
+      "category": "E",
+      "name": "Section 7 재결정 ↔ 최종 표 일관성",
+      "result": "YES",
+      "evidence": "spec.md L346: 본문에 \"재결정\", \"변경 대상\", \"대체\", \"수정함\" 키워드 없음. 최종 표 (L339-344) 2파일 MODIFY = 확정된 상태. 모순 0건"
+    },
+    {
+      "id": "F-01",
+      "category": "F",
+      "name": "패키지 대상 명시 (packages/grid-core vs grid-{pro})",
+      "result": "YES",
+      "evidence": "spec.md L618: `packages: grid-core` (MIT) 정확히 명시"
+    },
+    {
+      "id": "F-02",
+      "category": "F",
+      "name": "라이선스 검증 호출 (Pro 패키지)",
+      "result": "N/A",
+      "evidence": "spec.md L618: MIT 패키지 (Pro 아님) — F-02 조건 \"Pro 패키지\" 미충족"
+    },
+    {
+      "id": "F-03",
+      "category": "F",
+      "name": "문서 작성 계획 (Docusaurus + Storybook)",
+      "result": "YES",
+      "evidence": "spec.md L620-625: 문서 계획 명시 — Storybook story 1개 (AC-004) + JSDoc (resetState, resetSection, clearSelectionKey) + Docusaurus 페이지 (useGridState API reference 추가)"
+    },
+    {
+      "id": "F-04",
+      "category": "F",
+      "name": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "spec.md L624: peerDependencies 변경 없음 — react, @tanstack/react-table 기존 peer 유지. 신규 dependency 없음"
+    },
+    {
+      "id": "G-01",
+      "category": "G",
+      "name": "Spec에 TBD/TODO/미정 없음 (G-01 v1.0.4 cross-consistency)",
+      "result": "YES",
+      "evidence": "spec.md L659-677: 모든 결정 명시 (D1~D8 표 일치 확인). Section 11 위험 요소에 \"stale\" 등 risk 명시하나 미결정 아님. Breakdown 일치 강화: D2 (NEW 0 + MODIFY 2) = Section 7 (2행 MODIFY) = Section 11 Steps (2 MODIFY) ✓"
+    }
+  ],
+  "yesCount": 27,
+  "noCount": 0,
+  "naCount": 5,
+  "denominator": 27,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [],
+  "c26SelfVerification": {
+    "denominatorExcludesNA": true,
+    "failedChecksContainsNoNA": true,
+    "rubricTotalMatches": true,
+    "scoreFormulaValid": true,
+    "allPassed": true
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 29,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 4,
+    "originalReportedDenominator": 29,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-02",
+  "runAt": "2026-05-27",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "runAt=2026-05-27"
+    ]
+  }
+}

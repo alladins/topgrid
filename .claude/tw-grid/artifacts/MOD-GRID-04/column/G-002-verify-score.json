@@ -1,0 +1,323 @@
+{
+  "goalId": "MOD-GRID-04/column/G-002",
+  "module": "MOD-GRID-04",
+  "area": "column",
+  "stage": "verify",
+  "rubricVersion": "1.0.2",
+  "rubricFile": ".claude/tw-grid/rubric/verify-rubric.md",
+  "rubricItemCounts": {
+    "A": 3,
+    "B": 5,
+    "C": 3,
+    "D": 2,
+    "E": 3,
+    "total": 16
+  },
+  "migrationImpact": "low",
+  "migrationImpactSource": "spec Section 1.5 (C-27 authoritative; overrides goals.json 'medium')",
+  "verifierModel": "opus",
+  "verifierRole": "Verifier Agent (VERIFY stage, independent — separate from Implementer / Coverage Verifier)",
+  "verifyDate": "2026-05-14",
+  "thresholds": {
+    "low": 85,
+    "medium": 90
+  },
+  "weights": {
+    "low": {
+      "A": 25,
+      "B": 25,
+      "C": 20,
+      "D": 15,
+      "E": 15
+    },
+    "medium": {
+      "A": 15,
+      "B": 20,
+      "C": 30,
+      "D": 20,
+      "E": 15
+    }
+  },
+  "weightSumCheck": {
+    "low": 100,
+    "medium": 100
+  },
+  "buildEvidence": {
+    "tsc": {
+      "command": "npx tsc -p D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/tsconfig.json --noEmit",
+      "exitCode": 0,
+      "errors": 0,
+      "executedBy": "verifier (independent re-run)"
+    },
+    "vitest": {
+      "command": "npx vitest run src/column/createGroupedColumns.test.ts",
+      "exitCode": 0,
+      "testFiles": 1,
+      "tests": 6,
+      "passed": 6,
+      "failed": 0,
+      "duration": "257ms",
+      "tcCoverage": [
+        "TC-01",
+        "TC-02",
+        "TC-03",
+        "TC-04",
+        "TC-05",
+        "TC-06"
+      ],
+      "executedBy": "verifier (independent re-run)"
+    },
+    "tsup": {
+      "command": "npx tsup --silent",
+      "exitCode": 0,
+      "errors": 0,
+      "executedBy": "verifier (independent re-run)"
+    },
+    "sizeLimit": {
+      "command": "npx size-limit (monorepo root)",
+      "package": "@tomis/grid-core",
+      "size": "25.75 kB (brotli)",
+      "limit": "30 kB",
+      "withinLimit": true,
+      "margin": "~4.25 kB",
+      "executedBy": "verifier (independent re-run)"
+    },
+    "license": {
+      "package": "@tomis/grid-core",
+      "field": "MIT",
+      "evidence": "packages/grid-core/package.json L5: \"license\": \"MIT\""
+    },
+    "anyHits": {
+      "command": "Grep ': any|<any>|as any' on createGroupedColumns.ts",
+      "result": 0,
+      "note": "Only spec-allowed `groups as ColumnDef<TData>[]` cast at L104 — not via `any` (C-4 exception per spec Section 8.2)"
+    }
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "gradlew compileJava — tw-framework-front + tvcom_back integration build. G-002 is monorepo grid-core package change, no FE/BE integration in this Goal. Rubric A-01 N/A: '그리드 작업이 FE 전용일 때 (대부분 N/A)'"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "npx tsc -p packages/grid-core/tsconfig.json --noEmit → exit 0, 0 errors (verifier independent re-run). tw-framework-front unaffected (affectedUsageFiles: []) so no FE tsc needed."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "npx tsup --silent → exit 0 (verifier independent re-run). size-limit (monorepo root .size-limit.json L1-7): @tomis/grid-core 25.75 kB brotli vs 30 kB limit — within bounds. Margin ~4.25 kB."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "정렬 동작 — G-002 thin wrapper column factory, no sorting logic. createGroupedColumns.ts L101-104 returns pass-through. No interaction with getSortedRowModel. Rubric B-01 N/A: '정렬 무관 기능'."
+    },
+    "B-02": {
+      "result": "N/A",
+      "evidence": "필터 동작 — G-002 thin wrapper. No filter logic. Rubric B-02 N/A: '필터 무관'."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "페이지네이션 — G-002 thin wrapper. No pagination logic. Rubric B-03 N/A: '페이지 무관'."
+    },
+    "B-04": {
+      "result": "N/A",
+      "evidence": "가상화 — G-002 thin wrapper. createGroupedColumns produces ColumnDef[] pass-through; virtualization concern is row-level, handled by Grid component (G-001 of MOD-GRID-01), not column factory. Rubric B-04 N/A: '가상화 무관'."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "인라인 편집 — G-002 thin wrapper. No EditableGrid logic. Rubric B-05 N/A: '편집 기능 없는 Goal'."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "영향 사용처 tsc — spec Section 8.3 L259 affectedUsageFiles: []. GroupedHeaderGrid.tsx actual migration deferred to MOD-GRID-14 (D4). Rubric C-01 N/A: '사용처 0개'."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "외관 보존 — migrationImpact: low (spec Section 1.5) + affectedUsageFiles: []. Rubric C-02 N/A: 'low tier + 사용처 0'."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "vitest 6/6 PASS at 257ms with no console.warn/error reported. Grep on createGroupedColumns.ts + stories.tsx for 'console.' → 0 production warnings. Story render uses <pre>{JSON.stringify}</pre> (stories.tsx L36-53) — no React warning patterns. C-03 satisfied."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "마이그레이션 비율 — affectedUsageFiles: [] per spec D4 (L19) and Section 8.3 (L259). Goal is new helper addition, not usage migration. Rubric D-01 N/A: '사용처 0개'."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 — affectedUsageFiles: [] this Goal. GroupedHeaderGrid.tsx migration belongs to separate module MOD-GRID-14 (spec D4, Section 8.3, Section 9 internal deps L300). Not this Goal's residual. Rubric D-02 N/A: '잔여 0건'."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "size-limit @tomis/grid-core: 25.75 kB brotli vs 30 kB limit (within C-21 한도). spec Section 8.5 (L283) predicted ~29.0 kB; actual is 25.75 kB — well below estimate and limit. Verifier independent re-run via `npx size-limit` at monorepo root."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "새 의존성 ADR — G-002 added no new dependencies. @tanstack/react-table already in grid-core peerDependencies (package.json L28). No package.json deps modification. Rubric E-02 N/A: '새 dep 없음'."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "라이선스 명시 — G-002 did not modify packages/grid-core/package.json (only 1 MODIFY = src/index.ts). Existing license: 'MIT' (package.json L5) preserved. Rubric E-03 N/A: 'package.json 변경 없는 Goal'."
+    }
+  },
+  "categoryScores": {
+    "A": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "denominator": 2,
+      "score": 100,
+      "formula": "2 / (2+0) × 100 = 100.0  (A-01 N/A excluded)"
+    },
+    "B": {
+      "yes": 0,
+      "no": 0,
+      "na": 5,
+      "denominator": 0,
+      "score": 100,
+      "formula": "vacuous truth (YES=0, NO=0, N/A=5) — Goal title 'createGroupedColumns thin wrapper' has no build/tsup/tsc/vite/rollup/size-limit/bundle keyword. Per rubric L60-64 + Vacuous Truth Rule: category vacuous (전 항목 N/A — thin column factory wrapper, no behavioral logic per D1/spec Section 8.2)"
+    },
+    "C": {
+      "yes": 1,
+      "no": 0,
+      "na": 2,
+      "denominator": 1,
+      "score": 100,
+      "formula": "1 / (1+0) × 100 = 100.0  (C-01/C-02 N/A excluded)"
+    },
+    "D": {
+      "yes": 0,
+      "no": 0,
+      "na": 2,
+      "denominator": 0,
+      "score": 100,
+      "formula": "vacuous truth (YES=0, NO=0, N/A=2) — affectedUsageFiles: [] per spec D4. No migration concept applies. Per Vacuous Truth Rule: category vacuous (전 항목 N/A — 신규 헬퍼 추가, 사용처 0개)"
+    },
+    "E": {
+      "yes": 1,
+      "no": 0,
+      "na": 2,
+      "denominator": 1,
+      "score": 100,
+      "formula": "1 / (1+0) × 100 = 100.0  (E-02/E-03 N/A excluded)"
+    }
+  },
+  "weightedScore": {
+    "low": {
+      "calculation": "100×0.25 + 100×0.25 + 100×0.20 + 100×0.15 + 100×0.15 = 25 + 25 + 20 + 15 + 15 = 100",
+      "value": 100,
+      "threshold": 85,
+      "passed": true
+    },
+    "medium": {
+      "calculation": "100×0.15 + 100×0.20 + 100×0.30 + 100×0.20 + 100×0.15 = 15 + 20 + 30 + 20 + 15 = 100",
+      "value": 100,
+      "threshold": 90,
+      "passed": true
+    }
+  },
+  "metaGates": {
+    "F-01": {
+      "result": "YES",
+      "description": "evidence 실재 검증 — sampling",
+      "samples": [
+        {
+          "check": "A-02 tsc 0 errors",
+          "evidence": "verifier independent re-run: `npx tsc -p D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/tsconfig.json --noEmit` returned exit code 0, no stdout. File verified: createGroupedColumns.ts L101-104 `export function createGroupedColumns<TData = unknown>(...groups: Array<TomisColumnGroup<TData>>): ColumnDef<TData>[] { return groups as ColumnDef<TData>[]; }`"
+        },
+        {
+          "check": "A-03 size-limit",
+          "evidence": "verifier independent re-run: `npx size-limit` at monorepo root produced `@tomis/grid-core Size: 25.75 kB (brotli) Size limit: 30 kB`. Config: `.size-limit.json` L1-7."
+        },
+        {
+          "check": "C-03 console warning",
+          "evidence": "Read createGroupedColumns.ts L101-105 — no console.* calls in production code. Stories.tsx L36-53 uses inline <pre>{JSON.stringify}</pre>, no console output."
+        },
+        {
+          "check": "TC-04 deep-equal compat (spec AC-004, D4)",
+          "evidence": "test.ts L77-114 expected literal structurally matches GroupedHeaderGrid.tsx comment block L171-181 — both use `[{ header: '기본 정보', columns: [{ accessorKey: 'empNo', header: '사번' }, ...] }, { header: '급여 내역', columns: [...] }]` pattern. vitest TC-04 PASS confirms deep-equality runtime."
+        },
+        {
+          "check": "Implementation thin-wrapper claim (D1)",
+          "evidence": "createGroupedColumns.ts L101-104: function body is single-statement `return groups as ColumnDef<TData>[];`. No conditionals, no helpers, no normalization. Confirms D1."
+        }
+      ],
+      "findingsReferences": "No documentedDeviations or findings/blocked entries referenced — n/a"
+    },
+    "F-02": {
+      "result": "YES",
+      "description": "categoryScores 산식 검증 — N/A 분모 제외",
+      "evidence": "Each category score = YES / (YES+NO) × 100, N/A excluded from denominator. A: 2/2=100, B: vacuous (전 N/A — thin wrapper, no behavior; per rubric L60-64 Vacuous Truth Rule + Goal title has no build keyword → vacuous allowed)=100, C: 1/1=100, D: vacuous (전 N/A — affected=0)=100, E: 1/1=100. Rubric category sum check: A(3)+B(5)+C(3)+D(2)+E(3) = 16 ✓ matches rubric L3 declared total."
+    },
+    "F-03": {
+      "result": "YES",
+      "description": "weightedScore 산식 검증 — Σ(categoryScore × weight) / 100",
+      "evidence": "low: 100×25 + 100×25 + 100×20 + 100×15 + 100×15 = 10000 → /100 = 100.0 ✓. medium: 100×15 + 100×20 + 100×30 + 100×20 + 100×15 = 10000 → /100 = 100.0 ✓. Σweight check: low (25+25+20+15+15=100) ✓, medium (15+20+30+20+15=100) ✓."
+    }
+  },
+  "selfVerification": {
+    "categoryItemCount": {
+      "A": 3,
+      "B": 5,
+      "C": 3,
+      "D": 2,
+      "E": 3,
+      "sum": 16,
+      "rubricExpected": 16,
+      "match": true
+    },
+    "failedChecksIntegrity": "failedChecks array contains only NO results. N/A entries excluded. Verified — array is empty since no NO present.",
+    "naExclusionVerified": "All vacuous (B, D) + denominator (A: A-01 excluded, C: C-01/C-02 excluded, E: E-02/E-03 excluded) N/A entries excluded from denominators. Re-checked per C-26.",
+    "weightSumVerified": "low: 25+25+20+15+15=100 ✓ | medium: 15+20+30+20+15=100 ✓",
+    "vacuousJustified": "B vacuous: Goal title has no build/tsup/tsc/vite/rollup/size-limit/bundle keyword (Goal is 'createGroupedColumns<TData>() — Multi-row column groups'). D vacuous: affectedUsageFiles: [] per spec D4. Both vacuous applications meet rubric L60-64 + L66-75 conditions."
+  },
+  "failedChecks": [],
+  "weightedScoreLow": 100,
+  "weightedScoreMedium": 100,
+  "passedLow": true,
+  "passedMedium": true,
+  "passed": true,
+  "verdict": "PASS at both low (100 ≥ 85) and medium (100 ≥ 90) thresholds",
+  "compatibilityConclusion": "GroupedHeaderGrid.tsx 호환성: TC-04 deep-equal fixture (test.ts L77-114) 가 GroupedHeaderGrid.tsx 사용 예시 L171-181 패턴과 구조적으로 1:1 일치 — runtime vitest PASS 확인. createGroupedColumns는 thin wrapper (D1: 변환 없음)이므로 useReactTable에 직접 주입 시 getHeaderGroups + colSpan + isPlaceholder 자동 산출 보장.",
+  "feedback": {
+    "strengths": [
+      "Implementation은 spec D1 thin wrapper 원칙을 단일 캐스팅으로 완벽 구현 (createGroupedColumns.ts L101-104, 4 lines)",
+      "TC-04 deep-equal fixture로 GroupedHeaderGrid.tsx L166-184 패턴 호환성 검증 (AC-004 + D4)",
+      "vitest 6/6 PASS — A-07 spec 의무 충족 (typetest-only 금지)",
+      "Bundle size 25.75 kB / 30 kB limit — spec Section 8.5 예상치(29.0 kB)보다 훨씬 안전",
+      "Storybook 3 stories (TwoLevelGroupHeader / MultipleGroups / EmptyGroup) — C-25 + D5 데모 의무 충족",
+      "TypeScript strict + 0 any — C-4 준수 (groups as ColumnDef[]는 spec Section 8.2 예외)"
+    ],
+    "observations": [
+      "spec migrationImpact: 'low' (Section 1.5) vs goals.json: 'medium' — Implementer가 promptSpecDrift로 spec 권위(C-27) 정확히 적용. low threshold 85 + medium 90 둘 다 PASS이므로 결정과 무관 PASS.",
+      "GroupedHeaderGrid.tsx 실 마이그레이션은 MOD-GRID-14 책임 (spec D4) — 본 Goal scope에서 잔여 없음.",
+      "B 카테고리 vacuous 적용 정당: Goal 제목에 build 키워드 없고, thin wrapper는 정렬/필터/페이지/가상화/편집 영역 외 (factory 단계)."
+    ]
+  },
+  "verifierStatement": "VERIFY stage independent verification complete. Verifier re-executed tsc, vitest, tsup, size-limit (4 builds), confirmed license/any-grep, sampled F-01 evidence (5 items). All 16 rubric items + 3 F meta-gates evaluated. Categories A=100/B=100(vacuous)/C=100/D=100(vacuous)/E=100. weightedScore = 100 at both low (85) and medium (90) thresholds → PASS both. Compatibility: TC-04 deep-equal fixture confirms GroupedHeaderGrid.tsx L166-184 pattern preservation. Ready for merge.",
+  "moduleId": "MOD-GRID-04",
+  "tier": "low",
+  "threshold": 85,
+  "yesCount": 4,
+  "noCount": 0,
+  "naCount": 12,
+  "denominator": 4,
+  "score": 0,
+  "runAt": "2026-05-27",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-002→full",
+      "tier=low",
+      "threshold=85",
+      "yesCount=4",
+      "noCount=0",
+      "naCount=12",
+      "denominator=4",
+      "score=0 (fallback)",
+      "runAt=2026-05-27"
+    ]
+  }
+}

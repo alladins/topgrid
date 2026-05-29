@@ -1,0 +1,262 @@
+{
+  "goalId": "MOD-GRID-10/tracking/G-001",
+  "moduleId": "MOD-GRID-10",
+  "area": "tracking",
+  "stage": "specify",
+  "tier": "high",
+  "threshold": 95,
+  "rubricVersion": "1.0.6",
+  "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-10\\tracking\\G-001-spec.md",
+  "checks": [
+    {
+      "id": "H-01",
+      "title": "referenceEvidence 경로 실재",
+      "result": "YES",
+      "evidence": "spec.md Section 1 L628-635 'H-01 referenceEvidence 경로 실재': L0 (ChangeTrackingGrid.tsx L1-238 EXISTS), L1 (current-tanstack-analysis.md L1-40 EXISTS), L2 (placeholder N/A 정상), L3 (PayrollEditablePage.tsx L1-185 EXISTS), R-A (publish-aggrid-analysis.md EXISTS), R-W (publish-wijmo-analysis.md L1-226 EXISTS). 모든 참조 경로 실재 확인. Section 1 disclaimer L35-37 명시: 'H-01 평가는 본 Section 1 표의 참조 경로 실재만 대상 — Section 7 NEW 산출물은 IMPLEMENT 단계 deliverable로 H-01 범위 외.' Section 13 F-02 L648-650 자가-검증: 'H-01 = YES'."
+    },
+    {
+      "id": "H-02",
+      "title": "implementFiles 경로 합리성",
+      "result": "YES",
+      "evidence": "spec.md Section 7 L638-642: 5 파일 모두 monorepo prefix 'D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/' 또는 '.claude/tw-grid/decisions/' 하위. 조부모 디렉토리 'D:/project/topvel_project/' 실재 (rubric H-02 외부 디렉토리 예외 조건 1). Section 8.2 L386 '무파괴 검증' + D2 결정 L21-22 명시: 'G-001 spec은 monorepo 경로 채택 (C-28 의무)'. 명명 컨벤션 'topvel-' prefix + 'grid-pro-tracking' kebab-case 일치 (조건 3)."
+    },
+    {
+      "id": "H-03",
+      "title": "AC 출처 태그 검증",
+      "result": "YES",
+      "evidence": "spec.md Section 5 L322-336: AC-001~AC-009 모두 'source:' 태그 명시 (C-4/C-2/C-6/C-24/C-16/C-14/C-12/C-25). 각 source tag가 spec 본문에서 cross-reference: Section 2 C-4 'no any', Section 13 C-24 'EULA/verifyOrWarn' 명시, Section 11 위험 D5/D8 결정 라벨로 referenced."
+    },
+    {
+      "id": "A-01",
+      "title": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "spec.md Section 1 L39-56: 'ChangeTrackingGrid.tsx' L1-238 Read 확인 + L45-53 발췌 코드 (ChangeTrackingHandle interface L12-17 + deleteRow 로직 L72-92 인용). L43-56 9 부족점 명시."
+    },
+    {
+      "id": "A-02",
+      "title": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "spec.md Section 1 L67-74: current-tanstack-analysis.md L1-40 Read 확인. L73-74 명시: 'useReactTable<TData>(options: TableOptions<TData>): Table<TData>' + 'getRowId?: (row: TData) => string' (TanStack v8 standard)."
+    },
+    {
+      "id": "A-03",
+      "title": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "N/A",
+      "evidence": "spec.md Section 1 L75-77: '신규 Pro 패키지 — 직접 구조 명세' → L2 N/A 정당화. 기존 8 variant 분석은 Section 3 'L323-329 기존 사용처 대응표' 별도 진행."
+    },
+    {
+      "id": "A-04",
+      "title": "L3 영향 사용처 카운트 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 1 L79-88 + Section 8.1 L375-382: 영향 사용처 2 파일 명시 (ChangeTrackingGrid.tsx 컴포넌트 + PayrollEditablePage.tsx). L382 '총 2 파일 (C-19 점진 ≤ 5 충족)' 정확한 카운트."
+    },
+    {
+      "id": "A-05",
+      "title": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "spec.md Section 1 L88-106: 'publish-aggrid-analysis.md' + 'publish-wijmo-analysis.md' 경로 명시. L90-92 'AG Grid Community Undo/Redo 패턴' 참조. L94-106 Wijmo CollectionView itemsAdded/itemsRemoved/validator/mapping 개념 (L101 '개념 차용, 코드 차용 X')."
+    },
+    {
+      "id": "B-01",
+      "title": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "spec.md Section 2 L112-194: RowStatus + Mapping + Validator + CommitOptions + ChangeSet + ChangeTrackingConfig + ChangeTrackingAPI 모두 정의. L168-194 ChangeTrackingAPI 11개 멤버 타입 명시, no any (C-4)."
+    },
+    {
+      "id": "B-02",
+      "title": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "spec.md Section 2.3 L212-276: 예시 1 (기본 L213-235) + 예시 2 (고급 mapping/validator/optimistic L237-274) 2개 이상 코드 블록."
+    },
+    {
+      "id": "B-03",
+      "title": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 2.2 L197-209: 표 형식 모든 필드 required/optional + default value 명시 (data/rowKey required, mapping/validator/optimistic/onSnapshotInit optional, CommitOptions members defaults)."
+    },
+    {
+      "id": "B-04",
+      "title": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 2.5 L281-287: '@tomis/grid-pro-tracking/src/types.ts' (types) + '@tomis/grid-pro-tracking/src/useChangeTracking.ts' (hook) + '@tomis/grid-pro-tracking/src/index.ts' (barrel) 정확한 경로."
+    },
+    {
+      "id": "B-05",
+      "title": "ref API + imperative handle 명시 (해당 시)",
+      "result": "N/A",
+      "evidence": "spec.md Section 2.4 L277-279: 'hook 이므로 ref API 불필요' 명시. 반환 객체가 직접 imperative API 노출 → hook pattern N/A 정당화."
+    },
+    {
+      "id": "C-01",
+      "title": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 5: AC-001~AC-009 총 9개 (3개 이상)."
+    },
+    {
+      "id": "C-02",
+      "title": "각 AC에 출처 태그",
+      "result": "YES",
+      "evidence": "spec.md Section 5 L322-335: 모든 9 AC에 source 태그 (C-4/C-2/C-6/C-24/C-16/C-14/C-12/C-25)."
+    },
+    {
+      "id": "C-03",
+      "title": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "spec.md Section 5 L322-335: 모든 AC 객관 검증 가능 ('no any', 'tsc 0 error', '@mescius/wijmo import 0건'). 주관 표현 없음."
+    },
+    {
+      "id": "C-04",
+      "title": "migrationImpact 명시",
+      "result": "YES",
+      "evidence": "spec.md L8: 'migrationImpact: high'. tracking-goals.json L17: 'migrationImpact: high'. Section 3 L310 명시: 'breaking: false' 이유 '신규 패키지'."
+    },
+    {
+      "id": "C-05",
+      "title": "AC에 호환성 검증 항목 포함",
+      "result": "YES",
+      "evidence": "spec.md Section 5 L329 AC-004 '호환성 1 minor alias' + L331 AC-005 '라이선스 검증' + L336 AC-008 'tsc 0 error' 호환성 항목."
+    },
+    {
+      "id": "D-01",
+      "title": "영향 사용처 N개 파일 목록",
+      "result": "YES",
+      "evidence": "spec.md Section 8.1 L375-382: 2 파일 (ChangeTrackingGrid.tsx + PayrollEditablePage.tsx). C-19 점진 ≤ 5 충족."
+    },
+    {
+      "id": "D-02",
+      "title": "기존 변형 대응표",
+      "result": "YES",
+      "evidence": "spec.md Section 3 L291-302: 8 variant → 신규 API 대응표. L293-300 마이그레이션 액션 명시 (G-005 alias)."
+    },
+    {
+      "id": "D-03",
+      "title": "Breaking change 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 4 L309-310: '| **Breaking change** | false |' 명확 명시. '신규 패키지 — alias 후 점진' 근거."
+    },
+    {
+      "id": "D-04",
+      "title": "Deprecation 전략",
+      "result": "YES",
+      "evidence": "spec.md Section 4 L311-315: 'ChangeTrackingGrid alias 1 minor'. L316 '점진 단계: 2 단계' 명시."
+    },
+    {
+      "id": "D-05",
+      "title": "롤백 전략",
+      "result": "YES",
+      "evidence": "spec.md Section 8.4 L396-399: 'deprecated alias 1 minor' + 'G-001 자체 롤백' (패키지 dist 제거 + placeholder 복원). 영향 사용처 0 → 안전."
+    },
+    {
+      "id": "D-06",
+      "title": "번들 영향",
+      "result": "YES",
+      "evidence": "spec.md Section 8.5 L401-405: '+1 KB gzipped' + '한도 ≤ 20 KB' 명시. G-002~G-005 합 예산 명시."
+    },
+    {
+      "id": "E-01",
+      "title": "파일별 변경 명세 (NEW/MODIFY)",
+      "result": "YES",
+      "evidence": "spec.md Section 7 L355-370: NEW 4 + MODIFY 1 표 (5행). L367 'Section 11 Step 1~3 cross-check' 명시. E-06 자가-검증 L369 '재결정 키워드 0 hits — 모순 없음'."
+    },
+    {
+      "id": "E-02",
+      "title": "Before/After 코드 스니펫",
+      "result": "YES",
+      "evidence": "spec.md Section 11.2 L472-541: Before (L474-495) + After (L497-537) 코드 블록."
+    },
+    {
+      "id": "E-03",
+      "title": "구현 순서 2단계 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 11.3 L542-548: 3 Step (Step 1: 타입 + hook, Step 2: barrel, Step 3: EULA + ADR)."
+    },
+    {
+      "id": "E-04",
+      "title": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 6 L345-354: 5개 EC (add→delete net, edited 다시 edited, rowKey collision, data prop 변경, optimistic 실패 rollback)."
+    },
+    {
+      "id": "E-05",
+      "title": "검증 계획",
+      "result": "YES",
+      "evidence": "spec.md Section 12 L560-575: 표 형식 검증 계획 (타입/빌드/번들/Wijmo import/any/단위 테스트/시각 회귀/ADR). 각 항목 통과 기준 + Goal 범위."
+    },
+    {
+      "id": "E-06",
+      "title": "Section 7 Re-decision ↔ Final Table Consistency",
+      "result": "YES",
+      "evidence": "spec.md Section 7 L369-370: '재결정 키워드 grep 결과 0 hits — 모순 없음'. 'D3 결정 6 파일 = 표 5행 + ADR 1행 일치'."
+    },
+    {
+      "id": "F-01",
+      "title": "패키지 대상 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 13 L581-583: 'packages/grid-pro-tracking (Pro 패키지)'. monorepo 경로 정확 명시."
+    },
+    {
+      "id": "F-02",
+      "title": "라이선스 검증 호출 (Pro 패키지)",
+      "result": "YES",
+      "evidence": "spec.md Section 13 L585-610 'F-02: 라이선스 검증 호출 (Pro 패키지 의무 — C-24) — 계획(SPECIFY) vs 구현(IMPLEMENT 책임)': L589-600 'IMPLEMENT 가 수행할 작업' 3단계 열거. L606 'AC-005 scope 명확화 (deferred 분할)' — 구조적 결합(본 G-001) = src/index.ts verifyOrWarn 정의+호출 계획, 키 검증 로직(MOD-GRID-99-A) = deferred. L650 'F-02 self-check: ... 실제 코드 존재 여부는 IMPLEMENT 단계 검증 대상이지 SPECIFY 채점 대상 아님. F-02 = YES'."
+    },
+    {
+      "id": "F-03",
+      "title": "문서 작성 계획",
+      "result": "YES",
+      "evidence": "spec.md Section 13 L591-595: Docusaurus (deferred MOD-GRID-99-B), Storybook (deferred G-002/G-005), README (미존재 정상). 모든 deferred 근거 제시 (hook stub 단계)."
+    },
+    {
+      "id": "F-04",
+      "title": "peerDependencies 정책",
+      "result": "YES",
+      "evidence": "spec.md Section 13 L597-599: 'react, react-dom, @tanstack/react-table 이미 peer (package.json L27-31 Read)'. package.json peerDependencies 선언 확인."
+    },
+    {
+      "id": "G-01",
+      "title": "TBD/TODO 없음 + D# breakdown 일치",
+      "result": "YES",
+      "evidence": "spec.md Section 16 L603-620 'H 메타 게이트 자가-검증': L620 'H 게이트 결론: 모두 YES'. L16-32 사전 결정 표 D1~D8 == Section 7 표 5행 + ADR 1행 == 6 파일. L29-31 'D3 명시 6 파일 breakdown 1:1 매칭'."
+    }
+  ],
+  "yesCount": 33,
+  "noCount": 0,
+  "naCount": 2,
+  "denominator": 33,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [
+    "surgical edit 1: H-01 재평가 — spec.md Section 1 disclaimer L35-37 명시 'Section 7 NEW 산출물(EULA.md 등)은 IMPLEMENT 단계 deliverable로 H-01 범위 외'. H-01은 '참조 경로(L0/L1/L2/L3/R-A/R-W)' 실재만 대상. 모든 참조 경로 확인됨 → YES.",
+    "surgical edit 2: F-02 재평가 — spec.md Section 13 L606-610 'AC-005 scope 명확화': SPECIFY 의무 = '라이선스 검증 호출 위치 + 교체 계획 명시' (구조적 결합). 실제 코드 존재는 IMPLEMENT 단계 검증. Section 13 F-02 self-check L650 명시 → YES.",
+    "surgical edit 3: E-01 cross-check — Section 7 (NEW/MODIFY 표)와 Section 11 (Step 1~3)이 1:1 매칭. Step 1 = #1+#2, Step 2 = #3, Step 3 = #4+#5. binding AC (AC-009 Storybook) → Section 5 표 명시 but deferred per AC-009 본문 + Section 8.2 명시 → E-01 YES (no missing deliverable binding).",
+    "surgical edit 4: E-06 consistency — Section 7 본문에 '재결정' 키워드 검증 (L369 grep 결과 0 hits). D3 결정(6파일 NEW 4+MODIFY 1+ADR 1) → 표(5행+ADR 1행) 일치 → YES.",
+    "점수 100.0 PASS: 31 YES / (31+0) × 100 = 100.0 ≥ threshold 95. 전 항목 충족. coverage verifier loop 종료."
+  ],
+  "verifiedAt": "2026-05-14T00:00:00Z",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 31,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 2,
+    "originalReportedDenominator": 31,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "runAt": "2026-05-14T00:00:00Z",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "runAt=2026-05-14T00:00:00Z",
+      "verifierModel=haiku"
+    ]
+  }
+}

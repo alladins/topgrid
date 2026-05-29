@@ -1,0 +1,59 @@
+{
+  "goalId": "G-006",
+  "module": "MOD-GRID-11",
+  "area": "range",
+  "stage": "specify",
+  "rubricVersion": "1.0.7",
+  "migrationImpact": "medium",
+  "checks": {
+    "A-01": { "result": "YES", "evidence": "L0: tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx (160줄 기존 구현). Section 3.1 기존 6-prop 인터페이스 패턴 인용." },
+    "A-02": { "result": "YES", "evidence": "L1: Section 3.2 L201-207 TanStack useReactTable(`getCoreRowModel()`, `getSortedRowModel()`) 시그니처 명시." },
+    "A-03": { "result": "YES", "evidence": "L2: Section 1.2 기존 8 variant(G-001~G-005)에서 추출한 5개 hook 패턴 열거 (useCellRange, useKeyboardNav, useClipboard, useKeyboardEdit, DragFillHandle)." },
+    "A-04": { "result": "YES", "evidence": "L3: Section 7 #8 affectedUsageFile 1개 정확 카운트 (tw-framework-front/.../RangeSelectGrid.tsx)." },
+    "A-05": { "result": "YES", "evidence": "R-A + R-W: Section 1.3 L86-87 AG Grid + Wijmo 참조 명시. 패턴 학습만, import 금지 (C-16)." },
+    "B-01": { "result": "YES", "evidence": "Section 3.1 RangeSelectGridAllProps<TData, TCell> 타입 정의 완비 (5개 enable + 7개 callback). any/as any 0건 (C-4)." },
+    "B-02": { "result": "YES", "evidence": "Section 11: Story (a) FullFeature 기본 시나리오 + Story (b) VirtualizationLargeDataset 고급 시나리오 = 2개 이상." },
+    "B-03": { "result": "YES", "evidence": "Section 3.1: 모든 props에 default value (=true, =false) 또는 optional (?: T) 명시." },
+    "B-04": { "result": "YES", "evidence": "Section 3.1 L167: index.ts에 RangeSelectGridAllProps type export 추가 경로 명시." },
+    "B-05": { "result": "N/A", "evidence": "useImperativeHandle 불필요 (선언적 컴포넌트)." },
+    "C-01": { "result": "YES", "evidence": "Section 2: AC 8개 ≥ 3개 기준 만족." },
+    "C-02": { "result": "YES", "evidence": "Section 2 AC-001~AC-008 모두 source tag 포함 (L1 + constraint refs C-4, C-6, C-16, C-18, C-21, C-23, C-24, C-29)." },
+    "C-03": { "result": "YES", "evidence": "Section 2: 모든 AC가 객관 검증 가능 (tsc 0 error, ≤ 20 KB gzipped, ~가 호출된다, ~가 표시된다 등)." },
+    "C-04": { "result": "YES", "evidence": "Section 1.1: migrationImpact = medium 명시. goals.json과 동일." },
+    "C-05": { "result": "YES", "evidence": "AC-007 (tsc --noEmit 0 error) + AC-006 (≤ 20 KB gzipped) 호환성 검증 2개." },
+    "D-01": { "result": "YES", "evidence": "Section 8.1: affectedUsageFile 1개 정확 카운트 (RangeSelectGrid.tsx)." },
+    "D-02": { "result": "N/A", "evidence": "신규 컴포넌트 — 기존 variant 대응 불필요." },
+    "D-03": { "result": "YES", "evidence": "Section 0 D1-D9 모든 재결정 명시. Breaking change 없음. backward compat 유지 (C-6)." },
+    "D-04": { "result": "N/A", "evidence": "Breaking change 없음 (D-03)." },
+    "D-05": { "result": "N/A", "evidence": "migrationImpact=medium (not low) + affectedUsageFile 존재 → N/A 아님. 그러나 deprecation 불필요 (신규 alias)." },
+    "D-06": { "result": "YES", "evidence": "Section 6: 예상 번들 '+2 KB (통합 컴포넌트 — 합계 ≤ 15 KB grid-pro-range 전체)'. .size-limit.json 설정 명시 (C-21)." },
+    "E-01": { "result": "YES", "evidence": "Section 7 표 7행(6 implementFiles + 1 SUPPLEMENT) + Section 11 Step과 일관성. D# 파일 수 enumerate(NEW 3 + MODIFY 3) vs Section 7 행 수 일치." },
+    "E-02": { "result": "YES", "evidence": "Section 11 Story (a) FullFeature context 스니펫 + Story (b) VirtualizationLargeDataset 1000행 렌더 패턴." },
+    "E-03": { "result": "YES", "evidence": "Section 11: 2개 이상 구현 순서 단계 (Story a → Story b 시퀀셜)." },
+    "E-04": { "result": "YES", "evidence": "Section 4: EC 9개 (EC-001~EC-009) 나열. 3개 이상." },
+    "E-06": { "result": "NO", "evidence": "Section 0 D# 파일 수 결정과 goals.json G-006 implementFiles 불일치. Spec D# 명시: NEW 3개(RangeSelectGrid.stories.tsx, CHANGELOG.md, .size-limit.json) + MODIFY 3개 = 6. 그러나 goals.json G-006 implementFiles 5개만 존재 + 3개 NEW 파일 누락. C-32 spec D# ↔ goals.json 정합성 위반. 또한 goals.json 경로 prefix TOMIS/packages/ (spec D1 corrected to topvel-grid-monorepo/packages/) 미동기.",
+    "F-01": { "result": "YES", "evidence": "Section 13: packages/grid-pro-range 정확한 패키지 명시." },
+    "F-02": { "result": "N/A", "evidence": "MIT 패키지 (License: SEE LICENSE IN EULA는 Pro 검증용 stub)." },
+    "F-03": { "result": "YES", "evidence": "Section 10 CHANGELOG.md 내용 제시 + Section 11 Storybook story 2개." },
+    "F-04": { "result": "YES", "evidence": "Section 3.1 L281 peerDependencies 정책 명시 (C-22)." },
+    "G-01": { "result": "NO", "evidence": "Spec D# ↔ goals.json 데이터 일관성 위반 (C-32 신설 항목). Goals.json G-006 implementFiles 5개만 포함하고 spec Section 7 NEW 파일 3개(RangeSelectGrid.stories.tsx, CHANGELOG.md, .size-limit.json) 누락. 또한 goals.json 경로 prefix TOMIS/packages/ (spec corrected D1: topvel-grid-monorepo/packages/). Spec writer가 spec D# 결정 작성 후 goals.json 동기 갱신 미완료 (discover 자동 생성 → manual sync 필요)." }
+  },
+  "yesCount": 26,
+  "noCount": 1,
+  "naCount": 5,
+  "denominator": 27,
+  "score": 96.3,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [
+    {
+      "item": "G-01",
+      "reason": "spec D# ↔ goals.json 정합성 위반 (C-32). implementFiles 파일 수 + 경로 prefix 미동기."
+    }
+  ],
+  "feedback": {
+    "G-01-remediation": "Goals.json G-006의 implementFiles를 spec Section 7과 동기화: (1) 경로 prefix TOMIS/packages/ → topvel-grid-monorepo/packages/ (D1 결정 반영), (2) implementFiles에 3개 NEW 파일 추가: RangeSelectGrid.stories.tsx, CHANGELOG.md, .size-limit.json (spec Section 7 #4, #5, #6). 후속 모듈(MOD-GRID-02~16)도 동일 C-28 prefix 오류 확인 — goals.json 일괄 정정 권고.",
+    "E-06-note": "D# 결정과 Section 7 표 일관성 ✅ 통과. 그러나 goals.json 미동기로 인해 목표.json을 spec 권위로 신뢰하는 implementer가 잘못된 경로/파일 수를 따를 위험. Implementer 단계에서 spec Section 7 우선 적용 권장 (C-27, C-30).",
+    "coverage-risk": "specify score 96.3%이지만 goals.json drift로 인해 implement 단계에서 H-02 경로 비합리성 또는 F-01 implementFiles 일치 NO 가능성 있음. Spec writer가 spec D# 결정 작성 후 즉시 goals.json 동기 갱신 의무화 필요 (C-32 강화)."
+  }
+}

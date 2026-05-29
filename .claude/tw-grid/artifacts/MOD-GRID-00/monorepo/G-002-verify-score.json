@@ -1,0 +1,198 @@
+{
+  "goalId": "MOD-GRID-00/monorepo/G-002",
+  "module": "MOD-GRID-00",
+  "area": "monorepo",
+  "stage": "verify",
+  "rubricVersion": "1.0.1",
+  "migrationImpact": "low",
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85,
+    "applied": 90
+  },
+  "weights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "vacuousKeywordAck": {
+    "acknowledged": true,
+    "goalTitleKeywords": [
+      "tsup",
+      "tsc",
+      "strict",
+      "dual"
+    ],
+    "vacuousBannedForCategory": [
+      "A"
+    ],
+    "rationale": "Goal title contains 'tsup' and 'tsc' (strict) — verify-rubric.md line 54-63 mandates A category be evaluated with real build/typecheck, NOT vacuous-truth N/A. A-02 and A-03 are evaluated YES/NO based on actual command execution below."
+  },
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "gradlew compileJava — TOMIS backend(tvcom_back) unaffected. G-002 is FE-side monorepo infra (topvel-grid-monorepo). Spec Section 8.2: 'TOMIS tw-framework-front 빌드는 이 Goal로 영향받지 않음'. Legitimate N/A; does NOT trigger vacuous ban because A-02/A-03 are evaluated YES."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "ACTUAL EXECUTION (2026-05-13): `cd D:/project/topvel_project/topvel-grid-monorepo && npx --yes pnpm@8.15.0 -r --filter './packages/*' exec tsc --noEmit` → EXIT=0, output lines=0 (no errors, no warnings) across all 13 packages. tsconfig.base.json strict:true + noImplicitAny:true + exactOptionalPropertyTypes:true + skipLibCheck:false confirmed (Read 2026-05-13 lines 12-18). AC-004 satisfied."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "ACTUAL EXECUTION (2026-05-13): tsup build artifacts confirmed via Get-ChildItem across all 13 packages — grid, grid-core, grid-export, grid-features, grid-license, grid-pro-agg, grid-pro-datamap, grid-pro-header, grid-pro-master, grid-pro-merging, grid-pro-range, grid-pro-tracking, grid-renderers. Each package shows dist/index.cjs=True, dist/index.mjs=True, dist/index.d.ts=True (39 files total, AC-003 satisfied). Sampled grid-core/dist/index.cjs ('use strict' + sourceMappingURL), index.mjs (sourceMappingURL), index.d.ts ('export {  }') — real tsup output, CJS+ESM+DTS dual format. tsup.config.ts confirmed format:['cjs','esm'] + dts:true + sourcemap:true + outExtension producing .cjs/.mjs. size-limit portion intentionally deferred to G-003 (spec Section 1 L1: 'F-00-03 size-limit (G-003)') — does not block A-03 because tsup build itself passes."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "B category (sort/filter/page/virtualization/edit) — G-002 is infrastructure (build pipeline). No runtime grid component implemented in this Goal. src/index.ts is 'export {}' across 13 packages. Vacuous truth allowed: B category entirely N/A → categoryScore = 100 per ADR-MOD-GRID-00-002. Vacuous ban does NOT apply to B (only A has build/tsup keyword guard)."
+    },
+    "B-02": {
+      "result": "N/A",
+      "evidence": "(category vacuous: 전 항목 N/A — infrastructure Goal, no filter functionality)"
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "(category vacuous: 전 항목 N/A — infrastructure Goal, no pagination)"
+    },
+    "B-04": {
+      "result": "N/A",
+      "evidence": "(category vacuous: 전 항목 N/A — infrastructure Goal, no virtualization yet)"
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "(category vacuous: 전 항목 N/A — infrastructure Goal, no inline editing)"
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] (spec Section 1 L3, Section 8.1). No usage migration scope in G-002. tw-framework-front unaffected per spec Section 8.2."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "Visual regression N/A per C-17: low tier + 사용처 0개. Rubric Section C-02 'N/A: low tier + 사용처 0' explicitly satisfied."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "(category vacuous: 전 항목 N/A — no runtime usage, no console execution. tsc + tsup invocations produced 0 warning lines)"
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] — zero usage to migrate. Pure infra Goal."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "(category vacuous: 전 항목 N/A — no remaining usage sites since 0 affected)"
+    },
+    "E-01": {
+      "result": "N/A",
+      "evidence": "Bundle size-limit measurement deferred to G-003 (size-limit + Changesets per spec Section 1 L1 F-00-03). Current dist/index.{cjs,mjs} are placeholders (export {}) — measurement premature. C-21 limit application timing: 'dist/ 실제 코드 포함 이후 (G-003+)' per spec Section 8.5."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "ADR-MOD-GRID-00-005 'tsup 빌드 도구 선택' present in D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-00-decisions.md (Read 2026-05-13, lines 134-181). Includes: 결정 (tsup ^8.4.0 + CJS+ESM dual), 사유 (esbuild 기반, 설정 minimal), 대안 2개 (Rollup, Vite library mode — 각하 이유 명시), Trade-off 표 (4 Pro / 4 Con), 라이선스 (MIT — C-9 허용목록 충족), 번들 영향, 결과. C-9/C-14/C-20 모두 충족. typescript는 ADR 생략 (언어 자체 — spec Section 9 명시)."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "All 13 packages have license field in package.json (Get-Content + ConvertFrom-Json 2026-05-13): grid-core/grid-export/grid-features/grid-renderers = 'MIT' (4 MIT packages); grid/grid-license/grid-pro-agg/grid-pro-datamap/grid-pro-header/grid-pro-master/grid-pro-merging/grid-pro-range/grid-pro-tracking = 'SEE LICENSE IN EULA' (9 Pro packages). C-24 license disclosure satisfied. LICENSE/EULA.md files are G-003 scope per spec Section 13. Pro runtime license verification (MOD-GRID-99-A) out of scope."
+    }
+  },
+  "categoryFormulaTrace": {
+    "A": "YES=2 (A-02, A-03), NO=0, N/A=1 (A-01). denominator=2. categoryScore = 2/2 × 100 = 100.0. Vacuous ban acknowledged — A evaluated with real execution.",
+    "B": "YES=0, NO=0, N/A=5. Category fully N/A → vacuous truth = 100.0 (ADR-MOD-GRID-00-002). Vacuous keyword guard inactive for B.",
+    "C": "YES=0, NO=0, N/A=3. Category fully N/A → vacuous truth = 100.0 (ADR-MOD-GRID-00-002). Sufficient justification: low tier + affectedUsageFiles=[].",
+    "D": "YES=0, NO=0, N/A=2. Category fully N/A → vacuous truth = 100.0 (ADR-MOD-GRID-00-002). Sufficient justification: affectedUsageFiles=[].",
+    "E": "YES=2 (E-02, E-03), NO=0, N/A=1 (E-01). denominator=2. categoryScore = 2/2 × 100 = 100.0."
+  },
+  "weightedScore": 100,
+  "weightedFormulaTrace": "Σ(categoryScore × weight)/100 = (100×25 + 100×25 + 100×20 + 100×15 + 100×15)/100 = (2500+2500+2000+1500+1500)/100 = 10000/100 = 100.0",
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {},
+  "buildStatus": {
+    "tsc": "PASS (npx pnpm@8.15.0 -r --filter './packages/*' exec tsc --noEmit → exit 0, 0 lines output)",
+    "tsupBuild": "PASS (13 packages × 3 files = 39 dist outputs confirmed via Get-ChildItem; sampled grid-core dist content valid)",
+    "viteBuild": "N/A (tsup chosen per ADR-MOD-GRID-00-005)",
+    "sizeLimit": "N/A (deferred to G-003 per spec Section 1 L1 + Section 8.5)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": null,
+    "note": "affectedUsageFiles=[] — pure build infrastructure Goal. No usage migration in scope."
+  },
+  "metaGates": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "5 evidence files sampled via Read 2026-05-13: (1) tsconfig.base.json strict:true noImplicitAny:true exactOptionalPropertyTypes:true skipLibCheck:false confirmed lines 12-18. (2) packages/grid-core/tsup.config.ts format:['cjs','esm'] dts:true sourcemap:true outExtension confirmed lines 5-13. (3) packages/grid-core/package.json exports map + scripts.build=tsup + license=MIT confirmed. (4) root package.json devDeps tsup ^8.4.0 + typescript ~5.8.3 confirmed. (5) decisions/MOD-GRID-00-decisions.md ADR-MOD-GRID-00-005 tsup confirmed lines 134-181. Implementer evidence claims match reality."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "Each category recomputed: A=2/(2+0)=100.0, B=vacuous 100.0, C=vacuous 100.0, D=vacuous 100.0, E=2/(2+0)=100.0. All match reported categoryScores. N/A correctly excluded from denominator. Vacuous truth rule applied only where vacuous keyword guard inactive (B/C/D). A is NOT vacuous (real execution per ban)."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore recompute: (100×25 + 100×25 + 100×20 + 100×15 + 100×15)/100 = 10000/100 = 100.0. Matches reported. Low-tier weights (A=25, B=25, C=20, D=15, E=15) sum to 100. Confirmed against verify-rubric.md table line 39."
+    },
+    "hallucinationDetected": false,
+    "vacuousKeywordViolation": false
+  },
+  "executionLog": {
+    "tscCommand": "npx --yes pnpm@8.15.0 -r --filter './packages/*' exec tsc --noEmit",
+    "tscExitCode": 0,
+    "tscOutputLineCount": 0,
+    "distFileCheck": "Get-ChildItem packages -Directory | ForEach test-path on dist/index.{cjs,mjs,d.ts}",
+    "distFileResult": "13/13 packages × 3/3 files = 39/39 files present",
+    "licenseCheck": "Get-Content packages/*/package.json | ConvertFrom-Json | license",
+    "licenseResult": "4 MIT + 9 'SEE LICENSE IN EULA' = 13/13 declared"
+  },
+  "summary": {
+    "status": "VERIFY PASS",
+    "score": "100.0 (threshold 90, low tier)",
+    "tier": "low",
+    "vacuousKeywordHandling": "ACKNOWLEDGED — A category evaluated with real tsc + tsup execution, NOT vacuous. B/C/D categories vacuous-truth (no keyword guard).",
+    "keyFindings": [
+      "tsc --noEmit exit 0 across 13 packages (real execution)",
+      "tsup build produced 39 dist files (CJS+ESM+DTS dual) — sampled grid-core valid",
+      "ADR-MOD-GRID-00-005 (tsup) present with all required sections",
+      "All 13 packages declare license field (4 MIT + 9 EULA)",
+      "size-limit absence is legitimate G-003 scope, not a NO"
+    ],
+    "recommendedNext": "Proceed to G-003 (size-limit + Changesets + peerDependencies) per spec Section 1 L1 phasing."
+  },
+  "moduleId": "MOD-GRID-00",
+  "tier": "low",
+  "yesCount": 4,
+  "noCount": 0,
+  "naCount": 12,
+  "denominator": 4,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-002→full",
+      "tier=low",
+      "yesCount=4",
+      "noCount=0",
+      "naCount=12",
+      "denominator=4",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

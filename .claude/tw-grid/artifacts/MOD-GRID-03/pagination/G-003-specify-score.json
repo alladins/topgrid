@@ -1,0 +1,202 @@
+{
+  "goalId": "MOD-GRID-03/pagination/G-003",
+  "module": "MOD-GRID-03",
+  "area": "pagination",
+  "stage": "specify",
+  "tier": "medium",
+  "threshold": 90,
+  "rubricVersion": "1.0.5",
+  "migrationImpact": "medium",
+  "checks": {
+    "H-01": {
+      "result": "YES",
+      "evidence": "spec.md L66-78: data-table-pagination.tsx L17-27 getPageNumbers() algorithm cited with line numbers. Props signature {paging, listAction} explicit. File verified in prior G-002/G-001 sessions (TOMIS context)."
+    },
+    "H-02": {
+      "result": "YES",
+      "evidence": "spec.md L193-200: implementFiles paths use monorepo root 'packages/grid-core/src/pagination/' + 'legacy/' (NOT TOMIS/packages/). C-28 正correction in Section 8.1 D1. Parent dirs exist per G-002 file creation. Convention monorepo kebab-case ✓."
+    },
+    "H-03": {
+      "result": "YES",
+      "evidence": "Section 4 AC table: AC-001(C-2), AC-002(L0), AC-003(C-5), AC-004(C-2), AC-005(C-6), AC-006(C-25). All 6 AC tagged with source. Tags cited in spec body (Section 2.3 L1, Section 8 ADR)."
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "Section 2.2 L0 current state: data-table-pagination.tsx path + getPageNumbers() algorithm (L17-27) + props {paging, listAction} explicit. File location cited."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Section 2.3 L1 TanStack API: table.getPageCount(), table.getState().pagination, table.setPageIndex(idx), table.previousPage(), table.nextPage(), table.getCanPreviousPage(), table.getCanNextPage() all with full signatures."
+    },
+    "A-03": {
+      "result": "N/A",
+      "evidence": "New component area (PageNumbers, DataTablePagination, enableKeyboardNav). No 8-variant common pattern extraction applicable. Spec Section 3 Scope: 신규 기능 추가."
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "Section 8.1 explicit: affectedUsageFiles = **0개** (new feature, no existing usage impact). Migration deferred to MOD-GRID-17. Count explicit."
+    },
+    "A-05": {
+      "result": "N/A",
+      "evidence": "New component area. AG Grid/Wijmo equivalent analysis not applicable. Section 2.2 notes L0 uses react-icons + shadcn (explicitly NOT adopted in grid-core per C-16). No equiv library comparison needed."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "Section 9.1 PageNumbersProps, 9.2 DataTablePaginationProps<TData>, 9.3 GridPaginationProps (with enableKeyboardNav?: boolean), 9.4 GridPaginationOptions. All props/return types defined with JSDoc."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Section 10 Data Flow: 3 code block diagrams (GridPagination.tsx render + PageNumbers.tsx render + DataTablePagination.tsx render). Shows usage + wiring flow."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "Section 9.3 enableKeyboardNav: marked optional (?:boolean). Section 9.1 PageNumbersProps all fields typed with purpose. Defaults: pageSize options [10,20,50,100] from D1 (G-002)."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "Section 9: DataTablePagination export path 'packages/grid-core/src/legacy/DataTablePagination.tsx', GridPagination 'src/pagination/GridPagination.tsx', types 'src/types.ts' — all explicit."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "Section 9.3 & 10: containerRef internal, no useImperativeHandle. Declarative component (ref used for event listener scope, not exposed API)."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "Section 4 AC table: AC-001, AC-002, AC-003, AC-004, AC-005, AC-006 = **6 AC** (≥3)."
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "Section 4 all 6 AC tagged: (C-2), (L0), (C-5), (C-2), (C-6), (C-25). Tags correspond to sources cited in spec body."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "Section 4 AC language: '호출된다', '렌더 된다', 'disabled 속성', '이벤트 리스너 등록', 'import 가능' — all objective, binary verifiable (not 'works well')."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "spec header: migrationImpact = medium. Section 1: 신규 컴포넌트 + alias 추가, affectedUsageFiles 0개 → explicit medium justification."
+    },
+    "C-05": {
+      "result": "YES",
+      "evidence": "AC-005: '빌드 확인 + 타입 체크' (compatibility/compat check). affectedUsageFiles=0 but AC explicitly covers build verification (not N/A)."
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "Section 8.1 affected files table: 직접 영향(1)/신규 생성(2)/자동 노출(1)/간접 영향(미작업) + explicit affectedUsageFiles: **0개**. Precise count."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "New component area (PageNumbers, alias wrapper). No existing 8 variants to map. Spec notes 신규 기능 추가."
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "Section 8.2: 파괴적 변경 없음. GridPagination existing props retained (table, mode, totalCount, pageCount, pageSizeOptions, showTotalCount, onPaginationChange). Only enableKeyboardNav optional prop added."
+    },
+    "D-04": {
+      "result": "YES",
+      "evidence": "Section 8.4 & 13.4: DataTablePagination 1 minor deprecation alias (C-23). Deprecation warning + migration guide in CHANGELOG (Section 13.4)."
+    },
+    "D-05": {
+      "result": "YES",
+      "evidence": "Section 8.4 rollback scenarios: (1) alias removal, (2) PageNumbers flag disable, (3) keyboard feature-flag. Alias failed → export remove + recover. Feature failures isolated."
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "Section 8.3 bundle impact: PageNumbers < 1KB, DataTablePagination < 0.5KB, enableKeyboardNav < 0.2KB, total < 2KB gzip, cumulative 11.6 KB < 30KB (C-21)."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "E-06 check (C-30 Truth Table): Section 7 (Authority table L189-200): CREATE 2 + MODIFY 3 = 5 파일. Section 11.1 파일 목록 (Step 1~5): 동일 5개 파일, 동일 순서, 동일 ACTION. Section 7 ↔ 11 일관성 100%. Grep '재결정/대체/대신/수정함' on Section 7: NONE. Section 8 ADR D1~D6 모두 Section 7 지지 (모순 0건)."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "Section 11.2 Step 4 (GridPagination.tsx): **Before** (L575-590 현재 G-002 상태) + **After** (L593-720 G-003 수정). keyboard useEffect + PageNumbers import + container ref 명시."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "Section 11.2 Step 1~5: types.ts (Step 1: enableKeyboardNav 추가) → PageNumbers.tsx (Step 2, no deps) → DataTablePagination.tsx (Step 3, imports GridPagination) → GridPagination.tsx (Step 4, imports PageNumbers + keyboard handler) → legacy/index.ts (Step 5, exports DataTablePagination). Dependency DAG clear: Step 1 first, Step 2/3 parallel, Step 4 requires 1/2, Step 5 requires 3."
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "Section 6 Edge Cases: EC-01 (pageCount=0), EC-02 (pageCount=1), EC-03 (≤5 pages), EC-04 (>5 pages, start), EC-05 (>5 pages, end), EC-06 (unmount cleanup), EC-07 (undefined keyboard prop), EC-08 (first page prev skip) = **8 엣지 케이스** (≥3)."
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "Section 12: 12.1 Unit tests (PageNumbers + GridPagination 보강 + DataTablePagination), 12.2 Storybook stories (ClientMode/ServerMode/KeyboardNav/FewPages), 12.3 Type verification (npx tsc --noEmit). All three methods covered."
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "Section 7 truth table (L189-200) = Authority. Grep Section 7 body for '재결정', '변경 대상', '대체', '수정함', '~로 변경', '~대신': **NONE FOUND** (L189-204 contains only file list + C-28/main index.ts 근거, no redecision statements). Section 7 표 ↔ Section 11.1 Step 파일 100% 동일 (5개 파일 동일 순서). Section 8 D1~D6 ADR all support Section 7 (no contradictions). **→ PASS: No redecision conflicts.**"
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "spec header + Section 13.1: packages/grid-core (MIT). Target explicit."
+    },
+    "F-02": {
+      "result": "N/A",
+      "evidence": "MIT package. configureGridLicense() not required (Pro packages only)."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "Section 13.3 Documentation plan: Storybook story path (packages/grid-core/src/stories/GridPagination.stories.tsx), Docusaurus API ref (docs/grid-core/pagination.md), CHANGELOG migration guide. All specified."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Section 13.2: react, react-dom, @tanstack/react-table marked as peerDependencies (existing, no new deps added). C-22 policy: peers not in dependencies ✓."
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "Grep entire spec for 'TBD', 'TODO', '미정': NONE. Section 14.1~14.7 Self-Check all checkmarks ✓. All D1~D6 decisions concrete (D1 path correction, D2 signature, D3 internal component, D4 container ref, D5 disabled rendering, D6 file count strategy). All Sections 1~13 complete."
+    }
+  },
+  "yesCount": 30,
+  "noCount": 0,
+  "naCount": 5,
+  "denominator": 30,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "constraintCompliance": {
+    "C-8": true,
+    "C-28": true,
+    "C-30": true
+  },
+  "feedback": {
+    "general": "Clean SPECIFY run. All 32 rubric items scored. H gates pass. E-06 (C-30 Truth Table Discipline) validates Section 7 authority: no redecision conflicts between spec body + final table + Section 11 steps. C-8 파일 수 5개 정확히 준수. C-28 monorepo 경로 정정 명시. implementFiles 경로 프리픽스 일치.",
+    "C-8": "5 파일 (CREATE 2 + MODIFY 3) ≤ 5 ✓",
+    "C-28": "implementFiles prefix D1 결정으로 정정: TOMIS/packages → topvel-grid-monorepo/packages ✓",
+    "C-30": "Section 7 Truth Table 권위 선언. 본문-표 모순 0건. Section 11 steps 100% 매칭. ✓",
+    "E-06": "Section 7 grep for redecision keywords (재결정, 대체, ~대신 등): NONE. No contradictions to detect. E-06 PASS.",
+    "H-gates": "H-01 (paths exist), H-02 (monorepo convention), H-03 (AC tags) all YES."
+  },
+  "constraintViolations": [],
+  "scoredAt": "2026-05-14",
+  "verifierNote": "Mechanical scoring by Coverage Verifier (SPECIFY stage). All 28 YES, 0 NO, 4 N/A (proper exclusions: A-03, A-05, B-05, D-02, F-02 all new-area or MIT-only). Denominator = 28. Score = 100.0 ≥ 90 THRESHOLD → PASSED. Rubric total check: 28+0+4=32 ✓. failedChecks array empty (no NO results). C-26 self-verification PASS.",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 28,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 4,
+    "originalReportedDenominator": 28,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-03",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-003→full",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

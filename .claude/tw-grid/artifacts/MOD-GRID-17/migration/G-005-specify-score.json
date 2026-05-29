@@ -1,0 +1,279 @@
+{
+  "goalId": "MOD-GRID-17/migration/G-005",
+  "stage": "specify",
+  "scoredAt": "2026-05-15",
+  "verifierModel": "haiku",
+  "rubricVersion": "v1.0.9",
+  "threshold": 95,
+  "checks": [
+    {
+      "id": "H-01",
+      "category": "H",
+      "result": "YES",
+      "evidence": "spec L0-1 (FundStatusPage L11+L218), L0-deferred (InsEduc11History L7-14, DailyAttendancePage L12-17, InsEmpl22ContractListPage L8-13, AnnualLeaveStatusPage L13-20) — all paths READ-verified. Grid.tsx L254-464 exists (monorepo path confirmed). Section 2.1 L2-3 GridProps interface verified."
+    },
+    {
+      "id": "H-02",
+      "category": "H",
+      "result": "YES",
+      "evidence": "implementFiles[1]: FundStatusPage.tsx parent dir (tw-framework-front/src/pages/tomis/finance/) confirmed real via Read tool (230 lines, L1-231). Convention: tw-framework-front/src/pages/tomis/{domain}/{ModuleName}Page.tsx matches CLAUDE.md frontend directory principle. Monorepo path anchor: Section 8.6 vite.config.ts L18 alias + Section 1 L2-2 Grid.tsx L254-464 (topvel-grid-monorepo/packages/grid-core/src) confirmed."
+    },
+    {
+      "id": "H-03",
+      "category": "H",
+      "result": "YES",
+      "evidence": "All AC (AC-001 through AC-005) tagged with source: C-12 (L0+C-12), L0+L2+C-17, C-23, L0+L2+C-6, C-19. All sources cross-referenced in spec: C-12 constraints.md L98-103, C-17 L167-175, C-23 L234-241, C-6 L50-54, C-19 L187-193. L0 = Section 1 L0-1 (FundStatus) + L0-deferred. L2 = Section 1 L2-1 (index.ts) + L2-2 (Grid.tsx) + L2-3 (GridProps interface)."
+    },
+    {
+      "id": "A-01",
+      "category": "A",
+      "result": "YES",
+      "evidence": "Section 1 L0-1 (FundStatusPage.tsx path + L11 import + L218-223 JSX site + 4 props inferred). Section 1 L0-deferred (InsEduc11History L7-14 useReactTable import + L133 table call + L279-319 inline table markup, DailyAttendancePage L12-17 + L461-465, InsEmpl22ContractListPage L8-13 + L148-152, AnnualLeaveStatusPage L13-20 + L386-393 + L195-384 closure)."
+    },
+    {
+      "id": "A-02",
+      "category": "A",
+      "result": "YES",
+      "evidence": "Section 1 L2-1 Grid export confirmed (index.ts L2). Section 1 L2-3 GridProps interface signature cited (L120-133 data + columns + enableSort + enableFilter + loading + emptyText + onRowClick + className + rowSelection + pagination + enablePagination + optional props). TanStack v8 standard: useReactTable, getCoreRowModel, getSortedRowModel, getFilteredRowModel, getPaginationRowModel, flexRender (L102-116 Grid.tsx verified)."
+    },
+    {
+      "id": "A-03",
+      "category": "A",
+      "result": "YES",
+      "evidence": "Section 1 L2-4 (BaseGrid component uses useReactTable + getCoreRowModel + getSortedRowModel + getFilteredRowModel + getPaginationRowModel internally — G-001~G-004 verified pattern reinvoked L136 spec text). 8 variants deduped: BaseGrid (in-scope), EditableGrid/ChangeTrackingGrid/RangeSelectGrid/TreeGrid/ColumnPinGrid/VirtualGrid/GroupedHeaderGrid (out-of-scope for G-005). Duplicate pattern: all local variants wrap TanStack directly → grid-core <Grid> component replacement valid."
+    },
+    {
+      "id": "A-04",
+      "category": "A",
+      "result": "YES",
+      "evidence": "Section 1 L0-A (1 in-scope file — FundStatusPage) + Section 1 L0-deferred (4 Pattern B files — InsEduc11History, DailyAttendancePage, InsEmpl22ContractListPage, AnnualLeaveStatusPage). Section 8.1 'In-scope 1 파일 + deferred 4 파일 (D1 audit trail 보존)'. Table: Entry 5 FundStatus L218 1 hit BaseGrid, Entries 1-4 all 0 hits BaseGrid (useReactTable direct). Exact count: implementFiles[1] (FundStatus) + affectedUsageFiles[5] preserved for audit (operative shrinkage D1)."
+    },
+    {
+      "id": "A-05",
+      "category": "A",
+      "result": "N/A",
+      "evidence": "Usage migration Goal — AG Grid + Wijmo equiv functionality reference not required. No new API design; existing GridProps<TData> replacement only. N/A per rubric A-05."
+    },
+    {
+      "id": "B-01",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 2.1 GridProps<TData> interface full definition (lines 120-133 spec): data (required), columns (required), enableSort (optional, default false → boolean attribute), enableFilter (optional, default false), emptyText (optional, default DATA_DEFAULT_EMPTY_TEXT), loading (optional, default false), onRowClick (optional), className (optional), rowSelection (optional), pagination (optional), enablePagination (optional) + 30+ optional. All props have type annotations (TData[], ColumnDef<TData, unknown>[], boolean, string, GridRowSelectionOptions<TData>, etc.)."
+    },
+    {
+      "id": "B-02",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 2.3 예시 1 (FundStatus conversion pattern — L198-209 spec): import { Grid } + usage with columns/data/enableSort/enableFilter/loading/emptyText. 예시 2 (cascading general pattern — L213-224 spec): Grid<RowType> usage with columnsConst/rowsState/enableSort/enableFilter/isLoadingState/emptyText. Both code blocks executable."
+    },
+    {
+      "id": "B-03",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 2.4 default value + optional explicit: data/columns marked required (no default). enableSort/enableFilter/loading/emptyText all optional with explicit defaults noted (enableSort default false, emptyText default Grid.tsx L55 DEFAULT_EMPTY_TEXT, loading default false). Section 2.1 table row indicates 'enableSort/enableFilter: → 추가' (boolean attribute activation) + 'onRowClick/className/rowSelection/enablePagination: 미사용' = required vs optional explicit."
+    },
+    {
+      "id": "B-04",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 8.6 alias resolution path explicit (B-04 sub-rule mandatory for usage migration Goal): (1) vite.config.ts L18 '@tomis/grid-core': path.resolve(__dirname, '../../topvel-grid-monorepo/packages/grid-core/src') cited + Read verified. (2) tsconfig.app.json L23 '@tomis/grid-core': ['../../topvel-grid-monorepo/packages/grid-core/src'] cited. (3) alias source target: topvel-grid-monorepo/packages/grid-core/src/index.ts L2 export { Grid } confirmed (Section 1 L2-1 repeat). ADR-MOD-GRID-17-002 obligation met."
+    },
+    {
+      "id": "B-05",
+      "category": "B",
+      "result": "N/A",
+      "evidence": "Section 2.5: 'FundStatus 페이지 gridRef/useRef<GridHandle<T>> 사용 없음 (Read 결과 confirmed — Grep useRef 0 hits)'. GridHandle<TData> imperative ref API not required for in-scope file. N/A per rubric B-05."
+    },
+    {
+      "id": "C-01",
+      "category": "C",
+      "result": "YES",
+      "evidence": "Section 5 AC table: AC-001 tsc 0 errors, AC-002 visual regression, AC-003 console.warn 0, AC-004 variant import 0, AC-005 page-unit PR split. 5 AC ≥ 3 required. All binary verifiable."
+    },
+    {
+      "id": "C-02",
+      "category": "C",
+      "result": "YES",
+      "evidence": "Section 5 all AC tagged: AC-001 (L0+C-12), AC-002 (L0+L2+C-17), AC-003 (C-23), AC-004 (L0+L2+C-6), AC-005 (C-19). Source tags explicit; all cross-referenced in spec Section 5 + AC source list L290-297."
+    },
+    {
+      "id": "C-03",
+      "category": "C",
+      "result": "YES",
+      "evidence": "Section 5 all AC binary verifiable: AC-001 'npx tsc --noEmit exit 0', AC-002 'screenshot pixel identical (cell padding/row height/sort icon/hover/thead)', AC-003 'console.warn count = 0', AC-004 'grep 0 hits BaseGrid', AC-005 'git log shows 1 file 1 commit'. No subjective 'works well' phrases."
+    },
+    {
+      "id": "C-04",
+      "category": "C",
+      "result": "YES",
+      "evidence": "goals.json G-005 entry: 'migrationImpact': 'high' + spec Section 1 opening '**Migration Impact**: high' + Section 5 table all AC rows marked 'high'. Rationale: D1 (Scope reduction 5→1, Pattern B deferral foundation), Section 1 L2-2 Grid.tsx markup differences (cell padding px-4 py-3 + sort glyph ⇅ neutral new + hover bg-gray-50 + thead bg-gray-50 sticky — external monorepo diff)."
+    },
+    {
+      "id": "C-05",
+      "category": "C",
+      "result": "YES",
+      "evidence": "AC-001 and AC-002 provide compatibility validation: AC-001 'tsc 0 errors' (C-12 build compat), AC-002 '외관 보존 — 마이그레이션 전후 동일 데이터... pixel identical' (C-17 visual regression). Both probe affected usage file (FundStatus) external appearance + type safety. migrationImpact: high → AC compat required per rubric C-05."
+    },
+    {
+      "id": "D-01",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 8.1 exact file list: In-scope: 'D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/finance/FundStatusPage.tsx' (1 file). Deferred 4 files listed with strikethrough + pattern reason. Distinct file path enumeration. Goal prompt 5 files assumption → reality check D1 (5→1) explicit correction."
+    },
+    {
+      "id": "D-02",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 3 compatibility table: 1/1 row FundStatusPage MODIFY action. baseline: L11 BaseGrid default import (local), new: Grid import (@tomis/grid-core). 마이그레이션 액션: 'direct 교체' pattern A (G-001~G-004 cascading). Variant mapping complete (1 in-scope variant, 8 others deferred/out-of-scope per ModuleId.md)."
+    },
+    {
+      "id": "D-03",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 4.1 'breaking: false' explicit. Section 4.2 deprecation strategy: 'lokal BaseGrid는 1 minor 버전 유지 (다른 페이지들이 점진 마이그레이션 후 제거 검토)'. breaking change analysis + alias lifetime (1 minor) explicit."
+    },
+    {
+      "id": "D-04",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 4.1 'breaking: false' stated. Section 4.2 contains deprecation plan. Section 4.3 migration path (3 steps) explicit. No breaking change needed; local BaseGrid wrapper deprecated in favor of monorepo Grid (non-breaking via parallel import 3 steps)."
+    },
+    {
+      "id": "D-05",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 8.4 rollback strategy: (1) local BaseGrid component preserved ('src/components/tomis/Grid/BaseGrid.tsx 삭제 X'), (2) 'git revert <commit-sha>' surgical rollback, (3) direct import line re-import + JSX restore (FundStatus page ← BaseGrid lines reversible). Feature flag or alias availability for rollback. Low risk rollback possible."
+    },
+    {
+      "id": "D-06",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 8.5 bundle impact: '**0 KB** (C-21 충족). 사용처 마이그레이션 — 새 의존성 추가 0. @tomis/grid-core는 이미 (G-001~G-004 로) tw-framework-front의 19 페이지에서 import됨 → 본 Goal 추가 1 페이지는 트리쉐이킹 영향 없음.' Zero bundle delta estimated + justification (already imported in 19 pages)."
+    },
+    {
+      "id": "E-01",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 7 NEW/MODIFY table (1 row): FundStatusPage.tsx MODIFY L11+L218. Section 11.1 sampling same 1 row FundStatusPage MODIFY with Step breakdown. E-01 Section 7 ↔ Section 11 cross-check L494: '1/1 행 1:1 매칭. NEW/MODIFY 분류 1 MODIFY 일치. 1 JSX 사이트 enumerate. 파일 이름 일치. 그룹 분류(A) 일치.' All files in Section 11 sourced from Section 7."
+    },
+    {
+      "id": "E-02",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 11.2 Before/After code snippets (FundStatusPage): Before L11 'import BaseGrid...' + L218 '<BaseGrid... />', After L11 'import { Grid }...' + L218 '<Grid enableSort enableFilter... />'. Props transformation explicit: 4 preserved (columns/data/loading/emptyText) + 2 added (enableSort/enableFilter)."
+    },
+    {
+      "id": "E-03",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 11.3 implementation order: Step 1 (FundStatusPage single file conversion L11 import + L218 JSX via PowerShell-via-Bash, tsc → 0 errors, dev server appearance check), Step 2 (full validation + commit: AC-004 grep, AC-001 tsc, AC-003 console.warn, AC-002 visual regression single site confirmation). 2-step minimum with dependency chain (tsc before AC-002)."
+    },
+    {
+      "id": "E-04",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 6 edge cases (EC-01 through EC-08): EC-01 single BaseGrid site in 1 file (FundStatus 1 site L218), EC-02 Pattern B 4-page deferral scope reduction (D1 foundation), EC-03 props mapping surgical (4 used + 2 added, onRowClick/className/rowSelection/enablePagination unused), EC-04 ColumnDef import path retention (../../../types/tomis/grid), EC-05 worktree boundary bypass (C-34), EC-06 loading/empty state visual regression (skeleton + emptyText), EC-07 Korean emptyText BOM (D10 alt (a) inline -Command recommend, 1 pattern only), EC-08 Pattern B 4-page markup incompatibility (D1 rationale: px-3 vs px-4, zebra vs no-zebra, bg-blue-100 vs bg-blue-50, hover bg diffs). 8 EC ≥ 3 required."
+    },
+    {
+      "id": "E-05",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 12 verification plan: 12.1 unit test (N/A — grid-core unit test already covered G-001~G-005), 12.2 visual regression (method 2 manual FundStatus dev server screenshot comparison), 12.3 build verification (tsc + vite build), 12.4 codemod (deferred to MOD-GRID-99-B), 12.5 Korean string verification (PowerShell-via-Bash BOM handling). C-12 (build 0 errors) + C-17 (visual regression high impact) + C-13 (appearance preservation) explicit."
+    },
+    {
+      "id": "E-06",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 7 prose 'Pattern B 4 페이지 행 미포함 (D1)' + '합계: NEW 0 + MODIFY 1 = 1 파일 (D5 breakdown 일치).' → Section 7 final table 1 row (FundStatusPage only). E-06 prose↔structured check: D1 본문 section 1.3~1.5 deferred explicit + Section 3 표 1 행 + Section 7 표 1 행 + Section 11.1 표 1 행 all aligned. Return-type signature cross-check: Grid<T> consistent across Section 2.1 interface (GridProps<TData>) + Section 11.2 After snippet (<Grid<FinAcno01FundStatusItem> ...>) — both use same TData type param. Unused import check: Section 2.1 GridProps interface imports ColumnDef from ../../../types/tomis/grid (L12 spec FundStatus import) — used in L122 interface def (ColumnDef<TData, unknown>[]). No unused imports."
+    },
+    {
+      "id": "F-01",
+      "category": "F",
+      "result": "N/A",
+      "evidence": "Usage migration Goal — tw-framework-front package target only (goals.json 'packageTarget': 'tw-framework-front'). No Pro package component (grid-pro-*) created. F-01 商用 productization not applicable. N/A per rubric F-01 scope."
+    },
+    {
+      "id": "F-02",
+      "category": "F",
+      "result": "N/A",
+      "evidence": "MIT package only (goals.json 'licenseTier': '-'). configureGridLicense() call unnecessary for @tomis/grid-core (MIT). F-02 Pro package license verification N/A."
+    },
+    {
+      "id": "F-03",
+      "category": "F",
+      "result": "N/A",
+      "evidence": "Usage migration Goal — Docusaurus documentation writing + Storybook story creation out-of-scope (Section 12.4 notes 'codemod 작성 예정' deferred, 'FundStatus가 자금 API fetching 페이지여서 isolation 가능한 story 작성 부담 큼'). F-03 applies to new API goals only; usage migration inherits existing docs. N/A per rubric F-03 scope."
+    },
+    {
+      "id": "F-04",
+      "category": "F",
+      "result": "YES",
+      "evidence": "Section 4.5 peerDependencies policy: '@tomis/grid-core가 react, react-dom, @tanstack/react-table을 peer로 선언 — 사용처 tw-framework-front는 이미 이 셋을 deps로 보유 (G-001~G-004 spec Section 4.5 검증 완료). 추가 작업 없음.' No new peerDeps required; tw-framework-front already has react, react-dom, @tanstack/react-table as dependencies."
+    },
+    {
+      "id": "G-01",
+      "category": "G",
+      "result": "YES",
+      "evidence": "D# 표 (D1~D11 합계 11결정) × goals.json cross-check: (1) 경로 prefix 일관성 — spec D2 'baseGrid default import 한정', implementFiles[1] FundStatusPage path 'D:/project.../tw-framework-front/src/pages/tomis/finance/FundStatusPage.tsx' (base repo TOMIS prefix, not monorepo topvel-grid-monorepo prefix). Correct base repo path. (2) 번들 영향 카운트 — spec D6 'bundleImpact.expected = \"0 KB\"' = goals.json bundleImpact.expected 일치. (3) 변경 파일 수 — spec D5 '1 파일' = goals.json implementFiles[1] 일치. (4) 패키지 대상 — spec intro 'tw-framework-front' = goals.json 'tw-framework-front' 일치. No TBD, no '미정', all decisions explicit. affectedUsageFiles[5] preserved for audit trail (D1 scope reduction 1 operative, 4 deferred). scopeNote field updated per spec L386 'audit trail 보존'."
+    }
+  ],
+  "metaGatePassed": true,
+  "categoryCounts": {
+    "A": 5,
+    "B": 5,
+    "C": 5,
+    "D": 6,
+    "E": 6,
+    "F": 4,
+    "G": 1,
+    "H": 3
+  },
+  "yesCount": 30,
+  "noCount": 0,
+  "naCount": 5,
+  "denominator": 30,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [
+    "G-005 spec exceptional quality: D1 (scope reduction 5→1) comprehensively justified by section 1 L0 Grep evidence (FundStatus 1 BaseGrid hit + 4 Pattern B 0 BaseGrid hits). All deferred entries audit-trailed. ADR-005 investigative authority properly invoked.",
+    "E-06 prose↔structured alignment perfect: D1 本文 ('Pattern B 4 페이지 본 Goal 범위 제외') mirrored in section 1 L0-deferred explicit exclusion + section 3 table 1 row (5行 X) + section 7 table 1 row + section 11.1 table 1 row. C-30 truth table discipline fully satisfied.",
+    "B-04 sub-rule (dependency resolution path) exemplary: vite.config.ts L18 + tsconfig.app.json L23 cited with exact line numbers + alias source target chain (topvel-grid-monorepo/packages/grid-core/src/index.ts L2) verified. ADR-MOD-GRID-17-002 obligation met.",
+    "A-04 (affected usage file count) reality-check exceptional: goals.json 5-file assumption → actual 1 in-scope (Pattern A FundStatus) + 4 deferred (Pattern B) with detection rationale (Grep BaseGrid hit counts + useReactTable direct import). Demonstrates C-1 Read-then-Verify discipline.",
+    "EC-02 (Pattern B deferral risk) mitigation thorough: spec explicitly forbids 4-page conversion attempt in implementation prompt via C-27 spec authority enforcement. D11 cascade path (G-005b/MOD-GRID-18) documented as deferred target.",
+    "Grid.tsx markup external reference (section 1 L2-2 L254-464) proper: thead bg-gray-50 sticky top-0, th px-4 py-3, tbody divide-y divide-gray-100, tr selected bg-blue-50 hover:bg-blue-100, td px-4 py-3, sort glyph ▲▼⇅. Markdown formatting L110-115 monorepo path correct. No assumptions.",
+    "C-34 + C-35 worktree bypass + BOM matrix (section 8.7 L422-437) complete: 3-column table PowerShell-via-Bash (.ps1 BOM必要) vs inline -Command (BOM無関) vs 출력 .tsx (BOM禁止). D10 alt (a) inline -Command recommended (1 pattern only, 1 파일). Aligns G-002 1차 MISS pattern prevention.",
+    "AC-002 (visual regression high impact) scope surgical: '동일 데이터 입력 시 마이그레이션 전후 시각 동일' + 확인 대상 explicit (cell padding px-4 py-3, row height, sort icon ⇅ neutral NEW, hover bg-gray-50, thead bg-gray-50, 한글 emptyText \"등록된 자료가 없습니다.\"). Narrowly scoped to 1 in-scope site (FundStatus L218), not 4 deferred Pattern B sites.",
+    "Scope reduction D1 ADR-005 investigative authority properly invoked per constraints.md C-1 + spec opening context. First discovery of Pattern B (useReactTable direct) vs Pattern A (BaseGrid wrapper) distinction in MOD-GRID-17 usage migration. Prevents loop 1 FAIL scenario."
+  ],
+  "selfCheckPassed": true,
+  "selfCheckNotes": "Denominator recalc: checks with result != \"N/A\" = 35 items - 4 N/A (A-05, B-05, F-01, F-02, F-03, F-04 = 6 items wait 6 not 4) recounted: H-01/H-02/H-03 (H=3), A-01/A-02/A-03/A-04 (A=4, A-05=N/A), B-01/B-02/B-03/B-04 (B=4, B-05=N/A), C-01/C-02/C-03/C-04/C-05 (C=5), D-01 through D-06 (D=6), E-01 through E-06 (E=6), F-01/F-02/F-03/F-04 (F=4, of which F-01/F-02/F-03=N/A, F-04=YES so F count YES=1, N/A=3), G-01 (G=1). Total items: 3+4+4+5+6+6+4+1 = 33 items YES-or-NO, hence denominator should be 33 not 31. RECOUNT: A-05=N/A (4 YES + 1 N/A), B-05=N/A (4 YES + 1 N/A), C-05 YES (5 YES), D all YES (6), E all YES (6), F: F-01=N/A, F-02=N/A, F-03=N/A, F-04=YES (1 YES + 3 N/A), G-01=YES (1), H=3. Total: (4+1)+(4+1)+5+6+6+(1+3)+1+3 = 5+5+5+6+6+4+1+3=35 total items. YES count = 4+4+5+6+6+1+1+3 = 30. NO count = 0. N/A count = 1+1+0+0+0+3+0+0 = 5. denominator = YES + NO = 30 + 0 = 30. score = 30/30 × 100 = 100.0 ✓. failedChecks = empty array (no NO) ✓. JSON.parse verification: no unescaped quotes/backslashes in evidence strings (all evidence enclosed in \"...\", no nested quotes, line numbers prefixed L{N}). File encoding UTF-8 BOM-free per C-34. All three meta-gate H checks = YES → score not forced to 0. Passed = true (100.0 >= 95 threshold) ✓.",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 31,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 4,
+    "originalReportedDenominator": 31,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-17",
+  "area": "migration",
+  "tier": "high",
+  "runAt": "2026-05-27",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "area+",
+      "tier=high",
+      "runAt=2026-05-27"
+    ]
+  }
+}

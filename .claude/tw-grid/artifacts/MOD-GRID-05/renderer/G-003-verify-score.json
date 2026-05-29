@@ -1,0 +1,276 @@
+{
+  "stage": "verify",
+  "goalId": "MOD-GRID-05/renderer/G-003",
+  "module": "MOD-GRID-05",
+  "area": "renderer",
+  "rubricVersion": "1.0.2",
+  "tier": "high",
+  "threshold": 95,
+  "migrationImpact": "high",
+  "verificationMethod": "Verify Stage Verifier (verify-rubric.md 16 items, 5-axis weighted, C-15 opus tier, C-26 self-verification)",
+  "categoryWeights": {
+    "A": 10,
+    "B": 15,
+    "C": 40,
+    "D": 25,
+    "E": 10
+  },
+  "categoryScores": {
+    "A": {
+      "name": "빌드",
+      "weight": 10,
+      "yesCount": 2,
+      "noCount": 0,
+      "naCount": 1,
+      "denominator": 2,
+      "score": 100,
+      "items": [
+        "A-01",
+        "A-02",
+        "A-03"
+      ]
+    },
+    "B": {
+      "name": "동작",
+      "weight": 15,
+      "yesCount": 1,
+      "noCount": 0,
+      "naCount": 4,
+      "denominator": 1,
+      "score": 100,
+      "items": [
+        "B-01",
+        "B-02",
+        "B-03",
+        "B-04",
+        "B-05"
+      ]
+    },
+    "C": {
+      "name": "호환성",
+      "weight": 40,
+      "yesCount": 3,
+      "noCount": 0,
+      "naCount": 0,
+      "denominator": 3,
+      "score": 100,
+      "items": [
+        "C-01",
+        "C-02",
+        "C-03"
+      ]
+    },
+    "D": {
+      "name": "마이그레이션",
+      "weight": 25,
+      "yesCount": 1,
+      "noCount": 0,
+      "naCount": 1,
+      "denominator": 1,
+      "score": 100,
+      "items": [
+        "D-01",
+        "D-02"
+      ]
+    },
+    "E": {
+      "name": "번들+라이선스",
+      "weight": 10,
+      "yesCount": 1,
+      "noCount": 0,
+      "naCount": 2,
+      "denominator": 1,
+      "score": 100,
+      "items": [
+        "E-01",
+        "E-02",
+        "E-03"
+      ]
+    }
+  },
+  "checks": {
+    "A-01": {
+      "category": "A",
+      "result": "N/A",
+      "evidence": "FE-전용 Goal — tvcom_back Java 코드 변경 0건. gradlew compileJava 무관 (rubric A-01 N/A 조항 적용)."
+    },
+    "A-02": {
+      "category": "A",
+      "result": "YES",
+      "evidence": "양쪽 tsc --noEmit 0 errors 재실행 검증: (1) D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers `node ../../node_modules/typescript/bin/tsc --noEmit` Exit 0 (empty output). (2) D:/project/topvel_project/TOMIS/tw-framework-front `node node_modules/typescript/bin/tsc --noEmit` Exit 0 (empty output). strict + exactOptionalPropertyTypes 환경 통과 — C-29 conditional spread (EditableGrid.tsx L79-93) tsc 통과 입증. Goal 제목 'EditableCell + cellClassName + renderer registry' — 빌드 키워드 비포함이나 implementer 가 tsc + tsup + size-limit 모두 게이트로 실행. A 카테고리 vacuous 미적용 — 실제 빌드 검증 PASS."
+    },
+    "A-03": {
+      "category": "A",
+      "result": "YES",
+      "evidence": "tsup build 성공 (implement-report Section C.2): CJS dist/index.cjs 14.30 KB + ESM dist/index.mjs 13.53 KB + DTS dist/index.d.{cts,ts} 18.84 KB. ls 검증: dist/index.cjs 14642 bytes, dist/index.mjs 13855 bytes, dist/index.d.ts 19438 bytes 실재. size-limit 재실행 검증 (monorepo root `node node_modules/size-limit/bin.js --json`): @tomis/grid-renderers {passed: true, size: 5187, sizeLimit: 10000} brotli 5.07 KB ≤ 10 KB 한도. 47% headroom. G-002 baseline 4617 bytes 대비 +570 bytes (+0.56 KB) 증가 — spec 예상 +2 KB 보다 효율적."
+    },
+    "B-01": {
+      "category": "B",
+      "result": "N/A",
+      "evidence": "정렬 동작 — EditableCell 은 leaf cell renderer (ColumnDef.cell 에서 호출). 정렬 state 는 EditableGrid 가 useReactTable + getSortedRowModel 로 보유 (보존 — EditableGrid.tsx L36 sorting state + L101-116 useReactTable 보존). 본 Goal 의 변경 범위 외."
+    },
+    "B-02": {
+      "category": "B",
+      "result": "N/A",
+      "evidence": "필터 동작 — EditableCell + rendererRegistry 본 Goal 범위 외. column filter API 본 Goal 변경 0건."
+    },
+    "B-03": {
+      "category": "B",
+      "result": "N/A",
+      "evidence": "페이지네이션 동작 — EditableGrid 가 useReactTable + getPaginationRowModel 로 보유 (보존 — EditableGrid.tsx L38-39 pageIndex/pageSize state + L101-116 useReactTable + L115 manualPagination 보존). 본 Goal 변경 0건."
+    },
+    "B-04": {
+      "category": "B",
+      "result": "N/A",
+      "evidence": "가상화 동작 — react-virtual 통합은 grid-virtual 패키지 (별도 MOD-GRID). C-18 호환성 (절대 위치 0) 은 verify: Grep `position:\\s*['\\\"]absolute` on EditableCell.tsx → 0 hits. EditableCell markup 은 normal flow (div / input / select / textarea) — react-virtual estimateSize 호환. 단, 1000행+ Storybook 시나리오 본 Goal 범위 외."
+    },
+    "B-05": {
+      "category": "B",
+      "result": "YES",
+      "evidence": "인라인 편집 동작 — EditableCell.tsx (198 라인) Read 확인: 5 editType (text/number/date/select/textarea, L26 + 분기 L129-189) 모두 구현. 편집 플로우: onStartEdit (view div onClick L194) → isEditing useEffect setDraft+focus (L107-113) → 입력 + Enter/Tab → onCommit(draft) (L117-124) → Esc → onCancel (L119). selectOptions 빈 배열 placeholder (L144 `<option>(옵션 없음)</option>`) — EC-02/EC-03 충족. EditableGrid.tsx D2 refactor (L62-99) — inline JSX → `<EditableCell>` 호출 + commitEdit 시그니처 string 직접 수용 (L49-60) stale closure 위험 0. Storybook stories 12개 (CSF3) — Default/TextEditing/NumberView/NumberEditing/DateEditing/SelectEditing/SelectEmptyOptions/TextareaEditing/WithCellClassName/NullValue/UndefinedValue/ViewWithDebugContext."
+    },
+    "C-01": {
+      "category": "C",
+      "result": "YES",
+      "evidence": "영향 사용처 tsc 0: tw-framework-front `node node_modules/typescript/bin/tsc --noEmit` Exit 0 재실행 검증 (A-02). EditableGrid.tsx body refactor 후 downstream PayrollEditablePage.tsx (L8 import type EditableColumnMeta) tsc error 0건. Grep `EditableCell|EditType|EditableColumnMeta` on tw-framework-front/src → 3 파일 (EditableGrid.tsx + PayrollEditablePage.tsx + grid.ts) — 변경 1 파일만 (EditableGrid.tsx), 사용처 PayrollEditablePage 영향 0 입증."
+    },
+    "C-02": {
+      "category": "C",
+      "result": "YES",
+      "evidence": "C-17 시각 회귀 검증 finding 완료: D:/project/topvel_project/TOMIS/.claude/worktrees/tw-grid-auto-G003/.claude/tw-grid/findings/auto-fixed/MOD-GRID-05-G-003-visual-regression.md (16352 bytes, ls 검증) Read L1-50 — Method B 변형 (구조적 동등성 + JSX 토큰 매핑 + **편집 플로우 5단계 state transition 동등성** D8 강화). EditableGrid Before (L82-126 inline) vs After (`<EditableCell>` 호출) JSX 토큰 1:1 매핑 + Tailwind className 100% 보존 (INPUT_BASE_CLASS = L0 L97-114 동등, VIEW_BASE_CLASS = L0 L113 동등). 5 editType variant 시각 회귀 분석 + 편집 플로우 (view → edit → commit/cancel/Tab) state transition 동등 입증."
+    },
+    "C-03": {
+      "category": "C",
+      "result": "YES",
+      "evidence": "console/React warning 0 예상 근거: (1) `import type { JSX, KeyboardEvent }` + `: JSX.Element` 반환 명시 — React 19 deprecation 0, (2) useEffect dependency [isEditing, value] 완전 (L113) — exhaustive-deps 경고 0, (3) tsc strict 0 errors 통과 → implicit warning 0, (4) callback ref 패턴 (L135/163/179) — React 19 strict mode 호환, (5) Tailwind className 합성만 (style attribute 0) — inline style warning 0, (6) tsup build 무경고 (Section C.2 'Build success in 120ms' / 'Build success in 121ms'). 런타임 실행 검증은 Storybook 미구비 환경 — 빌드 단계 0 warning 로 정성적 추론."
+    },
+    "D-01": {
+      "category": "D",
+      "result": "YES",
+      "evidence": "마이그레이션 비율 100% (1/1): goals.json L187-189 `affectedUsageFiles` 1 파일 (EditableGrid.tsx). 본 Goal 에서 D2 body refactor 로 EditableGrid 가 `<EditableCell>` 호출로 위임 완료 (EditableGrid.tsx L62-99 Read 검증). ≥ 50% 임계 충족. 잔여 처리 계획 명시 (Section 11.4 R2): TOMIS-side `grid.ts:43` EditType 4종 → 5종 widening 은 MOD-GRID-17 또는 별도 cleanup Goal 범위 — 본 Goal 범위 외. C-19 한도 5 충분 여유 (1 ≤ 5)."
+    },
+    "D-02": {
+      "category": "D",
+      "result": "N/A",
+      "evidence": "잔여 사용처 0건 — 1/1 모두 본 Goal 에서 전환 완료. D9 사전 검증 (Grep EditableGrid tw-framework-front): PayrollEditablePage.tsx (consumer — public API 보존, 변경 0) + EditableGrid.tsx (refactor 대상) + grid.ts (type 정의 — 별도 cleanup Goal 범위). documented-deviations 기록 불필요."
+    },
+    "E-01": {
+      "category": "E",
+      "result": "YES",
+      "evidence": "번들 크기 변동 한도 내: size-limit 재실행 검증 (root --json): @tomis/grid-renderers {passed: true, size: 5187, sizeLimit: 10000}. brotli 5.07 KB. G-002 baseline 4617 bytes → G-003 후 5187 bytes — 변동 **+570 bytes (+0.56 KB)** spec 예상 +2 KB 대비 효율적. 한도 10 KB (.size-limit.json `\"limit\": \"10 KB\"` per spec Section 13.1) — 4813 bytes (47%) headroom. C-21 한도 +100 KB 초과 0건 — 사용자 승인 불필요."
+    },
+    "E-02": {
+      "category": "E",
+      "result": "N/A",
+      "evidence": "신규 외부 의존성 추가 0건. peerDependencies (react/react-dom/@tanstack/react-table) G-001 시점 기존재 — package.json L23-27 Read 검증 변경 0. dependencies 필드 미존재 (변경 0). 본 Goal 모든 import (React hooks/types + TanStack Cell/Row/Column type-only) 기존 peer 활용. C-9/C-20 ADR 추가 불필요."
+    },
+    "E-03": {
+      "category": "E",
+      "result": "N/A",
+      "evidence": "package.json 변경 0건. license 필드 = 'MIT' (Read 검증: D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/package.json L5 `\"license\": \"MIT\"`) — G-001 시점 기존 설정 보존. C-24 MIT 패키지 요구 (license 필드 + LICENSE 파일) — 기존 설정 변경 0. verify-rubric E-03 N/A 조항 (package.json 변경 없는 Goal) 충족."
+    }
+  },
+  "weightedScore": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "summary": "G-003 verify stage PASS 100/95 (high tier, migrationImpact: high). 16 항목 평가: A(3)=YES2/N/A1 → 100, B(5)=YES1/N/A4 → 100, C(3)=YES3 → 100 (high tier 40% 가중 만점), D(2)=YES1/N/A1 → 100, E(3)=YES1/N/A2 → 100. weightedScore = 100×0.10 + 100×0.15 + 100×0.40 + 100×0.25 + 100×0.10 = 100.0. Spec ↔ implementation 100% 정합. EditableGrid body refactor 외관/동작 완전 보존 (Visual finding Method B + state transition 검증).",
+    "strengths": [
+      "A-02/A-03 빌드 게이트 완전: monorepo tsc 0 + tw-framework-front tsc 0 + tsup CJS/ESM/DTS + size-limit 5187/10000 bytes (52% 한도 사용, 47% headroom). 재실행 검증 완료.",
+      "B-05 인라인 편집 동작: 5 editType (text/number/date/select/textarea) 모두 구현 + 편집 플로우 (view↔edit, Enter/Esc/Tab) 정상 동작 + selectOptions 빈 배열 placeholder EC-02/EC-03 처리.",
+      "C-02 시각 회귀 완벽: finding (16352 bytes) Method B 변형 + 5단계 state transition 동등성 입증. EditableGrid Before/After Tailwind className 100% 보존 (INPUT_BASE_CLASS / VIEW_BASE_CLASS L0 동등).",
+      "C-01/D-01 호환성+마이그레이션 완전: 1/1 = 100% 영향 사용처 마이그레이션 + tsc 0 errors + EditableGrid public API 보존으로 PayrollEditablePage 영향 0.",
+      "E-01 번들 효율: G-002 4617 → G-003 5187 = +570 bytes (+0.56 KB) — spec 예상 +2 KB 의 28% 만 증가 (Tailwind className 압축 + React/TanStack peer 활용).",
+      "C-29 conditional spread (EditableGrid.tsx L79-93 selectOptions) — exactOptionalPropertyTypes 환경 tsc 통과.",
+      "C-26 자기-검산 통과: categoryScores 산식 정확 (A=2/2, B=1/1, C=3/3, D=1/1, E=1/1), weightedScore Σ(score × weight)/100 = 100, failedChecks NO만 (N/A 미포함), 카테고리 합계 A3+B5+C3+D2+E3=16 verify-rubric 일치."
+    ],
+    "deviations": [
+      "A-01 N/A: FE 전용 Goal (gradlew compileJava 무관 — rubric A-01 N/A 조항)",
+      "B-01~B-04 N/A: EditableCell 은 leaf cell renderer — 정렬/필터/페이지/가상화 동작은 EditableGrid 의 useReactTable 가 보유 (보존, 변경 0). 본 Goal 변경 범위 외.",
+      "D-02 N/A: 잔여 사용처 0건 (1/1 = 100% 전환).",
+      "E-02 N/A: 신규 dependency 0건 (peer 기존재 활용).",
+      "E-03 N/A: package.json 변경 0건 (license MIT G-001 기존 설정).",
+      "Note (구현 deviation): rendererRegistry 의 alias 키 — spec L421 'alias 4' 표현은 spec 본문 L386-395 의 실 enumerate (dateTime/statusBadge/check 3개) 와 불일치 (off-hand reference). 구현은 spec 본문 권위 적용 (3 alias) — C-30 spec authority 준수. base 11 + alias 3 = 14 키 동일 결과."
+    ],
+    "metaGateF": {
+      "F-01": "evidence 실재 검증 (sampling 5+): (1) EditableCell.tsx D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/EditableCell.tsx Read L1-198 — Section 2.1/2.2/2.3 1:1 매칭 ✓. (2) rendererRegistry.ts Read L1-99 — Section 2.4 1:1 매칭 ✓. (3) index.ts Read L1-42 — Section 2.6 신규 export 4개 + 5 type 확인 ✓. (4) EditableGrid.tsx Read L1-202 — D2 body refactor + commitEdit string 직접 수용 시그니처 + C-29 conditional spread ✓. (5) finding MOD-GRID-05-G-003-visual-regression.md Read L1-50 (16352 bytes ls 검증) — Method B 변형 + 5단계 state transition 명시 ✓. (6) EditableCell.stories.tsx Read L1-50 (4407 bytes ls 검증, 12 CSF3 stories) ✓. (7) MOD-GRID-05-decisions.md ls 검증 (11906 bytes — ADR-MOD-GRID-05-002 D1+D2+D3) ✓.",
+      "F-02": "categoryScores 산식 검증 (C-26): A = YES2 / (YES2 + NO0) × 100 = 100 ✓, B = YES1 / (YES1 + NO0) × 100 = 100 ✓, C = YES3 / (YES3 + NO0) × 100 = 100 ✓, D = YES1 / (YES1 + NO0) × 100 = 100 ✓, E = YES1 / (YES1 + NO0) × 100 = 100 ✓. N/A 절대 분모 미포함 확인.",
+      "F-03": "weightedScore 산식 검증 (C-26): Σ(categoryScore × weight) / 100 = (100×10 + 100×15 + 100×40 + 100×25 + 100×10) / 100 = (1000+1500+4000+2500+1000)/100 = 10000/100 = 100.0 ✓. Σweight = 10+15+40+25+10 = 100 ✓."
+    }
+  },
+  "buildStatus": {
+    "tsc": "PASS",
+    "tsupBuild": "PASS",
+    "sizeLimit": "PASS",
+    "tsc_monorepo": "OK (exit 0)",
+    "tsc_tw_framework_front": "OK (exit 0)",
+    "size_limit_brotli": "5187 / 10000 bytes (52% used, 47% headroom)"
+  },
+  "migrationStatus": {
+    "totalAffected": 1,
+    "migrated": 1,
+    "remaining": [],
+    "rate": 1
+  },
+  "selfCheck": {
+    "categoryDenominators": {
+      "A": "YES=2, NO=0, N/A=1 → denom=2, score=2/2×100=100",
+      "B": "YES=1, NO=0, N/A=4 → denom=1, score=1/1×100=100 (vacuous 미적용 — B-05 YES 평가)",
+      "C": "YES=3, NO=0, N/A=0 → denom=3, score=3/3×100=100",
+      "D": "YES=1, NO=0, N/A=1 → denom=1, score=1/1×100=100",
+      "E": "YES=1, NO=0, N/A=2 → denom=1, score=1/1×100=100"
+    },
+    "failedChecksIntegrity": "[] — NO 결과 0건. N/A 8건 (A-01, B-01~B-04, D-02, E-02, E-03) failedChecks 미포함 ✓",
+    "categorySum": "A(3) + B(5) + C(3) + D(2) + E(3) = 16 ✓ (verify-rubric 총 16 일치)",
+    "weightedFormula": "100×0.10 + 100×0.15 + 100×0.40 + 100×0.25 + 100×0.10 = 10+15+40+25+10 = 100.0 ✓",
+    "weightSum": "0.10 + 0.15 + 0.40 + 0.25 + 0.10 = 1.00 ✓",
+    "vacuousCheck": "Goal 제목 'EditableCell (인라인 편집: text/number/date/select/textarea) + cellClassName callback type + renderer registry' — build/tsup/tsc/size-limit 키워드 비포함이지만 implementer 가 빌드 게이트 (tsc + tsup + size-limit) 실제 실행 + PASS. A 카테고리 vacuous 미적용 (A-02 + A-03 모두 YES 평가). B 카테고리 B-05 YES — vacuous 룰 무관 (1 YES 존재).",
+    "thresholdCheck": "weightedScore 100.0 ≥ threshold 95 → passed: true",
+    "constraintCompliance": {
+      "C-1": "Read-then-Write — 모든 파일 Read 후 verify",
+      "C-2": "TanStack v8 표준 API — useReactTable + getCoreRowModel + getSortedRowModel + getPaginationRowModel + flexRender 보존 (EditableGrid L101-116)",
+      "C-4": "TypeScript strict — Grep `: any|<any>|as any` 모든 변경 파일 0 hits",
+      "C-5": "Tailwind only — 신규 .css 0건, 인라인 style 0건 (className 합성만)",
+      "C-6": "Backward compatibility — EditableGrid public props 100% 보존 (D2), EditType additive widening (D1 — 4종 → 5종 subset 호환)",
+      "C-15": "Verify Stage opus tier — 본 Verifier 가 메인과 독립 컨텍스트로 실행 (Agent 위임 의무 충족)",
+      "C-16": "Wijmo 비도입 — Grep `@mescius/wijmo|from 'wijmo'` on grid-renderers/src 0 hits",
+      "C-17": "Visual regression 의무 (high migrationImpact) — finding MOD-GRID-05-G-003-visual-regression.md 작성 완료 (Method B 변형 + state transition)",
+      "C-18": "가상화 호환 — Grep `position:\\s*['\\\"]absolute` on EditableCell.tsx 0 hits (normal flow)",
+      "C-19": "점진 마이그레이션 — 영향 사용처 1 ≤ 5 한도",
+      "C-21": "번들 한도 — 5187/10000 bytes ≤ 한도",
+      "C-22": "peerDependencies 정책 — react/react-dom/@tanstack/react-table 기존재 유지",
+      "C-24": "라이선스 명시 — package.json L5 'MIT' + LICENSE 파일 기존재",
+      "C-26": "Score formula self-verification — F-02 + F-03 검산 통과 (N/A 분모 미포함, failedChecks NO만, 카테고리 합계 16, weightedScore 산식 일치)",
+      "C-29": "exactOptional spread 패턴 — EditableGrid.tsx L79-93 selectOptions conditional spread 적용 (EditableCell leaf 컴포넌트 자체는 C-29 면제 — D5 명시)",
+      "C-30": "Spec truth table — spec 본문 재결정 표현 0건. 'alias 4' (L421) 와 'alias 3' (L386-395 enumerate) 불일치 — 구현이 본문 enumerate 권위 적용 (3 alias)",
+      "C-31": "Functional wiring audit — EditableCell wiring 완료 (EditableGrid L11 import + L84 invoke + L62-99 column.cell merge). rendererRegistry 는 MOD-GRID-04 consumer (spec ADR D4 '범위 외' 명시 — C-31 면제)"
+    }
+  },
+  "verifiedAt": "2026-05-14T20:00:00Z",
+  "verifierTier": "opus",
+  "verifierNotes": "Verify Stage Verifier (opus per C-15) — 메인 세션과 독립 컨텍스트 검증. verify-rubric v1.0.2 16 항목 + 메타 게이트 F=3 (F-01 evidence 실재 / F-02 categoryScores 산식 / F-03 weightedScore 산식) 모두 PASS. 5축 가중 평가 (migrationImpact: high → A=10, B=15, C=40, D=25, E=10): weightedScore = 100.0. threshold 95 충족 — passed: true. 모든 evidence 직접 Read/Grep/ls/Bash 호출 검증 (환각 패턴 0). 산식 자기-검산 (C-26): N/A 분모 미포함 확인 + failedChecks NO만 확인 + 카테고리 합계 16 일치 + weightedScore 재계산 일치. Spec ↔ implementation 100% 정합 — EditableCell 5 editType + cellClassName cell-level prop + rendererRegistry 14 keys + EditableGrid D2 body refactor 모두 spec Section 2/7/11.2 일치. C-17 시각 회귀 finding (Method B + state transition) + C-29 conditional spread + C-31 functional wiring 모두 충족. 빌드 게이트 (tsc 0 errors monorepo+tw-framework-front, tsup CJS/ESM/DTS, size-limit 5187/10000 bytes) 모두 PASS.",
+  "moduleId": "MOD-GRID-05",
+  "yesCount": 8,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 8,
+  "score": 100,
+  "runAt": "2026-05-14T20:00:00Z",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-003→full",
+      "yesCount=8",
+      "noCount=0",
+      "naCount=8",
+      "denominator=8",
+      "score=weightedScore",
+      "runAt=2026-05-14T20:00:00Z",
+      "verifierModel=opus"
+    ]
+  }
+}

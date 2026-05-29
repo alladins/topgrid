@@ -1,0 +1,225 @@
+{
+  "goalId": "MOD-GRID-99-B/migration/G-004",
+  "module": "MOD-GRID-99-B",
+  "area": "migration",
+  "stage": "implement",
+  "rubricVersion": "1.0.9",
+  "migrationImpact": "low",
+  "checks": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "Glob migration/ → 5 files exist: (1) 8-variant-table.md (2) dataTable-migration.md (3) incremental-strategy.md (4) live-demos.md (5) deprecated-aliases.md. All match spec Section 7 + implement-report Section 1."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "Implementer-reported files ⊆ spec Section 7 implementFiles. Goal: 5 new .md docs. Spec D1 corrected path prefix: D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/migration/. All 5 files exist at corrected prefix. No files outside spec."
+    },
+    "F-03": {
+      "result": "N/A",
+      "evidence": "Spec implementFiles are in external monorepo directory (D:/project/topvel_project/topvel-grid-monorepo/). Per C-1/F-03, TOMIS git tracking N/A for external dirs. Replacement: Glob *.md in migration/ = 5 files confirmed. No git diff needed for external monorepo output."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Spec AC core identifiers verified: (1) '8 variant' → 8-variant-table.md L19-29 '8個 變形' heading + 8 rows in table (BaseGrid/VirtualGrid/TreeGrid/ColumnPinGrid/EditableGrid/GroupedHeaderGrid/ChangeTrackingGrid/RangeSelectGrid). (2) 'DataTable' → dataTable-migration.md L6 'DataTable → Grid mode=\"server\" 전환' heading + 5 conversion items (Sections 1-5). (3) 'C-19' → incremental-strategy.md L16 'C-19 규칙' heading + 5개 text mention. (4) 'StackBlitz' → live-demos.md L18-24 iframe src=stackblitz.com embed (3 total per Grep). (5) 'C-23 semver' → deprecated-aliases.md L20 'C-23 원문 요약' + L26 '1 minor 버전' text."
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "No prompt-spec drift detected. Implementer applied spec values for: (1) File paths: spec D1 path prefix correction applied (monorepo prefix). (2) AC names: spec AC-001~005 used exactly. (3) Variant count: spec 8 variants confirmed (not 5 as initial confusion). (4) DataTable sections: spec 5 conversion items (not 4). (5) StackBlitz count: spec ≥3 embeds confirmed (5 total). No promptSpecDrift[] needed."
+    },
+    "F-06": {
+      "result": "N/A",
+      "evidence": "Spec has no executable code templates (Section 11.2 BEFORE/AFTER code blocks) for G-004. Goal is pure documentation (5 markdown files describing migration patterns, not implementing code). No specCodeDefects to report."
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "All spec implementFiles exist on disk (Glob confirmed 5 files). Path verification: D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/migration/{8-variant-table.md|dataTable-migration.md|incremental-strategy.md|live-demos.md|deprecated-aliases.md}. Read confirmed file presence + frontmatter (---title: ... ---) in all 5."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Spec Section 1 defines goal output as '5개 마이그레이션 가이드 문서' + spec Section 4 FR-001~005. Implementer delivered exactly 5 .md files matching Section 7 + Section 11. No API signatures for docs (prose-only deliverable), so A-02 = type/format match = YES."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "Usage examples in 8-variant-table.md L37-68 (BaseGrid Before/After JSX), L100-110 (VirtualGrid example), dataTable-migration.md L74-95 (createColumns helper usage). Code blocks are markdown syntax-valid + illustrative (not runtime-testable for docs, but structurally correct)."
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "Spec Section 3 defines 9 entries (8 variants + DataTable). Implementer coverage: (1) 8-variant-table.md Sections 1-8 = 8 variants covered (BaseGrid, VirtualGrid, TreeGrid, ColumnPinGrid, EditableGrid, GroupedHeaderGrid, ChangeTrackingGrid, RangeSelectGrid). (2) dataTable-migration.md Sections 1-5 = DataTable covered. All 9 entries documented."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "Spec Section 5 AC mapping: AC-001 (8 variant table) in 8-variant-table.md ✓. AC-002 (DataTable table) in dataTable-migration.md ✓. AC-003 (C-19 strategy) in incremental-strategy.md ✓. AC-004 (StackBlitz ≥3) in live-demos.md ✓. AC-005 (deprecated alias + C-23) in deprecated-aliases.md ✓. All 5 ACs mapped and verifiable."
+    },
+    "A-06": {
+      "result": "N/A",
+      "evidence": "G-004 creates 5 new .md documentation files only. No utility functions (e.g., buildPaginationOptions, useGridState) or React hooks defined. A-06 applies to Goals creating *executable helper code* that requires wiring to call sites. Prose-only docs do not trigger A-06."
+    },
+    "A-07": {
+      "result": "N/A",
+      "evidence": "Spec Section 7 implementFiles contain zero test files (*.test.ts, *.spec.ts). G-004 deliverables are 5 .md docs, not code. A-07 applies to Goals with spec-mandated test files. N/A."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "G-004 creates .md documentation files only. No TypeScript/JavaScript code. tsc --noEmit not applicable to markdown files. B-01 (tsc 0 errors) N/A."
+    },
+    "B-02": {
+      "result": "N/A",
+      "evidence": "No TypeScript code in G-004 deliverables (5 .md docs). B-02 (any type check) N/A."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "No TanStack API usage in .md documentation files. B-03 N/A."
+    },
+    "B-04": {
+      "result": "N/A",
+      "evidence": "G-004 creates markdown documentation, not React components. No CSS files or style attributes. B-04 (Tailwind) N/A."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "No source code files (.ts/.tsx) in 5 new .md files. ESLint N/A for markdown."
+    },
+    "B-06": {
+      "result": "N/A",
+      "evidence": "No imports (Wijmo or otherwise) in markdown documentation. B-06 N/A."
+    },
+    "B-07": {
+      "result": "N/A",
+      "evidence": "Markdown documentation only. No dummy/mock data variables. B-07 N/A."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "G-004 creates documentation artifacts (5 .md files), not executable components. No affected usage files to typecheck. C-01 (affected usage tsc) N/A."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "No visual components migrated (documentation only). C-02 (visual regression) N/A."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "No runtime code. No console warnings possible from .md docs. C-03 N/A."
+    },
+    "C-04": {
+      "result": "N/A",
+      "evidence": "No package.json modifications (docs-only Goal). C-04 (peerDeps policy) N/A."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "G-004 is documentation/guidance for MOD-GRID-17 to-be Goals. No affectedUsageFiles in spec (migrationImpact: low). D-01 (usage migration %) N/A."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "No affected usage migration in G-004 (documentation Goal). D-02 (≤5 usage files) N/A."
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "Zero affected usage files (docs Goal). No documented-deviations needed. D-03 N/A."
+    },
+    "E-01": {
+      "result": "N/A",
+      "evidence": "G-004 creates .md docs in Docusaurus site. No bundled code (no package.json dist changes). Bundle size check (C-21/size-limit) not applicable. E-01 N/A."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "No new external dependencies added (markdown docs only). E-02 (ADR for new deps) N/A."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "No package.json changes. E-03 (license disclosure) N/A."
+    }
+  },
+  "categoryScores": {
+    "A": {
+      "yesCount": 5,
+      "noCount": 0,
+      "naCount": 2,
+      "denominator": 5,
+      "score": 100
+    },
+    "B": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 7,
+      "denominator": 0,
+      "score": "N/A"
+    },
+    "C": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 4,
+      "denominator": 0,
+      "score": "N/A"
+    },
+    "D": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 3,
+      "denominator": 0,
+      "score": "N/A"
+    },
+    "E": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 3,
+      "denominator": 0,
+      "score": "N/A"
+    }
+  },
+  "buildResult": {
+    "tsc": "N/A (markdown docs only)",
+    "viteBuild": "N/A",
+    "sizeLimit": "N/A"
+  },
+  "yesCount": 5,
+  "noCount": 0,
+  "naCount": 19,
+  "denominator": 5,
+  "score": 100,
+  "threshold": 85,
+  "passed": true,
+  "failedChecks": [],
+  "autoFixed": [],
+  "promptSpecDrift": [],
+  "specCodeDefects": [],
+  "documentedDeviations": [],
+  "surgicalChangeVerification": {
+    "fileCount": 5,
+    "allFilesNew": true,
+    "modifyCount": 0,
+    "preservedSections": []
+  },
+  "feedback": {
+    "summary": "G-004 documentation Goal complete: 5/5 files created (8-variant-table.md, dataTable-migration.md, incremental-strategy.md, live-demos.md, deprecated-aliases.md). All AC-001~AC-005 mapped. Spec D1 path prefix correction applied. No code implementation (docs only) — 19 code-quality rubric items N/A. A-01~A-05 + F-01~F-05 all PASS. Score 100/100, threshold 85, migrationImpact low.",
+    "metaGatesStatus": "F-01:YES, F-02:YES, F-03:N/A, F-04:YES, F-05:YES, F-06:N/A",
+    "specComplianceNotes": [
+      "Spec D1 corrected monorepo prefix (from TOMIS path to topvel-grid-monorepo) correctly applied.",
+      "Spec D2-D5 decisions (variant status, legacy alias count, sidebars exclusion, 27-pages citation) all respected in docs.",
+      "No drift from spec Section 7 implementFiles — 5 files match exactly.",
+      "AC-001 (8 variant table): Grep 150 hits (8-variant-table.md:58 + other mentions). ✓",
+      "AC-002 (DataTable conversion): Grep 31 hits (dataTable-migration.md:31 server/manualPagination hits). ✓",
+      "AC-003 (C-19 incremental): Grep 15 hits (incremental-strategy.md:15 '≤5' or '5個' mentions). ✓",
+      "AC-004 (StackBlitz ≥3): Grep 5 hits (live-demos.md:5 stackblitz mentions, 3+ embeds confirmed). ✓",
+      "AC-005 (deprecated alias + C-23 semver): Grep 18 hits (deprecated-aliases.md:18 'minor'/'버전'/semver/C-23 mentions). ✓"
+    ],
+    "recommendedNextSteps": [
+      "Register 5 .md files in sidebars.ts (per spec D4 NOTE — G-001 scope)",
+      "Verify Docusaurus build passes (vite build in apps/docs/)",
+      "MOD-GRID-17+ Goals begin actual file-level migrations using these guides as reference"
+    ]
+  },
+  "moduleId": "MOD-GRID-99-B",
+  "tier": "low",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "tier=low",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

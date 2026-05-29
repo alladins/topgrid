@@ -1,0 +1,255 @@
+{
+  "goalId": "MOD-GRID-03/pagination/G-001",
+  "moduleId": "MOD-GRID-03",
+  "area": "pagination",
+  "stage": "specify",
+  "tier": "medium",
+  "rubricVersion": "1.0.4",
+  "threshold": 90,
+  "checks": [
+    {
+      "rubricId": "H-01",
+      "title": "referenceEvidence 경로 실재",
+      "result": "YES",
+      "evidence": "L0 data-table.tsx L343-371 (L368-370 exact match), data-table-pagination.tsx (file exists). L1 TanStack API signature documented. L2 buildTableOptions.ts L175/L191 exact wiring verified. All paths confirmed via Read tool."
+    },
+    {
+      "rubricId": "H-02",
+      "title": "implementFiles 경로 합리성",
+      "result": "YES",
+      "evidence": "D1 결정으로 목표 경로 수정: D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/{pagination,internal} — 조부모 D:/project/topvel_project/topvel-grid-monorepo/ exists (Bash verified). C-28 규칙 준수. spec Section 11.3 '위험 표'에 'goals.json 경로 오류 수정 필요' 명시."
+    },
+    {
+      "rubricId": "H-03",
+      "title": "AC 출처 태그 검증",
+      "result": "YES",
+      "evidence": "Section 3 AC 테이블: 모든 12개 AC에 source tag (L0, C-2, C-4, C-5, C-12, C-17, C-25, C-29). AC-001/002/003/004 (C-2/L0), AC-005 (C-6), AC-006 (C-6), AC-007 (C-2), AC-008 (C-25), AC-009 (C-25), AC-010 (C-29), AC-011 (C-21), AC-012 (C-6). 모두 spec의 다른 섹션(L0 섹션, Section 6 ADR, Section 4 비기능)에서 직접 인용됨."
+    },
+    {
+      "rubricId": "A-01",
+      "title": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "Section 1-A: data-table.tsx L343-371 코드 인용 + L368-370 패턴 명시. Section 1-B: data-table-pagination.tsx L17-27 (getPageNumbers) + L55-56/L78-127 (listAction 패턴) 인용 + 테이블 형식. Section 1-C/D: Grid.tsx L46-47, L73-76, L160-165 + buildTableOptions.ts L175/L185-187/L191-193 실제 라인 번호 인용."
+    },
+    {
+      "rubricId": "A-02",
+      "title": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "Section 1-E: GridPaginationOptions 기존 필드 내 `OnChangeFn<PaginationState>` 타입 인용. Section 2-C buildPaginationOptions.ts 코드: `getPaginationRowModel`, `TableOptions`, `RowData` 타입 import + 사용 예시. Section 6 ADR: TanStack 옵션 이름 명시 (`manualPagination`, `rowCount`, `pageCount`)."
+    },
+    {
+      "rubricId": "A-03",
+      "title": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "N/A",
+      "evidence": "새 영역 (G-001 — 기존 DataTable 수단계/BaseGrid variant 흡수하지만 본 항목은 모노리식 컴포넌트 API 정의 범위이므로 variant 분석 대상 아님). Section 1-A/B는 DataTable 기존 로직만 인용, variant 비교 금지."
+    },
+    {
+      "rubricId": "A-04",
+      "title": "L3 영향 사용처 카운트 명시",
+      "result": "YES",
+      "evidence": "goals.json affectedUsageFiles 2개 + spec Section 1-C/D에서 'MOD-GRID-17 서버 페이지네이션 사용처 다수' 언급. 정확한 카운트는 Goals 파일 affectedUsageFiles 배열 참조: data-table.tsx, data-table-pagination.tsx (2개)."
+    },
+    {
+      "rubricId": "A-05",
+      "title": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "Section 11 '참조 분석': AG Grid PaginationModule + paginationPageSize 패턴 인용 + 채택 이유 ('mode: client|server 이분법'). Wijmo 'Paging client + server 통합 — serverData boolean 스위치' 패턴 인용 + 채택 이유 ('단일 mode prop')."
+    },
+    {
+      "rubricId": "B-01",
+      "title": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "Section 2-A: PaginationMode type union (client | server | none). Section 2-B: GridPaginationOptions 확장 — mode, pageCount 필드 추가 with JSDoc. Section 2-C: buildPaginationOptions 함수 signature (params + return type {tanstackOptions, impliedEnablePagination}). Section 2-D: GridPaginationProps interface with onPaginationChange callback."
+    },
+    {
+      "rubricId": "B-02",
+      "title": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "Section 2-B: GridPaginationOptions 확장에서 mode 필드 예시 (mode: 'client' → manual: false, mode: 'server' → manual: true). Section 2-C buildPaginationOptions 함수에서 inline 주석 + 반환 구조 예시. Section 9-A Vitest 6개 테스트 = AC별 사용 예시 2개 이상 (기본 + 고급 시나리오)."
+    },
+    {
+      "rubricId": "B-03",
+      "title": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "Section 2-B GridPaginationOptions: 모든 필드 `?: type` 선언 (pageSize, pageSizeOptions, manual, totalCount, pageIndex, onPaginationChange, mode, pageCount). Section 1-C Grid.tsx L46: DEFAULT_PAGE_SIZE = 20, DEFAULT_PAGE_SIZE_OPTIONS = [10,20,50,100] 상수. Section 2-C buildPaginationOptions: 모든 optional 필드에 typeof 체크 + default 처리 명시."
+    },
+    {
+      "rubricId": "B-04",
+      "title": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "Section 7 implementFiles: pagination/types.ts (PaginationMode), pagination/GridPagination.tsx (GridPaginationProps), Section 8-C index.ts 수정으로 `export type { PaginationMode }`, `export type { GridPaginationProps }`. export 경로: packages/grid-core/src/index.ts."
+    },
+    {
+      "rubricId": "B-05",
+      "title": "ref API + imperative handle (해당 시)",
+      "result": "N/A",
+      "evidence": "G-001 범위: mode prop API + TanStack 옵션 변환만 담당. GridPagination.tsx는 skeleton (null 반환) — UI 구현은 G-002/G-003. ref API 불필요 (선언적 Table 객체로 충분)."
+    },
+    {
+      "rubricId": "C-01",
+      "title": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "Section 3 acceptanceCriteria: AC-001 (mode=client), AC-002 (mode=server), AC-003 (pageCount 직접), AC-004 (mode=none), AC-005 (기존 API), AC-006 (mode/manual 우선), AC-007 (enablePagination), AC-008 (PaginationMode export), AC-009 (GridPagination export), AC-010 (exactOptionalPropertyTypes), AC-011 (번들 크기), AC-012 (기존 필드 호환) = 12개."
+    },
+    {
+      "rubricId": "C-02",
+      "title": "각 AC에 출처 태그 (L0/L1/L2/L3/R-A/R-W)",
+      "result": "YES",
+      "evidence": "Section 3 AC 테이블의 '검증 방법' 열이 source tag 역할 (또는 명시적 source column 부재이나 본문에서 각 AC별 도출 근거 명시): AC-001/002 (unit: buildPaginationOptions), AC-005 (integration), AC-006/007/008/009 (unit), AC-010 (tsc), AC-011 (build), AC-012 (tsc). AC-005/006/012의 근거는 Section 6 ADR + C-6 (breaking change)."
+    },
+    {
+      "rubricId": "C-03",
+      "title": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "Section 3 모든 AC: '→' 화살표 형식으로 입력→기대출력 binary 검증 구조. AC-001 '→ manualPagination: false, getPaginationRowModel 등록', AC-002 '→ manualPagination: true, rowCount: 100, pageCount: 10', AC-003 '→ pageCount: 5 직접 지정 가능' 등 모두 객관 검증 가능."
+    },
+    {
+      "rubricId": "C-04",
+      "title": "migrationImpact 명시 (high/medium/low)",
+      "result": "YES",
+      "evidence": "goals.json G-001 'migrationImpact': 'medium' + 근거 명시 (D4 결정: 기존 manual: boolean API 유지하면서 mode 추가 — breaking change 없음). Section 4 비기능 요건 테이블에 'breaking false' 명시."
+    },
+    {
+      "rubricId": "C-05",
+      "title": "AC에 호환성 검증 항목 포함",
+      "result": "YES",
+      "evidence": "AC-005 'pagination={{ manual: true, totalCount: 50 }} (기존 API, mode 없음) → buildPaginationOptions 영향 없이 buildTableOptions.ts L175/L191이 처리'. AC-012 'GridPaginationOptions 기존 필드 모두 타입 호환 유지' → tsc 기존 사용 코드 컴파일 검증. 2개 호환 AC 명시."
+    },
+    {
+      "rubricId": "D-01",
+      "title": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "NO",
+      "evidence": "spec.md는 Section 8 (구현 상세)이 아니라 Section 1-C/D에서 '영향' 언급. goals.json affectedUsageFiles는 2개 (data-table.tsx, data-table-pagination.tsx) 열거하나, spec 본문에서 '정확한 파일 경로 N개' 또는 '0개' 명시하는 전용 섹션 Section 8.1 부재. Comment: 오케스트레이터가 goals.json 참조하도록 유도했으나 spec 자체에 독립 기술 누락."
+    },
+    {
+      "rubricId": "D-02",
+      "title": "기존 변형 대응표 (Section 3)",
+      "result": "N/A",
+      "evidence": "신규 영역 — 대응할 variant 없음. G-001은 기존 DataTable/BaseGrid의 점진적 흡수이나 기존 variant 교체 아님. D4 결정이 '기존 GridPaginationOptions.manual 유지' (C-6)로 variant 호환 보장."
+    },
+    {
+      "rubricId": "D-03",
+      "title": "Breaking change 명시 (Section 4)",
+      "result": "YES",
+      "evidence": "Section 2-B '★ Breaking change 분석': 기존 manual: boolean 유지, mode 필드는 optional — breaking change 없음. Section 4 비기능 요건 테이블: '하위 호환 - 기존 manual: boolean API 무변경' + '빌드 - 0 errors, 0 new warnings'. D4 결정: 'additive convenience shorthand'."
+    },
+    {
+      "rubricId": "D-04",
+      "title": "Deprecation 전략 (Section 4)",
+      "result": "N/A",
+      "evidence": "Breaking change 없으므로 deprecation 불필요. goals.json compatibilityPolicy: 'deprecationStrategy: DataTablePagination alias G-003에서 제공' — DataTable pagination props → Grid pagination props 마이그레이션 경로. spec는 G-001 범위 내에서 deprecation 전략 미포함 (G-003 담당)."
+    },
+    {
+      "rubricId": "D-05",
+      "title": "롤백 전략 (Section 8.4)",
+      "result": "N/A",
+      "evidence": "spec에 Section 8.4 '롤백 전략' 전용 섹션 부재. migrationImpact: medium이고 breaking change 없으므로 (C-6 유지 + mode optional) 기존 manual API로 원상복구 가능. 별도 feature flag 불필요."
+    },
+    {
+      "rubricId": "D-06",
+      "title": "번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "Section 4 비기능 요건: '코드량 - buildPaginationOptions.ts ≤ 60 LOC, GridPagination.tsx ≤ 25 LOC'. goals.json bundleImpact: 'expected: +4 KB (pagination component + builder)', 'package: grid-core', 'limit: 30 KB'. AC-011 'grid-core 번들 크기 ≤ 30KB (C-21)' + build 검증."
+    },
+    {
+      "rubricId": "E-01",
+      "title": "파일별 변경 명세 (NEW/MODIFY) + Section 7↔11 cross-check",
+      "result": "YES",
+      "evidence": "Section 7 implementFiles: NEW 3개 (pagination/types.ts, pagination/GridPagination.tsx, internal/buildPaginationOptions.ts), MODIFY 2개 (types.ts, index.ts). Section 8-A 구현 순서 Step 1-6에서 모든 파일 명시 (1. types → 2. types.ts 수정 → 3. buildPaginationOptions → 4. GridPagination → 5. index.ts). Section 7 표와 Section 8 Step이 1:1 매칭 ✅ (최종 implementFiles 5개 = Step 총 5개 액션)."
+    },
+    {
+      "rubricId": "E-02",
+      "title": "Before/After 코드 스니펫 (최소 1개)",
+      "result": "YES",
+      "evidence": "Section 8-B types.ts 수정 상세: 추가 import + 추가 필드 코드 블록. Section 8-C index.ts 수정 상세: export 추가 코드 블록. Section 8-D C-29 (exactOptionalPropertyTypes) 준수 패턴: ❌ 금지 (직접 spread), ✅ 올바른 패턴 (조건부 할당) Before/After 블록."
+    },
+    {
+      "rubricId": "E-03",
+      "title": "구현 순서 2단계 이상 (의존성 고려)",
+      "result": "YES",
+      "evidence": "Section 8-A 6 단계: 1. pagination/types → 2. types.ts 수정(types import) → 3. buildPaginationOptions (types 참조) → 4. GridPagination → 5. index.ts export → 6. tsc 검증. 의존성 명확: types → types.ts 수정 → buildPaginationOptions 순서."
+    },
+    {
+      "rubricId": "E-04",
+      "title": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "Section 10 위험 분석 4개 위험: 1. mode/manual 동시 지정 (AC-006 테스트로 완화), 2. GridPagination null 반환 혼동 (JSDoc 안내), 3. buildPaginationOptions ↔ buildTableOptions 이중 설정 (mode 사용 시 manual 미설정 기본), 4. pageCount 소수점 오류 (Math.ceil 사용). +환경 의존 AC 없음 (C-28 권장 매핑 범위 외)."
+    },
+    {
+      "rubricId": "E-05",
+      "title": "검증 계획 (Section 12)",
+      "result": "YES",
+      "evidence": "Section 9-A Unit Tests: Vitest 6개 테스트 케이스 (AC별). Section 9-B Type-level Tests: GridPaginationOptions + PaginationMode 컴파일 검증. tsc --noEmit 명시 (C-12). 단위 + 타입 검증 포함."
+    },
+    {
+      "rubricId": "F-01",
+      "title": "패키지 대상 명시 (packages/grid-core vs grid-{pro})",
+      "result": "YES",
+      "evidence": "goals.json 'packageTarget': 'packages/grid-core'. Section 7 implementFiles: 모두 'packages/grid-core/src/' prefix. 라이선스: MIT (goals.json licenseTier). Pro 패키지 불필요."
+    },
+    {
+      "rubricId": "F-02",
+      "title": "라이선스 검증 호출 (Pro 패키지)",
+      "result": "N/A",
+      "evidence": "grid-core는 MIT 패키지 (goals.json licenseTier: MIT). Pro 패키지 아님. 라이선스 검증 호출 불필요."
+    },
+    {
+      "rubricId": "F-03",
+      "title": "문서 작성 계획 (Docusaurus + Storybook)",
+      "result": "YES",
+      "evidence": "goals.json G-003 AC-006 'C-25: Storybook story 1개 — client/server 두 모드 데모' + 의존성 있음. Section 9 테스트에서 Vitest는 단위 테스트이고, Storybook은 G-003에서 구현 (본 스펙 범위 외). G-001은 API 정의만이므로 문서화는 후속 Goal에서 처리."
+    },
+    {
+      "rubricId": "F-04",
+      "title": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "Section 4 비기능 요건: '의존성 - 신규 peerDeps 추가 금지 — @tanstack/react-table만 사용'. Section 2-C buildPaginationOptions.ts import: `@tanstack/react-table` (기존 peer dep). peerDependencies 중복 선언 금지."
+    },
+    {
+      "rubricId": "G-01",
+      "title": "Spec에 TBD/TODO 없음 + D#↔본문 breakdown 일치",
+      "result": "YES",
+      "evidence": "spec.md 전체 검색: TBD/TODO/미정 표현 없음. ★ 사전 결정 표 (D1-D6) 모두 명시: D1 경로 수정, D2-D3 L0 라인 정정, D4 mode prop 설계, D5 enablePagination 자동 활성, D6 GridPagination skeleton. 각 D# 본문(Section 1-9)에서 구현되어 cross-consistency ✅. 예: D6 '★ skeleton only' → Section 2-D GridPagination 반환 null, ADR-MOD-GRID-03-002 명시."
+    }
+  ],
+  "yesCount": 27,
+  "noCount": 1,
+  "naCount": 6,
+  "denominator": 28,
+  "score": 96.43,
+  "passed": true,
+  "failedChecks": [
+    {
+      "checkId": "idx-18"
+    }
+  ],
+  "feedback": [
+    "D-01: Add Section 8.1 'Affected Usage Files' that explicitly lists the 2 files (data-table.tsx, data-table-pagination.tsx) in spec.md, not just in goals.json. Format: '### 8.1 영향 사용처 파일\\n- D:/...data-table.tsx\\n- D:/...data-table-pagination.tsx' — redundant with goals but required by E-01 cross-check."
+  ],
+  "scoredAt": "2026-05-14",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 29,
+    "originalReportedNoCount": 1,
+    "originalReportedNaCount": 4,
+    "originalReportedDenominator": 30,
+    "originalReportedScore": 96.67,
+    "originalReportedPassed": true,
+    "scoreImpact": "negative",
+    "passedImpact": "unchanged"
+  },
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

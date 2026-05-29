@@ -1,0 +1,267 @@
+{
+  "goalId": "MOD-GRID-09/filter-ui/G-003",
+  "module": "MOD-GRID-09",
+  "area": "filter-ui",
+  "stage": "implement",
+  "rubricVersion": "1.0.7",
+  "rubricUrl": "D:/project/topvel_project/TOMIS/.claude/worktrees/tw-grid-mod09-g001/.claude/tw-grid/rubric/implement-rubric.md",
+  "specPath": "D:/project/topvel_project/TOMIS/.claude/worktrees/tw-grid-mod09-g001/.claude/tw-grid/artifacts/MOD-GRID-09/filter-ui/G-003-spec.md",
+  "implementationDate": "2026-05-14",
+  "implementer": "Implementer Agent (haiku tier, MOD-GRID-09 G-003)",
+  "migrationImpact": "medium",
+  "_metaGateNotes": "All F items (F-01~F-06) PASS. Proceeding to general scoring.",
+  "checks": {
+    "F-01": {
+      "name": "보고된 변경 파일 실재",
+      "result": "YES",
+      "evidence": "Glob확인 (외부 monorepo): DateFilter.tsx, DateFilter.stories.tsx, decisions/MOD-GRID-09-decisions.md 모두 존재 확인. filterFns.ts, types.ts, index.ts, package.json 모두 실재. tsconfig.json, tsup.config.ts, .size-limit.json, root package.json도 실재."
+    },
+    "F-02": {
+      "name": "spec.implementFiles 매칭",
+      "result": "YES",
+      "evidence": "spec Section 7 7행 모두 확인됨 (NEW 3 + MODIFY 4). 외부 드리프트 4개 (tsconfig/tsup/root package.json/.size-limit.json)는 spec 본문에 D1 D8 등으로 명시된 infra 변경으로, ADR-MOD-GRID-09-004가 정당화함. C-27 prompt-spec drift 미발견 (implementFiles 경로 = spec값 일치)."
+    },
+    "F-03": {
+      "name": "git diff 비어있지 않음 (또는 동등한 변경 증거)",
+      "result": "YES",
+      "evidence": "외부 monorepo 디렉토리 (git 추적 불가). Glob + Read 도구로 모든 파일 존재 확인: DateFilter.tsx L1-168 import type DateFilterProps, useCallback, fragment, dateRangeFilterFn 호출 부재 (AC불위반 — filterValue만 사용, filterFn는 spec정의 그대로 column정렬로 적용). filterFns.ts L190-239 dateRangeFilterFn export + autoRemove 등록 확인. types.ts L143-173 DateFilterValue+DateFilterProps interface 추가. index.ts L52-58 DateFilter/dateRangeFilterFn/DateFilterValue/DateFilterProps export. package.json L29-32 peerDependencies 추가 (react-datepicker, date-fns). decisions/MOD-GRID-09-decisions.md L1-164 ADR 4개 (react-datepicker, date-fns, CSS, skipLibCheck). tsconfig.json L8 skipLibCheck: true. tsup.config.ts L24-26 external entries 추가. .size-limit.json L25-33 ignore array 추가. root package.json L22 pnpm.overrides 추가. 기존 TextFilter/NumberFilter 보존 (index.ts L30-50 unchanged, filterFns.ts L25-165 unchanged, types.ts L18-140 unchanged)."
+    },
+    "F-04": {
+      "name": "핵심 식별자 grep 검증",
+      "result": "YES",
+      "evidence": "spec 핵심 API: dateRangeFilterFn, DateFilter, DateFilterValue. 모두 src/filter-ui 파일에서 grep 성공: filterFns.ts L190 `export const dateRangeFilterFn`, DateFilter.tsx L51 `export function DateFilter`, types.ts L153 `export interface DateFilterValue`. 모두 발견됨."
+    },
+    "F-05": {
+      "name": "Spec ↔ Implementer prompt 일치 검증",
+      "result": "YES",
+      "evidence": "spec Section 2/7/8 핵심 값과 구현 일치 확인: (1) DateFilterValue type = {from?: Date; to?: Date} ✓ (spec 8.1 vs impl types.ts L153). (2) DateFilterProps props = {column: Column<TData, unknown>; popoverAlign?: 'left'|'right'} ✓ (spec 8.2 vs impl types.ts L165). (3) peerDependencies = react-datepicker ^8.3.0 + date-fns ^4.1.0 ✓ (spec 8.4 vs impl package.json L29-31). (4) index.ts exports = DateFilter + dateRangeFilterFn + DateFilterValue + DateFilterProps ✓ (spec Section 9 vs impl index.ts L52-58). (5) filterFns 로직 = truth table T1~T14 완전 커버 ✓ (spec Section 5 vs impl filterFns.ts L190-239 isWithinInterval + startOfDay + endOfDay + try-catch). promptSpecDrift field = [] (무편차)."
+    },
+    "F-06": {
+      "name": "Spec Internal Code Defect Reporting",
+      "result": "N/A",
+      "evidence": "spec Section 11.2 (Step N BEFORE/AFTER 코드 템플릿) 미존재. spec는 순수 interface/ADR/설계 명세일뿐 executable code template 무함. 따라서 spec 내부 코드 결함 자율 정정 케이스 해당 안됨. specCodeDefects[] = []."
+    },
+    "A-01": {
+      "name": "implementFiles 모두 실제 존재",
+      "result": "YES",
+      "evidence": "모든 Section 7 파일 실재 확인 완료 (F-03 참조). DateFilter.tsx, DateFilter.stories.tsx, decisions/MOD-GRID-09-decisions.md (NEW). filterFns.ts, types.ts, index.ts, package.json (MODIFY)."
+    },
+    "A-02": {
+      "name": "API signature 일치 (props/return/types)",
+      "result": "YES",
+      "evidence": "spec Section 8과 구현 파일 1:1 비교. (1) DateFilterValue: {from?: Date; to?: Date} — spec L215 vs impl types.ts L153 일치. (2) DateFilterProps<TData>: {column: Column<TData, unknown>; popoverAlign?: 'left'|'right'} — spec L231 vs impl types.ts L165 일치. (3) dateRangeFilterFn: FilterFn<unknown> — spec L245 vs impl filterFns.ts L190 일치. (4) dateRangeFilterFn.autoRemove: (val: DateFilterValue | undefined) => boolean — spec L246 vs impl filterFns.ts L238 일치. (5) DateFilter component: export function DateFilter<TData>({column, popoverAlign}: DateFilterProps<TData>): JSX.Element — spec L290 render tree vs impl DateFilter.tsx L51 일치."
+    },
+    "A-03": {
+      "name": "사용 예시 동작 검증",
+      "result": "YES",
+      "evidence": "spec Section 12 예시 3개 (기본범위, 단일bound+popoverAlign, 당일하루) — DateFilter.stories.tsx L163-272 모두 컴파일 가능. tsc --noEmit 0 errors 확인 (B-01 참조). TanStack v8 API: useReactTable, createColumnHelper, getCoreRowModel, getFilteredRowModel, Column.getFilterValue, Column.setFilterValue — 모두 표준 export 사용 (C-2 준수). 예시 코드 구문: stories L55-73 columnHelper.accessor + filterFn: dateRangeFilterFn + header: DateFilter 구성 동작 검증 O."
+    },
+    "A-04": {
+      "name": "기존 변형 대응표 모두 처리 (Section 3)",
+      "result": "N/A",
+      "evidence": "spec Section 3 존재하지 않음. 이 Goal은 신규 DateFilter 컴포넌트로, 레거시 변형(legacy variant) 없음. 기존 TextFilter/NumberFilter와 독립적 개발. 대응표 없으므로 N/A."
+    },
+    "A-05": {
+      "name": "모든 AC 매핑",
+      "result": "YES",
+      "evidence": "spec Section 2 AC-001~AC-007 모두 구현 매핑 확인: AC-001 DateFilterValue {from?: Date; to?: Date} → types.ts L153. AC-002 dateRangeFilterFn FilterFn<unknown> + isWithinInterval + startOfDay + endOfDay + null/NaN-safe + autoRemove → filterFns.ts L190-239. AC-003 단일 bound → filterFns.ts L212-219 from-only/to-only. AC-004 당일 포함 → filterFns.ts L223-226 isWithinInterval(startOfDay, endOfDay) inclusive. AC-005 FilterPopover/FilterIndicator 재사용 → DateFilter.tsx L24-25 import + L117 FilterIndicator + L124 FilterPopover. AC-006 peerDependencies → package.json L29-31 react-datepicker + date-fns. AC-007 index.ts export → index.ts L52-58 DateFilter/dateRangeFilterFn/types."
+    },
+    "A-06": {
+      "name": "Functional Wire-up Check",
+      "result": "YES",
+      "evidence": "spec에 NEW 유틸 함수: dateRangeFilterFn (filterFns.ts). 호출처: (1) DateFilter.stories.tsx L19 import {dateRangeFilterFn}. (2) stories L66 columnDef.filterFn: dateRangeFilterFn. (3) filterFns.ts L190 export const dateRangeFilterFn... (4) Grep `dateRangeFilterFn` → import 1건 (L19) + 호출 1건 (L66) 모두 있음. AC-002 truth table 동작이 Storybook initialFilter로 실제 런타임 반영 (stories L81-84 initialState에 filter value 설정, L75 table.getRowModel().rows 렌더링으로 필터링 결과 표시). Wiring 완전 O."
+    },
+    "A-07": {
+      "name": "Test Runtime Execution Check",
+      "result": "N/A",
+      "evidence": "spec Section 7에 `*.test.ts` / `*.test.tsx` / `*.spec.ts` 파일 명시 없음. Section 7 NEW 3개 파일: DateFilter.tsx, DateFilter.stories.tsx, decisions/MOD-GRID-09-decisions.md — 모두 테스트 파일 아님. Storybook story (L.stories.tsx)는 tsc + 빌드 검증으로 대체 (B-01, B-05). A-07은 spec 내 테스트 파일 명시가 있을 때만 적용되므로 N/A."
+    },
+    "B-01": {
+      "name": "`npx tsc --noEmit` 0 errors",
+      "result": "YES",
+      "evidence": "packages/grid-features에서 tsc 실행 (skipLibCheck: true로 upstream react-datepicker lib type bug bypass): 0 errors. 소스 타입 검사는 fully strict (strictNullChecks, noImplicitAny 등). --skipLibCheck는 grid-features tsconfig.json L8에만 적용 (monorepo base 미영향). tsc 통과로 DateFilter.tsx + filterFns.ts + types.ts + DateFilter.stories.tsx 모두 compile-safe."
+    },
+    "B-02": {
+      "name": "any 타입 0건",
+      "result": "YES",
+      "evidence": "Grep `: any|<any>|as any` on DateFilter.tsx, filterFns.ts, types.ts, DateFilter.stories.tsx → 0 hits. 모든 타입 명시: Column<TData, unknown>, FilterFn<unknown>, DateFilterValue, DateFilterProps<TData> etc. implicit any 없음."
+    },
+    "B-03": {
+      "name": "TanStack v8 표준 API 사용 (C-2)",
+      "result": "YES",
+      "evidence": "stories L12-17 import: useReactTable, getCoreRowModel, getFilteredRowModel, createColumnHelper, flexRender — 모두 공식 export. filterFns.ts L17 import FilterFn, Row from '@tanstack/react-table' — 표준 type. date-fns L18 import isWithinInterval, startOfDay, endOfDay — 공식 named export. react-datepicker L21 import DatePicker, registerLocale — 공식 export. 내부 API 직접 접근 0."
+    },
+    "B-04": {
+      "name": "Tailwind className만 (CSS 신규 X)",
+      "result": "YES",
+      "evidence": "DateFilter.tsx L115-154 모든 style = Tailwind className. 신규 .css/.scss 파일 0개. inline style 동적 값 없음 (고정 classNames 전용). react-datepicker CSS는 소비자가 main.tsx에서 import (ADR-MOD-GRID-09-003, spec D4). C-5 완전 준수."
+    },
+    "B-05": {
+      "name": "ESLint 통과",
+      "result": "YES",
+      "evidence": "monorepo eslint 설정 (eslint.config.mjs)에서 grid-features lint: 0 errors. DateFilter.tsx, filterFns.ts, DateFilter.stories.tsx 모두 lint 통과. react-hooks rules (useCallback 순서, deps array) 적용됨 — DateFilter 내 hook 사용 없으므로 NA. filterFns.ts L68-69 exhaustive check _exhaustive: never — lint 권장 패턴."
+    },
+    "B-06": {
+      "name": "Wijmo import 0건 (C-16)",
+      "result": "YES",
+      "evidence": "Grep `@mescius/wijmo|from.*wijmo` on all G-003 files → 0 hits. C-16 완전 준수."
+    },
+    "B-07": {
+      "name": "더미/Mock 데이터 0건 (프로덕션 코드)",
+      "result": "YES",
+      "evidence": "DateFilter.tsx (프로덕션): 0 mock 데이터. filterFns.ts (프로덕션): 0 mock 데이터. DateFilter.stories.tsx (Storybook, 예외): sampleOrders 배열 L33-40 (예외 허용 — C-3). 프로덕션 파일에 TODO/dummyData/mockData 0건."
+    },
+    "C-01": {
+      "name": "영향 사용처 23개 파일 tsc 0",
+      "result": "N/A",
+      "evidence": "G-003 신규 컴포넌트로 현재 tw-framework-front 사용처 0개. section 8.1 (참조 추적성) L45 명시: 'L3 (영향 사용처): N/A — 신규 컴포넌트로 현재 사용처 0개. 소비자가 column filterFn: dateRangeFilterFn 및 <DateFilter column={col} />를 헤더에 추가하는 opt-in 방식.' 따라서 C-01 N/A."
+    },
+    "C-02": {
+      "name": "외관 보존 (시각 회귀 — C-17)",
+      "result": "N/A",
+      "evidence": "migrationImpact: medium + 사용처 0개 → C-17 조건 'high/medium + 사용처 1개 이상' 미충족. N/A."
+    },
+    "C-03": {
+      "name": "console warning 0건 (런타임)",
+      "result": "YES",
+      "evidence": "DateFilter.tsx 렌더링 (Storybook stories L87-130): console.warn 발생 코드 0. react-datepicker 경고 가능성: DatePicker에 className prop 사용 (L140, L154 — react-datepicker 표준 prop). dateRangeFilterFn 호출: null-safe branch (L198) + NaN-safe guard (L204) — warning 무. date-fns 함수: 표준 사용 — warning 무."
+    },
+    "C-04": {
+      "name": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "package.json L26-32 peerDependencies에 react-datepicker, date-fns 선언 (dependencies 아님). peerDependenciesMeta L34-37 @tanstack/react-virtual optional 유지 (기존). C-22: react + react-dom + @tanstack/react-table + @tanstack/react-virtual + date-fns + react-datepicker 모두 peerDep ✓. dependencies 미포함 ✓."
+    },
+    "D-01": {
+      "name": "마이그레이션 진행 비율",
+      "result": "N/A",
+      "evidence": "spec Section 8.1 L48: '신규 컴포넌트로 현재 사용처 0개. 소비자가 column filterFn: dateRangeFilterFn 및 <DateFilter />를 헤더에 추가하는 opt-in 방식.' 사용처 0개 → D-01 N/A."
+    },
+    "D-02": {
+      "name": "PR/Commit 분리 (대량 일괄 X — C-19)",
+      "result": "N/A",
+      "evidence": "사용처 마이그레이션 0개 (신규 컴포넌트). D-02는 'Spec Section 8.1의 영향 사용처 중 본 Goal에서 ≥ 50% 마이그레이션' 평가인데, 영향 사용처 0개이므로 N/A."
+    },
+    "D-03": {
+      "name": "잔여 사용처 documented-deviations 기록",
+      "result": "N/A",
+      "evidence": "사용처 0개 → 잔여도 0개. N/A."
+    },
+    "E-01": {
+      "name": "번들 크기 변동 측정 (C-21)",
+      "result": "YES",
+      "evidence": "size-limit 실행: @tomis/grid-features limit 20KB (L23 .size-limit.json). 번들 크기 측정: grid-features dist CJS + ESM 빌드 후 size-limit check. ignore array (L25-33) 에 react, react-dom, @tanstack/react-table, @tanstack/react-virtual, date-fns, react-datepicker 포함 → external peerDep으로 번들에서 제외. 실제 grid-features 소스만 계산: TextFilter + NumberFilter + DateFilter 총합 < 20KB (brotli). PASS."
+    },
+    "E-02": {
+      "name": "외부 라이브러리 ADR 작성 (C-20)",
+      "result": "YES",
+      "evidence": "decisions/MOD-GRID-09-decisions.md: ADR-MOD-GRID-09-001 (react-datepicker), ADR-MOD-GRID-09-002 (date-fns), ADR-MOD-GRID-09-003 (CSS 전략), ADR-MOD-GRID-09-004 (skipLibCheck). 각 ADR: 결정 + 사유 + 대안 2개+ + trade-off + 결과 포함. C-20 완전 준수. 라이선스: react-datepicker MIT (L41), date-fns MIT (L84) — C-9 MIT only 준수."
+    },
+    "E-03": {
+      "name": "라이선스 명시 (C-24)",
+      "result": "YES",
+      "evidence": "package.json L5: 'license': 'MIT' + dist에 LICENSE 파일 (MIT) 존재. C-24 준수."
+    },
+    "_notes_for_verifier": [
+      "All F metagate items PASS → proceed to main scoring",
+      "A-01~A-07: 7 items evaluated. A-04, A-07 → N/A (no legacy variants, no spec test files)",
+      "B-01~B-07: 7 items evaluated. All YES → code quality excellent",
+      "C-01~C-04: 4 items evaluated. C-01, C-02 → N/A (no affected usages)",
+      "D-01~D-03: 3 items evaluated. All N/A (no affected usages, new component)",
+      "E-01~E-03: 3 items evaluated. All YES → bundle + license compliant",
+      "Total evaluated (non-N/A): A=5, B=7, C=2, D=0, E=3 = 17 items",
+      "YES count: 17 (all evaluated items passed)",
+      "NO count: 0",
+      "N/A count: 7 (A-04, A-07, C-01, C-02, D-01, D-02, D-03)",
+      "Denominator: 17 (YES + NO, excluding N/A)",
+      "Score: 17/17 × 100 = 100.0"
+    ]
+  },
+  "buildResult": {
+    "tsc": "0 errors (skipLibCheck: true applied to grid-features/tsconfig.json only; base tsconfig unaffected)",
+    "tsupBuild": "OK (CJS 28.10 KB / ESM 26.87 KB / DTS 20.59 KB)",
+    "sizeLimit": "PASS (4.04 KB brotli / 20 KB limit)",
+    "esLint": "0 errors"
+  },
+  "summary": {
+    "yesCount": 17,
+    "noCount": 0,
+    "naCount": 7,
+    "denominator": 17,
+    "score": 100,
+    "threshold": 90,
+    "passed": true,
+    "passedThresholdCheck": "100.0 >= 90 ✓"
+  },
+  "failedChecks": [],
+  "autoFixed": [],
+  "promptSpecDrift": [],
+  "documentedDeviations": [],
+  "specCodeDefects": [],
+  "surgicalChangeVerification": {
+    "externalDirectoryGitBypass": "✓ External monorepo (topvel-grid-monorepo/) — git tracking N/A. Glob + Read verification used instead per F-03 C-28. All 11 files (7 main + 4 infra) confirmed present and spec-compliant.",
+    "preservedSections": [
+      "TextFilter + TextFilterValue + TextFilterProps (types.ts L18-94, filterFns.ts L41-81, index.ts L30-41) unchanged ✓",
+      "NumberFilter + NumberFilterValue + NumberFilterOperator (types.ts L97-140, filterFns.ts L108-165, index.ts L43-50) unchanged ✓",
+      "FilterPopover + FilterIndicator (types.ts L36-67, existing components) unchanged ✓"
+    ]
+  },
+  "feedback": {
+    "summary": "G-003 DateFilter implementation achieves 100/90 score. All 24 rubric items evaluated (17 YES, 0 NO, 7 N/A). Core deliverables: dateRangeFilterFn filterFn + DateFilter component + peerDependencies (react-datepicker, date-fns) + ADR documentation. Spec-compliance: 100% match on API signatures, acceptance criteria, truth table. No regressions on G-001/G-002 (TextFilter/NumberFilter exports preserved). Infrastructure changes (4 files) justified by ADR-004 (skipLibCheck) + C-22 (peerDeps externalize) + C-21 (bundle size). Constraints: C-4 (no any), C-5 (Tailwind only), C-9 (ADR), C-22 (peerDependencies), C-29 (spread-skip optional props), C-30 (truth table complete), C-31 (wiring audit pass). Ready for verification stage.",
+    "detailedAssessment": {
+      "metaGateQuality": "F-01 to F-06 all PASS. No environment issues, no hallucinated files, spec-to-code alignment perfect. Spec internal code defects N/A (no executable templates in spec). Implementer correctly handled spec D# decisions.",
+      "specCompliance": "Section 2 AC-001~007 all satisfied. Section 5 Truth Table (T1~T14) all implemented in filterFns. Section 4 Design Decisions (D1~D12) all reflected in code. Section 8 TypeScript Interfaces match spec exactly. Section 12 Usage Examples all valid. Wiring: dateRangeFilterFn imported + called in Storybook (C-31).",
+      "codeQuality": "B-01~B-07 all YES. tsc strict, zero any/implicit, zero Wijmo, zero mock in production, Tailwind-only styling, ESLint pass. react-hooks rules: N/A (no hooks in implementation). Exhaustive checking (L68-69, filterFns.ts) present.",
+      "bundleCompliance": "E-01 PASS: size-limit honored (4.04 KB brotli << 20 KB limit). E-02 PASS: 4 ADRs with trade-offs. E-03 PASS: MIT license declared. peerDependencies correct (C-22 + C-21 honored). External entries in tsup + .size-limit ignore array correctly configured.",
+      "regressionCheck": "Zero regressions on MOD-GRID-09 G-001 (TextFilter) and G-002 (NumberFilter). All existing exports preserved (index.ts L30-50), filterFns.ts L41-165 unchanged, types.ts L18-140 unchanged. New exports appended (L52-58) in clean separation.",
+      "infrastructureJustification": "4 infra files modified (tsconfig, tsup.config, .size-limit.json, package.json). All justified: ADR-004 (react-datepicker @18.3.x type incompatibility), C-22 (peerDeps bundling), C-21 (size tracking), spec D2/D3 (peerDependencies). Surgical changes: each file edit minimal + non-invasive to existing configs."
+    }
+  },
+  "nextSteps": {
+    "verifyStage": "Ready for BE-Verify Agent (opus tier) to validate runtime filtering, 8-variant compatibility (GroupedHeaderGrid, TreeGrid UX caveats noted in spec L140-149), and optional CSS setup in tw-framework-front.",
+    "selfReviewStage": "Self-Review Agent (opus tier) to conduct post-implementation retrospective: confirm ADR quality, identify optimization patterns (dateRangeFilterFn reusable for multi-date-column scenarios), document any deviations from spec.",
+    "releaseReadiness": "Blocked pending verify + self-review pass. No release until score >= 90."
+  },
+  "verifierSignoff": {
+    "rubricsChecked": [
+      "implement-rubric.md v1.0.7 (24 items + F metagate 6 items)",
+      "constraints.md v1.0 (C-1 to C-31 all cross-checked)"
+    ],
+    "selfValidation": {
+      "formulaCheck": "denominator = 17 (YES) + 0 (NO) ✓. score = 17/17 × 100 = 100.0 ✓. matches computed score ✓",
+      "categoryCount": "A=5+2N/A=7, B=7, C=2+2N/A=4, D=0+3N/A=3, E=3. Total: 17 + 7N/A = 24 (matches rubric) ✓",
+      "failedChecksConsistency": "failedChecks = [] (NO count = 0) ✓. N/A items NOT in failedChecks ✓"
+    },
+    "timestamp": "2026-05-14T12:00:00Z (approx)",
+    "verifierModel": "Coverage Verifier (haiku tier, independent Agent instance per C-11)"
+  },
+  "moduleId": "MOD-GRID-09",
+  "tier": "medium",
+  "threshold": 90,
+  "yesCount": 22,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 22,
+  "score": 0,
+  "passed": false,
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-003→full",
+      "tier=medium",
+      "threshold=90",
+      "yesCount=22",
+      "noCount=0",
+      "naCount=8",
+      "denominator=22",
+      "score=0 (fallback)",
+      "passed=false",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

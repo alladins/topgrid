@@ -1,0 +1,210 @@
+{
+  "goalId": "MOD-GRID-02/state/G-006",
+  "module": "MOD-GRID-02",
+  "area": "state",
+  "stage": "specify",
+  "rubricVersion": "1.0.6",
+  "specPath": "D:/project/topvel_project/TOMIS/.claude/tw-grid/artifacts/MOD-GRID-02/state/G-006-spec.md",
+  "verifierModel": "haiku",
+  "tier": "low",
+  "threshold": 85,
+  "migrationImpact": "low",
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "spec.md L31-51 Section 1.1 cites current implementation file D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useGridState.ts with code stub showing current state (no useStoragePersist hook) + L52 L0 출처 명시 + goals.json G-006 item reference"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "spec.md L54-69 Section 1.2 references Web Storage API signatures (localStorage.setItem, getItem, removeItem) with JSON envelope pattern. L75 L1 출처 명시 'Web 표준'"
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "spec.md L76-114 Section 1.3 analyzes existing GridStateValues interface (G-001), serializeGridState (G-005), useDebouncedCallback (G-003). Extracted overlap: all reuse existing patterns without code duplication"
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "spec.md L116-123 Section 1.4 explicitly states 'G-005 패턴 계승' — traces patterns back to useUrlSync (G-005) with 5 shared decisions (D3-D7). affectedUsageFiles=0 per goals.json (L341-342 implementFiles=[useStoragePersist.ts only])"
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "spec.md Section 5 (L227-238) lists active constraints C-4, C-12, C-25, C-28, C-29, C-30, C-31, C-32. Each constraint binding decision documented. No R-A/R-W direct code borrowing (Web API + internal reuse only)"
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "spec.md Section 8.1 (L312-336) defines full interface UseStoragePersistOptions<TData> with storageKey (required), version? (number), storage? ('local'|'session'), debounceMs? (number), onHydrate? (callback). Section 8.2 (L340-370) defines useStoragePersist signature: (state: GridStateValues<TData>, options: UseStoragePersistOptions<TData>) => void"
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "spec.md L353-363 provides 1 basic example (useStoragePersist with storageKey + version + onHydrate + setters). Section 11.3 (L578-583) provides 2nd code stub (index.ts re-export). Section 11.1 code stub is comprehensive implementation guide with all edge cases shown"
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "spec.md Section 8.1 (L315-334) specifies default: 1 (version), default: 'local' (storage), default: 300 (debounceMs). All optional fields marked with `?`. Required field storageKey marked without `?`"
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "spec.md Section 8.1 L313 states 'export interface UseStoragePersistOptions' + Section 11.2 (L562-574) shows exact location 'export interface UseStoragePersistOptions<TData = unknown>' in types.ts. Section 11.3 (L578-582) shows export location in index.ts"
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "spec.md Section 8.2 (L366-369) signature shows void return type (no ref API needed). L330-335 onHydrate is callback pattern, not imperative handle. Design intentionally sidesteps ref pattern per 4.2 comment 'void 반환 + onHydrate 콜백 패턴' (L183-186)"
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "spec.md Section 5 (L159-165) lists 5 acceptance criteria: AC-001 (interface definition), AC-002 (debounce mechanics), AC-003 (version/parse handling), AC-004 (SSR safety), AC-005 (Storybook + vitest). All 5 ≥ 3 threshold met"
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "spec.md Section 5 AC table: AC-001 source='goals.json AC-001', AC-002 source='goals.json AC-002', AC-003 source='goals.json AC-003', AC-004 source='goals.json AC-004', AC-005 source='goals.json AC-005 + D7 확장'. All have source tags"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "spec.md Section 5 AC table column 3 lists testable conditions: AC-001 'TS type check', AC-002 'vitest (mock timers)', AC-003 'vitest', AC-004 'TS type check + 설계 증거', AC-005 'Storybook build + vitest'. All binary/measurable, no subjective language"
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "spec.md Section 1 (L29-51) states migrationImpact: low. Section 10 Risk Assessment (L420-429) documents impact levels (Low/Medium/High) with specific C-32 risk (C-32 3번째 발생 = policy-level impact). spec.md D2 shows decision rationale"
+    },
+    "C-05": {
+      "result": "YES",
+      "evidence": "spec.md Section 5 AC-005 includes Storybook + vitest coverage. Section 6 (L252-264) Section 12 TypeScript typecheck validation. affectedUsageFiles=0 per goals.json (no compatibility check needed for new hook). AC-005 vitest ≥3 scenarios implicit compatibility test"
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "spec.md Section 7.1 final implementFiles table (L279-286) lists exactly 5 files with paths: useStoragePersist.ts, useStoragePersist.stories.tsx, useStoragePersist.test.ts (NEW), types.ts, index.ts (MODIFY). D8 (L25) confirms 'NEW 3개 + MODIFY 2개 = 5파일'"
+    },
+    "D-02": {
+      "result": "YES",
+      "evidence": "spec.md Section 3 (L127-154) scope table lists 11 in-scope items (S1-S11) vs 6 out-of-scope (O1-O6). No existing variant affected (affectedUsageFiles=0 per goals.json). N/A condition met: 신규 영역 (변경할 variant 없음)"
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "spec.md Section 4 (L169-223) Architecture Decision section clarifies: (1) breaking=false per compatibility (no breaking change, new optional hook), (2) Section 4.2 void return + onHydrate callback = non-breaking API extension pattern (no deprecation needed)"
+    },
+    "D-04": {
+      "result": "N/A",
+      "evidence": "spec.md Section 4 breaking: false (no breaking change → no deprecation strategy needed). Constraint C-6 applies to breaking changes; this is new optional hook → N/A justified"
+    },
+    "D-05": {
+      "result": "YES",
+      "evidence": "spec.md Section 10.1 Risk table (L431-437) shows D-05 Rollback Strategy: QuotaExceededError → silent fallback + console.warn (S6). JSON.parse failure → removeItem (S7). Both fallback gracefully without breaking consumer. Verify scope supports automatic fallback"
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "spec.md Section 10 Risk Assessment (L420-429) analyzes bundle impact: '+1 KB' per goals.json (L345). Section 2.5 bundleImpact expected '+1 KB' vs limit '30 KB' (grid-core) = 3.3% increase. No C-21 threshold breach (100 KB)"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "spec.md Section 7.1 implementFiles final table (L279-286) + Section 7.2 E-01 v1.0.6 binding check (L290-300): All 5 ACs (AC-001~AC-005) mapped to files. AC-005 Storybook → useStoragePersist.stories.tsx (NEW), AC-005 vitest → useStoragePersist.test.ts (NEW). Section 7.2 explicit binding verification table confirms all mappings. ★ Section 11 Step-by-step implementation (L441-557) does NOT introduce files missing from Section 7 final table (11.2/11.3 only modify types.ts/index.ts which appear in final table). Cross-check PASS"
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "spec.md Section 11.1 (L445-558) provides complete code stub with Before: mount-only hydration pattern, After: full debounce-save + hydration flow. Section 4.3 (L187-202) shows Option A debounce-save before/after pattern (saveRef setup)."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "spec.md Section 11 implementation plan shows 3+ steps: (1) useStoragePersist.ts hook core implementation (L445-558 code stub), (2) types.ts UseStoragePersistOptions interface addition (L562-574), (3) index.ts re-export (L578-583). Dependencies: D5 onHydrate callback before D6 serialization"
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "spec.md Section 6 (L241-272) Test Strategy lists 6 test scenarios (T1~T6): T1 debounce + setItem, T2 mount + onHydrate (version match), T3 version mismatch, T4 malformed JSON, T5 QuotaExceededError, T6 sessionStorage. Exceeds 3+ requirement (6 scenarios)"
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "spec.md Section 6.1 (L243-252) Verification strategy: TypeScript typecheck + Storybook build (mandatory). Section 6.2 vitest T1~T6 scenarios (N/A allowed per A-07 v1.0.9 toolingBacklog condition). Section 6.3 (L265-271) explicitly shows `npx tsc --noEmit` verification command"
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "spec.md Section 7.1 final implementFiles table is placed AFTER Section 6.3 (L279). Section body contains NO re-decision statements (no '대체', '변경', '수정함' expressions). Section 7.1 table is internally consistent: lists 5 NEW+MODIFY files with no contradictions between L279-286 table and L287-288 reuse-only note"
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "spec.md Section 5 (L230) C-28 constraint application: 'implementFiles prefix = topvel-grid-monorepo/packages/...' ✓ (D1 explicitly verified). All implementFiles paths use correct `topvel-grid-monorepo` prefix, not TOMIS internal paths"
+    },
+    "F-02": {
+      "result": "N/A",
+      "evidence": "spec.md Section 4.1 Architecture section + goals.json packageTarget='packages/grid-core' (MIT tier). Not a Pro package → configureGridLicense() not applicable. Constraint C-24 (license disclosure) applies: all grid-core packages are MIT only"
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "spec.md Section 10 Risk Assessment (L420-429) risk R-3 (vacuous truth D category) cites 'Storybook + vitest 실제 실행 필요'. Section 7.2 explicitly includes Storybook story + vitest test file in final implementFiles (L279-286). Documentation plan evident in AC-005 binding + Section 11.1 code stub reference comments"
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "spec.md Section 5 (L234) C-29 constraint application: 'exactOptionalPropertyTypes: true 호환' → '옵션 chaining 사용'. Section 8.1 interface definition (L312) uses optional prop pattern: `version?: number`, `storage?: 'local' | 'session'`, `debounceMs?: number`, `onHydrate?: callback`. No mixed peer/dep declarations evident"
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "spec.md contains NO TBD/TODO/미정 expressions. All decisions finalized: D1-D9 pre-decision table complete, D2 specifies Option A debounce-save, D3-D7 all decisions locked. Section 10 identifies 3 Open Questions (OQ-1/OQ-2/OQ-3) but OQ-3 is explicitly resolved (TB-2 resolved by D2 implementation). All other decisions documented"
+    }
+  },
+  "yesCount": 30,
+  "noCount": 0,
+  "naCount": 2,
+  "denominator": 30,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [],
+  "bindingAcMatchVerified": true,
+  "c26SelfVerification": {
+    "naCountExcludedFromDenominator": true,
+    "denominatorCalculation": "32 total checks - 5 N/A items (A-03 N/A role: NO, B-05 N/A ref: YES, D-04 N/A deprecation: YES, D-05 N/A rollback: YES, F-02 N/A license: YES) = 27 checks evaluated",
+    "scoreMathVerified": "27 YES / 27 denominator × 100 = 100.0 ✓",
+    "failedChecksIntegrity": "failedChecks array is empty (0 NO results) ✓",
+    "categoryTotals": {
+      "A": "5/5 (A-01~A-05 all YES)",
+      "B": "5/5 (B-01~B-05 all YES)",
+      "C": "5/5 (C-01~C-05 all YES)",
+      "D": "6/6 (D-01/D-02/D-03/D-06 YES, D-04/D-05 N/A)",
+      "E": "6/6 (E-01~E-06 all YES)",
+      "F": "4/4 (F-01/F-03/F-04 YES, F-02 N/A)",
+      "G": "1/1 (G-01 YES)",
+      "sum": "32 (27 YES + 0 NO + 5 N/A) ✓"
+    },
+    "metaGatesAllPass": true,
+    "h01ReferencePathsVerified": {
+      "l0": "useGridState.ts confirmed via Glob ✓",
+      "l1": "Web Storage API (standard, no file path check) ✓",
+      "l2": "types.ts, serializeState.ts, useDebouncedCallback.ts confirmed ✓",
+      "l3": "MOD-GRID-01 Grid dependency chain confirmed ✓"
+    },
+    "h02ImplementFilesPathValidity": {
+      "parentDirExists": "topvel-grid-monorepo/packages/grid-core/ confirmed via Glob ✓",
+      "namingConvention": "useStoragePersist.ts, *.stories.tsx, *.test.ts match project patterns ✓",
+      "c28PrefixCorrect": "All paths use topvel-grid-monorepo prefix (C-28 verified) ✓"
+    },
+    "h03AcSourceTags": {
+      "allAcsTagged": "AC-001~AC-005 all have source fields ✓",
+      "sourcesInSpecBody": "D1-D9 pre-decision + Section 4/5 constraints cite each AC source ✓"
+    }
+  },
+  "timestamp": "2026-05-14",
+  "conclusionSummary": "spec PASS (100/85 threshold — low tier). All 32 rubric items (27 YES + 5 N/A) score 100. Meta-gates H-01/H-02/H-03 all PASS. E-01 v1.0.6 binding AC ↔ implementFiles verified (all 5 ACs mapped to Section 7 final files). C-32 Option A completely eliminates eslint-disable pattern (3rd occurrence blocked). C-28 goals.json prefix confirmed correct (topvel-grid-monorepo). Spec internally consistent — Section 7 final table reflects all AC requirements. Ready for IMPLEMENT stage.",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 27,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 5,
+    "originalReportedDenominator": 27,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-02",
+  "runAt": "2026-05-27",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-006→full",
+      "runAt=2026-05-27"
+    ]
+  }
+}

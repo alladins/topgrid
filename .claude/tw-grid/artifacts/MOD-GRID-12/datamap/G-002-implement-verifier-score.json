@@ -1,0 +1,192 @@
+{
+  "goalId": "MOD-GRID-12/datamap/G-002",
+  "module": "MOD-GRID-12",
+  "area": "datamap",
+  "stage": "verify",
+  "rubricVersion": "1.0.8",
+  "migrationImpact": "medium",
+  "goalsJsonCrossCheck": "goals.json L139: migrationImpact = medium (Read-verified). Consistent with implement-score report.",
+  "checks": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "Glob confirms all files exist under D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/ (external to TOMIS git per ADR-MOD-GRID-00-001): DataMapCell.tsx (NEW), types.ts (MODIFY), index.ts (MODIFY), __stories__/DataMapCell.stories.tsx. tsc 0 errors independent confirmation."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "Implemented files: DataMapCell.tsx, types.ts, index.ts (3 files) + stories (AC-007 scope). All are in spec Section 7 or Section 13.4. No extra files modified. goals.json vs spec Section 7 path discrepancy (C-28) reported in feedback — spec authoritative applied."
+    },
+    "F-03": {
+      "result": "N/A",
+      "evidence": "topvel-grid-monorepo outside TOMIS git (ADR-MOD-GRID-00-001). File existence verified via Glob + Read tool. DataMapCell.tsx L49 export function DataMapCell<TData> confirmed. types.ts L48 DataMapCellProps confirmed. index.ts L17 export DataMapCell confirmed."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Core identifiers Grep-verified: DataMapCell (DataMapCell.tsx L49, index.ts L17), resolveDataMap (DataMapCell.tsx L23 def + L57 call), TomisColumnDef (DataMapCell.tsx L56 usage, types.ts L55 def)."
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "Implementation matches spec Section 3.2 precisely. label !== undefined pattern (not ||) applied per C-30. promptSpecDrift[] empty per implement-score. Spec Section 7 paths used (not goals.json wrong paths)."
+    },
+    "F-06": {
+      "result": "YES",
+      "evidence": "specCodeDefects[]: AC-001 prose || vs Section 3.2 !== undefined discrepancy reported. Implementer applied Section 3.2 (correct). No Rules of Hooks violations (DataMapCell is pure function, 0 React hooks). F-06 reporting requirement met."
+    },
+    "F-07": {
+      "result": "YES",
+      "evidence": "goals.json L139: migrationImpact=medium (Read-confirmed by this Verifier). implement-score reports medium. 100% consistent. No cascading tier error."
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "Read tool confirmation: DataMapCell.tsx exists at correct path, 63 lines. types.ts L48 DataMapCellProps added. index.ts L17 DataMapCell export added. All Section 7 files verified."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "DataMapCell.tsx L49: signature 'export function DataMapCell<TData>(info: CellContext<TData, unknown>): JSX.Element' = spec Section 3.2 verbatim. resolveDataMap L23-32 = spec Section 3.1 verbatim. DataMapCellProps<TData> = CellContext<TData, unknown> in types.ts L48 = spec Section 3 scope."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "tsc --noEmit 0 errors validates compile-time correctness. Section 10.1/10.2 usage patterns type-check. CellContext generic propagation TData through resolveDataMap confirmed by tsc."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "New Pro renderer. No 8-variant migration target."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "AC-001: DataMapCell.tsx L60 '!== undefined' fallback. AC-002: L57 row.original injection via resolveDataMap. AC-003: documented deviation D-4 (MOD-GRID-04). AC-004: resolveDataMap O(1) + Map.get() O(1). AC-005: 0 wijmo imports (Grep confirmed). AC-006: tsc 0 errors. AC-007: 2 Storybook scenarios (StaticDataMap + DynamicRowLevelDataMap)."
+    },
+    "A-06": {
+      "result": "YES",
+      "evidence": "resolveDataMap: internal inline helper. Defined DataMapCell.tsx L23, called L57. Not standalone util — same-file wire-up confirmed."
+    },
+    "A-07": {
+      "result": "N/A",
+      "evidence": "No *.test.* in spec Section 7."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "Independent tsc --noEmit run: 0 errors. No --skipLibCheck."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Grep ': any|<any>|as any': 0 matches in src. 'as TomisColumnDef<TData>' = specific type narrowing (subtype, not any)."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "CellContext.getValue(), CellContext.column.columnDef, CellContext.row.original — all TanStack v8 public API. No private internals."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "span element, no className, no CSS files, no inline styles."
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "ESLint 0 errors on DataMapCell.tsx, types.ts, index.ts."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep 'from @mescius': 0 hits. C-16 compliant."
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "No dummy/mock/fake data in production files."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "0 usage sites. Additive export. G-001 exports preserved."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "0 affected usage files. Additive only."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "Pure render function. No console calls. No React warnings."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "peerDependencies unchanged. G-002 adds no new packages."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "0 usage sites."
+    },
+    "D-02": {
+      "result": "YES",
+      "evidence": "4 files total <= 5 per Goal."
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "0 remaining usage sites."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "size-limit: 838 bytes brotli, passed:true (limit 20 KB). Measured at IMPLEMENT time per ADR-MOD-GRID-00-010."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "No new external dependencies."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "package.json not modified."
+    }
+  },
+  "buildResult": {
+    "tsc": "0 errors (independent verification)",
+    "sizeLimit": "838 bytes brotli — passed: true (limit 20 KB)"
+  },
+  "yesCount": 23,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 23,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "selfCheck": {
+    "totalItems": 24,
+    "itemSum": "A(7)+B(7)+C(4)+D(3)+E(3)=24",
+    "yesNoNaSum": "17+0+7=24 OK",
+    "scoreVerification": "17/17*100=100.0; 100.0*17/100=17.0=yesCount OK",
+    "failedChecksNaFree": "failedChecks=[] — 0 NO items. N/A not included.",
+    "f07CrossCheck": "goals.json L139 migrationImpact=medium (Read by this Verifier). implement-score medium = consistent."
+  },
+  "feedback": {
+    "goalsJsonImplementFiles": "goals.json implementFiles 3 files with TOMIS prefix (wrong, C-28) vs spec Section 7 3 files with topvel-grid-monorepo prefix. Spec authoritative. No action needed from Implementer.",
+    "ac003Deferral": "AC-003 documented deviation D-4 is properly declared. MOD-GRID-04 will complete integration.",
+    "specCodeDefect": "AC-001 prose || vs Section 3.2 !== undefined — low severity, correctly handled by Implementer.",
+    "overallAssessment": "G-002 implementation is complete, correct, and well within all limits. 100/100 implement score. Ready for VERIFY stage."
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 17,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 7,
+    "originalReportedDenominator": 17,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-12",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "stage:implement-verify→verify",
+      "moduleId+",
+      "goalId:G-002→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ],
+    "originalStage": "implement-verify"
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "goalId": "MOD-GRID-12/datamap/G-001",
+  "module": "MOD-GRID-12",
+  "area": "datamap",
+  "stage": "verify",
+  "rubricVersion": "1.0.3",
+  "migrationImpact": "medium",
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85
+  },
+  "weights": {
+    "A": 15,
+    "B": 20,
+    "C": 30,
+    "D": 20,
+    "E": 15
+  },
+  "metaGates": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "Evidence sampling 5건 worktree-prefix verified: (1) '.claude/worktrees/tw-grid-mod12-g001/.claude/tw-grid/artifacts/MOD-GRID-12/datamap/G-001-spec.md' L9 migrationImpact=medium (Read confirmed 409 lines). (2) '.claude/worktrees/tw-grid-mod12-g001/.claude/tw-grid/goals/MOD-GRID-12/datamap-goals.json' L17 migrationImpact='medium' (Bash grep confirmed). (3) 'D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/types.ts' L11-18 DataMap interface + L43-56 TomisColumnDef (Read confirmed 56 lines; external monorepo per ADR-MOD-GRID-00-001). (4) 'D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/index.ts' L8 verifyOrWarn stub + L11 invoke + L14-15 exports (Read confirmed 16 lines). (5) 'D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-12-decisions.md' L1-119 ADR-001/002/003 (Read confirmed; spec D2 explicitly directs TOMIS-internal path for decisions.md, not worktree-prefixed). External monorepo paths use Read evidence per F-01 v1.0.3 'TOMIS git 무관 경로' clause; tw-grid artifact paths use worktree-prefix segment."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "categoryScores formula re-verified: A=2/2×100=100 (A-01 N/A excluded). B vacuous (YES=0,NO=0,N/A=5) → 100 — Goal title 'DataMap API 설계' has no build/tsup/tsc keywords in B category (B is behavior not build); per rubric vacuous allowed. C vacuous (3 N/A: 0 usage migration in G-001 scope per spec Section 4) → 100. D vacuous (2 N/A: 0 affected usages, brand new API) → 100. E=2/2×100=100 (E-02 N/A: no new external dep, verifyOrWarn inline stub per ADR-003). All N/A excluded from denominator (rubric L10-11)."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore = 100×0.15 + 100×0.20 + 100×0.30 + 100×0.20 + 100×0.15 = 15+20+30+20+15 = 100.0. Σweight = 15+20+30+20+15 = 100 ✓"
+    },
+    "F-07": {
+      "result": "YES",
+      "evidence": "goals.json L17 migrationImpact='medium' (Bash grep confirmed). spec L9 migrationImpact='medium'. verify-score migrationImpact='medium'. Three-way match — C-32 cross-check consistent. threshold=90 correctly applied (medium tier)."
+    }
+  },
+  "metaGatesPassed": true,
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "categoryDetails": {
+    "A": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "vacuous": false
+    },
+    "B": {
+      "yes": 0,
+      "no": 0,
+      "na": 5,
+      "vacuous": true
+    },
+    "C": {
+      "yes": 0,
+      "no": 0,
+      "na": 3,
+      "vacuous": true
+    },
+    "D": {
+      "yes": 0,
+      "no": 0,
+      "na": 2,
+      "vacuous": true
+    },
+    "E": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "vacuous": false
+    }
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "G-001 is FE-only (Pro package @tomis/grid-pro-datamap). No Java/Gradle artifacts. tw-framework-front integration not in scope (spec Section 4: EditableGrid.tsx unmodified, future G-017)."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Bash: 'cd D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap && npx tsc --noEmit' → EXIT=0, no output. 0 errors confirmed. Implementer + implement-verifier both report 0 errors (cross-aligned)."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "Bash: tsup build EXIT=0. ls dist/: index.mjs=995B, index.cjs=1023B (verified Bash). Both << 20KB Pro package limit (C-21, spec Section 11). No .size-limit.json required for G-001 — direct tsup output measurement per implement-score note."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "G-001 scope is API/type design (DataMap interface + createDataMap factory + TomisColumnDef type + index.ts exports). Sorting behavior not in spec Section 1.4 scope — deferred to G-002+ (DataMapCell renderer)."
+    },
+    "B-02": {
+      "result": "N/A",
+      "evidence": "Same as B-01 — column filter not in G-001 API design scope."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "Pagination not in G-001 scope (API design only)."
+    },
+    "B-04": {
+      "result": "N/A",
+      "evidence": "Virtualization not in G-001 scope (no UI component, type-only Goal)."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "Inline editing not in G-001 scope — DataMapEditor is G-003. Spec Section 1.4 explicit: 'DataMapEditor 편집 드롭다운 → G-003'."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "Spec Section 4 + Section 8.1 affectedUsageFiles is empty. G-001 creates brand new Pro package with 0 existing consumers. EditableGrid.tsx selectOptions→column.dataMap migration deferred to G-017 (spec Section 4). git status confirms EditableGrid.tsx unchanged."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "Visual regression N/A — 0 usage migration + medium tier rubric C-02 allows N/A when 0 usages. G-001 is type/factory only (no UI rendering component)."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "0 console warnings to verify — no runtime usage execution. verifyOrWarn stub is no-op (per ADR-003 + index.ts L8-10 inspection). G-001 is pure type/factory."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "Per rubric L156-157, D-01 is N/A when affectedUsageFiles count = 0. Spec Section 4 confirms 0 usages migrated in G-001 — brand new API, EditableGrid migration is future G-017."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "Per rubric L160-161, D-02 is N/A when residual=0. Spec Section 4 explicitly mentions 'EditableGrid selectOptions → column.dataMap (미래 G-017)' as forward-looking plan — not residual from current Goal. G-001 has no migration backlog."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Bash ls verified: dist/index.mjs=995B + dist/index.cjs=1023B. Both < 20KB Pro grid-pro-datamap limit (C-21). Bundle change is +995B ESM (new package baseline). Well within +100KB threshold for user approval."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "No new dependency in G-001. Per spec D7, @tomis/grid-license peer + @tomis/grid-core devDep deferred to G-004. Implementer used inline verifyOrWarn stub per ADR-003 (monorepo precedent: grid-pro-tracking, grid-pro-range). package.json peerDependencies unchanged (Read L27-31 verified: @tanstack/react-table + react + react-dom only). ADR-003 still documented per C-14 (license stub decision)."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "package.json L5: '\"license\": \"SEE LICENSE IN EULA\"' (Read confirmed). EULA.md L1-52 present (Read confirmed 52 lines, all 8 sections complete). Pro license verification call: index.ts L11 'verifyOrWarn(@tomis/grid-pro-datamap)' inline stub per ADR-003 (MOD-GRID-99-A/G-002 미구현 환경 forced; monorepo precedent confirmed). C-24 satisfied."
+    }
+  },
+  "weightedScore": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "scopeValidation": "G-001 scope per spec Section 1.4 is API/type design only — DataMap interface + createDataMap factory + TomisColumnDef type + index.ts (exports + license stub) + EULA.md + decisions.md. B/C/D categories N/A by scope (no UI rendering, no usage migration, no behavior runtime). E-02 N/A justified by ADR-003 (inline stub pattern, G-004 will add peer deps).",
+    "specCodeDefectAcknowledged": "Implementer specCodeDefects[0] noted D4 prose 'TomisColumnMeta' undefined type reference. Resolution: C-30 truth table — code template Section 3.3 + ADR-002 intersection pattern took priority over D4 prose. Properly documented in implement-score + verifier reviewed. No verify impact.",
+    "d6DeviationJustified": "ADR-003 documents grid-license inline stub vs spec D6 import pattern. Three constraints (D6/D7/C-12) mutually incompatible without G-004 first. Monorepo precedent (grid-pro-tracking, grid-pro-range) confirms pattern. G-004 will replace stub with actual import. No verify-stage failure.",
+    "crossStageConsistency": "Implementer score = 100, implement-verifier score = 100, verify score = 100. Three-stage independent agents agree. No discrepancy.",
+    "futureMigration": "EditableGrid.tsx selectOptions → column.dataMap migration documented in spec Section 4 as future G-017 (MOD-GRID-17). Not a residual deviation for current Goal."
+  },
+  "buildStatus": {
+    "tsc": "PASS (npx tsc --noEmit EXIT=0 in packages/grid-pro-datamap)",
+    "viteBuild": "PASS (tsup build EXIT=0, ESM 995B + CJS 1023B)",
+    "sizeLimit": "PASS (995B + 1023B << 20KB Pro package limit)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [
+      "EditableGrid.tsx selectOptions → column.dataMap (future G-017 per spec Section 4)"
+    ],
+    "rate": null,
+    "note": "G-001 creates brand new Pro package API — totalAffected=0 means no existing consumer migration in this Goal. EditableGrid.tsx selectOptions is forward-looking plan (G-017), not current Goal residual."
+  },
+  "selfVerification": {
+    "categorySumEquals16": "YES — A(3)+B(5)+C(3)+D(2)+E(3) = 16 matches rubric L7 total.",
+    "naExcludedFromDenominator": "YES — A denominator=2 (A-01 N/A excluded), B/C/D vacuous (0/0 → 100), E denominator=2 (E-02 N/A excluded). N/A items absent from all category denominators.",
+    "failedChecksOnlyContainsNO": "YES — failedChecks is empty array. No NO results. N/A items excluded.",
+    "weightedScoreFormulaCheck": "weightedScore = Σ(categoryScore × weight)/100 = (100×15 + 100×20 + 100×30 + 100×20 + 100×15)/100 = 10000/100 = 100.0 ✓",
+    "weightSumEquals100": "YES — 15+20+30+20+15 = 100 ✓",
+    "jsonParseSuccess": "Output JSON structure validated — all evidence strings escape-safe, no embedded raw double quotes, no unescaped backslashes. Self-parse check passed before disk write."
+  },
+  "verifiedAt": "2026-05-15",
+  "verifierAgent": "Verifier (opus) — Independent Agent",
+  "notes": [
+    "G-001 achieves 100.0 weightedScore with all F meta gates PASS (F-01/F-02/F-03/F-07).",
+    "Vacuous truth applied to B/C/D categories — Goal scope is API/type design only (spec Section 1.4 explicit); no behavior/UI/usage migration in G-001. B vacuous allowed: Goal title 'DataMap API 설계' contains no build/tsup/tsc/vite/rollup/size-limit/bundle keywords for A vacuous restriction (and B is behavior not build).",
+    "All 6 spec Section 7 write set files verified to exist with correct content (Read sampling). Build chain (tsc + tsup) executed successfully with measurable outputs.",
+    "EditableGrid.tsx confirmed unchanged in TOMIS git (git status clean). C-1 boundary respected.",
+    "ADR-003 (inline grid-license stub) is a documented, justified deviation from spec D6 — environment-forced (D6+D7+C-12 incompatible without G-004), monorepo precedent confirmed (grid-pro-tracking + grid-pro-range). No verify-stage failure.",
+    "Cross-stage consistency: Implementer 100, implement-verifier 100, verify 100 — three independent agents agree, no discrepancy."
+  ],
+  "moduleId": "MOD-GRID-12",
+  "tier": "medium",
+  "yesCount": 4,
+  "noCount": 0,
+  "naCount": 12,
+  "denominator": 4,
+  "score": 100,
+  "runAt": "2026-05-15",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-001→full",
+      "tier=medium",
+      "yesCount=4",
+      "noCount=0",
+      "naCount=12",
+      "denominator=4",
+      "score=weightedScore",
+      "runAt=2026-05-15",
+      "verifierModel=opus"
+    ]
+  }
+}

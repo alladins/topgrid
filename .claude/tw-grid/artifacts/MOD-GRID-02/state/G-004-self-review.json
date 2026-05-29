@@ -1,0 +1,82 @@
+{
+  "goalId": "G-004",
+  "module": "MOD-GRID-02",
+  "area": "state",
+  "stage": "self-review",
+  "reviewedAt": "2026-05-14",
+  "reviewerModel": "opus",
+  "scoreSummary": {
+    "specify": 100.0,
+    "implement": 100.0,
+    "implementVerifier": 100.0,
+    "verify": 100.0,
+    "implementerSelfScore": 100,
+    "verifierModel": "haiku (independent re-check confirmed in G-004-implement-verifier-score.json L7 + L11)"
+  },
+  "cascadingRisksFromPrevious": {
+    "R-1_specifyScoreAbsence": {
+      "status": "resolved",
+      "evidence": "G-004-specify-score.json present on disk (Read confirmed 254 lines, 29 YES + 0 NO + 4 N/A + c26SelfVerification block). check-level data fully populated, audit trail complete. Tooling enforcement question (orchestrator allowing state-goals.json status=done without specify-score.json write) remains open as harness backlog item but did not manifest for G-004."
+    },
+    "R-2_verifierModelMissing": {
+      "status": "resolved",
+      "evidence": "G-004-implement-verifier-score.json L7 'verifierModel: haiku' explicit + L8 'implementerSelfScore: 100' separation. Implementer self-score lives in G-004-implement-score.json (model: opus per implement-score), Coverage Verifier (haiku) independent re-check produces G-004-implement-verifier-score.json with 15 YES + 9 N/A + 6 meta gates (F-01..F-06 all YES + surgicalChangeVerification 6/6 + c27DriftCrossCheck + c30SpecTableMatch + c31WiringAuditPass). C-15 medium tier procedure followed correctly. This is the 2nd correctly executed instance after G-003 (1st)."
+    },
+    "R-3_rulesOfHooksSilentFix": {
+      "status": "different-pattern-emerged",
+      "evidence": "G-004 spec Section 11.1 useEffect code template (L505-507): `useEffect(() => {...}, [clearSelectionKey])` — comment says 'setRowSelection은 useControllableState 반환 — stable ref' but factual issue (G-003 retrospective found): useControllableState L112 setValue is recreated each render. Implementer chose option 3 (eslint-disable comment + JSDoc rationale) rather than option 1 (silent fix without report) or option 2 (Rules of Hooks restructure). useGridState.ts L246-266 documents intent in 8-line comment block + L265 `// eslint-disable-next-line react-hooks/exhaustive-deps`. Implementer reported this in implement-score.json feedback item 4 (L74) — C-27/F-05 reporting honored. F-06 specCodeDefects=[] correct (no spec internal code defect — spec template was Rules-of-Hooks-compliant; only the comment claim about setRowSelection stability was inaccurate, not the code structure). Coverage Verifier captured this in B-05 ESLint evidence + rulesOfHooksEvidence."
+    }
+  },
+  "findings": [
+    "G-004 implementation correctly applied C-15 medium tier model split (Implementer=opus self-score + Coverage Verifier=haiku independent re-check) — G-004-implement-verifier-score.json verifierModel='haiku' explicitly recorded; this is 2nd correctly-procedured Goal after G-003.",
+    "G-004 spec Section 5 AC-004 (Storybook story) and AC-005 (vitest 3 scenarios — labeled '단위 테스트 ≥ 3 시나리오 통과') are binding ACs. Section 7 final implementFiles table does NOT enumerate any *.test.ts or *.stories.tsx file. Implementer correctly applied C-30 (Section 7 authoritative) + deferred AC-004/AC-005 with feedback report (implement-score.json L75-76). Coverage Verifier graded A-05 as YES with deferred notation. Result: 2 binding ACs effectively unverified at score=100 — a C-30 ↔ AC-binding loophole.",
+    "Implementer added `eslint-disable-next-line react-hooks/exhaustive-deps` at useGridState.ts L265 with 8-line JSDoc rationale (L246-254). This is intentional escape hatch — root cause is useControllableState.ts L112 returning non-stable setValue (plain const function recreated each render). G-004 does not fix root cause; pattern may propagate to future Goals that depend on useControllableState setters in useEffect deps.",
+    "Verify-rubric vacuous truth applied to categories B (5 N/A — hook-only) + D (2 N/A — affectedUsageFiles=0). Goal title 'resetState() / resetSection helper + clearSelectionKey 외부 트리거' contains no vacuous-prohibited keywords (build/tsup/tsc/vite/rollup/size-limit/bundle), so vacuous rule legitimately applies. However, the implementation-correctness verification strength is effectively limited to A category (tsc + size-limit) — actual runtime behavior of resetState/resetSection/clearSelectionKey not exercised by any test. AC-005's 3 vitest scenarios would have provided the missing runtime coverage but were deferred.",
+    "Structural reference errors in main prompt (G-004 implement-score.json feedback items 1-2): (a) prompt cited '@topvel/grid-core' but actual package name is '@tomis/grid-core' (per packages/grid-core/package.json L2), (b) prompt cited types.ts 'GridState L670-706 + UseGridStateOptions L608-655' but actual pre-change positions are L692-728, L630-677. Implementer correctly applied F-05 update (2026-05-14): structural reference errors are feedback-only, not promptSpecDrift entries. F-05 YES decision in verifier-score is correct. No silent value drift occurred.",
+    "AC-005 includes specific scenario (b): 'controlled mode (state.sorting 제공) 에서 resetState() 호출 시 sorting setter 가 onChange 만 호출하고 내부 state 변경 없음 (G-002 useControllableState 동작 확인)'. This scenario directly tests G-002 controlled-mode behavior in conjunction with G-004 reset semantics. Deferring it means G-002 ↔ G-004 integration is unverified at runtime — only via static Read+trace by Implementer (implement-score.json L76)."
+  ],
+  "newCascadingRisks": [
+    "R-1 (high): C-30 ↔ AC-binding loophole — when spec Section 5 lists binding ACs (Storybook, vitest, integration test) but Section 7 final implementFiles table omits the corresponding deliverable files, Implementer can legitimately defer those ACs per C-30 (Section 7 authoritative). Score 100 is technically achievable while 2 binding ACs are unverified. This patterns affects every future Goal where spec writer enumerates documentation/test ACs without adding corresponding files to Section 7. Affected Goals: any future Storybook/test/docs-binding Goal across MOD-GRID-02~16.",
+    "R-2 (medium): useControllableState non-stable setValue root cause not fixed in G-004. Future Goals (G-005+, other modules using useControllableState setters in useEffect deps) likely to repeat eslint-disable-next-line pattern. Without underlying fix (memoize setValue via useCallback in useControllableState.ts, or extract setterRef pattern), the eslint-disable count will accumulate across modules. Risk severity escalates from anecdote (1 occurrence in G-004) to pattern when 2nd Goal encounters same issue.",
+    "R-3 (medium): hook-only Goal vacuous truth pattern — B (동작) and D (마이그레이션) categories vacuous→100 means verify weightedScore reduces to A+C+E effective scoring (45% weight at medium tier). When affectedUsageFiles=0 + no test file in implementFiles, real verification strength is limited to tsc + size-limit + console-warning grep. spec G-004 Section 12.1 enumerates 3 AC-005 vitest scenarios as 'AC-005 게이트' but deferral means those scenarios never executed. Future hook-only Goals (e.g. MOD-GRID-13/14 hooks for advanced features) may inherit this pattern — 'specified but unverified' AC-005 becomes normalized."
+  ],
+  "improvementsAppliedCount": 3,
+  "improvementsRejectedCount": 2,
+  "appliedItems": [
+    "specify-rubric.md E-01 강화: Section 5 binding AC (Storybook/vitest/test scenario)가 명시되면 Section 7 final implementFiles 표에 매칭 deliverable 파일 (*.test.ts, *.stories.tsx 등) 1건 이상 enumerate 의무. AC enumeration vs file enumeration 불일치 시 E-01 NO. 근거: G-004 AC-004/005 deferred → score 100 but 2 binding ACs 미검증 (R-1).",
+    "implement-rubric.md A-05 명확화: AC deferral discipline — Implementer 가 binding AC (Section 5 명시) 를 deferred 처리하려면 (a) implement-score JSON `deferredAcs[]` 필드 명시 + (b) follow-up Goal/task ID 제안 + (c) deferred AC에 매핑된 vitest/Storybook 매핑이 있으면 A-05를 자동 YES 아닌 PARTIAL 처리 후보. Coverage Verifier가 deferred AC 발견 시 follow-up Goal proposal 확인 의무. 근거: G-004 implement-score.json feedback (L75-76) AC-004/005 deferred 보고를 score-level penalty 없이 인정한 사례.",
+    "constraints.md C-32 신설: useControllableState setter (또는 비안정 returnRef) 를 useEffect/useCallback deps 에 포함 시 처리 룰 — 옵션 1 (root cause fix: useControllableState 내부에서 setValue를 useCallback memoize) 우선 권장, 옵션 2 (setterRef 패턴 wrapping) 차선, 옵션 3 (eslint-disable + JSDoc rationale) 는 마지막 escape hatch. 옵션 3 사용 시 (a) JSDoc 에 'spec D# 근거' 명시 + (b) findings/auto-fixed/ 또는 ADR-MOD-GRID-XX-NNN 에 root cause fix 후보 기록 + (c) 다음 Goal/모듈에서 동일 패턴 재발 시 root cause fix promotion trigger. 근거: G-004 useGridState.ts L246-266 eslint-disable 패턴 (R-2)."
+  ],
+  "rejectedItems": [
+    "verify-rubric.md vacuous truth rule 약화 (hook-only Goal에서 B/D vacuous 금지) — REJECT. 이유: ADR-MOD-GRID-00-002 vacuous truth rule은 인프라/hook Goal의 정상 점수 부여를 위한 의도된 정책. G-004 미검증 부분은 vacuous 자체가 아니라 AC deferral (R-1)이 근본 원인. R-1 mitigation (specify E-01 강화)으로 차단 가능하며, vacuous rule 자체 변경은 G-001/G-002 (이미 vacuous로 100점 인정) retroactive 영향 + 인프라 Goal blanket damage. 1=anecdote 룰 적용 — G-004 한 사례로 정책 변경 부적격.",
+    "implement-rubric.md F-06 specCodeDefects 강화 (spec 코드 주석의 사실 오류도 결함으로 포함) — REJECT. 이유: G-003 F-06 신설 시점에 '컴파일 통과하지만 의미적/구조적으로 잘못된 결함' 범위 정의됨. G-004 spec Section 11.1 'setRowSelection은 stable ref' 주석은 사실 오류이나 spec 코드 구조 자체는 Rules-of-Hooks-compliant. Implementer가 주석을 무시하고 eslint-disable로 처리 — F-06 (code defect) 아닌 C-32 (escape hatch documentation) 범위. F-06 범위 inflation 회피 — 신설 후 1 Goal 만에 정의 확장은 over-engineering."
+  ],
+  "affectedFiles": [
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/rubric/specify-rubric.md",
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/rubric/implement-rubric.md",
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/constraints.md",
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/artifacts/MOD-GRID-02/state/G-004-self-review.json"
+  ],
+  "metaValidation": {
+    "scoreFormulaConsistency": "specify YES29/(29+0)×100=100 ✓. implement(verifier) YES15/(15+0)×100=100 ✓. verify Σ(100×0.15)+(100×0.20)+(100×0.30)+(100×0.20)+(100×0.15)=100 ✓. All match reported scores.",
+    "naDenominatorExclusion": "specify naCount=4 + denominator=29 ✓. implement(verifier) naCount=9 + denominator=15 ✓. verify naCount=12 + vacuous applied to B (5 N/A) + D (2 N/A) ✓.",
+    "failedChecksIntegrity": "All 3 stages failedChecks=[]. No NO results. C-26 self-verification block present in implement-verifier and verify score JSONs.",
+    "vacuousRuleApplication": "verify B (hook-only, 5 N/A) + D (affectedUsageFiles=0, 2 N/A) vacuous → 100. ADR-MOD-GRID-00-002 + verify-rubric vacuous rule 정확 적용. A category build keyword 없음 (Goal title 'resetState/resetSection helper') — vacuous 금지 룰 회피 ✓ (A category 실 채점 YES×2 + N/A×1 = 100).",
+    "f06SpecCodeDefectsScope": "G-004 specCodeDefects=[] correct. spec Section 11.1 useEffect deps comment에 사실 오류(setRowSelection stability claim) 있으나 코드 구조 자체는 Rules-of-Hooks-compliant. Implementer가 comment 무시 + eslint-disable로 처리 → C-32 (escape hatch) 범위, F-06 (code defect) 아님."
+  },
+  "harnessReviewArtifact": {
+    "selfReviewPath": ".claude/tw-grid/artifacts/MOD-GRID-02/state/G-004-self-review.json",
+    "rubricUpdates": [
+      "rubric/specify-rubric.md E-01 강화 (Section 5 binding AC ↔ Section 7 final implementFiles 매칭 의무)",
+      "rubric/implement-rubric.md A-05 명확화 (AC deferral discipline — deferredAcs[] 필드 + follow-up Goal 의무)"
+    ],
+    "constraintsUpdates": [
+      "constraints.md C-32 신설 (useControllableState 비안정 setter useEffect deps 처리 룰)"
+    ],
+    "toolingBacklog": [
+      "Coverage Verifier prompt 보강: spec Section 5 AC 표 read + Section 7 implementFiles 표 read + cross-match (E-01 신규 검증 의무)",
+      "useControllableState.ts root cause fix Goal proposal — useCallback wrapping 또는 setterRef 패턴 적용 → 후속 모듈 eslint-disable 누적 차단"
+    ]
+  },
+  "timestamp": "2026-05-14T15:00:00Z"
+}

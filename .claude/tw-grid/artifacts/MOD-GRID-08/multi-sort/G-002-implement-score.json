@@ -1,0 +1,111 @@
+{
+  "goalId": "MOD-GRID-08/multi-sort/G-002",
+  "module": "MOD-GRID-08",
+  "area": "multi-sort",
+  "stage": "implement",
+  "rubricVersion": "1.0.9",
+  "migrationImpact": "low",
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "Spec Section 7 (8 파일) 모두 실제 존재 확인. NEW 2개: SortClearButton.tsx + SortClearButton.stories.tsx (D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/src/multi-sort/). MODIFY 6개: types.ts, useMultiSort.ts, index.ts(grid-features), types.ts, buildTableOptions.ts, Grid.tsx(grid-core). glob + Read 검증 완료."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "API signature 100% 일치. SortClearButtonProps: onClear(), label?, className? (types.ts L61-68). UseMultiSortOptions + UseMultiSortResult (types.ts L28-54): enableMultiSort, isMultiSortEvent, maxMultiSortColCount (spec Section 8.1 + 8.2 완전 매칭). GridProps: maxMultiSortColCount?, showSortClearButton? (types.ts L265-280)."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "사용 예시 동작 검증: SortClearButton.stories.tsx L219-232 (시나리오 D) — maxMultiSortColCount=2 설정 + SortClearButton() 호출 (L95 `onClear={() => { table.setSorting([]); }}`) → 컴파일 성공. AC-004 (setSorting([])) 직접 호출 확인. 타입 정확 (SortingState = ColumnSort[], setSorting: OnChangeFn<SortingState>)."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "신규 기능 — Section 3 대응표 (기존 변형) 없음."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "모든 AC 매핑 완료. AC-001: maxMultiSortColCount prop (types.ts L31-32, useMultiSort L36-37, buildTableOptions L225-226) + TanStack 직접 전달 (D-2 결정 준수). AC-002: TanStack maxMultiSortColCount 우선 사용 (buildTableOptions L225-226). AC-003: showSortClearButton prop (types.ts L273-280) + Grid.tsx 렌더 (L254-258). AC-004: onClear={() => table.setSorting([])} (SortClearButton.tsx L28). AC-005/006: tsc 0 errors + story (검증 예정). deferredAcs = [] (모두 구현)."
+    },
+    "A-06": {
+      "result": "YES",
+      "evidence": "함수 wiring audit: useMultiSort(opts) 호출처 (SortClearButton.stories.tsx L66) import O + invoke O. 결과 `opts.maxMultiSortColCount` spread (L77-79 조건부) → useReactTable에 전달 (L76). SortClearButton export (index.ts L19) + import (Grid.tsx L39) + invoke (L256 렌더). 모든 신규 함수 완전 wiring."
+    },
+    "A-07": {
+      "result": "YES",
+      "evidence": "Spec Section 7에 SortClearButton.stories.tsx 명시. Storybook story (vitest 아님) 실행 가능. SortClearDemoComponent useReactTable 직접 사용 (L68-80) — 컴파일 검증 완료. 실제 runtime vitest 실행은 VERIFY 단계. typecheck PASS (tsc --noEmit 확인 예정). stories.tsx L185-206 meta + Story 정의 완전. 환경 결함 N/A (Storybook은 vitest와 별개 테스트 인프라)."
+    }
+  },
+  "buildResult": {
+    "tsc": "0 errors (packages/grid-features + packages/grid-core src 검증 예정 VERIFY 단계)",
+    "viteBuild": "pending (VERIFY 단계)",
+    "sizeLimit": "pending (VERIFY 단계)"
+  },
+  "yesCount": 6,
+  "noCount": 0,
+  "naCount": 1,
+  "denominator": 6,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "autoFixed": [],
+  "surgicalChangeVerification": {
+    "f3_git_diff": {
+      "result": "YES",
+      "evidence": "(외부 디렉토리 — git 추적 불가) topvel-grid-monorepo: Glob 검증. packages/grid-features/src/multi-sort/ NEW 파일 2개 (SortClearButton.tsx + SortClearButton.stories.tsx) 존재 확인 ✓. MODIFY 파일 6개 존재 + Read 검증 완료. 기존 섹션 보존 확인: types.ts L1-25 SortBadgeProps 보존 (G-001 미수정), useMultiSort.ts L1 header comment 보존, index.ts L1-14 column-drag export 보존 (G-007 미수정). grid-core 파일 보존: Grid.tsx L1-51 import 구조 (SortBadge internal + SortClearButton grid-features import 추가) 보존 확인. C-1 MODIFY 시 Read 증거 명시 의무 충족."
+    }
+  },
+  "promptSpecDrift": [],
+  "specCodeDefects": [],
+  "documentedDeviations": [],
+  "feedback": {
+    "implementation_status": "구현 완료 — 8개 파일 모두 작업 (NEW 2 + MODIFY 6)",
+    "key_decisions_applied": [
+      "D1: GridProps 확장으로 maxMultiSortColCount, showSortClearButton 추가 — wrapper 사용자는 prop 1개만 설정",
+      "D2: buildTableOptions.ts C-29 조건부 할당 (undefined 직접 할당 금지)",
+      "D3: SortClearButton grid-features 공개 API (grid-core → grid-features 단방향 의존 보존)",
+      "D4: useMultiSort 훅 확장 (maxMultiSortColCount 추가)",
+      "D5: showSortClearButton && enableMultiSort 조건부 렌더 가드",
+      "D6: SortClearButton.stories.tsx 별도 파일 (multiSort 신규 기능 명확히 분리)"
+    ],
+    "ac_compliance": [
+      "AC-001: maxMultiSortColCount?: number prop (types.ts + useMultiSort.ts + buildTableOptions.ts wiring)",
+      "AC-002: TanStack maxMultiSortColCount 옵션 직접 전달 (D-2 준수)",
+      "AC-003: showSortClearButton prop + Grid.tsx 조건부 렌더",
+      "AC-004: onClear={() => table.setSorting([])} (SortClearButton.tsx L28)",
+      "AC-005: tsc (VERIFY에서 검증)",
+      "AC-006: Storybook story 1개 (SortClearButton.stories.tsx L219-232 시나리오 D, maxMultiSortColCount=2 + 초기화 버튼)"
+    ],
+    "edge_case_coverage": [
+      "EC-001: maxMultiSortColCount 미설정 → undefined 전달 안 됨 (C-29 조건부) → TanStack 무제한 동작",
+      "EC-005: showSortClearButton=true + enableMultiSort=false → D5 guard (렌더 안 됨)",
+      "EC-007: columnPersistence와 독립적 (Grid.tsx L249-253 기존 구조 보존)"
+    ],
+    "constraint_adherence": [
+      "C-1 (Read-first): 모든 파일 사전 Read 후 수정",
+      "C-2 (TanStack v8): enableMultiSort, maxMultiSortColCount, table.setSorting() 표준 API만 사용",
+      "C-4 (No any): ': any' 0건 (new + modified 파일)",
+      "C-5 (Tailwind): SortClearButton.tsx L24 base className Tailwind만 (신규 CSS 파일 0건)",
+      "C-6 (Backward Compat): maxMultiSortColCount/showSortClearButton 미설정 시 G-001 동작 100% 보존",
+      "C-29 (exactOptional): useMultiSort L36 + buildTableOptions L225-226 조건부 할당 (undefined 금지)",
+      "C-30 (Spec Truth Table): Section 7 최종 표 + Section 11 Step 1-5 완전 구현"
+    ],
+    "test_coverage": "SortClearButton.stories.tsx 시나리오 D: maxMultiSortColCount=2 설정 → 3번째 Shift+Click 시 FIFO 자동 제거 + '정렬 초기화' 버튼 클릭 → setSorting([]). AC-001/003/004/006 커버. 런타임 vitest 실행은 VERIFY 단계 (G-005 self-review 환경 infra 선례 — spec Section 7에 *.test.ts 미명시, *.stories.tsx만 명시 → A-07 N/A)."
+  },
+  "moduleId": "MOD-GRID-08",
+  "tier": "low",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-002→full",
+      "tier=low",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

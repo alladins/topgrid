@@ -1,0 +1,228 @@
+{
+  "stage": "verify",
+  "goalId": "MOD-GRID-99-A/license/G-001",
+  "moduleId": "MOD-GRID-99-A",
+  "area": "license",
+  "tier": "low",
+  "threshold": 90,
+  "rubricVersion": "1.0.3",
+  "migrationImpact": "low",
+  "verifier": "claude-opus-4-7",
+  "verifiedAt": "2026-05-15",
+  "weights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "metaGates": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "Sampled 5 evidence citations from implement-score: (1) types.ts L1-15 — Read confirmed LicenseReason/LicenseStatus/LicenseState exact text; (2) state.ts L1-14 — Read confirmed module-static _state + setLicenseState + getLicenseState; (3) verifySignature.ts L27-116 — Read confirmed pure async Ed25519 implementation with all EC handlers; (4) setLicenseKey.ts L15-31 — Read confirmed sync wrapper + fire-and-forget; (5) MOD-GRID-99-A-decisions.md L23-145 — Read confirmed 3 ADRs (Ed25519, domain, sync API). All paths absolute, all files exist in topvel-grid-monorepo (external dir per ADR-MOD-GRID-00-001 — Glob/Read used per F-01 외부 디렉토리 evidence rule)."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "categoryScore formula re-checked. A: YES=2 / NO=0 / N/A=1 → 2/(2+0)×100 = 100.0. B: YES=0 / NO=0 / N/A=5 → vacuous (0/0 undefined). C: YES=0 / NO=0 / N/A=3 → vacuous. D: YES=0 / NO=0 / N/A=2 → vacuous. E: YES=2 / NO=0 / N/A=1 → 2/(2+0)×100 = 100.0. N/A 분모 미포함 확인."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore = (100×25 + 100×25 + 100×20 + 100×15 + 100×15)/100 = (2500+2500+2000+1500+1500)/100 = 10000/100 = 100.0. Σweight = 25+25+20+15+15 = 100 ✓. Per Vacuous Truth Rule (rubric L72-78), B/C/D categories with all-N/A → categoryScore=100. Goal title 'setLicenseKey global API + key 알고리즘 결정 ADR' contains no build|tsup|tsc|vite|rollup|size-limit|bundle keyword → A category vacuous would be allowed, but A has real evidence (A-02 tsc, A-03 tsup build) so scored as YES not vacuous."
+    }
+  },
+  "buildEvidence": {
+    "typecheck": "0 errors (re-run by Verifier: cd packages/grid-license && ../../node_modules/.bin/tsc --noEmit → EXIT_CODE=0)",
+    "build": "PASS (Implementer: tsup CJS+ESM+DTS in ~640ms; dist/ artifacts confirmed by Verifier via ls)",
+    "distSizes": {
+      "index.cjs": "2.67 KB (2730 B raw)",
+      "index.mjs": "2.64 KB (2702 B raw)",
+      "index.d.ts": "866 B",
+      "index.d.cts": "866 B"
+    },
+    "bundleLimit": "20 KB (Pro per C-21)",
+    "underLimit": true,
+    "tsConfigStrict": "exactOptionalPropertyTypes:true confirmed; noUnusedLocals:true confirmed (implementer removed unused LicenseState import in verifySignature.ts per F-06 specCodeDefects)",
+    "anyTypeGrep": "0 hits (': any|<any>|as any' Grep on src/ = empty — C-4 compliance)"
+  },
+  "categories": {
+    "A": {
+      "yesCount": 2,
+      "noCount": 0,
+      "naCount": 1,
+      "categoryScore": 100,
+      "weight": 25
+    },
+    "B": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 5,
+      "categoryScore": 100,
+      "weight": 25
+    },
+    "C": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 3,
+      "categoryScore": 100,
+      "weight": 20
+    },
+    "D": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 2,
+      "categoryScore": 100,
+      "weight": 15
+    },
+    "E": {
+      "yesCount": 2,
+      "noCount": 0,
+      "naCount": 1,
+      "categoryScore": 100,
+      "weight": 15
+    }
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "tw-framework-front (FE) + tvcom_back (BE) 통합 빌드는 본 Goal scope 외. grid-license는 외부 monorepo의 독립 TS 패키지, FE/BE 통합 빌드 무관 (rubric L96-98: 그리드 작업이 FE 전용일 때 N/A — 본 Goal은 FE조차 미터치)."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Verifier 직접 실행: `cd D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license && ../../node_modules/.bin/tsc --noEmit` → EXIT_CODE=0 (0 errors). monorepo tsconfig.base.json exactOptionalPropertyTypes:true + noUnusedLocals:true strict 환경 통과. tw-framework-front 사용처 0 (affectedUsageFiles=[]) — 단일 패키지 tsc로 충분."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "tsup build PASS (Implementer evidence: 'Build success CJS + ESM + DTS in ~640ms'). Verifier 직접 확인: ls dist/ → 6 artifacts (index.cjs 2730B, index.mjs 2702B, index.d.ts 866B, index.d.cts 866B, +2 sourcemaps). 최대 산출 2.67 KB ≪ Pro 한도 20 KB (C-21). size-limit 설정 파일 별도 미작성이지만 raw size로 직접 검증 — 한도 충분 (G-003 EULA + size-limit 통합 예정)."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "grid-license는 라이선스 검증 런타임 — 정렬 동작과 무관 (rubric L113: 정렬 무관 기능 N/A). 데이터 그리드 컴포넌트 없음."
+    },
+    "B-02": {
+      "result": "N/A",
+      "evidence": "필터 무관 — 라이선스 검증 런타임 (rubric L117)."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "페이지네이션 무관 (rubric L121)."
+    },
+    "B-04": {
+      "result": "N/A",
+      "evidence": "가상화 무관 (rubric L125). grid-license는 DOM 렌더 없음 (Web Crypto API + module-static state only)."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "인라인 편집 기능 없음 (rubric L129). 본 Goal은 setLicenseKey global API + Ed25519 검증."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] (goals.json + spec Section 5 + implement-score.C-01 일관 확인). 본 Goal에서 마이그레이션한 사용처 0개 → rubric L139 N/A 조건."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "사용처 0 + migrationImpact=low (rubric L144 N/A 조건: low tier + 사용처 0). 시각 회귀 검증 대상 없음."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "사용처 0 — 사용처 실행 console warning 검증 불가. spec D3에서 console.warn은 G-002 scope 명시 (본 G-001은 LicenseStatus 반환만, warning 없음). 검증 대상 미존재."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "사용처 0개 (rubric L157 N/A 조건). 본 Goal은 신규 패키지 + 신규 API — 마이그레이션 사용처 미존재. G-002/G-003에서 grid-pro-* 사용처 통합 예정."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 0건 (rubric L161 N/A 조건)."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Pro 패키지 한도 20 KB (C-21). 실제 산출 raw: index.mjs 2702 B (~2.64 KB), index.cjs 2730 B (~2.67 KB), d.ts 866 B. 최대 2.67 KB << 20 KB (한도의 13.4%). gzip 변동은 비교 대상(이전 dist) 없음(신규 패키지) 으로 N/A이나, raw 절대 한도 충분 확인. 사용자 승인 불필요. .size-limit.json 미설정은 G-003 범위 (spec Section 7 implementFiles 미포함 — implement-score E-01 evidence 일관)."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "외부 npm dependency 0개 (Web Crypto API 빌트인). spec Section 5.4 '추가 외부 패키지 없음' + ADR-MOD-GRID-99-A-001 '외부 npm 패키지 추가 없음' 명시. 따라서 새 dep ADR 의무(C-20) 비적용. 단, ADR-001/002/003 3건 작성됨 — 알고리즘 결정 ADR로서 C-14 의무 별도 충족 (rubric E-02는 'new dep' 한정)."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "package.json L5: \"license\": \"SEE LICENSE IN EULA\" 확인 (Read). Pro 패키지 라이선스 명시 의무 C-24 충족. EULA.md + 자동 require 통합은 spec Section 4 OUT-OF-SCOPE 명시 + spec Section 7 영향 없는 파일 표 '이미 설정됨, G-001 범위 외' → G-003 scope. 본 Goal에서는 package.json license 필드 명시 단독 검증, 통과."
+    }
+  },
+  "weightedScore": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [
+    "Opus Verifier (C-15 의무 — high+medium+low 모두 opus): 16 verify-rubric 항목 5축 가중 채점 완료.",
+    "A category: A-02/A-03 YES (tsc 0 errors Verifier 직접 재실행 EXIT_CODE=0; tsup build PASS + dist 2.67 KB ≪ 20 KB 한도). A-01 N/A (FE/BE 통합 빌드 본 Goal scope 외).",
+    "B category: B-01~B-05 모두 N/A (라이선스 검증 런타임 — 그리드 동작 항목과 무관). Vacuous Truth Rule (rubric L72-78) 적용 → categoryScore=100.",
+    "C category: C-01~C-03 모두 N/A (affectedUsageFiles=[] — 신규 패키지 사용처 0개). Vacuous → 100.",
+    "D category: D-01/D-02 모두 N/A (사용처 0 → 마이그레이션 비율/잔여 대상 미존재). Vacuous → 100.",
+    "E category: E-01 YES (raw 2.67 KB ≪ Pro 20 KB 한도, 한도의 13.4%), E-03 YES (package.json license: 'SEE LICENSE IN EULA' 확인), E-02 N/A (외부 npm 0개 — Web Crypto 빌트인).",
+    "메타 게이트 F-01/F-02/F-03 전부 YES — evidence 5건 sampling Read 검증 + 산식 재검산 통과. C-26 self-verification 완료.",
+    "weightedScore = (100×25 + 100×25 + 100×20 + 100×15 + 100×15) / 100 = 10000/100 = 100.0. Σweight = 100 ✓. threshold 90 (low tier) → PASS.",
+    "categoryTotals: A(3) + B(5) + C(3) + D(2) + E(3) = 16 = rubricTotal ✓ (verify-rubric.md L7).",
+    "failedChecks 배열은 NO 항목만 포함 (N/A 미포함) — 비어있음 (NO 0건).",
+    "구현 품질 노트: ': any|<any>|as any' Grep on src/ = 0 hits (C-4 strict). C-29 spread-skip 패턴 9개소 적용 확인 (verifySignature.ts 5 + state.ts 1 + setLicenseKey.ts 1 + 2 spec template). C-32 pure helper (verifySignature.ts) + React shell 분리 미적용 (본 패키지 React 무관 — C-32 본질적 N/A).",
+    "specCodeDefects 2건은 spec 내부 정합성 결함이며 implementer가 C-30 Truth Table Discipline 따라 Section 5.3 executable 권위 적용 + 자율 정정 — 본 verify 단계에서 추가 조치 불필요. 차후 spec 정정 권고 (별도 G-001 spec amendment 또는 G-002 spec에 반영)."
+  ],
+  "categoryTotals": {
+    "A": 3,
+    "B": 5,
+    "C": 3,
+    "D": 2,
+    "E": 3
+  },
+  "rubricTotal": 16,
+  "naCategoryHandling": "Vacuous Truth Rule per verify-rubric.md L72-78: B/C/D 전 항목 N/A → categoryScore=100 처리 (0/0 undefined 대응). Goal title 'setLicenseKey global API + key 알고리즘 결정 ADR' 에 build/tsup/tsc/vite/rollup/size-limit/bundle 키워드 없음 → A 카테고리 vacuous 허용 영역이나 A-02/A-03 실제 YES 평가 (vacuous 사용 안 함). weight 재분배 미적용 — 5개 weight 합 100 유지.",
+  "categoryCheckOK": true,
+  "scoreFormulaOK": true,
+  "categoryScoreVerification": {
+    "A": "YES(2) / (YES(2) + NO(0)) × 100 = 100.0",
+    "B": "vacuous (YES=0, NO=0, N/A=5) → 100.0 per rubric L72-78",
+    "C": "vacuous (YES=0, NO=0, N/A=3) → 100.0",
+    "D": "vacuous (YES=0, NO=0, N/A=2) → 100.0",
+    "E": "YES(2) / (YES(2) + NO(0)) × 100 = 100.0"
+  },
+  "weightedScoreVerification": "(100.0×25 + 100.0×25 + 100.0×20 + 100.0×15 + 100.0×15) / 100 = (2500+2500+2000+1500+1500)/100 = 10000/100 = 100.0 ≥ threshold 90 → passed=true",
+  "selfVerification": {
+    "naDenominatorExcluded": true,
+    "failedChecksContainsNoOnly": true,
+    "categoryTotalMatchesRubric": true,
+    "weightSumEquals100": true,
+    "formulaRecomputed": true,
+    "jsonParseSelfTest": "passed (Verifier confirmed all string escapes valid before write)"
+  },
+  "buildStatus": {
+    "tsc": "PASS (0 errors)",
+    "tsupBuild": "PASS (CJS+ESM+DTS)",
+    "sizeLimit": "PASS (2.67 KB / 20 KB)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": null,
+    "note": "신규 패키지 G-001 — 사용처 미존재. G-002/G-003에서 grid-pro-* 통합 예정."
+  },
+  "yesCount": 4,
+  "noCount": 0,
+  "naCount": 12,
+  "denominator": 4,
+  "score": 100,
+  "runAt": "2026-05-15",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "yesCount=4",
+      "noCount=0",
+      "naCount=12",
+      "denominator=4",
+      "score=weightedScore",
+      "runAt=2026-05-15",
+      "verifierModel=opus"
+    ]
+  }
+}

@@ -1,0 +1,266 @@
+{
+  "goalId": "MOD-GRID-11/range/G-006",
+  "moduleId": "MOD-GRID-11",
+  "area": "range",
+  "stage": "specify",
+  "tier": "medium",
+  "threshold": 90,
+  "rubricVersion": "1.0.6",
+  "migrationImpact": "medium",
+  "checks": [
+    {
+      "id": "A-01",
+      "category": "A",
+      "result": "YES",
+      "evidence": "L0: tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx (160줄 기존). Section 3.1-3.2 기존 6-prop RangeSelectGridProps 패턴 인용."
+    },
+    {
+      "id": "A-02",
+      "category": "A",
+      "result": "YES",
+      "evidence": "L1: Section 3.2 L201-207 TanStack useReactTable(getCoreRowModel(), getSortedRowModel()) API 시그니처 명시."
+    },
+    {
+      "id": "A-03",
+      "category": "A",
+      "result": "YES",
+      "evidence": "L2: Section 1.2 기존 G-001~G-005 5개 hook 패턴 열거 (useCellRange, useKeyboardNav, DragFillHandle, useClipboard, useKeyboardEdit)."
+    },
+    {
+      "id": "A-04",
+      "category": "A",
+      "result": "YES",
+      "evidence": "L3: Section 7 #8 affectedUsageFile 정확 1개 명시 (tw-framework-front/.../RangeSelectGrid.tsx)."
+    },
+    {
+      "id": "A-05",
+      "category": "A",
+      "result": "YES",
+      "evidence": "R-A + R-W: Section 1.3 L86-87 AG Grid + Wijmo 참조명시 (패턴 학습만, import 금지 C-16)."
+    },
+    {
+      "id": "B-01",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 3.1 RangeSelectGridAllProps<TData, TCell> 완전 타입 정의. any/as any 0건 (C-4)."
+    },
+    {
+      "id": "B-02",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 11: Story (a) FullFeature 기본 시나리오 + Story (b) VirtualizationLargeDataset 1000행 = 2개 이상."
+    },
+    {
+      "id": "B-03",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 3.1: 모든 props default value(true/false) 또는 optional(?: T) 명시."
+    },
+    {
+      "id": "B-04",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 3.1 L167: index.ts RangeSelectGridAllProps type export 추가."
+    },
+    {
+      "id": "B-05",
+      "category": "B",
+      "result": "N/A",
+      "evidence": "useImperativeHandle 불필요 (선언적 컴포넌트)."
+    },
+    {
+      "id": "C-01",
+      "category": "C",
+      "result": "YES",
+      "evidence": "Section 2: AC 8개 ≥ 3개."
+    },
+    {
+      "id": "C-02",
+      "category": "C",
+      "result": "YES",
+      "evidence": "Section 2 AC-001~AC-008 모두 source tag 포함 (L1 + C 컨스트레인트)."
+    },
+    {
+      "id": "C-03",
+      "category": "C",
+      "result": "YES",
+      "evidence": "Section 2: 모든 AC 객관 검증 가능 (tsc 0 error, ≤ 20 KB, 호출됨, 표시됨 등)."
+    },
+    {
+      "id": "C-04",
+      "category": "C",
+      "result": "YES",
+      "evidence": "Section 1.1: migrationImpact=medium 명시. goals.json 동일."
+    },
+    {
+      "id": "C-05",
+      "category": "C",
+      "result": "YES",
+      "evidence": "AC-007 (tsc 0 error) + AC-006 (≤ 20 KB) 호환성 검증 2개."
+    },
+    {
+      "id": "D-01",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 8.1 (H-meta): affectedUsageFile 1개 정확 카운트 (RangeSelectGrid.tsx)."
+    },
+    {
+      "id": "D-02",
+      "category": "D",
+      "result": "N/A",
+      "evidence": "신규 컴포넌트 — 기존 variant 대응 불필요."
+    },
+    {
+      "id": "D-03",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 0 D1-D9 모든 재결정 명시. Breaking change 없음. backward compat (C-6)."
+    },
+    {
+      "id": "D-04",
+      "category": "D",
+      "result": "N/A",
+      "evidence": "Breaking change 없음 (D-03 NO 보고)."
+    },
+    {
+      "id": "D-05",
+      "category": "D",
+      "result": "N/A",
+      "evidence": "Breaking change 없음 — deprecation 전략 불필요."
+    },
+    {
+      "id": "D-06",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 6: 번들 '+2 KB' + .size-limit.json ≤ 20 KB (C-21)."
+    },
+    {
+      "id": "E-01",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 7: 7행 (MODIFY 3 + NEW 3 + SUPPLEMENT 1). D# enumerate(NEW 3 + MODIFY 3) vs 표 일치."
+    },
+    {
+      "id": "E-02",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 11: Story (a) FullFeature + Story (b) VirtualizationLargeDataset 1000행."
+    },
+    {
+      "id": "E-03",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 11: 2개 이상 순서 단계 (Story a → Story b)."
+    },
+    {
+      "id": "E-04",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 4: EC 9개 (EC-001~009) 나열. 3개 이상."
+    },
+    {
+      "id": "E-05",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 12 자기점검: tsc 검증, Storybook story 2개, visual regression via decorators."
+    },
+    {
+      "id": "E-06",
+      "category": "E",
+      "result": "NO",
+      "evidence": "Spec D# vs goals.json inconsistency (C-32). spec Section 0 D1: monorepo prefix 결정. spec Section 7 파일 7개. BUT goals.json G-006 implementFiles: 5개만 + TOMIS prefix 유지 + 3개 NEW 파일(stories, CHANGELOG, .size-limit) 누락."
+    },
+    {
+      "id": "F-01",
+      "category": "F",
+      "result": "YES",
+      "evidence": "Section 13: packages/grid-pro-range Pro package 정확명시."
+    },
+    {
+      "id": "F-02",
+      "category": "F",
+      "result": "N/A",
+      "evidence": "Pro license verification position명시 (D2), 구현 위치는 AC-003 명시 (SPECIFY vs IMPLEMENT책임분리 F-02 강화 2026-05-14)."
+    },
+    {
+      "id": "F-03",
+      "category": "F",
+      "result": "YES",
+      "evidence": "Section 10 CHANGELOG.md + Section 11 Storybook story path 명시."
+    },
+    {
+      "id": "F-04",
+      "category": "F",
+      "result": "YES",
+      "evidence": "Section 3.1 L281 peerDependencies policy (C-22)."
+    },
+    {
+      "id": "G-01",
+      "category": "G",
+      "result": "NO",
+      "evidence": "Spec D# ↔ goals.json 데이터 일관성 위반 (C-32 신설). D# 파일 수 NEW 3 + MODIFY 3 vs goals.json implementFiles 5개만 + 경로 prefix TOMIS 유지. Spec Section 0 D1에서 monorepo prefix 결정했으나 goals.json 미갱신."
+    },
+    {
+      "id": "H-01",
+      "category": "metaGate",
+      "result": "YES",
+      "evidence": "Section 8 H-01 referenceEvidence 14개 경로 모두 Glob/Read로 존재확인. L0/L1/L2/L3 경로 100% 실재."
+    },
+    {
+      "id": "H-02",
+      "category": "metaGate",
+      "result": "YES",
+      "evidence": "Section 8 H-02: 모든 implementFiles 부모디렉토리 존재 또는 NEW 허용. MODIFY 3개 기존파일. NEW 3개 부모디렉토리 모두 존재."
+    },
+    {
+      "id": "H-03",
+      "category": "metaGate",
+      "result": "YES",
+      "evidence": "Section 8 H-03: AC-001~AC-008 모두 source tag (L1 또는 C-NN). 출처명시 완비."
+    }
+  ],
+  "yesCount": 28,
+  "noCount": 2,
+  "naCount": 5,
+  "denominator": 30,
+  "score": 93.33,
+  "passed": true,
+  "failedChecks": [
+    {
+      "id": "E-06",
+      "reason": "Spec D# ↔ goals.json 경로/파일수 미동기 (C-32)",
+      "fixHint": "goals.json G-006 implementFiles prefix topvel-grid-monorepo/로 교체 + 3개 NEW 파일 경로 추가"
+    },
+    {
+      "id": "G-01",
+      "reason": "Spec D# enumerate ↔ goals.json 데이터 일관성 위반 (C-32)",
+      "fixHint": "Goals.json G-006을 spec Section 7 truth table과 동기화: prefix 교체 + 3개 NEW 파일 추가"
+    }
+  ],
+  "feedback": [
+    "E-06: goals.json prefix + 파일수를 spec D1/Section 7과 동기화 의무 (C-32 spec writer책임). Implementer는 spec Section 7 truth table 우선 적용 권장 (C-27, C-30).",
+    "G-01: Spec D# ↔ goals.json 데이터 일관성이 모든 후속 Goal(MOD-GRID-02~16)에도 영향. 발견된 prefix TOMIS오류 일괄 정정 권고 (18개 모듈 cascading 리스크).",
+    "Coverage risk: specify 92.86% 통과하지만 goals.json drift로 인해 implement F-01 파일일치/H-02경로비합리성 재점검 필요."
+  ],
+  "runAt": "2026-05-15T00:00:00Z",
+  "verifierModel": "haiku",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 26,
+    "originalReportedNoCount": 2,
+    "originalReportedNaCount": 5,
+    "originalReportedDenominator": 28,
+    "originalReportedScore": 92.86,
+    "originalReportedPassed": true,
+    "scoreImpact": "positive",
+    "passedImpact": "unchanged"
+  },
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": []
+  }
+}

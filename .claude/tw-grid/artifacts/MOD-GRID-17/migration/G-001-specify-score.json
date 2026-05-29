@@ -1,0 +1,310 @@
+{
+  "goalId": "MOD-GRID-17/migration/G-001",
+  "moduleId": "MOD-GRID-17",
+  "area": "migration",
+  "stage": "specify",
+  "migrationImpact": "high",
+  "threshold": 95,
+  "specFile": "D:/project/topvel_project/TOMIS/.claude/worktrees/tw-grid-mod17-g001/.claude/tw-grid/artifacts/MOD-GRID-17/migration/G-001-spec.md",
+  "rubricVersion": "1.0.7",
+  "checks": [
+    {
+      "id": "H-01",
+      "label": "referenceEvidence 경로 실재",
+      "result": "YES",
+      "evidence": "Section 1 L0-1~L0-5: 5 파일 경로 모두 Read 도구로 로드 성공 (각 1620/311/472/176/216 줄). Section 1 L2-1~L2-4: monorepo 경로 D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/ 실재 확인됨.",
+      "feedback": ""
+    },
+    {
+      "id": "H-02",
+      "label": "implementFiles 경로 합리성",
+      "result": "YES",
+      "evidence": "Section 7 표 5행 모두 부모 디렉토리 '.../tw-framework-front/src/pages/tomis/account/' 실재. 컨벤션 'tw-framework-front/src/pages/tomis/{도메인}/{모듈}Page.tsx' 일치 (CLAUDE.md 프론트엔드 원칙).",
+      "feedback": ""
+    },
+    {
+      "id": "H-03",
+      "label": "AC 출처 태그 검증",
+      "result": "YES",
+      "evidence": "Section 5 AC 표 5건 모두 source 태그 명시: AC-001(C-12), AC-002(C-17), AC-003(C-23), AC-004(C-6), AC-005(C-19). 출처 모두 constraints.md 또는 rubric 내 인용됨.",
+      "feedback": ""
+    },
+    {
+      "id": "A-01",
+      "label": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "Section 1 L0-1~L0-5: tw-framework-front 5 페이지 경로 + 핵심 코드 발췌 (BaseGrid import L21, JSX L1024-1031 등) 모두 명시됨.",
+      "feedback": ""
+    },
+    {
+      "id": "A-02",
+      "label": "L1 TanStack v8 API signature 인용",
+      "result": "N/A",
+      "evidence": "Section 1 L1 명시: 'N/A (본 Goal은 TanStack API 변경 없음 — grid-core wrapper 만 교체)'. 사용처 마이그레이션이므로 TanStack API 직접 인용 불필요.",
+      "feedback": ""
+    },
+    {
+      "id": "A-03",
+      "label": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "YES",
+      "evidence": "Section 1 L2-1~L2-4: Grid/BaseGrid legacy alias 분석 명시. legacy/BaseGrid.tsx L17-36 매핑 패턴(권위적 매핑 표) 인용 — 'BaseGrid = <Grid enableSort enableFilter ...>' 중복 패턴 추출됨.",
+      "feedback": ""
+    },
+    {
+      "id": "A-04",
+      "label": "L3 영향 사용처 카운트 명시",
+      "result": "YES",
+      "evidence": "Section 1 L3: '영향 사용처 카운트 = 5 파일 (5/5, C-19 준수)'. Section 8.1: 5 파일 전체 경로 명시 (L68-74). 정확한 카운트 'canonical-modules.json MOD-GRID-17' 인용.",
+      "feedback": ""
+    },
+    {
+      "id": "A-05",
+      "label": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "N/A",
+      "evidence": "Section 1 R-A/R-W 명시: 'N/A — 본 Goal은 신규 API 설계가 아닌 사용처 마이그레이션'. AG Grid/Wijmo 참조 불필요 (사용처 전환만).",
+      "feedback": ""
+    },
+    {
+      "id": "B-01",
+      "label": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "Section 2.1: GridProps<TData> interface 전체 정의 인용 (L201-225). 필수 props(data/columns) + 11개 optional props(enableSort/enableFilter/rowSelection/pagination/onRowClick 등) 모두 타입 명시.",
+      "feedback": ""
+    },
+    {
+      "id": "B-02",
+      "label": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "Section 2.3: 예시 1(단순 패턴 L239-252) + 예시 2(rowSelection multi 패턴 L256-270) 2개 이상. 각 예시는 마이그레이션 후 코드 스니펫 형태.",
+      "feedback": ""
+    },
+    {
+      "id": "B-03",
+      "label": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "Section 2.4: 'data, columns = required' 명시, '그 외 11개 props는 모두 optional' 명시. pagination?.pageSize default 20, emptyText default '데이터가 없습니다.' (L276-277).",
+      "feedback": ""
+    },
+    {
+      "id": "B-04",
+      "label": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "Section 2.2 L230-234: 'import { Grid } from @tomis/grid-core' + 'import type { ColumnDef } from @tanstack/react-table' export 경로 정확 명시.",
+      "feedback": ""
+    },
+    {
+      "id": "B-05",
+      "label": "ref API + imperative handle 명시 (해당 시)",
+      "result": "N/A",
+      "evidence": "Section 2.5: 'ref API — N/A (B-05) — 본 Goal의 5 페이지 어느 곳도 gridRef 사용 없음 (Read 결과 confirmed)'. GridHandle<TData> 미사용.",
+      "feedback": ""
+    },
+    {
+      "id": "C-01",
+      "label": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "Section 5 AC 표: AC-001~AC-005 5개 항목 (3개 이상 충족).",
+      "feedback": ""
+    },
+    {
+      "id": "C-02",
+      "label": "각 AC에 출처 태그 (L0/L1/L2/L3/R-A/R-W)",
+      "result": "YES",
+      "evidence": "Section 5 AC 표 '출처' 컬럼: AC-001(L0+C-12), AC-002(L0+L2+C-17), AC-003(C-23), AC-004(L0+L2+C-6), AC-005(C-19). 모든 AC에 출처 태그 명시.",
+      "feedback": ""
+    },
+    {
+      "id": "C-03",
+      "label": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "Section 5 AC 모두 객관 검증 가능: AC-001('tsc 0 errors'), AC-002('픽셀 비교'), AC-003('console.warn 0건'), AC-004('grep 0 hits'), AC-005('git log enumerate'). 주관 표현 없음.",
+      "feedback": ""
+    },
+    {
+      "id": "C-04",
+      "label": "migrationImpact 명시 (high/medium/low)",
+      "result": "YES",
+      "evidence": "Section 1 헤더 L4: 'Migration Impact: high'. goals.json L17 'migrationImpact: high' 일치. 사유: 5 페이지 × 2 위치(SlipListPage) + rowSelection(SlipApprovePage) 복잡도 고려.",
+      "feedback": ""
+    },
+    {
+      "id": "C-05",
+      "label": "AC에 호환성 검증 항목 포함",
+      "result": "YES",
+      "evidence": "Section 5 AC-001(tsc 0 errors — 빌드 호환성 C-12) + AC-002(시각 회귀 — 호환성 C-17). 영향 사용처 5개 외관 보존 검증 포함.",
+      "feedback": ""
+    },
+    {
+      "id": "D-01",
+      "label": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "YES",
+      "evidence": "Section 8.1 L399-404: 정확한 5 파일 경로 목록 enumerate + '5/5' 카운트. goals.json L68-74 affectedUsageFiles 일치.",
+      "feedback": ""
+    },
+    {
+      "id": "D-02",
+      "label": "기존 변형 대응표 (Section 3)",
+      "result": "YES",
+      "evidence": "Section 3 L285-293: 기존 8 variant 중 본 Goal 영향 대상(BaseGrid) 대응표 5행. 'BaseGrid → <Grid enableSort enableFilter' 마이그레이션 액션 모두 명시.",
+      "feedback": ""
+    },
+    {
+      "id": "D-03",
+      "label": "Breaking change 명시 (Section 4)",
+      "result": "YES",
+      "evidence": "Section 4.1 L299-301: 'breaking: false' 명시 + 'BaseGrid legacy alias 자체는 monorepo에 계속 export됨' 설명. goals.json L50 'breaking: false' 일치.",
+      "feedback": ""
+    },
+    {
+      "id": "D-04",
+      "label": "Deprecation 전략 (Section 4)",
+      "result": "YES",
+      "evidence": "Section 4.2 L303-305: 'BaseGrid alias는 1 minor 버전 유지' + 'deprecation 정책은 MOD-GRID-01 G-005 ADR 명시' (C-23 준수). goals.json L51 일치.",
+      "feedback": ""
+    },
+    {
+      "id": "D-05",
+      "label": "롤백 전략 (Section 8.4)",
+      "result": "YES",
+      "evidence": "Section 8.4 L415-418: '롤백 방법 1: git revert' + '롤백 방법 2: alias 재도입' + 'BaseGrid deprecated alias 1 minor 유지로 즉시 복구 가능'. low tier + 사용처 5개 제한 범위 내.",
+      "feedback": ""
+    },
+    {
+      "id": "D-06",
+      "label": "번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "Section 8.5 L420-422: '번들 크기 영향 = 0 KB (사용처 변경 — 새 의존성 추가 0)'. goals.json L75-79 'bundleImpact.expected = \"0 KB\"' 일치 + C-21 준수.",
+      "feedback": ""
+    },
+    {
+      "id": "E-01",
+      "label": "파일별 변경 명세 (NEW/MODIFY) + Section 7 ↔ Section 11 일관성",
+      "result": "YES",
+      "evidence": "Section 7 표(L375-389): NEW 0 + MODIFY 5 파일 (D4 breakdown 일치). Section 11.1 표(L460-466): 5/5 행 1:1 매칭. NEW/MODIFY 분류 일치(MODIFY 5). 파일 이름 일치. Section 2 template vs Section 11.2 시그니처 1:1 일치 확인됨 (GridProps 필드 일관성).",
+      "feedback": ""
+    },
+    {
+      "id": "E-02",
+      "label": "Before/After 코드 스니펫 (최소 1개)",
+      "result": "YES",
+      "evidence": "Section 11.2 L472-562: Before/After 3개 예시 (SlipClosePage 단순 + SlipApprovePage rowSelection + SlipListPage 2위치). 각 Before/After 코드 블록 완전 제시.",
+      "feedback": ""
+    },
+    {
+      "id": "E-03",
+      "label": "구현 순서 2단계 이상 (의존성 고려)",
+      "result": "YES",
+      "evidence": "Section 11.3 L564-582: Step 1(SlipClosePage 단순 패턴 먼저 검증) → Step 2(나머지 4 페이지 일괄 변환) → Step 3(검증 및 commit). 의존성 고려(tsc 실패 시 진행 금지) 명시.",
+      "feedback": ""
+    },
+    {
+      "id": "E-04",
+      "label": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "Section 6 L344-372: EC-01(SlipListPage 2위치 동기 교체) + EC-02(SlipApprovePage 외부 페이지네이션 충돌) + EC-03(ColumnDef import 경로 drift) + EC-04(DailyMonthlyReportPage 13컬럼 width) + EC-05(rowSelection.onSelectionChange 타입 contravariance). 5개 엣지 케이스(3개 이상 충족).",
+      "feedback": ""
+    },
+    {
+      "id": "E-05",
+      "label": "검증 계획 (Section 12)",
+      "result": "YES",
+      "evidence": "Section 12: 12.1 단위 테스트 (N/A — grid-core 테스트 완료) + 12.2 시각 회귀(방법 1/2 명시) + 12.3 빌드 검증(tsc + vite build) + 12.4 codemod(MOD-GRID-99-B). C-12/C-17 의무 명시됨.",
+      "feedback": ""
+    },
+    {
+      "id": "E-06",
+      "label": "Section 7 Re-decision ↔ Final Table Consistency + Prose ↔ Structured Form Semantic Cross-Check",
+      "result": "YES",
+      "evidence": "Section 7 본문에 '재결정' 표현 0건 grep. Section 7 표 L381-389는 순수 NEW/MODIFY 선언(재결정 없음). prose/structured form semantic 모순 0건(EC-01~EC-05 명시된 위험 모두 처리책 제시). Spec D1-D7 모든 결정이 Section 1~13과 일관성 유지.",
+      "feedback": ""
+    },
+    {
+      "id": "F-01",
+      "label": "패키지 대상 명시 (packages/grid-core vs grid-{pro})",
+      "result": "YES",
+      "evidence": "Section 13.1 L625-627: 'packageTarget = tw-framework-front (사용처만)'. '@tomis/grid-core' / '@tomis/grid-pro-*' 변경 0 명시. goals.json L7 'packageTarget: tw-framework-front' 일치.",
+      "feedback": ""
+    },
+    {
+      "id": "F-02",
+      "label": "라이선스 검증 호출 (Pro 패키지)",
+      "result": "N/A",
+      "evidence": "Section 13.2 L629-631: 'N/A — 본 Goal의 5 페이지는 MIT 영역(@tomis/grid-core) 만 사용'. '@tomis/grid-pro-*' 호출 0 (BaseGrid alias만 사용, Pro alias RangeSelectGrid 미사용). setLicenseKey 불필요.",
+      "feedback": ""
+    },
+    {
+      "id": "F-03",
+      "label": "문서 작성 계획 (Docusaurus + Storybook)",
+      "result": "YES",
+      "evidence": "Section 13.3 L633-637: 'public API 변경 0 → Docusaurus API reference 추가 불필요' (C-25 발동 아님). '권장: MOD-GRID-99-B docs Goal의 마이그레이션 가이드 챕터에 SlipApprovePage 예시 추가'. Storybook 범위 외 명시(부담 대비 효과).",
+      "feedback": ""
+    },
+    {
+      "id": "F-04",
+      "label": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "Section 13.4 L638-642: '@tomis/grid-core peer(react/react-dom/@tanstack/react-table)' + 'tw-framework-front package.json L20/L22/L32/L34에서 이미 보유'. dependency 변경 0 → C-22 위반 없음.",
+      "feedback": ""
+    },
+    {
+      "id": "G-01",
+      "label": "Spec에 TBD/TODO 없음 + D# ↔ 본문 cross-consistency + Breakdown 일치 + D# ↔ goals.json 일관성",
+      "result": "YES",
+      "evidence": "spec.md 전문 검색: TBD/TODO/미정 표현 0건. 헤더 D# 표(L10-21): D1-D7 7개 결정 모두 명시. Breakdown 검증: D4='NEW 0 + MODIFY 5' vs 본문 Section 7='NEW 0 + MODIFY 5' 일치. 파일 이름: D4 enumerate(5 파일명) vs Section 7 표 행 1:1 매칭. goals.json L62-74 implementFiles 경로 prefix 일관성(모두 D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/) + bundleImpact 0 KB 일치 + packageTarget 'tw-framework-front' 일치.",
+      "feedback": ""
+    }
+  ],
+  "yesCount": 31,
+  "noCount": 0,
+  "naCount": 4,
+  "denominator": 31,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [],
+  "verifiedAt": "2026-05-15T14:32:00Z",
+  "selfValidation": {
+    "categoryBreakdown": {
+      "A": 3,
+      "B": 4,
+      "C": 5,
+      "D": 6,
+      "E": 6,
+      "F": 3,
+      "G": 1,
+      "H": 3
+    },
+    "totalItems": 31,
+    "yesNoNaSum": 34,
+    "formulaCheck": "score = 29 / 29 × 100 = 100.0 ✓",
+    "failedChecksCounts": "NO count (0) matches failedChecks array length (0) ✓",
+    "naExcluded": "N/A items (5) correctly excluded from denominator ✓"
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 29,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 5,
+    "originalReportedDenominator": 29,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "tier": "high",
+  "runAt": "2026-05-15T14:32:00Z",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "tier=high",
+      "runAt=2026-05-15T14:32:00Z",
+      "verifierModel=haiku"
+    ]
+  }
+}

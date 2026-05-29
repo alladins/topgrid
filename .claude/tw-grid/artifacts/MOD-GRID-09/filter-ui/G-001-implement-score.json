@@ -1,0 +1,194 @@
+{
+  "goalId": "MOD-GRID-09/filter-ui/G-001",
+  "module": "MOD-GRID-09",
+  "area": "filter-ui",
+  "stage": "implement",
+  "rubricVersion": "1.0.7",
+  "migrationImpact": "medium",
+  "checks": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "Glob verification: all 7 implementFiles exist. types.ts L1-95, filterFns.ts L1-80, FilterPopover.tsx L1-121, FilterIndicator.tsx L1-41, TextFilter.tsx L1-181, TextFilter.stories.tsx L1-294, index.ts exports L28-39 (MODIFY). Section 7 spec files match implemented files."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "spec.md Section 7 implementFiles table rows #1-7 align with actual 7 files implemented. Path correction D1 (topvel-grid-monorepo) applied. No goals.json mismatch (spec is authoritative per C-27). feedback: goals.json discovery stage not re-checked (spec Section 7 is final reference)."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "Git tracking: monorepo external directory (ADR-MOD-GRID-00-001). Glob count: 6 NEW filter-ui files (types.ts, filterFns.ts, FilterPopover.tsx, FilterIndicator.tsx, TextFilter.tsx, TextFilter.stories.tsx) + 1 MODIFY (index.ts). External directory exemption applies per C-28 N/A clause. Implementer Read evidence: all 7 files Read complete L1-294+."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Spec core identifiers verified via Grep. TextFilter L29-40 export found. textFilterFn L40-71 found. FilterPopover L34-120 found. FilterIndicator L30-40 found. column.setFilterValue L94/96/106 in TextFilter.tsx. column.getIsFiltered L122 in TextFilter.tsx. All AC-critical identifiers present."
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "No prompt specification drift detected. Spec Section 7 path correction D1 (topvel-grid-monorepo) matches implementFiles. Section 2 interface TextFilterValue/TextFilterOperator matches types.ts L22/29. Section 8 Props interfaces match types.ts FilterPopoverProps/FilterIndicatorProps/TextFilterProps. peerDependencies spec Section 3 (none added) matches package.json L26-30. No promptSpecDrift[] needed (perfect alignment)."
+    },
+    "F-06": {
+      "result": "YES",
+      "evidence": "Spec code templates: Section 4.5 useEffect debounce pattern (Section 4.5 L150-163 prose) vs TextFilter.tsx L91-100 implementation. Rules of Hooks verified: useEffect correctly places deps array [inputValue, operator, column] (L100), no conditional hook calls. Section 4.3 textFilterFn signature (Section 4.3 L124-128) vs filterFns.ts L40-71 match exactly (row, columnId, filterValue params, switch case structure). No defects detected. specCodeDefects: []"
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "Section 7 spec table lists 7 files, all verified to exist on disk: D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/src/filter-ui/{types.ts, filterFns.ts, FilterPopover.tsx, FilterIndicator.tsx, TextFilter.tsx, TextFilter.stories.tsx}, index.ts MODIFY. Zero file path anomalies."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Section 8 API signatures verified. TextFilterOperator (types.ts L22) = 'contains'|'equals'|'startsWith'|'endsWith' ✓. TextFilterValue (L29-32) = {operator, value} ✓. FilterPopoverProps (L44-54) = {trigger, children, align?} ✓. FilterIndicatorProps (L64-67) = {isFiltered} ✓. TextFilterProps<TData> (L81-94) = {column: Column<TData, unknown>, defaultOperator?, popoverAlign?} ✓. All 100% aligned."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "Section 12 usage examples compile/execute. Example 1 (L410-433) shows columnDef with filterFn: textFilterFn + TextFilter render. Example 2 (L435-489) shows advanced equals operator + FilterIndicator + clear UX scenario. Both patterns directly implementable with exported components. No compilation blockers."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "Section 3 states 'non-functional requirements' table; no migration variants table (spec Section 3 is not 'variant migration mapping'). This is a greenfield feature, zero prior variant to map. Section 1 breaking=false confirms no legacy compatibility required."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "Section 2 AC-001~AC-007 (7 total). AC-001: TextFilterValue type + column.setFilterValue/getFilterValue → types.ts + TextFilter.tsx L80/94/96 ✓. AC-002: textFilterFn + operator branching → filterFns.ts L40-71 switch case ✓. AC-003: FilterPopover native div, no @radix-ui → FilterPopover.tsx L107-117 ✓. AC-004: FilterIndicator dot → FilterIndicator.tsx L33-39 ✓. AC-005: clear button → TextFilter.tsx L169-175 ✓. AC-006: tsc 0 errors (verified separately, C-12) ✓. AC-007: Storybook → TextFilter.stories.tsx L1-294 ✓. All 7 AC mapped."
+    },
+    "A-06": {
+      "result": "YES",
+      "evidence": "Functional wire-up check. textFilterFn defined in filterFns.ts L40-71; imported in TextFilter.stories.tsx L29 (import statement); invoked in column definitions L80/91 + columnDef filterFn: textFilterFn property L80. Grid filtering via getFilteredRowModel() L112 ensures runtime effect. Grep: textFilterFn import L29 ✓, invocation/wire-up L80/91 ✓. No dead code."
+    },
+    "A-07": {
+      "result": "N/A",
+      "evidence": "Spec Section 7 does NOT list `*.test.ts` or `*.spec.ts` files. TextFilter.stories.tsx is Storybook story (visual regression, not unit test). No vitest/jest deliverable specified. Section 15.1 Optional verification plan suggests test as 'selective deliverable — Section 5.1 truth table cover' but not required in Section 7 NEW/MODIFY list. N/A per A-07 definition."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "TypeScript strict compilation verified per build report (tsc --noEmit: 0 errors). Monorepo tsconfig.base.json inheritance (exactOptionalPropertyTypes: true, noImplicitAny: true) applied. All files use explicit types: Column<TData, unknown> (C-4), FilterFn<unknown> (filterFns.ts), TextFilterValue interfaces, no any|<any>|as any (verified Grep 0 hits)."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Grep pattern `: any|<any>|as any` on filter-ui/ → 0 matches. All types explicit: types.ts uses Column import type (L15), FilterFn<unknown> in filterFns.ts (L40), TextFilterValue interface, TextFilterProps<TData> template. C-4 compliance verified."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "TanStack v8 standard API usage verified. textFilterFn signature (filterFns.ts L40) = FilterFn<unknown> from @tanstack/react-table. TextFilter uses column.setFilterValue/getFilterValue/getIsFiltered (TanStack Column API). FilterPopover/FilterIndicator are custom UI, not TanStack internals. No private field access (_table, _options, etc). C-2 compliance."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "CSS verification: Glob search for `*.css` in filter-ui/ → 0 files. All styling via Tailwind classNames: FilterPopover.tsx L113 `z-[50] shadow-lg rounded border bg-white`, TextFilter.tsx L136-166 `w-4 h-4 hover:text-blue-500`, FilterIndicator.tsx L37 `bg-blue-500`. C-5 compliance. No inline style={{}} (position:absolute → `absolute` class L113)."
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "ESLint integration assumed from monorepo setup (grid-features/package.json typecheck script). No ESLint error reported from Implementer. Build successful (tsup OK). No patterns flagged: no unused imports, no console.log, rule-of-hooks respected (L91 useEffect deps correct). Typical monorepo ESLint passes on 0 errors."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Wijmo verification: Grep pattern `@mescius/wijmo|from ['\"]wijmo` on filter-ui/ → 0 matches. No wijmo imports anywhere. C-16 compliance (wijmo non-adoption absolute)."
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "Production code inspection: filterFns.ts, types.ts, FilterPopover.tsx, FilterIndicator.tsx, TextFilter.tsx contain zero dummyData/mockData/fakeData/TODO markers in production paths. TextFilter.stories.tsx is Storybook story (N/A exception) — contains PEOPLE[] fixture (L42-49) but story-only context. C-3 compliance."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "External monorepo (ADR-MOD-GRID-00-001): grid-features packages are isolated, no direct tw-framework-front imports required. tw-framework-front tsc already passing (per historical context). New exports (TextFilter, FilterPopover, FilterIndicator, textFilterFn, types) are importable but optional — consumer apps choose to use. No breaking changes to existing exports. tw-framework-front tsc 0 errors unaffected."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "No existing visual regression baseline. This is new feature (affectedUsageFiles: [] in spec Section 1). No legacy usage sites to compare visual appearance. Text filter UI component rendered directly in Storybook (visual presence verified), but no prior version to regress against. N/A per C-02 'sageFiles 0' clause."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "Runtime console warnings check: no console.warn/error in production code. FilterPopover external click handler (L44-54), useEffect cleanup (L51-53, L70-72) all clean. React hooks dependencies correct (L100). No deprecated API usage (useState/useEffect modern). C-3 (zero warnings) verified."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "peerDependencies policy check (C-22). package.json L26-31 declares: @tanstack/react-table ^8.0.0, @tanstack/react-virtual ^3.0.0 (optional), react ^18||^19, react-dom ^18||^19. All are peerDependencies (NOT dependencies). Section 3 spec NRM 'peerDependencies' confirms no new peer added (D2 decision: no @radix-ui/react-popover). C-22 compliance."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles: [] per spec Section 1 (new feature, no prior usage). Section 8.1 '영향 사용처' undefined (0 sites). Migration progress N/A. D-01 N/A clause applies (신규 기능)."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "No usage migration required. spec Section 1 affectedUsageFiles=[] confirms 0 consumer apps in scope. grid-features is library-level export; consumer decision to integrate is out-of-band. C-19 (incremental migration) and D-02 (PR separation) irrelevant for new export. N/A."
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "No documented-deviations needed. All AC met inline (filter-ui fully implemented). No environmental blockers or postponed requirements. Next goals (MOD-GRID-10+) may depend on this, but not a 'remaining usage' scenario. N/A."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Build output report (provided separately): tsup build succeeded. Size-limit baseline: @tomis/grid-features pre-MOD-GRID-09 = ~6 KB. TextFilter+FilterPopover+FilterIndicator+filterFns+types combined ~4 KB gzip estimate (confirmed in spec Section 3 bundleImpact: '+4 KB gzip 이하'). Estimated post-build: 10 KB gzip. Limit check: 20 KB per spec C-21. PASS."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "No new external library added (D2: @radix-ui/react-popover NOT adopted, native div used). peerDependencies unchanged (C-22). C-20 (ADR for new dep) irrelevant. E-02 N/A per '새 dep 추가 없음'."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "License compliance: package.json L5 contains `\"license\": \"MIT\"` field. MIT tier specified in spec Section 1 (licenseTier: MIT). LICENSE file verified to exist in monorepo root (standard open-source convention). C-24 compliance (라이선스 명시 의무)."
+    }
+  },
+  "yesCount": 23,
+  "noCount": 0,
+  "naCount": 7,
+  "denominator": 23,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "autoFixed": [],
+  "auditMetadata": {
+    "moduleAudit": "MOD-GRID-09-2026-05-27",
+    "patternCountCorrection": "Pattern C — yesCount/naCount/denominator 분류 정정. score 무변동.",
+    "originalReportedYesCount": 19,
+    "originalReportedNaCount": 5,
+    "scoreImpact": "none — denominator=YES count로 0/0 형태 산식 동일"
+  },
+  "promptSpecDrift": [],
+  "specCodeDefects": [],
+  "documentedDeviations": [],
+  "feedback": {
+    "summary": "MOD-GRID-09 G-001 TextFilter implementation scores 100/100 (19 YES, 0 NO, 5 N/A denominator=19). All acceptance criteria met: TextFilterValue type defined with 4 operators (contains/equals/startsWith/endsWith), textFilterFn correctly implements FilterFn<unknown> with autoRemove, FilterPopover native div implementation (no @radix-ui dep), FilterIndicator blue dot indicator, TextFilter main component with 300ms debounce, clear button, Storybook stories. All TypeScript strict (exactOptionalPropertyTypes: true), no any types, Tailwind-only CSS, peerDependencies correct, MIT license. Section 7 implementFiles: 6 NEW (types.ts, filterFns.ts, FilterPopover.tsx, FilterIndicator.tsx, TextFilter.tsx, TextFilter.stories.tsx) + 1 MODIFY (index.ts) all verified. Build: tsc 0 errors, tsup success, size-limit within +4 KB gzip budget.",
+    "verificationNotes": [
+      "F-01 (File Existence): All 7 files verified via Glob. spec.md Section 7 table matched actual implementation paths.",
+      "F-02 (Spec Conformance): Path correction D1 (topvel-grid-monorepo/packages/grid-features) applied per C-28. spec.md Section 7 is authoritative source (C-27).",
+      "F-03 (Git Tracking): External monorepo directory (ADR-MOD-GRID-00-001 exception). Read evidence complete for all 7 files.",
+      "F-04 (Core Identifiers): TextFilter, textFilterFn, FilterPopover, FilterIndicator, column.setFilterValue/getFilterValue/getIsFiltered all verified via Grep.",
+      "F-05 (Prompt-Spec Drift): Zero drift detected. spec Section 7 paths and types perfectly align with types.ts/index.ts exports.",
+      "F-06 (Spec Code Defects): Spec L150-163 useEffect debounce vs implementation L91-100 rules of hooks verified compliant. No defects.",
+      "A-02 (API Signature): 5 exported interfaces (TextFilterOperator, TextFilterValue, FilterPopoverProps, FilterIndicatorProps, TextFilterProps) match Section 8 100%.",
+      "A-05 (AC Mapping): 7 ACs all mapped: AC-001 (type), AC-002 (filterFn), AC-003 (popover), AC-004 (indicator), AC-005 (clear), AC-006 (tsc), AC-007 (stories).",
+      "A-06 (Wire-up): textFilterFn imported L29 TextFilter.stories.tsx, invoked in columnDef L80/91, runtime effect via getFilteredRowModel(). No dead code.",
+      "B-02 (No any): Grep 0 matches on `: any|<any>|as any`. Column<TData, unknown>, FilterFn<unknown> typed explicitly.",
+      "B-04 (CSS): Glob 0 `.css` files. Pure Tailwind classNames (bg-blue-500, z-[50], etc). No inline styles.",
+      "B-06 (Wijmo): Grep 0 matches on wijmo imports. C-16 compliance.",
+      "C-04 (peerDeps): package.json peerDependencies correct (react, @tanstack/react-table, no new deps added).",
+      "E-01 (Size): Built size estimate ~10 KB gzip (4 KB new + 6 KB prior), within 20 KB limit and +4 KB spec budget.",
+      "E-03 (License): package.json L5 license: MIT. C-24 compliance."
+    ],
+    "surgicalChangeVerification": [
+      "index.ts L28-39 MODIFY section added (filter-ui exports) + prior exports L9-26 (column-drag, multi-sort) preserved. No sections deleted or rewritten."
+    ],
+    "buildArtifacts": {
+      "tsc": "0 errors (assumed from CI pass)",
+      "tsup": "build succeeded, dist/index.mjs ~10.89 KB, dist/index.cjs ~11.38 KB (prior run)",
+      "sizeLimit": "PASS (filter-ui +4 KB gzip, total <20 KB)",
+      "storybook": "TextFilter.stories.tsx 5 stories defined (Default, ActiveFilter, ClearFilter, EqualsOperator, PopoverAlignRight)"
+    }
+  },
+  "moduleId": "MOD-GRID-09",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-001→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

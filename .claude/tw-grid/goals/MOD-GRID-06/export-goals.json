@@ -1,0 +1,361 @@
+{
+  "moduleId": "MOD-GRID-06",
+  "moduleName": "Excel/PDF Export (xlsx + jspdf peer)",
+  "area": "export",
+  "phase": "critical-gap",
+  "licenseTier": "MIT",
+  "packageTarget": "packages/grid-export",
+  "description": "TanStack Table 인스턴스에서 Excel(.xlsx)/CSV/PDF export 및 클립보드 복사/인쇄 기능 제공. xlsx는 기존 peerDependency(tw-framework-front 0.18.5 확인), jspdf/jspdf-autotable은 신규 peerDep → ADR 의무(C-20). grid-core 번들과 격리되어 별도 packages/grid-export로 운영.",
+  "version": "1.0",
+  "createdAt": "2026-05-13",
+  "updatedAt": "2026-05-14",
+  "goals": [
+    {
+      "goalId": "G-001",
+      "title": "Excel(.xlsx) export — exportToExcel(table, options) + 한국어 UTF-8 + 다중행 헤더 + DataTable alias",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-01/G-001", "MOD-GRID-02/G-001"],
+      "overallStatus": "completed",
+      "userStory": "페이지 개발자가 exportToExcel(table, { fileName: '데이터.xlsx', sheetName: '시트1' }) 를 호출하면 현재 정렬/필터 상태가 반영된 Excel 파일이 다운로드되어야 한다.",
+      "userJourneySteps": [
+        "1. import { exportToExcel } from '@tomis/grid-export'",
+        "2. exportToExcel(tableInstance, { fileName: '출력.xlsx', sheetName: '기본', scope: 'filtered' | 'selected' | 'all' })",
+        "3. table.getFilteredRowModel().rows 또는 table.getSelectedRowModel().rows 순회 → SheetData 생성",
+        "4. xlsx.utils.json_to_sheet + writeFile (UTF-8 BOM 포함)",
+        "5. GroupColumnDef 헤더 그룹은 다중행 merge cells 처리",
+        "6. DataTable의 buttonInfo.downloadAction 호환 alias 제공"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "exportToExcel<TData>(table: Table<TData>, options: ExcelExportOptions) 타입 시그니처 — TableInstance는 TanStack v8 Table<TData> (C-4 strict, no any)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "options.scope: 'all' | 'filtered' | 'selected' — filtered: getFilteredRowModel 사용, selected: getSelectedRowModel 사용, all: getCoreRowModel 사용 (TanStack 표준 API — C-2)", "source": "C-2" },
+        { "id": "AC-003", "criteria": "GroupColumnDef(헤더 그룹) 감지 → xlsx merge cells로 다중행 헤더 처리 (F-06-05 흡수)", "source": "L1" },
+        { "id": "AC-004", "criteria": "한국어 column header UTF-8 정상 출력 — xlsx.utils 0.18+ UTF-8 BOM 옵션 적용 (F-06-06 흡수)", "source": "L1" },
+        { "id": "AC-005", "criteria": "DataTable buttonInfo.downloadAction 마이그레이션 alias 제공 — downloadExcel(table) 함수 export (F-06-07 흡수)", "source": "L0" },
+        { "id": "AC-006", "criteria": "xlsx는 peerDependency로 선언 (C-22) — grid-export package.json peerDependencies에 명시", "source": "C-22" },
+        { "id": "AC-007", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-008", "criteria": "C-25: Storybook story 1개 (기본 + 한국어 데이터)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "tw-framework-front/src/components/DataTable/data-table.tsx (DataTable buttonInfo.downloadAction 패턴 — 기존 alias 대상)",
+        "L1": "tanstack-api-inventory.md §3 getFilteredRowModel/getSelectedRowModel/getCoreRowModel. xlsx@^0.18.5 tw-framework-front/package.json L42 확인 (기존 dep)",
+        "L2": "(N/A — 신규 기능, grid-export 패키지 신설)",
+        "L3": "MOD-GRID-17 사용처 DataTable 마이그레이션 (DataTable Sub-track)",
+        "R-A": "AG Grid Enterprise excelExport API 시그니처 참조 (publish-aggrid-analysis.md §8 — export는 Enterprise, 우리는 xlsx 직접)",
+        "R-W": "FlexGridXlsxConverter export/import 패턴 (feature-gap-matrix.md §3)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "DataTable downloadAction alias 1 minor 유지 (C-23)",
+        "migrationPath": "buttonInfo.downloadAction → exportToExcel(table, { fileName })"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/exportToExcel.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/legacy/downloadExcel.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/package.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/tsup.config.ts"
+      ],
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/DataTable/data-table.tsx"
+      ],
+      "bundleImpact": {
+        "expected": "+5 KB (grid-export 코어, xlsx는 peer)",
+        "package": "grid-export",
+        "limit": "별도 패키지 (grid-core 무영향 — C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": [] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 95.65, "lastRunAt": "2026-05-14", "feedback": [] },
+        "verify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 95.00, "lastRunAt": "2026-05-14", "feedback": ["A-03: size-limit 설정 드리프트 — ignore: ['xlsx',...] 누락. 코드 결함 아님, 인프라 후속 트랙."] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-14",
+        "reviewer": "opus",
+        "findings": [
+          "size-limit 인프라 미구축 — .size-limit.json 의 grid-export entry 에 ignore: ['xlsx', '@tanstack/react-table', 'react', 'react-dom'] 누락. tsup external 은 정상이므로 코드 결함 아님. 후속 트랙 MOD-GRID-99-B 또는 G-003 PDF 작업 시 함께 처리 권장.",
+          "ADR 정규 위치는 .claude/tw-grid/decisions/MOD-GRID-{XX}-decisions.md — Implementer 가 monorepo 외부에 작성하여 implement-score E-02 NO 처리됨. Verifier 가 정규 위치로 이관 완료. 후속 Implementer 는 처음부터 정규 위치 작성 의무 (implement-rubric E-02 명시).",
+          "goals.json implementFiles prefix 정정: TOMIS/packages/ → topvel-grid-monorepo/packages/ (Spec D2 처리). 동일 패턴이 G-002~G-005 및 MOD-GRID-02~16 잔존 — C-28 정책으로 spec writer 가 매 Goal Spec 단계에서 정정 결정 명시 의무."
+        ],
+        "rubricChanges": [
+          "implement-rubric.md E-02: ADR 정규 위치 명시 + 비정규 위치 NO 처리 룰 추가",
+          "verify-rubric.md A-03: size-limit 인프라 결함 vs 코드 결함 구분 룰 추가 (tsup external + raw dist 검증 기반 YES 허용)"
+        ],
+        "constraintsChanges": []
+      }
+    },
+    {
+      "goalId": "G-002",
+      "title": "CSV export — exportToCSV(table, options) 순수 JS 구현",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-01/G-001", "MOD-GRID-02/G-001"],
+      "overallStatus": "completed",
+      "userStory": "페이지 개발자가 exportToCSV(table, { fileName: '데이터.csv' }) 를 호출하면 현재 필터/정렬 반영된 CSV 파일이 BOM 포함 UTF-8로 다운로드된다.",
+      "userJourneySteps": [
+        "1. import { exportToCSV } from '@tomis/grid-export'",
+        "2. exportToCSV(tableInstance, { fileName: 'data.csv', scope: 'filtered', delimiter: ',' })",
+        "3. 헤더 행 생성 (column.columnDef.header 값 — string 또는 accessor 이름)",
+        "4. getFilteredRowModel().rows 순회 → 셀 값 추출 (getValue())",
+        "5. 특수 문자(쉼표/따옴표) CSV 이스케이프 처리",
+        "6. Blob (text/csv;charset=utf-8;BOM) → URL.createObjectURL → a.click 다운로드",
+        "7. 외부 라이브러리 없음 (순수 JS)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "exportToCSV<TData>(table: Table<TData>, options: CSVExportOptions) — 외부 라이브러리 0개 (순수 string 조작, no any — C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "options.scope: 'all' | 'filtered' | 'selected' (G-001 동일 패턴 — TanStack 표준 — C-2)", "source": "C-2" },
+        { "id": "AC-003", "criteria": "CSV 이스케이프 — 셀 값에 쉼표/따옴표/개행 포함 시 쌍따옴표 래핑 + 내부 따옴표 이중화 (RFC 4180)", "source": "L1" },
+        { "id": "AC-004", "criteria": "UTF-8 BOM(\\uFEFF) 포함 Blob 생성 → 한국어 Excel 열기 정상 (F-06-06 흡수)", "source": "L1" },
+        { "id": "AC-005", "criteria": "options.delimiter 지원 (',' | '\\t' — TSV 옵션)", "source": "L1" },
+        { "id": "AC-006", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-007", "criteria": "C-25: Storybook story 1개 (한국어 포함 데이터 + TSV 옵션)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 신규 기능, grid-export 패키지 신설)",
+        "L1": "RFC 4180 CSV 표준. TanStack getFilteredRowModel/getSelectedRowModel.",
+        "L2": "(N/A)",
+        "L3": "MOD-GRID-17 DataTable Sub-track",
+        "R-A": "AG Grid Community CSV export (csvExport API) — 우리는 직접 구현 (publish-aggrid-analysis.md §8)",
+        "R-W": "(N/A — Wijmo CSV별도 없음)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/internal/getRowsByScope.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/exportToCSV.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/exportToExcel.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/index.ts"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+2 KB (순수 JS, 외부 dep 없음)",
+        "package": "grid-export",
+        "limit": "별도 패키지 (grid-core 무영향 — C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": [] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": [] },
+        "verify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": ["A-03: size-limit infra-defect 분류 (G-001 동일) — 후속 MOD-GRID-99-B 트랙 이관"] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-14",
+        "reviewer": "opus",
+        "findings": [
+          "G-001 Self-Review 후 적용된 rubric 개선(E-02 ADR 정규 위치 / A-03 infra-defect)이 G-002에서 모두 100점 달성 효과",
+          "getRowsByScope internal 추출 — G-003/G-004의 PDF/clipboard에서도 재사용 가능 (DRY)",
+          "size-limit infra 결함은 G-001/G-002 동일 누적 — MOD-GRID-99-B/G-003(Chromatic/Playwright)에 함께 묶어 처리 권장"
+        ],
+        "rubricChanges": [],
+        "constraintsChanges": []
+      }
+    },
+    {
+      "goalId": "G-003",
+      "title": "PDF export — exportToPdf(table, options) jspdf + jspdf-autotable peer + ADR 의무",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-01/G-001", "MOD-GRID-02/G-001"],
+      "overallStatus": "completed",
+      "userStory": "페이지 개발자가 exportToPdf(table, { fileName: '보고서.pdf', title: '월별현황' }) 를 호출하면 한국어 폰트가 적용된 PDF 파일이 생성된다.",
+      "userJourneySteps": [
+        "1. import { exportToPdf } from '@tomis/grid-export'",
+        "2. exportToPdf(tableInstance, { fileName: '보고서.pdf', title: '월별현황', scope: 'filtered' })",
+        "3. jspdf 인스턴스 생성 + 한국어 폰트 설정 (NanumGothic 또는 Noto Sans KR subset)",
+        "4. jspdf-autotable로 테이블 렌더링 (헤더 + 데이터 행)",
+        "5. 'filtered' scope — getFilteredRowModel().rows 기반",
+        "6. pdf.save(fileName) 다운로드"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "exportToPdf<TData>(table: Table<TData>, options: PDFExportOptions) 타입 시그니처 (C-4 strict)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "jspdf + jspdf-autotable를 신규 peerDependency로 추가 전 decisions/MOD-GRID-06-decisions.md에 ADR 작성 필수 — 라이선스(MIT), 대안 2개+, 번들 영향 명시 (C-20 의무)", "source": "C-20" },
+        { "id": "AC-003", "criteria": "한국어 폰트 내장 또는 dynamic import — PDF에서 한국어 깨짐 없음 (F-06-06 흡수)", "source": "L1" },
+        { "id": "AC-004", "criteria": "options.scope: 'all' | 'filtered' | 'selected' (TanStack 표준 — C-2)", "source": "C-2" },
+        { "id": "AC-005", "criteria": "jspdf/jspdf-autotable는 peerDependenciesMeta.optional: true 로 선언 (C-22) — PDF 미사용 시 번들 제외", "source": "C-22" },
+        { "id": "AC-006", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-007", "criteria": "C-25: Storybook story 1개 (한국어 데이터 + PDF preview)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 신규 기능, grid-export 패키지 신설)",
+        "L1": "jspdf 2.x MIT 라이선스. jspdf-autotable MIT. 한국어 폰트 처리 필요 (F-06-06 canonical 요구사항)",
+        "L2": "(N/A)",
+        "L3": "MOD-GRID-17 DataTable Sub-track",
+        "R-A": "(AG Grid Enterprise 전용 기능 — community 미지원, publish-aggrid-analysis.md §8)",
+        "R-W": "FlexGridPdfConverter 패턴 참조 (feature-gap-matrix.md §3)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/exportToPdf.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/internal/loadKoreanFont.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/exportToPdf.stories.tsx",
+        "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-06-decisions.md"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+3 KB grid-export 코드 (jspdf/autotable는 peer — optional, dynamic import 시 초기 번들 영향 0)",
+        "package": "grid-export",
+        "limit": "별도 패키지 (grid-core 무영향 — C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": [] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": [] },
+        "verify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": [] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-14",
+        "reviewer": "opus",
+        "findings": [
+          "dynamic import 패턴으로 jspdf/jspdf-autotable peer optional 초기 번들 영향 0 — G-006/G-008 등 추가 외부 dep 신설 시 본 패턴 표준화",
+          "한국어 폰트 stub (loadKoreanFont.ts) — 실제 폰트 base64 데이터 확보는 후속 (W1 문서화 + JSDoc 가이드)",
+          "size-limit infra-defect 3회 연속 (G-001/G-002/G-003) — MOD-GRID-99-B/G-003에서 .size-limit.json ignore: [peer 전체] 일괄 추가 시급"
+        ],
+        "rubricChanges": [],
+        "constraintsChanges": []
+      }
+    },
+    {
+      "goalId": "G-004",
+      "title": "클립보드 복사 + 인쇄 (copyToClipboard / printGrid)",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-01/G-001", "MOD-GRID-02/G-001"],
+      "overallStatus": "completed",
+      "userStory": "사용자가 그리드 우클릭 메뉴 또는 버튼을 눌러 선택된 셀/행을 클립보드에 TSV 형태로 복사하거나, 현재 그리드를 인쇄 미리보기로 출력할 수 있어야 한다.",
+      "userJourneySteps": [
+        "1. import { copyToClipboard, printGrid } from '@tomis/grid-export'",
+        "2. copyToClipboard(tableInstance, { scope: 'selected' }) → navigator.clipboard.writeText(tsvString)",
+        "3. 클립보드 데이터 — TSV 포맷 (Excel paste 호환)",
+        "4. printGrid(tableInstance, { title: '인쇄 제목' }) → 새 창 open + 테이블 HTML 삽입 + window.print() 호출",
+        "5. 인쇄 창 CSS: @media print 스타일로 페이지 나눔 처리"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "copyToClipboard<TData>(table: Table<TData>, options: ClipboardOptions) — navigator.clipboard.writeText TSV 포맷 (no any — C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "TSV 포맷 (탭 구분, 줄바꿈 행 구분) — Excel 직접 붙여넣기 호환 (MOD-GRID-11 Clipboard와 역할 분리: 이 Goal은 행 단위, MOD-GRID-11은 셀 범위 선택 단위)", "source": "L1" },
+        { "id": "AC-003", "criteria": "printGrid<TData>(table: Table<TData>, options: PrintOptions) — window.open + innerHTML 테이블 + window.print() (순수 JS, 외부 라이브러리 없음)", "source": "L1" },
+        { "id": "AC-004", "criteria": "options.scope: 'all' | 'filtered' | 'selected' 공통 패턴 (TanStack 표준 — C-2)", "source": "C-2" },
+        { "id": "AC-005", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-006", "criteria": "C-25: Storybook story 1개 (버튼 트리거 + 클립보드/인쇄 시나리오)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 신규 기능, grid-export 패키지 신설)",
+        "L1": "navigator.clipboard API (Web API 표준). window.print() 표준. TanStack getFilteredRowModel/getSelectedRowModel.",
+        "L2": "(N/A)",
+        "L3": "MOD-GRID-17 사용처",
+        "R-A": "AG Grid Community Clipboard copy (Ctrl+C) 패턴 참조 (publish-aggrid-analysis.md §2)",
+        "R-W": "(N/A)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/copyToClipboard.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/printGrid.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/copyToClipboard.stories.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/index.ts"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+2 KB (순수 JS)",
+        "package": "grid-export",
+        "limit": "별도 패키지 (grid-core 무영향 — C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": [] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": [] },
+        "verify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": [] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-14",
+        "reviewer": "opus",
+        "findings": [
+          "MOD-GRID-06 4 Goal 연속 100/100/100 — G-001 후 적용된 rubric 개선(E-02 ADR / A-03 infra-defect)이 일관 효과",
+          "getRowsByScope internal 추출(G-002) 후 G-002/G-003/G-004 모두 재사용 — DRY 패턴 입증, 향후 모든 export 신규 Goal에 표준",
+          "size-limit infra-defect 4회 누적(G-001~G-004) — MOD-GRID-99-B/G-003 트랙 시급도 최상위로 격상 권장 (`.size-limit.json` peer ignore 일괄 추가)",
+          "vitest 인프라 부재 — A-07/B-* 기계적 N/A 처리 누적 → MOD-GRID-99-B(docs/test infra)에서 단위 테스트 인프라 신설 필요"
+        ],
+        "rubricChanges": [],
+        "constraintsChanges": []
+      }
+    },
+    {
+      "goalId": "G-005",
+      "title": "컬럼 필터/정렬 상태 반영 + 사용자 선택 행만 export (scope 통합 검증)",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-06/G-001", "MOD-GRID-06/G-002", "MOD-GRID-06/G-003", "MOD-GRID-06/G-004"],
+      "overallStatus": "completed",
+      "userStory": "사용자가 필터로 300행 중 50행을 필터링한 후 export 버튼을 누르면 필터된 50행만 Excel/CSV에 포함되고, 추가로 10행을 체크박스 선택했다면 선택 행만 export 하는 옵션도 동작해야 한다.",
+      "userJourneySteps": [
+        "1. 사용자가 그리드에서 column filter 적용 → 50행 표시",
+        "2. exportToExcel(table, { scope: 'filtered' }) → getFilteredRowModel().rows 50행 export",
+        "3. 사용자가 10행 체크박스 선택",
+        "4. exportToExcel(table, { scope: 'selected' }) → getSelectedRowModel().rows 10행 export",
+        "5. export 후 정렬 순서(현재 sortingState 기준) 반영 확인",
+        "6. G-001/G-002/G-003 모두 동일 scope 패턴 사용 — 통합 테스트"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "scope='filtered' → getFilteredRowModel().rows 사용 (TanStack 표준 — C-2). 정렬 상태 반영 — getSortedRowModel() 적용 후 결과", "source": "C-2" },
+        { "id": "AC-002", "criteria": "scope='selected' → getSelectedRowModel().rows 사용. 선택 행 없을 시 경고 없이 빈 파일 생성 (또는 options.emptyBehavior: 'warn'|'skip' 지원)", "source": "C-2" },
+        { "id": "AC-003", "criteria": "scope='all' → getCoreRowModel().rows 사용 (필터/정렬 미반영 원본 순서)", "source": "C-2" },
+        { "id": "AC-004", "criteria": "ExcelExportOptions / CSVExportOptions / PDFExportOptions 모두 동일 scope 필드 (G-001~G-003 공통 types.ts — C-4)", "source": "C-4" },
+        { "id": "AC-005", "criteria": "통합 Storybook story — 필터 적용 후 export 버튼 시나리오 (C-25)", "source": "C-25" },
+        { "id": "AC-006", "criteria": "C-12: tsc --noEmit 0 error (types.ts 단일 소스 — 중복 타입 없음)", "source": "C-12" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 신규 기능, grid-export 패키지 신설)",
+        "L1": "TanStack v8 getFilteredRowModel / getSortedRowModel / getSelectedRowModel / getCoreRowModel (tanstack-api-inventory.md §3)",
+        "L2": "(N/A)",
+        "L3": "MOD-GRID-17 사용처 — export 기능은 account/Slip* 페이지 주요 사용 시나리오",
+        "R-A": "AG Grid Enterprise excelExport onlySelected/exportedRows 옵션 시그니처 참조 (publish-aggrid-analysis.md §8)",
+        "R-W": "FlexGridXlsxConverter — selected rows export 패턴 (feature-gap-matrix.md §3)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/src/scopeIntegration.stories.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/findings/documented-deviations/MOD-GRID-06-G005-resolveRows-vs-getRowsByScope.md"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+1 KB (resolveRows 헬퍼 — 공유 유틸)",
+        "package": "grid-export",
+        "limit": "별도 패키지 (grid-core 무영향 — C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 92.59, "lastRunAt": "2026-05-14", "feedback": ["H-02/B-01/E-01 NO는 spec→implement 분리 단계 차이 — implement에서 모두 해소"] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": [] },
+        "verify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRunAt": "2026-05-14", "feedback": [] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-14",
+        "reviewer": "opus",
+        "findings": [
+          "Spec 92.59 — H-02/B-01/E-01 NO는 spec→implement 분리 본질. 후속 rubric 검토: spec stage 항목 중 implement 산출물 의존 항목은 N/A 처리 사유 명시 권장",
+          "EmptyBehavior 타입 단일화 — 5종 Options 정합. 런타임 변경 0 — 회귀 위험 없음",
+          "findings 파일 비정규 위치 (packages/grid-export/findings/) — 정규는 .claude/tw-grid/findings/. 후속 정리 권장",
+          "MOD-GRID-06 5 Goals 평균 ~98.6점 — 1 loop 내 모두 통과. G-001 후 rubric 개선이 일관 효과"
+        ],
+        "rubricChanges": [],
+        "constraintsChanges": []
+      }
+    }
+  ]
+}

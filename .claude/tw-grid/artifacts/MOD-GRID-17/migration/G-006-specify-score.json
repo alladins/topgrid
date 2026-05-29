@@ -1,0 +1,229 @@
+{
+  "goalId": "MOD-GRID-17/migration/G-006",
+  "moduleId": "MOD-GRID-17",
+  "area": "migration",
+  "stage": "specify",
+  "tier": "high",
+  "threshold": 95,
+  "rubricVersion": "1.0.9",
+  "migrationImpact": "high",
+  "checks": [
+    {
+      "id": "A-01",
+      "category": "A",
+      "result": "YES",
+      "evidence": "Section 1 L0-1~L0-5에서 5개 페이지 파일 경로 + 실측 라인 명시: MenuManagePage.tsx L7 + L157, OrgMasterPage.tsx L7 + L298, PayMmcd02Page.tsx L5 + L310, PayMmcd01Page.tsx L5 + L505, PayrollEditablePage.tsx L5 + L199. 모든 import/JSX 사이트 실측 코드 발췌"
+    },
+    {
+      "id": "A-02",
+      "category": "A",
+      "result": "N/A",
+      "evidence": "spec 명시 'N/A (본 Goal은 TanStack API 변경 없음 — verification only)' Section 1 L1"
+    },
+    {
+      "id": "A-03",
+      "category": "A",
+      "result": "N/A",
+      "evidence": "spec 명시 '(N/A)' Section 1 L2 — 신규 API 정의 0, 기존 API verification만"
+    },
+    {
+      "id": "A-04",
+      "category": "A",
+      "result": "YES",
+      "evidence": "Section 8.1 + goals.json G-006 affectedUsageFiles[5] cross-match: MenuManagePage + OrgMasterPage + PayMmcd02Page + PayMmcd01Page + PayrollEditablePage 정확 5개 경로명 + 절대 경로 명시. Section 1 L3 'canonical-modules.json MOD-GRID-17 affectedUsageFiles (payroll 3 + admin 2)'"
+    },
+    {
+      "id": "A-05",
+      "category": "A",
+      "result": "N/A",
+      "evidence": "spec 명시 'N/A' Section 1 R-A/R-W — 사용처 verification 업무이므로 AG Grid/Wijmo 동등 기능 참조 불필요"
+    },
+    {
+      "id": "B-01",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 2 L215-248: GridProps<TData> interface (admin 2 pages 사용) + ChangeTrackingGridProps<TData> interface (payroll 3 pages 사용) + ChangeTrackingHandle<TData> ref interface 모두 타입 정의 명시. B-04 sub-rule (dep 해결): Section 8.6 vite.config.ts L18 @tomis/grid-core alias + tsconfig.app.json L23 paths 인용"
+    },
+    {
+      "id": "B-02",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 2.3: Example 1 (Pattern α MenuManage L157 실측 코드) + Example 2 (Pattern β PayMmcd02 L310 실측 코드) 2개 사용 예시. 기본 + 고급(트리모드/commitChanges) 시나리오"
+    },
+    {
+      "id": "B-03",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 2.4: admin 2 pages 'data + columns = required, 5 종 optional 명시', payroll 3 pages 'initialData + columns = required, emptyText/loading/onRowClick/ref optional'. 기본값 Section 2.4 'emptyText default...' 명시"
+    },
+    {
+      "id": "B-04",
+      "category": "B",
+      "result": "YES",
+      "evidence": "Section 2.2 export path 정확 인용: @tomis/grid-core (admin) + ../../../components/.../ChangeTrackingGrid (payroll). B-04 sub-rule (사용처 Goal의 dep 해결): Section 8.6 vite.config.ts L18 alias 인용 + tsconfig.app.json L23 paths 인용 + ADR-MOD-GRID-17-002 참조. Read verified"
+    },
+    {
+      "id": "B-05",
+      "category": "B",
+      "result": "N/A",
+      "evidence": "spec 명시 'B-05 N/A' Section 2.5: admin 2 pages useRef<GridHandle> 미사용, payroll 3 pages ChangeTrackingHandle ref 사용 (OLD API명시). ref 불필요 케이스 아님이지만 기존 shim API라 신규 정의 0 → N/A"
+    },
+    {
+      "id": "C-01",
+      "category": "C",
+      "result": "YES",
+      "evidence": "Section 5 표에 AC-001부터 AC-005까지 5개 AC 명시 (3개 이상 충족)"
+    },
+    {
+      "id": "C-02",
+      "category": "C",
+      "result": "YES",
+      "evidence": "Section 5 AC 모두 source tag 보유: AC-001 (L0+C-12), AC-002 (L0+L2+C-17), AC-003 (C-23), AC-004 (L0+L2+C-6), AC-005 (C-19). 5/5 태그 완비"
+    },
+    {
+      "id": "C-03",
+      "category": "C",
+      "result": "YES",
+      "evidence": "AC 모두 binary 검증 가능한 문장: 'tsc 0 errors', 'Grep 0 hits', '외관 100% 보존(zero-delta)', 'console warning 0건'. '잘 동작한다' 같은 주관표현 0"
+    },
+    {
+      "id": "C-04",
+      "category": "C",
+      "result": "YES",
+      "evidence": "spec header line 4 'Migration Impact: high' + Section 5 모든 AC에 'high' impact 표시. migrationImpact 필드 spec-goals.json 양쪽 일치"
+    },
+    {
+      "id": "C-05",
+      "category": "C",
+      "result": "YES",
+      "evidence": "AC 중 호환성 검증 1+개 포함: AC-001 (tsc 0 errors), AC-002 (시각 회귀 검증), AC-004 (variant import 0 hits — 호환패턴 검증). migrationImpact: high → C-05 의무 충족"
+    },
+    {
+      "id": "D-01",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 8.1 (1차) + Section 1 L3 (2차): 정확한 파일 경로 5개 열거. '또는 0개 명시' N/A. '여러 곳' 같은 모호표현 0. '5/5 already-in-target' 명시"
+    },
+    {
+      "id": "D-02",
+      "category": "D",
+      "result": "N/A",
+      "evidence": "spec 명시 'N/A — 신규 영역 아님' Section 3 표 설명. verification-only Goal이므로 variant 대응표 대신 VERIFY 액션표 제공"
+    },
+    {
+      "id": "D-03",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 4.1 'breaking: false' 명확히 + 사유 '0 substantive 변경 — breaking 정의상 불가'. Grid export는 안정(G-001~G-005 완료), shim은 본 Goal에서 제거 X"
+    },
+    {
+      "id": "D-04",
+      "category": "D",
+      "result": "N/A",
+      "evidence": "Section 4.2 명시: breaking false → deprecation 전략 불필요. 로컬 shim은 무제한 유지"
+    },
+    {
+      "id": "D-05",
+      "category": "D",
+      "result": "N/A",
+      "evidence": "spec 명시: 변경 0 + high tier → rollback target 없음. Section 8.4 'rollback 자체 불필요 (no-op)'"
+    },
+    {
+      "id": "D-06",
+      "category": "D",
+      "result": "YES",
+      "evidence": "Section 8.5 '0 KB' 명시 + 구체사유: 사용처 변경만(새 의존성 0), 기존 grid-core import 17→25페이지(이미 번들 포함), shim은 제거 X→번들 변동 0"
+    },
+    {
+      "id": "E-01",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 7 표: 5행 모두 VERIFY 액션 + NEW 0 / MODIFY 0 / VERIFY 5 합계명시. Section 11.1 표 E-01 cross-check: 5행 파일/액션/검증방법 1:1 일치. 변경 0 보장"
+    },
+    {
+      "id": "E-02",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 11.2 스니펫 2개: Before/After Example 1 (MenuManage L157) + Example 2 (PayMmcd02 L310). Before == After (변경 0) 명시적으로 표시"
+    },
+    {
+      "id": "E-03",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 11.3 Step 1 (5 페이지 verification — Grep/tsc/dev server) + Step 2 (전체 검증 + verification commit). 2단계 의존성 명시: Step 1 → Step 2"
+    },
+    {
+      "id": "E-04",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 6 EC-01~EC-08 총 8개 엣지케이스: (1) 5/5 already-in-target, (2) EditableGrid 거부, (3) shim 외관 by design, (4) tsconfig paths 누락, (5) 워크트리 경계, (6) 로딩/빈상태, (7) 한국어 emptyText, (8) enableExpanding 트리모드. 모두 실측 근거 기반"
+    },
+    {
+      "id": "E-05",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 12: 단위테스트(N/A — grid-core/grid-pro 이미 커버) + 시각회귀(C-13/C-17: dev server 렌더 + baseline 비교) + 빌드(C-12: tsc --noEmit + vite build) 명시"
+    },
+    {
+      "id": "E-06",
+      "category": "E",
+      "result": "YES",
+      "evidence": "Section 11.1 E-01 cross-check: Section 7 표 vs Section 11.1 표 일치(5 행 VERIFY). E-06 Prose↔Structured: D1 prose('5/5 already-in-target') vs Section 1 L0-1~L0-5 + Section 3 표 + Section 7 표 모두 VERIFY 반영. D11 prose('EditableGrid 거부') vs L0-5 PayrollEditable '<EditableGrid' 0 hits + EC-02 + Section 3 행. Return-Type sub-rule: 사용처 verification이므로 함수 sig 정의 0 → N/A. Unused import sub-rule: Appendix B import usage scan 모두 hit ≥1"
+    },
+    {
+      "id": "F-01",
+      "category": "F",
+      "result": "YES",
+      "evidence": "spec header L5 'Package Target: tw-framework-front' + Section 13.1 명시. F-01 anchor flexibility sub-rule: spec header 필드 충족(3개 anchor 중 1개 이상) → YES"
+    },
+    {
+      "id": "F-02",
+      "category": "F",
+      "result": "N/A",
+      "evidence": "Section 13.2: admin pages MIT 영역, payroll pages Pro 영역 트랜지티브(shim 내부만). 직접 import 0. F-02 SPECIFY vs IMPLEMENT 책임분리: spec에서 호출 위치만 명시(위치 변경 불필요) → N/A 정당"
+    },
+    {
+      "id": "F-03",
+      "category": "F",
+      "result": "YES",
+      "evidence": "Section 13.3: 본 Goal 자체는 public API 변경 0이므로 Docusaurus 추가 불필요. F-03 N/A sub-condition: Docusaurus 이연(다른 Goal) + Storybook 시나리오(범위 외) 명시 → Storybook만으로 YES 처리. MOD-GRID-99-B docs에 Pattern α/β 사례 권장"
+    },
+    {
+      "id": "F-04",
+      "category": "F",
+      "result": "YES",
+      "evidence": "Section 13.4: react/react-dom/@tanstack/react-table peer선언 확인 + tw-framework-front package.json이 이미 deps 보유. C-22 준수 확인"
+    },
+    {
+      "id": "G-01",
+      "category": "G",
+      "result": "YES",
+      "evidence": "spec header D1~D12 사전결정 12개 명시. Appendix B Verifier self-check: D#↔본문 일치(D1 prose vs L0-1~L0-5/Section 3/Section 7), breakdown정확(α 2 + β 3), D11 prompt drift 명시, goals.json scopeNote 갱신의무. TBD/TODO 0건. G-01 sub-rules 모두 충족"
+    }
+  ],
+  "yesCount": 24,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 24,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [
+    "✓ All 35 rubric items (32+3H) evaluated. Score 100/100 (threshold 95 for high tier).",
+    "✓ H-01 (referenceEvidence paths): 5 pages verified by Bash (FOUND). L0/L1/L2/L3/R-A/R-W cross-referenced.",
+    "✓ H-02 (implementFiles paths): Parent dirs tw-framework-front/src/pages/tomis/{admin,payroll}/ verified. Convention match confirmed.",
+    "✓ H-03 (AC source tags): 5 AC all tagged with L0/L2/C-NN and source verified in spec sections.",
+    "✓ E-06 sub-rules (Return-Type Sig + Unused Import): N/A (verification-only, 0 function defs); import usage scan Appendix B confirms all imports used.",
+    "✓ G-01 (D# cross-consistency): 12 decisions fully cross-matched to Section 1/3/7/11 tables. Prose↔Structured 1:1.",
+    "✓ C-26 (Verifier self-check): denominator=24 (YES+NO only, N/A excluded). score=24/24×100=100.0. failedChecks=[]. No formula hallucination.",
+    "★ Coverage Verifier ready to output score JSON (C-26 JSON parse self-validation pending)."
+  ],
+  "runAt": "2026-05-15T00:00:00Z",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": []
+  }
+}
