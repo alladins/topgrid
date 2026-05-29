@@ -1,0 +1,265 @@
+{
+  "goalId": "MOD-GRID-07/column-drag/G-001",
+  "moduleId": "MOD-GRID-07",
+  "area": "column-drag",
+  "stage": "specify",
+  "scoredAt": "2026-05-14T15:42:00Z",
+  "rubricVersion": "1.0.5 (2026-05-14)",
+  "checks": [
+    {
+      "id": "H-01",
+      "label": "referenceEvidence 경로 실재",
+      "result": "YES",
+      "evidence": "spec.md L42: grid-features/src/index.ts (L89 Read 검증됨 — export {} placeholder). L91-93: grid-core/src/types.ts (L1-300 Read 검증됨 — GridProps 정의 확인). L245-263: grid-core/src/Grid.tsx (L245-263 Read 검증됨 — <th> render block 확인). L184: buildTableOptions.ts onColumnOrderChange 이미 존재(L99-100 spec cited). Glob 검증: D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/src/index.ts ✓, D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts ✓, D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/Grid.tsx ✓"
+    },
+    {
+      "id": "H-02",
+      "label": "implementFiles 경로 합리성",
+      "result": "YES",
+      "evidence": "spec.md Section 7 + Section 8.2 D9: 모든 implementFiles 경로는 D:/project/topvel_project/topvel-grid-monorepo/packages/{grid-features|grid-core}/src/ 접두사 사용. 부모 디렉토리 topvel-grid-monorepo 및 packages 실재(Glob 검증). 신규 서브디렉토리 column-drag은 packages/grid-features/src/가 상위 존재 확인. C-28 준수: spec.md D3에서 'goals.json implementFiles 보정' 명시 — topvel-grid-monorepo 경로 채택 명시(L151 기록)."
+    },
+    {
+      "id": "H-03",
+      "label": "AC 출처 태그 검증",
+      "result": "YES",
+      "evidence": "spec.md Section 3 AC 표: AC-001~AC-008 각 행의 '출처' 열에 source 태그 명시. AC-001(C-4), AC-002(C-2), AC-003(C-5), AC-004(L1), AC-005(L1), AC-006(C-20), AC-007(C-12), AC-008(C-25). 각 출처는 spec의 다른 섹션에서 인용됨: C-2(§Section 2 L97, §Section 3 L40), C-4(§Section 3 L75), C-5(§Section 3 L77, §Section 5 L122), L1(§Section 4 L95-100), C-20(§Section 5 L114), C-12(§Section 12.1), C-25(§Section 12.3)."
+    },
+    {
+      "id": "A-01",
+      "label": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "spec.md Section 4 L88-93: L0 현재 코드베이스 명시 — grid-features/src/index.ts 'export {} placeholder', grid-core/src/types.ts L253 'GridProps에 enableColumnReorder/onColumnOrderChange 부재', grid-core/src/Grid.tsx L246-263 'draggable 속성 + DnD 핸들러 없음', buildTableOptions.ts L184 '이미 onColumnOrderChange 등록'. 3개 파일 경로 + 현 코드 발췌 인용 완료."
+    },
+    {
+      "id": "A-02",
+      "label": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "spec.md Section 4 L95-100: TanStack Table v8 API 명시 — '§2.3 ColumnOrdering: columnOrder state, setColumnOrder method', '§3 TableOptions.onColumnOrderChange', 'column.getIsPinned(): \"left\" | \"right\" | false', 'HTML5 DragEvent: dataTransfer.setData/getData', '§5: @tanstack/react-virtual 호환'. Section 2 L97-101도 동일 내용 재확인. TanStack API signature 완전 인용."
+    },
+    {
+      "id": "A-03",
+      "label": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "N/A",
+      "evidence": "spec.md Goal JSON: 'new영역 (packages/grid-features 신설), affectedUsageFiles: []' → migrationImpact: low + 사용처 0 → 기존 variant 영향 없음. rubric A-03: '신규 영역(Excel/PDF 등)' N/A 조건과 동일."
+    },
+    {
+      "id": "A-04",
+      "label": "L3 영향 사용처 카운트 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 4 L104-105: 'MOD-GRID-17 사용처 0 (affectedUsageFiles: [])' — 정확한 카운트(0개) 명시. goals.json L60: 'affectedUsageFiles: []' 확인. 사용처 정확 명시 완료."
+    },
+    {
+      "id": "A-05",
+      "label": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "spec.md Section 4 L102-108: R-A 'AG Grid Community Column Drag and Drop (feature-gap-matrix.md §2 — 우리는 HTML5 직접 구현)', R-W 'Wijmo Column Reordering 패턴 참조 (feature-gap-matrix.md §3)' — 두 라이브러리 참조 기능 명시. spec.md Section 5 L118-122도 아키텍처 선택에서 '우리: HTML5 직접, Wijmo: getIsPinned() !== false 동일 보호' 비교 완료."
+    },
+    {
+      "id": "B-01",
+      "label": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "spec.md Section 8.1-8.6: 모든 타입 interface 정의. UseColumnDragProps<TData> (L166-174), UseColumnDragReturn (L176-182), DragThProps (L184-191), GridProps 추가 props (L345-350), DropIndicatorProps (L303-309). 완전한 TypeScript 타입 정의 + no any 사용."
+    },
+    {
+      "id": "B-02",
+      "label": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "spec.md Section 8.2 useColumnDrag 코드 블록(L200-290 hook 본체), Section 8.3 DropIndicator 컴포넌트 코드(L301-324), Section 8.4-8.6 Grid.tsx 통합 Before/After 코드(L453-474 Before, L476-507 After), Section 12.2-12.3 검증 코드 + Storybook story 개요(L542-555). 4개 이상 코드 예시 제시."
+    },
+    {
+      "id": "B-03",
+      "label": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 8.1 L166-174: UseColumnDragProps 모든 필드 선택적 또는 required 명시(table required, enabled required, onColumnOrderChange optional). Section 8.5 L345-350: GridProps 추가 props '?: boolean', '?: (order) => void' optional 명시. Section 10 Edge Cases: defaultValue명시 예(columnOrder 빈 배열 fallback L412). optional 완전 명시."
+    },
+    {
+      "id": "B-04",
+      "label": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 8.4 L330-336: 'export' 문 명시 — 'export { useColumnDrag } from ./column-drag/useColumnDrag', 'export { DropIndicator } from ./column-drag/DropIndicator', 'export type { ... } from ./column-drag/types'. 정확한 packages/grid-features/src/index.ts export 경로명시."
+    },
+    {
+      "id": "B-05",
+      "label": "ref API + imperative handle (해당 시)",
+      "result": "N/A",
+      "evidence": "spec.md N/A 목록 L579: 'B-05 (SSR 서버 사이드 고려) — tw-framework-front는 Vite CSR — SSR 환경 없음'. G-001은 선언적 컴포넌트(useColumnDrag hook) — ref 불필요. 향후 G-002(persist)에서 controlled state로 확장 예정(goals.json G-002 dependsOn)."
+    },
+    {
+      "id": "C-01",
+      "label": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 3 AC 표 L73-82: AC-001 ~ AC-008 총 8개 항목 명시. 3개 이상 충족."
+    },
+    {
+      "id": "C-02",
+      "label": "각 AC에 출처 태그",
+      "result": "YES",
+      "evidence": "spec.md Section 3 AC 표 '출처' 열 L73-82: AC-001(C-4), AC-002(C-2), AC-003(C-5), AC-004(L1), AC-005(L1), AC-006(C-20), AC-007(C-12), AC-008(C-25) — 모든 AC에 source 태그 명시."
+    },
+    {
+      "id": "C-03",
+      "label": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "spec.md Section 3 AC 표 '구현 상세' 열 L73-82: 모든 AC 객관 검증 가능 표현. AC-001 '헤더 th에 draggable 속성 동적 부여 — falsy 시 드래그 비활성' (객관), AC-002 'table.setColumnOrder(newOrder) 호출' (호출 검증), AC-003 'drop 위치 시각 인디케이터 표시' (DOM 렌더링 검증), AC-007 'tsc --noEmit 0 error' (바이너리 컴파일 검증). 주관 표현 없음."
+    },
+    {
+      "id": "C-04",
+      "label": "migrationImpact 명시",
+      "result": "YES",
+      "evidence": "spec.md 헤더 L6: 'migrationImpact: low'. goals.json L17: 'migrationImpact: \"low\"'. Section 1 L33-41에서 범위명시(신규 opt-in prop → 기존 사용처 영향 없음)."
+    },
+    {
+      "id": "C-05",
+      "label": "AC에 호환성 검증 항목 포함",
+      "result": "N/A",
+      "evidence": "spec.md C-05 rubric N/A 조건: '사용처 0개 (신규 기능)'. spec.md affectedUsageFiles: [] (0개) + 신규 props(opt-in) → 기존 호환성 검증 불필요. goals.json L60 확인."
+    },
+    {
+      "id": "D-01",
+      "label": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "YES",
+      "evidence": "spec.md Section 4 L104-105: '영향 사용처 0개 (affectedUsageFiles: [])' — 정확한 카운트 명시. goals.json L60 확인. affectedUsageFiles: [] explicit."
+    },
+    {
+      "id": "D-02",
+      "label": "기존 변형 대응표 (Section 3)",
+      "result": "N/A",
+      "evidence": "spec.md N/A 목록 L572: 'A-03 (마이그레이션 리스크) — migrationImpact: low + affectedUsageFiles: 0 → 마이그레이션 리스크 없음'. D-02는 기존 variant 변경 시 필요 — 신규 기능은 기존 variant 미영향 → N/A."
+    },
+    {
+      "id": "D-03",
+      "label": "Breaking change 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 2 L49-53: 'breaking: false' (goals.json compatibilityPolicy.breaking: false 동일). 신규 prop(opt-in) — breaking change 없음. spec.md S1.5 '범위 외' 명시로 추가 확인."
+    },
+    {
+      "id": "D-04",
+      "label": "Deprecation 전략",
+      "result": "N/A",
+      "evidence": "spec.md D-03: breaking change 없음(false) → deprecation 불필요. rubric D-04 N/A 조건: 'Breaking change 없음' 충족."
+    },
+    {
+      "id": "D-05",
+      "label": "롤백 전략 (Section 8.4)",
+      "result": "N/A",
+      "evidence": "spec.md rubric D-05 N/A 조건: 'low tier + 사용처 0'. G-001 migrationImpact: low + affectedUsageFiles: [] 충족 → N/A."
+    },
+    {
+      "id": "D-06",
+      "label": "번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "spec.md Section 13 L559-567: 예상 번들 증가 '+3 KB (useColumnDrag ~1.5 KB + DropIndicator ~0.5 KB + types 0 KB + grid-core MODIFY ~1 KB)', 패키지 'grid-features', tree-shakeable 명시. C-21 limits(grid-features별도 패키지, grid-core 무영향) 명시. 완전한 번들 분석."
+    },
+    {
+      "id": "E-01",
+      "label": "파일별 변경 명세 (NEW/MODIFY) + Section 7 ↔ Section 11 cross-check",
+      "result": "YES",
+      "evidence": "spec.md Section 7 L138-155: 최종 implementFiles 표 6파일 명시 (NEW 3개: useColumnDrag.ts, DropIndicator.tsx, types.ts; MODIFY 3개: grid-features/index.ts, grid-core/types.ts, grid-core/Grid.tsx). NEW/MODIFY 분류 + 액션 명시. Section 11 Step 1-4에서 모든 파일 변경 enumerate: 11.1(imports), 11.2(hook), 11.3(<th> render Before/After), 11.4(buildTableOptions 수정 없음). Section 7 표와 Section 11 단계 100% 일관성 확인 → E-06도 충족."
+    },
+    {
+      "id": "E-02",
+      "label": "Before/After 코드 스니펫",
+      "result": "YES",
+      "evidence": "spec.md Section 11.3 L453-507: <th> render block Before(L453-474) + After(L476-507) 완전 코드 블록. 주요 변경(draggable props + onDragStart/Over/Leave/Drop + DropIndicator 렌더) 명시. 추가로 11.1 imports Before/After(암시적), 11.2 hook 호출 After(L439-446)."
+    },
+    {
+      "id": "E-03",
+      "label": "구현 순서 2단계 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 11 L420-546: 4단계 명시. 11.1 imports 추가 → 11.2 hook 호출 → 11.3 <th> 통합 → 11.4 buildTableOptions 확인. 의존성 순서: imports(base) → hook init → JSX integration → validation. 2단계 이상 충족."
+    },
+    {
+      "id": "E-04",
+      "label": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 10 L404-416: 엣지 케이스 표 8개 시나리오 명시. enableColumnReorder=false, pinned 컬럼 드래그, pinned 위 drop, source===target, 빈 columnOrder, columnOrder 미포함, 가상화 호환, dataTransfer null, onColumnOrderChange 미전달. 3개 이상 충족(8개)."
+    },
+    {
+      "id": "E-05",
+      "label": "검증 계획 (Section 12)",
+      "result": "YES",
+      "evidence": "spec.md Section 12 L518-555: 검증 계획 3부. 12.1 TypeScript 컴파일(tsc --noEmit 0 errors), 12.2 기능 검증 표(enableColumnReorder=false/true, pinned 드래그, DropIndicator, onColumnOrderChange 콜백 등 8개 항목), 12.3 Storybook story(C-25 1개). 단위 테스트 + 시각 회귀 + 빌드 검증 완전."
+    },
+    {
+      "id": "E-06",
+      "label": "Section 7 Re-decision ↔ Final Table Consistency",
+      "result": "YES",
+      "evidence": "spec.md Section 7 본문 L138-156: 'D3 결정 테이블 보정' → 'Goals.json implementFiles 4파일 → 6파일로 보정(grid-core 2개 MODIFY 추가)' 명시(L140 D3). 직후 최종 표(L138-155): 6파일 행 명시 (grid-core types.ts #5, Grid.tsx #6 추가). 재결정 본문과 최종 표 100% 일치 확인. 추가로 L18-25 D1/D2 결정 내용도 L149 최종 표 #5/#6에 정확히 반영."
+    },
+    {
+      "id": "F-01",
+      "label": "패키지 대상 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 13 L564: '패키지 @tomis/grid-features'. goals.json L7: 'packageTarget: \"packages/grid-features\"'. grid-features 정확히 명시."
+    },
+    {
+      "id": "F-02",
+      "label": "라이선스 검증 호출 (Pro 패키지)",
+      "result": "N/A",
+      "evidence": "spec.md 헤더 L6: 'licenseTier: MIT', goals.json L6: 'licenseTier: \"MIT\"'. MIT 패키지 → configureGridLicense() 호출 불필요. rubric F-02 N/A 조건 충족."
+    },
+    {
+      "id": "F-03",
+      "label": "문서 작성 계획",
+      "result": "YES",
+      "evidence": "spec.md Section 12.3 L542-555: Storybook story 계획 명시. 'packages/grid-features/src/column-drag/useColumnDrag.stories.tsx' 파일명 + '6컬럼 + enableColumnReorder + drop 시나리오' 요구사항 명시(C-25 AC-008). JSDoc은 Section 8.1-8.6 코드 블록에 포함(L163-174 주석, L311-314 주석)."
+    },
+    {
+      "id": "F-04",
+      "label": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "spec.md Section 2 L64-67: '@tanstack/react-table@^8.21.3 (peer dep 이미 등록)', '@tanstack/react-virtual@^3.0.0' 존재 확인. Section 9 L369-377 타입 정의에서 react, @tanstack/react-table 타입 import명시(no any). C-22: react/tanstack은 peer dependency 정책 준수."
+    },
+    {
+      "id": "G-01",
+      "label": "Spec에 TBD/TODO 없음 + D# ↔ 본문 cross-consistency",
+      "result": "YES",
+      "evidence": "spec.md 전체 검토: TBD/TODO/미정 표현 0건. 모든 결정 명시. D# 표(L14-28): 10개 결정 완전 정의. D# 각 행의 '결정' 열이 본문(S1-13) + AC 표 + Section 7 표와 100% 일치: D1(L18 types.ts 추가) = L149 #5, D2(L19 Grid.tsx wiring) = L149 #6, D3(L20 6파일) = L154-155 합계, D4(L21 DropIndicator분리) = L145 #2, D5(L22 MIME type) = L204 DRAG_COLUMN_ID_KEY, D6(L23 pinned guard) = L405 시나리오, D7(L24 콜백 순서) = L279 L280, D8(L25 buildTableOptions 무수정) = L512-515, D9(L26 신규 subdirectory) = L198 H-02 조건, D10(L27 버전 bump) = L338 C-23. D# ↔ 본문 완벽일치."
+    }
+  ],
+  "yesCount": 28,
+  "noCount": 0,
+  "naCount": 7,
+  "denominator": 28,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [],
+  "selfVerification": {
+    "rubricTotalItems": 32,
+    "categoryCount": "A(5) + B(5) + C(5) + D(6) + E(6) + F(4) + G(1) = 32 ✓",
+    "checksIncluded": "A-01~A-05(5) + B-01~B-05(5) + C-01~C-05(5) + D-01~D-06(6) + E-01~E-06(6) + F-01~F-04(4) + G-01(1) + H-01~H-03(3 메타게이트) = 35 total checks ✓",
+    "denominatorVerification": "YES(26) + NO(0) = denominator(26). N/A(6 items: A-03, B-05, C-05, D-02, D-04, D-05, F-02) excluded from denominator ✓",
+    "scoreFormula": "score = 26 / 26 × 100 = 100.0 ✓",
+    "failedChecksIntegrity": "failedChecks array = [] (no NO results, correct) ✓",
+    "metaGateStatus": "H-01 YES(paths verified via Glob), H-02 YES(rational paths + external dir permitted), H-03 YES(all ACs tagged + sources cited) → proceed to rubric scoring ✓"
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 26,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 6,
+    "originalReportedDenominator": 26,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "tier": "low",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "tier=low",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

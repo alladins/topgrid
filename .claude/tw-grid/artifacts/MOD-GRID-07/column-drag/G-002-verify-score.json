@@ -1,0 +1,257 @@
+{
+  "goalId": "MOD-GRID-07/column-drag/G-002",
+  "moduleId": "MOD-GRID-07",
+  "area": "column-drag",
+  "stage": "verify",
+  "scoredAt": "2026-05-14T17:05:00Z",
+  "verifier": "independent-opus-verify-agent",
+  "rubricVersion": "verify-rubric.md v1.0.2",
+  "migrationImpact": "low",
+  "weights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "checks": [
+    {
+      "id": "A-01",
+      "axis": "A",
+      "label": "gradlew compileJava 0 errors",
+      "result": "N/A",
+      "evidence": "FE-only Goal (packages/grid-features + packages/grid-core monorepo). No Java/Gradle backend touched — per goals.json affectedUsageFiles: [] and spec Section 1 scope."
+    },
+    {
+      "id": "A-02",
+      "axis": "A",
+      "label": "npx tsc --noEmit 0 errors (grid-features + grid-core)",
+      "result": "YES",
+      "evidence": "Ran `node_modules/.bin/tsc.CMD --noEmit` from each package directory. grid-features: EXIT=0 (no output). grid-core: EXIT=0 (no output). Both strict + exactOptionalPropertyTypes + verbatimModuleSyntax pass. C-29 spread-skip pattern observed in Grid.tsx L172-177 for persistColumnOrder/columnOrderStorageKey."
+    },
+    {
+      "id": "A-03",
+      "axis": "A",
+      "label": "tsup build + size-limit 한도 내",
+      "result": "YES",
+      "evidence": "tsup grid-features: dist/index.mjs 21.87 KB raw, dist/index.cjs 22.73 KB (EXIT=0, ../../node_modules/.bin/tsup.CMD). tsup grid-core: dist/index.mjs 59.34 KB (EXIT=0). size-limit (run from monorepo root via ./node_modules/.bin/size-limit.CMD): @tomis/grid-features brotli 6.07 kB < 20 kB limit (PASS), @tomis/grid-core brotli 29.37 kB < 30 kB limit (PASS). G-002 incremental delta from G-001 baseline (3.26 KB raw) is +18.6 KB raw — driven by MOD-GRID-08 multi-sort + MOD-GRID-09 TextFilter/NumberFilter siblings now compiled into the same index.mjs barrel (these existed pre-G-002). G-002-specific contribution per spec Section 13 is ~+2 KB. Brotli 6.07 kB << 20 kB confirms tree-shakeability + within hard limit."
+    },
+    {
+      "id": "B-01",
+      "axis": "B",
+      "label": "정렬 동작",
+      "result": "N/A",
+      "evidence": "Goal scope: column drag persistence (localStorage) + keyboard reorder (Alt+←/→). Sorting feature untouched (MOD-GRID-08 is a separate module + already merged into grid-features index — unaffected by G-002 changes). Spec Section 1 범위 명시."
+    },
+    {
+      "id": "B-02",
+      "axis": "B",
+      "label": "필터 동작",
+      "result": "N/A",
+      "evidence": "Goal scope unrelated to column filters. Filter UI (MOD-GRID-09) untouched."
+    },
+    {
+      "id": "B-03",
+      "axis": "B",
+      "label": "페이지네이션 동작",
+      "result": "N/A",
+      "evidence": "Goal scope: header-plane DnD persist + keyboard. Pagination unaffected. Spec D8 documents that GridPagination enableKeyboardNav listener is pagination-container-scoped — no Alt+←/→ scope collision with th-level onKeyDown handler added by G-002."
+    },
+    {
+      "id": "B-04",
+      "axis": "B",
+      "label": "가상화 동작 (C-18)",
+      "result": "N/A",
+      "evidence": "Header-plane keyboard reorder + localStorage persist is independent of row virtualization (react-virtual). No row layout or estimateSize change. Same N/A rationale as G-001 verify (spec L1 §5 alignment)."
+    },
+    {
+      "id": "B-05",
+      "axis": "B",
+      "label": "인라인 편집 동작",
+      "result": "N/A",
+      "evidence": "Goal does not touch EditableCell / ChangeTrackingGrid. Inline editing scope is MOD-GRID-10 + MOD-GRID-11."
+    },
+    {
+      "id": "C-01",
+      "axis": "C",
+      "label": "영향 사용처 tsc 0 (마이그레이션 후)",
+      "result": "N/A",
+      "evidence": "goals.json affectedUsageFiles: []. No tw-framework-front usage migrations performed by this Goal — all new props are opt-in (persistColumnOrder?, columnOrderStorageKey? optional in GridProps)."
+    },
+    {
+      "id": "C-02",
+      "axis": "C",
+      "label": "외관 보존 (시각 회귀 — C-17)",
+      "result": "N/A",
+      "evidence": "low tier + affectedUsageFiles: 0 → C-17 N/A per rubric. tabIndex={0} addition is non-visual (browser default focus outline applies only on actual focus — no layout change). aria-roledescription is non-visual ARIA attribute. Spec Section 6 explicitly declares C-17 N/A."
+    },
+    {
+      "id": "C-03",
+      "axis": "C",
+      "label": "console warning 0 + React warning 0",
+      "result": "N/A",
+      "evidence": "0 usage files → no runtime usage path to exercise. Static review: only console.warn is intentional QuotaExceededError fallback in useColumnOrderPersist.ts L49 (spec-mandated AC-002). No React deprecation warnings introduced — exactOptionalPropertyTypes spread-skip pattern (Grid.tsx L172-177) preserves prop semantics. No runtime usage available to assert empirically (0 affected sites)."
+    },
+    {
+      "id": "D-01",
+      "axis": "D",
+      "label": "마이그레이션 비율",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles: 0 — 마이그레이션 대상 사용처 없음. 신규 opt-in feature."
+    },
+    {
+      "id": "D-02",
+      "axis": "D",
+      "label": "잔여 사용처 명시",
+      "result": "N/A",
+      "evidence": "잔여 사용처 0건 (총 0개 중 0개 마이그레이션). 다음 Goal에 위임할 항목 없음."
+    },
+    {
+      "id": "E-01",
+      "axis": "E",
+      "label": "번들 크기 변동 (C-21)",
+      "result": "YES",
+      "evidence": "size-limit from monorepo root: @tomis/grid-features brotli 6.07 kB < 20 kB limit; @tomis/grid-core brotli 29.37 kB < 30 kB limit. spec Section 13 estimated G-002 +2 KB delta — actual aggregated brotli (with MOD-GRID-08/09 siblings) 6.07 kB still well under cap. C-21 PASS."
+    },
+    {
+      "id": "E-02",
+      "axis": "E",
+      "label": "새 의존성 ADR (C-20)",
+      "result": "N/A",
+      "evidence": "No new dependency/peerDependency added. localStorage is a native Web Storage API; KeyboardEvent.altKey is a native DOM API. C-20 trigger condition not met. Spec Section 5 ('ADR 불필요') explicitly justifies."
+    },
+    {
+      "id": "E-03",
+      "axis": "E",
+      "label": "라이선스 명시 (C-24)",
+      "result": "YES",
+      "evidence": "packages/grid-features/package.json L4: \"license\": \"MIT\"; L2: \"version\": \"0.2.0\" (C-23 minor bump for additive feature export — useColumnOrderPersist). packages/grid-core/package.json L4: \"license\": \"MIT\". LICENSE files pre-existing in monorepo root. C-24 satisfied (MIT-only — no Pro license-verification runtime call required)."
+    }
+  ],
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "categoryBreakdown": {
+    "A": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "denominator": 2,
+      "note": "A-01 N/A (FE-only). 2/2 × 100 = 100.0"
+    },
+    "B": {
+      "yes": 0,
+      "no": 0,
+      "na": 5,
+      "denominator": 0,
+      "note": "Vacuous — all N/A (header-plane DnD + persist + keyboard untouched by sort/filter/page/virtual/edit). Goal title contains no build keyword → vacuous truth allowed → 100.0"
+    },
+    "C": {
+      "yes": 0,
+      "no": 0,
+      "na": 3,
+      "denominator": 0,
+      "note": "Vacuous — all N/A (0 affected usages, opt-in props only). Vacuous truth rule → 100.0"
+    },
+    "D": {
+      "yes": 0,
+      "no": 0,
+      "na": 2,
+      "denominator": 0,
+      "note": "Vacuous — 0 affected usages → no migration progress to measure. Vacuous truth rule → 100.0"
+    },
+    "E": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "denominator": 2,
+      "note": "E-02 N/A (no new deps). 2/2 × 100 = 100.0"
+    }
+  },
+  "selfVerification": {
+    "rubricItemCountCheck": "A(3) + B(5) + C(3) + D(2) + E(3) = 16 — matches verify-rubric.md v1.0.2 header (16 items)",
+    "categoryScoreFormula": {
+      "A": "YES(2) / (YES(2) + NO(0)) × 100 = 100.0",
+      "B": "vacuous (YES=0, NO=0, N/A=5) → 100.0 per rubric L62 vacuous truth rule; build keyword 'build/tsup/tsc/vite/rollup/size-limit/bundle' not in Goal title ('컬럼 순서 영속화 ... 키보드 단축키') — vacuous permitted",
+      "C": "vacuous → 100.0",
+      "D": "vacuous → 100.0",
+      "E": "YES(2) / (YES(2) + NO(0)) × 100 = 100.0"
+    },
+    "weightedScoreCheck": "100.0×0.25 + 100.0×0.25 + 100.0×0.20 + 100.0×0.15 + 100.0×0.15 = 25 + 25 + 20 + 15 + 15 = 100.0",
+    "weightsSumCheck": "25 + 25 + 20 + 15 + 15 = 100 ✓",
+    "failedChecksNAExclusion": "failedChecks=[] contains only NO results — N/A items excluded ✓",
+    "naDenominatorExclusion": "N/A items (A-01, B-01..B-05, C-01..C-03, D-01, D-02, E-02) excluded from each category denominator ✓"
+  },
+  "weightedScore": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "acComplianceMap": {
+    "AC-001": "YES",
+    "AC-002": "YES",
+    "AC-003": "YES",
+    "AC-004": "YES",
+    "AC-005": "YES",
+    "AC-006": "YES"
+  },
+  "acEvidence": {
+    "AC-001": "persistColumnOrder?: boolean + columnOrderStorageKey?: string defined in grid-features types.ts L22-25 AND propagated to grid-core/types.ts L323/L331 on GridProps. Grid.tsx L172-177 forwards both via C-29 spread-skip pattern. useColumnOrderPersist.ts mounts → table.setColumnOrder() restore (L70). useColumnDrag.ts handleColumnOrderChange composes saveOrder (L48-53).",
+    "AC-002": "useColumnOrderPersist.ts: typeof window guard (L43, L56), try/catch around setItem (L44-51), try/catch around getItem+JSON.parse with Array.isArray validation (L57-79), QuotaExceededError silent fallback with console.warn (L48-50), corrupted-data localStorage.removeItem cleanup (L65, L75).",
+    "AC-003": "useColumnDrag.ts getKeyDownHandler L56-103: handles e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight'), e.preventDefault() at L64. Grid.tsx L329 tabIndex={0}, L330 onKeyDown={(e) => keyDownHandler(e.nativeEvent)}, L331 aria-roledescription={props.enableColumnReorder === true ? 'draggable column' : undefined}.",
+    "AC-004": "useColumnDrag.ts L60 early-return 'if (!enabled || isPinned) return'. L78-87 pinned-skip while loop: continues advancing targetIndex while target column getIsPinned() !== false (column.getIsPinned() === false test at L85 finds first non-pinned target). Out-of-range guard L89.",
+    "AC-005": "tsc --noEmit EXIT=0 in both grid-features and grid-core (verified via direct CLI invocation in this session).",
+    "AC-006": "useColumnDrag.stories.tsx PersistKeyboardDemo component L200-303 + PersistAndKeyboard story export L309-313. Includes persistColumnOrder=true, columnOrderStorageKey='story-column-order', localStorage display panel, Alt+←/→ keyboard guidance text."
+  },
+  "buildStatus": {
+    "gridFeaturesTsc": "PASS (EXIT=0)",
+    "gridCoreTsc": "PASS (EXIT=0)",
+    "gridFeaturesTsup": "PASS (EXIT=0, dist/index.mjs 21.87 KB raw)",
+    "gridCoreTsup": "PASS (EXIT=0, dist/index.mjs 59.34 KB raw)",
+    "sizeLimit": "PASS — grid-features brotli 6.07 kB < 20 kB, grid-core brotli 29.37 kB < 30 kB",
+    "prohibitedLibScan": "PASS — 0 hits for @mescius/wijmo|wijmo across grid-features + grid-core src; 0 hits for react-dnd|dnd-kit|sortablejs in grid-features/src (defensive '@dnd-kit/core' in tsup.config.ts external is OK)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": null
+  },
+  "supersedes": {
+    "priorScorePath": "self-written by implement agent (C-15 violation — implementer ran verify in own session)",
+    "priorScore": 100,
+    "priorThreshold": 85,
+    "supersededReason": "Independent verifier re-evaluated all 16 rubric items + 6 ACs against actual tool outputs (tsc EXIT=0 for both packages, tsup build outputs, size-limit brotli 6.07 kB, grep checks for prohibited libs) + direct file reads. Score arithmetic and AC compliance confirmed identical (100.0 / passed), but the prior score was produced without an independent Agent instance (C-15 / C-11 violation). This file overwrites the prior self-score per the legitimate independent-verify protocol."
+  },
+  "feedback": [],
+  "notes": [
+    "Threshold value: task prompt instructed threshold=90 (citing goals.json explicit). goals.json file at .claude/tw-grid/goals/MOD-GRID-07/column-drag-goals.json L151 actually shows 'threshold': 85 (low-tier default per state.json config.thresholds.low.verify=85). Outcome is invariant (weightedScore=100.0 >= 90 >= 85 → passed=true). Honored prompt directive (90) per Verifier instruction; flagged here for harness reconciliation."
+  ],
+  "tier": "low",
+  "yesCount": 4,
+  "noCount": 0,
+  "naCount": 12,
+  "denominator": 4,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-002→full",
+      "tier=low",
+      "yesCount=4",
+      "noCount=0",
+      "naCount=12",
+      "denominator=4",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

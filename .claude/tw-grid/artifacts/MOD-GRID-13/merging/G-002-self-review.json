@@ -1,0 +1,68 @@
+{
+  "goalId": "G-002",
+  "module": "MOD-GRID-13",
+  "area": "merging",
+  "stage": "self-review",
+  "reviewedAt": "2026-05-15",
+  "reviewerModel": "opus",
+  "scoreSummary": {
+    "specify": 100.0,
+    "implement": 100.0,
+    "implementVerifier": 100.0,
+    "verify": 100.0,
+    "implementerSelfScore": 100,
+    "verifierModel": "in-context (low tier — C-15 independent haiku re-check not required for low tier; same-agent self-check applied)"
+  },
+  "cascadingRisksFromPrevious": {
+    "R-1_c30AcBindingLoophole": {
+      "status": "recurred",
+      "evidence": "G-004 self-review identified this pattern: when binding ACs are deferred, implement-score must include deferredAcs[] field + followupGoal ID per implement-rubric A-05 (updated 2026-05-14). G-002 AC-005 sub-clause 'C-18 가상화 포함' was deferred per spec W-2 but implement-score did not include deferredAcs[]. Self-review patched implement-score.json retroactively to add deferredAcs[] per the A-05 discipline (2nd occurrence of this pattern — G-004 → G-002). G-003 is the followup Goal for react-virtual integration."
+    }
+  },
+  "findings": [
+    "G-002 implement delivered the ancestorBoundary hierarchical algorithm correctly. All 3 spec D# decisions applied: D2 (unified algorithm, no explicit single-column branch), D3 (implicit priority via array order, no MergePriorityConfig type), D4 (regression invariant documented in JSDoc @remarks + ADR-008). Algorithm trace-verified for T-001 (dept/team 5-row truth table) and single-column degeneration (rows=[A,A,B] → {0_dept:2,1_dept:0,2_dept:1}).",
+    "AC-005 sub-clause deferral (2nd occurrence of G-004 R-1 C-30↔AC-binding loophole): goals.json G-002 AC-005 reads 'C-25: Storybook story 1개 — dept/team 계층 병합 시나리오 (1000행+ C-18 가상화 포함)'. Implementation delivered the 1000+ row HierarchicalMerge story but deferred react-virtual integration per spec Section 12 W-2. Implement-score A-05 was marked YES without deferredAcs[] — a procedural gap caught by self-review. Patched retroactively. G-003 is the binding followup. Pattern: G-004 and G-002 both had deferred sub-clause ACs without deferredAcs[]. Emerging 2-instance pattern.",
+    "goals.json userJourneySteps[3] references 'mergePriority 옵션으로 좌측 컬럼 우선 기준 컬럼 ID 순서 지정 가능' — implies an explicit mergePriority API. Spec D3 + ADR-MOD-GRID-13-007 explicitly rejected this in favor of implicit priority via array order. Implement-score promptSpecDrift was [] — this goals.json value drift was not captured. Patched retroactively: goals.json step 4 drift added to promptSpecDrift[] as 'spec applied' resolution. The drift is between goals.json (discover-stage artifact) and spec D3 (specify-stage authoritative). C-27 + C-28 apply.",
+    "Prompt structural reference drifts (correctly classified as non-value, feedback-only per F-05): (a) Prompt named G-001 stories 'BasicMerge / CustomCompareFn' — actual names are MergeRowsBoolean / MergeRowsCompareFn. (b) Prompt implied explicit single-column branch — spec D2 mandates unified algorithm. Both handled correctly at implementation time with 1-line feedback + spec applied. Not in promptSpecDrift[] (structural, not value drift) — correctly classified.",
+    "Build verification: tsc --noEmit exit 0 + tsup exit 0 (dist/index.mjs 3.25 KB, +0.39 KB delta vs G-001 2.86 KB). Size well within 20 KB Pro limit. ADRs 006/007/008 added to decisions.md with correct Section headers matching spec Section 13 templates.",
+    "EC-002 handling (mergeRows-unset column in middle of columns array): `if (fn === null) continue;` without resetting ancestorBoundary — correctly propagates boundary across non-merge columns. Algorithm comment L74 documents this: 'mergeRows 미설정 컬럼은 skip — ancestorBoundary는 유지 (EC-002: 중간 미설정 컬럼 무시)'.",
+    "No verifierModel field in G-002-implement-verifier-score.json. For low-tier Goals, C-15 does not require an independent haiku Coverage Verifier — same-agent self-check is the current practice. G-004 (medium) required verifierModel separation. This gap is appropriate for low tier but should be explicitly documented to prevent future confusion when low-tier Goals are promoted.",
+    "Goals.json G-002 stages.implement shows status='in_progress' — state-sync to mark implement+verify+self-review as 'done' is the final step after this self-review."
+  ],
+  "newCascadingRisks": [
+    "R-1 (medium): AC sub-clause deferral without deferredAcs[] — 2nd occurrence (G-004 + G-002). Pattern emerging. G-003 will also have a deferral scenario (react-virtual integration deferred from G-002). Third occurrence would justify a rubric-level change: implement-rubric A-05 should require Coverage Verifier to explicitly check for deferred sub-clauses and verify deferredAcs[] exists when any AC contains deferred deliverables. Current A-05 guidance says 'PARTIAL 처리 후보' but does not mandate Verifier check for deferredAcs[] completeness.",
+    "R-2 (low): goals.json discover-stage API proposals vs spec specify-stage decisions — G-002 userJourneySteps[3] proposed mergePriority API, spec D3 rejected it. The drift was not pre-screened before implementation. A pattern where goals.json step-level API descriptions propose concrete APIs (not just user behaviors) that the spec-writer may reject creates a systematic F-05 gap. Future implementers should cross-check goals.json userJourneySteps for API-specific language (option/prop names) against spec decisions D-table."
+  ],
+  "improvementsAppliedCount": 1,
+  "improvementsRejectedCount": 0,
+  "appliedItems": [
+    "implement-rubric.md A-05 보강: Coverage Verifier 의무 추가 — implement-score에 binding AC 일부 sub-clause가 deferred된 경우 (예: story에 '가상화 포함' sub-clause가 있으나 실제 story에서 미구현), `deferredAcs[]` 필드 존재 여부 + followupGoal 명시 여부 Coverage Verifier가 확인 의무. deferredAcs[] 없이 YES 처리된 경우 verifier A-05 PARTIAL 처리 + feedback 기재. 근거: G-004 + G-002 2-instance pattern (R-1 escalation to rubric-level fix)."
+  ],
+  "rejectedItems": [],
+  "affectedFiles": [
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/rubric/implement-rubric.md",
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/artifacts/MOD-GRID-13/merging/G-002-implement-score.json",
+    "D:/project/topvel_project/TOMIS/.claude/tw-grid/artifacts/MOD-GRID-13/merging/G-002-self-review.json"
+  ],
+  "metaValidation": {
+    "scoreFormulaConsistency": "specify YES(counted in spec score) 100 ✓. implement YES=15/denom=15×100=100 ✓. verifier weighted = 25*100+25*100+20*100+15*100+15*100=100 ✓. All match reported scores.",
+    "naDenominatorExclusion": "implement naCount=9 + denominator=15 (only YES+NO) ✓. verifier: B vacuous (5 N/A), D vacuous (2 N/A), others category-wise ✓.",
+    "failedChecksIntegrity": "All 3 stages failedChecks=[]. No NO results in any stage.",
+    "ac005SubClauseDeferralAudit": "deferredAcs[] retroactively added to implement-score.json: AC-005 sub-clause 'C-18 가상화' deferred to G-003. This matches spec Section 12 W-2 explicit deferral. ✓",
+    "promptSpecDriftAudit": "goals.json userJourneySteps[3] 'mergePriority 옵션' API proposal — spec D3/ADR-007 reject. Added to promptSpecDrift[] retroactively with resolution 'spec applied'. ✓",
+    "algorithmCorrectnessTrace": "T-001 5-row truth table traced: dept=[개발,개발,개발,디자인,디자인], team=[FE,FE,BE,UX,UX]. Expected: dept spans {0:3,1:skip,2:skip,3:2,4:skip}; team spans {0:2,1:skip,2:1,3:2,4:skip} (dept boundary at row 3 forces team boundary). ancestorBoundary propagation verified. ✓",
+    "regressionInvariantAudit": "columns.length=1 with rows=[A,A,B]: i=1: ancestorBoundary=false, fn[0](A,A)=true→ownBoundary=false→hasBoundary=false→spanCount[0]=2, map.set('1_dept',0). i=2: ancestorBoundary=false, fn[0](A,B)=false→ownBoundary=true→hasBoundary=true→flush(0_dept:2),spanStart=2,spanCount=1. Final flush: map.set('2_dept',1). Output={0_dept:2,1_dept:0,2_dept:1} = G-001 bit-identical. ✓"
+  },
+  "harnessReviewArtifact": {
+    "selfReviewPath": ".claude/tw-grid/artifacts/MOD-GRID-13/merging/G-002-self-review.json",
+    "rubricUpdates": [
+      "rubric/implement-rubric.md A-05 보강 — Coverage Verifier deferredAcs[] completeness check 의무화 (2-instance pattern R-1 escalation)"
+    ],
+    "constraintsUpdates": [],
+    "toolingBacklog": [
+      "goals.json userJourneySteps API-specific language cross-check: when steps contain 'option', 'prop', '옵션으로' language → Implementer pre-screens against spec D-table decisions before implementing. Systematic prompt for future G-NNN implement agents.",
+      "G-003 implementer: spec Section 11.2 namespace import example (`import * as gridLicense from '@tomis/grid-license'`) still in spec body — G-001 harnessReview P-3 warning. G-003 touches computeMergeSpans.ts (same file) + react-virtual integration. react-virtual peer constraint check needed (pnpm symlinks parity)."
+    ]
+  },
+  "timestamp": "2026-05-15T00:00:00Z"
+}

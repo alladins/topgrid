@@ -1,0 +1,207 @@
+{
+  "moduleId": "MOD-GRID-13",
+  "area": "merging",
+  "goalId": "MOD-GRID-13/merging/G-001",
+  "stage": "verify",
+  "verifier": "opus",
+  "rubricVersion": "1.0.8",
+  "migrationImpact": "low",
+  "migrationImpactSource": "goals.json L17: \"migrationImpact\": \"low\" (direct Read 2026-05-15)",
+  "threshold": 90,
+  "weights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "checks": [
+    {
+      "id": "A-01",
+      "result": "N/A",
+      "evidence": "FE-only Goal (grid-pro-merging Pro package). No tvcom_back/gradlew involved. Rubric A-01 explicit N/A condition: 'FE 전용일 때 (대부분 N/A)'."
+    },
+    {
+      "id": "A-02",
+      "result": "YES",
+      "evidence": "Re-ran tsc --noEmit at D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging via node_modules/.bin/tsc.CMD 2026-05-15 — exit code 0, zero diagnostic output. implement-score.buildResult.tsc='0 errors' + implement-verifier-score B-01 corroborate. tw-framework-front unchanged (no imports touched)."
+    },
+    {
+      "id": "A-03",
+      "result": "YES",
+      "evidence": "Re-ran tsup at packages/grid-pro-merging 2026-05-15 — exit 0. Output: CJS dist/index.cjs 3.00 KB + ESM dist/index.mjs 2.86 KB + DTS dist/index.d.ts 3.08 KB + dist/index.d.cts 3.08 KB. PowerShell GZipStream measurement: dist/index.mjs uncompressed=2932 bytes, gzipped=1055 bytes (1.03 KB) < 20 KB limit. .size-limit.json present at packages/grid-pro-merging/.size-limit.json with 20 KB gzip limit (Read L3-7)."
+    },
+    {
+      "id": "B-01",
+      "result": "YES",
+      "evidence": "MergingGrid.tsx uses getSortedRowModel (L52) — spec Section 11.2 + EC-005 sort re-calc covered. spanMap recomputed via useMemo dependency array [rows, mergeColumns, enableMerging] (L83) — TanStack sorting state change → rows reference change → useMemo invalidation → computeMergeSpans rerun. Core engine correctness verified via algorithm trace: computeMergeSpans.ts L25-76 single-pass per-column scan handles EC-001 (empty), EC-002 (all different), EC-003 (all same), EC-004 (undefined ===), EC-005 (dynamic). flexRender at L92/L114 uses TanStack public API."
+    },
+    {
+      "id": "B-02",
+      "result": "N/A",
+      "evidence": "Filtering out of G-001 scope. Spec Section 11.3 W-4 + Section 1 L1: getFilteredRowModel inclusion deferred to G-003. No filter UI in MergingGrid.tsx."
+    },
+    {
+      "id": "B-03",
+      "result": "N/A",
+      "evidence": "Pagination out of scope. No getPaginationRowModel in MergingGrid.tsx. G-001 acceptance criteria do not mention pagination."
+    },
+    {
+      "id": "B-04",
+      "result": "N/A",
+      "evidence": "Virtualization (C-18) explicitly deferred to G-003 per spec Section 11.3 W-4 ('G-001 scope에서는 가상화 미포함. G-003에서 C-18 가상화 호환 구현 예정. 문서에 limitation 명시'). MergingGrid.tsx has no @tanstack/react-virtual import. ADR-MOD-GRID-13 documents the deferral. N/A condition: 가상화 무관 (small dataset only, sample data 5 rows)."
+    },
+    {
+      "id": "B-05",
+      "result": "N/A",
+      "evidence": "No editing feature. MergingGrid.tsx is read-only renderer. G-001 acceptance criteria AC-001~AC-009 do not include inline editing."
+    },
+    {
+      "id": "C-01",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0 per goals.json L62. New Pro package — no existing usage files to migrate. spec Section 3 + 8.1 confirm N/A."
+    },
+    {
+      "id": "C-02",
+      "result": "N/A",
+      "evidence": "Rubric C-02 explicit N/A: 'low tier + 사용처 0'. migrationImpact=low (goals.json L17) + affectedUsageFiles=0 → both conditions satisfied. Spec Section 12.4: 'migrationImpact: low + 사용처 0 → C-13/C-17 N/A. Storybook 수동 확인으로 대체'."
+    },
+    {
+      "id": "C-03",
+      "result": "YES",
+      "evidence": "MergingGrid.tsx (Read L1-123): verifyOrWarn stub (L19-21) body is comment-only no-op — zero console.* calls. computeMergeSpans.ts (Read L1-77): zero console.* calls. types.ts (Read L1-72): zero console.* calls. index.ts (Read L1-11): pure re-exports. No deprecated TanStack v8 API usage (useReactTable/getCoreRowModel/getSortedRowModel/flexRender are current public API). MergingGrid.stories.tsx is type-only CSF3 placeholder (no Storybook runtime warnings)."
+    },
+    {
+      "id": "D-01",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0 per goals.json L62. New Pro package — no existing usage to migrate. Rubric D-01 explicit N/A condition: '사용처 0개'."
+    },
+    {
+      "id": "D-02",
+      "result": "N/A",
+      "evidence": "No remaining usage files (affectedUsageFiles=0). Rubric D-02 explicit N/A: '잔여 0건'."
+    },
+    {
+      "id": "E-01",
+      "result": "YES",
+      "evidence": "PowerShell GZipStream measurement 2026-05-15: dist/index.mjs gzipped = 1055 bytes = 1.03 KB. Pro package limit per C-21 = 20 KB gzipped. 1.03 KB << 20 KB (5.15% of budget). .size-limit.json (Read L1-8) configured: path=dist/index.mjs, limit=20 KB, gzip=true. Bundle impact estimate from spec Section 8.5 (+5 KB) substantially below actual (+1.03 KB)."
+    },
+    {
+      "id": "E-02",
+      "result": "N/A",
+      "evidence": "No new runtime dependencies added. package.json (Read L1-40) has no 'dependencies' field. peerDependencies (L28-34): @tanstack/react-table, @tomis/grid-core, @tomis/grid-license, react, react-dom — all existing monorepo peers. peerDependenciesMeta.@tomis/grid-license.optional=true. No new external library requires ADR per C-9/C-20."
+    },
+    {
+      "id": "E-03",
+      "result": "YES",
+      "evidence": "package.json L5 (Read): \"license\": \"SEE LICENSE IN EULA\". EULA.md present at D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/EULA.md (Read L1-27) with Pro license terms + Permitted Use + Restrictions + License Validation + Contact sections. ADR-MOD-GRID-13-002 (Read L69-131) documents license verification approach (inline stub fallback for MOD-GRID-99-A pending). C-24 disclosure obligations met."
+    }
+  ],
+  "categoryScores": {
+    "A": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "score": 100
+    },
+    "B": {
+      "yes": 1,
+      "no": 0,
+      "na": 4,
+      "score": 100
+    },
+    "C": {
+      "yes": 1,
+      "no": 0,
+      "na": 2,
+      "score": 100
+    },
+    "D": {
+      "yes": 0,
+      "no": 0,
+      "na": 2,
+      "score": 100,
+      "note": "vacuous truth (all N/A) — per rubric L60-65, allowed for D (no build keyword exclusion). affectedUsageFiles=0 justification."
+    },
+    "E": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "score": 100
+    }
+  },
+  "weightedScore": 100,
+  "weightedScoreFormula": "100.0*0.25 + 100.0*0.25 + 100.0*0.20 + 100.0*0.15 + 100.0*0.15 = 25 + 25 + 20 + 15 + 15 = 100.0",
+  "passed": true,
+  "selfCheck": {
+    "weightSum100": true,
+    "weightSumValue": 100,
+    "categoryFormulaValid": true,
+    "categoryFormulaDetail": "A: 2/(2+0)*100=100, B: 1/(1+0)*100=100, C: 1/(1+0)*100=100, D: vacuous (0/0)=100 per rubric L60-65, E: 2/(2+0)*100=100",
+    "failedChecksOnlyNO": true,
+    "naHandledPerRubric": true,
+    "naHandledDetail": "N/A excluded from denominator per category. D vacuous truth applied (no build keyword in Goal title 'column.mergeRows prop API + rowSpan 자동 계산 렌더러'). A axis has 2 YES so not vacuous-only. All explicit N/A conditions match rubric (A-01 FE-only, B-02~05 out of scope, C-01/02 affectedUsageFiles=0+low tier, D-01/02 affectedUsageFiles=0, E-02 no new deps).",
+    "totalItemsMatchesRubric": true,
+    "totalItemsDetail": "A(3)+B(5)+C(3)+D(2)+E(3) = 16 — matches verify-rubric L3 'A=3 + B=5 + C=3 + D=2 + E=3 = 16'",
+    "buildKeywordVacuousExclusion": "Goal title contains no build/tsup/tsc/vite/rollup/size-limit/bundle keyword. A vacuous would be allowed but A has 2 YES so non-vacuous evaluation applied (real build verification performed: tsc exit 0 + tsup exit 0 + gzipped 1.03 KB measured).",
+    "jsonParseValidation": "Score JSON validated via mental JSON.parse before write — no unescaped quotes, all evidence strings properly escaped, no embedded regex with backslashes."
+  },
+  "failedChecks": [],
+  "feedback": [
+    "All 16 verify-rubric items scored: 6 YES, 0 NO, 10 N/A.",
+    "Re-ran tsc --noEmit + tsup build at packages/grid-pro-merging 2026-05-15: both exit 0.",
+    "Gzipped bundle size measured via PowerShell GZipStream: dist/index.mjs = 1.03 KB << 20 KB Pro limit (5.15% of budget).",
+    "C-26 self-verification: weightSum=100, formulas valid, failedChecks empty, N/A handling per rubric. All 4 selfCheck items PASS.",
+    "Goal MOD-GRID-13/G-001 (low tier, threshold 90) PASSED with weightedScore=100.0."
+  ],
+  "buildVerification": {
+    "tscNoEmit": {
+      "exitCode": 0,
+      "command": "D:/project/topvel_project/topvel-grid-monorepo/node_modules/.bin/tsc.CMD --noEmit (cwd=packages/grid-pro-merging)",
+      "timestamp": "2026-05-15"
+    },
+    "tsupBuild": {
+      "exitCode": 0,
+      "command": "D:/project/topvel_project/topvel-grid-monorepo/node_modules/.bin/tsup.CMD (cwd=packages/grid-pro-merging)",
+      "outputs": {
+        "cjs": "dist/index.cjs 3.00 KB",
+        "esm": "dist/index.mjs 2.86 KB",
+        "dts": "dist/index.d.ts 3.08 KB",
+        "dctsAlias": "dist/index.d.cts 3.08 KB"
+      },
+      "timestamp": "2026-05-15"
+    },
+    "sizeLimit": {
+      "configFile": "packages/grid-pro-merging/.size-limit.json",
+      "limit": "20 KB gzipped",
+      "actualUncompressed": "2932 bytes (2.86 KB)",
+      "actualGzipped": "1055 bytes (1.03 KB)",
+      "withinLimit": true,
+      "measurementMethod": "PowerShell System.IO.Compression.GZipStream"
+    }
+  },
+  "tier": "low",
+  "yesCount": 6,
+  "noCount": 0,
+  "naCount": 10,
+  "denominator": 6,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "tier=low",
+      "yesCount=6",
+      "noCount=0",
+      "naCount=10",
+      "denominator=6",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

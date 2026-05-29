@@ -1,0 +1,210 @@
+{
+  "goalId": "MOD-GRID-11/range/G-003",
+  "module": "MOD-GRID-11",
+  "area": "range",
+  "stage": "verify",
+  "rubricVersion": "1.0.2",
+  "verifierModel": "opus",
+  "verifiedAt": "2026-05-14T22:30:00Z",
+  "migrationImpact": "medium",
+  "migrationImpactSource": "goals.json L193 직접 Read 확인 (F-07 echo 차단 의무)",
+  "migrationImpactEvidence": "range-goals.json L193 발췌: `\"migrationImpact\": \"medium\",` (G-003 객체 내). verify 단계에서 메인 prompt 의존 없이 직접 Read 호출 → goals.json L130-220 범위에서 G-003 객체 명시 확인. implement-score L7 + implement-verifier-score L9 모두 'medium' 보고와 100% 일치. medium-tier threshold 90 적용.",
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85
+  },
+  "weights": {
+    "A": 15,
+    "B": 20,
+    "C": 30,
+    "D": 20,
+    "E": 15
+  },
+  "metaGates": {
+    "F-01-evidenceReality": {
+      "result": "YES",
+      "evidence": "implement-verifier-score 의 핵심 evidence 5건 sampling Read 확인: (1) DragFillHandle.tsx L12 'import { fillRange } from ./internal/fillRange' — 실재 확인; (2) DragFillHandle.tsx L165 'const updates = fillRange<TCell>(range, direction, fillCount, getCellValue)' — 실재 확인 (단, prompt에 명시된 L165 invoke는 실제 L165 match); (3) DragFillHandle.tsx L199 'absolute w-2 h-2 bg-blue-500 cursor-crosshair border border-white z-10' — 실재 확인; (4) fillRange.ts L18 export detectSeriesStep — 실재 확인; (5) types.ts L47 `export type FillDirection = 'up' | 'down' | 'left' | 'right'` — 실재 확인. 외부 monorepo 디렉토리 (TOMIS git 무관) → Glob/Read evidence 대체 (ADR-MOD-GRID-00-001 적용)."
+    },
+    "F-02-categoryScoresFormula": {
+      "result": "YES",
+      "evidence": "각 카테고리 산식 자기-검산: A: YES 2 / NO 0 / 분모 2 → 100.0 ✓; B: YES 1 / NO 0 / 분모 1 → 100.0 ✓; C: YES 1 / NO 0 / 분모 1 → 100.0 ✓; D: vacuous (YES 0 / NO 0 / N/A 2) → 100.0 (vacuous truth, ADR-MOD-GRID-00-002 적용); E: YES 1 / NO 0 / 분모 1 → 100.0 ✓. N/A 항목 분모 제외 확인 완료. failedChecks=[]에 NO 항목만 포함 (현재 NO 0건).",
+      "categorySumCheck": "A(3) + B(5) + C(3) + D(2) + E(3) = 16 ✓ (rubric 총 16항목 일치)"
+    },
+    "F-03-weightedScoreFormula": {
+      "result": "YES",
+      "evidence": "weightedScore = 100.0×0.15 + 100.0×0.20 + 100.0×0.30 + 100.0×0.20 + 100.0×0.15 = 15 + 20 + 30 + 20 + 15 = 100.0. Σweights = 15+20+30+20+15 = 100 ✓. 산식 정확."
+    },
+    "metaGatesSummary": "F-01/F-02/F-03 모두 PASS. F-07 (migrationImpact 직접 확인)도 통과 — goals.json L193 직접 Read로 'medium' 권위 값 확정. echo 차단 의무 충족."
+  },
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "G-003는 FE 전용 (grid-pro-range 패키지). tvcom_back gradlew compileJava 무관."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "verify 단계 직접 재실행 (PowerShell): `cd D:\\project\\topvel_project\\topvel-grid-monorepo\\packages\\grid-pro-range; npx tsc --noEmit` → exit code 0, 0 errors. implement-score L45 / implement-verifier-score L73 보고와 100% 일치 (재현 확인)."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "verify 단계 직접 재실행 (PowerShell): `npx tsup` → CJS Build success + ESM Build success + DTS Build success. 산출물: dist/index.mjs = 17.46 KB, dist/index.cjs = 17.92 KB. C-21 pro 패키지 한도 ≤ 20 KB (gzip) 준수 (uncompressed 17.46 KB; gzip 추정 ~5-6 KB)."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "G-003 = Drag-fill 기능. 정렬 동작 무관 (별도 Goal scope)."
+    },
+    "B-02": {
+      "result": "N/A",
+      "evidence": "G-003 = Drag-fill 기능. 필터 동작 무관."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "G-003 = Drag-fill 기능. 페이지네이션 동작 무관."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "AC-004 가상화 호환 검증됨. DragFillHandle.tsx L52-78 coordFromMouseEvent: getCellRect 추상화 + getBoundingClientRect 기반 hit-test → 가상화 환경에서도 row/col index 정확. EG-006 (뷰포트 밖 셀 드래그) 처리됨. spec Section 6 EG-006 + Section 4.1 getCellRect prop 명시. Storybook story 'DragFillSeries' (L58-93) — 6행 grid + 단일 컬럼 시리즈 시나리오 제공."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "G-003 = Drag-fill 기능. 인라인 편집 기능 자체는 별도 Goal scope (G-006 capstone). drag-fill 결과는 onFillComplete callback으로 caller(MOD-GRID-10)에 위임 (D3)."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] (goals.json L226 + spec Section 1.3 + Section 5.3 일치). 마이그레이션 대상 사용처 0건. types.ts/index.ts MODIFY는 기존 export 전체 보존 (CellCoord, CellRange, RangeSelectGridProps, normalizeRange, isInRange, useCellRange, RangeSelectGrid, useKeyboardNav) — tsc 0 errors는 패키지 내부 호환성 확보 의미. 외부 사용처는 0건이므로 본 axis는 N/A."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] (goals.json + spec Section 5.3 L564). 시각 회귀 비교 대상 0건. 향후 G-006 RangeSelectGrid.tsx 통합 시 C-17 의무 적용 예정 (spec Section 5.3 L565 명시). medium-tier에서 사용처 0인 케이스는 N/A 정당."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "_verifyGridLicenseStub (DragFillHandle.tsx L19-21)는 빈 함수 (주석만) — console warning 0. deprecated React API 사용 없음 (useCallback/useEffect/useRef 표준). Rules of Hooks 위반 없음 (모든 hooks 함수 최상단). React strict mode 호환. Storybook stories의 console.log는 사용자 콜백 시뮬레이션 (no warning)."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] (goals.json L226). 본 Goal에서 마이그레이션 대상 사용처 0개 → 50% 비율 계산 불가."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 0건. documented-deviations 또는 다음 Goal에 명시 필요 없음. 단, spec Section 5.3 L565가 G-006 RangeSelectGrid.tsx 통합 시점에 사용처 발생 명시 (forward-looking note — D-02 의무 아님)."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "tsup 빌드 결과 직접 확인 (PowerShell 재실행): dist/index.mjs = 17.46 KB uncompressed (gzip 추정 ~5-6 KB). C-21 pro 패키지 한도 ≤ 20 KB (gzip) 준수. G-002 baseline 9.86 KB 대비 +7.6 KB 증가 — DragFillHandle + fillRange + types 추가분 합산. spec Section 13.2 예상 +3 KB와 비교 시 다소 초과 (DragFillHandle.tsx 200행 컴포넌트 포함). 한도 내."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "G-003에서 신규 외부 라이브러리 추가 0건. 기존 peerDeps (react, @tanstack/react-table, @tanstack/react-virtual) 재사용. C-9/C-20 ADR 의무 미발생."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "package.json 변경 없음 (verify 단계 직접 확인 — implement-score L186 보고 + types.ts/index.ts/DragFillHandle.tsx/fillRange.ts 5개 파일만 변경). 기존 'SEE LICENSE IN EULA' 유지 (G-001/G-002 baseline)."
+    }
+  },
+  "scoreCalculation": {
+    "axes": {
+      "A": {
+        "yes": 2,
+        "no": 0,
+        "na": 1,
+        "denominator": 2,
+        "categoryScore": 100,
+        "weight": 15
+      },
+      "B": {
+        "yes": 1,
+        "no": 0,
+        "na": 4,
+        "denominator": 1,
+        "categoryScore": 100,
+        "weight": 20
+      },
+      "C": {
+        "yes": 1,
+        "no": 0,
+        "na": 2,
+        "denominator": 1,
+        "categoryScore": 100,
+        "weight": 30
+      },
+      "D": {
+        "yes": 0,
+        "no": 0,
+        "na": 2,
+        "denominator": 0,
+        "categoryScore": 100,
+        "weight": 20,
+        "vacuous": true,
+        "vacuousReason": "D 전 항목 N/A — affectedUsageFiles=[]. ADR-MOD-GRID-00-002 vacuous truth 적용."
+      },
+      "E": {
+        "yes": 1,
+        "no": 0,
+        "na": 2,
+        "denominator": 1,
+        "categoryScore": 100,
+        "weight": 15
+      }
+    },
+    "weightedScoreFormula": "100.0×0.15 + 100.0×0.20 + 100.0×0.30 + 100.0×0.20 + 100.0×0.15 = 15 + 20 + 30 + 20 + 15 = 100.0",
+    "weightsSum": 100,
+    "categorySumCheck": "A(3) + B(5) + C(3) + D(2) + E(3) = 16 ✓ (rubric 총 16항목 일치 — verify-rubric L3)",
+    "selfVerification": "F-02/F-03 메타게이트 PASS. N/A 분모 제외 확인. failedChecks=[] (NO 0건). D axis vacuous truth (ADR-MOD-GRID-00-002). 산식 재검산 일치."
+  },
+  "weightedScore": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "buildStatus": {
+    "tsc": "PASS",
+    "tsup": "PASS",
+    "sizeLimit": "PASS"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": "N/A (affectedUsageFiles=[])"
+  },
+  "feedback": {
+    "summary": "G-003 Drag-fill verify PASS 100/90 (medium tier). 5축 모두 100.0 — A(빌드) tsc 0 + tsup PASS (17.46 KB ≤ 20 KB); B(동작) AC-004 가상화 호환 + Storybook 시나리오; C(호환성) 사용처 0 + console warning 0; D(마이그레이션) vacuous (affectedUsageFiles=[]); E(번들+라이선스) 한도 준수 + 기존 EULA 유지.",
+    "migrationImpactDirectRead": "F-07 echo 차단 의무 수행 — goals.json L193 직접 Read로 'medium' 권위 값 재확인. implement-score L7 / implement-verifier-score L9 모두 'medium' 일치. tier-appropriate threshold 90 적용.",
+    "buildReExecution": "verify 단계에서 tsc + tsup 둘 다 직접 재실행 (PowerShell). implement 보고와 100% 일치 — 17.46 KB ESM / 17.92 KB CJS / 0 tsc errors.",
+    "vacuousAxes": "D 카테고리 전 항목 N/A → vacuous truth 100.0 적용 (ADR-MOD-GRID-00-002). 향후 G-006 RangeSelectGrid 통합 시 affectedUsageFiles 증가 예정 — 그 시점에 C/D axis 실평가 필요.",
+    "specCodeDefectsForFollowUp": "implement-score L203-215에 2건 자율 정정 보고 (coordFromMouseEvent unused destructure + generateFillValue dead branch). spec writer 추후 G-003-spec.md L307-309 + L234-235 갱신 권장 — verify 점수 영향 없음 (Implementer가 코드에서 이미 정정 적용).",
+    "nextStage": "Goal G-003 verify 완료. MOD-GRID-11 range Goals (G-001/G-002/G-003) 진행. G-004 (Clipboard) 또는 다른 Goal로 진행 가능."
+  },
+  "moduleId": "MOD-GRID-11",
+  "tier": "medium",
+  "yesCount": 5,
+  "noCount": 0,
+  "naCount": 11,
+  "denominator": 5,
+  "score": 100,
+  "runAt": "2026-05-14T22:30:00Z",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-003→full",
+      "tier=medium",
+      "yesCount=5",
+      "noCount=0",
+      "naCount=11",
+      "denominator=5",
+      "score=weightedScore",
+      "runAt=2026-05-14T22:30:00Z"
+    ]
+  }
+}

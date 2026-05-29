@@ -1,0 +1,233 @@
+{
+  "goalId": "MOD-GRID-14/header/G-001",
+  "moduleId": "MOD-GRID-14",
+  "area": "header",
+  "stage": "specify",
+  "specPath": "D:/project/topvel_project/TOMIS/.claude/tw-grid/artifacts/MOD-GRID-14/header/G-001-spec.md",
+  "verifiedAt": "2026-05-15T07:36:20Z",
+  "checks": [
+    {
+      "id": "A-01",
+      "title": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "spec.md L30-63: 'D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx (185줄, 직접 Read 확인)' + code snippet L36-62 (getHeaderGroups, headerGroup.map, colSpan, isPlaceholder 등 패턴 인용)"
+    },
+    {
+      "id": "A-02",
+      "title": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "spec.md L78-86: 'GroupColumnDef<TData>, getHeaderGroups(), header.isPlaceholder, header.colSpan, header.subHeaders, flexRender, useReactTable 모두 TanStack API signature 명시'"
+    },
+    {
+      "id": "A-03",
+      "title": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "N/A",
+      "evidence": "spec.md L88: 'grid-pro-header 패키지는 신규 생성 대상이다. 기존 구현 없음.' → N/A 명시됨"
+    },
+    {
+      "id": "A-04",
+      "title": "L3 영향 사용처 카운트 명시",
+      "result": "YES",
+      "evidence": "spec.md L92-99: 'affectedUsageFiles는 GroupedHeaderGrid.tsx (alias 유지 대상) 1건뿐이다.' + 정확한 파일 경로 명시"
+    },
+    {
+      "id": "A-05",
+      "title": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "spec.md L101-107: 'publish-aggrid-analysis.md 확인: AG Grid Column Groups는 Enterprise 전용' + 'publish-wijmo-analysis.md §3 확인: Wijmo는 hdr.rows.push() + setCellData() 방식' (개념 참조만, C-16 준수)"
+    },
+    {
+      "id": "B-01",
+      "title": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "spec.md L215-227: 'ColumnGroupConfig<TData> interface' + L233-241: 'MultiRowHeaderProps<TData> interface' 모두 정의됨"
+    },
+    {
+      "id": "B-02",
+      "title": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "spec.md L117-122: 사용자 여정 5단계 + L232-250: MultiRowHeader 컴포넌트 상세 사용 예시 (min 2개)"
+    },
+    {
+      "id": "B-03",
+      "title": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "spec.md L220-227: 'config: ColumnGroupConfig<TData>' 필수, L234-240: 'table: Table<TData>' 필수 명시, optional 항목 문서화"
+    },
+    {
+      "id": "B-04",
+      "title": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "spec.md L253-258: 'types.ts' + L261-271: 'index.ts barrel export' 경로 정확히 명시"
+    },
+    {
+      "id": "B-05",
+      "title": "ref API + imperative handle 명시 (해당 시)",
+      "result": "N/A",
+      "evidence": "spec.md 내 ref 불필요 판정 (선언적 컴포넌트) — 명시 없으나 MultiRowHeader props에 ref 없음"
+    },
+    {
+      "id": "C-01",
+      "title": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md L28-38: AC-001 ~ AC-009 (9개) — 3개 이상 충족"
+    },
+    {
+      "id": "C-02",
+      "title": "각 AC에 출처 태그 (L0/L1/L2/L3/R-A/R-W)",
+      "result": "YES",
+      "evidence": "spec.md L28-38: 모든 AC-001~009에 'source: \"C-N\"' 태그 포함 (C-4, C-2, C-6, C-24, C-16, C-14, C-12, C-25)"
+    },
+    {
+      "id": "C-03",
+      "title": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "spec.md L28-38: AC 모두 '반환된다', '표시된다', '호출된다', '표현이 등장하면' 같은 객관 검증 표현. '잘 동작한다' 같은 주관 표현 없음"
+    },
+    {
+      "id": "C-04",
+      "title": "migrationImpact 명시 (high/medium/low)",
+      "result": "YES",
+      "evidence": "spec.md L5: '@Spec Version 1.0' + goals-json L17: 'migrationImpact: low' + spec 내 L6-9 description에 사유 포함"
+    },
+    {
+      "id": "C-05",
+      "title": "AC에 호환성 검증 항목 포함",
+      "result": "YES",
+      "evidence": "spec.md L28-38: AC-006 'tsc --noEmit 0 error' (C-12) + AC-008 동일 명시, 호환성 검증 항목 포함"
+    },
+    {
+      "id": "D-01",
+      "title": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "YES",
+      "evidence": "spec.md L313-320: Section 8.1 'affectedUsageFiles는 GroupedHeaderGrid.tsx (alias 유지 대상) 1건뿐이다.' 정확한 파일 경로 명시"
+    },
+    {
+      "id": "D-02",
+      "title": "기존 변형 대응표 (Section 3)",
+      "result": "N/A",
+      "evidence": "spec.md L88: '신규 패키지 — 기존 구현 없음' (N/A 명시됨)"
+    },
+    {
+      "id": "D-03",
+      "title": "Breaking change 명시 (Section 4)",
+      "result": "YES",
+      "evidence": "spec.md L350-352: 'Section 10.1 Breaking Change — 없음 (breaking: false)' 명확히 명시"
+    },
+    {
+      "id": "D-04",
+      "title": "Deprecation 전략 (Section 4)",
+      "result": "YES",
+      "evidence": "spec.md L355-358: 'GroupedHeaderGrid alias: 1 minor 버전 유지 (C-23, C-6)' + 상세 설명"
+    },
+    {
+      "id": "D-05",
+      "title": "롤백 전략 (Section 8.4)",
+      "result": "YES",
+      "evidence": "spec.md L355-358: 'alias 1 minor 버전 유지'로 롤백 가능 보장 (low tier + affectedUsageFiles 1개만)"
+    },
+    {
+      "id": "D-06",
+      "title": "번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "spec.md L307: '번들 영향: +5 KB (createColumnGroup + MultiRowHeader + types), 한도 ≤ 20 KB (C-21)' 명시"
+    },
+    {
+      "id": "E-01",
+      "title": "파일별 변경 명세 (NEW/MODIFY) + Section 7 ↔ Section 11 일관성",
+      "result": "YES",
+      "evidence": "spec.md L295-305 Section 7 implementFiles 표 + L370-405 Section 11 구현 지침 cross-match: Section 11에서 언급된 파일(createColumnGroup.ts, MultiRowHeader.tsx, types.ts, index.ts, EULA.md, package.json, decisions.md) 모두 Section 7 표에 나열 ✓"
+    },
+    {
+      "id": "E-02",
+      "title": "Before/After 코드 스니펫 (최소 1개)",
+      "result": "YES",
+      "evidence": "spec.md L372-385: createColumnGroup helper 'Before (리터럴 { header, columns })' → 'After (helper function)' 코드 변환 스니펫"
+    },
+    {
+      "id": "E-03",
+      "title": "구현 순서 2단계 이상 (의존성 고려)",
+      "result": "YES",
+      "evidence": "spec.md L397-402 Section 11.3 Functional Wiring: 신규 유틸 4개 + 호출 위치 순서 명시 (createColumnGroup → verifyOrWarn → MultiRowHeader → Grid.tsx 통합)"
+    },
+    {
+      "id": "E-04",
+      "title": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md L280-287: EC-01(빈 columns) + EC-02(3단 중첩) + EC-03(모든 자식 hidden) + EC-04(flat only) = 4개 (3개 이상)"
+    },
+    {
+      "id": "E-05",
+      "title": "검증 계획 (Section 12)",
+      "result": "YES",
+      "evidence": "spec.md L426-450 Section 12: AC 검증(12.1) + EC 검증(12.2) + tsc + Storybook 명시"
+    },
+    {
+      "id": "E-06",
+      "title": "Section 7 재결정 ↔ Final Table Consistency",
+      "result": "YES",
+      "evidence": "spec.md L13-22 D1 결정(prefix 수정: TOMIS/ → topvel-grid-monorepo/) 명시 후 L295-305 Section 7 표에서 수정된 prefix 반영: 'D:/project/topvel_project/topvel-grid-monorepo/packages/...' 완전 일치 ✓"
+    },
+    {
+      "id": "F-01",
+      "title": "패키지 대상 명시 (packages/grid-core vs grid-{pro})",
+      "result": "YES",
+      "evidence": "spec.md L6: '@tomis/grid-pro-header (Pro tier, licenseTier: Pro)' + goals.json L7: 'packageTarget: \"packages/grid-pro-header\"' 명시"
+    },
+    {
+      "id": "F-02",
+      "title": "라이선스 검증 호출 (Pro 패키지)",
+      "result": "NO",
+      "evidence": "spec.md L165-171 AC-005: 'verifyOrWarn() 호출 명시하나', package.json L27-31 확인 결과 '@tomis/grid-license' dependency 누락. index.ts L1-2는 placeholder (실제 구현 미작성). AC-005 조건 미충족: 'import { verifyOrWarn } from @tomis/grid-license' 불가능"
+    },
+    {
+      "id": "F-03",
+      "title": "문서 작성 계획 (Docusaurus + Storybook)",
+      "result": "YES",
+      "evidence": "spec.md L189-191 AC-009: 'Storybook story 1개: 그룹 헤더 2단 + flat 컬럼 혼합 시나리오' 명시"
+    },
+    {
+      "id": "F-04",
+      "title": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "spec.md L338-341 + package.json L27-31: '@tanstack/react-table', 'react', 'react-dom' 모두 peerDependencies 선언 (C-22 준수)"
+    },
+    {
+      "id": "G-01",
+      "title": "TBD/TODO 없음 + D# ↔ 본문 cross-consistency",
+      "result": "NO",
+      "evidence": "spec.md L13-22 D1 결정(prefix 수정) 명시 후 L22: 'goals.json도 동일하게 업데이트 필요 (G-01 v1.0.6 요건)' 명시. 그러나 goals.json G-001 implementFiles는 여전히 오류 상태: 'TOMIS/packages/grid-pro-header' (spec D1 결정의 'topvel-grid-monorepo/' prefix 미반영). spec writer가 D1 결정을 명시했으나 goals.json 실제 동기화 미실행. spec 제출 시점의 goals.json이 D1 결정과 불일치 상태."
+    }
+  ],
+  "yesCount": 27,
+  "noCount": 2,
+  "naCount": 3,
+  "denominator": 29,
+  "score": 93.1,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [
+    "F-02: Pro 패키지 라이선스 검증 호출 — @tomis/grid-license dependency 누락, verifyOrWarn import 불가능",
+    "G-01: spec D1 결정(prefix 수정)이 goals.json에 미반영 — spec 내부 결정 vs 외부 파일 동기화 미실행"
+  ],
+  "feedback": [
+    "F-02 개선: package.json에 '@tomis/grid-license'를 dependencies (또는 peerDependencies)로 추가. AC-005의 verifyOrWarn() 호출을 실제로 가능하게 해야 함.",
+    "G-01 개선: spec L22에서 'goals.json도 동일하게 업데이트 필요'라고 명시했으면, spec 제출 전에 실제 goals.json을 수정하거나 spec writer agent가 goals.json도 함께 제출해야 함. D1 결정이 있으면 즉시 영향받는 모든 외부 파일(goals.json의 implementFiles[] prefix 등)을 동기화하는 것이 SPECIFY 책임."
+  ],
+  "tier": "low",
+  "rubricVersion": "1.0.10",
+  "runAt": "2026-05-15T07:36:20Z",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "tier=low",
+      "rubricVersion=1.0.10",
+      "runAt=2026-05-15T07:36:20Z",
+      "verifierModel=haiku"
+    ]
+  }
+}

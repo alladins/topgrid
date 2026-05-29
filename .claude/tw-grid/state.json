@@ -1,0 +1,1305 @@
+{
+  "version": "1.0",
+  "createdAt": "2026-05-13",
+  "lastUpdated": "2026-05-27",
+  "config": {
+    "thresholds": {
+      "high": {
+        "specify": 95,
+        "implement": 95,
+        "verify": 95
+      },
+      "medium": {
+        "specify": 90,
+        "implement": 90,
+        "verify": 90
+      },
+      "low": {
+        "specify": 85,
+        "implement": 85,
+        "verify": 85
+      }
+    },
+    "maxLoopsPerStage": 3,
+    "verifyCategoryWeights": {
+      "high": {
+        "A": 10,
+        "B": 15,
+        "C": 40,
+        "D": 25,
+        "E": 10
+      },
+      "medium": {
+        "A": 15,
+        "B": 20,
+        "C": 30,
+        "D": 20,
+        "E": 15
+      },
+      "low": {
+        "A": 25,
+        "B": 25,
+        "C": 20,
+        "D": 15,
+        "E": 15
+      }
+    },
+    "agentModels": {
+      "high": {
+        "specify": "opus",
+        "implement": "opus",
+        "verify": "opus"
+      },
+      "medium": {
+        "specify": "sonnet",
+        "implement": "sonnet",
+        "verify": "opus"
+      },
+      "low": {
+        "specify": "sonnet",
+        "implement": "sonnet",
+        "verify": "opus"
+      },
+      "coverageVerifier": "haiku",
+      "selfReview": "opus",
+      "discover": "opus",
+      "goals": "opus"
+    },
+    "bundleSizeLimits": {
+      "grid-core": "30 KB",
+      "grid-renderers": "10 KB",
+      "grid-virtual": "15 KB",
+      "grid-pro-package": "20 KB",
+      "grid-meta": "150 KB"
+    },
+    "monorepoRoot": "D:/project/platree_project/TWGRID",
+    "monorepoEnabled": true
+  },
+  "phase": "done",
+  "goalsIndex": [
+    {
+      "key": "MOD-GRID-00/monorepo/G-001",
+      "moduleId": "MOD-GRID-00",
+      "area": "monorepo",
+      "goalId": "G-001",
+      "title": "pnpm workspace + 13 패키지 + apps/docs 디렉토리 스캐폴딩",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-00/monorepo/G-002",
+      "moduleId": "MOD-GRID-00",
+      "area": "monorepo",
+      "goalId": "G-002",
+      "title": "tsup + TypeScript strict + 공유 tsconfig.base.json (CJS+ESM dual)",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-00/monorepo/G-003",
+      "moduleId": "MOD-GRID-00",
+      "area": "monorepo",
+      "goalId": "G-003",
+      "title": "peerDependencies 정책 + size-limit 패키지별 한도",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-00/monorepo/G-004",
+      "moduleId": "MOD-GRID-00",
+      "area": "monorepo",
+      "goalId": "G-004",
+      "title": "Changesets + ESLint flat config + tw-framework-front workspace alias",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-01/wrapper/G-001",
+      "moduleId": "MOD-GRID-01",
+      "area": "wrapper",
+      "goalId": "G-001",
+      "title": "<Grid data columns> 단일 API + enable* 토글 (sort/filter/selection/pagination/pinning)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-01/wrapper/G-002",
+      "moduleId": "MOD-GRID-01",
+      "area": "wrapper",
+      "goalId": "G-002",
+      "title": "Sticky header + sticky pinned columns + columnResizing onChange (CSS sticky)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-01/wrapper/G-003",
+      "moduleId": "MOD-GRID-01",
+      "area": "wrapper",
+      "goalId": "G-003",
+      "title": "Loading skeleton + empty state slot + autoSelectFirstRow + onRowClick/DoubleClick/onCellClick",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-01/wrapper/G-004",
+      "moduleId": "MOD-GRID-01",
+      "area": "wrapper",
+      "goalId": "G-004",
+      "title": "Imperative API ref (addRow/deleteRow/scrollTo/getSelection/refresh) + react-virtual 통합",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-01/wrapper/G-005",
+      "moduleId": "MOD-GRID-01",
+      "area": "wrapper",
+      "goalId": "G-005",
+      "title": "BaseGridProps 호환 alias 5종 (BaseGrid/VirtualGrid/ColumnPinGrid/GroupedHeaderGrid/TreeGrid)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-02/state/G-001",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-001",
+      "title": "useGridState() — 8개 state 통합 반환 (sorting/filters/selection/pagination/pinning/order/sizing/visibility)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-02/state/G-002",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-002",
+      "title": "initialState prop + controlled mode (외부 state 주입)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-02/state/G-003",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-003",
+      "title": "onStateChange unified callback + debounce 옵션",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-02/state/G-004",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-004",
+      "title": "resetState() / resetSection(key) helper",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-02/state/G-005",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-005",
+      "title": "URL 동기화 helper (옵션) — search params 반영",
+      "priority": "P2",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-02/state/G-006",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-006",
+      "title": "localStorage 영속화 helper (옵션) — storage key 명시",
+      "priority": "P2",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-03/pagination/G-001",
+      "moduleId": "MOD-GRID-03",
+      "area": "pagination",
+      "goalId": "G-001",
+      "title": "client + server 통합 pagination prop (mode/pageIndex/pageSize/totalCount/pageCount)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-03/pagination/G-002",
+      "moduleId": "MOD-GRID-03",
+      "area": "pagination",
+      "goalId": "G-002",
+      "title": "페이지 크기 변경 UI + pageSizeOptions (기본 [10,20,50,100]) + showTotalCount",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-03/pagination/G-003",
+      "moduleId": "MOD-GRID-03",
+      "area": "pagination",
+      "goalId": "G-003",
+      "title": "페이지 이동 컨트롤 (이전/다음/처음/끝 + 키보드 단축키) + DataTablePagination 호환 alias",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-04/column/G-001",
+      "moduleId": "MOD-GRID-04",
+      "area": "column",
+      "goalId": "G-001",
+      "title": "createColumns<TData>() + type 자동 renderer 분기 + 표준 columnDef 옵션",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-04/column/G-002",
+      "moduleId": "MOD-GRID-04",
+      "area": "column",
+      "goalId": "G-002",
+      "title": "createGroupedColumns() 그룹 헤더 helper (Multi-row column groups)",
+      "priority": "P1",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-04/column/G-003",
+      "moduleId": "MOD-GRID-04",
+      "area": "column",
+      "goalId": "G-003",
+      "title": "컬럼 가시성 + 순서 영속화 (MOD-GRID-02 useStoragePersist 통합)",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-05/renderer/G-001",
+      "moduleId": "MOD-GRID-05",
+      "area": "renderer",
+      "goalId": "G-001",
+      "title": "기본 3종 표준화: TextCell + NumberCell + DateCell (기존 흡수 + formatter helper)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-05/renderer/G-002",
+      "moduleId": "MOD-GRID-05",
+      "area": "renderer",
+      "goalId": "G-002",
+      "title": "UI 3종 표준화: StatusBadgeCell + LinkCell + ButtonCell + 신규 3종 (TagCell/AvatarCell/ProgressCell)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-05/renderer/G-003",
+      "moduleId": "MOD-GRID-05",
+      "area": "renderer",
+      "goalId": "G-003",
+      "title": "EditableCell (인라인 편집: text/number/date/select/textarea) + cellClassName callback + renderer registry",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-06/export/G-001",
+      "moduleId": "MOD-GRID-06",
+      "area": "export",
+      "goalId": "G-001",
+      "title": "Excel(.xlsx) export — exportToExcel(table, options) + 한국어 UTF-8 + 다중행 헤더 + DataTable alias",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-06/export/G-002",
+      "moduleId": "MOD-GRID-06",
+      "area": "export",
+      "goalId": "G-002",
+      "title": "CSV export — exportToCSV(table, options) 순수 JS 구현",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-06/export/G-003",
+      "moduleId": "MOD-GRID-06",
+      "area": "export",
+      "goalId": "G-003",
+      "title": "PDF export — exportToPdf(table, options) jspdf + jspdf-autotable peer + ADR 의무",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-06/export/G-004",
+      "moduleId": "MOD-GRID-06",
+      "area": "export",
+      "goalId": "G-004",
+      "title": "클립보드 복사 + 인쇄 (copyToClipboard / printGrid)",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-06/export/G-005",
+      "moduleId": "MOD-GRID-06",
+      "area": "export",
+      "goalId": "G-005",
+      "title": "컬럼 필터/정렬 상태 반영 + 사용자 선택 행만 export (scope 통합 검증)",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-07/column-drag/G-001",
+      "moduleId": "MOD-GRID-07",
+      "area": "column-drag",
+      "goalId": "G-001",
+      "title": "HTML5 drag-and-drop 기반 컬럼 순서 변경 + 시각 인디케이터 + pinned 가드 + onColumnOrderChange",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-07/column-drag/G-002",
+      "moduleId": "MOD-GRID-07",
+      "area": "column-drag",
+      "goalId": "G-002",
+      "title": "컬럼 순서 영속화 (useGridState columnOrder 통합) + 키보드 단축키 (Alt+← / Alt+→)",
+      "priority": "P1",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-08/multi-sort/G-001",
+      "moduleId": "MOD-GRID-08",
+      "area": "multi-sort",
+      "goalId": "G-001",
+      "title": "Shift+Click 다중 정렬 활성 + 정렬 우선순위 배지 (1/2/3) + Ctrl+Click 정렬 제거",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-08/multi-sort/G-002",
+      "moduleId": "MOD-GRID-08",
+      "area": "multi-sort",
+      "goalId": "G-002",
+      "title": "maxMultiSortColCount 제한 + 정렬 전체 초기화 버튼",
+      "priority": "P1",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-09/filter-ui/G-001",
+      "moduleId": "MOD-GRID-09",
+      "area": "filter-ui",
+      "goalId": "G-001",
+      "title": "TextFilter — 컬럼 헤더 Popover + contains/equals/startsWith 연산자 + 필터 인디케이터",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-09/filter-ui/G-002",
+      "moduleId": "MOD-GRID-09",
+      "area": "filter-ui",
+      "goalId": "G-002",
+      "title": "NumberFilter — 연산자(=, !=, >, <, between) + range 입력",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-09/filter-ui/G-003",
+      "moduleId": "MOD-GRID-09",
+      "area": "filter-ui",
+      "goalId": "G-003",
+      "title": "DateFilter — range picker (시작일/종료일) + date-fns 연산",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-09/filter-ui/G-004",
+      "moduleId": "MOD-GRID-09",
+      "area": "filter-ui",
+      "goalId": "G-004",
+      "title": "SelectFilter (다중선택 체크박스) + GlobalSearch 박스 + 필터 전체 초기화",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-10/tracking/G-001",
+      "moduleId": "MOD-GRID-10",
+      "area": "tracking",
+      "goalId": "G-001",
+      "title": "trackChanges API 설계 — useChangeTracking<TData> props/return 타입 + ChangeTrackingConfig",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-10/tracking/G-002",
+      "moduleId": "MOD-GRID-10",
+      "area": "tracking",
+      "goalId": "G-002",
+      "title": "added/edited/deleted 배열 분리 + 원본 데이터 보존 (structuredClone snapshot)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-10/tracking/G-003",
+      "moduleId": "MOD-GRID-10",
+      "area": "tracking",
+      "goalId": "G-003",
+      "title": "buildChangeSet() — Mapping + Validator 통합 → 서버 payload 변환",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-10/tracking/G-004",
+      "moduleId": "MOD-GRID-10",
+      "area": "tracking",
+      "goalId": "G-004",
+      "title": "변경된 셀/행 시각 표시 (배경색 마커) + 변경 취소 UX (행 단위 undo)",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-10/tracking/G-005",
+      "moduleId": "MOD-GRID-10",
+      "area": "tracking",
+      "goalId": "G-005",
+      "title": "useChangeTracking hook 완전 통합 — save/commit + ChangeTrackingGrid alias + EditableGrid 흡수",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-11/range/G-001",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-001",
+      "title": "CellRange 모델 + 마우스 드래그 셀 범위 선택 + Shift+Click 범위 확장",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-11/range/G-002",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-002",
+      "title": "키보드 범위 확장 — Shift+방향키, 키보드 내비게이션 (방향키/Tab/Enter/Ctrl+방향)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-11/range/G-003",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-003",
+      "title": "Drag-fill — 우하단 핸들 드래그로 Excel 스타일 패턴 채우기 (숫자 시리즈 + 값 복사)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-11/range/G-004",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-004",
+      "title": "복사/붙여넣기 — Ctrl+C TSV export + Ctrl+V TSV 파싱 → 셀 매트릭스 입력 (Excel 호환)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-11/range/G-005",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-005",
+      "title": "Delete 키 범위 삭제 + F2/Enter 셀 편집 시작 + 범위 단위 일괄 동일 값 입력",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-11/range/G-006",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-006",
+      "title": "RangeSelectGrid 완전 통합 alias + Pro 라이선스 런타임 + 가상화 호환 검증",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-12/datamap/G-001",
+      "moduleId": "MOD-GRID-12",
+      "area": "datamap",
+      "goalId": "G-001",
+      "title": "DataMap API 설계 — createDataMap(items, valuePath, displayPath) + column-level dataMap prop",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-12/datamap/G-002",
+      "moduleId": "MOD-GRID-12",
+      "area": "datamap",
+      "goalId": "G-002",
+      "title": "표시 셀 코드→레이블 변환 렌더러 + 행 단위 동적 DataMap (cell-level dataMap 함수)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-12/datamap/G-003",
+      "moduleId": "MOD-GRID-12",
+      "area": "datamap",
+      "goalId": "G-003",
+      "title": "편집 셀 드롭다운 자동 생성 — DataMapEditor (filter-typing + 옵션 list rendering)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-12/datamap/G-004",
+      "moduleId": "MOD-GRID-12",
+      "area": "datamap",
+      "goalId": "G-004",
+      "title": "동적 옵션 비동기 로드 + 캐싱 (async DataMap) + Pro 라이선스 런타임 완전 통합",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-13/merging/G-001",
+      "moduleId": "MOD-GRID-13",
+      "area": "merging",
+      "goalId": "G-001",
+      "title": "column.mergeRows prop API + rowSpan 자동 계산 렌더러 (핵심 병합 엔진)",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-13/merging/G-002",
+      "moduleId": "MOD-GRID-13",
+      "area": "merging",
+      "goalId": "G-002",
+      "title": "복수 컬럼 계층 병합 (hierarchical merge — 좌측 컬럼 기준)",
+      "priority": "P1",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-13/merging/G-003",
+      "moduleId": "MOD-GRID-13",
+      "area": "merging",
+      "goalId": "G-003",
+      "title": "정렬/필터 변경 시 병합 자동 재계산 + 가상화 호환 (C-18)",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-14/header/G-001",
+      "moduleId": "MOD-GRID-14",
+      "area": "header",
+      "goalId": "G-001",
+      "title": "createColumnGroup helper + 다단 헤더 자동 렌더링 (TanStack getHeaderGroups)",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-14/header/G-002",
+      "moduleId": "MOD-GRID-14",
+      "area": "header",
+      "goalId": "G-002",
+      "title": "그룹 헤더 sticky + colSpan + frozenColumns 통합",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-14/header/G-003",
+      "moduleId": "MOD-GRID-14",
+      "area": "header",
+      "goalId": "G-003",
+      "title": "그룹 헤더 자식 컬럼 visibility 일괄 토글 + GroupedHeaderGrid alias (C-6)",
+      "priority": "P1",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-15/aggregation/G-001",
+      "moduleId": "MOD-GRID-15",
+      "area": "aggregation",
+      "goalId": "G-001",
+      "title": "TanStack groupedRowModel 활성 + 내장 aggregationFn 5종 (sum/avg/min/max/count)",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-15/aggregation/G-002",
+      "moduleId": "MOD-GRID-15",
+      "area": "aggregation",
+      "goalId": "G-002",
+      "title": "그룹 footer 행 렌더링 + expand/collapse (TanStack expanded state)",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-15/aggregation/G-003",
+      "moduleId": "MOD-GRID-15",
+      "area": "aggregation",
+      "goalId": "G-003",
+      "title": "사용자 정의 aggregator 함수 등록 (aggregationFns registry)",
+      "priority": "P1",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-15/aggregation/G-004",
+      "moduleId": "MOD-GRID-15",
+      "area": "aggregation",
+      "goalId": "G-004",
+      "title": "Group panel UI (drag column → group) + 그룹 단위 정렬",
+      "priority": "P1",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-16/enhancement/G-001",
+      "moduleId": "MOD-GRID-16",
+      "area": "enhancement",
+      "goalId": "G-001",
+      "title": "Master-Detail — 행 클릭 시 자식 컴포넌트 확장 + 동적 자식 그리드 (renderDetailRow)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-16/enhancement/G-002",
+      "moduleId": "MOD-GRID-16",
+      "area": "enhancement",
+      "goalId": "G-002",
+      "title": "우클릭 Context Menu — 커스텀 메뉴 항목 + 키보드 단축키 (contextMenuItems prop)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-16/enhancement/G-003",
+      "moduleId": "MOD-GRID-16",
+      "area": "enhancement",
+      "goalId": "G-003",
+      "title": "행 확장 상태 영속화 (useGridState 통합) + 키보드 접근성 (Enter/Space) + TreeGrid/ColumnPinGrid alias",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-17/migration/G-001",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-001",
+      "title": "account/Slip* 5 페이지 마이그레이션 (SlipList/SlipClose/SlipApprove/SlipDailyStatus/DailyMonthlyReport)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-17/migration/G-002",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-002",
+      "title": "account/Expense*+Vat* 5 페이지 마이그레이션 (ExpenseGeneral/ExpenseCard/ExpenseResearchCard/VatManage/VatSchedule)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-17/migration/G-003",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-003",
+      "title": "account/Cash*+기타 5 페이지 마이그레이션 (CashAdvanceSettle/CashAdvanceRequest/InterestIncome/Adjustment/EtaxReceive)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-17/migration/G-004",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-004",
+      "title": "account 잔여 4 페이지 마이그레이션 (AdminSlipEdit/FinancialCarryover/SettlementSummary/MonthlySettlement)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-17/migration/G-005",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-005",
+      "title": "hr 4 페이지 + finance 1 페이지 마이그레이션 (InsEduc11History/DailyAttendance/InsEmpl22ContractList/AnnualLeaveStatus/FundStatus)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-17/migration/G-006",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-006",
+      "title": "payroll 3 페이지 + admin 2 페이지 마이그레이션 (PayMmcd02/PayMmcd01/PayrollEditable/MenuManage/OrgMaster)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-99-A/license/G-001",
+      "moduleId": "MOD-GRID-99-A",
+      "area": "license",
+      "goalId": "G-001",
+      "title": "setLicenseKey global API + key 알고리즘 결정 ADR",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-99-A/license/G-002",
+      "moduleId": "MOD-GRID-99-A",
+      "area": "license",
+      "goalId": "G-002",
+      "title": "Pro 패키지 import 시 자동 검증 + 워터마크 + expiry 60일 경고",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-99-A/license/G-003",
+      "moduleId": "MOD-GRID-99-A",
+      "area": "license",
+      "goalId": "G-003",
+      "title": "각 grid-pro-* 패키지에 EULA.md + license 필드 + 자동 require 통합",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-99-B/docs/G-001",
+      "moduleId": "MOD-GRID-99-B",
+      "area": "docs",
+      "goalId": "G-001",
+      "title": "Docusaurus(또는 Nextra) 사이트 + TypeDoc API reference 자동 생성",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-99-B/docs/G-002",
+      "moduleId": "MOD-GRID-99-B",
+      "area": "docs",
+      "goalId": "G-002",
+      "title": "Storybook (모든 패키지) — story 최소 1개/컴포넌트 + 대용량 시나리오",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-99-B/docs/G-003",
+      "moduleId": "MOD-GRID-99-B",
+      "area": "docs",
+      "goalId": "G-003",
+      "title": "Chromatic 또는 Playwright 시각 회귀 자동화 (C-13, C-17)",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-99-B/docs/G-004",
+      "moduleId": "MOD-GRID-99-B",
+      "area": "docs",
+      "goalId": "G-004",
+      "title": "마이그레이션 가이드 + Live demo (CodeSandbox/StackBlitz)",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    },
+    {
+      "key": "MOD-GRID-99-B/docs/G-005",
+      "moduleId": "MOD-GRID-99-B",
+      "area": "docs",
+      "goalId": "G-005",
+      "title": "각 패키지 README.md + 한국어/영어 docs",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "overallStatus": "completed",
+      "stages": {
+        "specify": "done",
+        "implement": "done",
+        "verify": "done"
+      }
+    }
+  ],
+  "summary": {
+    "totalGoals": 79,
+    "completed": 79,
+    "inProgress": 0,
+    "pending": 0,
+    "blocked": 0,
+    "byTier": {
+      "high": 18,
+      "medium": 32,
+      "low": 29
+    },
+    "byPackage": {
+      "open": 51,
+      "pro": 28
+    },
+    "byPhase": {
+      "abstraction": 20,
+      "critical-gap": 13,
+      "wijmo-class": 25,
+      "enhancement": 3,
+      "migration": 6,
+      "infra": 12
+    }
+  },
+  "buildCache": {
+    "tscResult": null,
+    "viteBuildResult": null,
+    "sizeLimitResult": null,
+    "cachedAt": null
+  },
+  "hallucinationLog": {
+    "totalDetected": 0,
+    "byStage": {
+      "specify": 0,
+      "implement": 0,
+      "verify": 0
+    },
+    "lastDetectedAt": null
+  }
+}

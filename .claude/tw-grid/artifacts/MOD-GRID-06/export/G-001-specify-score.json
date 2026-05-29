@@ -1,0 +1,256 @@
+{
+  "moduleId": "MOD-GRID-06",
+  "area": "export",
+  "goalId": "MOD-GRID-06/export/G-001",
+  "stage": "specify",
+  "tier": "medium",
+  "threshold": 90,
+  "loops": 1,
+  "ranAt": "2026-05-14T14:32:00Z",
+  "rubricVersion": "1.0.5",
+  "checks": [
+    {
+      "id": "H-01",
+      "title": "referenceEvidence 경로 실재",
+      "result": "YES",
+      "evidence": "spec.md L32-34: 파일 경로 D:/project/topvel_project/TOMIS/tw-framework-front/src/components/DataTable/data-table.tsx 명시 + 파일 실재 확인. L42: tanstack-api-inventory.md 출처 명시. L86: xlsx@^0.18.5 tw-framework-front/package.json L42 확인 가능."
+    },
+    {
+      "id": "H-02",
+      "title": "implementFiles 경로 합리성",
+      "result": "YES",
+      "evidence": "spec.md D1 (L19): topvel-grid-monorepo 신설 + 경로 정정 결정 명시. L350-357: monorepo 절대 경로 D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/ — 조부모 D:/project/topvel_project/ 실재 (Glob 확인). 명명 컨벤션 topvel-kebab-case (ADR-MOD-GRID-00-001 준수)."
+    },
+    {
+      "id": "H-03",
+      "title": "AC 출처 태그 검증",
+      "result": "YES",
+      "evidence": "spec.md L299-308: 모든 AC(AC-001~AC-008) source 태그 명시 — AC-001: C-4, AC-002: C-2, AC-003: L1, AC-004: L1, AC-005: L0, AC-006: C-22, AC-007: C-12, AC-008: C-25. 모두 spec 내 다른 섹션에서 인용 가능."
+    },
+    {
+      "id": "A-01",
+      "title": "L0 현 구현 파일 + 코드 발췌",
+      "result": "YES",
+      "evidence": "spec.md L31-59 Section 1: L32 파일 경로 D:/project/topvel_project/TOMIS/tw-framework-front/src/components/DataTable/data-table.tsx 명시. L487-495 코드 발췌 라인 번호 포함. L24, L343-371 추가 라인 참조."
+    },
+    {
+      "id": "A-02",
+      "title": "L1 TanStack v8 API signature",
+      "result": "YES",
+      "evidence": "spec.md L61-100 Section 1.1: tanstack-api-inventory.md 출처 명시. L66-77: getCoreRowModel(), getFilteredRowModel(), getSelectedRowModel(), getHeaderGroups() signature 완전 인용. L79-84: GroupColumnDef signature."
+    },
+    {
+      "id": "A-03",
+      "title": "L2 공통 컴포넌트 분석",
+      "result": "N/A",
+      "evidence": "spec.md L102-104: '신규 패키지(N/A) — grid-export는 이번 G-001이 처음 생성 → 기존 공통 구조 없음' 명시됨. 공유 타입 ExportScope는 G-005(emptyBehavior)와 통합 가능 구조 (D7)."
+    },
+    {
+      "id": "A-04",
+      "title": "L3 영향 사용처 N개 카운트",
+      "result": "YES",
+      "evidence": "spec.md L106-114 Section 1.3: '영향 사용처 1개' 명시. L366 Section 8.1 재확인: D:/project/topvel_project/TOMIS/tw-framework-front/src/components/DataTable/data-table.tsx 정확한 파일 경로 + L490 라인 참조."
+    },
+    {
+      "id": "A-05",
+      "title": "R-A AG Grid + R-W Wijmo 참조",
+      "result": "YES",
+      "evidence": "spec.md L116-138 Section 1.4/1.5: AG Grid Enterprise excelExport API (columnGroups: true) vs 우리 xlsx 직접 구현. Wijmo FlexGridXlsxConverter 패턴 (feature-gap-matrix.md §3). 참조만 명시 — 코드 차용 절대 금지(C-16)."
+    },
+    {
+      "id": "B-01",
+      "title": "TypeScript interface 정의",
+      "result": "YES",
+      "evidence": "spec.md L144-181 Section 2.1: type ExportScope = 'all' | 'filtered' | 'selected', interface ExcelExportOptions {...}, interface DownloadExcelOptions 완전 정의. 모든 props type 명시."
+    },
+    {
+      "id": "B-02",
+      "title": "사용 예시 2개 이상",
+      "result": "YES",
+      "evidence": "spec.md L216-246 Section 2.3: 예시 1(기본, L217-224), 예시 2(선택행+merge, L227-237), 예시 3(DataTable alias, L240-245) 총 3개. 각각 코드 블록 완전."
+    },
+    {
+      "id": "B-03",
+      "title": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "spec.md L250-255 Section 2.4 표: fileName('export.xlsx', optional), sheetName('Sheet1', optional), scope('filtered', optional), emptyBehavior('skip', optional) 모두 명시."
+    },
+    {
+      "id": "B-04",
+      "title": "타입 export 경로",
+      "result": "YES",
+      "evidence": "spec.md L143 Section 2.1: 'packages/grid-export/src/types.ts' 정확한 export 위치 명시. L144 import 구문도 완전."
+    },
+    {
+      "id": "B-05",
+      "title": "ref API + imperative handle",
+      "result": "N/A",
+      "evidence": "exportToExcel는 선언적 함수(useImperativeHandle 불필요) — spec에 ref 관련 내용 없음이 정상. 마이그레이션Impact: medium, 함수형 export API이므로 ref 패턴 미적용."
+    },
+    {
+      "id": "C-01",
+      "title": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md L299-308 Section 5: AC-001, AC-002, AC-003, AC-004, AC-005, AC-006, AC-007, AC-008 총 8개 항목."
+    },
+    {
+      "id": "C-02",
+      "title": "AC 출처 태그",
+      "result": "YES",
+      "evidence": "spec.md L300-308: 각 AC에 source 필드 — AC-001: 'C-4 strict', AC-002: 'C-2 표준 API', AC-003: 'L1: tanstack-api-inventory.md', AC-004: 'L1: xlsx@0.18.5', AC-005: 'L0: data-table.tsx', AC-006: 'C-22 peerDependencies', AC-007: 'C-12 빌드', AC-008: 'C-25 문서화'. 모두 명시."
+    },
+    {
+      "id": "C-03",
+      "title": "AC binary 검증 가능",
+      "result": "YES",
+      "evidence": "AC 모두 '~가 표시된다', '~가 호출된다', '~가 적용된다' 객관 표현 — AC-001: 'exportToExcel signature 정의됨', AC-002: 'scope 옵션 동작', AC-003: 'merge cells 적용', AC-004: '한국어 정상 출력', AC-005: 'alias 제공', AC-006: 'peerDependencies 선언', AC-007: 'tsc 0 error', AC-008: 'Storybook story 존재'. 주관 표현 0건."
+    },
+    {
+      "id": "C-04",
+      "title": "migrationImpact 명시",
+      "result": "YES",
+      "evidence": "spec.md L6: 'migrationImpact: medium' 명시. spec 헤더 표(L15-26)에 D4 threshold = 90 (medium에 대응). Goal JSON L17도 'migrationImpact: medium' 일치."
+    },
+    {
+      "id": "C-05",
+      "title": "AC 호환성 검증 1개",
+      "result": "YES",
+      "evidence": "spec.md L307: AC-007 'tsc --noEmit 0 error' — C-12 빌드 0 errors 필수. 호환성 검증 항목."
+    },
+    {
+      "id": "D-01",
+      "title": "영향 사용처 N개 파일",
+      "result": "YES",
+      "evidence": "spec.md L365-368 Section 8.1: D:/project/topvel_project/TOMIS/tw-framework-front/src/components/DataTable/data-table.tsx 정확한 파일 경로. '영향 사용처 1개' 명시. L368: C-19 준수 확인(1개 <= 5개)."
+    },
+    {
+      "id": "D-02",
+      "title": "기존 변형 대응표",
+      "result": "N/A",
+      "evidence": "spec.md L259-265 Section 3: '신규 패키지 — 대응할 variant 없음' 명시. grid-export는 첫 Goal이므로 마이그레이션 대응 불필요."
+    },
+    {
+      "id": "D-03",
+      "title": "Breaking change 명시",
+      "result": "YES",
+      "evidence": "spec.md L269-271 Section 4: '### Breaking change: **no**' 명확히 명시. 사유: '신규 패키지 + 기존 data-table.tsx 그대로 유지'."
+    },
+    {
+      "id": "D-04",
+      "title": "Deprecation 전략",
+      "result": "YES",
+      "evidence": "spec.md L276-279 Section 4: 'downloadExcel(table) alias: G-001 도입 후 **최소 1 minor 버전** 유지 (C-6, C-23)'. 구체적 단계 L281-286 명시."
+    },
+    {
+      "id": "D-05",
+      "title": "롤백 전략",
+      "result": "YES",
+      "evidence": "spec.md L383-386 Section 8.4: 'downloadExcel(table) deprecated alias 1 minor 유지 + 패키지 import 제거만으로 충분'. 신규 패키지 신설 → 기존 코드 미수정 → 롤백 간단."
+    },
+    {
+      "id": "D-06",
+      "title": "번들 크기 영향",
+      "result": "YES",
+      "evidence": "spec.md L388-391 Section 8.5: '예상 +5 KB (gzipped) — xlsx는 peerDependency → grid-export 번들에 미포함'. grid-core 무영향 명시."
+    },
+    {
+      "id": "E-01",
+      "title": "파일별 변경 명세 + Section 7 ↔ Section 11 일관성 + E-06 재결정 검증",
+      "result": "YES",
+      "evidence": "spec.md L350-357 Section 7: 6개 파일(모두 NEW) + 액션 + 설명 명시. L359: '재결정 없음 — 위 6개 파일이 최종 implementFiles'. Section 11.1-11.3: Step 1~6에서 언급된 파일(types.ts, exportToExcel.ts, legacy/downloadExcel.ts, index.ts, package.json, tsup.config.ts) 모두 Section 7 표에 포함. 모순 0건."
+    },
+    {
+      "id": "E-02",
+      "title": "Before/After 코드 스니펫",
+      "result": "YES",
+      "evidence": "spec.md L473-540 Section 11.1: Before(L476-489 data-table.tsx 현 패턴) + After(L493-540 grid-export 신규 exportToExcel.ts 핵심 구현) 완전 코드 블록."
+    },
+    {
+      "id": "E-03",
+      "title": "구현 순서 2단계 이상",
+      "result": "YES",
+      "evidence": "spec.md L542-606 Section 11.2: Step 1(types.ts) → Step 2(exportToExcel.ts) → Step 3(legacy/downloadExcel.ts) → Step 4(index.ts) → Step 5(package.json) → Step 6(tsup.config.ts) 총 6단계. 의존성 명확(타입 → 구현 → 통합)."
+    },
+    {
+      "id": "E-04",
+      "title": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md L312-341 Section 6: EC-01(빈 데이터 export), EC-02(헤더 그룹+pinned), EC-03(scope=selected 0건), EC-04(fileName 확장자 없음), EC-05(대용량 데이터) 총 5개."
+    },
+    {
+      "id": "E-05",
+      "title": "검증 계획",
+      "result": "YES",
+      "evidence": "spec.md L620-659 Section 12: L622-634 단위테스트(8개 시나리오), L636-641 시각회귀(Storybook + migrationImpact: medium 필수), L643-652 빌드검증(tsc + tsup + size-limit). 모두 명시."
+    },
+    {
+      "id": "E-06",
+      "title": "Section 7 재결정 ↔ 최종표 일관성",
+      "result": "YES",
+      "evidence": "spec.md L359: '재결정 없음 — 위 6개 파일이 최종 implementFiles'. Section 7 본문(L346-358)에 '재결정', '변경', '수정함' 등의 키워드 0건. 따라서 최종 표(L350-357)는 그대로 권위성 유지. E-06 검증 통과."
+    },
+    {
+      "id": "F-01",
+      "title": "패키지 대상 명시",
+      "result": "YES",
+      "evidence": "spec.md L7: 'packageTarget: `packages/grid-export` (monorepo: `D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/`)' 정확히 명시. D1 결정에서도 재확인."
+    },
+    {
+      "id": "F-02",
+      "title": "라이선스 검증 호출",
+      "result": "N/A",
+      "evidence": "spec.md L8: 'licenseTier: MIT'. L666-668 Section 13: '불필요 (MIT 패키지) — configureGridLicense() 호출 불필요'. C-24 의무만(license 필드 + LICENSE 파일) 명시."
+    },
+    {
+      "id": "F-03",
+      "title": "문서 작성 계획",
+      "result": "YES",
+      "evidence": "spec.md L672-679 Section 13: Docusaurus 경로 apps/docs/docs/grid-export/excel.md, Storybook story packages/grid-export/src/exportToExcel.stories.tsx, README.md packages/grid-export/README.md 모두 명시."
+    },
+    {
+      "id": "F-04",
+      "title": "peerDependencies 정책",
+      "result": "YES",
+      "evidence": "spec.md L397-414 Section 9: peerDependencies에 xlsx, @tanstack/react-table, react 명시. L416-417: dependencies 비워둠. C-22 정책(peer vs dep 분리) 준수."
+    },
+    {
+      "id": "G-01",
+      "title": "TBD/TODO/미정 없음 + D# ↔ 본문 일관성",
+      "result": "YES",
+      "evidence": "spec 전체: 'TBD', 'TODO', '미정', '추후 결정' 표현 0건. D# 표(L15-26) 모든 결정 완료. 헤더 표 합계 6파일 == Section 7 표 6파일 일치. 본문 AC 8개 == 헤더 표 결정 내용 모두 명시됨."
+    }
+  ],
+  "yesCount": 31,
+  "noCount": 0,
+  "naCount": 4,
+  "denominator": 31,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [],
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 27,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 5,
+    "originalReportedDenominator": 27,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

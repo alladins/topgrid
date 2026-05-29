@@ -1,0 +1,364 @@
+{
+  "moduleId": "MOD-GRID-99-A",
+  "moduleName": "Pro 패키지 라이선스 검증 런타임 (grid-license)",
+  "area": "license",
+  "phase": "infra",
+  "licenseTier": "Pro",
+  "packageTarget": "packages/grid-license",
+  "description": "grid-pro-* 6 패키지의 상용 라이선스 검증 런타임. setLicenseKey + 자동 검증 + 만료/도메인 경고. 부드러운 강제(워터마크 + console.warn), block 없음.",
+  "version": "1.0",
+  "createdAt": "2026-05-13",
+  "updatedAt": "2026-05-13",
+  "goals": [
+    {
+      "goalId": "G-001",
+      "title": "setLicenseKey global API + key 알고리즘 결정 ADR",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "dependsOn": ["MOD-GRID-00/G-002"],
+      "overallStatus": "pending",
+      "userStory": "Pro 패키지 사용자가 앱 entry에서 setLicenseKey(key) 한 번 호출로 모든 grid-pro-* 패키지 라이선스가 등록되어야 한다.",
+      "userJourneySteps": [
+        "1. import { setLicenseKey } from '@tomis/grid-license'",
+        "2. main.tsx 또는 App.tsx 에서 setLicenseKey('eyJ...') 호출",
+        "3. 내부 모듈-static 상태에 key 저장 + 즉시 검증 (signature + expiry + domain)",
+        "4. 결과 유효 → silent, 무효 → console.warn + watermark 활성"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "setLicenseKey(key: string): LicenseStatus 시그니처 export", "source": "C-25" },
+        { "id": "AC-002", "criteria": "LicenseStatus 타입 = { valid: boolean; reason?: 'invalid'|'expired'|'domain-mismatch'; expiresAt?: Date; domain?: string }", "source": "C-4" },
+        { "id": "AC-003", "criteria": "decisions/MOD-GRID-99-A-decisions.md ADR 작성 — 알고리즘 JWT vs HMAC 대안 2개+ 비교 + 결정 사유 + trade-off", "source": "C-14" },
+        { "id": "AC-004", "criteria": "선택된 알고리즘 (예: HMAC-SHA256(domain + expiry)) 검증 코드 구현", "source": "L1" },
+        { "id": "AC-005", "criteria": "도메인 검증 — window.location.hostname 매칭, localhost/127.0.0.1 은 dev 모드 자동 허용", "source": "R-A" },
+        { "id": "AC-006", "criteria": "C-4: any 사용 없음, 모든 인수/반환 타입 명시", "source": "C-4" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 신규 패키지)",
+        "L1": "Web Crypto API SubtleCrypto.verify 사용 (브라우저 표준)",
+        "L2": "(N/A)",
+        "L3": "MOD-GRID-10~16 6 Pro 패키지 import 시 자동 호출",
+        "R-A": "AG Grid Enterprise LicenseManager.setLicenseKey() — domain + expiry 검증 패턴",
+        "R-W": "Wijmo setLicenseKey(domain key) — per-domain HMAC 패턴"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 API (0.x)",
+        "migrationPath": "N/A"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/src/setLicenseKey.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/src/verifySignature.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/src/state.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/src/index.ts",
+        "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-99-A-decisions.md"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+4 KB (algorithm verify + state)",
+        "package": "grid-license",
+        "limit": "20 KB"
+      },
+      "overallStatus": "completed",
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 0, "maxLoops": 3, "feedback": [], "score": 100, "verifierIteration": 2, "lastRun": "2026-05-15T00:00:00Z" },
+        "implement": { "status": "done", "threshold": 90, "loops": 0, "maxLoops": 3, "feedback": [], "score": 100, "lastRun": "2026-05-15T00:00:00Z" },
+        "verify": { "status": "done", "threshold": 90, "loops": 0, "maxLoops": 3, "feedback": [], "score": 100, "lastRun": "2026-05-15T00:00:00Z" }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-15T00:00:00Z",
+        "score": "S",
+        "rationale": "1차 specify Verifier H-02 환각 → 2차 정정 (verifierIteration=2). implement F-06 specCodeDefects 2건 자율 정정. verify weighted 100. 모든 단계 100/90 PASS. 외부 디렉토리 예외 + 비-그리드 런타임 vacuous truth + spec template self-check 3개 영역에서 후속 Goal cascading 개선 점 도출.",
+        "improvements": [
+          {
+            "scope": "specify-rubric",
+            "section": "H-02 외부 디렉토리 예외",
+            "change": "조부모 실재 검증을 first-step main rule 명시 + sub-rule (2) anchor OR 확장 (Section 7 D# 정정 / Section 8.2 / D# 결정 표 / ADR 참조 본문 중 하나 이상) + Verifier 거부 시 세 sub-rule 개별 판정 의무",
+            "evidence": "G-001 1차 Verifier H-02 환각 — spec.md L486-492 D1 정정에 외부 저장소 명시 + 조부모 실재했음에도 Section 8.2 단일 anchor 만 검색하여 NO 처리 → 2차 정정",
+            "cascading": "MOD-GRID-99-A/G-002+G-003 (같은 외부 monorepo prefix), MOD-GRID-99-B Docs"
+          },
+          {
+            "scope": "specify-rubric",
+            "section": "E-06 Return-Type Signature Cross-Check (신설 sub-rule)",
+            "change": "동일 함수가 spec 의 prose + executable 양쪽에 시그니처 등장 시 100% 일치 의무 (param 수/이름/순서/optional + return type)",
+            "evidence": "G-001 spec Section 4 prose L107 Promise<LicenseState> vs Section 5.3 executable L306 Promise<LicenseStatus> 1:1 불일치 — 기존 keyword grep (재결정) 으로 미검출",
+            "cascading": "MOD-GRID-99-A/G-002 (checkLicense), 모든 Pro 패키지 hook spec"
+          },
+          {
+            "scope": "specify-rubric",
+            "section": "E-06 Unused Type Import Cross-Check (신설 sub-rule)",
+            "change": "spec 코드 템플릿 import line 의 모든 항목이 같은 블록 본문에서 1회 이상 사용 의무. monorepo noUnusedLocals:true 환경 사전 차단",
+            "evidence": "G-001 spec L280 import { LicenseState, LicenseStatus } — LicenseState 본문 미사용 → Implementer 자율 제거 + specCodeDefects[1]",
+            "cascading": "monorepo strict 옵션 적용 모든 Goal 의 spec 코드 템플릿"
+          },
+          {
+            "scope": "verify-rubric",
+            "section": "Vacuous Truth Rule — Non-grid Runtime Module 명확화",
+            "change": "라이선스 런타임 / Docusaurus 문서 / 빌드 도구 등 비-그리드 컴포넌트 모듈의 B/C/D vacuous=100 적법 명시 + 3 조건 판정 기준 신설 + Verifier evidence naCategoryHandling 필드 의무",
+            "evidence": "G-001 verify B/C/D 전 항목 N/A (라이선스 검증 런타임 = 그리드 동작 무관 + affectedUsageFiles=[]) → vacuous=100 적법 처리. 후속 Goal verifier 환각 차단 필요",
+            "cascading": "MOD-GRID-99-A/G-002 (Watermark), G-003 (EULA), MOD-GRID-99-B Docs"
+          },
+          {
+            "scope": "constraints.md",
+            "section": "C-35 신설 — Spec Writer Self-Check (same-function signature + import usage scan)",
+            "change": "spec 제출 직전 자가-검증 의무 명시 — 동일 함수 시그니처 set diff 0건 + 모든 import 항목 본문 사용 hit 1+. spec writer 측 강화 (E-06 검증의 spec writer 의무 안문화)",
+            "evidence": "G-001 specCodeDefects 2건 (signature 불일치 + unused import) 모두 spec writer self-check 로 사전 차단 가능",
+            "cascading": "MOD-GRID-99-A/G-002, G-003 + MOD-GRID-99-B + 모든 후속 코드 템플릿 포함 spec"
+          }
+        ],
+        "verifierAutonomyAssessment": "C-26 Coverage Verifier 산식 자기-검증 정책 작동 확인 — 1차 H-02 환각 → 동일 결과 폐기 후 2차 Agent 재호출 + verifierIteration 필드 사용 + previousVerifierIssue 보고. 추가 강화 불필요. H-02 sub-rule 명확화만으로 동일 환각 재발 차단 충분."
+      }
+    },
+    {
+      "goalId": "G-002",
+      "title": "Pro 패키지 import 시 자동 검증 + 워터마크 + expiry 60일 경고",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "dependsOn": ["MOD-GRID-99-A/G-001"],
+      "overallStatus": "pending",
+      "userStory": "유효한 라이선스 없이 grid-pro-* 컴포넌트를 사용하면 콘솔 경고 + 그리드 우상단에 'Unlicensed' 워터마크가 표시되어야 한다.",
+      "userJourneySteps": [
+        "1. grid-pro-tracking 등 import → 모듈 초기화 시 checkLicense() 호출",
+        "2. 미설정/무효 → console.warn('@tomis/grid-license: ...') + 전역 watermarkRequired=true",
+        "3. grid-pro-* 컴포넌트 mount 시 <Watermark /> 자동 합성",
+        "4. expiry 60일 이내 → 추가 console.warn (block X)",
+        "5. block 없음 — 모든 기능 정상 동작 (부드러운 강제)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "checkLicense() — 모듈-static 상태 조회 + 결과 반환", "source": "C-25" },
+        { "id": "AC-002", "criteria": "Watermark 컴포넌트 — position absolute top-right, opacity 0.4, text 'Unlicensed @tomis/grid'", "source": "C-5" },
+        { "id": "AC-003", "criteria": "expiresAt - now < 60일 시 console.warn + 만료일 표시", "source": "L1" },
+        { "id": "AC-004", "criteria": "block 동작 없음 (C-24 부드러운 강제) — 모든 그리드 기능 정상", "source": "C-24" },
+        { "id": "AC-005", "criteria": "Storybook story 3개 — valid / invalid / expiry-soon", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A)",
+        "L1": "Date.now() 비교 — 60일 = 60 * 24 * 3600 * 1000 ms",
+        "L2": "(N/A)",
+        "L3": "MOD-GRID-10~16 Pro 패키지 진입점에서 자동 호출",
+        "R-A": "AG Grid Enterprise watermark 패턴 (트라이얼 표시)",
+        "R-W": "Wijmo evaluation 워터마크 패턴"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능",
+        "migrationPath": "N/A"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/src/checkLicense.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/src/Watermark.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/stories/License.stories.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/package.json",
+        "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-99-A-decisions.md"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+3 KB (Watermark + check)",
+        "package": "grid-license",
+        "limit": "20 KB"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 0, "maxLoops": 3, "feedback": [], "score": 100, "verifierIteration": 1, "lastRun": "2026-05-15T00:00:00Z" },
+        "implement": { "status": "done", "threshold": 90, "loops": 0, "maxLoops": 3, "feedback": [], "score": 100, "verifierIteration": 2, "lastRun": "2026-05-15T00:00:00Z" },
+        "verify": { "status": "done", "threshold": 90, "loops": 0, "maxLoops": 3, "feedback": [], "score": 100, "lastRun": "2026-05-15T00:00:00Z" }
+      },
+      "overallStatus": "completed",
+      "harnessReview": {
+        "reviewedAt": "2026-05-15T00:00:00Z",
+        "score": "Strong",
+        "rationale": "specify 100 (verifierIteration=1, C-35 Appendix B 효과 검증 — signature + import scan 무결함). implement 100 (Implementer 자체 self-score → Coverage Verifier (haiku-independent) iteration=2 재평가, C-11 정책 reactive 작동). verify weighted 100 (naCategoryHandling 필드로 vacuous-truth 정당화). G-001 verifyLicense 제거 cascading defect 1건 외부 발견 — G-002 scope 외 + G-003 priority 1 권장 기록.",
+        "improvements": [
+          {
+            "scope": "constraints.md",
+            "section": "C-36 신설 — Implementer Score JSON 작성 금지 (C-11 보완)",
+            "change": "Implementer Agent 가 implement-score.json 을 직접 작성 금지. 모든 score JSON 은 Coverage Verifier (haiku-independent) 가 작성. Implementer 는 변경 사항 + feedback 만 보고. C-11 (Coverage Verifier 독립성) 은 'Verifier 가 별도 Agent' 만 명시 → Implementer 의 self-scoring 경로는 묵시적 금지였음. 본 C-36 으로 명시화.",
+            "evidence": "G-002 implement loop 0 에서 Implementer 가 implement-score.json 자체 작성 → Coverage Verifier 가 iteration 2 로 재평가 (`previousImplementerSelfScoreIgnored: 'C-11 violation'` 명시, L9). 시스템이 사후 검출했으나 reactive — preventive 차단 필요.",
+            "cascading": "MOD-GRID-99-A/G-003 + MOD-GRID-99-B + 모든 후속 Goal implement 단계"
+          },
+          {
+            "scope": "specify-rubric",
+            "section": "Section 3 (변형 대응표) 강화 — Public Export 제거/rename 시 사용처 대응 의무",
+            "change": "spec 이 public export 를 제거하거나 rename 할 때, Section 3 (기존 변형 대응표) 에 monorepo 전체 사용처 검색 결과 + 각 사용처별 처리 방침 (deprecated alias 제공 vs hard-remove + follow-up Goal 명시) 의무. C-6 (호환성 절대) cascading defect 사전 차단.",
+            "evidence": "G-001 implement 가 verifyLicense stub 을 제거하면서 grid-pro-master/ContextMenuGrid.tsx + MasterDetailGrid.tsx 의 stale import 처리 미수행 → monorepo-wide tsc / size-limit 도구 차단. G-001 spec Section 3 에 사용처 대응 누락. G-002 verify L102 + implement L11 cascadingDefects 필드로 외부 발견.",
+            "cascading": "G-003 (grid-pro-* 7 패키지 통합) priority 1 — checkLicense() 통합 시 stale verifyLicense import 동반 제거. 모든 후속 public API 제거/rename Goal."
+          },
+          {
+            "scope": "verify-rubric",
+            "section": "naCategoryHandling 필드 의무 — 효과 확인 (유지)",
+            "change": "G-001 self-review 권고 (verify-rubric L72-78 Vacuous Truth Rule + Non-grid Runtime Module 3 조건) 가 G-002 verify 에서 적법 적용됨. naCategoryHandling 필드 명시 의무 (verify-score L24-26) 유지 + 후속 비-그리드 모듈 (MOD-GRID-99-A/G-003 EULA, MOD-GRID-99-B Docs) 에 cascading.",
+            "evidence": "G-002 verify-score L24 naCategoryHandling 필드 — B (5 N/A) + D (2 N/A) vacuous=100 적법 (3 조건 모두 충족: 그리드 동작 키워드 부재 + affectedUsageFiles=[] + modulePath=packages/grid-license). C (C-03 1건 YES 평가 가능) 는 부분 vacuous 아닌 실제 평가. Verifier 환각 차단 효과 검증됨.",
+            "cascading": "G-003 EULA + MOD-GRID-99-B Docs + 향후 비-그리드 인프라 Goal"
+          },
+          {
+            "scope": "constraints.md",
+            "section": "C-35 Spec Writer Self-Check 효과 검증 — 유지",
+            "change": "G-001 retrospective 신설 C-35 (Appendix B 자가-검증: signature + import scan) 가 G-002 spec 에서 적법 적용됨. checkLicense 시그니처 8 출현 위치 일관 + import 미사용 0 (specify-score L513-527). 의무 유지 — 후속 Goal cascading.",
+            "evidence": "G-002 specify-score L172-175 (E-06 cross-checks Return-Type + Unused Import 모두 YES) + spec Appendix B 검증 완비. G-001 specCodeDefects 2건 (Promise 불일치 + LicenseState 미사용) 패턴이 G-002 에서 0건 — C-35 사전 차단 효과 검증됨.",
+            "cascading": "G-003 + 모든 후속 코드 템플릿 포함 spec"
+          }
+        ],
+        "cascadingDefectFromG001": "grid-pro-master/ContextMenuGrid.tsx + MasterDetailGrid.tsx — verifyLicense stale import (G-001 export 제거됨, alias 미제공). G-002 scope 외 (affectedUsageFiles=[]). G-003 priority 1: checkLicense() 통합 작업 시 stale import 동반 제거 + .size-limit.json entry 추가.",
+        "rejectedImprovements": [
+          {
+            "candidate": "implement-rubric monorepo-wide tsc 의무",
+            "reason": "범용 적용 시 모든 Goal 에서 발화 — 토큰/시간 낭비. 본질 원인은 spec 의 export 제거 시 사용처 대응 누락 → specify-rubric Section 3 강화로 surgical 해결."
+          },
+          {
+            "candidate": "implement-rubric F-07 (Implementer score 작성 금지 메타 게이트)",
+            "reason": "C-36 (constraints) 와 정책 중복. iteration 재평가 메커니즘이 이미 작동 — F 메타 게이트 인플레이션 없이 C-36 만으로 preventive 충분."
+          }
+        ]
+      }
+    },
+    {
+      "goalId": "G-003",
+      "title": "각 grid-pro-* 패키지에 EULA.md + license 필드 + 자동 require 통합",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "dependsOn": ["MOD-GRID-99-A/G-002"],
+      "overallStatus": "pending",
+      "userStory": "Pro 패키지 사용자가 npm install 후 EULA.md 와 package.json license 필드를 확인할 수 있어야 한다. 각 Pro 패키지는 grid-license를 자동 require 해야 한다.",
+      "userJourneySteps": [
+        "1. grid-pro-* 6 패키지 package.json — license: 'SEE LICENSE IN EULA'",
+        "2. 각 패키지에 EULA.md 추가 (상업적 사용 조건 명시)",
+        "3. 각 Pro 패키지 entry 에서 import { checkLicense } from '@tomis/grid-license' 자동 호출",
+        "4. grid-license 는 peerDependencies 가 아닌 dependencies (Pro 패키지에 한해)",
+        "5. release 시 EULA + license 필드 누락 시 publish 거부 (C-24)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "grid-pro-tracking, grid-pro-range, grid-pro-datamap, grid-pro-merging, grid-pro-header, grid-pro-agg, grid-pro-master 7 패키지 package.json license 필드 = 'SEE LICENSE IN EULA'", "source": "C-24" },
+        { "id": "AC-002", "criteria": "각 Pro 패키지 루트에 EULA.md 추가 (상업적 라이선스 조건)", "source": "C-24" },
+        { "id": "AC-003", "criteria": "각 Pro 패키지 src/index.ts 에 checkLicense() 자동 호출 (module-side-effect)", "source": "L1" },
+        { "id": "AC-004", "criteria": "MIT 패키지(grid-core, grid-renderers, grid-export, grid-features) 는 license: 'MIT' + LICENSE 파일", "source": "C-24" },
+        { "id": "AC-005", "criteria": "release CI 단계에서 license 필드 + EULA/LICENSE 존재 검증, 누락 시 거부", "source": "C-24" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A)",
+        "L1": "package.json license 필드 SPDX 표기 표준",
+        "L2": "(N/A)",
+        "L3": "grid-pro-* 7 패키지 (canonical L29 packages/grid-pro-* 6 + grid-pro-master 1)",
+        "R-A": "AG Grid Enterprise EULA.md 패턴",
+        "R-W": "Wijmo per-domain license + EULA 패턴"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 정책",
+        "migrationPath": "N/A"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master/EULA.md",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/LICENSE",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/LICENSE",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/LICENSE",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/LICENSE",
+        "D:/project/topvel_project/topvel-grid-monorepo/scripts/verify-license.mjs",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-header/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/package.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/package.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/package.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/package.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-header/package.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/package.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master/package.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master/src/MasterDetailGrid.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master/src/ContextMenuGrid.tsx",
+        "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-99-A-decisions.md"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+1 KB (각 Pro 패키지에서 grid-license re-export)",
+        "package": "grid-license",
+        "limit": "20 KB"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 0, "maxLoops": 3, "feedback": [], "score": 100, "verifierIteration": 1, "lastRun": "2026-05-15T00:00:00Z" },
+        "implement": { "status": "done", "threshold": 90, "loops": 0, "maxLoops": 3, "feedback": [], "score": 100, "verifierIteration": 1, "lastRun": "2026-05-15T00:00:00Z" },
+        "verify": { "status": "done", "threshold": 90, "loops": 0, "maxLoops": 3, "feedback": [], "score": 100, "lastRun": "2026-05-15T00:00:00Z" }
+      },
+      "overallStatus": "completed",
+      "harnessReview": {
+        "reviewedAt": "2026-05-15T00:00:00Z",
+        "score": "Strong",
+        "rationale": "specify 100/90 (H-01~H-03 meta gates 모두 YES + Truth Table 23 files consistent). implement 100/90 (C-36 효과 검증: Implementer score JSON 미작성 → Coverage Verifier 단독 채점, preventive 차단 성공). verify weighted 100/90 (5 categories all 100, vacuous truth B 정당화 + cascading defect RESOLVED 직접 검증). ADR-005 (cascading defect Option A) + ADR-006 (release script Option B) decisions.md APPEND 완료. 23 파일 구현 검증: 7 Pro src/index.ts checkLicense() hits + 7 package.json dependencies migration + 4 MIT LICENSE + 1 grid-pro-master EULA + 1 verify-license.mjs + 2 stale verifyLicense 제거. monorepo typecheck 0 errors + release script exit(0) PASSED 13 packages OK.",
+        "improvements": [
+          {
+            "scope": "constraints.md",
+            "section": "C-36 효과 검증 — 유지 (preventive)",
+            "change": "G-002 retrospective 신설 C-36 (Implementer score JSON 작성 금지) 가 G-003 implement 에서 적법 적용됨. Implementer 는 Markdown 보고서만 반환, score JSON 0건 작성. Coverage Verifier (haiku-independent) iteration=1 단독 채점. C-11 (Verifier 독립성) preventive 차단 완성 — 유지 의무.",
+            "evidence": "G-003 implement-score L8 `implementerC36Compliance: 'PASS — implementer did not write score JSON (C-36 신설 효과)'` 명시. iteration=1 (재평가 불필요). G-002 의 reactive 재평가 (iteration=2) 와 대조 — preventive 효과 확인.",
+            "cascading": "MOD-GRID-99-B Docs + 모든 후속 Goal implement 단계"
+          },
+          {
+            "scope": "specify-rubric",
+            "section": "Section 3 cascading defect 사용처 대응 강화 효과 검증 — 유지",
+            "change": "G-002 retrospective 신설 specify-rubric Section 3 강화 (public export 제거/rename 시 사용처 명시적 처리) 가 G-003 spec 에서 적법 적용됨. spec D3 (ADR-005 Option A) + Section 5 + Truth Table #21-22 에서 grid-pro-master 2 서브파일 stale import 제거 명시. cascading defect 자가 검출 + 해소 sequence 검증 완료.",
+            "evidence": "G-003 spec L48-49 + L289-290 (Truth Table) + L141-160 (Section 5 D3 alternatives comparison) + ADR-005 명시. G-002 verify cascadingDefectFromG001 → G-003 spec에서 Option A 선택 + Implementer 정확 적용 + Coverage Verifier grep 0 hits 확인.",
+            "cascading": "모든 후속 public API 제거/rename Goal"
+          },
+          {
+            "scope": "specify-rubric",
+            "section": "Cascading defect harness sequence 학습 — 명시 (선택)",
+            "change": "G-001 발생 → G-002 verify에서 검출 (Coverage Verifier monorepo-wide tsc + size-limit) → G-002 retrospective 에서 G-003 priority 1 선언 → G-003 spec writer Option A 결정 + ADR-005 작성 → G-003 implement 해소 → G-003 verify 직접 grep 0 hits 확인. 이 4-stage harness sequence 가 cascading defect 의 표준 처리 패턴.",
+            "evidence": "G-002 verify-score L102 cascadingDefects + G-002 harnessReview cascadingDefectFromG001 (license-goals L199) + G-003 specify-score 1L59 truthTableConsistency + G-003 implement-score cascadingDefectResolution + G-003 verify-score L66 cascadingDefectResolved. 4 stage 모두 명시적 추적.",
+            "cascading": "선택 적용 — 후속 cascading defect 발생 시 동일 sequence 기대"
+          }
+        ],
+        "cascadingDefectResolution": "RESOLVED via ADR-005 Option A — grid-pro-master 2 subfiles (MasterDetailGrid.tsx L36 + ContextMenuGrid.tsx L33) stale verifyLicense import + 호출 제거 완료. 단일 검증 지점: grid-pro-master/src/index.ts L1-3 checkLicense() 모듈 레벨. Grep verifyLicense on src/**/*.ts(x) = 0 hits 직접 확인.",
+        "c19TrivialException": "spec C-19 (affectedUsageFiles ≤ 5) 초과 (16 MODIFY) but 트리비얼 예외 적용 — 각 변경 1-2 lines (import + call), 의미적 변경 없음. 후속 라이선스/통합 Goal 에서 동일 패턴 (대량 packages 단순 import/call 추가) 시 예외 정당."
+      }
+    }
+  ],
+  "moduleHarnessReview": {
+    "reviewedAt": "2026-05-15T00:00:00Z",
+    "moduleScore": "Strong",
+    "goalsCompleted": 3,
+    "adrsCreated": 6,
+    "buildResults": {
+      "monorepoTypecheck": "0 errors — `pnpm -r typecheck` 14 packages PASS",
+      "releaseScript": "PASS — node scripts/verify-license.mjs exit(0): 13 packages OK",
+      "checkLicenseIntegration": "7/7 Pro packages — Grep checkLicense() on grid-pro-*/src/index.ts = 7 hits",
+      "eulaFiles": "7/7 Pro EULA.md + 2 meta (grid, grid-license) side-effect",
+      "mitLicenseFiles": "4/4 (grid-core, grid-renderers, grid-export, grid-features)",
+      "gridLicenseDependency": "7/7 Pro package.json @tomis/grid-license workspace:* in dependencies"
+    },
+    "goalSummary": {
+      "G-001": {"title": "setLicenseKey + Ed25519 알고리즘", "score": "S", "stages": "100/100/100", "adrs": ["ADR-001 Ed25519", "ADR-002 domain check", "ADR-003 sync API"]},
+      "G-002": {"title": "checkLicense + Watermark + expiry 60일", "score": "Strong", "stages": "100/100/100", "adrs": ["ADR-004 React peerDep"]},
+      "G-003": {"title": "EULA + license 필드 + 자동 require 통합", "score": "Strong", "stages": "100/100/100", "adrs": ["ADR-005 cascading defect Option A", "ADR-006 release script Option B"]}
+    },
+    "improvements": [
+      {
+        "scope": "harness sequence 학습",
+        "lesson": "Cascading defect 4-stage 처리 패턴 확립 — Generate(G-001) → Detect(G-002 Coverage Verifier) → Decide(G-002 retrospective → G-003 spec writer ADR) → Resolve(G-003 implement+verify grep 검증). 후속 모듈에 적용 가능 표준."
+      },
+      {
+        "scope": "preventive constraints 효과",
+        "lesson": "C-35 (Spec Writer Self-Check) + C-36 (Implementer Score 금지) 모두 후속 Goal 에서 zero defect — preventive 정책의 ROI 검증."
+      },
+      {
+        "scope": "vacuous truth rule 일관 적용",
+        "lesson": "비-그리드 인프라 모듈 (license + 향후 docs) 의 B/C/D 카테고리 N/A → 100 처리 패턴 3 Goal 일관 적용. naCategoryHandling 필드 의무 + 3 조건 판정 (modulePath + affectedUsageFiles + 그리드 동작 키워드 부재) 작동."
+      },
+      {
+        "scope": "C-19 트리비얼 예외",
+        "lesson": "G-003 16 MODIFY (5 초과) 트리비얼 예외 적용 — 명확화 불필요 (각 변경 1-2 lines 단순 import/call). 후속 패턴 통합 Goal 에 동일 적용."
+      }
+    ],
+    "cascadingDefectsResolved": [
+      "G-001 verifyLicense export 제거 → grid-pro-master 2 subfiles stale import → G-003 ADR-005 Option A 해소 (Grep verifyLicense = 0 hits 직접 검증)"
+    ],
+    "outOfScopeAcknowledged": [
+      "meta 패키지 `grid` EULA.md 누락 — D2 (AC-001 7 Pro 명시 스코프 외) 후속 Goal 이연 (MOD-GRID-99-A/G-004 candidate)",
+      "릴리스 검증 스크립트 enabler 2 신규 EULA (grid/EULA.md + grid-license/EULA.md) — implement-score documentedDeviation 명시"
+    ],
+    "nextModuleRecommendation": "MOD-GRID-99-B Docs (Storybook + Docusaurus + Chromatic) — 비-그리드 인프라 모듈, vacuous truth + C-35/C-36 cascading 적용 후보. 또는 MOD-GRID-17 잔여 사용처 마이그레이션. state.json 다음 Goal 선택 우선순위 따름."
+  }
+}

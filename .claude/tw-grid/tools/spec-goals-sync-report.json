@@ -1,0 +1,1168 @@
+{
+  "stats": {
+    "totalGoals": 79,
+    "clean": 48,
+    "drift": 31,
+    "parseError": 0,
+    "specMissing": 0
+  },
+  "results": [
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-00",
+      "area": "monorepo",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-00/monorepo/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-00\\monorepo\\G-001-spec.md",
+      "goalsCount": 16,
+      "specCount": 16
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-00",
+      "area": "monorepo",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-00/monorepo/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-00\\monorepo\\G-002-spec.md",
+      "goalsCount": 15,
+      "specCount": 12,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/tsup.config.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/tsup.config.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/tsup.config.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/tsup.config.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/tsup.config.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/tsup.config.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/tsup.config.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-header/tsup.config.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/tsup.config.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master/tsup.config.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/tsup.config.ts"
+        ],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/package.json",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/index.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/package.json",
+          "packages/grid-{renderers,export,features,pro-tracking,pro-range,pro-datamap,pro-merging,pro-header,pro-agg,pro-master,grid-license}",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid/tsconfig.json",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid/src/index.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid/package.json",
+          "D:/project/topvel_project/topvel-grid-monorepo/apps/docs/package.json"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-00",
+      "area": "monorepo",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-00/monorepo/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-00\\monorepo\\G-003-spec.md",
+      "goalsCount": 13,
+      "specCount": 14,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "topvel-grid-monorepo/package.json"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-00",
+      "area": "monorepo",
+      "goalId": "G-004",
+      "goalKey": "MOD-GRID-00/monorepo/G-004",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-00\\monorepo\\G-004-spec.md",
+      "goalsCount": 3,
+      "specCount": 16,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-export/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-header/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-license/CHANGELOG.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid/CHANGELOG.md"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-01",
+      "area": "wrapper",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-01/wrapper/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-01\\wrapper\\G-001-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-01",
+      "area": "wrapper",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-01/wrapper/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-01\\wrapper\\G-002-spec.md",
+      "goalsCount": 4,
+      "specCount": 6,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/internal/StickyHeader.tsx"
+        ],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/internal/buildTableOptions.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/index.ts"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-01",
+      "area": "wrapper",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-01/wrapper/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-01\\wrapper\\G-003-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-01",
+      "area": "wrapper",
+      "goalId": "G-004",
+      "goalKey": "MOD-GRID-01/wrapper/G-004",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-01\\wrapper\\G-004-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-01",
+      "area": "wrapper",
+      "goalId": "G-005",
+      "goalKey": "MOD-GRID-01/wrapper/G-005",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-01\\wrapper\\G-005-spec.md",
+      "goalsCount": 11,
+      "specCount": 14,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/SlipListPage.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/AdminSlipEditPage.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/admin/MenuManagePage.tsx"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-02/state/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-02\\state\\G-001-spec.md",
+      "goalsCount": 3,
+      "specCount": 3
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-02/state/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-02\\state\\G-002-spec.md",
+      "goalsCount": 4,
+      "specCount": 4
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-02/state/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-02\\state\\G-003-spec.md",
+      "goalsCount": 3,
+      "specCount": 3
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-004",
+      "goalKey": "MOD-GRID-02/state/G-004",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-02\\state\\G-004-spec.md",
+      "goalsCount": 1,
+      "specCount": 2,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-005",
+      "goalKey": "MOD-GRID-02/state/G-005",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-02\\state\\G-005-spec.md",
+      "goalsCount": 2,
+      "specCount": 6,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useUrlSync.stories.tsx",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useUrlSync.test.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/index.ts"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-02",
+      "area": "state",
+      "goalId": "G-006",
+      "goalKey": "MOD-GRID-02/state/G-006",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-02\\state\\G-006-spec.md",
+      "goalsCount": 1,
+      "specCount": 5,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "topvel-grid-monorepo/packages/grid-core/src/useStoragePersist.stories.tsx",
+          "topvel-grid-monorepo/packages/grid-core/src/useStoragePersist.test.ts",
+          "topvel-grid-monorepo/packages/grid-core/src/types.ts",
+          "topvel-grid-monorepo/packages/grid-core/src/index.ts"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-03",
+      "area": "pagination",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-03/pagination/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-03\\pagination\\G-001-spec.md",
+      "goalsCount": 5,
+      "specCount": 6,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/pagination/types.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/pagination/GridPagination.tsx",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/internal/buildPaginationOptions.ts"
+        ],
+        "specOnly": [
+          "D:/project/topvel_project/TOMIS/packages/pagination/types.ts",
+          "D:/project/topvel_project/TOMIS/packages/pagination/GridPagination.tsx",
+          "D:/project/topvel_project/TOMIS/packages/internal/buildPaginationOptions.ts",
+          "D:/project/topvel_project/TOMIS/packages/internal/buildTableOptions.ts"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-03",
+      "area": "pagination",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-03/pagination/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-03\\pagination\\G-002-spec.md",
+      "goalsCount": 6,
+      "specCount": 6
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-03",
+      "area": "pagination",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-03/pagination/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-03\\pagination\\G-003-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-04",
+      "area": "column",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-04/column/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-04\\column\\G-001-spec.md",
+      "goalsCount": 5,
+      "specCount": 9,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "packages/grid-core/src/column/createColumns.test.ts",
+          "packages/grid-core/src/column/createColumns.typetest.ts",
+          "packages/grid-core/src/column/createColumns.stories.tsx",
+          "packages/grid-core/src/index.ts"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-04",
+      "area": "column",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-04/column/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-04\\column\\G-002-spec.md",
+      "goalsCount": 1,
+      "specCount": 4,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "packages/grid-core/src/column/createGroupedColumns.test.ts",
+          "packages/grid-core/src/column/createGroupedColumns.stories.tsx",
+          "packages/grid-core/src/index.ts"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-04",
+      "area": "column",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-04/column/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-04\\column\\G-003-spec.md",
+      "goalsCount": 2,
+      "specCount": 8,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/column/useColumnPersistence.test.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/column/ColumnVisibilityMenu.test.tsx",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/column/ColumnVisibilityMenu.stories.tsx",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/index.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/Grid.tsx",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-05",
+      "area": "renderer",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-05/renderer/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-05\\renderer\\G-001-spec.md",
+      "goalsCount": 5,
+      "specCount": 8,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/NumberCell.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/DateCell.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/index.ts"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-05",
+      "area": "renderer",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-05/renderer/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-05\\renderer\\G-002-spec.md",
+      "goalsCount": 9,
+      "specCount": 14,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/ButtonCell.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/BadgeCell.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/CheckCell.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/LinkCell.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/IconCell.tsx"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-05",
+      "area": "renderer",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-05/renderer/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-05\\renderer\\G-003-spec.md",
+      "goalsCount": 3,
+      "specCount": 4,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-06",
+      "area": "export",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-06/export/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-06\\export\\G-001-spec.md",
+      "goalsCount": 6,
+      "specCount": 6
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-06",
+      "area": "export",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-06/export/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-06\\export\\G-002-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-06",
+      "area": "export",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-06/export/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-06\\export\\G-003-spec.md",
+      "goalsCount": 6,
+      "specCount": 6
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-06",
+      "area": "export",
+      "goalId": "G-004",
+      "goalKey": "MOD-GRID-06/export/G-004",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-06\\export\\G-004-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-06",
+      "area": "export",
+      "goalId": "G-005",
+      "goalKey": "MOD-GRID-06/export/G-005",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-06\\export\\G-005-spec.md",
+      "goalsCount": 4,
+      "specCount": 4
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-07",
+      "area": "column-drag",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-07/column-drag/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-07\\column-drag\\G-001-spec.md",
+      "goalsCount": 4,
+      "specCount": 6,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "packages/grid-core/src/types.ts",
+          "packages/grid-core/src/Grid.tsx"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-07",
+      "area": "column-drag",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-07/column-drag/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-07\\column-drag\\G-002-spec.md",
+      "goalsCount": 3,
+      "specCount": 7,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "packages/grid-features/src/index.ts",
+          "packages/grid-features/src/column-drag/useColumnDrag.stories.tsx",
+          "packages/grid-core/src/types.ts",
+          "packages/grid-core/src/Grid.tsx"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-08",
+      "area": "multi-sort",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-08/multi-sort/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-08\\multi-sort\\G-001-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-08",
+      "area": "multi-sort",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-08/multi-sort/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-08\\multi-sort\\G-002-spec.md",
+      "goalsCount": 8,
+      "specCount": 8
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-09",
+      "area": "filter-ui",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-09/filter-ui/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-09\\filter-ui\\G-001-spec.md",
+      "goalsCount": 7,
+      "specCount": 7
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-09",
+      "area": "filter-ui",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-09/filter-ui/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-09\\filter-ui\\G-002-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-09",
+      "area": "filter-ui",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-09/filter-ui/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-09\\filter-ui\\G-003-spec.md",
+      "goalsCount": 7,
+      "specCount": 7
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-09",
+      "area": "filter-ui",
+      "goalId": "G-004",
+      "goalKey": "MOD-GRID-09/filter-ui/G-004",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-09\\filter-ui\\G-004-spec.md",
+      "goalsCount": 8,
+      "specCount": 8
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-10",
+      "area": "tracking",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-10/tracking/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-10\\tracking\\G-001-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-10",
+      "area": "tracking",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-10/tracking/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-10\\tracking\\G-002-spec.md",
+      "goalsCount": 4,
+      "specCount": 4
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-10",
+      "area": "tracking",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-10/tracking/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-10\\tracking\\G-003-spec.md",
+      "goalsCount": 5,
+      "specCount": 7,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/src/useChangeTracking.ts",
+          "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-10-decisions.md"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-10",
+      "area": "tracking",
+      "goalId": "G-004",
+      "goalKey": "MOD-GRID-10/tracking/G-004",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-10\\tracking\\G-004-spec.md",
+      "goalsCount": 5,
+      "specCount": 6,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/decisions/MOD-GRID-10-decisions.md"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-10",
+      "area": "tracking",
+      "goalId": "G-005",
+      "goalKey": "MOD-GRID-10/tracking/G-005",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-10\\tracking\\G-005-spec.md",
+      "goalsCount": 5,
+      "specCount": 11,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/src/internal/changeMap.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/src/types.ts",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/ChangeTrackingGrid.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/payroll/PayrollEditablePage.tsx",
+          "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-10-decisions.md"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-11/range/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-11\\range\\G-001-spec.md",
+      "goalsCount": 8,
+      "specCount": 8,
+      "drifts": {
+        "stale": [],
+        "countDiff": false,
+        "goalsOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/types.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/internal/normalize.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useCellRange.ts",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/RangeSelectGrid.tsx",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/legacy/RangeSelectGrid.tsx",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useCellRange.stories.tsx",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/EULA.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/index.ts"
+        ],
+        "specOnly": [
+          "src/types.ts",
+          "src/internal/normalize.ts",
+          "src/useCellRange.ts",
+          "src/RangeSelectGrid.tsx",
+          "src/legacy/RangeSelectGrid.tsx",
+          "src/useCellRange.stories.tsx",
+          "src/index.ts",
+          "tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-11/range/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-11\\range\\G-002-spec.md",
+      "goalsCount": 4,
+      "specCount": 4
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-11/range/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-11\\range\\G-003-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-004",
+      "goalKey": "MOD-GRID-11/range/G-004",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-11\\range\\G-004-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-005",
+      "goalKey": "MOD-GRID-11/range/G-005",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-11\\range\\G-005-spec.md",
+      "goalsCount": 4,
+      "specCount": 4
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-11",
+      "area": "range",
+      "goalId": "G-006",
+      "goalKey": "MOD-GRID-11/range/G-006",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-11\\range\\G-006-spec.md",
+      "goalsCount": 7,
+      "specCount": 10,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [
+          "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-11-decisions.md"
+        ],
+        "specOnly": [
+          ".claude/tw-grid/decisions/MOD-GRID-11-decisions.md",
+          "tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx",
+          "packages/grid-pro-range/package.json",
+          "packages/grid-pro-range/EULA.md"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-12",
+      "area": "datamap",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-12/datamap/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-12\\datamap\\G-001-spec.md",
+      "goalsCount": 6,
+      "specCount": 6
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-12",
+      "area": "datamap",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-12/datamap/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-12\\datamap\\G-002-spec.md",
+      "goalsCount": 3,
+      "specCount": 3
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-12",
+      "area": "datamap",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-12/datamap/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-12\\datamap\\G-003-spec.md",
+      "goalsCount": 3,
+      "specCount": 3
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-12",
+      "area": "datamap",
+      "goalId": "G-004",
+      "goalKey": "MOD-GRID-12/datamap/G-004",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-12\\datamap\\G-004-spec.md",
+      "goalsCount": 9,
+      "specCount": 9
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-13",
+      "area": "merging",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-13/merging/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-13\\merging\\G-001-spec.md",
+      "goalsCount": 10,
+      "specCount": 10
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-13",
+      "area": "merging",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-13/merging/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-13\\merging\\G-002-spec.md",
+      "goalsCount": 3,
+      "specCount": 3
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-13",
+      "area": "merging",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-13/merging/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-13\\merging\\G-003-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-14",
+      "area": "header",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-14/header/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-14\\header\\G-001-spec.md",
+      "goalsCount": 7,
+      "specCount": 7
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-14",
+      "area": "header",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-14/header/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-14\\header\\G-002-spec.md",
+      "goalsCount": 2,
+      "specCount": 2
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-14",
+      "area": "header",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-14/header/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-14\\header\\G-003-spec.md",
+      "goalsCount": 5,
+      "specCount": 7,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-header/src/types.ts",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-15",
+      "area": "aggregation",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-15/aggregation/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-15\\aggregation\\G-001-spec.md",
+      "goalsCount": 7,
+      "specCount": 7
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-15",
+      "area": "aggregation",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-15/aggregation/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-15\\aggregation\\G-002-spec.md",
+      "goalsCount": 7,
+      "specCount": 7
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-15",
+      "area": "aggregation",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-15/aggregation/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-15\\aggregation\\G-003-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-15",
+      "area": "aggregation",
+      "goalId": "G-004",
+      "goalKey": "MOD-GRID-15/aggregation/G-004",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-15\\aggregation\\G-004-spec.md",
+      "goalsCount": 6,
+      "specCount": 6
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-16",
+      "area": "enhancement",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-16/enhancement/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-16\\enhancement\\G-001-spec.md",
+      "goalsCount": 7,
+      "specCount": 7
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-16",
+      "area": "enhancement",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-16/enhancement/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-16\\enhancement\\G-002-spec.md",
+      "goalsCount": 6,
+      "specCount": 5,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [
+          "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-16-decisions.md"
+        ],
+        "specOnly": []
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-16",
+      "area": "enhancement",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-16/enhancement/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-16\\enhancement\\G-003-spec.md",
+      "goalsCount": 6,
+      "specCount": 6
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-17/migration/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-17\\migration\\G-001-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-17/migration/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-17\\migration\\G-002-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-17/migration/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-17\\migration\\G-003-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-004",
+      "goalKey": "MOD-GRID-17/migration/G-004",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-17\\migration\\G-004-spec.md",
+      "goalsCount": 5,
+      "specCount": 4,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/MyNotification/MyNotificationPage.tsx"
+        ],
+        "specOnly": []
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-005",
+      "goalKey": "MOD-GRID-17/migration/G-005",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-17\\migration\\G-005-spec.md",
+      "goalsCount": 5,
+      "specCount": 1,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/hr/InsEduc11HistoryPage.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/hr/DailyAttendancePage.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/hr/InsEmpl22ContractListPage.tsx",
+          "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/hr/AnnualLeaveStatusPage.tsx"
+        ],
+        "specOnly": []
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-17",
+      "area": "migration",
+      "goalId": "G-006",
+      "goalKey": "MOD-GRID-17/migration/G-006",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-17\\migration\\G-006-spec.md",
+      "goalsCount": 5,
+      "specCount": 5
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-99-A",
+      "area": "license",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-99-A/license/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-99-A\\license\\G-001-spec.md",
+      "goalsCount": 6,
+      "specCount": 9,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [],
+        "specOnly": [
+          "grid-pro-*/src/index.ts",
+          "grid-license/package.json",
+          "grid-license/tsup.config.ts"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-99-A",
+      "area": "license",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-99-A/license/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-99-A\\license\\G-002-spec.md",
+      "goalsCount": 7,
+      "specCount": 8,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [
+          "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-99-A-decisions.md"
+        ],
+        "specOnly": [
+          ".claude/tw-grid/decisions/MOD-GRID-99-A-decisions.md",
+          "topvel-grid-monorepo/packages/grid-license/tsup.config.ts"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-99-A",
+      "area": "license",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-99-A/license/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-99-A\\license\\G-003-spec.md",
+      "goalsCount": 23,
+      "specCount": 23
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-99-B",
+      "area": "docs",
+      "goalId": "G-001",
+      "goalKey": "MOD-GRID-99-B/docs/G-001",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-99-B\\docs\\G-001-spec.md",
+      "goalsCount": 6,
+      "specCount": 7,
+      "drifts": {
+        "stale": [],
+        "countDiff": true,
+        "goalsOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/getting-started.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/architecture.md",
+          "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-99-B-decisions.md"
+        ],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/getting-started.mdx",
+          "D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/architecture.mdx",
+          "D:/project/topvel_project/topvel-grid-monorepo/apps/docs/src/css/custom.css",
+          "D:/project/topvel_project/topvel-grid-monorepo/apps/docs/package.json"
+        ]
+      }
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-99-B",
+      "area": "docs",
+      "goalId": "G-002",
+      "goalKey": "MOD-GRID-99-B/docs/G-002",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-99-B\\docs\\G-002-spec.md",
+      "goalsCount": 16,
+      "specCount": 16,
+      "drifts": {
+        "stale": [],
+        "countDiff": false,
+        "goalsOnly": [
+          "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-99-B-decisions.md"
+        ],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/.claude/tw-grid/decisions/MOD-GRID-99-B-decisions.md"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-99-B",
+      "area": "docs",
+      "goalId": "G-003",
+      "goalKey": "MOD-GRID-99-B/docs/G-003",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-99-B\\docs\\G-003-spec.md",
+      "goalsCount": 7,
+      "specCount": 7
+    },
+    {
+      "kind": "drift",
+      "moduleId": "MOD-GRID-99-B",
+      "area": "docs",
+      "goalId": "G-004",
+      "goalKey": "MOD-GRID-99-B/docs/G-004",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-99-B\\docs\\G-004-spec.md",
+      "goalsCount": 5,
+      "specCount": 5,
+      "drifts": {
+        "stale": [],
+        "countDiff": false,
+        "goalsOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/migration/datatable.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/migration/codemod.md"
+        ],
+        "specOnly": [
+          "D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/migration/dataTable-migration.md",
+          "D:/project/topvel_project/topvel-grid-monorepo/apps/docs/docs/migration/live-demos.md"
+        ]
+      }
+    },
+    {
+      "kind": "clean",
+      "moduleId": "MOD-GRID-99-B",
+      "area": "docs",
+      "goalId": "G-005",
+      "goalKey": "MOD-GRID-99-B/docs/G-005",
+      "specPath": "D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\artifacts\\MOD-GRID-99-B\\docs\\G-005-spec.md",
+      "goalsCount": 23,
+      "specCount": 23
+    }
+  ]
+}

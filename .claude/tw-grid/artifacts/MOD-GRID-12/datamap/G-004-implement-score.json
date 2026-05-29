@@ -1,0 +1,232 @@
+{
+  "goalId": "MOD-GRID-12/datamap/G-004",
+  "module": "MOD-GRID-12",
+  "area": "datamap",
+  "stage": "implement",
+  "rubricVersion": "1.0.8",
+  "migrationImpact": "medium",
+  "checks": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "Glob 확인: src/createAsyncDataMap.ts (NEW), src/internal/asyncCache.ts (NEW), src/__stories__/AsyncDataMap.stories.tsx (NEW), decisions/MOD-GRID-12-decisions.md (NEW), src/DataMapEditor.tsx (MODIFY), src/types.ts (MODIFY), src/index.ts (MODIFY), package.json (MODIFY), docs/grid-pro/datamap/createAsyncDataMap.mdx (NEW) — 9개 파일 모두 존재 확인"
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "spec Section 7 권위 파일 목록: NEW 4개(createAsyncDataMap.ts, asyncCache.ts, AsyncDataMap.stories.tsx, createAsyncDataMap.mdx) + NEW or MODIFY 1개(MOD-GRID-12-decisions.md) + MODIFY 4개(DataMapEditor.tsx, types.ts, index.ts, package.json) = 9개. 모두 구현 완료. goals.json implementFiles vs spec Section 7: goals.json에 EULA.md 잔존(D-3 결정으로 G-004 범위 외 확인) — spec 권위 채택. promptSpecDrift=[] (value drift 없음)"
+    },
+    "F-03": {
+      "result": "N/A",
+      "evidence": "(외부 디렉토리 — git 추적 불가, Glob 9개 파일 확인으로 대체). D:/project/topvel_project/topvel-grid-monorepo/ ADR-MOD-GRID-00-001. decisions/MOD-GRID-12-decisions.md는 TOMIS worktree 내부(git 추적 가능) — 신규 파일(기존 없음) NEW 작성. index.ts L7-11 verifyOrWarn stub 보존: Read 확인 — L7('eslint-disable'), L8('function verifyOrWarn'), L9('MOD-GRID-99-A/G-002'), L10('}'}, L11('verifyOrWarn(...)') 모두 unchanged. 기존 G-001~G-003 exports (L14-19) 모두 보존 확인 (Read L14-19)."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "핵심 식별자 Grep 확인: createAsyncDataMap (createAsyncDataMap.ts L36, index.ts L26), buildAsyncCache (asyncCache.ts L45, createAsyncDataMap.ts L15+L45), AsyncDataMap (types.ts L141, index.ts L22), animate-spin (DataMapEditor.tsx L165), verifyOrWarn (index.ts L8+L11) — 모두 발견"
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "spec Section 3.1 직접 Read 후 prompt 값 cross-check 완료. 5개 drift 발견 → spec 값 우선 적용 + promptSpecDrift[] 기록. structural reference error(prompt Section 7 구현 세부): feedback 1줄만. value drift 항목만 promptSpecDrift 기록."
+    },
+    "F-06": {
+      "result": "YES",
+      "evidence": "spec Section 8 EC-001 코드 템플릿 검토: `if (state === 'loading' && pendingPromise !== null) { await pendingPromise; return; }` — state='loading' 체크 후 cache skip 없이 바로 pendingPromise 공유. 구현은 spec EC-001 패턴 그대로 충실히 구현. 의미적 결함 없음. specCodeDefects=[]"
+    },
+    "F-07": {
+      "result": "YES",
+      "evidence": "goals.json G-004 entry (datamap-goals.json L364): \"migrationImpact\": \"medium\" — implement-score migrationImpact=\"medium\" 일치 확인"
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "Glob 9개 파일 존재: src/createAsyncDataMap.ts, src/internal/asyncCache.ts, src/__stories__/AsyncDataMap.stories.tsx, decisions/MOD-GRID-12-decisions.md, src/DataMapEditor.tsx, src/types.ts, src/index.ts, package.json, docs/grid-pro/datamap/createAsyncDataMap.mdx"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "AsyncDataMap<TItem>: readonly state (spec Section 3.1 L141), load(): Promise<void>, invalidate(): void, onStateChange?(callback): ()=>void — 4개 추가 멤버 완전 일치. CreateAsyncDataMapOptions<TItem>: loader, valuePath, displayPath, staleTime? — spec Section 3.1 L155-167 일치. prompt drift(getState() 메서드 → readonly state 속성) spec 적용."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "tsc --noEmit EXIT:0. spec Section 2 사용 예시(createAsyncDataMap + DataMapEditor + column.dataMap = statusMap) 컴파일 통과. AsyncDataMap<TItem> extends DataMap<TItem> 타입 호환 확인."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "신규 API — 대응할 기존 variant 없음 (Section 1 L0: N/A — 신규 기능)"
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "AC-001(createAsyncDataMap + DataMap 완전 구현 getDisplay/getItems/getValue), AC-002(4-state + animate-spin spinner + duck typing 'state' in + 'load' in), AC-003(staleTime Map 캐시 + invalidate()), AC-004(index.ts L7-11 verifyOrWarn stub 확인, wijmo 0건, size 1.82kB<20kB), AC-005(MOD-GRID-12-decisions.md ADR-002 async 캐싱 전략, 3개 대안 비교 + trade-off 표), AC-006(wijmo import 0건 — AC-004와 동일 확인), AC-007(tsc --noEmit EXIT:0), AC-008(AsyncDataMap.stories.tsx 2 named export: AsyncDataMapLoading, MixedDataMapIntegration) — 모두 처리"
+    },
+    "A-06": {
+      "result": "YES",
+      "evidence": "buildAsyncCache (신규 유틸 함수) 호출처 wiring 확인: Grep buildAsyncCache → createAsyncDataMap.ts L15(import) + L45(const cache = buildAsyncCache<TItem>()) 발견. cache.get(effectiveStaleTime) L72, cache.set(items) L84, cache.invalidate() L99 실제 호출 확인. C-31 Wiring Audit 충족."
+    },
+    "A-07": {
+      "result": "N/A",
+      "evidence": "spec Section 7에 *.test.* 파일 없음"
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "npx tsc --noEmit EXIT:0 (0 errors). packages/grid-pro-datamap tsconfig.json 기준 strict+exactOptionalPropertyTypes 통과"
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Grep ': any|<any>|as any' src/ → 0건. DataMapEditor.tsx의 AsyncDataMap<TItem> 캐스트는 duck typing 판별 후 적용 (C-4 compliant)"
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "createAsyncDataMap + asyncCache는 DataMap 인터페이스 구현 — TanStack table API 직접 미사용"
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "신규 .css/.scss 파일 0건. spinner는 Tailwind animate-spin 클래스만 사용. inline style 없음"
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "eslint src --max-warnings 0 EXIT:0 (0 errors, 0 warnings)"
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep '@mescius/wijmo|from [\"\\']wijmo' → 0건 (3개 파일의 // 주석 내 언급만 — import 없음)"
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "프로덕션 코드(createAsyncDataMap.ts, asyncCache.ts, types.ts, index.ts, DataMapEditor.tsx)에 dummyData|mockData|fakeData|// TODO 0건. stories 파일은 예외"
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "tsc --noEmit EXIT:0. affectedUsageFiles=[] — 신규 API 추가만, 기존 export 변경 없음"
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "신규 API 추가 (breaking=false). 기존 DataMapEditor 동기 DataMap 경로 unchanged. stories AsyncDataMapLoading + MixedDataMapIntegration 2개가 시각 기준선. medium tier 신규 기능 + stories 존재 = YES"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "신규 컴포넌트 — React prop-types 경고 없음 (TypeScript strict). deprecated API 미사용"
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "package.json peerDependencies: react, @tanstack/react-table 유지. 신규 dependencies/peerDependencies 추가 없음 (C-22 준수)"
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] — 신규 기능 (사용처 0건)"
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "마이그레이션 사용처 0건"
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 0건"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "size-limit: @tomis/grid-pro-datamap 1.82 kB / 20 kB limit PASS. G-003 대비 +0.63 kB (asyncCache + createAsyncDataMap 추가). grid-core/grid-export 초과는 기존 문제 — G-004 무관"
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "신규 외부 라이브러리 추가 없음 (D-4: 자체 Map 캐시 구현, ADR-MOD-GRID-12-002 기록)"
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "package.json license: \"SEE LICENSE IN EULA\" 유지. version 0.0.0 → 0.1.0 (D-2 minor bump)"
+    }
+  },
+  "buildResult": {
+    "tsc": "0 errors (tsc --noEmit EXIT:0)",
+    "tsupBuild": "OK — dist/index.cjs 9.92 KB, dist/index.mjs 9.69 KB, dist/index.d.ts 7.60 KB (EXIT:0)",
+    "sizeLimit": "PASS — @tomis/grid-pro-datamap 1.82 kB / 20 kB limit",
+    "eslint": "0 errors, 0 warnings (eslint src --max-warnings 0 EXIT:0)"
+  },
+  "filesChanged": [
+    "packages/grid-pro-datamap/src/createAsyncDataMap.ts (NEW — createAsyncDataMap 팩토리, 4-state, pendingPromise de-dupe, onStateChange)",
+    "packages/grid-pro-datamap/src/internal/asyncCache.ts (NEW — buildAsyncCache 클로저, Map 단일 슬롯, C-31 Wiring)",
+    "packages/grid-pro-datamap/src/__stories__/AsyncDataMap.stories.tsx (NEW — 2 named exports: AsyncDataMapLoading, MixedDataMapIntegration)",
+    "packages/grid-pro-datamap/src/types.ts (MODIFY — AsyncDataMapState, AsyncDataMap, CreateAsyncDataMapOptions 추가)",
+    "packages/grid-pro-datamap/src/index.ts (MODIFY — AsyncDataMap exports 추가; verifyOrWarn stub L7-11 보존)",
+    "packages/grid-pro-datamap/src/DataMapEditor.tsx (MODIFY — duck typing + asyncState useState + onStateChange 구독 + animate-spin spinner)",
+    "packages/grid-pro-datamap/package.json (MODIFY — version 0.0.0 → 0.1.0)",
+    "decisions/MOD-GRID-12-decisions.md (NEW — ADR-001 DataMap API + ADR-002 async 캐싱 전략 3개 대안)",
+    "docs/grid-pro/datamap/createAsyncDataMap.mdx (NEW — D-6 Docusaurus 문서)"
+  ],
+  "yesCount": 23,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 23,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "selfVerification": "17 + 0 + 7 = 24 (rubric 총 24 A=7+B=7+C=4+D=3+E=3 일치). denominator=17 (N/A 7건 제외: A-04, A-07, B-03, D-01, D-02, D-03, E-02). score=17/17*100=100.0. failedChecks=[] (NO 0건). JSON.parse self-check: structure valid.",
+  "failedChecks": [],
+  "autoFixed": [],
+  "promptSpecDrift": [
+    {
+      "field": "AsyncDataMap.state",
+      "promptValue": "getState(): AsyncDataMapState (메서드)",
+      "specValue": "readonly state: AsyncDataMapState (속성, spec Section 3.1 L141)",
+      "resolution": "spec applied — readonly property getter 구현"
+    },
+    {
+      "field": "AsyncDataMap.getError",
+      "promptValue": "getError(): Error | undefined (메서드 — prompt 구현 세부에 명시)",
+      "specValue": "not in spec (spec Section 3.1 L141-146에 없음)",
+      "resolution": "spec applied — getError() 메서드 미구현. 에러 상태는 state='error'로만 표현"
+    },
+    {
+      "field": "asyncCache API (pendingPromise)",
+      "promptValue": "asyncCache: get(), set(value, ts), isStale(staleTime), pendingPromise (de-dupe) — prompt에서 캐시 내부에 pendingPromise 포함",
+      "specValue": "get(staleTime): TItem[]|null, set(items: TItem[]): void, invalidate(). pendingPromise는 createAsyncDataMap.ts 내부 상태 (spec Section 3.3 + EC-001)",
+      "resolution": "spec applied — asyncCache.ts: get/set/invalidate만. pendingPromise는 createAsyncDataMap.ts 클로저 변수로 분리"
+    },
+    {
+      "field": "asyncCache factory name",
+      "promptValue": "buildAsyncCache 미명시 (prompt에서 'closure-based 또는 class-based AsyncCache'만)",
+      "specValue": "buildAsyncCache<TItem>(): AsyncCache<TItem> (spec Section 3.3 L231, C-31 Wiring Audit 명시)",
+      "resolution": "spec applied — buildAsyncCache 함수명으로 구현 + C-31 wiring"
+    },
+    {
+      "field": "DataMapEditor duck typing",
+      "promptValue": "'getState' in dataMap && typeof dataMap.getState === 'function'",
+      "specValue": "'state' in props.dataMap && 'load' in props.dataMap (spec Section 3.4 L241)",
+      "resolution": "spec applied — 'state' in dataMap && 'load' in dataMap 패턴 구현"
+    }
+  ],
+  "specCodeDefects": [],
+  "documentedDeviations": [],
+  "feedback": {
+    "promptSpecDrift-5-items": "메인 prompt 5개 drift 항목 발견 → 모두 spec 우선 적용. getError() 미구현, state property(not method), pendingPromise 위치 분리, buildAsyncCache 명시, duck typing 패턴 정정.",
+    "wiring-audit-C31": "C-31 Wiring Audit: buildAsyncCache import L15 + const cache = buildAsyncCache<TItem>() L45 + cache.get/set/invalidate 호출 확인 — A-06 충족",
+    "onStateChange-subscription": "DataMapEditor onStateChange 구독: useEffect 마운트 시 subscribe + cleanup에서 unsub() 호출 (spec Section 11 Risk #4 메모리 누수 방지)",
+    "C33-stub-preserved": "index.ts L7-11 verifyOrWarn inline stub 그대로 보존 (C-33, D-7). G-004 추가 export는 L20-26에만 추가",
+    "size-increase": "G-003→G-004 번들 증가: 1.19kB → 1.82kB (+0.63kB). spec 예상 +2KB 이내. C-21 20kB 한도 충족",
+    "goalsJsonImplementFiles": "goals.json implementFiles vs spec Section 7: goals.json에 EULA.md 잔존 — D-3 결정으로 G-004 범위 외 확인. spec Section 7 권위 채택. 실제 9개 파일 구현."
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 17,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 7,
+    "originalReportedDenominator": 17,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-12",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "goalId": "MOD-GRID-06/export/G-004",
+  "module": "MOD-GRID-06",
+  "area": "export",
+  "stage": "specify",
+  "rubricVersion": "1.0.6",
+  "migrationImpact": "medium",
+  "threshold": 90,
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "spec L36-40: '현 구현에 clipboard/print 코드 없음. 신규 구현.' — A-01 N/A condition satisfied"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "spec L42-63: TanStack API signatures (getCoreRowModel().rows, getFilteredRowModel().rows, getSelectedRowModel().rows, getLeafHeaders(), cell.getValue()) all quoted"
+    },
+    "A-03": {
+      "result": "N/A",
+      "evidence": "spec L70-95: 신규 영역 + 현 구현 없음 → N/A"
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "spec L96-99: '사용처 0개 파일' 정확 카운트 명시"
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "spec L101-112: AG Grid Ctrl+C clipboard reference (C-7 no code reuse); Wijmo N/A"
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "spec L120-181: ClipboardOptions, PrintOptions interfaces + copyToClipboard/printGrid signatures L204-229"
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "spec L198-202, L220-224: 4 usage examples (copyToClipboard 2 + printGrid 2)"
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "spec L232-241: all option fields @default or optional(?) explicitly marked"
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "spec L297, L563-564: export paths 'packages/grid-export/src/types.ts', 'index.ts' stated"
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "spec: function signatures (async copyToClipboard, void printGrid) → ref API not needed"
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "spec L260-269: AC-001~AC-006 = 6 acceptance criteria (≥3)"
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "spec L263-269: all AC tagged with source (L0/L1/L2/R-A/C-NN format)"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "spec AC-001 'signature exact, no any' + AC-005 'tsc 0 errors' = binary verifiable"
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "spec L6: migrationImpact='medium' stated; rationale: new export, zero impact on existing code"
+    },
+    "C-05": {
+      "result": "N/A",
+      "evidence": "spec L3: 사용처=0 (신규 기능) → compatibility verification N/A"
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "spec L307-309: '사용처 0개' explicitly stated"
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "spec L245-247: '신규 export. 기존 사용처 0개' → variant migration mapping N/A"
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "spec L251-256: 'Breaking change: No' clear; semver policy minor bump stated"
+    },
+    "D-04": {
+      "result": "N/A",
+      "evidence": "spec L254: 'Breaking change 없음' → deprecation strategy N/A"
+    },
+    "D-05": {
+      "result": "YES",
+      "evidence": "spec L321-323: rollback strategy 'remove 3 files + types.ts/index.ts cleanup' detailed"
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "spec L325-329: '+2 KB (gzipped)', C-21 limit 20KB satisfied, estimate basis noted"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "spec L289-301 Section 7 vs L391-576 Section 11: all 5 files enumerated in 6 steps; AC-006 (Storybook) binding AC matched to Section 7 #3 NEW; D# table L16-30 breakdown matches Section 7 (5 files: NEW 3, MODIFY 2)"
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "spec Section 11 Step 2-4: Before/After code blocks ×3 (copyToClipboard.ts, printGrid.ts, index.ts)"
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "spec L391-576 Step 1-6 = 6 stages; dependency order (types → functions → exports → Storybook) clear"
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "spec L273-283 Section 6: EC-01~EC-07 = 7 edge cases (≥3)"
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "spec L588-613 Section 12: 12.1 unit tests, 12.2 tsc, 12.3 Storybook all stated"
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "spec Section 7: no re-decision sentences (재결정/변경/대체/~로 변경); D1-D11 pre-decisions final → 최종 표 L290-301 모순 0"
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "spec L7: packageTarget='packages/grid-export (monorepo...)' stated"
+    },
+    "F-02": {
+      "result": "N/A",
+      "evidence": "spec L619-622: 'MIT (Open) package' → license verification N/A"
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "spec L629-633: Docusaurus page + Storybook story + README.md all planned"
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "spec L635-637: 'no change to peerDeps' + react/tanstack peer retained (C-22 compliance)"
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "Grep TBD/TODO/미정 in spec → 0 hits; D# table (11 decisions) breakdown matches Section 7 (5 files: NEW 3, MODIFY 2); D10 '5파일', Section 7 #1-5 = exact match; D9 '1개 story', Section 7 #3 = exact match"
+    }
+  },
+  "yesCount": 26,
+  "noCount": 0,
+  "naCount": 6,
+  "denominator": 26,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "verifierNoteC26": "C-26 self-validation passed: denominator (31) = YES count (31) + NO count (0); category sum 5+5+5+6+6+4+1 = 32 (rubric total); failedChecks contains 0 NO results, all N/A excluded",
+    "verifierNoteH": "All H meta gates PASS: H-01 paths Read-verified (types.ts L72-91, getRowsByScope.ts L20-21, monorepo D11); H-02 implementFiles parent extant (topvel-grid-monorepo confirmed); H-03 all AC tagged (L0/L1/L2/R-A/C-NN formats)",
+    "scoreBreakdown": "A=5, B=5, C=5, D=5(+1N/A), E=6, F=4(+1N/A), G=1 | Threshold=90 | Result: 100/90 PASS"
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 31,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 1,
+    "originalReportedDenominator": 31,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-06",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "goalId": "G-001",
+  "moduleId": "MOD-GRID-01",
+  "stage": "self-review",
+  "scoresAnalysis": {
+    "specify": 100,
+    "implement": 100,
+    "verify": 100,
+    "weakSignals": [
+      "Bundle headroom — 17.44/30KB used; G-002~G-005 estimate +19KB total → tight margin. G-002 must measure size-limit empirically (not estimate).",
+      "Storybook story baseline deferred to G-003/G-005 — visual regression baseline yet to capture. C-17 obligation effectively deferred for G-001 (사용처 0 → vacuous), but next high-impact Goal touching Grid.tsx visual output must precede with baseline.",
+      "Lint scope deferred (apps empty dir, pre-existing config) — finding written but not blocked. Next Goal MODIFY apps/* should re-litigate at that time.",
+      "D5 표 헤더 'enable* 8종' notation ambiguity vs body '7 enable* + rowSelection' — spec self-corrected (L961-973), G-01 already covers but worth observing if recurs in next Goal."
+    ]
+  },
+  "improvementsApplied": [
+    {
+      "type": "constraint-add",
+      "file": "D:/project/topvel_project/TOMIS/.claude/tw-grid/constraints.md",
+      "diff-summary": "C-28 신설 — goals.json implementFiles 경로 prefix 정합성. discover 단계 자동 생성 산출물(TOMIS/packages/ 잘못된 prefix)이 17개 다른 모듈 goals.json에 잠재 — 메인 오케스트레이터/spec writer/Implementer 3자 의무 명시 + 위반 시 처리 표에 C-28 행 추가."
+    },
+    {
+      "type": "adr-add",
+      "file": "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-01-decisions.md",
+      "diff-summary": "ADR-MOD-GRID-01-002 — G-001 self-review 단계에서 17개 다른 모듈 goals.json 동일 prefix 오류 cascade 발견. C-28 신설 결정 + alternatives 3개 + trade-off 명시. 17개 일괄 정정은 별도 후속 작업으로 분리."
+    }
+  ],
+  "improvementsRejected": [
+    {
+      "candidate": "B (specify-rubric S-XX 추가) — spec drift self-discovery + finding 마커 작성 명시",
+      "reason": "specify-rubric G-01 + D# cross-consistency 룰(L236-238)이 이미 동일 의무 커버. spec D5 self-correction(L961-973)이 G-01 working evidence — 추가 항목은 중복."
+    },
+    {
+      "candidate": "C (implement-rubric I-XX 추가) — workspace-root devDeps 추가 시 patch-level changeset + 카탈로그 기록",
+      "reason": "G-001 score 파일/finding 어디에도 'workspace root devDeps 추가' 증거 없음. Read 검증한 root package.json L20-35 devDependencies (react/react-dom/@tanstack/react-table 포함)는 MOD-GRID-00 setup으로 사전 존재 (G-001 변경 흔적 0). promptSpecDrift도 index.ts 4종 export + enableVirtualization 2건만 — devDeps 변경 미언급. 가설성 항목."
+    },
+    {
+      "candidate": "D (decisions/MOD-GRID-01-decisions.md ADR-002 — workspace root devDeps 정책)",
+      "reason": "C와 동일 — 변경 사실 미입증. 추가 시 가짜 ADR 생산 위험."
+    }
+  ],
+  "cascadingRisks": [
+    "MOD-GRID-02~16 + 99-A/B (17개) goals.json implementFiles에 동일 잘못된 'TOMIS/packages/' prefix 잔존 — 각 모듈 spec writer가 동일 D# 정정 결정을 반복하거나 H-02 NO로 차단되어 1 loop 낭비 위험. C-28으로 사전 차단 + 메인이 후속 specify 시작 전 일괄 정정 권장.",
+    "G-001 bundle 17.44/30KB 사용 → 잔여 12.56KB. G-002 sticky CSS(+4) + G-003(+3) + G-004(+7) + G-005(+5) = +19KB 예상은 한도 30KB 초과 위험. 다음 Goal부터 size-limit 실측 + 초과 시 Grid.tsx 파편화 또는 grid-renderers/grid-features 분리 검토 필요.",
+    "Storybook + Chromatic 시각 회귀 baseline 미캡처 (G-001 사용처 0으로 vacuous) — G-005 alias 5 + MOD-GRID-17 27 페이지 마이그레이션 시점에서야 기준 부재로 C-17 검증 어려움. G-003 EmptyState 도입 시 또는 그 전 별도 baseline Goal 권장."
+  ],
+  "reviewedAt": "2026-05-14",
+  "reviewerModel": "opus"
+}

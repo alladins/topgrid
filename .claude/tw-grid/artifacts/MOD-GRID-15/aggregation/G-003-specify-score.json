@@ -1,0 +1,258 @@
+{
+  "goalId": "MOD-GRID-15/aggregation/G-003",
+  "module": "MOD-GRID-15",
+  "area": "aggregation",
+  "stage": "specify",
+  "rubricVersion": "1.0.7",
+  "migrationImpact": "low",
+  "tier": "low",
+  "threshold": 90,
+  "checks": [
+    {
+      "id": "H-01",
+      "name": "referenceEvidence 경로 실재 (H-01)",
+      "result": "YES",
+      "evidence": "spec.md L45~54 인용: Section 1 L0/L1/L2/L3/R-A/R-W 참조 테이블. L0: N/A 명시. L1: 실제 파일 경로 명시 (packages/grid-pro-agg/src/aggregationFns.ts, index.ts). R-A/R-W: publish-aggrid-analysis.md + publish-wijmo-analysis.md 존재 확인 (Glob 결과). 라인 인용: Section 1 L1 L73 '`AggregationFn<TData>` 타입 + 내장 키 표' — TanStack v8 aggregationFns 내장 API 구조와 일치. H-01 신설 기준 충족: spec.md L32 파일명 정확 인용, Read/Glob 직접 검증 완료, 경로 일관성 검증 (TOMIS segment 포함 재확인)."
+    },
+    {
+      "id": "H-02",
+      "name": "implementFiles 경로 합리성 (H-02)",
+      "result": "YES",
+      "evidence": "spec.md L353~362 Section 7 최종 표: 5개 MODIFY 파일 모두 `D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/src/` 부모 디렉토리 기준. D1 결정(spec.md L18~19)에서 'monorepo 외부 경로 채택' 명시. 조부모 디렉토리 `D:/project/topvel_project/` 실재(프로젝트 루트, 기존 구조). 명명 컨벤션: topvel- prefix + kebab-case = 프로젝트 외부 디렉토리 패턴과 일치 (G-001/G-002 선례, ADR-MOD-GRID-00-001). H-02 외부 경로 예외 조건 3개 충족."
+    },
+    {
+      "id": "H-03",
+      "name": "AC 소스 태그 검증 (H-03)",
+      "result": "YES",
+      "evidence": "spec.md L323~330 Section 5 AC 표: AC-001~AC-006 모두 'source:' 태그 포함. AC-001 `L1: TanStack AggregationFn<TData> (C-2)`. AC-002 `C-4, L1: TanStack ColumnDef.aggregationFn`. AC-003 `C-14, L1: TanStack aggregationFns 내장`. AC-004 `C-16`. AC-005 `C-12`. AC-006 `C-25`. 각 태그가 Section 1에서 실제 인용됨(L73 TanStack AggregationFn, L90~97 내장 registry, L101~107 R-A/R-W 참조). 출처 날조 의심 0건."
+    },
+    {
+      "id": "A-01",
+      "name": "L0 현 구현 파일 명시 + 패턴 인용 (A-01)",
+      "result": "YES",
+      "evidence": "spec.md L56~71 Section 1 L0: 'N/A — 신규 Pro 패키지. 현행 tw-framework-front에 @tomis/grid-pro-agg import 없음.' 명시. 현재 aggregationFns.ts 상태 기술(L60~63): 'registry Map 없음, registerAggregationFn 함수 없음 — G-003 목표'. index.ts 현황(L65~67): 신규 export 대상 명시. AggregationGrid.tsx 현황(L69~71): 'registry lookup 로직 없음 — G-003 통합 대상'. N/A 신규 영역임을 명확히 표시하고 기존 코드 상태 기술 완료."
+    },
+    {
+      "id": "A-02",
+      "name": "L1 TanStack v8 API signature 인용 (A-02)",
+      "result": "YES",
+      "evidence": "spec.md L73~100 Section 1 L1: TanStack v8 AggregationFn<TData> 표준 시그니처 명시 (L76~83 코드블록): '(columnId: string, leafRows: Row<TData>[], childRows: Row<TData>[]) => unknown'. 내장 registry 카탈로그(L90~97 표): sum/min/max/mean/count 키 + 동작. TableOptions.aggregationFns 및 ColumnDef.aggregationFn 허용 형식(L99) 인용. 근거 출처: 'tanstack-api-inventory.md §2.4 확인'(L73). TanStack 표준 API 충분히 인용."
+    },
+    {
+      "id": "A-03",
+      "name": "L2 공통 컴포넌트 분석 (A-03)",
+      "result": "N/A",
+      "evidence": "spec.md L51: L2 참조 대상 'N/A — 신규 Pro 패키지' 명시. 신규 영역이므로 현 8 variant 중복 추출 불필요. 정상 N/A."
+    },
+    {
+      "id": "A-04",
+      "name": "L3 영향 사용처 카운트 명시 (A-04)",
+      "result": "YES",
+      "evidence": "spec.md L52: L3 '`affectedUsageFiles: []` 0개'. Section 8.1(L530): '영향 사용처 **0개**. 신규 Pro 패키지이며 현재 tw-framework-front 내 @tomis/grid-pro-agg import 없음.' goals.json L170도 확인: 'affectedUsageFiles: []'. 영향 사용처 정확한 카운트(0개) 명시 완료."
+    },
+    {
+      "id": "A-05",
+      "name": "R-A AG Grid + R-W Wijmo 동등 기능 참조 (A-05)",
+      "result": "YES",
+      "evidence": "spec.md L101~108 Section 1 R-A/R-W: 'publish-aggrid-analysis.md에서 확인: AG Grid는 `gridOptions.aggFuncs` 객체에 커스텀 집계 함수를 등록' (L103). 'Wijmo에서 커스텀 집계는 `getAggregate` 함수 override 또는 IColumnAggregateDescriptor.getAggregate 콜백'(L107). 개념 학습 전용, 코드 차용 금지(C-7, C-16) 명시. R-A/R-W 동등 기능 참조 완료."
+    },
+    {
+      "id": "B-01",
+      "name": "TypeScript interface 정의 (B-01)",
+      "result": "YES",
+      "evidence": "spec.md L115~163 Section 2.1: `registerAggregationFn<TData extends object>(name: string, fn: AggregationFn<TData>): void` 명시(L135~138). `getAggregationFn<TData extends object>(name: string): AggregationFn<TData> | undefined` 명시(L146~148). `resolveAggregationFn(key: AggregationFnKey): TanStackAggKey` 명시(L155). `BUILT_IN_AGGREGATION_KEYS: ReadonlyArray<AggregationFnKey>` 명시(L161). Section 2.2 L169~187: `AggregationColumnMeta.aggregationFn?: AggregationFnKey | (string & {})` 변경 명시. 모든 props/return/event type interface 정의 완료."
+    },
+    {
+      "id": "B-02",
+      "name": "사용 예시 코드 최소 2개 (B-02)",
+      "result": "YES",
+      "evidence": "spec.md L227~265 Section 2.4: 예시 1 'weightedAvg' (L227~265) — 가중평균 시나리오. 예시 2 'ratio' (L267~290) — 비율 집계 시나리오. 추가로 Section 10 L586~637: 시나리오 1(개발자 커스텀 fn 등록), 시나리오 2(최종 사용자 혼용), 시나리오 3(중복 등록) 3개. 기본 + 고급 시나리오 다수 제시."
+    },
+    {
+      "id": "B-03",
+      "name": "기본값 + optional 명시 (B-03)",
+      "result": "YES",
+      "evidence": "spec.md L135~138 registerAggregationFn: `name: string` (required), `fn: AggregationFn<TData>` (required) — 모두 필수 파라미터. L146~148 getAggregationFn: `name: string` (required). L185 AggregationColumnMeta: `aggregationFn?:` (optional, ? 기호). 모든 props에 required/optional 명시 완료."
+    },
+    {
+      "id": "B-04",
+      "name": "타입 export 경로 명시 (B-04)",
+      "result": "YES",
+      "evidence": "spec.md L415: `AggregationFn<TData>` from '@tanstack/react-table' 인용. Section 2.2 L189~190: '`AggregationFnKey`, `AggregationColumnDef`, `AggregationGridProps`, `GroupRowProps`, `FooterRowProps` — 변경 없음 (C-6 호환성)', export 위치 `packages/grid-pro-agg/src/types.ts` 명시(L417). Section 7 파일명 명시(L358): `packages/grid-pro-agg/src/types.ts` MODIFY. 타입 export 경로 정확하게 명시."
+    },
+    {
+      "id": "B-05",
+      "name": "ref API + imperative handle 명시 (B-05)",
+      "result": "N/A",
+      "evidence": "spec.md L824: 'B-05 ref API — N/A' 기술. 사용자 정의 집계 함수는 선언적 컴포넌트(AggregationGrid)에 props 전달하는 형식. useImperativeHandle 불필요. 정상 N/A."
+    },
+    {
+      "id": "C-01",
+      "name": "AC 3개 이상 (C-01)",
+      "result": "YES",
+      "evidence": "spec.md L323~330 Section 5: AC-001~AC-006 6개 정의. '| AC ID | 항목 | 소스 태그 | 검증 방법 |' 표 형식으로 6개 항목 명시. 3개 초과 충족."
+    },
+    {
+      "id": "C-02",
+      "name": "각 AC에 출처 태그 (C-02)",
+      "result": "YES",
+      "evidence": "spec.md L323~330 Section 5 AC 표: 모든 AC에 '소스 태그' 열. AC-001 'L1: TanStack AggregationFn<TData> (C-2)', AC-002 'C-4, L1:', AC-003 'C-14, L1:', AC-004 'C-16', AC-005 'C-12', AC-006 'C-25'. 모든 AC에 출처 명시."
+    },
+    {
+      "id": "C-03",
+      "name": "binary 검증 가능 (C-03)",
+      "result": "YES",
+      "evidence": "spec.md L323~330 Section 5: AC-001 '`registerAggregationFn<SalesRow>('name', fn)` — TypeScript strict, no any'. AC-002 'registry 존재' + 'console.error 출력'. AC-003 '내장 5종도 G-001 경로로 동작 보장'. AC-004 'Wijmo import 0건'. AC-005 'tsc --noEmit 0 에러'. AC-006 'Storybook story 1개'. 모두 객관 검증 가능한 표현. '잘 동작한다' 같은 주관 표현 0건."
+    },
+    {
+      "id": "C-04",
+      "name": "migrationImpact 명시 (C-04)",
+      "result": "YES",
+      "evidence": "spec.md L6: 'Migration Impact: low'. goals.json L134: 'migrationImpact: low'. Section 1에도 암묵적으로 포함(신규 기능, 사용처 0개). 명확히 'low' 명시 + 근거(사용처 0개, 신규 기능)."
+    },
+    {
+      "id": "C-05",
+      "name": "호환성 검증 AC 포함 (C-05)",
+      "result": "N/A",
+      "evidence": "spec.md L52: 'L3: `affectedUsageFiles: []` 0개'. 신규 Pro 패키지로 영향 사용처 0개. 호환성 검증 AC 대상 없음. 정상 N/A."
+    },
+    {
+      "id": "D-01",
+      "name": "영향 사용처 N개 파일 목록 (D-01)",
+      "result": "YES",
+      "evidence": "spec.md L529~531 Section 8.1: '영향 사용처 **0개**. 신규 Pro 패키지이며 현재 tw-framework-front 내 @tomis/grid-pro-agg import 없음.' 정확한 카운트(0개) 명시. affectedUsageFiles: [] 명시."
+    },
+    {
+      "id": "D-02",
+      "name": "기존 변형 대응표 (D-02)",
+      "result": "N/A",
+      "evidence": "spec.md L295~296 Section 3: 'N/A — 신규 Pro 패키지(`grid-pro-agg`). `affectedUsageFiles: []` (0개). 기존 variant 마이그레이션 대응표 없음.' 신규 패키지이므로 대응표 불필요. 정상 N/A."
+    },
+    {
+      "id": "D-03",
+      "name": "Breaking change 명시 (D-03)",
+      "result": "YES",
+      "evidence": "spec.md L302~309 Section 4: 'breaking: false' 명시. 근거: '`registerAggregationFn`, `getAggregationFn`, `BUILT_IN_AGGREGATION_KEYS` 신규 export 추가만. `resolveAggregationFn` 시그니처 유지 (D3 — ADR-MOD-GRID-15-003 보존). G-001/G-002에서 `aggregationFn: \\'sum\\'` 등을 사용하던 코드는 변경 없이 동작'. Breaking 여부 명확히 기술."
+    },
+    {
+      "id": "D-04",
+      "name": "Deprecation 전략 (D-04)",
+      "result": "N/A",
+      "evidence": "spec.md L311~313 Section 4: '신규 기능 — alias 불필요. 기존 G-001/G-002 API를 확장하며 대체하지 않는다. 최소 1 minor 버전 alias 유지 의무 없음 (새 기능).' Breaking change 없으므로 deprecation 불필요. 정상 N/A."
+    },
+    {
+      "id": "D-05",
+      "name": "롤백 전략 (D-05)",
+      "result": "N/A",
+      "evidence": "spec.md L179: 'N/A: low tier + 사용처 0' 기본 규칙. Section 8.3(L540~544): '신규 export (`registerAggregationFn`, `getAggregationFn`, `BUILT_IN_AGGREGATION_KEYS`)를 `index.ts`에서 제거 + `aggregationFns.ts` registry 코드 제거'. 롤백 가능성 기술되어 있으나, N/A 판정 기준(migrationImpact: low + 사용처 0)에 부합. 정상 N/A."
+    },
+    {
+      "id": "D-06",
+      "name": "번들 영향 (D-06)",
+      "result": "YES",
+      "evidence": "spec.md L552~559 Section 8.5 표: '| 항목 | 예상 크기 | registry Map + registerAggregationFn + getAggregationFn + BUILT_IN_AGGREGATION_KEYS | +1 KB gzipped | AggregationGrid.tsx lookup 합성 로직 | +1 KB gzipped | **G-003 합계** | **+2 KB gzipped** | G-001+G-002 기존 | ~9 KB | **grid-pro-agg 누적** | **~11 KB** | Pro 패키지 한도 (C-21) | ≤ 20 KB'. 예상 번들 변동 +2 KB gzipped, 누적 ~11 KB 명시. 한도 내 충분히 여유. goals.json L171 확인: 'bundleImpact.expected: +2 KB'."
+    },
+    {
+      "id": "E-01",
+      "name": "파일별 변경 명세 (E-01)",
+      "result": "YES",
+      "evidence": "spec.md L353~364 Section 7 최종 표: 5개 파일 (# | 파일 경로 | 작업 | 설명). #1 aggregationFns.ts MODIFY (+40 LOC 명시), #2 types.ts MODIFY (+5 LOC), #3 AggregationGrid.tsx MODIFY (+25 LOC), #4 index.ts MODIFY (+3 LOC), #5 AggregationGrid.stories.tsx MODIFY (+60 LOC). Section 11.1(L645~651 표): 파일별 변경 내용 + 예상 LOC 변화. Section 7 ↔ Section 11 파일 목록 1:1 매칭 확인: 최종 표 5개 == Step 1~5 파일 동일. E-01 cross-check 조건 충족."
+    },
+    {
+      "id": "E-02",
+      "name": "Before/After 코드 스니펫 (E-02)",
+      "result": "YES",
+      "evidence": "spec.md L653~697 Section 11.2: 'aggregationFns.ts — registry 추가 (핵심 변경)' Before(L658~663) vs After(L665~697). Before에는 resolveAggregationFn만 있고, After에는 registry Map + registerAggregationFn + getAggregationFn + BUILT_IN_AGGREGATION_KEYS + resolveAggregationFn 포함. Before/After 명확한 대비 제시."
+    },
+    {
+      "id": "E-03",
+      "name": "구현 순서 2단계 이상 (E-03)",
+      "result": "YES",
+      "evidence": "spec.md L700~718 Section 11.3: '### 11.3 구현 순서 (의존성 고려)' Step 1~5 명시. Step 1: aggregationFns.ts, Step 2: types.ts (독립적), Step 3: AggregationGrid.tsx (Step 1+2 의존), Step 4: index.ts (Step 1 의존), Step 5: stories.tsx (Step 1~4 의존). 5단계로 의존성 고려한 순서 제시. 단계 2개 초과 충족."
+    },
+    {
+      "id": "E-04",
+      "name": "엣지 케이스 3개 이상 (E-04)",
+      "result": "YES",
+      "evidence": "spec.md L334~343 Section 6 표: EC-001~EC-006 6개 엣지 케이스 + 매핑 AC 명시. EC-001(미등록 이름), EC-002(중복 등록), EC-003(내장 키 오버라이드), EC-004(빈 배열), EC-005(등록 전 사용), EC-006(내장 키+미등록). 추가로 E-04 권장(2026-05-13): 환경 의존 AC와 EC 매핑 표. spec.md L337에는 매핑 표는 없으나 EC 6개 모두 | AC 매핑 | 명시. 3개 초과, 매핑도 명시."
+    },
+    {
+      "id": "E-05",
+      "name": "검증 계획 (E-05)",
+      "result": "YES",
+      "evidence": "spec.md L730~764 Section 12: '### 검증 계획 (Verification Plan)'. 빌드 검증(L733~737): 'npx tsc --noEmit', 'npx tsup'. 기능 검증 체크리스트(L740~747): 7개 항목. 타입 검증(L750~754): 4개 검증. 제약 준수 검증(L757~764): 8개 항목 (Wijmo import, verifyOrWarn, React import, TanStack API, Functional Wiring, E-06 일관성). 단위 테스트+시각 회귀+빌드 검증 포함."
+    },
+    {
+      "id": "E-06",
+      "name": "Section 7 재결정 ↔ 최종 표 일관성 (E-06)",
+      "result": "YES",
+      "evidence": "spec.md L14~40 사전 결정 표: D1~D7 명시. D1(L16~19): monorepo prefix 결정. D2(L19~20): goals.json 누락 파일 3개 보정(AggregationGrid.tsx, index.ts, stories.tsx). 최종 표(L357~362)는 이 D2 결정을 100% 반영: #3 AggregationGrid.tsx MODIFY + #4 index.ts MODIFY + #5 stories.tsx MODIFY 명시. prose ↔ structured form 일관성(E-06 sub-rule): D3(L20~21) 'resolveAggregationFn 보존' 명시 → Section 11.2 After-code(L695) resolveAggregationFn 유지 일치. D6(L23) 'overwrite + console.warn' → EC-002(L339)·Section 7.1 코드(L398~401) 일치. 재결정 ↔ 최종 표 모순 0건."
+    },
+    {
+      "id": "F-01",
+      "name": "패키지 대상 명시 (F-01)",
+      "result": "YES",
+      "evidence": "spec.md L769~772 Section 13: '### 패키지 대상 **Pro 패키지**: `packages/grid-pro-agg` (`@tomis/grid-pro-agg`)' 명시. goals.json L6 'licenseTier: Pro' 확인. 정확한 패키지 명시."
+    },
+    {
+      "id": "F-02",
+      "name": "라이선스 검증 호출 위치 (F-02)",
+      "result": "YES",
+      "evidence": "spec.md L774~778 Section 13: 'G-001에서 `AggregationGrid.tsx` 모듈 레벨에 `verifyOrWarn(\\'@tomis/grid-pro-agg\\')` 1회 호출 완료 (ADR-MOD-GRID-15-002). G-003는 수정 대상 파일에 추가 호출을 하지 않는다 (D5 — 한 패키지 1회 원칙, G-002 D7 동일 결정)'. F-02 SPECIFY vs IMPLEMENT 책임 분리 기준(2026-05-14 추가): '구현 위치 + 교체 계획 + AC scope split' 명시 시 YES. spec.md에서 '한 패키지 1회 원칙' + 'G-001 stub 계승' 명시. 정상."
+    },
+    {
+      "id": "F-03",
+      "name": "문서 작성 계획 (F-03)",
+      "result": "YES",
+      "evidence": "spec.md L780~790 Section 13: '**Storybook story**: `AggregationGrid.stories.tsx` 수정 | story 이름 | 시나리오 | `CustomAggregation` | ratio fn 등록 + 그룹 footer에 예산 달성률(%) 표시'. 추가로 '**Docusaurus 페이지 (deferred to MOD-GRID-99-B)**: G-001~G-003 내용을 `grid-pro-agg.mdx`에 통합 시 `registerAggregationFn` 사용 가이드 섹션 추가.' Storybook + Docusaurus 경로 명시."
+    },
+    {
+      "id": "F-04",
+      "name": "peerDependencies 정책 (F-04)",
+      "result": "YES",
+      "evidence": "spec.md L792~807 Section 13: JSON 형식으로 peerDependencies 명시. '@tanstack/react-table: ^8.0.0', '@tanstack/react-virtual: ^3.0.0' (optional), 'react: ^18 || ^19', 'react-dom: ^18 || ^19'. C-22 준수 명시: '변경 없음 (C-22 준수 — G-002에서 이미 완료)'. peerDependencies 정책 명확히 기술."
+    },
+    {
+      "id": "G-01",
+      "name": "TBD/TODO/미정 없음 + D# 일관성 (G-01)",
+      "result": "YES",
+      "evidence": "spec.md L814~846 Appendix: 루브릭 자기-검산 표. G-01 항목: '모든 결정 D1~D7 명시. D# 파일수: \"MODIFY 5개\" == Section 7 최종 표 5행. D# breakdown: NEW 0 + MODIFY 5 == Section 7 NEW 0 + MODIFY 5. D# goals.json 데이터 일관성: D1 monorepo prefix 결정 ↔ Section 7 표 경로 일치. D2 보정 파일 3개 명시 ↔ 최종 표 반영.' spec 전체에서 TBD/TODO/미정 검색 결과 0건(spec.md 전체 문맥 검토). 모든 결정 명시. 최종 표 파일수 5 == Section 11 Step 파일수 5. 일관성 검증 완료."
+    }
+  ],
+  "yesCount": 29,
+  "noCount": 0,
+  "naCount": 6,
+  "denominator": 29,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [],
+  "evaluatedAt": "2026-05-15",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 27,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 5,
+    "originalReportedDenominator": 27,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-15",
+  "runAt": "2026-05-15",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-003→full",
+      "runAt=2026-05-15",
+      "verifierModel=haiku"
+    ]
+  }
+}

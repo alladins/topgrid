@@ -1,0 +1,159 @@
+{
+  "goalId": "MOD-GRID-04/column/G-003",
+  "module": "MOD-GRID-04",
+  "area": "column",
+  "stage": "verify",
+  "rubricVersion": "1.0.2",
+  "tier": "medium",
+  "threshold": 90,
+  "migrationImpact": "medium",
+  "weights": { "A": 0.15, "B": 0.20, "C": 0.30, "D": 0.20, "E": 0.15 },
+  "categoryScores": {
+    "A": {
+      "score": 100.0,
+      "items": [
+        {
+          "id": "A-01",
+          "result": "N/A",
+          "evidence": "Goal scope is FE-only (grid-core hook + component). No Spring Boot backend involvement — tvcom_back gradlew compileJava not applicable. Per rubric A-01 'N/A: 그리드 작업이 FE 전용일 때 (대부분 N/A)'."
+        },
+        {
+          "id": "A-02",
+          "result": "YES",
+          "evidence": "(1) `npx tsc --noEmit` in D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core → EXIT_CODE=0 (0 errors). (2) `npx tsc --noEmit` in D:/project/topvel_project/TOMIS/tw-framework-front → EXIT_CODE=0 (0 errors, no output). Both grid-core package + downstream consumer tw-framework-front compile clean post-hotfix (ColumnVisibilityMenu.tsx L27-39 props interface + L64-69 destructure + L77/L86/L109 render usage)."
+        },
+        {
+          "id": "A-03",
+          "result": "YES",
+          "evidence": "`npx tsup` in grid-core → EXIT_CODE=0. Build artifacts: dist/index.cjs=60.38 KB raw / dist/index.mjs=58.85 KB raw, dist/legacy/index.{cjs,mjs}=43.56/42.47 KB raw, DTS bundles 26.15 KB. gzip measurement (gzip -c via Git/usr/bin): dist/index.mjs raw=60,812 / gzip=13,411 bytes (≈13.1 KB), dist/index.cjs raw=62,374 / gzip=13,535 bytes. C-21 grid-core ≤ 30 KB hard limit satisfied with ≈55% headroom. .size-limit.json not configured at grid-core (pre-existing infra gap, not introduced by G-003 — flagged in feedback). Goal title 'useColumnPersistence + ColumnVisibilityMenu — 컬럼 가시성·순서 영속화' contains no 'build/tsup/tsc/vite/rollup/size-limit/bundle' keyword (no vacuous-block trigger applicable to A — but A is not vacuous: 2 YES + 1 N/A with denominator 2). tsup build success constitutes the operative bundle verification gate."
+        }
+      ]
+    },
+    "B": {
+      "score": 100.0,
+      "items": [
+        {
+          "id": "B-01",
+          "result": "N/A",
+          "evidence": "Goal scope = column visibility + order persistence (useColumnPersistence + ColumnVisibilityMenu). Sorting state untouched — useColumnPersistence.ts L128-134 writes only `visibility` + `order` to localStorage; restore path L111-115 calls only setColumnVisibility/setColumnOrder, never touches sorting. No regression vector for sort."
+        },
+        {
+          "id": "B-02",
+          "result": "N/A",
+          "evidence": "Filter behavior unchanged — Goal does not touch column filters. ColumnVisibilityMenu.tsx L70-74 uses `col.getCanHide()` which is hide-eligibility, not column-filter feature."
+        },
+        {
+          "id": "B-03",
+          "result": "N/A",
+          "evidence": "Pagination behavior unchanged — Goal does not touch pagination. Grid.tsx L80-83 pagination state untouched; buildTableOptions paginationActive logic unchanged by G-003."
+        },
+        {
+          "id": "B-04",
+          "result": "YES",
+          "evidence": "Virtualization compatibility verified by Read of Grid.tsx: columnVisibility (L101) + columnOrder (L102) state additions flow through buildTableOptions (L119-122) into useReactTable (L125-129). The virtualization padding-row pattern (L226-244) uses `table.getAllLeafColumns()` (L245) and `table.getRowModel()` rows — both honor TanStack's columnVisibility/columnOrder state automatically. useColumnPersistence (useColumnPersistence.ts L87-149) only reads/writes localStorage + calls `table.setColumnVisibility`/`table.setColumnOrder`; no DOM reads, no position:absolute cells, no scroll-element coupling. C-18 / C-10 compatible. Storybook stories (ColumnVisibilityMenu.stories.tsx L76-128) use the standard `<Grid>` integration path."
+        },
+        {
+          "id": "B-05",
+          "result": "N/A",
+          "evidence": "Inline editing out of Goal scope (handled by MOD-GRID-05 / MOD-GRID-10). G-003 deals only with column visibility/order persistence."
+        }
+      ]
+    },
+    "C": {
+      "score": 100.0,
+      "items": [
+        {
+          "id": "C-01",
+          "result": "YES",
+          "evidence": "`affectedUsageFiles: []` per goals.json L208 + spec Section 8.0 explicit '영향 사용처: 0개'. Goal is purely additive — new optional prop `columnPersistence?: ColumnPersistenceOptions` on GridProps + new files. Verified by `npx tsc --noEmit` in D:/project/topvel_project/TOMIS/tw-framework-front → EXIT_CODE=0 (0 errors, no output). No downstream consumer breakage. Pre-existing DataTable usages remain untouched (migration scheduled at MOD-GRID-17 per spec deprecationStrategy)."
+        },
+        {
+          "id": "C-02",
+          "result": "N/A",
+          "evidence": "Visual regression: affectedUsageFiles=[] → no AS-IS consumer UI being replaced in this Goal. data-table-view-options.tsx remains untouched (Section 1.1 — direct migration source preserved). The new ColumnVisibilityMenu (ColumnVisibilityMenu.tsx L64-142) is additive and only renders when `columnPersistence` prop provided (Grid.tsx L249-253). 4 Storybook stories authored as the visual spec for the additive component (Default/VisibilityOnly/NoOp/NoPersistence — stories.tsx L76-128). No pre-existing visual baseline to regress against. C-17 N/A condition: '영향 사용처 0개'."
+        },
+        {
+          "id": "C-03",
+          "result": "YES",
+          "evidence": "Grep `console\\.(warn|error|log)` on useColumnPersistence.ts + ColumnVisibilityMenu.tsx → 0 hits in G-003 NEW files. localStorage failure paths use silent try/catch (useColumnPersistence.ts L50-53 readStorage catch, L61-63 writeStorage catch — NFR-002 + EC-003 silent skip per spec). Grid.tsx retains pre-existing virtualization + multiSort dev-warn (L181-184, L197-200) — unrelated to G-003 scope, both gated by NODE_ENV !== 'production'. No PropTypes use (strict TS throughout). No new React warnings introduced (forwardRef + useImperativeHandle pattern unchanged from G-004)."
+        }
+      ]
+    },
+    "D": {
+      "score": 100.0,
+      "items": [
+        {
+          "id": "D-01",
+          "result": "N/A",
+          "evidence": "affectedUsageFiles=[] → no usage migration in this Goal (additive new prop + new files). Migration ratio undefined (0/0). spec Section 8.0 explicitly notes G-003 does not migrate any existing usage; DataTable usage migration is deferred to MOD-GRID-17 per spec deprecationStrategy 'DataTableViewOptions alias 1 minor 버전 유지'."
+        },
+        {
+          "id": "D-02",
+          "result": "N/A",
+          "evidence": "No remaining usages — 0 usage migrations in this Goal. spec Section 10 documents deferred migration path (DataTable→Grid with columnPersistence) for actual transition at MOD-GRID-17. findings/documented-deviations/ entry not required (no jobs left over)."
+        }
+      ]
+    },
+    "E": {
+      "score": 100.0,
+      "items": [
+        {
+          "id": "E-01",
+          "result": "YES",
+          "evidence": "Gzip measurement of built artifacts (gzip -c via Git/usr/bin): dist/index.mjs raw=60,812 bytes / gzip=13,411 bytes (≈13.1 KB); dist/index.cjs raw=62,374 / gzip=13,535. C-21 grid-core ≤ 30 KB hard limit satisfied with ≈55% headroom. spec Section 8.5 bundleImpact.expected = '+3 KB' (NFR-001). Prior verify-score recorded 11,755 bytes gzip for mjs; current delta ≈ +1,656 bytes ≈ +1.6 KB which is within the +3 KB target. No bundle limit violation."
+        },
+        {
+          "id": "E-02",
+          "result": "N/A",
+          "evidence": "Zero new dependencies / peerDependencies added by G-003. spec D3 explicit decision: '신규 peerDep 없음 — Radix UI / react-icons 미추가, 네이티브 HTML <details>/<summary>/<input> + Tailwind only'. package.json L31-36 peerDependencies unchanged: react / react-dom / @tanstack/react-table / @tanstack/react-virtual — all pre-existing from prior Goals (MOD-GRID-01~02 + G-001/G-002). No ADR required (C-20 trigger absent)."
+        },
+        {
+          "id": "E-03",
+          "result": "YES",
+          "evidence": "package.json L5 `\"license\": \"MIT\"` present (C-24 disclosure satisfied). License field is the package-manifest gate. Note: LICENSE/EULA file is absent at package root and monorepo root — pre-existing monorepo-wide concern not introduced by G-003 (consistent with G-001/G-002 baseline state). Not blocking for this Goal; recommend monorepo-level LICENSE addition outside G-003 scope. Pro-tier license verification N/A (grid-core is MIT)."
+        }
+      ]
+    }
+  },
+  "weightedScore": 100.0,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [
+    "Hotfix verified: ColumnVisibilityMenu.tsx L27-39 ColumnVisibilityMenuProps now includes triggerLabel/menuLabel/className optional props as spec Section 8.3 + Section 10 require. L64-69 destructure with defaults ('리스트 항목 설정' / '표시할 항목 선택'). L77 className interpolated into root <details>. L86 triggerLabel rendered in <summary>. L109 menuLabel rendered as menu header. Spec drift from prior implement-score (A-03 NO) fully resolved.",
+    "Bundle delta tracking: gzip mjs 11,755 → 13,411 bytes (+1,656 ≈ +1.6 KB) — within spec Section 8.5 +3 KB target. Recommend adding .size-limit.json + script to grid-core/package.json for delta-based automated verification in future Goals (carry-over from G-001/G-002 verify-score; not blocking for this Goal).",
+    "Monorepo LICENSE files absent (pre-existing). Recommend adding LICENSE (MIT) at monorepo root + grid-core package directory before public npm publish. Out of G-003 scope.",
+    "Storybook stories (4 variants: Default/VisibilityOnly/NoOp/NoPersistence) provide the visual spec but Chromatic/Playwright screenshot automation not wired. Manual visual review of stories recommended once Storybook is running in CI. ColumnVisibilityMenu.stories.tsx imports `{ Grid }` from '../Grid' and `{ createColumns }` from './createColumns' — render path validated by tsup build success.",
+    "vitest not installed at monorepo level — useColumnPersistence.test.ts + ColumnVisibilityMenu.test.tsx authored per spec Section 6 TC-001~TC-008 but not runtime-executed. Implement-rubric A-07 N/A justification (v1.0.9 environment-defect rule). Recommend cascading vitest installation Goal at MOD-GRID-00 infra track (3rd occurrence per implement-score documentedDeviations)."
+  ],
+  "buildStatus": {
+    "tsc": "PASS (0 errors, grid-core EXIT=0 + tw-framework-front EXIT=0)",
+    "tsupBuild": "PASS (dist/index.{cjs,mjs} + dist/legacy/* + dist/*.d.ts artifacts generated, EXIT=0)",
+    "sizeLimit": "PASS (manual gzip: index.mjs=13.1 KB / index.cjs=13.2 KB; both << 30 KB C-21 limit. .size-limit.json script not configured at grid-core — pre-existing infra gap)",
+    "tw-framework-front-tsc": "PASS (EXIT=0, no errors, no output)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": null,
+    "note": "Additive Goal — new optional GridProps.columnPersistence prop + new files (useColumnPersistence.ts, ColumnVisibilityMenu.tsx, .test.ts, .test.tsx, .stories.tsx) + index.ts public-API export. Existing consumers (DataTable + 27 pages per MOD-GRID-17) untouched. DataTable→Grid usage migration deferred to MOD-GRID-17 per spec deprecationStrategy 'DataTableViewOptions alias 1 minor 버전 유지'."
+  },
+  "verifierChecks": {
+    "selfValidation": {
+      "categoryTotals": "A=3 + B=5 + C=3 + D=2 + E=3 = 16 ✓ (matches verify-rubric.md L3)",
+      "yesNaCount": "YES=7 / NO=0 / N/A=9. failedChecks=[] contains NO only ✓ (no N/A leakage per C-26)",
+      "denominatorPerCategory": "A: denom=2 (A-01 N/A excluded; A-02+A-03 YES); B: denom=1 (B-01/B-02/B-03/B-05 N/A excluded; B-04 YES); C: denom=2 (C-02 N/A excluded; C-01+C-03 YES); D: denom=0 vacuous truth → categoryScore=100 per C-26 + rubric L60-65 (Goal title has no build/tsup/tsc/vite/rollup/size-limit/bundle keyword for D — vacuous-block rule is A-specific and A is not vacuous here); E: denom=2 (E-02 N/A excluded; E-01+E-03 YES) ✓",
+      "weightedScoreFormula": "100×0.15 + 100×0.20 + 100×0.30 + 100×0.20 + 100×0.15 = 15 + 20 + 30 + 20 + 15 = 100.0 ✓",
+      "weightSum": "0.15 + 0.20 + 0.30 + 0.20 + 0.15 = 1.00 ✓",
+      "passedCheck": "100.0 >= 90 (medium threshold) → passed=true ✓",
+      "vacuousCheck": "D category fully N/A (D-01 + D-02 both N/A; affectedUsageFiles=[]) — rubric L60-65 vacuous truth applied (categoryScore=100). vacuous-block keyword check: A category NOT vacuous (denom=2: A-02+A-03 YES) → 'build/tsup/tsc/vite/rollup/size-limit/bundle' vacuous-block rule does not trigger for A. D vacuous is genuine (migration ratio 0/0 with affectedUsageFiles=[]) ✓"
+    },
+    "metaGate": {
+      "F-01_evidence_realness": "YES — sampled implementFiles via Read with line-cited evidence: (1) useColumnPersistence.ts L87-149 (hook signature D4 + readStorage L33-54 + writeStorage L57-64 + restore L103-119 + persist L122-148). (2) ColumnVisibilityMenu.tsx L1-142 — verified hotfix: L27-39 props interface (triggerLabel?/menuLabel?/className?), L64-69 destructure with defaults, L77 className interpolation, L86 triggerLabel render, L109 menuLabel render. (3) Grid.tsx L100-102 columnVisibility/columnOrder state, L119-122 buildTableOptions pass, L125-129 useReactTable, L133 useColumnPersistence call, L249-253 ColumnVisibilityMenu conditional render. (4) types.ts L492 columnPersistence?: ColumnPersistenceOptions, L937 PersistTarget type, L960 ColumnPersistenceOptions interface. (5) index.ts L62-65 5 exports (useColumnPersistence, ColumnVisibilityMenu, ColumnVisibilityMenuProps, ColumnPersistenceOptions, PersistTarget). (6) package.json L5 license=MIT, L31-36 peerDependencies unchanged. (7) stories.tsx L46-128 — 4 stories with Grid+columnPersistence. (8) test files L1-202 + L1-102 — vitest imports + describe/it/expect TC-001~TC-008 + EC-002 authored. All cited line numbers verified by Read.",
+      "F-02_category_formula": "YES — recomputed each category per C-26 self-verification: A=YES2/(YES2+NO0)=100; B=YES1/(YES1+NO0)=100; C=YES2/(YES2+NO0)=100; D=vacuous(YES0,NO0,N/A2)→100 per rubric L60-65; E=YES2/(YES2+NO0)=100. Matches reported scores exactly.",
+      "F-03_weighted_formula": "YES — Σ(categoryScore × weight) = 100×0.15 + 100×0.20 + 100×0.30 + 100×0.20 + 100×0.15 = 15.0 + 20.0 + 30.0 + 20.0 + 15.0 = 100.0 exactly. weightedScore reported = 100.0. Δ=0. weight sum = 1.00 ✓ (matches medium-tier weights table per rubric L46-53)."
+    }
+  },
+  "verifierModel": "opus",
+  "runAt": "2026-05-14"
+}

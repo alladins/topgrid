@@ -1,0 +1,62 @@
+{
+  "goalId": "MOD-GRID-10/tracking/G-001",
+  "module": "MOD-GRID-10",
+  "area": "tracking",
+  "stage": "implement",
+  "rubricVersion": "1.0.9",
+  "migrationImpact": "high",
+  "threshold": 95,
+  "tier": "high",
+  "metaGateResult": "FAILED",
+  "checks": {
+    "F-01": {
+      "result": "NO",
+      "evidence": "MOD-GRID-10-decisions.md not found at D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-10-decisions.md. Files present: types.ts (types.ts exists D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/src/types.ts L1), useChangeTracking.ts (D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/src/useChangeTracking.ts L1), index.ts (D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/src/index.ts L1), EULA.md (D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-tracking/EULA.md L1). ADR file missing."
+    },
+    "F-02": {
+      "result": "NO",
+      "evidence": "Spec Section 7 implementFiles table row #5 mandates 'D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-10-decisions.md (NEW)'. Rubric E-02 emphasizes '정규 위치' (regular TOMIS location) is authoritative. File does not exist in required location. Rubric E-02: 'Non-정규 위치는 NO 처리 — Coverage Verifier가 정규 위치 검색만 의무'. ADR missing at required location = spec external library ADR requirement unfulfilled (C-20, C-14)."
+    }
+  },
+  "failedChecks": [
+    {
+      "rubricId": "F-01",
+      "issue": "Hallucination suspect: reported deliverable MOD-GRID-10-decisions.md does not exist at required spec location D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/"
+    },
+    {
+      "rubricId": "F-02",
+      "issue": "Spec Section 7 final implementFiles table (authoritative per C-30) specifies NEW file 'D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-10-decisions.md' (row #5). External library ADR mandatory per C-20 + E-02. File missing at required 정규 위치 (regular TOMIS location). Implementer has not created ADR per spec."
+    }
+  ],
+  "yesCount": 0,
+  "noCount": 2,
+  "naCount": 0,
+  "denominator": 2,
+  "score": 0,
+  "passed": false,
+  "feedback": [
+    "METAGATE FAILURE: F-01 (모든 보고된 deliverable 파일 미존재 2건) + F-02 (spec implementFiles 외 임의 변경 또는 required 파일 누락). 일반 채점 생략. 변경 롤백 권장.",
+    "Implementer 가 MOD-GRID-10-decisions.md ADR 파일을 작성하지 않았음. Spec Section 7 #5 + E-02 요구 사항: '정규 위치 D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-10-decisions.md에 ADR 파일 존재 (Read 도구로 파일 실재 + ADR-MOD-GRID-{XX}-NNN 항목 본문 확인)'. 타입/hook/EULA는 생성했으나 핵심 ADR 결정 문서는 누락. C-14 + C-20 의무 위반.",
+    "A-E 항목 채점 생략 (metagate failure due to incomplete deliverables). Implementer Agent 재호출 지시: (1) MOD-GRID-10-decisions.md 작성 — ADR-MOD-GRID-10-001 (API 시그니처 결정), ADR-MOD-GRID-10-002 (Mapping 설계), ADR-MOD-GRID-10-003 (MOD-GRID-99-A stub 전략) 포함, 각 ADR은 대안 2개+ + trade-off + 결과 명시. (2) 정규 위치에 저장: D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-10-decisions.md. (3) 재제출."
+  ],
+  "verifiedAt": "2026-05-14T22:16:00Z",
+  "verifiedBy": "haiku-coverage-verifier",
+  "notes": {
+    "c26SelfVerification": "Denominator = 2 (2 F checks, both NO). failedChecks 배열 = NO 항목만 포함 (N/A 0건). 카테고리 합계: F=2 + (A-E 생략 due to metagate) = 정상. 점수 산식: 0 YES / 2 (YES+NO) × 100 = 0. passed = false (0 < 95 threshold).",
+    "rubricViolation": "Spec C-20 (external library ADR mandatory) + C-14 (decision record) + E-02 (정규 위치 ADR 파일) 모두 위반. F-01 + F-02 동시 NO = immediate metagate fail."
+  },
+  "moduleId": "MOD-GRID-10",
+  "runAt": "2026-05-14T22:16:00Z",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-001→full",
+      "runAt=2026-05-14T22:16:00Z",
+      "verifierModel=haiku"
+    ]
+  }
+}

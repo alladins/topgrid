@@ -1,0 +1,226 @@
+{
+  "goalId": "MOD-GRID-07/column-drag/G-001",
+  "moduleId": "MOD-GRID-07",
+  "area": "column-drag",
+  "stage": "verify",
+  "scoredAt": "2026-05-14T11:10:00Z",
+  "rubricVersion": "verify-rubric.md v1.0.2",
+  "migrationImpact": "low",
+  "weights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "checks": [
+    {
+      "id": "A-01",
+      "axis": "A",
+      "label": "gradlew compileJava 0 errors",
+      "result": "N/A",
+      "evidence": "FE-only Goal (packages/grid-features + packages/grid-core monorepo). tvcom_back Java backend 무관 — Section 1 범위에 백엔드 변경 없음."
+    },
+    {
+      "id": "A-02",
+      "axis": "A",
+      "label": "npx tsc --noEmit 0 errors (grid-features + grid-core)",
+      "result": "YES",
+      "evidence": "Ran `node_modules/.bin/tsc.CMD --noEmit` in both packages. grid-features EXIT=0, grid-core EXIT=0. 모든 source 파일 tsc strict + exactOptionalPropertyTypes + verbatimModuleSyntax 통과."
+    },
+    {
+      "id": "A-03",
+      "axis": "A",
+      "label": "tsup build + size-limit 한도 내",
+      "result": "YES",
+      "evidence": "tsup grid-features: dist/index.mjs 3.26 KB, dist/index.cjs 3.37 KB (EXIT=0). tsup grid-core: dist/index.mjs 53.04 KB (EXIT=0). size-limit @tomis/grid-features: size=3620 brotli, limit=20000 → passed:true (.size-limit.json L36-40)."
+    },
+    {
+      "id": "B-01",
+      "axis": "B",
+      "label": "정렬 동작",
+      "result": "N/A",
+      "evidence": "G-001 범위는 컬럼 헤더 DnD 재정렬 — 정렬(sort) 무관. 스토리는 `getCoreRowModel()` only — sort 모델 미포함 (useColumnDrag.stories.tsx L62)."
+    },
+    {
+      "id": "B-02",
+      "axis": "B",
+      "label": "필터 동작",
+      "result": "N/A",
+      "evidence": "G-001 범위 — 필터 무관. spec Section 1 명시."
+    },
+    {
+      "id": "B-03",
+      "axis": "B",
+      "label": "페이지네이션 동작",
+      "result": "N/A",
+      "evidence": "G-001 범위 — 페이지네이션 무관."
+    },
+    {
+      "id": "B-04",
+      "axis": "B",
+      "label": "가상화 동작 (C-18)",
+      "result": "N/A",
+      "evidence": "헤더 DnD 는 row-level 가상화와 독립 (spec L1 §5, Section 10 마지막 행). G-001 자체는 virtualization 시나리오 미포함."
+    },
+    {
+      "id": "B-05",
+      "axis": "B",
+      "label": "인라인 편집 동작",
+      "result": "N/A",
+      "evidence": "G-001 범위 — 편집 기능 없음."
+    },
+    {
+      "id": "C-01",
+      "axis": "C",
+      "label": "영향 사용처 tsc 0",
+      "result": "N/A",
+      "evidence": "goals.json affectedUsageFiles: [] (0 usages). spec Section 6 + Section 13: 신규 prop opt-in — 기존 23개 Grid 사용처 무영향."
+    },
+    {
+      "id": "C-02",
+      "axis": "C",
+      "label": "외관 보존 (시각 회귀)",
+      "result": "N/A",
+      "evidence": "rubric C-02 N/A 조건 충족: low tier + 사용처 0. spec Section 6 N/A 명시 (C-17 의무 미해당)."
+    },
+    {
+      "id": "C-03",
+      "axis": "C",
+      "label": "console warning 0 + React warning 0",
+      "result": "YES",
+      "evidence": "tsup grid-features/grid-core 빌드 출력에 warning 메시지 없음. tsc 0 errors (deprecation/warning 포함 0). useColumnDrag.ts/DropIndicator.tsx Grep `console.warn|console.error` 0 hits. Grid.tsx 기존 dev-mode warn (L181, L197) 은 G-001과 무관 — 기존 코드 보존."
+    },
+    {
+      "id": "D-01",
+      "axis": "D",
+      "label": "마이그레이션 비율 ≥50% + 잔여 계획",
+      "result": "N/A",
+      "evidence": "rubric D-01 N/A 조건 충족: 사용처 0개 (goals.json affectedUsageFiles: []). 마이그레이션 분모 없음."
+    },
+    {
+      "id": "D-02",
+      "axis": "D",
+      "label": "잔여 사용처 명시",
+      "result": "N/A",
+      "evidence": "rubric D-02 N/A 조건 충족: 잔여 0건 (사용처 0)."
+    },
+    {
+      "id": "E-01",
+      "axis": "E",
+      "label": "번들 크기 변동 한도 내 (C-21)",
+      "result": "YES",
+      "evidence": "grid-features dist/index.mjs = 3.26 KB (raw), 3620 bytes (brotli). spec Section 13 예상 +3 KB 부합. size-limit `@tomis/grid-features` limit=20000 → passed:true. grid-core는 본 Goal MODIFY 영향 미미 (53.04 KB total, size-limit 30KB 한도 — 브로틀리 27897 < 30000 → passed:true)."
+    },
+    {
+      "id": "E-02",
+      "axis": "E",
+      "label": "새 의존성 ADR (C-20)",
+      "result": "N/A",
+      "evidence": "외부 dependency 추가 없음 (AC-006 + spec Section 5 ADR 불필요). grid-features/package.json peerDependencies 변경 없음 (HTML5 DnD only). grid-core/package.json 에 `@tomis/grid-features: workspace:*` 내부 monorepo dep 추가 — C-20 외부 라이브러리 트리거 조건 미해당. tsup.config.ts `external: ['@dnd-kit/core', ...]` 는 방어적 미사용 노드 (실제 import 0건)."
+    },
+    {
+      "id": "E-03",
+      "axis": "E",
+      "label": "라이선스 명시 (C-24)",
+      "result": "YES",
+      "evidence": "grid-features/package.json L5 `\"license\": \"MIT\"`. grid-core/package.json L5 `\"license\": \"MIT\"`. 두 패키지 모두 MIT 선언 — C-24 준수."
+    }
+  ],
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "weightedScore": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "acComplianceMap": {
+    "AC-001": "YES",
+    "AC-002": "YES",
+    "AC-003": "YES",
+    "AC-004": "YES",
+    "AC-005": "YES",
+    "AC-006": "YES",
+    "AC-007": "YES",
+    "AC-008": "YES"
+  },
+  "acEvidence": {
+    "AC-001": "types.ts L285-292 enableColumnReorder?: boolean + onColumnOrderChange? 추가. Grid.tsx L165-171 useColumnDrag({ enabled: props.enableColumnReorder === true }). Grid.tsx L309 <th draggable={dragProps.draggable}>. useColumnDrag.ts L38 `!enabled || isPinned` → draggable:false 반환.",
+    "AC-002": "useColumnDrag.ts L98 `table.setColumnOrder(newOrder)` — TanStack v8 표준 API (C-2 준수).",
+    "AC-003": "DropIndicator.tsx L29-34 Tailwind `absolute left-0 top-0 bottom-0 w-0.5 bg-blue-500 pointer-events-none` className 사용 (style={{}} 없음). spec L320 `border-l-2 border-blue-500` 대신 `w-0.5 bg-blue-500` 패턴 — 시각적 동등 (수직 파란 실선). C-5 Tailwind only 준수.",
+    "AC-004": "useColumnDrag.ts L38 (initial guard), L61 (onDragOver early return), L72 (onDrop early return). Grid.tsx L277 `header.column.getIsPinned() !== false` 로 isPinned 계산 후 hook 에 전달.",
+    "AC-005": "useColumnDrag.ts L101 `onColumnOrderChange?.(newOrder)` — table.setColumnOrder 직후 호출 (D7 준수). types.ts L21 callback prop 정의.",
+    "AC-006": "Grep `react-dnd|dnd-kit|@dnd-kit|react-beautiful-dnd|sortablejs` in src/ → 0 hits. package.json peerDependencies/dependencies: 외부 DnD 라이브러리 없음. tsup.config.ts L21 `@dnd-kit/core` 는 external 방어적 등록 — 실제 import 0건.",
+    "AC-007": "tsc --noEmit grid-features EXIT=0, grid-core EXIT=0. exactOptionalPropertyTypes + verbatimModuleSyntax + noUnusedLocals 모두 통과.",
+    "AC-008": "useColumnDrag.stories.tsx 존재 (canonical 경로 packages/grid-features/src/column-drag/). 6 컬럼 (id/name/department/role/location/status, L42-49). 2개 story export (ColumnReorderDrop L172, WithPinnedGuard L181). title='grid-features/column-drag/useColumnDrag'."
+  },
+  "buildStatus": {
+    "tscGridFeatures": "PASS (0 errors)",
+    "tscGridCore": "PASS (0 errors)",
+    "tsupGridFeatures": "PASS (dist/index.mjs 3.26 KB)",
+    "tsupGridCore": "PASS (dist/index.mjs 53.04 KB)",
+    "sizeLimitGridFeatures": "PASS (3620 brotli / 20000 limit)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": null,
+    "note": "affectedUsageFiles: [] — neue feature opt-in only, no migration required"
+  },
+  "selfVerification": {
+    "categoryItemCounts": {
+      "A": 3,
+      "B": 5,
+      "C": 3,
+      "D": 2,
+      "E": 3,
+      "total": 16
+    },
+    "itemCountMatchesRubric": true,
+    "weightSum": 100,
+    "weightSumValid": true,
+    "categoryScoreFormulaCheck": {
+      "A": "YES=2, NO=0, N/A=1 → 2/2*100=100 ✓",
+      "B": "YES=0, NO=0, N/A=5 → vacuous → 100 ✓ (B not in build-keyword vacuous-banned list)",
+      "C": "YES=1, NO=0, N/A=2 → 1/1*100=100 ✓",
+      "D": "YES=0, NO=0, N/A=2 → vacuous → 100 ✓",
+      "E": "YES=2, NO=0, N/A=1 → 2/2*100=100 ✓"
+    },
+    "weightedScoreFormulaCheck": "Σ(categoryScore × weight)/100 = (100*25 + 100*25 + 100*20 + 100*15 + 100*15)/100 = 10000/100 = 100.0 ✓",
+    "failedChecksContainsOnlyNO": true,
+    "naExcludedFromDenominator": true,
+    "vacuousAxisAllowedHere": "A vacuous banned per rubric (build keyword), but A here has 2 YES so vacuous N/A. B/D vacuous allowed (no build keyword in those axes' purpose)."
+  },
+  "feedback": [],
+  "blockers": [],
+  "regressions": [],
+  "tier": "low",
+  "yesCount": 5,
+  "noCount": 0,
+  "naCount": 11,
+  "denominator": 5,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "tier=low",
+      "yesCount=5",
+      "noCount=0",
+      "naCount=11",
+      "denominator=5",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

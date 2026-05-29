@@ -1,0 +1,240 @@
+{
+  "goalId": "MOD-GRID-10/tracking/G-001",
+  "moduleId": "MOD-GRID-10",
+  "area": "tracking",
+  "stage": "verify",
+  "tier": "high",
+  "migrationImpact": "high",
+  "threshold": 95,
+  "rubricVersion": "1.0.2",
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85
+  },
+  "weights": {
+    "A": 0.1,
+    "B": 0.15,
+    "C": 0.4,
+    "D": 0.25,
+    "E": 0.1
+  },
+  "checks": [
+    {
+      "id": "V-A-01",
+      "title": "npx tsc --noEmit 0 errors",
+      "axis": "A",
+      "result": "YES",
+      "evidence": "cd packages/grid-pro-tracking && npx tsc --noEmit → exit 0 (no output, 0 errors). C-12 충족."
+    },
+    {
+      "id": "V-A-02",
+      "title": "tsup build 산출물 생성",
+      "axis": "A",
+      "result": "YES",
+      "evidence": "Glob packages/grid-pro-tracking/dist/** → 6 files: index.cjs (1224 B), index.mjs (1189 B), index.d.cts (3269 B), index.d.ts (3269 B), + 2 maps. CJS+ESM+DTS dual export 완성."
+    },
+    {
+      "id": "V-A-03",
+      "title": "size-limit 한도 내",
+      "axis": "A",
+      "result": "YES",
+      "evidence": ".size-limit.json L26-31: grid-pro-tracking limit 20 KB brotli. 실측 raw mjs=1189 B, gzipped=431 B (.NET GZipStream Optimal 측정). 20 KB 한도 대비 ~2.1% 사용 — 충분히 여유. C-21 충족."
+    },
+    {
+      "id": "V-B-01",
+      "title": "정렬 동작",
+      "axis": "B",
+      "result": "N/A",
+      "evidence": "G-001 hook stub 단계 — UI 컴포넌트 0개. 정렬 동작은 G-002+ 또는 useReactTable 외부 조합 책임 (spec Section 12 deferred 명시)."
+    },
+    {
+      "id": "V-B-02",
+      "title": "필터 동작",
+      "axis": "B",
+      "result": "N/A",
+      "evidence": "G-001 stub — 필터 무관 (spec Section 8.2 deferred)"
+    },
+    {
+      "id": "V-B-03",
+      "title": "페이지네이션 동작",
+      "axis": "B",
+      "result": "N/A",
+      "evidence": "G-001 stub — 페이지 무관 (spec Section 8.2 deferred)"
+    },
+    {
+      "id": "V-B-04",
+      "title": "가상화 동작",
+      "axis": "B",
+      "result": "N/A",
+      "evidence": "G-001 hook + types only — 1000행 시나리오 Storybook G-002/G-005 위임 (spec Section 8.2 AC-009 deferred). hook 자체는 reactive array 반환으로 react-virtual 호환 가능 (ADR-001 Trade-offs)."
+    },
+    {
+      "id": "V-B-05",
+      "title": "인라인 편집 동작",
+      "axis": "B",
+      "result": "N/A",
+      "evidence": "stub body — updateRow/addRow/deleteRow 모두 throw new Error('see G-002'). 실제 편집 동작은 G-002 책임 (spec Section 11.3 + 11.4 risk-3)."
+    },
+    {
+      "id": "V-C-01",
+      "title": "영향 사용처 tsc 0 (마이그레이션 후)",
+      "axis": "C",
+      "result": "N/A",
+      "evidence": "G-001 마이그레이션 사용처 0건 — 영향 사용처(ChangeTrackingGrid.tsx + PayrollEditablePage.tsx)는 본 Goal에서 미변경 (spec Section 8.1 명시, G-005에서 alias 도입 후 점진 교체)."
+    },
+    {
+      "id": "V-C-02",
+      "title": "외관 보존 (시각 회귀)",
+      "axis": "C",
+      "result": "YES",
+      "evidence": "영향 사용처 2 파일 모두 unchanged: (1) git diff --stat HEAD -- tw-framework-front/src/components/tomis/Grid/ChangeTrackingGrid.tsx tw-framework-front/src/pages/tomis/payroll/PayrollEditablePage.tsx → 빈 출력 (0 lines changed). (2) git status --short → 빈 출력. (3) Grep 'grid-pro-tracking' on 두 파일 → 0 hits (신규 패키지 import 부재). (4) ChangeTrackingHandle interface L12-17 보존 확인 (Read). 미변경 = vacuous 외관 보존. spec Section 4 (Breaking change: false) + C-17 NA 룰('사용처 0개 또는 변경 없는 Goal') 충족."
+    },
+    {
+      "id": "V-C-03",
+      "title": "console warning 0 + React warning 0",
+      "axis": "C",
+      "result": "YES",
+      "evidence": "Grep 'console\\.' on packages/grid-pro-tracking/src → 0 hits. 사용처 미변경으로 React warning 신규 발생 가능성 0. implement-score buildEvidence.eslint = '0 errors, 0 warnings'."
+    },
+    {
+      "id": "V-D-01",
+      "title": "마이그레이션 비율 (≥ 50%)",
+      "axis": "D",
+      "result": "N/A",
+      "evidence": "G-001 영향 사용처 마이그레이션 0건 — spec Section 8.1 + Section 3 명시: '본 G-001 범위 마이그레이션 액션 없음 (타입/시그니처만 정의). 실제 사용처 변경은 G-005.' 잔여 100% 모두 G-005 계획됨 (spec Section 11.3 + Migration path)."
+    },
+    {
+      "id": "V-D-02",
+      "title": "잔여 사용처 명시 (다음 Goal 또는 documented-deviations)",
+      "axis": "D",
+      "result": "YES",
+      "evidence": "잔여 2 파일(ChangeTrackingGrid.tsx + PayrollEditablePage.tsx) 모두 G-005에 명시: (1) spec Section 3 대응표 (alias 도입 단계 G-005), (2) spec Section 8.3 점진 단계 2단계 G-005, (3) ADR-MOD-GRID-10-001 Consequences L33 'migration moves to G-005 with a 1-minor ChangeTrackingGrid alias per C-6/C-23'. C-19 점진 ≤ 5 충족."
+    },
+    {
+      "id": "V-E-01",
+      "title": "번들 크기 변동 (한도 내)",
+      "axis": "E",
+      "result": "YES",
+      "evidence": "gzipped mjs=431 B (raw 1189 B), cjs gzipped=451 B (raw 1224 B). .size-limit.json L26-31 grid-pro-tracking 20 KB 한도 대비 ~2.1% 사용. spec Section 8.5 예상 '+1 KB' 충족. C-21 한도 내 + 사용자 승인 불필요."
+    },
+    {
+      "id": "V-E-02",
+      "title": "새 의존성 ADR (C-20)",
+      "axis": "E",
+      "result": "N/A",
+      "evidence": "G-001 신규 dependencies 0건 (zero-runtime). peerDependencies는 기존 L27-31 (react, react-dom, @tanstack/react-table) 유지. ADR-MOD-GRID-10-001/002/003 작성 완료 (decisions.md L1-115, 각 대안 2개+ trade-off 포함) — 시그니처/Mapping/license-stub 결정 ADR (C-14 충족, dependency 추가는 아님)."
+    },
+    {
+      "id": "V-E-03",
+      "title": "라이선스 명시 (C-24)",
+      "axis": "E",
+      "result": "YES",
+      "evidence": "(1) package.json L5: 'license: SEE LICENSE IN EULA'. (2) EULA.md (L1-27) 존재 — TOPVEL Pro License 명시 + grid-license 위임 + 60-day expiry warning + license@topvel.com contact. (3) index.ts L6-9 verifyOrWarn() 호출 1건 — Pro 패키지 런타임 라이선스 검증 hook (stub no-op, MOD-GRID-99-A/G-002 완성 시 import 교체 계획 ADR-003 명시). C-24 구조적 결합 충족."
+    }
+  ],
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "categoryBreakdown": {
+    "A": {
+      "yes": 3,
+      "no": 0,
+      "na": 0,
+      "total": 3
+    },
+    "B": {
+      "yes": 0,
+      "no": 0,
+      "na": 5,
+      "total": 5,
+      "vacuous": true,
+      "vacuousReason": "G-001 hook stub 단계 — 정렬/필터/페이지/가상화/편집 동작 모두 G-002+로 deferred (spec Section 8.2 + 12). Goal 제목에 build|tsup|tsc|vite|rollup|size-limit|bundle 키워드 부재 — B 카테고리 vacuous 100 적용 허용 (verify-rubric L66-75)."
+    },
+    "C": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "total": 3
+    },
+    "D": {
+      "yes": 1,
+      "no": 0,
+      "na": 1,
+      "total": 2
+    },
+    "E": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "total": 3
+    }
+  },
+  "weightedScore": 100,
+  "passed": true,
+  "failedChecks": [],
+  "buildStatus": {
+    "tsc": "PASS (exit 0)",
+    "tsupBuild": "PASS (CJS+ESM+DTS dist/ 6 files)",
+    "sizeLimit": "PASS (gzipped 431 B / 20 KB limit = 2.1%)"
+  },
+  "migrationStatus": {
+    "totalAffected": 2,
+    "migrated": 0,
+    "remaining": [
+      "tw-framework-front/src/components/tomis/Grid/ChangeTrackingGrid.tsx",
+      "tw-framework-front/src/pages/tomis/payroll/PayrollEditablePage.tsx"
+    ],
+    "rate": 0,
+    "rationale": "G-001 hook stub 단계 (의도된 0%). spec Section 8.1 + Section 11.3 명시 — 마이그레이션은 G-005 alias 도입 단계 책임. 잔여 사용처는 G-005 계획됨 (V-D-02 YES)."
+  },
+  "metaGateF": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "evidence sampling 5건 Read 확인: (1) types.ts L4 RowStatus 'added|edited|deleted' 일치, (2) useChangeTracking.ts L13 export function 일치, (3) index.ts L9 verifyOrWarn 호출 일치, (4) EULA.md L1-27 TOPVEL Pro License 일치, (5) ChangeTrackingGrid.tsx L12 ChangeTrackingHandle 보존 일치. 외부 디렉토리 evidence는 Glob+Read로 검증."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "categoryScores 산식 검증: A=3/(3+0)×100=100 ✓, B=vacuous(0/0)→100 ✓ (Goal 제목 build 키워드 부재 — verify-rubric L74 vacuous 허용), C=2/(2+0)×100=100 ✓, D=1/(1+0)×100=100 ✓, E=2/(2+0)×100=100 ✓. N/A 분모 미포함 확인. failedChecks=[] (NO 0건). 카테고리 합계 A3+B5+C3+D2+E3=16 ✓ (verify-rubric L277)."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore = 100×0.10 + 100×0.15 + 100×0.40 + 100×0.25 + 100×0.10 = 10+15+40+25+10 = 100.0 ✓. Σweight = 0.10+0.15+0.40+0.25+0.10 = 1.00 ✓."
+    }
+  },
+  "feedback": [
+    "G-001 hook stub 단계 의도된 deferred — B 동작 5항목 + C-01 + D-01 모두 N/A 정상 (spec Section 8.2 + 11.3 + 12).",
+    "C 호환성 (high tier 40% 가중) — 영향 사용처 git diff 0 lines + grid-pro-tracking import 부재 + ChangeTrackingHandle L12 보존으로 vacuous 외관 보존 충족.",
+    "E-01 번들 — gzipped 431 B (한도 20 KB의 2.1%) — G-002~G-005 합 ~13 KB 예산 충분 (spec Section 8.5 + tracking-goals L67-69).",
+    "다음 단계 (G-002): 상태 추적 본격 구현. 본 G-001의 11 API 멤버 모두 시그니처 권위 잠금 (ADR-MOD-GRID-10-001 Consequences).",
+    "메타 게이트 F-01/F-02/F-03 모두 YES + 카테고리 합 16 일치 + 산식 재검산 정확 → C-26 자기-검증 통과 → 결과 신뢰."
+  ],
+  "verifiedAt": "2026-05-14T00:00:00Z",
+  "verifierNotes": "메타 게이트 F 모두 YES → 일반 채점 진행. categoryScores 자기-검산: A=3/3=100, B=vacuous 100 (Goal 제목 build 키워드 부재로 vacuous 허용 — verify-rubric L74-75), C=2/2=100, D=1/1=100, E=2/2=100. weightedScore = 100.0/95 → PASS. 항목 합계 A3+B5+C3+D2+E3=16 ✓ (rubric 16 일치). failedChecks=[] (N/A 8개는 분모 제외). C-17 시각 회귀: 영향 사용처 미변경 (git diff 0) + import 부재 → vacuous 외관 보존 YES (C-13/C-17 N/A 조건 '사용처 0개 또는 변경 없는 Goal' 충족).",
+  "yesCount": 8,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 8,
+  "score": 100,
+  "runAt": "2026-05-14T00:00:00Z",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "yesCount=8",
+      "noCount=0",
+      "naCount=8",
+      "denominator=8",
+      "score=weightedScore",
+      "runAt=2026-05-14T00:00:00Z",
+      "verifierModel=opus"
+    ]
+  }
+}

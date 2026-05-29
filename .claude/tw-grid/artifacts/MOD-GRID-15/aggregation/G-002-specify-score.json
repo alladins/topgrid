@@ -1,0 +1,258 @@
+{
+  "goalId": "MOD-GRID-15/aggregation/G-002",
+  "module": "MOD-GRID-15",
+  "area": "aggregation",
+  "stage": "specify",
+  "tier": "low",
+  "rubricVersion": "1.0.7",
+  "threshold": 90,
+  "score": 100,
+  "passed": true,
+  "yesCount": 28,
+  "noCount": 0,
+  "naCount": 7,
+  "denominator": 28,
+  "checks": [
+    {
+      "id": "H-01",
+      "name": "referenceEvidence 경로 실재",
+      "result": "YES",
+      "evidence": "Section 1 L0: 'N/A — 신규 Pro 패키지. 현 구현 없음' 명시. L1: TanStack v8 Row/Cell API signature 표 (row.getIsGrouped, row.getToggleExpandedHandler, cell.getIsAggregated 등) 직접 인용. L2: 'N/A — 신규 Pro 패키지' 명시. L3: 'N/A — affectedUsageFiles: [] 0개' 명시. R-A: AG Grid Enterprise groupIncludeFooter 패턴 명시. R-W: publish-wijmo-analysis.md §4 Aggregation 항목 참조 명시. 모든 L0/L1/L2/L3/R-A/R-W 출처 영역 적법 처리. Section 7 NEW 파일(GroupRow.tsx, FooterRow.tsx) 은 IMPLEMENT 단계 deliverable 로 H-01 평가 대상 아님."
+    },
+    {
+      "id": "H-02",
+      "name": "implementFiles 경로 합리성",
+      "result": "YES",
+      "evidence": "Section 7 최종 표 7개 파일 모두 D1 결정으로 'topvel-grid-monorepo/packages/grid-pro-agg/' prefix 채택. 부모 디렉토리 'packages/grid-pro-agg/' 는 G-001 구현 완료로 실재 확인 (AggregationGrid.tsx 실제 읽기 증거: 168 LOC 구현). 명명 컨벤션 'grid-pro-' prefix kebab-case 준수. NEW 파일 2개 (GroupRow.tsx, FooterRow.tsx) 는 'src/internal/' 서브디렉토리 신규 생성 — 조부모 'topvel-grid-monorepo/packages/grid-pro-agg/src/' 실재 (AggregationGrid.tsx, types.ts, index.ts 실재 확인)."
+    },
+    {
+      "id": "H-03",
+      "name": "AC 출처 태그 검증",
+      "result": "YES",
+      "evidence": "Section 5 AC-001~AC-007 모두 출처 태그 포함. AC-001: 'L1: TanStack row.getIsGrouped / row.getToggleExpandedHandler'. AC-002: 'L1: TanStack cell.getIsAggregated / cell.getValue (D5: row.getIsAggregated() 아님)'. AC-003: 'L1: TanStack getExpandedRowModel, C-2'. AC-004: 'C-18: react-virtual useVirtualizer'. AC-005: 'C-16'. AC-006: 'C-12'. AC-007: 'C-25, C-18'. 모든 출처 태그가 Section 1 L1 API 표 및 constraints.md 에서 실제 인용됨."
+    },
+    {
+      "id": "A-01",
+      "name": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "Section 1 L0: 'N/A — 신규 Pro 패키지. 현 구현 없음' 명시. 신규 영역이므로 N/A 조건 충족. 단, G-001 현행 구현 상태 별도 항목으로 AggregationGrid.tsx (168 LOC) 의 tbody 루프 패턴 (row.getIsGrouped, cell.getIsAggregated) 을 L123~167 라인 참조로 구체적으로 분석."
+    },
+    {
+      "id": "A-02",
+      "name": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "Section 1 L1 두 개 표: (1) Row 레벨 메서드 8종 (row.getIsGrouped, row.getIsExpanded, row.getToggleExpandedHandler, row.getCanExpand, row.subRows, row.depth, row.groupingColumnId, row.groupingValue, row.getValue) signature+용도 명시. (2) Cell 레벨 메서드 4종 (cell.getIsAggregated, cell.getIsPlaceholder, cell.getIsGrouped, cell.getValue) signature+용도 명시. (3) Table 레벨 3종 (table.toggleAllRowsExpanded, table.getIsAllRowsExpanded, getExpandedRowModel) 명시. D4 결정으로 getExpandedRowModel row 방출 순서 [그룹 헤더, ...leaf rows] 명시. D5 결정으로 row.getIsAggregated() 비존재 명시."
+    },
+    {
+      "id": "A-03",
+      "name": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "N/A",
+      "evidence": "Section 1 L2: 'N/A — 신규 Pro 패키지. publish 중간 참조 소스 없음' 명시. 신규 Pro 패키지이므로 N/A 조건 충족."
+    },
+    {
+      "id": "A-04",
+      "name": "L3 영향 사용처 카운트 명시",
+      "result": "N/A",
+      "evidence": "Section 1 L3: 'N/A — affectedUsageFiles: [] 0개' 명시. Section 8.1: '영향 사용처 0개. 신규 Pro 패키지이며 현재 tw-framework-front 내 @tomis/grid-pro-agg를 import하는 파일이 없다' 명시. 사용처 0개 N/A 조건 충족."
+    },
+    {
+      "id": "A-05",
+      "name": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "Section 1 R-A: 'AG Grid Enterprise의 그룹 footer는 groupIncludeFooter: true + groupIncludeTotalFooter: true 로 각 그룹 하단에 집계 footer 행 자동 생성. aggFunc: sum 컬럼에 집계값 표시. 개념 학습 전용 (C-7, AG Grid API 직접 사용 금지)' 명시. Section 1 R-W: 'Wijmo CollectionView + GroupDescription 패턴 — Aggregation (group footer) 항목 (MOD-GRID-15 매핑). Wijmo 코드 차용 절대 금지 (C-16)' 명시. C-7/C-16 제약 준수 명시 포함."
+    },
+    {
+      "id": "B-01",
+      "name": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "Section 2.1: GroupRowProps<TData> interface (row, columnCount, indentUnit?, className?, renderGroupRow?) 완전 정의. Section 2.2: FooterRowProps<TData> interface (row, cells, className?, renderFooterRow?) 완전 정의. Section 2.3: AggregationGridProps<TData> 전체 — G-001 기존 5 props 보존 + G-002 신규 9 props (showFooter?, groupRowClassName?, footerRowClassName?, renderGroupRow?, renderFooterRow?, enableVirtualization?, estimatedRowHeight?, virtualOverscan?, onGroupingChange?, onExpandedChange?) 완전 정의. 모든 interface에 JSDoc 주석 포함."
+    },
+    {
+      "id": "B-02",
+      "name": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "Section 2.4: 예시 1 '기본 footer 행 + expand/collapse' (enableAggregation + showFooter default + onExpandedChange 콜백), 예시 2 '가상화 + 1000행+ + 커스텀 footer 렌더러' (enableVirtualization + renderFooterRow + cell.getIsAggregated) — 2개 완전 코드 예시. Section 10: 시나리오 1~3 추가 코드 포함. 총 5개 이상 예시."
+    },
+    {
+      "id": "B-03",
+      "name": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "Section 2.1: indentUnit 기본값 4, className undefined 명시. Section 2.2: className undefined, renderFooterRow undefined 명시. Section 2.3: 기본값 요약 표 — showFooter=true, groupRowClassName=undefined, footerRowClassName=undefined, renderGroupRow=undefined, renderFooterRow=undefined, enableVirtualization=false, estimatedRowHeight=40, virtualOverscan=5, onGroupingChange=undefined, onExpandedChange=undefined. 모든 신규 props optional 명시."
+    },
+    {
+      "id": "B-04",
+      "name": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "Section 7 최종 표 #4: 'D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/src/types.ts MODIFY — AggregationGridProps 신규 props 추가 (D2)' 정확한 경로 명시. Section 7 최종 표 #6: 'index.ts MODIFY — GroupRowProps, FooterRowProps 타입 re-export (필요 시) — D3: 컴포넌트 자체는 internal, 타입만 export' 명시."
+    },
+    {
+      "id": "B-05",
+      "name": "ref API + imperative handle 명시 (해당 시)",
+      "result": "N/A",
+      "evidence": "Section 2.1~2.3 props 정의에 ref 요구사항 없음. GroupRow, FooterRow 모두 선언적 컴포넌트 — useImperativeHandle 불필요. N/A 조건 충족."
+    },
+    {
+      "id": "C-01",
+      "name": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "Section 5: AC-001~AC-007 총 7개 (≥3). AC-001 그룹 헤더 행 들여쓰기+토글, AC-002 합성 footer 행 집계값, AC-003 expanded 상태별 렌더링, AC-004 가상화, AC-005 Wijmo import 0건, AC-006 tsc 0에러, AC-007 Storybook story."
+    },
+    {
+      "id": "C-02",
+      "name": "각 AC에 출처 태그 (L0/L1/L2/L3/R-A/R-W)",
+      "result": "YES",
+      "evidence": "Section 5 모든 AC에 소스 태그: AC-001 'L1: TanStack row.getIsGrouped / row.getToggleExpandedHandler', AC-002 'L1: TanStack cell.getIsAggregated / cell.getValue (D5)', AC-003 'L1: TanStack getExpandedRowModel, C-2', AC-004 'C-18: react-virtual useVirtualizer', AC-005 'C-16', AC-006 'C-12', AC-007 'C-25, C-18'. 모든 7개 AC에 출처 태그 포함."
+    },
+    {
+      "id": "C-03",
+      "name": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "AC-001: 'pl-{depth*4} 들여쓰기 + 펼치기/접기 아이콘(▶/▼) + 그룹 키 표시' (객관 grep 가능). AC-002: 'cell.getIsAggregated()=true인 셀에 집계값 표시. 배경 기본 bg-gray-50' (객관). AC-003: 'expanded=false 시 DOM에서 미렌더링' (객관). AC-004: 'enableVirtualization=true 시 ... MergingGrid.tsx D6 패턴 채택' (객관). AC-005: 'grep @mescius/wijmo → 0 hits' (객관). AC-006: 'tsc --noEmit 0 에러' (객관). AC-007: 'Storybook CSF3 story 1개 이상 확인' (객관). 모두 binary 검증 가능."
+    },
+    {
+      "id": "C-04",
+      "name": "migrationImpact 명시 (high/medium/low)",
+      "result": "YES",
+      "evidence": "Section 헤더 (라인 7): 'Migration Impact: low' 명시. goals.json G-002 migrationImpact: low 일치. Section 8 migrationImpact low 사유: 신규 Pro 패키지, affectedUsageFiles 0개, 사용처 없음."
+    },
+    {
+      "id": "C-05",
+      "name": "AC에 호환성 검증 항목 포함",
+      "result": "N/A",
+      "evidence": "goals.json affectedUsageFiles: [] (사용처 0개 신규 기능). C-05 N/A 조건 충족. AC-006 (tsc 0에러) 이 타입 호환성 검증을 간접 포함하므로 practical 충족."
+    },
+    {
+      "id": "D-01",
+      "name": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "YES",
+      "evidence": "Section 8.1: 'affectedUsageFiles: [] — 영향 사용처 0개. 신규 Pro 패키지이며 현재 tw-framework-front 내 @tomis/grid-pro-agg를 import하는 파일이 없다' 명시. 정확한 카운트(0개) 명시."
+    },
+    {
+      "id": "D-02",
+      "name": "기존 변형 대응표 (Section 3)",
+      "result": "N/A",
+      "evidence": "Section 3: 'N/A — 신규 Pro 패키지. affectedUsageFiles: [] 0개. 기존 variant 마이그레이션 대응표 없음' 명시. 신규 영역 N/A 조건 충족."
+    },
+    {
+      "id": "D-03",
+      "name": "Breaking change 명시 (Section 4)",
+      "result": "YES",
+      "evidence": "Section 4 '호환성 정책': 'breaking: false. G-001에서 제공한 AggregationGridProps<TData> 기존 props (data, columns, enableAggregation, grouping, expanded) 모두 유지. G-002 신규 props는 모두 optional이며 기본값이 지정되어 있어 기존 G-001 사용 코드가 변경 없이 동작' 명시."
+    },
+    {
+      "id": "D-04",
+      "name": "Deprecation 전략 (Section 4)",
+      "result": "N/A",
+      "evidence": "Section 4: 'Breaking change 없음. 최소 1 minor 버전 alias 유지 의무 없음 (새 기능이므로 deprecation 전략 N/A)' 명시. Breaking change = false → D-04 N/A 조건 충족."
+    },
+    {
+      "id": "D-05",
+      "name": "롤백 전략 (Section 8.4)",
+      "result": "N/A",
+      "evidence": "Section 8.3: 'migrationImpact: low + 사용처 0개 → 롤백 전략 N/A. 신규 Pro 패키지이므로 이 Goal의 변경을 revert해도 외부 사용처 영향 없음' 명시. low tier + 사용처 0 → D-05 N/A 조건 충족."
+    },
+    {
+      "id": "D-06",
+      "name": "번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "Section 8.5 번들 영향 표: GroupRow.tsx +1.5 KB, FooterRow.tsx +1.5 KB, AggregationGrid.tsx 변경 +1 KB, G-002 합계 +4 KB gzipped. G-001 기존 +5 KB. grid-pro-agg 누적 ~9 KB. Pro 패키지 한도 (C-21) ≤20 KB — 여유 있음. goals.json bundleImpact: '+4 KB (GroupRow + FooterRow 컴포넌트)' 일치."
+    },
+    {
+      "id": "E-01",
+      "name": "파일별 변경 명세 (NEW/MODIFY)",
+      "result": "YES",
+      "evidence": "Section 7 최종 표 7개 파일 (GroupRow.tsx NEW, FooterRow.tsx NEW, AggregationGrid.tsx MODIFY, types.ts MODIFY, stories.tsx MODIFY, index.ts MODIFY, package.json MODIFY). Section 11.3 Steps 1~7: Step 1=types.ts, Step 2=GroupRow.tsx, Step 3=FooterRow.tsx, Step 4=AggregationGrid.tsx, Step 5=package.json, Step 6=stories.tsx, Step 7=index.ts — Section 7 표 7행과 1:1 완전 일치. Section 11.1 파일별 변경 명세 표도 동일 7파일 명시. Section 2 GroupRowProps 시그니처(renderGroupRow?: (row: Row<TData>) => React.ReactNode) ↔ Section 11.2 GroupRow.tsx 코드 renderGroupRow 파라미터 — 일치. FooterRowProps 시그니처(renderFooterRow?: (row: Row<TData>, cells: Cell<TData, unknown>[]) => React.ReactNode) ↔ Section 11.2 FooterRow.tsx 코드 renderFooterRow — 일치."
+    },
+    {
+      "id": "E-02",
+      "name": "Before/After 코드 스니펫 (최소 1개)",
+      "result": "YES",
+      "evidence": "Section 11.2: AggregationGrid.tsx tbody 렌더링 Before (G-001 L122~167 인라인 패턴 — table.getRowModel().rows.map) / After (D4 합성 footer 인터리빙 — flatMap + GroupRow 컴포넌트 + FooterRow 인터리빙) 코드 블록 2개. 추가로 '실제 그룹별 버킷 접근법 (D4 구체화)' 코드 블록으로 allRows.forEach footer 삽입 로직 상세 명시."
+    },
+    {
+      "id": "E-03",
+      "name": "구현 순서 2단계 이상 (의존성 고려)",
+      "result": "YES",
+      "evidence": "Section 11.3: Step 1(types.ts — 타입 기반) → Step 2(GroupRow.tsx — types.ts 의존) → Step 3(FooterRow.tsx — types.ts 의존) → Step 4(AggregationGrid.tsx — Steps 1~3 모두 의존) → Step 5(package.json) → Step 6(stories.tsx — Steps 1~4 의존) → Step 7(index.ts) 총 7단계, 의존성 명시."
+    },
+    {
+      "id": "E-04",
+      "name": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "Section 6: EC-001(단일 그룹), EC-002(빈 그룹 subRows=0), EC-003(100개 이상 그룹), EC-004(enableVirtualization + 1000행+ — footer 정적 삽입 한계), EC-005(expanded=false 초기값 + 클릭 펼침 + onExpandedChange 콜백), EC-006(showFooter=false), EC-007(다중 레벨 그룹화 depth=0,1) 총 7개 (≥3)."
+    },
+    {
+      "id": "E-05",
+      "name": "검증 계획 (Section 12)",
+      "result": "YES",
+      "evidence": "Section 12: (1) 빌드 검증 (tsc --noEmit, tsup), (2) 기능 검증 체크리스트 10개 항목 (row.getIsGrouped GroupRow 렌더, pl-depth*4 클래스, 토글 핸들러, expanded 상태별 렌더, cell.getIsAggregated 집계값, bg-gray-50, footerRowClassName, showFooter=false, enableVirtualization 1000행 story), (3) 타입 검증 (GroupRowProps/FooterRowProps 제네릭, any 0건, C-29 conditional spread), (4) 제약 준수 검증 (C-16 Wijmo 0건, D7 verifyOrWarn 추가 없음, C-2 표준 API, C-5 Tailwind, C-22 peerDependency, C-31 Wiring Audit, E-06 일관성)."
+    },
+    {
+      "id": "E-06",
+      "name": "Section 7 Re-decision ↔ Final Table Consistency",
+      "result": "YES",
+      "evidence": "Section 7 본문 재결정 키워드: D1 '이 섹션의 모든 파일 경로는 topvel-grid-monorepo/packages/grid-pro-agg/를 기준으로 한다. goals.json의 TOMIS/packages/ 접두사는 stale 아티팩트' + D1 보정 표 3 entries. D2 'goals.json implementFiles에 types.ts 누락 → spec 정정 추가' + D3 'index.ts MODIFY 포함'. 최종 표 cross-check: D1 수정 3개 경로(AggregationGrid.tsx MODIFY, GroupRow.tsx NEW, FooterRow.tsx NEW) 모두 최종 표에 반영. D2 추가 types.ts MODIFY → 최종 표 #4 행 존재. D3 index.ts MODIFY → 최종 표 #6 행 존재. stories.tsx MODIFY (#5), package.json MODIFY (#7) 추가 — 재결정과 최종 표 1:1 일치. Prose ↔ structured form: Section 2.3 AggregationGridProps 신규 props 9종 ↔ Section 11.1 types.ts '+60 LOC' 일관성, Section 11.2 After 코드의 GroupRow/FooterRow 컴포넌트 호출 ↔ Section 7 #1/#2 NEW — 의미 일치."
+    },
+    {
+      "id": "F-01",
+      "name": "패키지 대상 명시 (packages/grid-core vs grid-{pro})",
+      "result": "YES",
+      "evidence": "Section 13: 'Pro 패키지: packages/grid-pro-agg (@tomis/grid-pro-agg)' 명시. goals.json packageTarget: 'packages/grid-pro-agg' 일치."
+    },
+    {
+      "id": "F-02",
+      "name": "라이선스 검증 호출 (Pro 패키지)",
+      "result": "YES",
+      "evidence": "Section 13 '라이선스 검증': 'G-001에서 AggregationGrid.tsx 모듈 레벨에 verifyOrWarn(@tomis/grid-pro-agg) 1회 호출 완료 (ADR-MOD-GRID-15-002). G-002는 GroupRow.tsx, FooterRow.tsx에 추가 호출 하지 않는다 (D7 — 한 패키지 1회 원칙). EULA.md는 G-001에서 이미 생성됨' 명시. SPECIFY 책임 분리: 구현 위치(AggregationGrid.tsx 모듈 레벨) + G-002 적용 계획(추가 호출 없음) 명시 — YES 조건 충족."
+    },
+    {
+      "id": "F-03",
+      "name": "문서 작성 계획 (Docusaurus + Storybook)",
+      "result": "YES",
+      "evidence": "Section 13 '문서화 계획': Storybook story 표 (GroupFooterExpand — 5개 그룹, expanded 토글, footer 집계값, showFooter on/off / VirtualizedGroupFooter — 1000행+, enableVirtualization, EC-004 limitation 주석). Docusaurus: 'G-001 + G-002 내용을 단일 페이지 grid-pro-agg.mdx에 통합 (G-003/G-004 완료 후 최종 확정). G-002 완료 시 Group Footer & Expand/Collapse 섹션 추가' 계획 명시."
+    },
+    {
+      "id": "F-04",
+      "name": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "Section 9 Runtime 의존성 표: @tanstack/react-table ^8.0.0 (G-001 상속), react ^18.0.0||^19.0.0 (상속), react-dom (상속), @tanstack/react-virtual ^3.0.0 (NEW optional peerDependency — D6). Section 13 peerDependencies 정책 JSON: peerDependencies + peerDependenciesMeta '@tanstack/react-virtual: {optional: true}' 명시. C-22 준수 명시."
+    },
+    {
+      "id": "G-01",
+      "name": "Spec에 TBD/TODO/미정 표현 없음",
+      "result": "YES",
+      "evidence": "spec 본문 전체에 TBD/TODO/미정 표현 0건. 모든 미결 사항은 D# 결정으로 해소. D# 표 (D1~D7) ↔ 본문 cross-check: D1 '경로 권한 topvel-grid-monorepo' → Section 7 모든 경로 동일 prefix ✓. D2 'types.ts + index.ts 추가' → Section 7 최종 표 #4 types.ts MODIFY + #6 index.ts MODIFY ✓. D3 'index.ts — internal 컴포넌트 비공개' → Section 7 #6 'D3: 컴포넌트 자체는 internal, 타입만 export' ✓. D4 '합성 footer row Reading B' → Section 11.2 After 코드 + EC-004 ✓. D5 'row.getIsAggregated() 비존재 → cell.getIsAggregated()' → Section 5 AC-002 + Section 11.2 After 코드 cell.getIsAggregated ✓. D6 'MergingGrid.tsx 가상화 패턴' → AC-004 + EC-004 ✓. D7 'verifyOrWarn 추가 없음' → Section 13 라이선스 검증 ✓. Breakdown 일치: D1 D2 D3 보정 결과 총 7개 파일 (NEW 2 + MODIFY 5) == Section 7 최종 표 7행 (NEW 2 + MODIFY 5). goals.json D# 일관성: D6 bundleImpact '+4 KB' == goals.json bundleImpact '+4 KB (GroupRow + FooterRow 컴포넌트)' ✓. D1 결정 (monorepo prefix) — goals.json implementFiles 3개 entry는 stale prefix이나 spec D1/D2 결정이 이를 명시적으로 인지하고 스스로 보정 결정을 기록함 (G-001 동일 패턴 100점 선례). Section 7 최종 표가 authoritative 정정 버전임."
+    }
+  ],
+  "failedChecks": [],
+  "feedback": [],
+  "evaluatedAt": "2026-05-15",
+  "note": "Verifier self-validation: score calculation (25/25×100=100.0), denominator match (25+0=25, N/A=7 excluded from denominator), category totals (A=5 + B=5 + C=5 + D=6 + E=6 + F=4 + G=1 = 32). All H gates YES. 25 YES + 0 NO + 7 N/A = 32 total checks ✓. failedChecks empty (0 NO). JSON parse self-validation: no unescaped quotes, no trailing commas, all string values escaped correctly. N/A items: A-03 (신규 Pro), A-04 (사용처 0), B-05 (ref 불필요), C-05 (사용처 0), D-02 (신규), D-04 (breaking false), D-05 (low+사용처 0). Threshold 90 (low tier per goals.json) — score 100.0 >= 90 → passed: true.",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 25,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 7,
+    "originalReportedDenominator": 25,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-15",
+  "runAt": "2026-05-15",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-002→full",
+      "runAt=2026-05-15",
+      "verifierModel=haiku"
+    ]
+  }
+}

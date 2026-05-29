@@ -1,0 +1,216 @@
+{
+  "goalId": "MOD-GRID-02/state/G-006",
+  "module": "MOD-GRID-02",
+  "area": "state",
+  "stage": "implement",
+  "tier": "low",
+  "threshold": 85,
+  "implementerModel": "claude-sonnet-4-6",
+  "rubricVersion": "1.0.9",
+  "implementFilesSpec": [
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useStoragePersist.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useStoragePersist.stories.tsx",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useStoragePersist.test.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/index.ts"
+  ],
+  "implementFilesActual": [
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useStoragePersist.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useStoragePersist.stories.tsx",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useStoragePersist.test.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts",
+    "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/index.ts"
+  ],
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "All 5 files verified on disk. useStoragePersist.ts (NEW, 147 lines), useStoragePersist.stories.tsx (NEW), useStoragePersist.test.ts (NEW, T1-T6 scenarios), types.ts (MODIFY, UseStoragePersistOptions<TData> interface added after UseUrlSyncOptions at L875), index.ts (MODIFY, useStoragePersist export + UseStoragePersistOptions type export added)."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "useStoragePersist<TData>(state: GridStateValues<TData>, options: UseStoragePersistOptions<TData>): void matches spec Section 8.2 exactly. UseStoragePersistOptions interface (types.ts) has storageKey (required), version?, storage?: 'local'|'session', debounceMs?, onHydrate? — matching spec Section 8.1 verbatim."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "npx tsc --noEmit in packages/grid-core → exit 0 (no output, no errors). tsup build passes: ESM 58.50KB, CJS 60.01KB, DTS 25.92KB. All 5 files typecheck clean."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "G-006 introduces new hook — no prior variants to map or migrate."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "All 5 ACs implemented: AC-001 (UseStoragePersistOptions interface with all 5 fields, storageKey required), AC-002 (debouncedSave via useDebouncedCallback + save-trigger useEffect with 8 state primitives), AC-003 (mount hydration: JSON.parse + version check + removeItem on mismatch/parse-failure, onHydrate only on success), AC-004 (SSR guard: typeof window === 'undefined' inside useEffect body, D3 pattern), AC-005 (1 Storybook story StoragePersistDemo + vitest test file T1-T6, N/A allowed per spec Section 6.1 toolingBacklog TB-2)."
+    },
+    "A-06": {
+      "result": "YES",
+      "evidence": "C-31 wiring verified: useStoragePersist.ts imports serializeGridState + deserializeGridState from './internal/serializeState' (L13). Both functions actively called: serializeGridState in debouncedSave closure (save path), deserializeGridState in mount useEffect (hydration path). No dead imports. internal/serializeState.ts not modified (reuse-only per D6, D8)."
+    },
+    "A-07": {
+      "result": "NO",
+      "evidence": "spec Section 7 lists useStoragePersist.test.ts (NEW). Test file authored with T1-T6 scenarios (6 total per spec Section 6.2). Vitest execution attempted: package.json test script = 'echo TODO', vitest not installed in monorepo. Same environment constraint as G-005 (A-07 NO). Test file typechecks clean. toolingBacklog TB-2 (G-005 self-review) covers this deviation."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "npx tsc --noEmit in packages/grid-core → exit 0. All 5 files (3 NEW + 2 MODIFY) typecheck clean. DTS build also succeeds in tsup run."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "No 'as any' cast in useStoragePersist.ts or types.ts additions. Only cast used: 'partial as Partial<GridStateValues<TData>>' (L95 of useStoragePersist.ts) — typed cast, not 'any'. 'state as Partial<GridStateValues>' (L112) — narrowing cast to match serializeGridState param, no 'any' involved."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "useStoragePersist uses only React (useEffect, useRef) + internal useDebouncedCallback + internal serializeState. No TanStack internal APIs. Web Storage API (localStorage/sessionStorage) is browser standard. No new npm packages."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "No new .css/.scss files created. useStoragePersist.stories.tsx uses inline style={{}} for Storybook demo layout only — acceptable per rule. No static inline styles in production hook code (useStoragePersist.ts)."
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "useStoragePersist.ts has exactly 1 eslint-disable-next-line comment (L100: react-hooks/exhaustive-deps for mount-only [] effect). This is 'intentional mount-only' category, not C-32 option 3 (unstable-setter bypass). Save-trigger useEffect uses saveRef.current() — refs are auto-excluded by react-hooks/exhaustive-deps, no eslint-disable needed. C-32 option 3 = 0 occurrences added."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep '@mescius/wijmo|wijmo' across all 5 files → 0 hits."
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "No dummyData/mockData/fakeData/TODO in production code (useStoragePersist.ts, types.ts additions, index.ts additions). Test file and story file contain mock data per rule exception."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "tsc --noEmit exit 0. useStoragePersist + UseStoragePersistOptions are NEW exports — no breaking changes to existing APIs. index.ts comment updated from 'G-001~G-005' to 'G-001~G-006' in header comment only."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "low tier + affectedUsageFiles = 0 (spec Section 2.2 O3: useGridState 내부 통합 Out-of-Scope). No UI component migration impact."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0. No existing usage sites affected."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "package.json unchanged. No new dependencies. Web Storage API is browser standard. useDebouncedCallback/serializeState reused from internal/."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0. useStoragePersist is optional new hook (spec S9: O3)."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "No usage site migrations."
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "No residual usage sites."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "size-limit run: @tomis/grid-core = 28.61 KB brotli (limit: 30 KB). G-005 baseline 28.29 KB → G-006 delta = +0.32 KB. Within spec D9 estimate of +1 KB. PASS. (@tomis/grid-export failure 283.41 KB is pre-existing, unrelated to G-006.)"
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "No new external dependencies."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "package.json not modified."
+    }
+  },
+  "yesCount": 15,
+  "noCount": 1,
+  "naCount": 8,
+  "denominator": 16,
+  "score": 93.75,
+  "passed": true,
+  "failedChecks": [
+    "A-07"
+  ],
+  "c26SelfVerification": {
+    "categoryCheck": {
+      "a_count": 7,
+      "b_count": 7,
+      "c_count": 4,
+      "d_count": 3,
+      "e_count": 3,
+      "total": 24,
+      "formula_integrity": "PASS"
+    },
+    "denominatorCheck": {
+      "yesCount": 15,
+      "noCount": 1,
+      "naCount": 8,
+      "denominator_computed": 16,
+      "check_formula": "15 / 16 × 100 = 93.75",
+      "formula_integrity": "PASS"
+    },
+    "failedChecksNaConsistency": {
+      "failedChecks_count": 1,
+      "containsNa": false,
+      "integrity": "PASS"
+    }
+  },
+  "c27DriftCrossCheck": {
+    "promptSpecDrift": [],
+    "note": "No value drifts detected between Implementer prompt and spec.md. Spec authority fully applied. spec Section 7 final table lists exactly 5 files — matches implementFilesActual."
+  },
+  "c29ExactOptionalPass": {
+    "result": true,
+    "evidence": "UseStoragePersistOptions all optional fields use ?.  Optional chaining used in useStoragePersist.ts: options.storage === 'session' (no undefined propagation), options.version ?? 1 (default), options.debounceMs destructured with default 300. hydrateRef.current?.(partial) uses optional chaining."
+  },
+  "c30SpecTableMatch": {
+    "result": true,
+    "evidence": "spec Section 7 table lists exactly 5 files (NEW 3 + MODIFY 2). Implementer created/modified exactly those 5 files. internal/serializeState.ts correctly excluded (reuse-only, D6/D8). No contradictions."
+  },
+  "c31WiringAuditPass": {
+    "result": true,
+    "evidence": "useStoragePersist.ts is sole call-site for serializeState functions. Import at L13. serializeGridState called in debouncedSave (save path, L109-114). deserializeGridState called in mount useEffect (hydration path, L93). Both actively used, no dead imports."
+  },
+  "c32UnstableSetterPass": {
+    "result": true,
+    "evidence": "D2 Option A fully applied: saveRef = useRef(debouncedSave) + always-sync useEffect (no deps). Save-trigger useEffect calls saveRef.current() only — ref excluded automatically by react-hooks/exhaustive-deps. onHydrate handled via hydrateRef (option 2, D5). C-32 option 3 occurrences added = 0. Cumulative option 3 count: G-004 (1) + G-005 (1) = 2 total. G-006 adds 0."
+  },
+  "specCodeDefects": [
+    {
+      "defectId": "F-06-G006-1",
+      "defectLocation": "G-006-spec.md Section 11.1 L546-547",
+      "defectDescription": "Spec code stub contains second eslint-disable-next-line in save-trigger useEffect (L546: '// eslint-disable-next-line react-hooks/exhaustive-deps'). But D2 explicitly states 'eslint-disable 0줄'. Section 13.2 reconciles: these 2 eslint-disable are 'C-32 option 3 아님 (mount-only / saveRef.current 정당한 제외)'. However, saveRef.current is a ref — react-hooks/exhaustive-deps auto-excludes refs, so eslint-disable on save-trigger useEffect is unnecessary.",
+      "fixApplied": true,
+      "fixDescription": "Applied 'tight read': save-trigger useEffect has NO eslint-disable (saveRef.current is auto-excluded by eslint). Only mount-only [] useEffect gets 1 eslint-disable. Total = 1 eslint-disable (not 2 as spec template shows). Honors D2 spirit more closely.",
+      "specInternalConflict": "D2 says 0줄, Section 11.1 template shows 2, Section 13.2 says 2건 (C-32 option 3 아님). Resolution: tight read → 1 (mount-only only, saveRef.current auto-excluded)."
+    }
+  ],
+  "documentedDeviations": [
+    {
+      "ac": "A-07 (vitest runtime execution)",
+      "reason": "vitest not installed in monorepo (package.json test script = 'echo TODO'). Same environment constraint as G-005.",
+      "finding": "Test file useStoragePersist.test.ts authored with T1-T6 scenarios covering spec Section 6.2. Typecheck clean.",
+      "toolingBacklog": "TB-2 (G-005 self-review산출: MOD-GRID-02/G-006-internal-hook-stable-callables)",
+      "resolution": "Developer action: pnpm add -D vitest @testing-library/react jsdom + pnpm vitest run"
+    }
+  ],
+  "feedback": [
+    "C-32 compliance (D2 Option A): saveRef pattern fully applied. Save-trigger useEffect calls saveRef.current() only — ref auto-excluded by react-hooks/exhaustive-deps, 0 eslint-disable on save-trigger. C-32 option 3 count added = 0 (cumulative total remains 2).",
+    "Spec code defect F-06-G006-1: spec Section 11.1 template shows 2 eslint-disable but saveRef.current is auto-excluded. Applied tight read — 1 eslint-disable only (mount-only []). Reported in specCodeDefects[].",
+    "A-07 deviation: vitest not installed (same as G-005). 6 test scenarios T1-T6 written covering all ACs. toolingBacklog TB-2 reference maintained.",
+    "Size: 28.61 KB brotli vs 30 KB limit. G-006 adds +0.32 KB from G-005 baseline (28.29 KB). Within spec D9 +1 KB estimate. PASS.",
+    "C-31 wiring: internal/serializeState.ts sole call-site = useStoragePersist.ts (import + serializeGridState in save path + deserializeGridState in hydration path). No dead code.",
+    "MOD-GRID-02 G-006 is the final Goal in this module's state area. All 6 goals (G-001 through G-006) now implemented."
+  ],
+  "moduleId": "MOD-GRID-02",
+  "runAt": "2026-05-27",
+  "verifierModel": "claude-sonnet-4-6",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-006→full",
+      "runAt=2026-05-27",
+      "verifierModel=claude-sonnet-4-6"
+    ]
+  }
+}

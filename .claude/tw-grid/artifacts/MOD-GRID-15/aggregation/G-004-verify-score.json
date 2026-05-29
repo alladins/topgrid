@@ -1,0 +1,191 @@
+{
+  "goalId": "MOD-GRID-15/aggregation/G-004",
+  "module": "MOD-GRID-15",
+  "area": "aggregation",
+  "stage": "verify",
+  "rubricVersion": "1.0.3",
+  "tier": "low",
+  "migrationImpact": "low",
+  "threshold": 90,
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "categoryWeights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "weightDistribution": "low tier: A 25 / B 25 / C 20 / D 15 / E 15 (sum=100). G-004 = final Goal MOD-GRID-15 (GroupPanel UI + drag-to-group + group-level sorting). B-02 filter / B-03 pagination / B-05 inline-edit out of scope → 3 N/A. C-01/C-02 affectedUsageFiles=[] → 2 N/A. D-01/D-02 사용처 0 → 2 N/A → vacuous 100. E-02 no new deps (D4 HTML5 native drag, D6 package.json no-op) → 1 N/A. Item count: A=3 + B=5 + C=3 + D=2 + E=3 = 16. failedChecks empty (NO=0).",
+  "weightedScore": 100,
+  "passed": true,
+  "checks": [
+    {
+      "id": "A-01",
+      "axis": "A",
+      "name": "tsc --noEmit 0 errors",
+      "result": "YES",
+      "evidence": "npx tsc --noEmit in packages/grid-pro-agg → EXIT=0, no output. Verified via PowerShell 2026-05-15. types.ts SortingState/OnChangeFn imports type-check, GroupPanel.tsx Column<TData,unknown> type-check, AggregationGrid.tsx getSortedRowModel/sortingState conditional spread (C-29) type-check."
+    },
+    {
+      "id": "A-02",
+      "axis": "A",
+      "name": "tsup build CJS+ESM+DTS",
+      "result": "YES",
+      "evidence": "npx tsup → EXIT=0. dist/index.mjs 15.92 KB, dist/index.cjs 16.54 KB, dist/index.d.ts 10.88 KB, dist/index.d.cts 10.88 KB. Build success 125ms (ESM/CJS) + 914ms (DTS). 2026-05-15 PowerShell verified."
+    },
+    {
+      "id": "A-03",
+      "axis": "A",
+      "name": "size-limit ≤ 20 KB Pro package",
+      "result": "YES",
+      "evidence": "dist/index.mjs raw = 15.92 KB (~80% of 20 KB Pro limit C-21), within limit. G-004 delta vs G-003 baseline (~9.86 KB) ≈ +6 KB (GroupPanel.tsx 124 lines + AggregationGrid.tsx diff ~150 lines + types.ts 7 new props + index.ts 2 new exports). Spec Section 8 estimate +4 KB cumulative ~14 KB — actual ~16 KB slightly above estimate but well within 20 KB Pro limit. .size-limit.json pre-existing infra defect (peerDeps bundled in measurement) noted in implement-score E-01 — raw output authoritative for code-size check."
+    },
+    {
+      "id": "B-01",
+      "axis": "B",
+      "name": "정렬 동작",
+      "result": "YES",
+      "evidence": "G-004 explicitly adds sort wiring per AC-004. AggregationGrid.tsx L28 import getSortedRowModel from @tanstack/react-table. L35 import type SortingState. L191-193 internal/external sorting state (D5 controlled/uncontrolled). L253 state.sorting conditional spread. L268 onSortingChange conditional spread. L278 getSortedRowModel() conditional spread. L382-384 onClick=getToggleSortingHandler() (non-virt). L460-462 same for virt. L392-400 sort icon ▲/▼ display (non-virt). L470-478 same for virt. Story GroupPanelWithSort (L469) validates with enableGroupSort:true + 1200 rows."
+    },
+    {
+      "id": "B-02",
+      "axis": "B",
+      "name": "필터 동작",
+      "result": "N/A",
+      "evidence": "G-004 spec Section 2/3/5 어디에도 필터 변경 없음. 필터 무관 기능. spec L286-295 AC table에 필터 관련 AC 없음."
+    },
+    {
+      "id": "B-03",
+      "axis": "B",
+      "name": "페이지네이션 동작",
+      "result": "N/A",
+      "evidence": "G-004 spec Section 2/3/5 페이지 변경 없음. 페이지 무관 기능. AggregationGrid에 pagination 미사용 (G-002~G-004 모두)."
+    },
+    {
+      "id": "B-04",
+      "axis": "B",
+      "name": "가상화 동작 (C-18)",
+      "result": "YES",
+      "evidence": "G-002 useVirtualizer wiring (AggregationGrid.tsx L298-303) 그대로 보존. G-004 GroupPanel + sort handlers가 virtualized path에도 추가됨 (L427-503): L430-438 GroupPanel above scrollable div, L451-462 draggable + onClick sort handler in virtualized <th>, L470-478 sort icon in virtualized <th>. Story GroupPanelWithSort (L442-471) 검증: enableVirtualization:true + 1200 rows + showGroupPanel:true + enableGroupSort:true 조합. Flow-layout spacer rows (L486-499) C-18 준수. 회귀 없음 (tsc EXIT=0)."
+    },
+    {
+      "id": "B-05",
+      "axis": "B",
+      "name": "인라인 편집 동작",
+      "result": "N/A",
+      "evidence": "G-004 spec 편집 기능 없음. AggregationGrid는 표시 전용 컴포넌트 (group + aggregate + panel + sort)."
+    },
+    {
+      "id": "C-01",
+      "axis": "C",
+      "name": "영향 사용처 tsc 0",
+      "result": "N/A",
+      "evidence": "spec.md Section 1 L55: 'affectedUsageFiles: [] 0개 (goals.json 일치)'. tw-framework-front 내 @tomis/grid-pro-agg import 없음. 영향 사용처 0개."
+    },
+    {
+      "id": "C-02",
+      "axis": "C",
+      "name": "외관 보존 (C-17)",
+      "result": "N/A",
+      "evidence": "rubric C-02 N/A 조건: 'low tier + 사용처 0' 충족. migrationImpact=low (spec header L6) + affectedUsageFiles=[]."
+    },
+    {
+      "id": "C-03",
+      "axis": "C",
+      "name": "console warning 0 + React warning 0",
+      "result": "YES",
+      "evidence": "Grep console.log src → 0 hits. Intentional console.warn 1건 (aggregationFns.ts L66 G-003 D6 duplicate registration overwrite policy) + console.error 2건 (AggregationGrid.tsx L198 G-004 EC-007 controlled sort misuse warning + L238 G-003 AC-002 unknown aggregationFn fallback). 모두 spec 의도된 동작 (D6, EC-007, AC-002 명시). Rubric C-03 'deprecation warning 제외 — 의도된 것' 규칙 적용."
+    },
+    {
+      "id": "D-01",
+      "axis": "D",
+      "name": "마이그레이션 비율 ≥ 50%",
+      "result": "N/A",
+      "evidence": "rubric D-01 N/A 조건: '사용처 0개' 충족. spec.md Section 1 L55 affectedUsageFiles=[]."
+    },
+    {
+      "id": "D-02",
+      "axis": "D",
+      "name": "잔여 사용처 명시",
+      "result": "N/A",
+      "evidence": "rubric D-02 N/A 조건: '잔여 0건' 충족. 신규 Pro 패키지로 마이그레이션 대상 없음."
+    },
+    {
+      "id": "E-01",
+      "axis": "E",
+      "name": "번들 크기 변동 (C-21)",
+      "result": "YES",
+      "evidence": "dist/index.mjs ESM 15.92 KB raw (~80% of Pro 20 KB 한도). G-004 추가분 ~6 KB(G-003 baseline 9.86 KB → 15.92 KB) — GroupPanel.tsx 124 lines + AggregationGrid.tsx 150+ lines diff + types.ts 7 new props + index.ts 2 new exports. Spec Section 8 추정 +4 KB ↔ 실측 +6 KB (story file 포함 영향 추정). 한도 ≤ 20 KB 내 여유 ~4 KB. C-21 준수."
+    },
+    {
+      "id": "E-02",
+      "axis": "E",
+      "name": "새 의존성 ADR (C-20)",
+      "result": "N/A",
+      "evidence": "package.json peerDependencies G-002 상태 그대로 유지 (변경 없음). D4 결정: HTML5 native drag (dnd-kit 미도입) → 신규 peerDep 0건. D6: package.json no-op. ADR-MOD-GRID-15-008 (HTML5 drag 결정) + ADR-MOD-GRID-15-009 (sort wiring 결정) 모두 decisions.md L311-409 기록되었으나 신규 dependency가 아닌 설계 결정 ADR. C-20 신규 dependency ADR 의무 미발생."
+    },
+    {
+      "id": "E-03",
+      "axis": "E",
+      "name": "라이선스 명시 (C-24)",
+      "result": "YES",
+      "evidence": "package.json L5: 'license: SEE LICENSE IN EULA'. EULA.md 존재 (27 lines, G-001 작성, Read 확인). verifyOrWarn stub 호출 AggregationGrid.tsx L55 모듈 레벨 1회 유지 (D7 한 패키지 1회 원칙). C-24 Pro 패키지 라이선스 명시 의무 충족. G-004에서 EULA.md/package.json 변경 없음 (D6)."
+    }
+  ],
+  "buildResult": {
+    "tsc": "0 errors (EXIT=0, npx tsc --noEmit)",
+    "tsup": "CJS 16.54 KB + ESM 15.92 KB + DTS 10.88 KB — Build success 125ms+914ms",
+    "bundleSize": "ESM 15.92 KB / CJS 16.54 KB (80% of 20 KB Pro limit, within C-21)",
+    "wijmoGrep": "0",
+    "anyGrep": "0",
+    "consoleLogGrep": "0 (intentional console.warn 1 + console.error 2: D6, EC-007, AC-002 all spec-mandated)",
+    "dndKitGrep": "0 (D4 HTML5 native drag, dnd-kit rejected)"
+  },
+  "moduleExportCheck": {
+    "G-001": "AggregationGrid (index.ts L12), resolveAggregationFn (L14), AggregationFnKey/AggregationColumnMeta/AggregationColumnDef/AggregationGridProps (L17-20) — all exported",
+    "G-002": "GroupRowProps, FooterRowProps (L21-22) — type-only exports (D3 internal components, only prop types exposed)",
+    "G-003": "registerAggregationFn, getAggregationFn, BUILT_IN_AGGREGATION_KEYS (L14), TanStackAggKey (L15 type-only) — all exported",
+    "G-004": "GroupPanel (L13), GroupPanelProps (L23) — both exported. Pure helpers (getColumnLabel, removeFromGrouping, addToGrouping) intentionally NOT exported (internal C-32)"
+  },
+  "failedChecks": [],
+  "feedback": [],
+  "selfVerification": {
+    "itemCount": "A=3 + B=5 + C=3 + D=2 + E=3 = 16 ✓",
+    "categoryScoreFormula": "A: 3YES/0NO=100. B: 2YES/0NO/3NA=100. C: 1YES/0NO/2NA=100. D: 0YES/0NO/2NA=vacuous 100. E: 2YES/0NO/1NA=100.",
+    "weightedScoreFormula": "100×0.25 + 100×0.25 + 100×0.20 + 100×0.15 + 100×0.15 = 25+25+20+15+15 = 100.0",
+    "weightSum": "25+25+20+15+15 = 100 ✓",
+    "failedChecksRule": "NO=0, failedChecks=[] ✓ (N/A 미포함)",
+    "vacuousJustification": "B: 3 N/A (B-02 filter, B-03 pagination, B-05 edit 모두 G-004 범위 외 — spec Section 2/3에 해당 키워드 없음). B-01 sort + B-04 virtualization 은 G-004 명시 범위 → YES. C: 2 N/A (C-01/C-02 affectedUsageFiles=[]). D: 2 N/A (사용처 0). E: 1 N/A (E-02 신규 dep 0건). A vacuous 금지 키워드(build/tsup/tsc/size-limit/bundle) 적용 — A-01/A-02/A-03 모두 YES로 실측 평가 (vacuous 금지)."
+  },
+  "evaluatedAt": "2026-05-15",
+  "moduleId": "MOD-GRID-15",
+  "yesCount": 8,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 8,
+  "score": 100,
+  "runAt": "2026-05-15",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "yesCount=8",
+      "noCount=0",
+      "naCount=8",
+      "denominator=8",
+      "score=weightedScore",
+      "runAt=2026-05-15",
+      "verifierModel=opus"
+    ]
+  }
+}

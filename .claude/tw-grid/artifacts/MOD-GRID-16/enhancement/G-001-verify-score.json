@@ -1,0 +1,226 @@
+{
+  "goalId": "MOD-GRID-16/enhancement/G-001",
+  "moduleId": "MOD-GRID-16",
+  "area": "enhancement",
+  "stage": "verify",
+  "tier": "medium",
+  "threshold": 90,
+  "rubricVersion": "1.0.3",
+  "migrationImpact": "medium",
+  "weights": {
+    "A": 15,
+    "B": 20,
+    "C": 30,
+    "D": 20,
+    "E": 15
+  },
+  "categoryScores": {
+    "A": {
+      "yesCount": 2,
+      "noCount": 0,
+      "naCount": 1,
+      "score": 100,
+      "weight": 15
+    },
+    "B": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 5,
+      "score": 100,
+      "weight": 20
+    },
+    "C": {
+      "yesCount": 1,
+      "noCount": 0,
+      "naCount": 2,
+      "score": 100,
+      "weight": 30
+    },
+    "D": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 2,
+      "score": 100,
+      "weight": 20
+    },
+    "E": {
+      "yesCount": 2,
+      "noCount": 1,
+      "naCount": 0,
+      "score": 66.67,
+      "weight": 15
+    }
+  },
+  "checks": [
+    {
+      "id": "A-01",
+      "title": "gradlew compileJava 0 errors",
+      "result": "N/A",
+      "evidence": "Goal scope: FE-only (Pro package @tomis/grid-pro-master + grid-core type extension). No Java/Spring backend code involved. spec.md Section 1 L34 confirms packages: 'packages/grid-pro-master (Pro) + packages/grid-core (MIT)'.",
+      "reasoning": "FE-only Goal — gradlew not applicable. Standard N/A per rubric A-01 ('그리드 작업이 FE 전용일 때 — 대부분 N/A')."
+    },
+    {
+      "id": "A-02",
+      "title": "npx tsc --noEmit 0 errors",
+      "result": "YES",
+      "evidence": "Executed `npx tsc --noEmit` at D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master → exit 0 (TSC_PASS echoed). Same at packages/grid-core → exit 0 (GRID_CORE_TSC_PASS echoed). affectedUsageFiles=[] so tw-framework-front tsc not exercised in this Goal scope.",
+      "reasoning": "Both packages compile clean. No type errors after grid-core GridHandle expandAll?/collapseAll? optional method addition + grid-pro-master 4 NEW files."
+    },
+    {
+      "id": "A-03",
+      "title": "vite/tsup build + size-limit 한도 내",
+      "result": "YES",
+      "evidence": "dist files exist: D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master/dist/index.cjs (7.40KB), index.mjs (7.21KB), index.d.ts (4.41KB), index.d.cts (4.41KB) — confirmed via ls -la. size-limit JSON output: @tomis/grid-pro-master size=15866 bytes, sizeLimit=20000, passed=true. .size-limit.json L (grid-pro-master entry) confirms 20 KB limit + brotli=true.",
+      "reasoning": "tsup build artifacts present + size-limit PASS (15866 ≤ 20000). Spec NFR-001 target was <5 KB delta (actual 15866 total package — first Goal — within C-21 20 KB cap)."
+    },
+    {
+      "id": "B-01",
+      "title": "정렬 동작 (단일 + 다중)",
+      "result": "N/A",
+      "evidence": "spec.md Section 1 + Section 5 declare scope: Master-Detail row expansion (F-16-01~04). Sort wiring is grid-core G-001+ scope. MasterDetailGrid.tsx L139-151 useReactTable invocation does NOT wire getSortedRowModel — only getCoreRowModel + getExpandedRowModel. No sort behavior is claimed by this Goal's AC.",
+      "reasoning": "Sort is out-of-scope for Master-Detail Goal. N/A per rubric B-01 ('정렬 무관 기능')."
+    },
+    {
+      "id": "B-02",
+      "title": "필터 동작",
+      "result": "N/A",
+      "evidence": "MasterDetailGrid.tsx useReactTable does not wire getFilteredRowModel. No column filter is part of this Goal's AC (Section 2.2 9 ACs). buildExpandColumn L72 sets enableColumnFilter: false on the expand toggle column itself.",
+      "reasoning": "Filter behavior not claimed by Goal. N/A per rubric B-02 ('필터 무관')."
+    },
+    {
+      "id": "B-03",
+      "title": "페이지네이션 동작 (client + server)",
+      "result": "N/A",
+      "evidence": "MasterDetailGrid.tsx useReactTable does not wire getPaginationRowModel. No pagination AC in Section 2.2. Pagination is grid-core MOD-GRID-03 scope.",
+      "reasoning": "Pagination not in Goal scope. N/A per rubric B-03 ('페이지 무관')."
+    },
+    {
+      "id": "B-04",
+      "title": "가상화 1000행+ 시나리오 동작",
+      "result": "N/A",
+      "evidence": "spec.md D5 (L21) + EC-002 + Section 12 risk row explicitly defer virtualization+Master-Detail combination. AC-008 verifies enableVirtualization=true triggers console.warn + skip (defensive). MasterDetailGrid.tsx L265 condition '!== true' implements EC-002 (skip detail when virtualization on). No 1000-row Storybook required this Goal.",
+      "reasoning": "Virtualization+Master-Detail integration is deferred (D5). Goal scope is small datasets only. N/A per rubric B-04 ('가상화 무관 — 작은 데이터셋 전용')."
+    },
+    {
+      "id": "B-05",
+      "title": "인라인 편집 동작",
+      "result": "N/A",
+      "evidence": "Goal is Master-Detail (row expansion + detail render), not editing. No EditableGrid / ChangeTrackingGrid touched. spec.md AC-001~009 contain no editing scenario.",
+      "reasoning": "Editing not in Goal scope. N/A per rubric B-05 ('편집 기능 없는 Goal')."
+    },
+    {
+      "id": "C-01",
+      "title": "영향 사용처 tsc 0 (마이그레이션 후)",
+      "result": "N/A",
+      "evidence": "spec.md header / Goal info affectedUsageFiles=[]. Grep 'grid-pro-master' in D:/project/topvel_project/TOMIS/tw-framework-front/src returned 0 matches (no current consumer). New Pro API — no usage to migrate.",
+      "reasoning": "Zero affected usage files. N/A per rubric C-01 ('사용처 0개')."
+    },
+    {
+      "id": "C-02",
+      "title": "외관 보존 (시각 회귀)",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[]. Grid.tsx unchanged (Section 7 Truth Table confirms grid-core/Grid.tsx not in change list — only grid-core/src/types.ts MODIFY for GridHandle interface optional method addition). No existing consumer to compare visual regression against. Storybook story for this Goal intentionally skipped per implement-score promptSpecDrift PSD-01 (C-30 Section 7 authority — no .stories.tsx in Truth Table).",
+      "reasoning": "New Pro component with 0 existing consumers + Grid.tsx zero change. N/A applies."
+    },
+    {
+      "id": "C-03",
+      "title": "console warning 0 + React warning 0 (정상 동작 시)",
+      "result": "YES",
+      "evidence": "MasterDetailGrid.tsx has 3 intentional dev-mode console.warn calls: L160 (addRow without onAddRow), L168 (deleteRow without onDeleteRow), L176 (updateRow without onUpdateRow). These are inherited GridHandle policy warnings (grid-core/src/types.ts L73-75 @remarks: '콜백 미제공 시 dev mode console.warn 1회 + no-op'). EC-002 dev warn for virtualization+Master-Detail conflict — appropriate use. All warnings are intentional API-misuse notifications, not unintentional warnings.",
+      "reasoning": "Rubric C-03 excludes 'deprecation warning — 의도된 것'. All warnings here are deliberate behavioral feedback (callback missing + virtualization conflict). In normal usage (callbacks provided), warning count = 0."
+    },
+    {
+      "id": "D-01",
+      "title": "마이그레이션 비율 ≥ 50% + 잔여 계획",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] (spec header + Goal info). Grep 'grid-pro-master' in tw-framework-front/src returned 0. New Pro API introduction Goal — no existing sites to migrate.",
+      "reasoning": "Zero affected usage files. N/A per rubric D-01 ('사용처 0개')."
+    },
+    {
+      "id": "D-02",
+      "title": "잔여 사용처 명시 (documented-deviations or 다음 Goal)",
+      "result": "N/A",
+      "evidence": "No affected usage files → no remaining sites to document.",
+      "reasoning": "N/A per rubric D-02 ('잔여 0건')."
+    },
+    {
+      "id": "E-01",
+      "title": "번들 크기 변동 (gzipped, brotli) 한도 내",
+      "result": "YES",
+      "evidence": "size-limit JSON output @tomis/grid-pro-master size=15866 bytes (brotli), sizeLimit=20000, passed=true. C-21 Pro package cap = 20 KB. Spec NFR-001 target delta < 5 KB (actual full package 15.87 KB on first Goal — under cap).",
+      "reasoning": "Bundle size confirmed under 20 KB Pro limit via executed size-limit command at monorepo root."
+    },
+    {
+      "id": "E-02",
+      "title": "새 의존성 ADR 작성됨",
+      "result": "YES",
+      "evidence": "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-16-decisions.md exists (find command located it). Implement-score checksC.C4 + rubricCheck.E_bundleAndLicense.E-02 confirm ADR with D1-D8 decisions. peerDependency additions: @tomis/grid-core (D4) + @tomis/grid-license (D5 — Changeset records grid-license patch). package.json L29-30 confirms both peer entries.",
+      "reasoning": "ADR present with D4/D5 covering peer dep additions. C-9/C-20 obligations met. (Worktree-local copy at .claude/worktrees/tw-grid-mod16-g001/.claude/tw-grid/decisions/ is missing — sync gap noted but does not invalidate ADR existence at canonical TOMIS path.)"
+    },
+    {
+      "id": "E-03",
+      "title": "라이선스 명시 (license 필드 + LICENSE/EULA 파일 + Pro 검증 호출)",
+      "result": "NO",
+      "evidence": "package.json L5 'license': 'SEE LICENSE IN EULA' confirmed. verifyLicense('@tomis/grid-pro-master') call site at MasterDetailGrid.tsx L47 confirmed (module-level, D7). HOWEVER: EULA.md file at D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master/EULA.md does NOT exist (ls 'No such file or directory'). Spec NFR-006 explicitly flagged: 'EULA.md 존재 — 구현 단계 확인' — implementer did not create it. implement-score checksA.A2 'Beyond-Section-7 additions' lists no EULA.md.",
+      "reasoning": "C-24 + rubric E-03 require all three: license field + LICENSE/EULA file + Pro verifyLicense call. EULA file missing. Two of three present — fails 'all three' requirement."
+    }
+  ],
+  "weightedScore": 95,
+  "passed": true,
+  "failedChecks": [
+    "E-03"
+  ],
+  "feedback": [
+    "E-03 (라이선스 EULA.md 누락): packages/grid-pro-master/EULA.md 파일이 존재하지 않음. spec NFR-006 + C-24 가 요구하는 Pro 패키지 EULA 파일을 다음 Goal 또는 후속 패치에서 추가해야 한다. license 필드(SEE LICENSE IN EULA) + verifyLicense call 은 정상 — 파일만 빠진 상태. 빠른 보완 권장: EULA.md (간단한 라이선스 요약 + 향후 grid-license 패키지가 enforce) 1회 작성으로 E-03 통과 가능.",
+    "ADR 파일 worktree sync 권장: MOD-GRID-16-decisions.md 가 메인 TOMIS .claude/tw-grid/decisions/ 에만 존재하고 worktree-local 복사본이 없음. F-01 worktree-prefix evidence 정책상 향후 추가 분석 시 worktree path 검색이 실패할 수 있음 — 차후 worktree merge 후 자동 일치 예상하나 운영상 주의."
+  ],
+  "buildStatus": {
+    "tsc_grid_pro_master": "PASS (0 errors)",
+    "tsc_grid_core": "PASS (0 errors)",
+    "tsup_build_grid_pro_master": "PASS (CJS 7.40KB, ESM 7.21KB, DTS 4.41KB present in dist/)",
+    "sizeLimit_grid_pro_master": "PASS (15866 bytes brotli ≤ 20000 limit)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": 1,
+    "note": "New Pro API — no migration scope. C/D categories N/A across the board."
+  },
+  "selfVerification": {
+    "categoryCountTotal": 16,
+    "categoryBreakdown": "A=3 + B=5 + C=3 + D=2 + E=3 = 16",
+    "weightSum": 100,
+    "naExcludedFromDenominator": true,
+    "failedChecksOnlyNo": true,
+    "weightedScoreFormula": "100*0.15 + 100*0.20 + 100*0.30 + 100*0.20 + 66.67*0.15 = 15 + 20 + 30 + 20 + 10.0005 = 95.0005",
+    "vacuousTruthApplied": [
+      "B (all 5 N/A — out-of-scope axes for Master-Detail Goal)",
+      "D (both N/A — affectedUsageFiles=[])"
+    ],
+    "vacuousBuildKeywordGuard": "A category did not require vacuous fallback (A-02/A-03 YES). B/D vacuous allowed (no build/tsup/tsc keyword in Goal title 'Master-Detail — 행 클릭 시 자식 컴포넌트 확장 + 동적 자식 그리드 renderDetailRow')."
+  },
+  "evaluatedAt": "2026-05-15T12:00:00Z",
+  "yesCount": 5,
+  "noCount": 1,
+  "naCount": 10,
+  "denominator": 6,
+  "score": 95,
+  "runAt": "2026-05-15T12:00:00Z",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "yesCount=5",
+      "noCount=1",
+      "naCount=10",
+      "denominator=6",
+      "score=weightedScore",
+      "runAt=2026-05-15T12:00:00Z",
+      "verifierModel=opus"
+    ]
+  }
+}

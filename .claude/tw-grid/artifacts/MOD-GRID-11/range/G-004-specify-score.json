@@ -1,0 +1,214 @@
+{
+  "goalId": "MOD-GRID-11/range/G-004",
+  "module": "MOD-GRID-11",
+  "area": "range",
+  "stage": "specify",
+  "rubricVersion": "1.0.7",
+  "rubricDate": "2026-05-14",
+  "migrationImpact": "medium",
+  "checks": {
+    "H-01": {
+      "result": "YES",
+      "evidence": "L0: N/A (affectedUsageFiles: [] spec.md L59), L1: D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\goals\\MOD-GRID-11\\range-goals.json (Glob verified), L2: types.ts (D:\\project\\topvel_project\\topvel-grid-monorepo\\packages\\grid-pro-range\\src\\types.ts Glob verified), L2: fillRange.ts (D:\\project\\topvel_project\\topvel-grid-monorepo\\packages\\grid-pro-range\\src\\internal\\fillRange.ts Glob verified), L3: MOD-GRID-11-decisions.md (D:\\project\\topvel_project\\TOMIS\\.claude\\tw-grid\\decisions\\MOD-GRID-11-decisions.md Glob verified), R-A: publish-aggrid-analysis.md (Glob verified), R-W: publish-wijmo-analysis.md (Glob verified)"
+    },
+    "H-02": {
+      "result": "YES",
+      "evidence": "internal/tsvUtils.ts parent dir: packages/grid-pro-range/src/internal/ (Glob verified, fillRange.ts + normalize.ts exist), useClipboard.ts parent dir: packages/grid-pro-range/src/ (Glob verified, useCellRange.ts + useKeyboardNav.ts + types.ts + index.ts exist), useClipboard.stories.tsx parent dir: packages/grid-pro-range/src/ (Glob verified, DragFillHandle.stories.tsx + useCellRange.stories.tsx exist), types.ts parent dir: packages/grid-pro-range/src/ (Glob verified), index.ts parent dir: packages/grid-pro-range/src/ (Glob verified)"
+    },
+    "H-03": {
+      "result": "YES",
+      "evidence": "AC-001 source tag C-4 (spec.md L72, constraint C-4 exists in constraints.md), AC-002 source tag L1 (spec.md L73, goals.json AC-002 cited in Section 2), AC-003 source tag L1 (spec.md L74), AC-004 source tag L1 (spec.md L75), AC-005 source tag C-16 (spec.md L76, constraint C-16 cited), AC-006 source tag C-12 (spec.md L77), AC-007 source tag C-25 (spec.md L78). All source tags present, all referenced in spec sections."
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "Section 1.3 referenceEvidence: L0 explicitly marked N/A with 'affectedUsageFiles: []' (goals.json L292 권위 값). L1 goals.json citation. No current implementation files cited (NEW feature)."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Section 2 AC table with interface signatures (UseClipboardProps<TData, TCell>, UseClipboardReturn) + TanStack Table types referenced in Section 3.1 L125."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "Section 1.3 L60-61: CellCoord, CellRange, CellUpdate 타입 G-001/G-003 기존 구현에서 추출 명시. Section 3.1 L109-127 interface 정의에서 이들 타입 재사용."
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "Section 1.3 L58-59: affectedUsageFiles: [] (0개 usage sites). Section 1.2 L47-54 신규 기능 설명 + Section 8.1 L617-619 '영향 사용처 0개' 명시."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "Section 1.3 L63-64: R-A AG Grid Clipboard API 패턴 (C-7: import 금지, 패턴 shape 참조만 — publish는 AG Grid Community 사용). R-W Wijmo Import/Export 목록 내 Clipboard copy/paste 기능 확인 (C-16: import 금지)."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "Section 3.1-3.3: PasteResult<TCell>, UseClipboardProps<TData, TCell>, UseClipboardReturn 타입 완전 정의. Section 3.2 stringifyTsv/parseTsv 함수 시그니처. Section 3.3 useClipboard hook 시그니처. 모든 props/return/events 타입 명시 (no any, C-4)."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Section 3.4 L447-457: (1) 기본 사용 예시 - clipboardProps 객체 생성 + useClipboard 호출, (2) G-002 useKeyboardNav와 합성 예시 - handleKeyDown composition. 2개 이상 코드 예시."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "Section 3.1 UseClipboardProps: selection (required), activeCell (required), rowCount (required), colCount (required), getCellValue (required), onPaste? (optional with ?:), onError? (optional with ?:), table? (optional with ?:). Spread-skip pattern (C-29) described in Section 3.4."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "Section 3.1 L88: export interface PasteResult<TCell = unknown> (line 96-101). Section 3.1 L109: export interface UseClipboardProps<TData, TCell = unknown>. Section 3.1 L129: export interface UseClipboardReturn. Section 7 #4 'types.ts MODIFY' — 정확한 export 위치 명시."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "useClipboard is a custom hook returning { onKeyDown, copyToClipboard, pasteFromClipboard }, not a React.forwardRef or imperative handle pattern. ref API not required — declarative hook."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "Section 2 acceptanceCriteria: 7개 항목 (AC-001 ~ AC-007, spec.md L70-78). 3개 이상 의무 충족."
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "Section 2 AC table L70-78: AC-001 source C-4, AC-002 source L1, AC-003 source L1, AC-004 source L1, AC-005 source C-16, AC-006 source C-12, AC-007 source C-25. 모든 AC에 source tag."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "AC-001 'writeText 호출' (binary: 호출 여부 검증 가능), AC-002 'CellUpdate[] 배열 반환' (binary: 타입 체크 가능), AC-003 'RFC 4180 쌍따옴표 래핑' (binary: 이스케이프 여부 테스트 가능), AC-004 '중복 구현 금지' (binary: grep 0 hits 검증), AC-006 'tsc 0 error' (binary: build 성공/실패)."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "Section 1.2 L42: migrationImpact = 'medium' (goals.json L251 권위 값). goals.json read at line 251 shows '\"migrationImpact\": \"medium\"'. C-32 constraint satisfied — goals.json is single source of truth."
+    },
+    "C-05": {
+      "result": "YES",
+      "evidence": "Section 2 AC-006: 'C-12: tsc --noEmit 0 error' — 호환성 검증 항목 포함. affectedUsageFiles: 0개 (신규 기능)이므로 C-17 N/A 조건 충족. AC-006은 타입 안전성 검증."
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "Section 8.1 영향 사용처 테이블: affectedUsageFiles: [] (L292 goals.json 원문) — 0개 명시. Section 1.3 L58-59 참조."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "신규 영역 (기존 8 variant 변형 없음). Goal G-004는 새로운 useClipboard hook 추가로, 기존 variant 대응 불필요."
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "Section 4 호환성 정책: breaking = 'no' (L485). 신규 기능이므로 breaking change 없음. 기존 types.ts export 미제거, index.ts 추가 export만."
+    },
+    "D-04": {
+      "result": "N/A",
+      "evidence": "Section 4: breaking = no이므로 deprecation strategy 불필요. 신규 기능 — alias 불필요."
+    },
+    "D-05": {
+      "result": "YES",
+      "evidence": "Section 8.6 Pre-flight L621-622: 롤백 전략 = 'index.ts export 제거'. 신규 export (useClipboard, PasteResult, 등) 제거하면 롤백 가능."
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "Section 8.6 번들 영향: '+2 KB gzip'. Section 13.2 L859-862 누적 수치: G-004 +2 KB, 누적 11 KB ≤ 20 KB (C-21 한도). ✓ 준수."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Section 7 최종 파일 목록 (L547-555): 5행 (NEW 3 + MODIFY 2). Section 11 Step 1-5 모든 파일 매핑: Step 1 types.ts MODIFY (L700-735) = Section 7 #4, Step 2 internal/tsvUtils.ts NEW (L738-746) = Section 7 #1, Step 3 useClipboard.ts NEW (L750-765) = Section 7 #2, Step 4 index.ts MODIFY (L767-783) = Section 7 #5, Step 5 useClipboard.stories.tsx NEW (L785-790) = Section 7 #3. Section 7 ↔ Section 11 100% 일치."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "Section 11 Step 1-5: Before/After 코드 블록 존재. Step 1 L703-735 (Before 기존 G-003까지 타입 vs After G-004 신규 타입), Step 3 L750-765 (Before 파일 없음 vs After useClipboard 구현), Step 4 L769-783 (Before 기존 export vs After G-004 추가 export). 핵심 변경의 Before/After 명시."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "Section 11 구현 순서 5단계: Step 1 types.ts → Step 2 tsvUtils → Step 3 useClipboard → Step 4 index.ts → Step 5 Storybook. 의존성 순서 명시 (types 먼저, 이후 hook, 마지막 export + story)."
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "Section 6 엣지 케이스: EC-001 ~ EC-009 (9개 > 3개 의무). EC 테이블 L522-542 + AC↔EC 환경의존 매핑 테이블 L534-541."
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "Section 12 검증 계획: 12.1 단위 테스트 (UT-001 ~ UT-015 테이블 L799-814), 12.2 Self-review 체크리스트 (L815-832), 12.3 빌드 검증 (tsc + tsup + size-limit L834-837), 12.4 시각 회귀 (affectedUsageFiles 0개 → N/A L839-840). 단위 테스트 + 시각 회귀 + 빌드 검증 명시."
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "Section 7 본문 L545: '최종 구현 파일 목록' 제목만 있고 '재결정', '변경', '대체', '수정함' 같은 결정 변경 표현 없음. 초기 설계에서 변경 없이 최종 표 (L547-555) 그대로 유지. D# 표 (L26-28)와 최종 표 100% 일치: NEW 3 + MODIFY 2 = 5 files."
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "Section 13.1 L849: '@tomis/grid-pro-range/useClipboard는 Pro tier 기능이다.' 명시. 정확한 패키지 경로 (@tomis/grid-pro-range)."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "Section 13.1 L850-851: '_verifyGridLicenseStub → MOD-GRID-99-A/G-002 완료 후 실제 EULA 라이선스 검증으로 교체' + Section 3.3 L283-287 inline function 정의 (D2 결정, ADR-MOD-GRID-11-002). B-06 compliant (no @ts-ignore, no declare const non-exported)."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "Section 13.4 L871-875: '문서화 계획 (C-25)' — Docusaurus 페이지 경로 + Storybook story 1개 + JSDoc 명시."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Section 13.4 L871: 'C-22: peerDependencies 정책'. Section 5.1 L498-501: react + @tanstack/react-table을 peer로 명시 (C-22 정책 준수). 신규 외부 dependencies 없음 (navigator.clipboard는 브라우저 내장 Web API)."
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "모든 결정이 명시됨. D# 표 (L26-28)에서 'NEW 3 + MODIFY 2 = 5 files' 명시. Section 7 (L547-555)에서 파일 5행 일치. AC 모두 source tag 포함, TBD/TODO 표현 0건. Section 11 '위험 요소' 불필요 (신규 기능)."
+    }
+  },
+  "yesCount": 32,
+  "noCount": 0,
+  "naCount": 3,
+  "denominator": 32,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "summary": "PASS (100.0 / 90)",
+    "metaGates": "H-01 YES (경로 7건 모두 실재), H-02 YES (parent 디렉토리 5건 모두 실재), H-03 YES (AC 소스 태그 7건 모두 명시)",
+    "categoryScores": {
+      "A": "5/5 = 100.0",
+      "B": "4/4 = 100.0 (B-05 N/A)",
+      "C": "5/5 = 100.0",
+      "D": "4/4 = 100.0 (D-02, D-04 N/A)",
+      "E": "6/6 = 100.0",
+      "F": "4/4 = 100.0",
+      "G": "1/1 = 100.0"
+    },
+    "highlights": [
+      "E-06: Section 7 ↔ Section 11 100% 일치. D# (NEW 3 + MODIFY 2) = 최종 표 5행. 재결정 표현 없이 원설계 그대로 유지.",
+      "H-01: referenceEvidence 경로 7건 (L0 N/A, L1-L3, R-A, R-W) 모두 Glob 검증. L1 goals.json L251 'migrationImpact: medium' cross-check (C-32).",
+      "C-05: AC-006 tsc 0 error = 호환성 검증. affectedUsageFiles: 0개 → C-17 N/A 조건 충족.",
+      "D-06: 번들 +2 KB < 20 KB 한도 (C-21). 누적 11 KB (G-001~004) < 20 KB 여유.",
+      "AC ↔ EC 환경의존 매핑: E-04에서 4개 환경의존 AC (AC-001 clipboardAPI, AC-002 권한, AC-003 RFC 4180, AC-006 tsc)에 대응 EC 명시 (E-04 권장 패턴)."
+    ],
+    "selfVerification": {
+      "naExclusion": "denominator = 32 total - 3 N/A = 29 ✓",
+      "failedChecksIntegrity": "NO 0건, failedChecks [] ✓",
+      "categorySum": "A(5) + B(4) + C(5) + D(4) + E(6) + F(4) + G(1) = 29 checked items, 3 N/A → 32 total ✓",
+      "scoreFormula": "29 / 29 × 100 = 100.0 ✓"
+    }
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 29,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 3,
+    "originalReportedDenominator": 29,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-11",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

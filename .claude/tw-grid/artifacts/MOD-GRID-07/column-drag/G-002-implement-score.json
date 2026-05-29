@@ -1,0 +1,162 @@
+{
+  "goalId": "MOD-GRID-07/column-drag/G-002",
+  "module": "MOD-GRID-07",
+  "area": "column-drag",
+  "stage": "implement",
+  "rubricVersion": "1.0.7",
+  "migrationImpact": "low",
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "All 7 spec Section 7 files exist: useColumnOrderPersist.ts (NEW), types.ts, useColumnDrag.ts, index.ts, useColumnDrag.stories.tsx, grid-core/types.ts, grid-core/Grid.tsx — verified via Write/Edit tool outputs"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "UseColumnDragProps extended with persistColumnOrder?: boolean + columnOrderStorageKey?: string. UseColumnDragReturn extended with getKeyDownHandler: (columnId: string, isPinned: boolean) => (e: KeyboardEvent) => void. GridProps extended with persistColumnOrder?: boolean + columnOrderStorageKey?: string. UseColumnOrderPersistProps<TData> created with table, enabled, storageKey fields. All match spec Section 9."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "spec Section 사용예시: Grid + useColumnDrag + useColumnOrderPersist usage compiles cleanly (tsc --noEmit 0 errors on both packages). Spec usage patterns (spread-skip for optional props, C-29) followed exactly."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "신규 기능 — 대응할 variant 없음 (affectedUsageFiles: 0)"
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "AC-001: persistColumnOrder + columnOrderStorageKey in GridProps + useColumnOrderPersist mount restore. AC-002: try/catch + typeof window + QuotaExceededError. AC-003: getKeyDownHandler + tabIndex=0 + onKeyDown on th. AC-004: isPinned guard in getKeyDownHandler + pinned skip loop. AC-005: tsc 0 errors. AC-006: PersistAndKeyboard story added."
+    },
+    "A-06": {
+      "result": "YES",
+      "evidence": "useColumnOrderPersist (NEW file) is imported and called in useColumnDrag.ts L19 (import) + L40-44 (call: { saveOrder } = useColumnOrderPersist({...})). saveOrder is called in handleColumnOrderChange L50. handleColumnOrderChange is wired into getDragProps (L171: handleColumnOrderChange(newOrder)) and getKeyDownHandler (L100: handleColumnOrderChange(newOrder)). C-31 wiring audit fully satisfied."
+    },
+    "A-07": {
+      "result": "N/A",
+      "evidence": "spec Section 7 에 *.test.* 파일 없음 — 테스트 파일 미명시 Goal"
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "grid-features tsc --noEmit: 0 errors (exit 0, no output). grid-core tsc --noEmit: 0 errors (exit 0, no output). --skipLibCheck 미사용."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Grep ': any|as any|<any>' in column-drag directory → 0 matches. All types explicit: Table<TData>, string[], boolean, KeyboardEvent, DragEvent, string | null. C-29 exactOptionalPropertyTypes: persistColumnOrder === true, columnOrderStorageKey ?? '' pattern used."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "table.setColumnOrder(newOrder), table.getState().columnOrder, table.getAllLeafColumns(), table.getColumn(), column.getIsPinned() — all TanStack v8 standard exported APIs (C-2). No internal private field access."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "No new .css/.scss files created. Storybook story uses Tailwind className (e.g. 'rounded border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800'). No static inline style={{}} added. Dynamic style (width) from G-001 preserved."
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "noUnusedLocals: true enforced by tsconfig. tsc passes 0 errors. All declared variables are used: dragSourceId (used in onDragStart/onDrop/onDragEnd), saveOrder (used in handleColumnOrderChange), handleColumnOrderChange (used in getDragProps + getKeyDownHandler), getKeyDownHandler (returned). No dead variables."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep '@mescius/wijmo|from wijmo' in all modified files → 0 matches. C-16 satisfied."
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "No dummyData, mockData, fakeData in production code. EMPLOYEES/COLUMNS fixture data exists only in useColumnDrag.stories.tsx (Storybook — C-3 exception). No // TODO in production code."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "affectedUsageFiles: []. No existing usage files modified. GridProps new props are optional — backward compatible. tsc 0 errors on both packages."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "migrationImpact: low + affectedUsageFiles: 0 — C-17 시각 회귀 체크 의무 미해당 (spec Section 6)"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "No deprecated API usage. QuotaExceededError uses console.warn (spec-mandated, not a deprecated API). No React prop-types warning. No TanStack deprecated API."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "grid-features package.json: react, @tanstack/react-table, @tanstack/react-virtual, react-dom all in peerDependencies. No new dependencies added. C-22 satisfied."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "사용처 0개 (신규 기능) — D-01 N/A"
+    },
+    "D-02": {
+      "result": "YES",
+      "evidence": "마이그레이션 사용처 0개 — 1 Goal당 ≤5개 자동 충족"
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 0건 — D-03 N/A"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "grid-features dist/index.mjs: 13.82 KB (14,153 bytes). .size-limit.json @tomis/grid-features 20 KB 한도 내. C-21 satisfied."
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "새 외부 dependency 추가 없음. localStorage = 네이티브 브라우저 API. KeyboardEvent = 네이티브 DOM API. ADR 불필요 (spec Section 5 확인)."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "grid-features package.json: \"license\": \"MIT\" 유지. version bumped 0.1.0 → 0.2.0 (C-23 minor bump for additive feature). LICENSE file pre-existing."
+    }
+  },
+  "buildResult": {
+    "gridFeaturesTsc": "0 errors",
+    "gridCoreTsc": "0 errors",
+    "gridFeaturesBuild": "OK — dist/index.mjs 13.82 KB, dist/index.cjs 14.36 KB",
+    "gridCoreBuild": "OK — dist/index.mjs 59.34 KB, dist/index.cjs 60.86 KB",
+    "sizeLimit": "13.82 KB < 20 KB limit"
+  },
+  "yesCount": 18,
+  "noCount": 0,
+  "naCount": 6,
+  "denominator": 18,
+  "score": 100,
+  "threshold": 85,
+  "passed": true,
+  "failedChecks": [],
+  "autoFixed": [],
+  "specCodeDefects": [
+    {
+      "specLocation": "G-002-spec.md L238-242 Section 8.1 useColumnOrderPersist",
+      "defect": "saveRef (useRef) + sync useEffect — saveRef.current is never read anywhere in the spec template. The hook returns { saveOrder } directly (L273) and the consumer (handleColumnOrderChange) captures saveOrder in useCallback deps. saveRef is a dead variable: unreachable by any read path.",
+      "fixApplied": "Removed useRef + sync useEffect entirely. saveOrder function returned directly as { saveOrder }. useRef import removed from useColumnOrderPersist.ts (only useEffect retained).",
+      "severity": "low"
+    }
+  ],
+  "promptSpecDrift": [],
+  "documentedDeviations": [],
+  "testResult": null,
+  "distSizeDelta": {
+    "before_G002": "~11.8 KB estimated (grid-features without G-002 changes)",
+    "after_G002": "13.82 KB",
+    "delta": "+2.02 KB",
+    "note": "Matches spec Section 13 estimate of +2 KB"
+  },
+  "feedback": {
+    "goalsJsonImplementFiles": "goals.json 3파일 vs spec Section 7 7파일 — spec 우선 적용 (D3 보정 반영). 7파일 모두 구현.",
+    "specCodeDefect": "spec L238-242 saveRef + sync useEffect dead code 자율 정정 — useRef/sync useEffect 제거, saveOrder 직접 반환 유지",
+    "versionBump": "grid-features 0.1.0 → 0.2.0 (C-23 minor bump)",
+    "tabIndexUnconditional": "tabIndex={0} is unconditional on all <th> per spec L747 — applies even when enableColumnReorder=false. This is intentional per spec Section 6 (opt-in changes are visible but non-breaking).",
+    "storybootstrapDeviation": "PersistAndKeyboard story written to canonical path. Storybook app not bootstrapped — same deviation as G-001-storybook-bootstrap.md. C-25 satisfied by 'story file written' criterion."
+  },
+  "moduleId": "MOD-GRID-07",
+  "tier": "low",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-002→full",
+      "tier=low",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

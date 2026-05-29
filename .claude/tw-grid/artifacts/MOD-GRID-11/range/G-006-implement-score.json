@@ -1,0 +1,293 @@
+{
+  "goalId": "MOD-GRID-11/range/G-006",
+  "module": "MOD-GRID-11",
+  "area": "range",
+  "stage": "implement",
+  "loop": 1,
+  "rubricVersion": "1.0.8",
+  "migrationImpact": "medium",
+  "checks": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "All 7 spec Section 7 files verified via Glob/ls: (1) packages/grid-pro-range/src/types.ts MODIFY, (2) packages/grid-pro-range/src/RangeSelectGrid.tsx MODIFY, (3) packages/grid-pro-range/src/index.ts MODIFY, (4) packages/grid-pro-range/src/RangeSelectGrid.stories.tsx NEW, (5) packages/grid-pro-range/CHANGELOG.md MODIFY (was stub), (6) packages/grid-pro-range/.size-limit.json NEW, (7) .claude/tw-grid/decisions/MOD-GRID-11-decisions.md MODIFY — all confirmed existent."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "Changed files exactly match spec Section 7 truth table: NEW 3 (stories, CHANGELOG, .size-limit.json) + MODIFY 3 (types.ts, RangeSelectGrid.tsx, index.ts) + SUPPLEMENT 1 (decisions.md) = 7 files. package.json also modified (added @tanstack/react-virtual peerDep per C-22 — promptSpecDrift entry documented). Spec Section 7 used as authoritative per C-27/F-02."
+    },
+    "F-03": {
+      "result": "N/A",
+      "evidence": "Target directory D:/project/topvel_project/topvel-grid-monorepo/ is external to TOMIS git (ADR-MOD-GRID-00-001). Glob confirms 7 target files created/modified. decisions.md in worktree path confirmed. N/A condition met."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Grep on RangeSelectGrid.tsx confirms all core identifiers: RangeSelectGridAllProps (L24 import, L67 signature), useCellRange (L26 import + L133 call), useKeyboardNav (L27 import + L140 call), useClipboard (L28 import + L155 call), useKeyboardEdit (L29 import + L166 call), DragFillHandle (L30 import + L341 render), useVirtualizer (L22 import + L190 call), _verifyGridLicenseStub (L39 def + L108 useEffect call). All core identifiers present."
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "Spec read directly (G-006-spec.md) before implementation. D3 says 'package.json: 변경 없음' but C-22 requires peerDep declaration when imported — @tanstack/react-virtual used in RangeSelectGrid.tsx (import line 22) but missing from peerDependencies. Resolved per C-22 constraint: added as optional peerDep. promptSpecDrift=[{field:'package.json',promptValue:'unchanged per D3',specValue:'C-22 peerDep required for useVirtualizer import',resolution:'C-22 constraint applied, added @tanstack/react-virtual optional peerDep'}]. spec-defect D3 vs C-22 tension documented."
+    },
+    "F-06": {
+      "result": "YES",
+      "evidence": "4 spec code defects found in Section 3.2 and corrected. See specCodeDefects[] array. All 4 defects documented with specLocation, defect description, fixApplied, severity. feedback array includes 4 corresponding '자율 정정' entries. F-06 YES (documented deviation mode)."
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "All 7 spec Section 7 files exist on disk (Bash ls confirmed all 7 paths). Spec Section 7 file list: #1 types.ts, #2 RangeSelectGrid.tsx, #3 index.ts, #4 RangeSelectGrid.stories.tsx, #5 CHANGELOG.md, #6 .size-limit.json, #7 decisions.md."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "RangeSelectGridAllProps<TData, TCell> interface in types.ts matches spec Section 3.1 exactly: 6 enable flags (enableRangeSelection, enableKeyboardNav, enableDragFill, enableClipboard, enableKeyboardEdit, enableVirtualization), getCellValue getter, 3 G-003 callbacks, 2 G-004 callbacks, 4 G-005 callbacks. extends RangeSelectGridProps<TData> (C-6 backward compat). tsc --noEmit 0 errors confirms interface contracts. RangeSelectGridAllProps exported from index.ts (L9)."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "tsc --noEmit 0 errors in packages/grid-pro-range (confirmed). tsc --noEmit 0 errors in tw-framework-front (confirmed). L0 usage file (tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx) uses Parameters<typeof ProRangeSelectGrid<TData>>[0] — automatically picks up RangeSelectGridAllProps without modification. D6 zero-touch verified."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "No variant adaptation table — G-006 is the capstone integration Goal. The existing RangeSelectGrid.tsx (G-001) is the predecessor being upgraded, not a third-party variant."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "AC-001 (5-hook integration): useCellRange+useKeyboardNav+DragFillHandle+useClipboard+useKeyboardEdit all wired in RangeSelectGrid.tsx. AC-002 (enableVirtualization+useVirtualizer): L190-196 + virtualRows render at L244+. AC-003 (_verifyGridLicenseStub): L39 def + L107-109 useEffect. AC-004 (CHANGELOG.md v0.2.0): created at packages/grid-pro-range/CHANGELOG.md. AC-005 (Wijmo 0): grep @mescius/wijmo = 0 hits confirmed. AC-006 (.size-limit.json): created with 20KB limit. AC-007 (tsc 0 + C-29 spread-skip): tsc 0 confirmed; all optional props use spread-skip pattern at L144, L148-149, L157-162, L167-172. AC-008 (2 Storybook stories): FullFeature + VirtualizationLargeDataset in RangeSelectGrid.stories.tsx."
+    },
+    "A-06": {
+      "result": "YES",
+      "evidence": "RangeSelectGrid.tsx IS the functional wiring point. Import evidence: useCellRange L26, useKeyboardNav L27, useClipboard L28, useKeyboardEdit L29, DragFillHandle L30, useVirtualizer L22. Call evidence: useCellRange L133, useKeyboardNav L140, useClipboard L155, useKeyboardEdit L166, DragFillHandle render L341-348, useVirtualizer L190. D9 onKeyDown chain L177-184 wires all 3 keydown handlers (editKeyDown→navKeyDown→clipKeyDown). All 5 hooks wire into component render/event chain — A-06 met."
+    },
+    "A-07": {
+      "result": "N/A",
+      "evidence": "Spec Section 7 lists no *.test.* or *.spec.* files for G-006. No test file requirement."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "npx tsc --noEmit in packages/grid-pro-range → empty output (0 errors, TSC_PASS confirmed). npx tsc --noEmit in tw-framework-front → empty output (0 errors, TSC_PASS confirmed). Clean typecheck pass in both packages."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Grep ': any|<any>|as any' in RangeSelectGrid.tsx + RangeSelectGrid.stories.tsx → 0 hits. No any types. getCellValueFallback returns 'undefined as TCell' using generic type cast (not any). C-4 compliant."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "RangeSelectGrid.tsx uses: useReactTable, getCoreRowModel, getSortedRowModel, flexRender (TanStack v8 standard). useVirtualizer from @tanstack/react-virtual (standard public API). useCellRange, useKeyboardNav, useClipboard, useKeyboardEdit, DragFillHandle from internal package (public API). No private field access or internal API usage."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "0 new .css/.scss files. style={{ height: totalHeight, position: 'relative' }} and style={{ position: 'absolute', top: vRow.start, width: '100%', tableLayout: 'fixed' }} in virtualization — pure dynamic layout values required for virtual positioning, not static styling. C-5 compliant."
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "eslint-disable @typescript-eslint/no-unused-vars on _verifyGridLicenseStub (L38) per G-002/G-003/G-004/G-005 established pattern. No other suppressions in RangeSelectGrid.tsx or stories. No ESLint errors in production code."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep '@mescius/wijmo|from ['\"]wijmo' in packages/grid-pro-range/src/ → 0 hits. AC-005 confirmed. C-16 compliant."
+    },
+    "B-07": {
+      "result": "N/A",
+      "evidence": "Production code (RangeSelectGrid.tsx, types.ts, index.ts) has no dummy/mock data. RangeSelectGrid.stories.tsx has sampleData20Rows + largeDataset fixtures (C-3 story exception per rubric B-07 N/A condition)."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "tw-framework-front tsc --noEmit 0 errors (TSC_PASS confirmed). L0 usage file RangeSelectGrid.tsx uses 6-prop interface — all 6 props still in RangeSelectGridAllProps (extends RangeSelectGridProps). D6 zero-touch: L0 file not modified. Backward compat confirmed."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "L0 usage file zero-touch (D6b decision). No visual changes to existing rendered output — only new enable* props added with defaults matching existing behavior. Visual regression N/A."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "No affected runtime usage files modified. L0 file is VERIFY ONLY (spec Section 7 #8). No console warning changes."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "peerDependencies: @tanstack/react-table ^8.0.0, @tanstack/react-virtual ^3.0.0 (optional), react ^18||^19, react-dom ^18||^19. peerDependenciesMeta: @tanstack/react-virtual optional=true. No dep/peer duplication. tsup.config.ts external[] already had @tanstack/react-virtual. C-22 compliant."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "Spec Section 7 #8 is VERIFY ONLY. No usage file migration required for G-006. affectedUsageFiles=[VERIFY ONLY]."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "0 usage files migrated per D6 zero-touch decision."
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "0 remaining migration files."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "tsup build: dist/index.mjs = 14.22 KB (minified, minify:true preserved), dist/index.cjs = 14.72 KB. Gzipped size: ESM 5.32 KB, CJS 5.34 KB — both well under 20 KB C-21 limit. .size-limit.json created with '20 KB' limit. PASS."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "Added @tanstack/react-virtual ^3.0.0 as optional peerDependency per C-22. ADR-007 (decisions.md) documents this decision: D3 'package.json unchanged' vs C-22 peerDep requirement tension resolved by adding optional peer. No new bundled/bundled-in-dist dependencies — tsup external[] already had react-virtual."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "package.json modified (added react-virtual peerDep). license field: 'SEE LICENSE IN EULA' preserved. EULA.md exists at packages/grid-pro-range/EULA.md. C-24 compliant."
+    }
+  },
+  "buildResult": {
+    "tsc": "0 errors (both packages/grid-pro-range and tw-framework-front)",
+    "build": "tsup success (loop 1, minify:true preserved) — dist/index.mjs 14.22 KB, dist/index.cjs 14.72 KB, dist/index.d.ts 13.44 KB",
+    "sizeLimit": "PASS — ESM gzipped 5.32 KB < 20 KB (C-21). dist/index.mjs 14.22 KB minified."
+  },
+  "files": [
+    {
+      "path": "packages/grid-pro-range/src/types.ts",
+      "action": "MODIFY",
+      "loop": 1,
+      "note": "RangeSelectGridAllProps<TData, TCell> appended (already done in pre-context)"
+    },
+    {
+      "path": "packages/grid-pro-range/src/RangeSelectGrid.tsx",
+      "action": "MODIFY",
+      "loop": 1,
+      "note": "5-hook integration, useVirtualizer, _verifyGridLicenseStub, data-row/col attributes"
+    },
+    {
+      "path": "packages/grid-pro-range/src/index.ts",
+      "action": "MODIFY",
+      "loop": 1,
+      "note": "Added RangeSelectGridAllProps to exports"
+    },
+    {
+      "path": "packages/grid-pro-range/src/RangeSelectGrid.stories.tsx",
+      "action": "NEW",
+      "loop": 1,
+      "note": "FullFeature + VirtualizationLargeDataset stories"
+    },
+    {
+      "path": "packages/grid-pro-range/CHANGELOG.md",
+      "action": "MODIFY",
+      "loop": 1,
+      "note": "v0.2.0 content added (was 0.0.0 scaffold stub)"
+    },
+    {
+      "path": "packages/grid-pro-range/.size-limit.json",
+      "action": "NEW",
+      "loop": 1,
+      "note": "20 KB gzipped limit config"
+    },
+    {
+      "path": ".claude/tw-grid/decisions/MOD-GRID-11-decisions.md",
+      "action": "MODIFY",
+      "loop": 1,
+      "note": "ADR-007 G-006 capstone added (worktree copy)"
+    },
+    {
+      "path": "packages/grid-pro-range/package.json",
+      "action": "MODIFY",
+      "loop": 1,
+      "note": "Added @tanstack/react-virtual optional peerDep (C-22 compliance, D3 spec defect)"
+    }
+  ],
+  "yesCount": 21,
+  "noCount": 0,
+  "naCount": 9,
+  "denominator": 21,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "specCodeDefects": [
+    {
+      "specLocation": "G-006-spec.md Section 3.2 L228-233 useCellRange call",
+      "defect": "useCellRange called with options object {rowCount, colCount, onRangeChange, disabled} — actual hook signature is useCellRange(onRangeChange?: callback) with single optional callback argument",
+      "fixApplied": "Called as useCellRange(enableRangeSelection ? onRangeChange : undefined) matching actual useCellRange.ts signature. Mouse event gating done at component level via enableRangeSelection check in onMouseDown/onMouseEnter handlers.",
+      "severity": "high"
+    },
+    {
+      "specLocation": "G-006-spec.md Section 5.1 L388-390 DragFillHandle getCellValue",
+      "defect": "DragFillHandle render shows getCellValue={getCellValue ?? (() => undefined)} but DragFillHandleProps.getCellValue is non-optional — type would error with fallback",
+      "fixApplied": "Render condition changed to: enableDragFill && range !== null && getCellValue !== undefined. No fallback — getCellValue undefined → DragFillHandle not rendered (EC-001 behavior).",
+      "severity": "medium"
+    },
+    {
+      "specLocation": "G-006-spec.md Section 3.2 L214-225 getCellRect + implicit data-row/col requirement",
+      "defect": "getCellRect uses querySelector('[data-row]...[data-col]...') but existing RangeSelectGrid.tsx (G-001 implementation) does not emit data-row/data-col attributes on <td> elements",
+      "fixApplied": "Added data-row={rowIdx} data-col={colIdx} attributes to all <td> elements in renderCells helper (Section 5.1 spec tree shows tr[data-row=r] + td[data-row=r][data-col=c]).",
+      "severity": "medium"
+    },
+    {
+      "specLocation": "G-006-spec.md Section 3.2 L283-288 useVirtualizer options",
+      "defect": "useVirtualizer called with enabled: enableVirtualization option — @tanstack/react-virtual v3 does not have an 'enabled' option in useVirtualizer",
+      "fixApplied": "Used count: enableVirtualization ? rowCount : 0 to disable virtualization (count=0 produces empty virtualRows). 'enabled' option removed.",
+      "severity": "medium"
+    }
+  ],
+  "promptSpecDrift": [
+    {
+      "field": "package.json peerDependencies",
+      "promptValue": "D3 decision: package.json unchanged",
+      "specValue": "C-22: peerDependencies required for @tanstack/react-virtual (used via import in RangeSelectGrid.tsx). Section 9 risk table notes 'C-22 정책 검토 필요 — implementer 판단'",
+      "resolution": "C-22 constraint applied — @tanstack/react-virtual added as optional peerDep. D3 interpreted as 'no license/EULA change needed' (the intent), not 'no peerDep addition allowed'."
+    }
+  ],
+  "autoFixed": [],
+  "documentedDeviations": [],
+  "implementedFiles": [
+    "packages/grid-pro-range/src/types.ts",
+    "packages/grid-pro-range/src/RangeSelectGrid.tsx",
+    "packages/grid-pro-range/src/index.ts",
+    "packages/grid-pro-range/src/RangeSelectGrid.stories.tsx",
+    "packages/grid-pro-range/CHANGELOG.md",
+    "packages/grid-pro-range/.size-limit.json",
+    "packages/grid-pro-range/package.json",
+    ".claude/tw-grid/decisions/MOD-GRID-11-decisions.md"
+  ],
+  "surgicalChangeVerification": {
+    "note": "External monorepo — git tracking N/A (ADR-MOD-GRID-00-001). Glob + Read + tsc verification used.",
+    "existingIndexTsPreserved": "G-001~G-005 exports (lines 9-38) preserved — RangeSelectGridAllProps added inline on L9 (same line as existing type exports).",
+    "existingTypesTsPreserved": "G-001~G-005 types preserved. RangeSelectGridAllProps appended at end of file (L177+ in previous session). No existing type interfaces modified.",
+    "tsupConfigPreserved": "tsup.config.ts not touched — minify:true from G-004 loop 2 remains intact (C-1 preservation). @tanstack/react-virtual already in external[] — no change needed.",
+    "existingRangeSelectGridPreserved": "G-001 base structure (table render, header, body, isInRange highlighting, loading state, emptyText) preserved. New: data-row/col attrs, tabIndex/onKeyDown on container, 5 hook calls, DragFillHandle conditional render, virtualization render branch."
+  },
+  "feedback": {
+    "summary": "G-006 capstone implemented: 7 spec files + package.json (C-22). tsc 0 errors (both packages). tsup build 14.22 KB ESM / 5.32 KB gzipped. 4 spec code defects found and corrected. 1 prompt-spec drift (D3 vs C-22 peerDep) resolved per C-22.",
+    "drift": "1 prompt-spec drift: D3 'package.json unchanged' vs C-22 peerDep obligation for @tanstack/react-virtual. Resolved per C-22 constraint (optional peerDep added).",
+    "defects": "4 spec code defects auto-corrected: (1) useCellRange signature HIGH, (2) DragFillHandle getCellValue MEDIUM, (3) data-row/col missing MEDIUM, (4) useVirtualizer 'enabled' option MEDIUM. All documented in specCodeDefects[].",
+    "items": [
+      "spec L228-233 useCellRange({rowCount,colCount,...}) 시그니처 불일치 자율 정정 — 실제 useCellRange(callback?) 단일 인자 시그니처 사용.",
+      "spec L388-390 DragFillHandle getCellValue fallback 타입 오류 자율 정정 — getCellValue !== undefined 렌더 조건 사용.",
+      "spec getCellRect querySelector data-row/col attribute 누락 자율 정정 — <td data-row={rowIdx} data-col={colIdx}> 추가.",
+      "spec useVirtualizer enabled 옵션 미존재 자율 정정 — count: enableVirtualization ? rowCount : 0 사용.",
+      "D5 Rules of Hooks 준수: 5개 hook 전부 무조건 호출. DragFillHandle은 컴포넌트이므로 조건부 렌더 허용.",
+      "D9 onKeyDown 합성 체인 editKeyDown → navKeyDown → clipKeyDown (e.defaultPrevented early return 포함).",
+      "C-29 spread-skip 패턴: getCellValue, onPaste, onClipboardError, onDeleteRange, onBulkEdit, onEditStart, onFillComplete, onFillTargetChange 모두 spread-skip.",
+      "useVirtualizer 가상화: count=0 (enableVirtualization=false) → virtualRows=null → 일반 tbody rows.map() 렌더 fallback.",
+      "noop function type: CellRange | null (not CellCoord | null) — fixed tsc error in useKeyboardNav onRangeChange parameter.",
+      "tsup.config.ts minify:true preserved from G-004 loop 2 — not re-touched per C-1 surgical changes."
+    ]
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 16,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 8,
+    "originalReportedDenominator": 16,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-11",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-006→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

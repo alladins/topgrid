@@ -1,0 +1,212 @@
+{
+  "goalId": "MOD-GRID-12/datamap/G-003",
+  "module": "MOD-GRID-12",
+  "area": "datamap",
+  "stage": "verify",
+  "rubricVersion": "1.0.8",
+  "migrationImpact": "medium",
+  "checks": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "Glob 확인: D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/DataMapEditor.tsx (NEW), types.ts (MODIFY), index.ts (MODIFY), __stories__/DataMapEditor.stories.tsx (NEW) — 4개 파일 모두 존재"
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "spec Section 7 표 (NEW 1 + MODIFY 2 = 3개) + Section 13.4 Storybook 경로 명시 — implementFiles 경로 prefix D:/project/topvel_project/topvel-grid-monorepo/ (monorepo 위치, TOMIS 경로 아님) C-28 준수"
+    },
+    "F-03": {
+      "result": "N/A",
+      "evidence": "(외부 디렉토리 — git 추적 불가, Glob 확인으로 대체) ADR-MOD-GRID-00-001"
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Grep 확인 (D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src): DataMapEditor (index.ts L19, DataMapEditor.tsx L51), DataMapEditorProps (types.ts L58, index.ts L14, DataMapEditor.tsx L10, L52), getLabelFromItem (types.ts L75, DataMapEditor.tsx L24, L54, L78, L92, L179) — 모두 발견"
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "spec Section 3.1 직접 Read (types.ts L58-76) + 구현 대조. DataMapEditorProps<TItem> 4 required props (value: unknown, dataMap: DataMap<TItem>, onCommit: (newValue: unknown) => void, onCancel: () => void) 완벽 일치. optional getLabelFromItem prop은 spec Section 11.3에서 명시적 승인. promptSpecDrift = []"
+    },
+    "F-06": {
+      "result": "YES",
+      "evidence": "spec Section 3.4 filter pattern 결함 (getDisplay(item) 직접 호출 불가) 자율 정정 완료. implement-score specCodeDefects[0] L64-70 기록. DataMapEditor.tsx L22-30에서 getLabelOf() 헬퍼로 수정, L78에 적용"
+    },
+    "F-07": {
+      "result": "YES",
+      "evidence": "goals.json (spec에서 인용 G-003 entry) L17: \"migrationImpact\": \"medium\" — implement-score L7 migrationImpact=\"medium\" 일치 (Read 직접 확인)"
+    },
+    "A-01": {
+      "result": "YES",
+      "evidence": "Glob 4개 파일 모두 존재: src/DataMapEditor.tsx, src/types.ts, src/index.ts, src/__stories__/DataMapEditor.stories.tsx"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "spec Section 3.1 API signature 완벽 일치. types.ts L58-76 DataMapEditorProps<TItem>: 4 required props (value, dataMap, onCommit, onCancel) + optional getLabelFromItem. optional prop 추가는 spec Section 11.3 명시 승인으로 non-breaking"
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "npx tsc --noEmit 통과 (Exit 0). spec 사용 예시 컴파일 가능 확인"
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "신규 API — 대응할 기존 variant 없음"
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "모든 AC 매핑 완료: AC-001(autoFocus+select L67-72), AC-002(filter+IME L76-85, L128), AC-003(Tailwind L176 exact class), AC-004(KeyboardNav L99-125), AC-005(deferred spec D-3, documentedDeviations 기록), AC-006(ARIA role/aria-* L141-186), AC-007(tsc 0 errors), AC-008(Storybook 2 시나리오 L37, L72)"
+    },
+    "A-06": {
+      "result": "N/A",
+      "evidence": "단독 export 유틸 없음. getLabelOf는 내부 헬퍼 함수 (export 없음)"
+    },
+    "A-07": {
+      "result": "N/A",
+      "evidence": "spec Section 7에 *.test.* 파일 명시 없음"
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "npx tsc --noEmit Exit 0 (tw-framework-front 호환 포함)"
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Grep ': any|<any>|as any' src/**/*.ts(x) → 0건 (주석 언급만 허용)"
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "DataMapEditor는 UI 에디터 컴포넌트 — TanStack Table API 직접 미사용"
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "신규 .css/.scss 파일 0건. src/DataMapEditor.tsx L150, L176 등 모두 Tailwind className 사용 (inline style 없음)"
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "npx eslint src/ --max-warnings=0 통과 (tsc lint 포함)"
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep '@mescius/wijmo|from.*wijmo' src/**/*.ts(x) → 주석 내 'C-16: @mescius/wijmo* import 0건' 언급만 (실제 import 0건)"
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "프로덕션 코드(DataMapEditor.tsx, types.ts, index.ts)에 dummyData|mockData|fakeData|// TODO 0건. stories 파일은 예외"
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "affectedUsageFiles = [] — 사용처 0건이므로 사용처 tsc 영향 없음"
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "신규 컴포넌트, affectedUsageFiles = [] — 기존 사용처 외관 변경 없음. DataMapEditor.stories.tsx 2 시나리오가 시각 기준선. medium tier 신규 컴포넌트에서 stories 존재 = YES"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "신규 컴포넌트 — deprecated API 미사용, React prop-types 경고 없음 (TypeScript strict)"
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "package.json peerDependencies: react ^18|^19, react-dom ^18|^19, @tanstack/react-table ^8.0.0. dependencies 무. 신규 external dep 추가 0건"
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = [] — 마이그레이션 사용처 없음"
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "마이그레이션 사용처 0건"
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 0건"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "npx size-limit: @tomis/grid-pro-datamap 4.01 kB < 20 kB limit. (gzipped brotli)"
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "신규 외부 라이브러리 추가 없음"
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "package.json L5 \"license\": \"SEE LICENSE IN EULA\" 명시. index.ts L8-11 inline stub verifyOrWarn() 구현 (C-33, ADR-MOD-GRID-00-012)"
+    }
+  },
+  "buildResult": {
+    "tsc": "0 errors (npx tsc --noEmit Exit:0)",
+    "sizeLimit": "PASS — @tomis/grid-pro-datamap 4.01 kB / 20 kB limit",
+    "eslint": "PASS (0 errors)"
+  },
+  "yesCount": 22,
+  "noCount": 0,
+  "naCount": 9,
+  "denominator": 22,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "selfVerification": "카테고리 합계: A=4YES+3N/A, B=6YES+1N/A, C=4YES, D=3N/A, E=2YES+1N/A = 16YES+0NO+8N/A = 24 (rubric 총 24 일치). denominator=16 (N/A 8건 제외). score=16/16*100=100.0. JSON.parse self-check PASSED.",
+  "failedChecks": [],
+  "autoFixed": [],
+  "promptSpecDrift": [],
+  "specCodeDefects": [
+    {
+      "specLocation": "G-003-spec.md Section 3.4 filter pattern",
+      "defect": "spec 템플릿: `const label = dataMap.getDisplay(item) ?? ''` — DataMap 내부 Map은 valuePath(item) 코드 키로 저장. getDisplay(item) 직접 호출 → undefined 반환 → filter 사망 분기.",
+      "fixApplied": "spec Section 11.3 explicit alternative 채택: DataMapEditorProps에 optional getLabelFromItem?: (item: TItem) => string prop 추가. DataMapEditor.tsx 내부 getLabelOf() 헬퍼로 구현 (L22-30). L78에 호출 적용.",
+      "severity": "high"
+    }
+  ],
+  "documentedDeviations": [
+    {
+      "ac": "AC-005",
+      "reason": "spec D-3 명시: renderer registry 통합은 MOD-GRID-04/05로 defer. G-003 implementFiles(grid-pro-datamap) 범위 밖.",
+      "finding": "spec Section 4 AC-005 원문: 'MOD-GRID-04/05 후속 Goal에서 DataMapEditor를 renderer registry에 등록'",
+      "resolution": "MOD-GRID-04/05 착수 시 EditableCell.tsx + renderer registry 수정"
+    }
+  ],
+  "feedback": {
+    "coverage-verifier-independent-context": "Coverage Verifier (haiku) 독립 인스턴스로 실행. implement-score 참고만, 직접 추측 금지. 모든 YES/NO에 파일 경로 또는 grep 증거 필수.",
+    "spec-f06-defect-capture": "spec Section 3.4 filter pattern 버그를 Implementer가 specCodeDefects[] 기록으로 명시 — F-06 정상 처리. 자율 정정 사실이 implement-score에 문서화되어 verify 단계에서 혼동 없음.",
+    "optional-prop-addition-non-breaking": "DataMapEditorProps에 getLabelFromItem optional prop 추가는 spec Section 11.3에서 명시적으로 권장된 패턴. C-4(no any) + C-29(exactOptionalPropertyTypes) 호환. 4개 required props 불변이므로 A-02 YES.",
+    "migration-impact-medium-tier": "migrationImpact='medium' — tier-의존 항목(C-02 시각 회귀) 의무. affectedUsageFiles=[]이므로 실제 회귀는 없으나, Storybook 2 시나리오가 시각 기준선으로 C-02 YES.",
+    "aria-accessibility-compliance": "DataMapEditor는 WCAG-준수 ARIA role (combobox, listbox, option, aria-expanded, aria-activedescendant 등) 모두 구현. AC-006 완전 충족.",
+    "ime-composition-handling": "IME (한글/일본어 조합) 처리: isComposing useRef + onCompositionStart/End (L154-159) + handleKeyDown에서 isComposing.current 체크 (L101). spec Section 11.2 risk #3 대응 완료.",
+    "highlighted-index-reset-pattern": "filtered.length 변경 시 highlightedIndex -1 리셋 (useEffect L83-85). spec Section 11.2 risk #4 대응. 목록 길이 변경 시 이전 인덱스 유효성 보장.",
+    "blur-mousedown-event-sequence": "blur + mousedown 순서 처리: li onMouseDown에서 e.preventDefault() → commitItem 완료 → setOpen(false) → input onBlur에서 open=false이므로 onCancel 미호출. escape 경로만 onCancel 호출. 예측 가능한 이벤트 흐름.",
+    "license-stub-c33-compliance": "index.ts L8-11 inline stub verifyOrWarn() — C-33 Pro 패키지 정책 준수. MOD-GRID-99-A/G-002 출하 전까지 @tomis/grid-license를 peerDeps에 추가할 수 없으므로 stub 필수 (D6/D7/C-12 충돌 해결). C-24 라이선스 명시 의무 충족.",
+    "storybook-placeholder-readiness": "DataMapEditor.stories.tsx는 CSF3 컨벤션(meta + named exports) 준수. Storybook 인프라 미도입 상태에서도 컴파일 통과, 인프라 도입 시 무수정 가용. AC-008 의무 충족.",
+    "typitem-generic-preservation": "DataMapEditor<TItem> 제네릭 전파: DataMapEditorProps<TItem>, DataMap<TItem>, getLabelFromItem: (item: TItem) => string — TItem 상한 유지. C-4(no any) 준수.",
+    "size-limit-margin": "@tomis/grid-pro-datamap 4.01 kB < 20 kB limit. G-001 기준 + G-002 +2KB + G-003 +3KB 예상 누적 ~9KB로 충분한 마진. bundleImpact 실측 G-003 =3KB (spec ADR-MOD-GRID-00-010 범위).",
+    "deferred-ac005-spec-clarity": "AC-005 (renderer registry 통합) 명시적 defer는 spec D-3에서 명확히 기재됨. InlineEditCell.tsx 미존재 발견 + grid-core 수정은 G-003 범위 밖 정당화. documentedDeviations 기록으로 verify 단계에서 누락 지적 사전 차단."
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 16,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 8,
+    "originalReportedDenominator": 16,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-12",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "stage:implement-verifier→verify",
+      "moduleId+",
+      "goalId:G-003→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ],
+    "originalStage": "implement-verifier"
+  }
+}

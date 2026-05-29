@@ -1,0 +1,86 @@
+{
+  "goalId": "G-001",
+  "module": "MOD-GRID-10",
+  "area": "tracking",
+  "stage": "self-review",
+  "reviewedAt": "2026-05-14",
+  "reviewedBy": "opus-self-review",
+  "scoreSummary": {
+    "specify": 100.0,
+    "implementVerifier": 100.0,
+    "verify": 100.0
+  },
+  "rubricVersionsAtReview": {
+    "specify": "1.0.6",
+    "implement": "1.0.7",
+    "verify": "1.0.2",
+    "constraints": "v1.0 (pre-C-32)"
+  },
+  "findings": [
+    {
+      "id": "SR-G001-01",
+      "severity": "medium",
+      "category": "agent-context-orientation",
+      "title": "Sub-agent worktree path confusion — Coverage Verifier looked for ADR at main checkout decisions/ instead of worktree TW_GRID_ROOT/decisions/",
+      "description": "Coverage Verifier (haiku) initially probed for MOD-GRID-10-decisions.md at the main checkout path. The harness runs inside a worktree (.claude/worktrees/tw-grid-auto-G003/...) and the orchestrator prompt provides TW_GRID_ROOT, but the verifier did not prepend it consistently when reading ADR/spec artifacts. Eventual successful re-run swallowed the incident in the 100/100 score, but it represents a real wasted agent turn that current rubric/F-01 evidence checks do not surface (since the final evidence cite was correct).",
+      "rootCause": "No rubric/constraint mandates that sub-agents Read-verify the TW_GRID_ROOT-prefixed path before scoring or rejecting a check. specify-rubric H-01 already mandates line-citation for rejections, but does not enforce path-prefix discipline for affirmative evidence either.",
+      "impact": "1 wasted Coverage Verifier turn for G-001. Risk compounds across the next 58 pending Goals running in this worktree.",
+      "appliedFix": "constraints.md → new C-32 (Sub-agent worktree path + goalId self-verification). verify-rubric.md F-01 strengthens line-citation requirement to include worktree-prefix segment."
+    },
+    {
+      "id": "SR-G001-02",
+      "severity": "medium",
+      "category": "agent-context-orientation",
+      "title": "Verifier goalId confusion — referenced G-003 while reviewing G-001",
+      "description": "Per task prompt: 'Verifier가 G-003으로 혼동한 사례' — the verifier referenced G-003 (the previous worktree Goal — MOD-GRID-05/G-003) in early evidence prose while scoring G-001. The worktree directory name (tw-grid-auto-G003) is the trigger: the trailing identifier disambiguates the worktree, not the current Goal. No rubric currently mandates that the verifier Read-confirm the spec.md filename literally contains the active goalId before assigning a score.",
+      "rootCause": "Worktree naming convention shares the 'G003' / 'G-003' token with a different Goal identifier, and no self-verification gate forces the sub-agent to disambiguate. The 100/100 verify-score.json eventually corrected the references, but only after the wasted turn.",
+      "impact": "1 wasted Verifier turn for G-001. Same risk on every Goal that runs in a worktree whose suffix collides with a different goalId.",
+      "appliedFix": "constraints.md C-32 step 2: Read the active spec.md and confirm filename matches `<goalId>-spec.md` before scoring. specify-rubric H-01 and implement-rubric F-04 get a cross-reference note to C-32."
+    },
+    {
+      "id": "SR-G001-03",
+      "severity": "low",
+      "category": "data-hygiene-observed-not-fixed",
+      "title": "tracking-goals.json G-001 implementFiles still uses TOMIS/packages/ prefix (C-28 batch fix candidate)",
+      "description": "tracking-goals.json L55-59 retains the legacy `D:/project/topvel_project/TOMIS/packages/grid-pro-tracking/...` prefix. Spec D1 (G-001-spec.md L19) corrected this in the specify stage by directing the implementer to the monorepo path. C-27/C-28 + the implementer's promptSpecDrift correctly absorbed the drift, and the resulting implementation landed in the right monorepo location. So this is observed-but-not-fixed-here — fixing tracking-goals.json broadly would constitute gold-plating (and is the harness's batch responsibility, not self-review).",
+      "rootCause": "discover stage output had the wrong prefix for the entire 17-module set; C-28 documents the policy + workaround.",
+      "impact": "Zero on G-001 outcome (spec authority handled it cleanly). Risk on the remaining 4 G-00N goals of MOD-GRID-10 and 16 sibling modules until C-28 batch fix lands.",
+      "appliedFix": "None in self-review. Surfaced here for traceability; harness owns the batch fix."
+    }
+  ],
+  "improvementsApplied": [
+    {
+      "target": "constraints.md",
+      "change": "Added C-32 (Sub-agent worktree path + goalId self-verification). Mandates that every sub-agent (Coverage Verifier / Verifier / Spec Writer / Implementer / Self-Review) (a) prepend TW_GRID_ROOT from the orchestrator prompt when reading ADR / decisions / spec artifacts, and (b) Read-verify the active spec.md path literally contains `<goalId>-spec.md` before scoring or rejecting. Cites SR-G001-01 + SR-G001-02 as 근거 사례.",
+      "version": "v1.1"
+    },
+    {
+      "target": "rubric/verify-rubric.md",
+      "change": "F-01 strengthened: evidence for ADR / decisions / spec artifact location MUST include the actual worktree-path segment (e.g., `.claude/worktrees/<wt>/`) when running inside a worktree, not just the filename. Cross-reference to constraints C-32 added. Version bumped 1.0.2 → 1.0.3.",
+      "version": "1.0.3"
+    },
+    {
+      "target": "rubric/specify-rubric.md",
+      "change": "H-01 — appended a one-line cross-reference: 'Sub-agent worktree-path discipline is governed by constraints.md C-32 (2026-05-14).' No item-count change. Version bumped 1.0.6 → 1.0.7.",
+      "version": "1.0.7"
+    },
+    {
+      "target": "rubric/implement-rubric.md",
+      "change": "F-04 — appended a one-line cross-reference: 'Sub-agent worktree-path discipline is governed by constraints.md C-32 (2026-05-14).' No item-count change. Version bumped 1.0.7 → 1.0.8.",
+      "version": "1.0.8"
+    },
+    {
+      "target": "goals/MOD-GRID-10/tracking-goals.json",
+      "change": "G-001 harnessReview field populated with summary object (this self-review).",
+      "version": "data-update"
+    },
+    {
+      "target": "state.json",
+      "change": "MOD-GRID-10/G-001 overallStatus pending → completed; stages.specify/implement/verify pending → done. Sync with tracking-goals.json L70-74. lastUpdated 2026-05-14.",
+      "version": "data-update"
+    }
+  ],
+  "catalogAdditions": [],
+  "catalogAdditionsRationale": "Catalog entries codify anti-patterns recovered from concrete NO findings or rubric failures. G-001 produced zero NO across specify/implement-verifier/verify (100/100/100) and the two findings here are agent-orchestration drift, not AG Grid/Wijmo pattern gaps. The AG Grid Undo/Redo + Wijmo CollectionView references in G-001-spec.md Section 1.5/1.6 were already adequately analyzed in references/publish-aggrid-analysis.md §4 and references/publish-wijmo-analysis.md §2; no new pattern emerged from this Goal that needs codification.",
+  "overallAssessment": "G-001 (trackChanges API 설계) delivered a clean stub-stage contract: 5 MODIFY (types.ts JSDoc + AC mapping, useChangeTracking.ts hook docstring, index.ts barrel + verifyOrWarn inline stub, EULA.md AC-005 marker, MOD-GRID-10-decisions.md ADR-MOD-GRID-10-001) + 1 supplementary CSF3 placeholder story. All gates passed: tsc 0 errors both packages, tsup ESM 1.16 KB, size-limit 3098/20000 (15.5% / 84.5% headroom), Wijmo 0 imports, no-any 0 hits. promptSpecDrift correctly recorded 3 value drifts (packageScope @topvel→@tomis, peerDeps 4-peer→3-peer, alias placeholder→G-005 deferral) with spec authoritative application. The 12-member API + 6-field config contract is locked, giving G-002~G-005 a stable runtime-implementation surface. The two real-but-swallowed incidents (sub-agent worktree-path + goalId disambiguation) are addressed via C-32 + F-01 line-citation strengthen for cascading benefit across the next 58 pending Goals."
+}

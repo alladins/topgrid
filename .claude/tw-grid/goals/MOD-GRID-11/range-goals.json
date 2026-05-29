@@ -1,0 +1,430 @@
+{
+  "moduleId": "MOD-GRID-11",
+  "moduleName": "Cell Range Selection + Drag-fill + Clipboard + Keyboard nav (Excel-class)",
+  "area": "range",
+  "phase": "discovered",
+  "licenseTier": "Pro",
+  "packageTarget": "packages/grid-pro-range",
+  "description": "TanStack Table 위에서 Excel 수준의 셀 범위 선택(마우스 드래그/Shift+Click), 키보드 범위 확장, Drag-fill(우하단 핸들 드래그), Ctrl+C/V(TSV 클립보드), Delete 키 삭제, 범위 일괄 편집을 제공한다. Wijmo CellRange/SelectionMode/Drag-fill 패턴을 React 이벤트 + TanStack data로 자체 구현 (C-16 코드 차용 X). Pro 패키지 — 라이선스 검증 런타임(MOD-GRID-99-A) 필수 연동. canonical thresholds 기준: 95/95/95.",
+  "version": "1.0",
+  "createdAt": "2026-05-13",
+  "updatedAt": "2026-05-13",
+  "goals": [
+    {
+      "goalId": "G-001",
+      "title": "CellRange 모델 + 마우스 드래그 셀 범위 선택 + Shift+Click 범위 확장",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-01/G-001", "MOD-GRID-10/G-001", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "사용자가 그리드 셀을 클릭 후 드래그하거나 Shift+Click을 하면 파란색 하이라이트로 셀 범위가 선택되고, 선택 범위 정보(시작/끝 행+열)를 외부에서 읽을 수 있어야 한다.",
+      "userJourneySteps": [
+        "1. import { useCellRange, RangeSelectGrid } from '@tomis/grid-pro-range'",
+        "2. const { selection, setSelection } = useCellRange({ tableRef })",
+        "3. 마우스 mousedown → anchorCell 기록, mousemove → currentCell 추적, mouseup → selection 확정",
+        "4. Shift+Click → anchorCell~clickedCell로 selection 갱신",
+        "5. selection: CellRange | null = { start: { row, col }, end: { row, col } } — normalize() 적용 (start ≤ end 보장)",
+        "6. 선택 셀에 Tailwind 'bg-blue-100 ring-1 ring-blue-400' className 적용 (C-5)",
+        "7. RangeSelectGrid alias → <Grid enableRangeSelection ... /> 래핑 (C-6 호환)",
+        "8. Pro 패키지 import 시 grid-license 검증 자동 실행 (C-24)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "CellRange 타입: { start: CellCoord; end: CellCoord } — CellCoord: { row: number; col: number }. normalize(): start.row ≤ end.row && start.col ≤ end.col 보장 (no any — C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "useCellRange hook: { selection: CellRange | null; setSelection: (r: CellRange | null) => void; clearSelection: () => void; isInRange: (row, col) => boolean } (C-4)", "source": "C-4" },
+        { "id": "AC-003", "criteria": "마우스 드래그: onMouseDown(anchorCell) → onMouseMove(extend) → onMouseUp(commit). 가상화 호환 — scroll 중에도 좌표 추적 정확 (C-18)", "source": "C-18" },
+        { "id": "AC-004", "criteria": "Shift+Click → anchorCell 유지 + clickedCell로 selection.end 업데이트 (F-11-03)", "source": "L1" },
+        { "id": "AC-005", "criteria": "선택 영역 시각: Tailwind className 'bg-blue-100 ring-1 ring-blue-400' (CSS .css 파일 신규 생성 금지 — C-5)", "source": "C-5" },
+        { "id": "AC-006", "criteria": "RangeSelectGrid alias export (기존 RangeSelectGrid.tsx C-6 호환, C-23 1 minor deprecation 보장). Ctrl/Cmd+Click 비연속 선택 옵션 prop (enableMultiRange: boolean, F-11-04) — P1, 기본 false", "source": "C-6" },
+        { "id": "AC-007", "criteria": "Pro 패키지: package.json `\"license\": \"SEE LICENSE IN EULA\"` + EULA.md 존재 + import 시 grid-license 검증 호출 (C-24)", "source": "C-24" },
+        { "id": "AC-008", "criteria": "@mescius/wijmo* import 0건 (C-16). Wijmo CellRange/SelectionMode 개념 학습만 (publish-wijmo-analysis.md §3) — 참조만, 코드 차용 X", "source": "C-16" },
+        { "id": "AC-009", "criteria": "decisions/MOD-GRID-11-decisions.md ADR — CellRange 모델 설계 결정 (대안: TanStack rowSelection 확장 vs 독립 state) + trade-off 포함 (C-14)", "source": "C-14" },
+        { "id": "AC-010", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-011", "criteria": "C-25: Storybook story 1개 (드래그 선택 + Shift+Click 시나리오)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx (기존 200줄 — alias 대상, 강화 필요)",
+        "L1": "자체 설계. React onMouseDown/onMouseMove/onMouseUp 이벤트 기반",
+        "L2": "(N/A)",
+        "L3": "(N/A — 신규 Pro 패키지, 사용처는 MOD-GRID-17에서 마이그레이션)",
+        "R-A": "AG Grid Enterprise Range Selection API 시그니처 참조 (publish-aggrid-analysis.md) — 우리는 자체 구현",
+        "R-W": "Wijmo CellRange 모델 (start/end/row/col) 개념 학습 (publish-wijmo-analysis.md §3, §2) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "RangeSelectGrid alias 1 minor 유지 (C-23, C-6)",
+        "migrationPath": "RangeSelectGrid → <Grid enableRangeSelection useCellRange={...} />"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/internal/normalize.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useCellRange.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/RangeSelectGrid.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/legacy/RangeSelectGrid.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useCellRange.stories.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/EULA.md",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/index.ts",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx"
+      ],
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx"
+      ],
+      "bundleImpact": {
+        "expected": "+4 KB (useCellRange + normalize + CellRange 타입)",
+        "package": "grid-pro-range",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-14", "feedback": [] },
+        "implement": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-14", "feedback": [] },
+        "verify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-14", "feedback": [] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-14",
+        "reviewer": "opus",
+        "scores": { "specify": 100.0, "implement": 100.0, "verify": 100.0 },
+        "loops": { "specify": 1, "implement": 1, "verify": 1 },
+        "improvements": [
+          {
+            "target": "specify-rubric.md",
+            "type": "add",
+            "summary": "B-06 신설: Spec Code Template C-4/C-29 Compliance — spec 본문 코드 템플릿이 `@ts-ignore`/`as any`/미존재 심볼 `declare const` 0건 의무. 근거: G-001 spec.md L317-326 `@ts-ignore` + `declare const verifyGridLicense` (실제 export 없는 심볼) 사례. 1차 specify Verifier가 100/100 통과시켰으나 Implementer F-06으로 자율 정정. specify 단계 사전 차단으로 F-06 대칭화."
+          },
+          {
+            "target": "implement-rubric.md",
+            "type": "add",
+            "summary": "F-07 신설: migrationImpact ↔ goals.json Consistency Check — Coverage Verifier가 goals.json을 직접 Read하여 migrationImpact 값 cross-check 의무. 근거: G-001 implement-score.json L7 + implement-verifier-score.json L7 모두 `low` 보고. goals.json L17 = `medium`. verify-score L7 + L103 feedback.migrationImpact-correction에서 정정. implement-verifier가 Implementer echo만 했던 패턴 차단."
+          },
+          {
+            "target": "constraints.md",
+            "type": "add",
+            "summary": "C-32 신설: migrationImpact ↔ goals.json 정합성 — goals.json이 single source of truth. Implementer/Verifier 모두 직접 Read 의무. tier-의존 항목 (C-02 시각 회귀) 잘못된 tier 적용 사례 차단. F-07 검증 룰과 1:1 매핑."
+          },
+          {
+            "target": "decisions/MOD-GRID-11-decisions.md",
+            "type": "add",
+            "summary": "ADR-MOD-GRID-11-006 신설: CellRange Pattern Catalog Note — AG Grid Range Selection + Wijmo CellRange 패턴 매핑 6항목 enumerate (anchorCell ref, normalize-on-extend, Shift+Click branch, mousedown/move/up 시퀀스, 2D matrix isInRange, selectionMode enum). G-002~G-006 spec 작성 시 본 ADR 인용 의무화. C-16/C-7 import 0건 증거 일원화."
+          }
+        ],
+        "lessonsLearned": [
+          "100/100/100 PASS 결과도 self-review 시 false-positive 가능 — spec 내부 코드 결함 (@ts-ignore + declare const)이 specify 단계 미검출되어 Implementer F-06으로 자율 정정한 사례. specify-rubric에 spec 코드 템플릿 C-4 준수 사전 검증 (B-06) 신설로 사후 대칭화.",
+          "Coverage Verifier (haiku)가 Implementer 보고 값을 cross-check 없이 echo하면 tier-의존 항목 (C-02 시각 회귀)이 잘못된 N/A 처리됨. goals.json이 single source of truth — 모든 단계가 직접 Read 의무 (F-07 + C-32).",
+          "AG Grid/Wijmo 패턴 인용이 spec body에 있어도 결정 로그에 enumerate 안 되면 후속 Goal에서 동일 참조 일관성 보장 어려움. 단일 ADR catalog로 cross-Goal 가이드 일원화 (ADR-MOD-GRID-11-006).",
+          "Implementer F-06 (specCodeDefects) 보고 패턴은 정상 작동 — spec.md Section 6.5 결함 인지 + namespace import + feature-detect 패턴으로 자율 정정 + 명시 보고. 본 자율 정정 메커니즘은 보존 (B-06 신설은 사전 차단이지 F-06 대체 아님)."
+        ],
+        "occurrences": [
+          {
+            "pattern": "spec 본문 코드 템플릿에 @ts-ignore + declare const (실제 export 없는 심볼) 잔존 → Implementer F-06 자율 정정",
+            "occurrenceCount": 1,
+            "promotionTrigger": "2+ occurrences → spec writer 단계 사전 lint 도구 도입 검토 (TypeScript strict 모드 spec sandbox 실행)"
+          },
+          {
+            "pattern": "implement-verifier (haiku)가 Implementer migrationImpact echo + goals.json 미확인 → tier-의존 항목 (C-02) 잘못된 N/A 처리",
+            "occurrenceCount": 1,
+            "promotionTrigger": "2+ occurrences → Coverage Verifier 워크플로우에 goals.json Read 1회 hard requirement 강제 (조기 fail-stop)"
+          },
+          {
+            "pattern": "implement-score promptSpecDrift 2건 보고 (Section 7 #4 + #9 누락) — Implementer가 spec 우선 적용 + 정상 보고. C-27 작동 정상.",
+            "occurrenceCount": 1,
+            "promotionTrigger": "패턴 정상 작동 — promotion 불필요. 단, 메인 prompt 작성 단계에서 spec Section 7 자동 sync 도구 도입 검토 (3+ occurrences 시)"
+          }
+        ]
+      }
+    },
+    {
+      "goalId": "G-002",
+      "title": "키보드 범위 확장 — Shift+방향키, 키보드 내비게이션 (방향키/Tab/Enter/Ctrl+방향)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-11/G-001", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "셀이 선택된 상태에서 Shift+방향키를 누르면 선택 범위가 확장되고, 방향키로 포커스 셀이 이동하며, Tab/Enter로 다음 셀로 이동하고, Ctrl+방향키로 데이터 끝 경계로 점프할 수 있어야 한다.",
+      "userJourneySteps": [
+        "1. 그리드에 focus → keydown 이벤트 캡처",
+        "2. ArrowUp/Down/Left/Right → 포커스 셀 (activeCellRef) 이동, selection 단일 셀로 갱신",
+        "3. Shift+Arrow → selection.end 확장 (anchorCell 고정)",
+        "4. Tab → 다음 컬럼 (우), 행 끝이면 다음 행 첫 컬럼. Shift+Tab → 역방향",
+        "5. Enter → 다음 행 같은 컬럼 (또는 편집 커밋 후 이동)",
+        "6. Ctrl+Down → 현재 컬럼 마지막 데이터 행으로 점프 (빈 셀 만나면 정지 또는 data edge)",
+        "7. F2 / Enter(편집 모드) → 셀 편집 시작 (F-11-09, G-006에서 구체화)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "useKeyboardNav hook: { activeCellRef: React.RefObject<CellCoord>; onKeyDown: KeyboardEventHandler } — Shift+Arrow → selection 확장, Arrow 단독 → activeCellRef 이동 (no any — C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "Shift+ArrowUp/Down/Left/Right → selection.end += delta (anchorCell 고정). TanStack table 행/열 범위 내에서 clamp (F-11-02 키보드 경로)", "source": "L1" },
+        { "id": "AC-003", "criteria": "Tab/Shift+Tab → 다음/이전 컬럼 포커스 이동. 행 경계에서 다음/이전 행으로 wrap. Enter → 다음 행 같은 컬럼 (F-11-08)", "source": "L1" },
+        { "id": "AC-004", "criteria": "Ctrl+Arrow → 같은 방향 데이터 edge (연속 데이터 끝 또는 다음 비연속 블록 시작) — getCoreRowModel().rows 길이 기반 clamp (C-2 TanStack 표준)", "source": "C-2" },
+        { "id": "AC-005", "criteria": "가상화 활성 시 (enableVirtualization=true) 키보드 이동으로 선택 셀이 뷰포트 밖이면 scrollToIndex 호출 (C-18 @tanstack/react-virtual 호환)", "source": "C-18" },
+        { "id": "AC-006", "criteria": "@mescius/wijmo* import 0건 (C-16)", "source": "C-16" },
+        { "id": "AC-007", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-008", "criteria": "C-25: Storybook story 1개 (키보드 내비게이션 + Shift+Arrow 범위 확장 시나리오)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx",
+        "L1": "자체 설계. KeyboardEvent.key 분기 처리",
+        "L2": "(N/A)",
+        "L3": "(N/A)",
+        "R-A": "AG Grid Keyboard Navigation (Community) 패턴 참조 — 우리는 자체 구현",
+        "R-W": "Wijmo 키보드 단축키 (Excel-like) 개념 학습 (publish-wijmo-analysis.md §4) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useKeyboardNav.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useKeyboardNav.stories.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/index.ts"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+2 KB (useKeyboardNav)",
+        "package": "grid-pro-range",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-14", "feedback": [] },
+        "implement": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-14", "feedback": [] },
+        "verify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-14", "feedback": [] }
+      },
+      "harnessReview": null
+    },
+    {
+      "goalId": "G-003",
+      "title": "Drag-fill — 우하단 핸들 드래그로 Excel 스타일 패턴 채우기 (숫자 시리즈 + 값 복사)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-11/G-001", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "사용자가 선택된 셀 범위의 우하단 작은 파란 핸들을 드래그하면, 숫자는 시리즈(1,2,3...)로, 텍스트는 동일 값으로 채워져야 한다.",
+      "userJourneySteps": [
+        "1. selection 활성 시 선택 범위 우하단 코너에 8×8 px 파란 핸들 렌더 (Tailwind absolute)",
+        "2. 핸들 mousedown → isDraggingFill = true",
+        "3. mousemove → fillTarget 범위 계산 (수직 또는 수평 확장)",
+        "4. mouseup → fillRange(selection, fillTarget, 'down'|'right'|'up'|'left') 실행",
+        "5. fillRange 로직: 소스 셀들이 숫자이고 등차 시리즈이면 패턴 연장, 아니면 마지막 값 복사",
+        "6. 채워진 값 → tracking.updateRow(key, patch) 로 changeSet에 반영 (MOD-GRID-10 연동)",
+        "7. 채우기 방향: 아래(↓) 기본 + 위/우/좌 지원"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "DragFillHandle 컴포넌트 — Tailwind 'absolute bottom-0 right-0 w-2 h-2 bg-blue-500 cursor-crosshair' (C-5, no CSS 파일 신규 생성)", "source": "C-5" },
+        { "id": "AC-002", "criteria": "fillRange(sourceRange, targetRange, data, direction) 순수 함수 — 숫자 등차 감지(step = 마지막-처음): step 일정하면 시리즈, 아니면 마지막 값 복사 (no any — C-4)", "source": "C-4" },
+        { "id": "AC-003", "criteria": "채우기 후 MOD-GRID-10 updateRow 배치 호출 — trackChanges 통합 (F-11-05 Drag-fill 기능 요구사항). tracking prop 주입 또는 onFillComplete(cells: CellUpdate[]) callback 제공", "source": "L1" },
+        { "id": "AC-004", "criteria": "가상화 활성 시 드래그 오프스크린 지원 — scroll + fill 확장 (C-18). 핸들은 가상화 컨테이너 좌표 기준 렌더", "source": "C-18" },
+        { "id": "AC-005", "criteria": "@mescius/wijmo* import 0건 (C-16). Wijmo drag-fill 개념 학습 (publish-wijmo-analysis.md §3, §2의 isDraggingRef 패턴) — 참조만, 코드 차용 X", "source": "C-16" },
+        { "id": "AC-006", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-007", "criteria": "C-25: Storybook story 1개 (숫자 시리즈 fill + 텍스트 복사 fill 시나리오)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 기존 구현 없음, 신규)",
+        "L1": "자체 설계. 소스 배열 step 분석 → 패턴 확장",
+        "L2": "(N/A)",
+        "L3": "(N/A)",
+        "R-A": "AG Grid Enterprise Fill Handle API 시그니처 참조 (publish-aggrid-analysis.md) — 우리는 자체 구현",
+        "R-W": "Wijmo drag-fill 핸들 패턴 + organizeSchedule isDraggingRef 흔적 학습 (publish-wijmo-analysis.md §3) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/DragFillHandle.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/internal/fillRange.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/DragFillHandle.stories.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/index.ts"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+3 KB (DragFillHandle + fillRange)",
+        "package": "grid-pro-range",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-14", "feedback": [] },
+        "implement": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-14", "feedback": [] },
+        "verify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-14", "feedback": [] }
+      },
+      "harnessReview": null
+    },
+    {
+      "goalId": "G-004",
+      "title": "복사/붙여넣기 — Ctrl+C TSV export + Ctrl+V TSV 파싱 → 셀 매트릭스 입력 (Excel 호환)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-11/G-001", "MOD-GRID-10/G-001", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "사용자가 그리드에서 Ctrl+C를 누르면 선택 범위가 TSV로 클립보드에 복사되고, Excel에 그대로 붙여넣을 수 있다. Ctrl+V를 누르면 클립보드 TSV를 파싱하여 현재 포커스 셀을 기준으로 셀 매트릭스에 값이 입력된다.",
+      "userJourneySteps": [
+        "1. keydown Ctrl+C → selection 범위 rows/cols 매트릭스 추출 → TSV 문자열 생성",
+        "2. navigator.clipboard.writeText(tsvString) → 클립보드 저장",
+        "3. keydown Ctrl+V → navigator.clipboard.readText() → TSV 파싱 (탭 구분, 줄바꿈 행 구분)",
+        "4. 파싱된 매트릭스를 activeCellRef 기준으로 rows/cols 오프셋 계산",
+        "5. 오프셋 범위 내 각 셀 updateRow 배치 호출 (MOD-GRID-10 연동)",
+        "6. 범위 초과 시 빈 셀까지만 채우기 (grid 경계 clamp)",
+        "7. TSV 셀 내 탭/줄바꿈은 쌍따옴표 래핑 (RFC 4180 호환)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "copySelection(selection, tableData) → TSV string — 선택 범위 row×col 매트릭스 직렬화. navigator.clipboard.writeText 호출 (no any — C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "pasteToGrid(tsvString, activeCell, options) → CellUpdate[] — TSV 파싱 → { row, col, value }[] 배열 반환. 호출자(onPaste callback)가 updateRow 실행 (MOD-GRID-10 결합)", "source": "L1" },
+        { "id": "AC-003", "criteria": "TSV 이스케이프: 탭/줄바꿈 포함 셀은 쌍따옴표 래핑 (RFC 4180) — Excel 직접 붙여넣기 호환 (F-11-06, F-11-07)", "source": "L1" },
+        { "id": "AC-004", "criteria": "MOD-GRID-06 copyToClipboard(행 단위 TSV)와 역할 분리 명확: 이 Goal은 셀 범위 선택 단위 복사. 중복 구현 금지 — 공유 tsvUtils 유틸 추출", "source": "L1" },
+        { "id": "AC-005", "criteria": "@mescius/wijmo* import 0건 (C-16)", "source": "C-16" },
+        { "id": "AC-006", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-007", "criteria": "C-25: Storybook story 1개 (Ctrl+C 복사 후 Excel 붙여넣기 시나리오 + Ctrl+V 역방향 시나리오)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 기존 구현 없음, 신규)",
+        "L1": "navigator.clipboard Web API (표준). RFC 4180 TSV 이스케이프",
+        "L2": "(N/A)",
+        "L3": "(N/A)",
+        "R-A": "AG Grid Enterprise Clipboard API 패턴 참조 (publish-aggrid-analysis.md §2) — 우리는 자체 구현",
+        "R-W": "Wijmo 클립보드 복사/붙여넣기 개념 학습 (publish-wijmo-analysis.md §4) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/internal/tsvUtils.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useClipboard.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useClipboard.stories.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/index.ts"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+2 KB (tsvUtils + useClipboard)",
+        "package": "grid-pro-range",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-15", "feedback": [] },
+        "implement": { "status": "done", "threshold": 95, "loops": 2, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-15", "feedback": ["loop 1 E-01 NO (unminified 23.28KB > 20KB) → tsup.config.ts minify:true 추가 → loop 2 PASS (minified 10.96KB)"] },
+        "verify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-15", "feedback": [] }
+      },
+      "harnessReview": null
+    },
+    {
+      "goalId": "G-005",
+      "title": "Delete 키 범위 삭제 + F2/Enter 셀 편집 시작 + 범위 단위 일괄 동일 값 입력",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-11/G-001", "MOD-GRID-11/G-002", "MOD-GRID-10/G-001", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "사용자가 셀 범위 선택 후 Delete를 누르면 선택 셀이 빈 문자열/null로 초기화되고, 범위 선택 후 값을 타이핑하면 선택 전체에 동일 값이 입력되며, F2 또는 Enter로 단일 셀 편집 모드를 시작할 수 있어야 한다.",
+      "userJourneySteps": [
+        "1. selection 활성 상태에서 Delete 키 → 범위 내 모든 셀 '' 또는 null로 updateRow 배치 호출",
+        "2. selection 활성 상태에서 일반 문자 타이핑 → selection 범위 전체 동일 값 입력 (일괄 updateRow)",
+        "3. 단일 셀 active에서 F2 → 해당 셀 인라인 편집 모드 시작 (EditableGrid InlineEditCell 연동)",
+        "4. 편집 모드 Escape → 편집 취소, 이전 값 복원",
+        "5. 편집 모드 Enter → 값 커밋 + 아래 셀로 포커스 이동"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "Delete key → 선택 범위 내 편집 가능 컬럼(editable: true)에 한해 '' | null 값 배치. onDeleteRange(cells: CellCoord[]) callback 또는 updateRow 직접 호출 (no any — C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "범위 선택 후 일반 문자 타이핑(printable key) → selection 전체 동일 값 입력. onBulkEdit(cells, value) callback 제공 (F-11-08 범위 편집 — P1)", "source": "L1" },
+        { "id": "AC-003", "criteria": "F2 / Enter → 단일 active 셀 편집 시작 — MOD-GRID-05 InlineEditCell 활성화. Escape → 편집 취소 (F-11-09, F-11-08)", "source": "L1" },
+        { "id": "AC-004", "criteria": "@mescius/wijmo* import 0건 (C-16)", "source": "C-16" },
+        { "id": "AC-005", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-006", "criteria": "C-25: Storybook story 1개 (Delete 삭제 + 일괄 타이핑 입력 + F2 편집 시나리오)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 기존 구현 없음, 신규)",
+        "L1": "자체 설계. KeyboardEvent.key 'Delete'/'F2'/'Enter' 분기",
+        "L2": "(N/A)",
+        "L3": "(N/A)",
+        "R-A": "AG Grid Enterprise Range Delete 패턴 참조 — 우리는 자체 구현",
+        "R-W": "Wijmo startEditing + cellEditEnded 이벤트 개념 학습 (publish-wijmo-analysis.md §3) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useKeyboardEdit.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/useKeyboardEdit.stories.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/index.ts"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+2 KB (useKeyboardEdit)",
+        "package": "grid-pro-range",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-15", "feedback": [] },
+        "implement": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-15", "feedback": [] },
+        "verify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-15", "feedback": [] }
+      },
+      "harnessReview": null
+    },
+    {
+      "goalId": "G-006",
+      "title": "RangeSelectGrid 완전 통합 alias + Pro 라이선스 런타임 + 가상화 호환 검증",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-11/G-001", "MOD-GRID-11/G-002", "MOD-GRID-11/G-003", "MOD-GRID-11/G-004", "MOD-GRID-11/G-005", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "페이지 개발자가 <RangeSelectGrid data={...} rowKey='id' enableDragFill enableClipboard /> 한 줄로 G-001~G-005 모든 기능(범위 선택/키보드/드래그필/클립보드/편집)을 사용할 수 있어야 하며, 1000행 가상화 시에도 정상 동작해야 한다.",
+      "userJourneySteps": [
+        "1. import { RangeSelectGrid } from '@tomis/grid-pro-range'",
+        "2. <RangeSelectGrid data={rows} columns={cols} rowKey='id' enableDragFill enableClipboard enableKeyboardNav onRangeChange={(range) => ...} />",
+        "3. 내부: useCellRange + useKeyboardNav + DragFillHandle + useClipboard + useKeyboardEdit 자동 합성",
+        "4. 1000행 enableVirtualization → react-virtual 연동 + 키보드 스크롤 정합성 (C-18)",
+        "5. Pro 라이선스 검증: import 시 grid-license 자동 호출, 미등록 → console.warn + 워터마크",
+        "6. decisions/MOD-GRID-11-decisions.md ADR 완성 (G-001 초안 → 이 Goal에서 최종)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "RangeSelectGrid 컴포넌트 — <Grid> 래핑 + useCellRange/useKeyboardNav/DragFillHandle/useClipboard/useKeyboardEdit 통합 props (C-4, C-2 TanStack 표준)", "source": "C-2" },
+        { "id": "AC-002", "criteria": "enableVirtualization=true + 1000행 데이터 Storybook 시나리오 — 키보드 이동/드래그/복사 정상 동작 (C-10, C-18 의무)", "source": "C-18" },
+        { "id": "AC-003", "criteria": "Pro 패키지: import 시 grid-license 검증 호출 (MOD-GRID-99-A/F-99A-03). console.warn + 워터마크만 (block X) (C-24)", "source": "C-24" },
+        { "id": "AC-004", "criteria": "RangeSelectGrid alias (기존 RangeSelectGrid.tsx) — C-6 1 minor 유지. CHANGELOG.md 마이그레이션 가이드 (C-23)", "source": "C-6" },
+        { "id": "AC-005", "criteria": "@mescius/wijmo* import 0건 전체 패키지 (C-16). npx -y @tomis/grid-pro-range 설치 후 Grep으로 확인", "source": "C-16" },
+        { "id": "AC-006", "criteria": "size-limit 통과: packages/grid-pro-range ≤ 20 KB gzipped (C-21). .size-limit.json 항목 확인", "source": "C-21" },
+        { "id": "AC-007", "criteria": "C-12: tsc --noEmit 0 error (packages/grid-pro-range 전체)", "source": "C-12" },
+        { "id": "AC-008", "criteria": "C-25: Storybook story 2개 — (a) 전체 기능 통합 시나리오, (b) 1000행+ 가상화 + 드래그필 시나리오 (C-18)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx (alias 대상, 기존 200줄)",
+        "L1": "자체 설계. React hooks 합성 패턴",
+        "L2": "(N/A)",
+        "L3": "(N/A)",
+        "R-A": "(N/A)",
+        "R-W": "Wijmo FlexGrid selectionMode CellRange 통합 패턴 학습 (publish-wijmo-analysis.md §3) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "RangeSelectGrid alias 1 minor 유지 (C-23, C-6)",
+        "migrationPath": "RangeSelectGrid → <Grid enableRangeSelection enableDragFill enableClipboard ... />"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/RangeSelectGrid.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/src/RangeSelectGrid.stories.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/CHANGELOG.md",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-range/.size-limit.json",
+        "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-11-decisions.md",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx"
+      ],
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx"
+      ],
+      "bundleImpact": {
+        "expected": "+2 KB (통합 컴포넌트 — 합계 ≤ 15 KB grid-pro-range 전체)",
+        "package": "grid-pro-range",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 96.3, "lastRun": "2026-05-15", "feedback": [] },
+        "implement": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-15", "feedback": ["specCodeDefects 4건 자율 정정 (useCellRange sig / DragFillHandle fallback / data-row/col attr / useVirtualizer enabled)", "promptSpecDrift 1건 (D3 vs C-22 peerDep) — spec 권위 적용으로 @tanstack/react-virtual optional peer 추가"] },
+        "verify": { "status": "done", "threshold": 95, "loops": 1, "maxLoops": 3, "score": 100.0, "lastRun": "2026-05-15", "feedback": [] }
+      },
+      "harnessReview": null
+    }
+  ]
+}

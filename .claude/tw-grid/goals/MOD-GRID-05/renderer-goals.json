@@ -1,0 +1,212 @@
+{
+  "moduleId": "MOD-GRID-05",
+  "moduleName": "셀 렌더러 표준 set (기존 8 흡수 + 신규)",
+  "area": "renderer",
+  "phase": "abstraction",
+  "licenseTier": "MIT",
+  "packageTarget": "packages/grid-renderers",
+  "description": "현재 tomis/Grid/renderers/ 의 7개 renderer (Button/Badge/Check/Link/Number/Date/Icon) + EditableGrid 인라인 편집 셀을 packages/grid-renderers 패키지로 표준화. 신규 3종(Tag/Avatar/Progress) 추가. renderer registry + cellClassName callback + formatter helper 포함. Storybook story 의무(C-25).",
+  "version": "1.0",
+  "createdAt": "2026-05-13",
+  "updatedAt": "2026-05-13",
+  "goals": [
+    {
+      "goalId": "G-001",
+      "title": "기본 3종 표준화: TextCell + NumberCell + DateCell (기존 흡수 + formatter helper)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "dependsOn": ["MOD-GRID-00/G-002"],
+      "overallStatus": "completed",
+      "userStory": "페이지 개발자가 NumberCell, DateCell 을 ColumnDef cell 함수에서 직접 사용하거나 createColumns type:'number' 로 자동 적용할 수 있어야 한다.",
+      "userJourneySteps": [
+        "1. import { NumberCell, DateCell, TextCell } from '@tomis/grid-renderers'",
+        "2. ColumnDef cell 함수: ({ getValue }) => <NumberCell value={getValue()} />",
+        "3. 또는 createColumns type:'number' → rendererRegistry 자동 조회",
+        "4. NumberCell: formatNumberString helper (천 단위 구분 + 소수점 옵션)",
+        "5. DateCell: formatDateTimeFromDateTimeString helper (YYYY-MM-DD / YYYY-MM-DD HH:mm)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "TextCell, NumberCell, DateCell 3개 컴포넌트 export — props: { value: unknown; className?: string } (C-4 strict)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "NumberCell — formatNumberString helper 사용, 소수점 precision prop (기존 NumberCell.tsx 흡수 — 구현 전 Read 필수)", "source": "L0" },
+        { "id": "AC-003", "criteria": "DateCell — formatDateTimeFromDateTimeString helper 사용 (기존 DateCell.tsx 흡수 — 구현 전 Read 필수)", "source": "L0" },
+        { "id": "AC-004", "criteria": "formatNumberString / formatDateTimeFromDateTimeString helper 함수 — 기존 useAuthStore 등 외부 의존 제거 (순수 함수, C-4)", "source": "C-4" },
+        { "id": "AC-005", "criteria": "Tailwind className only — C-5 (인라인 style 금지)", "source": "C-5" },
+        { "id": "AC-006", "criteria": "C-25: 각 renderer Storybook story 1개 이상", "source": "C-25" },
+        { "id": "AC-007", "criteria": "C-21: grid-renderers 패키지 ≤ 10 KB (gzipped)", "source": "C-21" }
+      ],
+      "referenceEvidence": {
+        "L0": "tw-framework-front/src/components/tomis/Grid/renderers/NumberCell.tsx (기존 구현 — 구현 전 Read 필수), DateCell.tsx (기존 구현 — Read 필수)",
+        "L1": "(N/A — UI 레이어)",
+        "L2": "(현재 renderers/ 8 파일 — 흡수 대상)",
+        "L3": "MOD-GRID-04 createColumns type:'number'|'dateTime'|'text' 자동 분기",
+        "R-A": "agTextCellEditor/agNumberCellEditor/agDateCellEditor (canonical referenceAGGrid)",
+        "R-W": "Cell Templates binding expressions (canonical referenceWijmo)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "기존 renderers/NumberCell.tsx 등은 패키지 import 로 re-export (1 minor alias — C-23)",
+        "migrationPath": "직접 경로 import → '@tomis/grid-renderers' import"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/TextCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/NumberCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/DateCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/formatters.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/index.ts",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/NumberCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/DateCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/index.ts"
+      ],
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/NumberCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/DateCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/index.ts"
+      ],
+      "bundleImpact": {
+        "expected": "+3 KB (3 렌더러 + formatter helpers)",
+        "package": "grid-renderers",
+        "limit": "10 KB"
+      },
+      "stages": {
+        "specify": { "status": "done", "score": 100, "threshold": 95, "loops": 1, "maxLoops": 3, "feedback": [], "lastRun": "2026-05-14", "scoreFile": "artifacts/MOD-GRID-05/renderer/G-001-specify-score.json", "specFile": "artifacts/MOD-GRID-05/renderer/G-001-spec.md" },
+        "implement": { "status": "done", "score": 100, "threshold": 95, "loops": 2, "maxLoops": 3, "feedback": ["loop1 C-02 시각 회귀 미수행 → loop2 finding + 3 stories 추가로 보완"], "lastRun": "2026-05-14", "scoreFile": "artifacts/MOD-GRID-05/renderer/G-001-implement-score.json", "reportFile": "artifacts/MOD-GRID-05/renderer/G-001-implement-report.md" },
+        "verify": { "status": "done", "score": 100, "threshold": 95, "loops": 2, "maxLoops": 3, "feedback": ["loop1 86.67 FAIL (C-02 시각 회귀 NO) → loop2 100 PASS (finding+stories 보완 후)"], "lastRun": "2026-05-14", "scoreFile": "artifacts/MOD-GRID-05/renderer/G-001-verify-score.json" }
+      },
+      "harnessReview": null
+    },
+    {
+      "goalId": "G-002",
+      "title": "UI 3종 표준화: StatusBadgeCell + LinkCell + ButtonCell + 신규 3종 (TagCell/AvatarCell/ProgressCell)",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "dependsOn": ["MOD-GRID-05/G-001"],
+      "overallStatus": "completed",
+      "userStory": "페이지 개발자가 StatusBadgeCell(상태 색상 뱃지), LinkCell(클릭 링크), ButtonCell(액션 버튼), TagCell(태그 목록), AvatarCell(사용자 아이콘), ProgressCell(진행률 바)을 ColumnDef에서 사용할 수 있어야 한다.",
+      "userJourneySteps": [
+        "1. StatusBadgeCell — value:'승인' → colorMap lookup → Tailwind color badge 렌더",
+        "2. LinkCell — href prop 또는 onClick prop, Tailwind underline + text-blue-600",
+        "3. ButtonCell — label/onClick/variant prop, disabled 상태 지원",
+        "4. TagCell — string[] 값 → 각각 badge chip 렌더",
+        "5. AvatarCell — name/src prop → 이니셜 fallback 원형 아이콘",
+        "6. ProgressCell — value: 0~100 → Tailwind bg-color bar + 퍼센트 텍스트"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "StatusBadgeCell — BadgeCell.tsx 흡수 (구현 전 Read 필수). colorMap?: Record<string, string> prop — 값→Tailwind class 매핑. 기본 colorMap 제공 (pending/approved/rejected)", "source": "L0" },
+        { "id": "AC-002", "criteria": "LinkCell — LinkCell.tsx 흡수 (구현 전 Read 필수). href?: string | onClick?: () => void, 둘 다 없으면 텍스트만. Tailwind only", "source": "L0" },
+        { "id": "AC-003", "criteria": "ButtonCell — ButtonCell.tsx 흡수 (구현 전 Read 필수). variant: 'default'|'destructive'|'ghost', disabled prop 지원", "source": "L0" },
+        { "id": "AC-004", "criteria": "TagCell (신규) — value: string[] → 각 item chip 렌더 (Tailwind rounded badge)", "source": "F-05-02" },
+        { "id": "AC-005", "criteria": "AvatarCell (신규) — name: string + src?: string → 이니셜 fallback 원형 (Tailwind rounded-full)", "source": "F-05-02" },
+        { "id": "AC-006", "criteria": "ProgressCell (신규) — value: number (0~100) → Tailwind h-2 bg-primary bar + percentage text", "source": "F-05-02" },
+        { "id": "AC-007", "criteria": "CheckCell/IconCell — CheckCell.tsx/IconCell.tsx 흡수 (구현 전 Read 필수). CheckCell: boolean → check icon. IconCell: iconName → icon component", "source": "L0" },
+        { "id": "AC-008", "criteria": "C-25: 각 renderer Storybook story 1개 이상 (모든 variant 포함)", "source": "C-25" },
+        { "id": "AC-009", "criteria": "C-17: 시각 회귀 — 기존 BadgeCell/LinkCell/ButtonCell 외관 동등 검증 (migrationImpact: high)", "source": "C-17" }
+      ],
+      "referenceEvidence": {
+        "L0": "tw-framework-front/src/components/tomis/Grid/renderers/ButtonCell.tsx (구현 전 Read 필수), BadgeCell.tsx (Read 필수), CheckCell.tsx (Read 필수), LinkCell.tsx (Read 필수), IconCell.tsx (Read 필수)",
+        "L1": "(N/A)",
+        "L2": "(renderers/ 7 파일 전부 흡수 대상)",
+        "L3": "MOD-GRID-04 createColumns type:'badge'|'link'|'icon'|'checkbox' 자동 분기",
+        "R-A": "components prop map (cellRenderer registry) (canonical referenceAGGrid)",
+        "R-W": "Conditional Formatting via formatItem (canonical referenceWijmo)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "기존 renderers/ 7 파일 — 패키지 re-export alias로 1 minor 유지 (C-23)",
+        "migrationPath": "직접 경로 import → '@tomis/grid-renderers'"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/StatusBadgeCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/LinkCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/ButtonCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/CheckCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/IconCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/TagCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/AvatarCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/ProgressCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/index.ts",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/ButtonCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/BadgeCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/CheckCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/LinkCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/IconCell.tsx"
+      ],
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/ButtonCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/BadgeCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/CheckCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/LinkCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/IconCell.tsx"
+      ],
+      "bundleImpact": {
+        "expected": "+5 KB (7종 흡수 + 신규 3종)",
+        "package": "grid-renderers",
+        "limit": "10 KB"
+      },
+      "stages": {
+        "specify": { "status": "done", "score": 100, "threshold": 95, "loops": 1, "maxLoops": 3, "feedback": [], "lastRun": "2026-05-14", "scoreFile": "artifacts/MOD-GRID-05/renderer/G-002-specify-score.json", "specFile": "artifacts/MOD-GRID-05/renderer/G-002-spec.md" },
+        "implement": { "status": "done", "score": 100, "threshold": 95, "loops": 1, "maxLoops": 3, "feedback": [], "lastRun": "2026-05-14", "scoreFile": "artifacts/MOD-GRID-05/renderer/G-002-implement-score.json", "reportFile": "artifacts/MOD-GRID-05/renderer/G-002-implement-report.md" },
+        "verify": { "status": "done", "score": 100, "threshold": 95, "loops": 1, "maxLoops": 3, "feedback": [], "lastRun": "2026-05-14", "scoreFile": "artifacts/MOD-GRID-05/renderer/G-002-verify-score.json" }
+      },
+      "harnessReview": null
+    },
+    {
+      "goalId": "G-003",
+      "title": "EditableCell (인라인 편집: text/number/date/select/textarea) + cellClassName callback + renderer registry",
+      "priority": "P0",
+      "migrationImpact": "high",
+      "dependsOn": ["MOD-GRID-05/G-002"],
+      "overallStatus": "completed",
+      "userStory": "페이지 개발자가 column.meta.editable=true 설정 시 클릭하면 인라인 편집 가능한 입력 셀이 렌더되어야 한다. cellClassName callback으로 조건부 셀 스타일도 지정 가능해야 한다.",
+      "userJourneySteps": [
+        "1. createColumns 또는 ColumnDef에 meta: { editable: true, editType: 'number', selectOptions: [...] } 지정",
+        "2. EditableCell — 뷰 모드(텍스트 렌더) + 클릭/포커스 → 편집 모드(input/select/textarea)",
+        "3. 편집 완료(blur/Enter) → onCellValueChange(rowIndex, columnId, newValue) 호출",
+        "4. cellClassName?: (cell: Cell<TData, unknown>) => string callback — Tailwind class 조건부 주입",
+        "5. rendererRegistry['text'] = TextCell, rendererRegistry['number'] = NumberCell ... — createColumns 내부 lookup"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "EditableCell — editType: 'text'|'number'|'date'|'select'|'textarea' 각각 input/select/textarea 렌더 (EditableGrid.tsx 흡수 — 구현 전 Read 필수)", "source": "L0" },
+        { "id": "AC-002", "criteria": "뷰모드/편집모드 전환 — useState(isEditing) + onClick(편집진입) + onBlur/Enter(확정) + Esc(취소)", "source": "L0" },
+        { "id": "AC-003", "criteria": "onCellValueChange?: (rowIndex: number, columnId: string, value: unknown) => void Grid prop — EditableGrid 흡수 (C-4)", "source": "C-4" },
+        { "id": "AC-004", "criteria": "cellClassName?: (cell: Cell<TData, unknown>) => string — Tailwind class 반환 (C-5) — conditional formatting (F-05-04)", "source": "C-5" },
+        { "id": "AC-005", "criteria": "rendererRegistry: Record<string, CellComponent> — export 가능 + 외부에서 커스텀 renderer 등록 가능 (F-05-06)", "source": "F-05-06" },
+        { "id": "AC-006", "criteria": "C-18: EditableCell virtualization 호환 — 절대 위치 없음, estimateSize 사용 가능", "source": "C-18" },
+        { "id": "AC-007", "criteria": "C-25: Storybook story — EditableCell 각 editType별 1개 + cellClassName 조건부 포매팅 데모", "source": "C-25" },
+        { "id": "AC-008", "criteria": "C-17: 시각 회귀 — EditableGrid.tsx 기존 편집 UI 외관 동등 검증", "source": "C-17" }
+      ],
+      "referenceEvidence": {
+        "L0": "tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx (meta.editable/editType/selectOptions 패턴 — 구현 전 Read 필수 — current-tanstack-analysis.md §1 'meta.editable/editType/selectOptions 기반')",
+        "L1": "(N/A — Grid meta 패턴)",
+        "L2": "(EditableGrid 8 variant 중 1개 — 흡수 대상)",
+        "L3": "MOD-GRID-10 ChangeTrackingGrid + MOD-GRID-12 DataMap 에서 EditableCell 의존",
+        "R-A": "agTextCellEditor/agNumberCellEditor/agSelectCellEditor/agDateCellEditor (canonical referenceAGGrid)",
+        "R-W": "Cell Templates binding (canonical referenceWijmo)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "EditableGrid.tsx 1 minor alias (MOD-GRID-10 ChangeTrackingGrid 에서도 참조)",
+        "migrationPath": "EditableGrid meta.editable → createColumns meta.editable + EditableCell auto-mapping"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/EditableCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/rendererRegistry.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-renderers/src/index.ts",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx"
+      ],
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx"
+      ],
+      "bundleImpact": {
+        "expected": "+2 KB (EditableCell + registry — 총 grid-renderers: 10 KB 한도 내)",
+        "package": "grid-renderers",
+        "limit": "10 KB"
+      },
+      "stages": {
+        "specify": { "status": "done", "score": 100, "threshold": 95, "loops": 1, "maxLoops": 3, "feedback": [], "lastRun": "2026-05-14", "scoreFile": "artifacts/MOD-GRID-05/renderer/G-003-specify-score.json", "specFile": "artifacts/MOD-GRID-05/renderer/G-003-spec.md" },
+        "implement": { "status": "done", "score": 100, "threshold": 95, "loops": 1, "maxLoops": 3, "feedback": [], "lastRun": "2026-05-14", "scoreFile": "artifacts/MOD-GRID-05/renderer/G-003-implement-score.json", "reportFile": "artifacts/MOD-GRID-05/renderer/G-003-implement-report.md" },
+        "verify": { "status": "done", "score": 100, "threshold": 95, "loops": 1, "maxLoops": 3, "feedback": [], "lastRun": "2026-05-14", "scoreFile": "artifacts/MOD-GRID-05/renderer/G-003-verify-score.json" }
+      },
+      "harnessReview": "artifacts/MOD-GRID-05/renderer/G-003-self-review.json"
+    }
+  ]
+}

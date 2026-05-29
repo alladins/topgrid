@@ -1,0 +1,258 @@
+{
+  "goalId": "MOD-GRID-15/aggregation/G-001",
+  "module": "MOD-GRID-15",
+  "area": "aggregation",
+  "stage": "specify",
+  "tier": "low",
+  "rubricVersion": "1.0.7",
+  "threshold": 90,
+  "score": 100,
+  "passed": true,
+  "yesCount": 27,
+  "noCount": 0,
+  "naCount": 8,
+  "denominator": 27,
+  "checks": [
+    {
+      "id": "H-01",
+      "name": "referenceEvidence 경로 실재",
+      "result": "YES",
+      "evidence": "Section 1: L0 'N/A — 신규 Pro 패키지' 명시 (L28-29), L1 TanStack v8 API signature 인용 (L31-46 aggregationFns 테이블), L2 'N/A' 명시 (L50-51), L3 'N/A' 명시 (L53-54), R-A AG Grid 개념 학습 명시 (L58), R-W Wijmo 개념 학습 명시 (L60). 모든 출처 영역 명시."
+    },
+    {
+      "id": "H-02",
+      "name": "implementFiles 경로 합리성",
+      "result": "YES",
+      "evidence": "Section 7 (L158-172): 조부모 'D:/project/topvel_project/' 실재 + D1 결정 명시 ('topvel-grid-monorepo/packages/grid-pro-agg/' 신규 부모 생성) + 명명 convention 'topvel-' prefix kebab-case 준수. 7개 파일 경로 정확히 명시."
+    },
+    {
+      "id": "H-03",
+      "name": "AC 출처 태그 검증",
+      "result": "YES",
+      "evidence": "Section 2 AC-001~AC-008 (L71-80): 모든 AC에 source 태그 포함. AC-001 'L1: TanStack groupedRowModel', AC-002 'L1: TanStack aggregationFns', ..., AC-008 'C-25, MOD-GRID-99-B 이연'. 태그 출처가 spec 내 다른 섹션에서 인용됨."
+    },
+    {
+      "id": "A-01",
+      "name": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "Section 1 L0 (L28-29): 'N/A — 신규 Pro 패키지. 집계 기능이 Oracle 레거시 시스템에 존재하지 않음' 명시 + 신규 영역임을 선언."
+    },
+    {
+      "id": "A-02",
+      "name": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "Section 1 L1 (L31-46): TanStack API signature 테이블 (L34-44) 'getGroupedRowModel()', 'getExpandedRowModel()', 'aggregationFns' 레지스트리 명시 + row 판별 API 'row.getIsGrouped()', 'row.getIsAggregated()' 인용."
+    },
+    {
+      "id": "A-03",
+      "name": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "N/A",
+      "evidence": "Section 1 L2 (L50-51): 'N/A — 신규 Pro 패키지. publish 중간 참조 소스 없음' 명시. 신규 영역(Excel/PDF 등) N/A 조건 충족."
+    },
+    {
+      "id": "A-04",
+      "name": "L3 영향 사용처 카운트 명시",
+      "result": "N/A",
+      "evidence": "Section 1 L3 (L53-54): 'N/A — 신규 Pro 패키지. TO-BE 구현 없음' 명시 + goals.json 'affectedUsageFiles: []' (사용처 0개 명시). 사용처 0개 N/A 조건 충족."
+    },
+    {
+      "id": "A-05",
+      "name": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "Section 1 R-A (L58): 'AG Grid aggFuncs 레지스트리에 sum/min/max/avg/count 등록 패턴. 개념 학습 전용 (C-7, C-16 — AG Grid API 직접 사용 금지)'. Section 1 R-W (L60): 'Wijmo GroupDescription + IColumnAggregateDescriptor 선언 패턴. 개념 학습 전용 (C-16 — Wijmo API 직접 사용 금지)'."
+    },
+    {
+      "id": "B-01",
+      "name": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "Section 7 types.ts (L177-197): AggregationFnKey 유니온, AggregationColumnMeta interface, AggregationColumnDef 타입, AggregationGridProps interface 정의. Section 2 AC-001~AC-008 (L71-80) 모든 props 타입 명시."
+    },
+    {
+      "id": "B-02",
+      "name": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "Section 10 사용자 여정 (L349-415): 시나리오 1 '기본 그룹핑 + sum 집계' (L351-382), 시나리오 2 'avg (→ mean) 사용' (L384-403), 시나리오 3 '그룹핑 해제' (L405-415) 총 3개 코드 예시."
+    },
+    {
+      "id": "B-03",
+      "name": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "Section 7 AggregationGrid.tsx 함수 시그니처 (L232-235): 'enableAggregation = false', 'grouping = []', 'expanded = true' 기본값 명시 + types.ts (L190-197) 'enableAggregation?: boolean', 'grouping?: string[]', 'expanded?: boolean | Record<string, boolean>' optional 명시."
+    },
+    {
+      "id": "B-04",
+      "name": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "Section 7 파일 구조 (L165): 'D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-agg/src/types.ts' 정확한 경로 + Section 7 index.ts (L266-268): 'export type { AggregationGridProps, AggregationColumnDef, AggregationFnKey } from ./types'."
+    },
+    {
+      "id": "B-05",
+      "name": "ref API + imperative handle 명시 (해당 시)",
+      "result": "N/A",
+      "evidence": "Section 2 AC-001~AC-008: ref API 또는 useImperativeHandle 요구사항 없음. 선언적 컴포넌트로 설계 (L190-197 props 중 ref 미포함)."
+    },
+    {
+      "id": "C-01",
+      "name": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "Section 2 acceptanceCriteria (L71-80): AC-001, AC-002, AC-003, AC-004, AC-005, AC-006, AC-007, AC-008 총 8개 (≥3)."
+    },
+    {
+      "id": "C-02",
+      "name": "각 AC에 출처 태그 (L0/L1/L2/L3/R-A/R-W)",
+      "result": "YES",
+      "evidence": "Section 2 AC 배열 (L71-80): AC-001 'L1: TanStack groupedRowModel', AC-002 'L1: TanStack aggregationFns', AC-003 'L1: TanStack row model API', AC-004 'L1: TanStack TableOptions.state.grouping', AC-005 'L1: TanStack expanded state', AC-006 'C-12, C-4', AC-007 'C-21', AC-008 'C-25, MOD-GRID-99-B 이연'. 모든 AC에 출처 태그."
+    },
+    {
+      "id": "C-03",
+      "name": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "Section 2 AC-001: '활성화된다' (객관 검증). AC-002: '지정할 수 있다' (객관). AC-003: '표시하고' (객관). AC-004: '제어한다' (객관). AC-005: '설정한다' (객관). AC-006: '0 에러' (객관). AC-007: '초과하지 않는다' (객관). AC-008: '존재하며' (객관). 모두 객관 검증 가능 표현."
+    },
+    {
+      "id": "C-04",
+      "name": "migrationImpact 명시 (high/medium/low)",
+      "result": "YES",
+      "evidence": "Section 1 (L6): 'Migration Impact: low' 명시 + goals.json G-001 'migrationImpact: low'. Section 8 (L281-300) bundleImpact 명시: '+5 KB'."
+    },
+    {
+      "id": "C-05",
+      "name": "AC에 호환성 검증 항목 포함",
+      "result": "N/A",
+      "evidence": "goals.json G-001 'affectedUsageFiles: []' (사용처 0개, 신규 기능) → C-05 N/A 조건 충족. '신규 기능'으로 compatibility 검증 불필요."
+    },
+    {
+      "id": "D-01",
+      "name": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "YES",
+      "evidence": "Section 7 파일 목록 (L163-171): 정확한 7개 파일 경로 열거 + goals.json 'affectedUsageFiles: []' (0개 명시). 사용처 미포함은 새 Pro 패키지이기 때문."
+    },
+    {
+      "id": "D-02",
+      "name": "기존 변형 대응표 (Section 3)",
+      "result": "N/A",
+      "evidence": "Section 4 (L99-108): '포함 (G-001 범위)' 신규 standalone 컴포넌트 명시 + Section 4 (L110-118) '제외 (이연)' 기존 variant 대응 불필요. 신규 영역 N/A 조건 충족."
+    },
+    {
+      "id": "D-03",
+      "name": "Breaking change 명시 (Section 4)",
+      "result": "YES",
+      "evidence": "Section 4 범위 (L99-108): 신규 Pro 패키지 + Section 7 (L67): Goal Statement 'standalone Pro 컴포넌트를 구현한다' + goals.json 'compatibilityPolicy.breaking: false' 명시. Breaking change 없음."
+    },
+    {
+      "id": "D-04",
+      "name": "Deprecation 전략 (Section 4)",
+      "result": "N/A",
+      "evidence": "D-03에서 breaking change = false → goals.json 'deprecationStrategy: 신규 Pro 패키지 — alias 불필요' 명시. Deprecation 전략 불필요."
+    },
+    {
+      "id": "D-05",
+      "name": "롤백 전략 (Section 8.4)",
+      "result": "N/A",
+      "evidence": "goals.json 'affectedUsageFiles: []' (사용처 0개) + tier = 'low' → D-05 N/A 조건 충족. 신규 Pro 패키지이므로 롤백 불필요."
+    },
+    {
+      "id": "D-06",
+      "name": "번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "Section 8 bundleImpact (L281-300): '+5 KB (types + aggregationFns + AggregationGrid 렌더러)' 예상 번들 변동 명시 + Section 8 bundle requirement (L89): 'aggregationFns.ts 순pure 함수 파일의 tree-shaking 지원' + AC-007 (L79-80): '번들 사이즈 증가량이 +5 KB를 초과하지 않는다 (C-21: 패키지당 ≤20 KB)'."
+    },
+    {
+      "id": "E-01",
+      "name": "파일별 변경 명세 (NEW/MODIFY)",
+      "result": "YES",
+      "evidence": "Section 7 구현 파일 목록 (L163-171): 7개 파일 모두 작업 유형(NEW/MODIFY) 명시. 1-4 NEW, 5 MODIFY, 6-7 NEW. Section 11 검증 기준 (L419-453) 모든 단계가 Section 7 파일과 대응. E-01 cross-check: Section 11의 검증 항목(tsc, tsup, 기능검증, 타입검증, 파일검증) 모두 Section 7 파일에서 도출."
+    },
+    {
+      "id": "E-02",
+      "name": "Before/After 코드 스니펫 (최소 1개)",
+      "result": "YES",
+      "evidence": "Section 7 파일별 구현 세부 (L175-277): types.ts 코드 블록 (L177-198), aggregationFns.ts 코드 블록 (L204-214), AggregationGrid.tsx 코드 블록 (L221-251) 구현 코드 명시. Section 9 라이선스 교체 경로 (L336-345): Before 'function verifyOrWarn(_packageName: string): void { /* no-op */ }' vs After 'import { verifyOrWarn } from @tomis/grid-license' 교체 패턴."
+    },
+    {
+      "id": "E-03",
+      "name": "구현 순서 2단계 이상 (의존성 고려)",
+      "result": "YES",
+      "evidence": "Section 11 검증 기준 (L419-453) 다단계 구조: 빌드 검증(L421-424) → 기능 검증(L426-433) → 타입 검증(L435-438) → 파일 검증(L440-446) → 제약 준수(L448-452). 의존성 고려: 빌드 먼저, 그 후 기능 검증 순서."
+    },
+    {
+      "id": "E-04",
+      "name": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "Section 6 엣지 케이스 (L144-152): EC-01 'grouping: [] (빈 배열)' (L148), EC-02 '셀 값이 문자열' (L149), EC-03 'aggregationFn이 없는 경우' (L150), EC-04 'expanded 변경' (L151), EC-05 'avg→mean 매핑' (L152) 총 5개 (≥3)."
+    },
+    {
+      "id": "E-05",
+      "name": "검증 계획 (Section 12)",
+      "result": "YES",
+      "evidence": "Section 11 검증 기준 (L419-453): 빌드 검증(L421-424 tsc/tsup), 기능 검증(L426-433 enableAggregation/aggregationFn/그룹행), 타입 검증(L435-438 tsc/제네릭), 파일 검증(L440-446 types.ts/aggregationFns.ts/components), 제약 준수(L448-452 Tailwind/peer)."
+    },
+    {
+      "id": "E-06",
+      "name": "Section 7 Re-decision ↔ Final Table Consistency",
+      "result": "YES",
+      "evidence": "Section 7 (L158-159) D1 결정: '이 섹션의 모든 파일 경로는 topvel-grid-monorepo/packages/grid-pro-agg/를 기준으로 한다' 명시 + Section 7 구현 파일 목록 (L163-171) 모든 파일이 동일 prefix 사용. 본문 재결정과 최종 표 1:1 일치. E-06 sub-rule prose ↔ structured form 검증: 재결정 문장(L158-159)이 파일 경로 결정을 명시 → 파일 목록(L163-171)이 100% 반영."
+    },
+    {
+      "id": "F-01",
+      "name": "패키지 대상 명시 (packages/grid-core vs grid-{pro})",
+      "result": "YES",
+      "evidence": "Section 13 ADR 참조 (L456-466): 'packages/grid-pro-agg Pro' (goals.json packageTarget: 'packages/grid-pro-agg'). Section 7 EULA.md (L271-273) '패키지명 @tomis/grid-pro-agg'."
+    },
+    {
+      "id": "F-02",
+      "name": "라이선스 검증 호출 (Pro 패키지)",
+      "result": "YES",
+      "evidence": "Section 7 D3 결정 (L20-21): 'verifyOrWarn(packageName: string): void 인라인 함수 (no-op body, MOD-GRID-99-A 대기)' + AggregationGrid.tsx (L223-227): 'function verifyOrWarn(_packageName: string): void { /* MOD-GRID-99-A/G-002 ... */ } verifyOrWarn(@tomis/grid-pro-agg)' 명시. SPECIFY 단계: 구현 위치 + 교체 계획 명시 (L339-345)."
+    },
+    {
+      "id": "F-03",
+      "name": "문서 작성 계획 (Docusaurus + Storybook)",
+      "result": "N/A",
+      "evidence": "Section 13 미결 사항 (L474-481) 'OI-06 Storybook 런타임 통합 | MOD-GRID-99-B' 이연 명시. SPECIFY 단계에서는 placeholder (L256-261) 'CSF3 placeholder 패턴 (C-25, MOD-GRID-99-B 이연)' 명시. 실제 구현은 IMPLEMENT 단계 책임."
+    },
+    {
+      "id": "F-04",
+      "name": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "Section 5 peerDependencies (L124-129): '@tanstack/react-table', 'react', 'react-dom' peerDependency 명시. 구간 버전 범위: '^8.0.0', '^18.0.0 || ^19.0.0'. Section 3 (L93) '빌드 peer 의존성: ... peerDependencies (C-22)' 명시."
+    },
+    {
+      "id": "G-01",
+      "name": "Spec에 TBD/TODO/미정 표현 없음",
+      "result": "YES",
+      "evidence": "Appendix Self-Check (L494-530): 모든 rubric 항목 ✓ 표시. 본문에 TBD/TODO 문구 0건. G-01 강화 cross-check: 헤더 D# 표(L14-22) vs 본문 일관성 — D1 '경로 권한' vs Section 7 파일 목록(L163-171) 모두 'topvel-grid-monorepo' prefix 일치 ✓. D# D4 'peerDeps G-004 이연' vs goals.json G-004 dependsOn 일치 ✓. Breakdown 일치: D# D1 (합계 7개 파일) vs Section 7 표 (정확히 7개 행) 일치 ✓. D# 결정 ↔ goals.json 데이터 일관성: D1 경로 prefix 'topvel-grid-monorepo' vs goals.json implementFiles[0-5] prefix 일치 ✓."
+    }
+  ],
+  "failedChecks": [],
+  "feedback": [],
+  "evaluatedAt": "2026-05-15",
+  "note": "Verifier self-validation: score calculation (27/27×100=100.0), denominator match (27+0=27, N/A=5 excluded), category totals (A=5, B=5, C=5, D=6, E=6, F=4, G=1 = 32). All H gate + 32 rubric checks passed. JSON parse validation complete.",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 27,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 5,
+    "originalReportedDenominator": 27,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-15",
+  "runAt": "2026-05-15",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-001→full",
+      "runAt=2026-05-15",
+      "verifierModel=haiku"
+    ]
+  }
+}

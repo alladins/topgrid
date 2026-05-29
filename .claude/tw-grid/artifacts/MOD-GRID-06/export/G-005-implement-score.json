@@ -1,0 +1,84 @@
+{
+  "goalId": "MOD-GRID-06/export/G-005",
+  "phase": "coverage-verify",
+  "model": "haiku",
+  "verificationDate": "2026-05-14T21:30:00Z",
+  "medium": true,
+  "threshold": 90,
+  "passed": true,
+  "score": 100,
+  "checklist": {
+    "any_type_usage": {
+      "status": "PASS",
+      "description": "No bare 'any' types found in grid-export src/",
+      "evidence": "grep -r ': any' returned 0 results"
+    },
+    "wijmo_usage": {
+      "status": "PASS",
+      "description": "No Wijmo dependencies or imports in grid-export",
+      "evidence": "grep -r 'wijmo\\|Wijmo' returned 0 results"
+    },
+    "empty_behavior_type_definition": {
+      "status": "PASS",
+      "description": "EmptyBehavior type exists and exported from types.ts",
+      "evidence": "types.ts L5: export type EmptyBehavior = 'skip' | 'empty';",
+      "location": "D:\\project\\topvel_project\\topvel-grid-monorepo\\packages\\grid-export\\src\\types.ts:5"
+    },
+    "five_options_empty_behavior_references": {
+      "status": "PASS",
+      "description": "All 5 Options interfaces reference EmptyBehavior type",
+      "details": {
+        "ExcelExportOptions": "types.ts L37: emptyBehavior?: EmptyBehavior",
+        "CSVExportOptions": "types.ts L84: emptyBehavior?: EmptyBehavior",
+        "PDFExportOptions": "types.ts L126: emptyBehavior?: EmptyBehavior",
+        "ClipboardOptions": "types.ts L167: emptyBehavior?: EmptyBehavior",
+        "PrintOptions": "types.ts L206: emptyBehavior?: EmptyBehavior"
+      }
+    },
+    "index_ts_export": {
+      "status": "PASS",
+      "description": "EmptyBehavior type exported from index.ts",
+      "evidence": "index.ts L16: EmptyBehavior, (within type export block)"
+    },
+    "five_export_functions_regression": {
+      "status": "PASS",
+      "description": "All 5 export functions correctly handle emptyBehavior (skip/empty compatible)",
+      "details": {
+        "exportToExcel": "L128: emptyBehavior = 'skip' default, L135: rows.length === 0 && emptyBehavior === 'skip' branch",
+        "exportToCSV": "L54: emptyBehavior = 'skip' default, L61: rows.length === 0 && emptyBehavior === 'skip' branch",
+        "exportToPdf": "L43: emptyBehavior = 'skip' default, L70: rows.length === 0 && emptyBehavior === 'skip' branch",
+        "copyToClipboard": "L42: emptyBehavior = 'skip' default, L48: rows.length === 0 && emptyBehavior === 'skip' branch",
+        "printGrid": "L30: emptyBehavior = 'skip' default, L37: rows.length === 0 && emptyBehavior === 'skip' branch"
+      }
+    },
+    "export_scope_unchanged": {
+      "status": "PASS",
+      "description": "ExportScope type definition unchanged (internal/getRowsByScope.ts verified)",
+      "evidence": "getRowsByScope.ts scope parameter matches ExportScope union: all | filtered | selected"
+    },
+    "documented_deviations_location": {
+      "status": "PASS",
+      "description": "Findings file created in actual location (non-standard but documented)",
+      "path": "D:\\project\\topvel_project\\topvel-grid-monorepo\\packages\\grid-export\\findings\\documented-deviations\\MOD-GRID-06-G005-resolveRows-vs-getRowsByScope.md",
+      "note": "Implementer created findings in packages/grid-export/findings/ (non-standard vs .claude/tw-grid/findings/). File documents resolveRows vs getRowsByScope naming deviation. Acceptable as documented deviation is self-contained within grid-export package."
+    },
+    "typescript_compilation": {
+      "status": "PASS",
+      "description": "tsc --noEmit returns 0 errors",
+      "location": "D:\\project\\topvel_project\\topvel-grid-monorepo\\packages\\grid-export\\src",
+      "command": "npx tsc --noEmit"
+    },
+    "scope_integration_story": {
+      "status": "PASS",
+      "description": "scopeIntegration.stories.tsx created with scope integration scenarios",
+      "path": "D:\\project\\topvel_project\\topvel-grid-monorepo\\packages\\grid-export\\src\\scopeIntegration.stories.tsx",
+      "verifiedContent": "Story imports EmptyBehavior type (L25), demonstrates filtered/selected/all scope scenarios with mock data"
+    }
+  },
+  "failedChecks": [],
+  "findings": {
+    "location_variance": "Implementer placed findings file in packages/grid-export/findings/documented-deviations/ instead of project-standard .claude/tw-grid/findings/. This is acceptable for goal-scoped deviations (resolveRows vs getRowsByScope is internal to grid-export package). Standard location for future MOD-GRID modules should be .claude/tw-grid/findings/.",
+    "status": "DOCUMENTED"
+  },
+  "summary": "G-005 Implementation verified: EmptyBehavior type added to types.ts, exported from index.ts, referenced by all 5 Options interfaces. 5 export functions use emptyBehavior correctly with 'skip'/'empty' handling. No any types, no Wijmo. TypeScript compilation clean. scopeIntegration.stories.tsx created. findings documented. All AC acceptance criteria met."
+}

@@ -1,0 +1,208 @@
+{
+  "goalId": "MOD-GRID-09/filter-ui/G-002",
+  "moduleId": "MOD-GRID-09",
+  "stage": "specify",
+  "tier": "medium",
+  "threshold": 90,
+  "rubricVersion": "1.0.5",
+  "loops": 1,
+  "checks": [
+    {
+      "rubricItem": "A-01: L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "N/A",
+      "evidence": "신규 기능 (numberFilter UI 없음). spec.md L43-44 명시: 'bundleImpact: +2 KB gzip 이하'"
+    },
+    {
+      "rubricItem": "A-02: L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "spec.md Section 2 AC-001: 'column.setFilterValue / column.getFilterValue 사용 (TanStack columnFilters 표준)' + Section 8 interface import from '@tanstack/react-table' 명시"
+    },
+    {
+      "rubricItem": "A-03: L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "N/A",
+      "evidence": "신규 기능. G-001 FilterPopover/FilterIndicator 재사용이지만 '중복 추출 분석' 아님"
+    },
+    {
+      "rubricItem": "A-04: L3 영향 사용처 카운트 명시",
+      "result": "N/A",
+      "evidence": "spec.md L43 'affectedUsageFiles: []' — 신규 기능, 사용처 0개"
+    },
+    {
+      "rubricItem": "A-05: R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "spec.md L627 Section 13 'AG Grid Community NumberFilterModule — 동등 7 operator 제공' + L647 'Wijmo Filtering 동등 기능' 명시"
+    },
+    {
+      "rubricItem": "B-01: TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "spec.md Section 8 (L368-412): NumberFilterOperator + NumberFilterValue + NumberFilterProps interface 모두 정의됨"
+    },
+    {
+      "rubricItem": "B-02: 사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "spec.md Section 12 (L533-634): 예시1 (Product 컬럼) + 예시2 (OrderItem between 시나리오)"
+    },
+    {
+      "rubricItem": "B-03: 기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 8: operator required, value/min/max optional. defaultOperator?/popoverAlign? 명시"
+    },
+    {
+      "rubricItem": "B-04: 타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 9 (L446-463): 'export type from ./filter-ui/types' 정확한 경로 나열"
+    },
+    {
+      "rubricItem": "B-05: ref API + imperative handle 명시 (해당 시)",
+      "result": "N/A",
+      "evidence": "선언적 컴포넌트. useRef/useImperativeHandle 불필요"
+    },
+    {
+      "rubricItem": "C-01: AC 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 2: AC-001~AC-007 총 7개 정의"
+    },
+    {
+      "rubricItem": "C-02: 각 AC에 출처 태그 (L0/L1/L2/L3/R-A/R-W)",
+      "result": "YES",
+      "evidence": "모든 AC에 source 필드: C-4/C-2/C-5/L1/C-12/C-25"
+    },
+    {
+      "rubricItem": "C-03: binary 검증 가능",
+      "result": "YES",
+      "evidence": "모든 AC 객관적 검증 가능: 타입 정의/함수 등록/렌더/tsc 0 error/story 파일"
+    },
+    {
+      "rubricItem": "C-04: migrationImpact 명시 (high/medium/low)",
+      "result": "YES",
+      "evidence": "spec.md L7/L38: 'migrationImpact: medium' 명시 + 사유"
+    },
+    {
+      "rubricItem": "C-05: AC에 호환성 검증 항목 포함",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles: [] (신규 기능) — 호환성 검증 불필요"
+    },
+    {
+      "rubricItem": "D-01: 영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "YES",
+      "evidence": "spec.md L43: 'affectedUsageFiles: []' — 0개 명시"
+    },
+    {
+      "rubricItem": "D-02: 기존 변형 대응표 (Section 3)",
+      "result": "N/A",
+      "evidence": "신규 기능 — 기존 variant 없음"
+    },
+    {
+      "rubricItem": "D-03: Breaking change 명시 (Section 4)",
+      "result": "YES",
+      "evidence": "spec.md L42: 'breaking: false' 명시"
+    },
+    {
+      "rubricItem": "D-04: Deprecation 전략 (Section 4)",
+      "result": "N/A",
+      "evidence": "신규 기능 (breaking: false) — deprecation 전략 불필요"
+    },
+    {
+      "rubricItem": "D-05: 롤백 전략 (Section 8.4)",
+      "result": "N/A",
+      "evidence": "신규 기능 + affectedUsageFiles: [] — 롤백 전략 불필요"
+    },
+    {
+      "rubricItem": "D-06: 번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "spec.md L44/L70/L647: '+2 KB gzip 이하' + 분할 명시"
+    },
+    {
+      "rubricItem": "E-01: 파일별 변경 명제 (NEW/MODIFY) + v1.0.6 binding AC",
+      "result": "YES",
+      "evidence": "spec.md Section 7 (L353-362): 5개 파일 + 상태. E-01 v1.0.6: AC-007 Storybook → Section 7 'NumberFilter.stories.tsx NEW' 매칭 ✓"
+    },
+    {
+      "rubricItem": "E-02: Before/After 코드 스니펫 (최소 1개)",
+      "result": "YES",
+      "evidence": "spec.md Section 5 Truth Table + Section 4.3 numberFilterFn 구현 코드블록 + Section 12 columnDef 코드"
+    },
+    {
+      "rubricItem": "E-03: 구현 순서 2단계 이상 (의존성 고려)",
+      "result": "YES",
+      "evidence": "spec.md Section 14: Phase A → Phase B → Phase C, 의존성 명시"
+    },
+    {
+      "rubricItem": "E-04: 엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 6: EC-01~EC-05 총 5개 엣지 케이스"
+    },
+    {
+      "rubricItem": "E-05: 검증 계획 (Section 12, 혹은 dedicated section)",
+      "result": "YES",
+      "evidence": "spec.md Section 15: 단위 테스트 21 시나리오 + Storybook 6 story + 빌드 검증"
+    },
+    {
+      "rubricItem": "E-06: Section 7 Re-decision ↔ Final Table Consistency",
+      "result": "YES",
+      "evidence": "spec.md Section 7 본문에 재결정 표현 없음. D5 확정 5개 파일 = Section 7 5행. 모순 0건"
+    },
+    {
+      "rubricItem": "F-01: 패키지 대상 명시 (packages/grid-core vs grid-{pro})",
+      "result": "YES",
+      "evidence": "spec.md L40: 'packageTarget: packages/grid-features' 명시"
+    },
+    {
+      "rubricItem": "F-02: 라이선스 검증 호출 (Pro 패키지)",
+      "result": "N/A",
+      "evidence": "spec.md L39: 'licenseTier: MIT' — Pro 패키지 아님"
+    },
+    {
+      "rubricItem": "F-03: 문서 작성 계획 (Docusaurus + Storybook)",
+      "result": "YES",
+      "evidence": "spec.md L359: 'NumberFilter.stories.tsx NEW' + Section 15.2 Storybook 6개 story 시나리오"
+    },
+    {
+      "rubricItem": "F-04: peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "spec.md Section 3 L74: '신규 의존성 없음. 기존 peerDeps만 사용' 명시"
+    },
+    {
+      "rubricItem": "G-01: Spec에 TBD/TODO/미정 표현 없음 + D# ↔ 본문 cross-consistency",
+      "result": "YES",
+      "evidence": "TBD/TODO 표현 0건. D# 11개 결정 모두 decisive. 합계 일치: 11개 결정 + 5개 파일 + 7개 AC"
+    }
+  ],
+  "yesCount": 23,
+  "noCount": 0,
+  "naCount": 9,
+  "denominator": 23,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "auditMetadata": {
+    "moduleAudit": "MOD-GRID-09-2026-05-27",
+    "patternCountCorrection": "Pattern C — yesCount/naCount/denominator 분류 정정. score 무변동.",
+    "originalReportedYesCount": 24,
+    "originalReportedNaCount": 8,
+    "scoreImpact": "none — denominator=YES count로 0/0 형태 산식 동일"
+  },
+  "feedback": [
+    "✅ H-01: monorepo 경로 실재 확인 (D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/src/)",
+    "✅ H-02: implementFiles 부모 디렉토리 실재 + convention 일치",
+    "✅ H-03: AC 출처 태그 검증 (AC-001~007 모두 source 필드 포함)",
+    "✅ Loop 1: 이전 H-01/H-02 환각 오류 정정",
+    "✅ Score calculation: 24/(24+0) × 100 = 100.0 >= 90 → PASSED"
+  ],
+  "scoredAt": "2026-05-14T16:30:00Z",
+  "verifierNote": "tw-grid Coverage Verifier loop 1. specify-rubric v1.0.5 기준 32항목 채점. H-01/H-02 환각 정정: 경로 실재 확인 ✓. 일반 채점: YES 24 + NO 0 + N/A 8 = 32 total. score = 100.0 >= 90 → PASSED. implement 진행 가능.",
+  "area": "filter-ui",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "area+",
+      "goalId:G-002→full",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

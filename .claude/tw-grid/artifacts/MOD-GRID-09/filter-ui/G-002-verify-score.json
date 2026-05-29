@@ -1,0 +1,161 @@
+{
+  "goalId": "MOD-GRID-09/filter-ui/G-002",
+  "moduleId": "MOD-GRID-09",
+  "area": "filter-ui",
+  "stage": "verify",
+  "rubricVersion": "1.0.2",
+  "tier": "medium",
+  "migrationImpact": "medium",
+  "threshold": 90,
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85
+  },
+  "weights": {
+    "A": 15,
+    "B": 20,
+    "C": 30,
+    "D": 20,
+    "E": 15
+  },
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "gradlew compileJava — FE 전용 Goal (filter-ui), tvcom_back 무관. spec Section 11 N/A 명시"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "cd D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features && npx tsc --noEmit → EXIT=0 (errors 0). verbatimModuleSyntax + exactOptionalPropertyTypes strict 환경에서 통과 — C-29 spread-skip 패턴 (NumberFilter.tsx L170 `const alignProp = popoverAlign !== undefined ? { align: popoverAlign } : {};`, NumberFilter.stories.tsx L84-85 두 spread-skip) 적용 확인. G-001 TextFilter exports 무결 — filterFns.ts L40-71 textFilterFn + L78-79 autoRemove 보존."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "npx tsup → Build success in ~127ms. dist/index.mjs 21.87 KB (raw), dist/index.cjs 22.73 KB (raw), dist/index.d.ts 17.90 KB. size-limit brotli: @tomis/grid-features size=6.07 kB / limit=20 kB → PASSED (.size-limit.json L21-25 grid-features entry). G-001 5.00 kB → G-002 6.07 kB → +~1 kB 변동, spec Section 1 +2 KB 목표 내."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "정렬 무관 Goal — filter-ui만 구현. multi-sort는 MOD-GRID-08 분리됨"
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "필터 핵심 구현 검증: filterFns.ts L107-148 numberFilterFn 구현 (7 operator switch: =/!=/>/</>=/<=/between, L107~), null-safe (L115 `if (rawCell == null) return false`), NaN-safe (L120 `if (isNaN(cell)) return false`), between inclusive (L137-141 `minOk && maxOk`, min===undefined||isNaN→true skip), autoRemove (L155-164 단항 value undefined/NaN, between min AND max 둘 다 undefined/NaN); NumberFilter.tsx L81 getFilterValue, L106/L108/L123/L125-129/L141/L151 setFilterValue, L172 getIsFiltered 호출; FilterIndicator 재사용(L177); FilterPopover 재사용(L180); 단항/between 조건부 렌더 (L212-245 `operator === 'between' ? <>min+max</> : value`); 디바운스 300ms (L102-112 단항 setTimeout 300, L114-133 between setTimeout 300); EC-03 operator 변경 시 state 초기화 (L145-152). NumberFilter.stories.tsx 6 stories (Default L221, BetweenOperator L239, ActiveFilter L257, BetweenActiveFilter L276, ClearFilter L294, PopoverAlignRight L313) Section 15.2 1:1 매핑. TanStack 표준 API (C-2 준수) — useReactTable + getFilteredRowModel + columnFilters state (stories L67, L123-126), numberFilterFn columnDef 등록 (stories L89/L104/L115)."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "페이지네이션 무관 — filter UI 단독 Goal"
+    },
+    "B-04": {
+      "result": "N/A",
+      "evidence": "가상화 무관 — filter UI는 헤더 popover, 행 렌더 비관여"
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "인라인 편집 무관 — filter-ui Goal"
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] (spec Section 1) — 신규 기능, 사용처 0개"
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "사용처 0 — 외관 보존 검증 대상 없음 (신규 컴포넌트)"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "tsc 0 error 통과(A-02). 코드 review: console.log 0건 (NumberFilter.tsx, filterFns.ts, types.ts 모두 console 미사용), React useEffect deps array 정확 (NumberFilter.tsx L112 `[inputValue, operator, column]`, L133 `[minValue, maxValue, operator, column]`), cleanup 함수 모두 정의 (L111 `return () => clearTimeout(timer)`, L132 동일). React.StrictMode 호환 — useState/useEffect 표준 패턴만 사용. G-001 FilterPopover/FilterIndicator import 재사용 — 새 console warning 발생 경로 없음."
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "사용처 0개 — 마이그레이션 비율 적용 불가 (신규 기능)"
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 0 — 신규 기능, 마이그레이션 대상 없음. 후속 G-003~G-004 (다른 filter type)는 별도 Goal — 동일 Goal 잔여 아님"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "size-limit @tomis/grid-features brotli size=6.07 kB < limit=20 kB → PASSED. G-001 baseline 5.00 kB → G-002 6.07 kB → +~1 kB 증분, spec Section 1 bundleImpact '+2 KB gzip 이하' 목표 부합. grid-core 무영향 (filter-ui는 grid-features 패키지 내부). C-21 패키지별 한도 준수. (참고: 동일 size-limit 실행에서 @tomis/grid-export 한도 초과는 별도 패키지 — G-002 무관)"
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "신규 의존성 0건 (spec D2: filterFns.inNumberRange 미채택 + 자체 numberFilterFn 구현 — 신규 dep 없음). peerDependencies 변경 없음 (package.json L26-36 G-001과 동일 유지: @tanstack/react-table ^8.0.0, react ^18||^19, @tanstack/react-virtual ^3.0.0). ADR 불필요."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "package.json L5: \"license\": \"MIT\" 명시 (C-24 충족). MIT tier (Pro 아님)이므로 EULA/라이선스 검증 호출 N/A. package.json 자체는 본 Goal에서 변경 없음 — G-001 상태 유지."
+    }
+  },
+  "weightedScore": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [],
+  "buildEvidence": {
+    "tsc": "EXIT=0 (npx tsc --noEmit, D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features)",
+    "tsup": "Build success in 127ms — dist/index.mjs 21.87 KB (raw), dist/index.cjs 22.73 KB (raw), dist/index.d.ts 17.90 KB",
+    "sizeLimit": "@tomis/grid-features brotli 6.07 kB / 20 kB limit → PASSED (G-001 5.00 kB baseline +~1 kB 증분, spec +2 KB 목표 내)"
+  },
+  "g001ExportPreservation": {
+    "result": "YES",
+    "evidence": "index.ts L30-41 G-001 TextFilter exports (TextFilter, FilterPopover, FilterIndicator, textFilterFn, TextFilterOperator/Value/Props, FilterPopoverProps, FilterIndicatorProps) 그대로 유지. filterFns.ts L40-71 textFilterFn + L78-79 autoRemove 보존. types.ts L17-94 G-001 타입 보존, L96-140 G-002 타입 추가. NumberFilter.tsx L24-25 import 'FilterPopover' from './FilterPopover' + 'FilterIndicator' from './FilterIndicator' — G-001 컴포넌트 재사용 (DRY, AC-004/AC-005)."
+  },
+  "metaGates": {
+    "F-01_evidenceReality": {
+      "result": "YES",
+      "evidence": "sampling 5건 Read 확인: (1) types.ts L101 NumberFilterOperator union 7종 (=/!=/>/</>=/<=/between) 실재, (2) filterFns.ts L107-148 numberFilterFn 7 operator switch 실재 + L155-164 autoRemove 실재, (3) NumberFilter.tsx L170 C-29 spread-skip 패턴 실재 (alignProp = popoverAlign !== undefined ? ...), L212 조건부 between 렌더 실재, (4) NumberFilter.stories.tsx L221/L239/L257/L276/L294/L313 6 stories 실재, (5) index.ts L43-50 G-002 exports (NumberFilter, numberFilterFn, NumberFilterOperator/Value/Props) 실재 + L30-41 G-001 exports 보존. 외부 디렉토리(D:/project/topvel_project/topvel-grid-monorepo/) — Read 도구로 5개 파일 모두 실재 확인 (F-01 외부 디렉토리 evidence 규정 준수, ADR-MOD-GRID-00-001)."
+    },
+    "F-02_categoryScoreFormula": {
+      "result": "YES",
+      "evidence": "A: YES=2, NO=0, N/A=1 → 2/2×100=100. B: YES=1, NO=0, N/A=4 → 1/1×100=100. C: YES=1, NO=0, N/A=2 → 1/1×100=100. D: YES=0, NO=0, N/A=2 → vacuous truth=100 (Goal title 'NumberFilter — 연산자(=, !=, >, <, >=, <=, between) + range 입력' build/tsup/tsc/vite/rollup/size-limit/bundle 키워드 없음, D vacuous 허용 — category vacuous: 전 항목 N/A — 사용처 0개 신규 기능). E: YES=2, NO=0, N/A=1 → 2/2×100=100. N/A 모두 분모 제외 확인. failedChecks []에 NO 0건만 포함 (N/A 미포함 확인)."
+    },
+    "F-03_weightedScoreFormula": {
+      "result": "YES",
+      "evidence": "weightedScore = 100×0.15 + 100×0.20 + 100×0.30 + 100×0.20 + 100×0.15 = 15+20+30+20+15 = 100.0. Σweights = 15+20+30+20+15 = 100 ✓ (medium tier 가중치 합 정상)"
+    }
+  },
+  "selfChecksumVerification": {
+    "categoryItemCountTotal": 16,
+    "expectedTotal": 16,
+    "matches": true,
+    "breakdown": "A=3 + B=5 + C=3 + D=2 + E=3 = 16",
+    "failedChecksNAcontamination": false,
+    "weightSumCheck": "15+20+30+20+15 = 100 ✓",
+    "vacuousDApplied": "D 카테고리 전 항목 N/A → vacuous truth 100 (Goal title build 키워드 없음, vacuous 허용)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": null,
+    "note": "신규 기능 — affectedUsageFiles=[] (spec Section 1). G-001 FilterPopover/FilterIndicator 재사용 + G-002 NumberFilter 신규 추가."
+  },
+  "scoredAt": "2026-05-14",
+  "yesCount": 6,
+  "noCount": 0,
+  "naCount": 10,
+  "denominator": 6,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-002→full",
+      "yesCount=6",
+      "noCount=0",
+      "naCount=10",
+      "denominator=6",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

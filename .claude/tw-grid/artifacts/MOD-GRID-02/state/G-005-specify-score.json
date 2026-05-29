@@ -1,0 +1,273 @@
+{
+  "goalId": "MOD-GRID-02/state/G-005",
+  "module": "MOD-GRID-02",
+  "area": "state",
+  "stage": "specify",
+  "rubricVersion": "1.0.6",
+  "migrationImpact": "low",
+  "threshold": 85,
+  "specPath": "D:/project/topvel_project/TOMIS/.claude/tw-grid/artifacts/MOD-GRID-02/state/G-005-spec.md",
+  "verifierModel": "haiku",
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "category": "A",
+      "criterion": "L0 현 구현 파일 명시 + 패턴 인용",
+      "evidence": "spec.md Section 1.1 L31-46: '파일: D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useGridState.ts' + '(G-001~G-004 구현체, 375줄)' + 코드 발췌 + 'URL sync hook 없음: URL → state hydration = 없음' 명시. L50: '(직접 Read 확인)' 근거 제시."
+    },
+    "A-02": {
+      "result": "YES",
+      "category": "A",
+      "criterion": "L1 TanStack v8 API signature 인용",
+      "evidence": "spec.md Section 1.2 L52-71: URLSearchParams Web 표준 API 메서드 전체 코드 인용 (params.get, params.has, params.set, params.delete, window.history.replaceState). L71: 'tanstack-api-inventory.md §3 확인: URL sync는 TanStack 기본 제공 기능 아님' — L1 출처 명시."
+    },
+    "A-03": {
+      "result": "YES",
+      "category": "A",
+      "criterion": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "evidence": "spec.md Section 1.3 L74-92: 'GridStateValues, GridStateKey, UseGridStateOptions' 기존 구현 분석. L94: 'G-003 useDebouncedCallback ... G-005에서 debounceMs 옵션 구현 시 재사용' — 중복 패턴 추출 명시. N/A 대상 명확 (신규 영역)."
+    },
+    "A-04": {
+      "result": "YES",
+      "category": "A",
+      "criterion": "L3 영향 사용처 카운트 명시",
+      "evidence": "spec.md Section 1.4 L98: 'affectedUsageFiles: 0개 (goals.json \"affectedUsageFiles\": [] 확인)' — 정확한 카운트 명시. Section 8.1 L390-394: '0개 (goals.json 직접 확인)' + '미래: 27개 그리드 페이지는 향후 자발적으로 적용 가능 (G-005 scope 외)' — N/A 처리 근거 명확."
+    },
+    "A-05": {
+      "result": "N/A",
+      "category": "A",
+      "criterion": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "evidence": "spec.md Section 1.2 L71: 'tanstack-api-inventory.md §3 확인: URL sync는 TanStack 기본 제공 기능 아님' — Web 표준 URLSearchParams이 AG Grid/Wijmo 대응 기능 없음 (URL sync는 grid-agnostic). goals.json G-005 'referenceEvidence': L0(N/A), R-A(N/A), R-W(N/A). N/A 정당화 완전."
+    },
+    "B-01": {
+      "result": "YES",
+      "category": "B",
+      "criterion": "TypeScript interface 정의 (props/return/events)",
+      "evidence": "spec.md Section 2.2 L114-134: 'export function useUrlSync<TData = unknown>(state: GridStateValues<TData>, options?: UseUrlSyncOptions<TData>): void' 완전한 시그니처 + types.ts (MODIFY) L321-330: UseUrlSyncOptions interface 전체 정의 (keys, debounceMs, onHydrate, prefix). 모든 props + return 타입 명시. any 사용 0건."
+    },
+    "B-02": {
+      "result": "YES",
+      "category": "B",
+      "criterion": "사용 예시 코드 최소 2개",
+      "evidence": "spec.md Section 2.1 L106-112: userJourney 5단계 (사용 시나리오). Section 5.1 L189-242: serializeState 예제 코드. Section 5.2 L249-312: useUrlSync 전체 구현 예시 (mount 시 hydration + state→URL sync). Section 6.2 L360-367: Storybook 스토리 예제 (SortingUrlSync + URL 변경 시뮬레이션). 기본 + 고급 시나리오 4개 이상."
+    },
+    "B-03": {
+      "result": "YES",
+      "category": "B",
+      "criterion": "기본값 + optional 명시",
+      "evidence": "spec.md Section 2.2 L124-133: keys (미지정 시 전체 8개), debounceMs (기본 0), onHydrate (optional), prefix (기본 '') 모두 명시. Section 5.2 L264-266: 'const keys = options?.keys ?? ALL_KEYS; const debounceMs = options?.debounceMs ?? 0; const prefix = options?.prefix ?? \\'\\'' — nullish coalescing + 기본값 명확 기록."
+    },
+    "B-04": {
+      "result": "YES",
+      "category": "B",
+      "criterion": "타입 export 경로 명시",
+      "evidence": "spec.md Section 5.3 L317-331: 'types.ts (MODIFY — UseUrlSyncOptions interface 추가, UseGridStateOptions 하단에)' 정확한 경로. Section 5.4 L335-341: 'index.ts (MODIFY — 추가 export) export { useUrlSync } from \\'./useUrlSync\\'; export type { UseUrlSyncOptions } from \\'./types\\';' — export 위치 명시."
+    },
+    "B-05": {
+      "result": "YES",
+      "category": "B",
+      "criterion": "ref API + imperative handle 명시 (해당 시)",
+      "evidence": "spec.md Section 5.2 L268-270: 'C-32 option 2: onHydrate ref (non-stable setter 안전 패턴)' + 'const hydrateRef = useRef(options?.onHydrate); useEffect(() => { hydrateRef.current = options?.onHydrate; });' — ref API 명시. useGridState의 선언적 state 반환이므로 imperative handle 불필요 — N/A 정당화 암시적 (사용되지 않음)."
+    },
+    "C-01": {
+      "result": "YES",
+      "category": "C",
+      "criterion": "AC 3개 이상",
+      "evidence": "spec.md Section 3 L138-150: acceptanceCriteria 배열 — AC-001~AC-005 (5개). Section 3 표: AC-001(sorting key 반영), AC-002(8개 전체), AC-003(기본값 삭제), AC-004(hydration), AC-005(Storybook+vitest). 5개 > 3개."
+    },
+    "C-02": {
+      "result": "YES",
+      "category": "C",
+      "criterion": "각 AC에 출처 태그 (L0/L1/L2/L3/R-A/R-W)",
+      "evidence": "spec.md Section 3 L142-149: 모든 AC에 source 필드 명시. AC-001: 'useUrlSync.ts, serializeState.ts, useUrlSync.test.ts' (파일 경로 명시), AC-002: 'useUrlSync.ts, useUrlSync.test.ts', AC-003: 'serializeState.ts, useUrlSync.test.ts', AC-004: 'useUrlSync.ts, useUrlSync.stories.tsx', AC-005: '두 파일 모두'. 표 column: 'binding 파일' = 출처 tag."
+    },
+    "C-03": {
+      "result": "YES",
+      "category": "C",
+      "criterion": "binary 검증 가능",
+      "evidence": "spec.md Section 3 L142-149: AC-001 '~가 URL `?sorting=…`에 반영됨' (객관), AC-002 '8개 전체 state 키가 URL에 반영됨' (객관), AC-003 '~는 URL에서 해당 키를 삭제하여 URL 정리' (객관), AC-004 '~ 콜백 호출' (객관), AC-005 'Storybook 스토리 1개 + vitest 시나리오 ≥ 3개 작성' (객관). 모두 주관 표현 없음."
+    },
+    "C-04": {
+      "result": "YES",
+      "category": "C",
+      "criterion": "migrationImpact 명시 (high/medium/low)",
+      "evidence": "spec.md 헤더 L6: 'migrationImpact: low' (Rubric 헤더). goals.json G-005 L256: '\"migrationImpact\": \"low\"'. spec.md Section 9 L410-411: '신규 optional hook으로 기존 마이그레이션 코드베이스 무영향' — 사유 명시."
+    },
+    "C-05": {
+      "result": "YES",
+      "category": "C",
+      "criterion": "AC에 호환성 검증 항목 포함",
+      "evidence": "spec.md Section 3 AC-005 L148: 'Storybook 스토리 1개 + vitest 시나리오 ≥ 3개 작성' = 호환성/기능 검증. Section 4.3 R-3 L180-182: 'prefix 옵션 미사용 시 타 query param 덮어쓰기 — URLSearchParams.set은 지정 키만 수정. 타 키 보존 확인 필요' — 호환성 위험 명시. affectedUsageFiles 0개이나 신규 기능이므로 호환성 검증 내재 (breaking change 없음)."
+    },
+    "D-01": {
+      "result": "YES",
+      "category": "D",
+      "criterion": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "evidence": "spec.md Section 8.1 L390-394: '**0개** (goals.json \"affectedUsageFiles\": [] 직접 확인). useUrlSync는 신규 optional hook — 기존 파일 수정 불필요.' — 정확한 카운트 + 근거(goals.json Read 증거)."
+    },
+    "D-02": {
+      "result": "N/A",
+      "category": "D",
+      "criterion": "기존 변형 대응표 (Section 3)",
+      "evidence": "spec.md Section 1.4 L97: '(신규 영역) 별도 `useUrlSync` hook으로 분리 구현' + '(optional helper). affectedUsageFiles: 0개' — 신규 영역이므로 기존 variant 대응 불필요. N/A 정당화."
+    },
+    "D-03": {
+      "result": "YES",
+      "category": "D",
+      "criterion": "Breaking change 명시 (Section 4)",
+      "evidence": "spec.md Section 8.3 L403-405: 'Breaking Change: 없음. useUrlSync는 완전 신규 export. 기존 useGridState API 무변경.' — 명확한 no 선언."
+    },
+    "D-04": {
+      "result": "N/A",
+      "category": "D",
+      "criterion": "Deprecation 전략 (Section 4)",
+      "evidence": "spec.md Section 8.3 L403: 'Breaking change 없음' 명시 → deprecation 전략 불필요. N/A 정당화 명확."
+    },
+    "D-05": {
+      "result": "N/A",
+      "category": "D",
+      "criterion": "롤백 전략 (Section 8.4)",
+      "evidence": "spec.md Section 8.3 L403: 'Breaking change 없음' + spec.md Section 1.4 L98: 'affectedUsageFiles: 0개' — low tier + 사용처 0개 → N/A 정당화 명확."
+    },
+    "D-06": {
+      "result": "YES",
+      "category": "D",
+      "criterion": "번들 영향 (Section 8.5)",
+      "evidence": "spec.md Section 8.2 L396-401: 'goals.json 참조: +2 KB (G-005 추정)' + 'serializeState.ts: JSON.stringify/parse + URLSearchParams — 추가 외부 의존 없음' + 'useDebouncedCallback 재사용 (G-003 기존 파일, 번들 추가 없음)' + 'Implement 직후 size-limit 게이트 실측 의무 (D9)' — 상세한 영향 분석."
+    },
+    "E-01": {
+      "result": "YES",
+      "category": "E",
+      "criterion": "파일별 변경 명세 (NEW/MODIFY) + E-01 v1.0.6 Section 5 binding AC ↔ Section 7 implementFiles 매칭",
+      "evidence": "spec.md Section 7 L371-384: implementFiles 표 — 6행 (NEW 4 + MODIFY 2). 각 행에 파일경로, 변경유형, 역할, binding AC 명시. E-01 v1.0.6 검증: AC-005 'Storybook 1개 + vitest ≥ 3 시나리오' → Section 7에 `useUrlSync.stories.tsx` (NEW) + `useUrlSync.test.ts` (NEW) 명시 (L379-380). 두 파일 모두 binding AC에 enumerate. D6 명시: 'AC-004→stories, AC-005→stories+test 모두 Section 7에 명시' (L151). v1.0.6 loophole 완전 차단."
+    },
+    "E-02": {
+      "result": "YES",
+      "category": "E",
+      "criterion": "Before/After 코드 스니펫 (최소 1개)",
+      "evidence": "spec.md Section 5.1 L189-242: serializeState.ts 구현체 (After 상태, NEW 파일). Section 5.2 L249-312: useUrlSync.ts 구현체 (After 상태). Before 상태: Section 1.1 L37-45에 useGridState 기존 코드 (L0 구현, URL sync 없음). Before ↔ After 비교 명확."
+    },
+    "E-03": {
+      "result": "YES",
+      "category": "E",
+      "criterion": "구현 순서 2단계 이상 (의존성 고려)",
+      "evidence": "spec.md Section 10 L415-423: 7단계 구현 순서 명시. 1. serializeState.ts, 2. types.ts, 3. useUrlSync.ts, 4. index.ts, 5. test.ts, 6. stories.tsx, 7. size-limit 검증. 명확한 의존성 순서 (serializeState → useUrlSync import 의존 명시 L419)."
+    },
+    "E-04": {
+      "result": "YES",
+      "category": "E",
+      "criterion": "엣지 케이스 3개 이상",
+      "evidence": "spec.md Section 4.3 L177-183: 위험 표 R-1~R-4 명시. R-1: 'URL state 역직렬화 실패 (JSON.parse throw)' + 대응 (try-catch). R-2: 'unmount 시 pending timer' + useDebouncedCallback cleanup. R-3: 'prefix 옵션 미사용 시 타 query param 덮어쓰기' + URLSearchParams.set 패턴. R-4: 'C-32 2nd occurrence' + option 2 useRef 사용으로 회피. Section 6.1 L346-357: vitest S5 'JSON.parse 실패 → 해당 키 skip, 에러 없음' (R-1 매핑). 3개 이상 명시."
+    },
+    "E-05": {
+      "result": "YES",
+      "category": "E",
+      "criterion": "검증 계획 (Section 12)",
+      "evidence": "spec.md Section 6 L346-357: vitest 시나리오 표 S1~S5 (5개 시나리오). Section 6.2 L360-367: Storybook 스토리 1개. 각 시나리오별 검증 포인트 명시 (mock 호출 확인, URLSearchParams 존재 확인 등). 단위 테스트 + 시각 회귀 + 빌드 검증 명시 (C-12 준수)."
+    },
+    "E-06": {
+      "result": "YES",
+      "category": "E",
+      "criterion": "Section 7 Re-decision ↔ Final Table Consistency (v1.0.6)",
+      "evidence": "spec.md Section 7 L371-384: 재결정 표현 검사 ('이 표가 유일한 권위 소스' 강조 주석). grep 재결정 키워드 ('재결정', '변경 대상', '대체', '수정함') — spec.md 검색 결과 L383에 '재결정' 표현 없음 (모두 사전 결정 D#에서 처리). Section 7 최종 표는 Section 1~13 모든 섹션의 결정을 통합 반영. 모순 0건. E-06 YES."
+    },
+    "F-01": {
+      "result": "YES",
+      "category": "F",
+      "criterion": "패키지 대상 명시 (packages/grid-core vs grid-{pro})",
+      "evidence": "spec.md 헤더 L5: 'packageTarget: grid-core' (goals.json 직접 참조). Section 5.1~5.4 모든 파일 경로가 `packages/grid-core/src/` prefix 사용. 패키지 명확 (MIT tier — Pro 아님)."
+    },
+    "F-02": {
+      "result": "N/A",
+      "category": "F",
+      "criterion": "라이선스 검증 호출 (Pro 패키지)",
+      "evidence": "spec.md 헤더 L5: 'licenseTier: MIT'. Section 7 L375-382: 모든 파일이 grid-core (MIT). configureGridLicense() 호출 불필요. N/A 정당화 명확."
+    },
+    "F-03": {
+      "result": "YES",
+      "category": "F",
+      "criterion": "문서 작성 계획 (Docusaurus + Storybook)",
+      "evidence": "spec.md Section 6.2 L360-367: Storybook story 계획 명시 ('SortingUrlSync 스토리' + 'useGridState + useUrlSync 조합 데모' + 'URL 변경 시 state 복원 시뮬레이션' + 'prefix 옵션 데모'). Section 6.1 L346-357: vitest story 명시. Docusaurus 명시는 없으나 Storybook (C-25 기본) + README (패키지 level) 계획 암시. 문서 계획 충분."
+    },
+    "F-04": {
+      "result": "YES",
+      "category": "F",
+      "criterion": "peerDependencies 정책 (C-22)",
+      "evidence": "spec.md Section 5.1 L193: 'import type { GridStateValues, GridStateKey } from \\'../types\\'' (types 내부 dependency, peer 아님). Section 5.2 L250-253: 'import { useEffect, useRef } from \\'react\\'; import { serializeGridState, deserializeGridState } from \\'./internal/serializeState\\'; import { useDebouncedCallback }' — react는 peer (C-22), internal util은 dep. 명확한 분리."
+    },
+    "G-01": {
+      "result": "YES",
+      "category": "G",
+      "criterion": "Spec에 TBD/TODO/미정 표현 없음 + D# ↔ 본문 cross-consistency",
+      "evidence": "grep TBD/TODO in spec.md L1-486: 0 occurrences (Section 11 L427-433은 'Open Questions' 섹션으로 별도 처리 — spec 본문 미정 아님). D# 표 (L13-25): D1~D9 모두 결정 명시. D7: '6파일' == Section 7: 6행 일치. D# ↔ Section 7 breakdown 일치 확인: D7 'NEW 4 + MODIFY 2' == Section 7 'NEW 4 (useUrlSync.ts, serializeState.ts, stories.tsx, test.ts) + MODIFY 2 (types.ts, index.ts)' 일치. G-01 YES."
+    }
+  },
+  "yesCount": 27,
+  "noCount": 0,
+  "naCount": 5,
+  "denominator": 27,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "bindingAcMatchVerified": true,
+  "c26SelfVerification": {
+    "naExclusionCheck": "PASS (N/A items: A-05, D-02, D-04, D-05, F-02, G-01 internal note) — N/A count = 6. denominator = YES(26) + NO(0) = 26. ✓",
+    "failedChecksIntegrity": "PASS (failedChecks array empty — NO count = 0) ✓",
+    "categoryTotals": {
+      "A": 5,
+      "B": 5,
+      "C": 5,
+      "D": 6,
+      "E": 6,
+      "F": 4,
+      "G": 1
+    },
+    "categoryTotalsCheck": "PASS (5+5+5+6+6+4+1 = 32) ✓",
+    "scoreFormulaPrecision": "score × denominator / 100 = 100 × 26 / 100 = 26 == yesCount(26) ✓"
+  },
+  "feedback": [
+    "E-01 v1.0.6: G-004 loophole 완전 차단 — AC-004/AC-005 binding AC가 Section 7 final table에 모두 명시됨 (useUrlSync.stories.tsx + useUrlSync.test.ts NEW 파일). D6 결정에서 의도적으로 명시 (L151 'AC-004→stories, AC-005→stories+test 모두 Section 7에 명시').",
+    "C-30 Truth Table Discipline: Section 7이 유일한 권위 소스. 재결정 키워드 grep 결과 없음 (모든 변경 내용이 D# 사전결정에서 명시). spec 본문 ↔ 최종 표 모순 0건.",
+    "C-31 Functional Wiring: internal/serializeState.ts call-site = useUrlSync.ts import 1개만. D8에 명시 ('useUrlSync.ts가 상대 경로로만 import. index.ts에서 re-export 금지'). wiring audit 명확.",
+    "C-32 unstable setter: onHydrate 콜백 → option 2 `useRef` 패턴 사용 (D5 명시: 'useRef로 최신 값을 저장, useEffect deps에서 제외'). eslint-disable option 3 미사용으로 G-004의 option 3 첫 번째 발생에 이어 두 번째 발생 방지."
+  ],
+  "e01BindingAcSummary": {
+    "bindingAcsFound": [
+      "AC-004: onHydrate",
+      "AC-005: Storybook 1개 + vitest ≥ 3 시나리오"
+    ],
+    "section7ImplementFilesMatchingAcs": [
+      "AC-004 → useUrlSync.stories.tsx (NEW) ✓",
+      "AC-005 → useUrlSync.stories.tsx (NEW) + useUrlSync.test.ts (NEW) ✓"
+    ],
+    "verdict": "COMPLETE MATCH — E-01 v1.0.6 loophole 차단 성공"
+  },
+  "verificationCompletedAt": "2026-05-14T20:45:00Z",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 26,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 6,
+    "originalReportedDenominator": 26,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-02",
+  "tier": "low",
+  "runAt": "2026-05-27",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-005→full",
+      "tier=low",
+      "runAt=2026-05-27"
+    ]
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "goalId": "MOD-GRID-09/filter-ui/G-004",
+  "module": "MOD-GRID-09",
+  "area": "filter-ui",
+  "stage": "specify",
+  "rubricVersion": "1.0.5",
+  "migrationImpact": "medium",
+  "threshold": 90,
+  "checks": {
+    "H-01": {
+      "result": "YES",
+      "evidence": "spec.md L32 D1/D2 인용: 'C-28 경로: topvel-grid-monorepo/packages/grid-features/ 사용'. Bash 검증: D:/project/topvel_project/topvel-grid-monorepo 존재 (2026-05-14 23:09 timestamp). 외부 디렉토리 H-02 예외 조건 충족: 1) 조부모 D:/project/topvel_project 실재, 2) Section 15 이후 구현 명시, 3) topvel- prefix kebab-case 컨벤션 일치."
+    },
+    "H-02": {
+      "result": "YES",
+      "evidence": "spec.md L215 prefix + L219-226 implementFiles 표. 모든 경로 D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/src/{component}.tsx. 부모 디렉토리 grid-features 신규 생성 명시(H-02 예외). 조부모 D:/project/topvel_project/ 확인됨. prefix topvel-grid-monorepo 프로젝트 컨벤션 준수."
+    },
+    "H-03": {
+      "result": "YES",
+      "evidence": "spec.md L54-62 AC 모두 source 태그 포함: AC-001~AC-005 source=(C-2, C-4, C-12, C-25, L1); AC-006~AC-007 source=(C-12, C-25). 각 source는 spec 내 다른 섹션에서 인용 — referenceEvidence L0/L1/L2/L3/R-A/R-W (L31-34), Constraints Checklist 섹션(L414-428), Design Decisions 섹션(D1-D9)에서 cross-referenced."
+    },
+    "A-01": {
+      "result": "N/A",
+      "evidence": "spec.md L42-44: '신규 컴포넌트. @tomis/grid-features에 SelectFilter, GlobalSearchInput, FilterResetButton 구현이 현재 전혀 없음.' AS-IS 코드 분석 불필요 — 신규 기능."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "spec.md L32-40 Section 1.1 표: SelectFilter 호출 API (column.getFacetedUniqueValues(), column.setFilterValue(string[])), GlobalSearchInput (table.setGlobalFilter(value)), FilterResetButton (table.resetColumnFilters(), table.setGlobalFilter(undefined)). L245 referenceEvidence: 'tanstack-api-inventory.md §2.4 Filtering: getFacetedUniqueValues(), globalFilter state, table.setGlobalFilter(), table.resetColumnFilters(), filterFns.arrIncludes' 출처 명시."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "spec.md L152-165 Section 4.7 표: 8개 변형(BaseGrid/VirtualGrid/ColumnPinGrid/GroupedHeaderGrid/TreeGrid/EditableGrid/ChangeTrackingGrid/RangeSelectGrid) SelectFilter/GlobalSearchInput/FilterResetButton 호환 분석. 중복 패턴: FilterPopover 재사용(G-001), FilterIndicator 재사용(G-001), column-level API 호환(행 가상화와 무관 등) 명시."
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "spec.md L249: 'MOD-GRID-17 사용처 0 (affectedUsageFiles: []). 신규 기능 — 기존 사용처 영향 없음. 기존 Base Grid 의존도 L0에만 명시 (getFilteredRowModel state 참조)."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "spec.md L250-251: 'AG Grid Community Set Filter(getFacetedUniqueValues 동등) + Global text search. Wijmo Full-text Searching + Excel-style filtering'. 참조용 기능 비교 명시 — 코드 차용 아님."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "spec.md L232-315 Section 8 전체: SelectFilterProps<TData> (column, searchThreshold, popoverAlign), GlobalSearchInputProps<TData> (table, debounceMs, placeholder), FilterResetButtonProps<TData> (table, children) 3개 interface 정의. Section 8.3 import 명시: 'Column, Table from @tanstack/react-table'."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "spec.md L432-546 Section 12: Before(L435-449) + After(L451-521) 1개 코드 블록; L523-547 고급 예제(searchThreshold, popoverAlign, debounceMs, children 커스텀). 2개 이상 시나리오 충족."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "spec.md L252-315: SelectFilterProps searchThreshold?: number (기본 50), popoverAlign?: 'left'|'right' (기본 'left'); GlobalSearchInputProps debounceMs?: number (기본 300), placeholder?: string (기본 'Search all columns…'); FilterResetButtonProps children?: React.ReactNode. 모든 prop optional/default 명시."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "spec.md L349: 'types.ts import 추가 필요: import type { Column, Table } from '@tanstack/react-table'. L358-370 Section 9 export 위치: packages/grid-features/src/index.ts 명시."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "spec.md L405-410: FilterResetButton render tree 선언적 컴포넌트 — useImperativeHandle 불필요. SelectFilter/GlobalSearchInput도 ref API 미필요."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "spec.md L54-62 AC 배열 7개 항목 (AC-001~AC-007). 3개 이상 충족."
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "spec.md L54-62 Section 2 AC 표 모든 행에 source 열: AC-001(C-2), AC-002(C-2), AC-003(C-2), AC-004(C-2), AC-005(L1), AC-006(C-12), AC-007(C-25). L0/L1/L2/L3/R-A/R-W/C-NN 형식 일치."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "spec.md L54-62 AC 모두 객관 검증 가능: AC-001 'Map 읽어 체크박스 옵션 렌더' ✓, AC-002 'columnDef에 filterFn 참조 등록' ✓, AC-003 '50+ 옵션 시 검색 입력 자동 노출' ✓, AC-004 '300ms debounce 호출' ✓, AC-005 'disabled 조건' ✓, AC-006 'tsc 0 에러' ✓, AC-007 'Storybook 2개 스토리' ✓. 주관 표현 0건."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "spec.md L6, L138: 'migrationImpact: medium' 명시. 사유 명시: L32-40 컴포넌트 3개 신규 추가, L68 번들 +4 KB. filterFns.arrIncludes re-export(0줄), SelectFilter/GlobalSearchInput/FilterResetButton 추가로 중간 수준 영향."
+    },
+    "C-05": {
+      "result": "YES",
+      "evidence": "spec.md L54-62 AC-006: 'tsc --noEmit 0 에러 (C-4: no any, C-29: exactOptional spread-skip 준수)'. 호환성 검증 항목 포함 — AC-006 타입 체크."
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "spec.md L213-228 Section 7 표 8행: 1-SelectFilter.tsx(NEW), 2-GlobalSearchInput.tsx(NEW), 3-FilterResetButton.tsx(NEW), 4-filterFns.ts(MODIFY), 5-types.ts(MODIFY), 6-index.ts(MODIFY), 7-SelectFilter.stories.tsx(NEW), 8-GlobalSearchInput.stories.tsx(NEW). 정확한 파일 경로 + 변경 유형(NEW/MODIFY) + 변경 요약 명시."
+    },
+    "D-02": {
+      "result": "YES",
+      "evidence": "spec.md L152-165 Section 4.7: 8개 variant(BaseGrid/VirtualGrid/ColumnPinGrid/GroupedHeaderGrid/TreeGrid/EditableGrid/ChangeTrackingGrid/RangeSelectGrid)에 대한 SelectFilter/GlobalSearchInput/FilterResetButton 호환성 분석 표. consumer 직접 getFacetedRowModel 등록 필요(D3 대응) 명시. TreeGrid 부분 테스트 권고."
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "spec.md L159: 'no breaking change'. L160: 'deprecationStrategy: 신규 기능 — 기존 사용처 영향 없음'. breaking change 명확히 no."
+    },
+    "D-04": {
+      "result": "N/A",
+      "evidence": "spec.md L159: breaking=false. Deprecation 전략 불필요 — 신규 기능."
+    },
+    "D-05": {
+      "result": "N/A",
+      "evidence": "spec.md L160: migrationImpact=medium, affectedUsageFiles=[] (0개). 롤백 전략 저-tier 신규 기능으로 N/A. feature flag 도입 불필요."
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "spec.md L68-70 Section 1.3 + L570-575 NFR-1: '예상 번들 크기 변동: SelectFilter ~2 KB + GlobalSearchInput ~1 KB + FilterResetButton ~0.5 KB + filterFn re-export ~0 B = +4 KB gzip'. 분할 가능성: 별도 패키지(grid-core 무영향)."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "spec.md L213-228 Section 7 최종 표 8행 NEW/MODIFY 구분 + 변경 범위. L579-616 Section 14 Implementation Plan: Phase 1(Types+filterFn, MODIFY 2) + Phase 2(Components, NEW 3) + Phase 3(Export+Stories, MODIFY 1+NEW 2) — Section 7 표와 100% 일치. E-06 재결정 미발생 — D# = Section 7 완벽 매칭."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "spec.md L432-549 Section 12: Before(L435-449, ❌ getFacetedRowModel 없음) + After(L451-521, ✅ getFacetedRowModel 추가). 고급 예제(L523-547, searchThreshold/popoverAlign/debounceMs/children 커스텀). 2개 이상 코드 블록."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "spec.md L579-616 Section 14 Implementation Plan 3 Phase: Phase 1(Types+filterFn 선행) → Phase 2(Component 구현) → Phase 3(Export+Stories). 의존성 명시: Phase 1 완료 후 Phase 2 진행 필요."
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "spec.md L199-210 Section 6 Edge Cases 7개: E-1(getFacetedRowModel 미등록 에러), E-2(빈 Map), E-3(빈 문자열 공백 처리), E-4(외부 클릭), E-5(300ms 연속 입력), E-6(FilterResetButton 클릭 후 팝오버), E-7(TreeGrid 호환성). 3개 이상."
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "spec.md L619-663 Section 15 Verification Plan: UT-001~UT-015 unit test 15개(selectFilterFn/GlobalSearchInput/FilterResetButton/SelectFilter 각 3-5개), Storybook story 3개(Default/ManyOptions/GlobalSearch), 빌드 검증(tsc/build/build-storybook). 단위+시각+빌드 명시."
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "spec.md L14-26 D# Decision Log vs L213-228 Section 7 final 표: D1~D9 결정과 Section 7 implementFiles 완벽 1:1 매칭. D1(경로) = L215 prefix, D2(selectFilterFn) = L222 filterFns.ts MODIFY, D3(getFacetedRowModel 미등록) = L99 명시, D4(50+ 내부검색) = L220 SelectFilter.tsx, D5(debounce) = L220 GlobalSearchInput.tsx, D6(disabled) = L221 FilterResetButton.tsx, D7(stories) = L225-226, D8(신규 peerDep 없음) = NFR-3, D9(8개 파일) = L228 합계. 재결정 없음 — 본문 ↔ 최종표 완벽 일치."
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "spec.md L268-270 implementFiles: packages/grid-features (6개 파일 명시, 패키지 분명). L569-570 Section 13.1: 'TOMIS Grid (G-004 후)' 포지셔닝 표. 모두 grid-features 패키지(grid-core 별도)."
+    },
+    "F-02": {
+      "result": "N/A",
+      "evidence": "spec.md L268-270 bundleImpact: 'limit: 별도 패키지 (grid-core 무영향)'. grid-features는 MIT 패키지 — Pro 패키지 아님. configureGridLicense() 호출 불필요."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "spec.md L567-576 Section 13.2 Docusaurus 경로 4개 명시: docs/ko/grid-features/filter-ui/select-filter, docs/ko/grid-features/filter-ui/global-search, docs/en/grid-features/filter-ui/select-filter, docs/en/grid-features/filter-ui/global-search. 2개 이상."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "spec.md L411-429 Section 11 Constraints Checklist 11개: C-2, C-4, C-5, C-7, C-16, C-27, C-28, C-29, C-30, C-31, E-06. peerDependencies: NFR-3 '신규 peerDependency 없음'. react/tanstack 이미 기존 peer."
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "spec.md 전체 검색: TBD/TODO/미정 표현 0건. 모든 결정 명시: D# 9개 완전 명시, Section 4~14 모든 design/implement 항목 정해짐. D# 표(L14-26) ↔ 본문/Section 7/AC/D# breakdown 100% 일치: D1(경로) = C-28 명시, D2(selectFilterFn) = Section 4.1 코드, D3(getFacetedRowModel) = Section 4.2 명시, D4~D9 모두 구체적 결정. D# = Section 7 표 파일 8개(NEW 5+MODIFY 3) 정확 매칭."
+    }
+  },
+  "summary": {
+    "yesCount": 26,
+    "noCount": 0,
+    "naCount": 6,
+    "denominator": 26,
+    "score": 100,
+    "passed": true
+  },
+  "auditMetadata": {
+    "moduleAudit": "MOD-GRID-09-2026-05-27",
+    "patternCountCorrection": "Pattern C — verified no change required. H-01/H-02/H-03 are meta-gates per rubricMetadata.rubricItemsTotal=32 (vs 35 actual items in checks). Existing summary.yesCount=26 + summary.naCount=6 = 32 = rubricItemsTotal. Audit Agent's proposed 29 would require rubricItemsTotal=35 (contradicts metadata).",
+    "originalReportedYesCount": 26,
+    "originalReportedNaCount": 6,
+    "auditAgentProposedYesCount": 29,
+    "auditAgentProposedNaCount": 6,
+    "resolution": "kept 26 — H-gates separately tracked per rubricMetadata signal",
+    "scoreImpact": "none"
+  },
+  "failedChecks": [],
+  "feedback": {
+    "overall": "✅ PASS (100/26 items YES, 0 NO, 6 N/A). Specify-rubric v1.0.5 완전 준수. H-01~H-03 메타 게이트 통과. A~G 카테고리 모두 요구사항 충족.",
+    "strengths": [
+      "H-01 외부 monorepo 경로(topvel-grid-monorepo) 실재 확인 + H-02 예외 조건(조부모 실재/신규 생성 명시/컨벤션) 완벽 충족",
+      "E-06 재결정 일관성: D# 9개 결정이 Section 7 final 표 8행 파일과 100% 매칭. 본문 재결정 문장 0건 — 최초 설계 변동 없음",
+      "AC-003~AC-004: GlobalSearchInput debounce 300ms + internal search 50+ threshold 구체적 결정 — C-2 최소구현 + C-29 spread-skip 패턴 적용",
+      "Section 14 Implementation Plan: 3 Phase 의존성 명확 — Phase 1(Types/filterFn) → Phase 2(Components) → Phase 3(Export/Stories)",
+      "Constraints Checklist (Section 11): C-28 monorepo 경로 + C-29 exactOptionalPropertyTypes + C-31 getFacetedRowModel consumer 등록 의무 명시"
+    ],
+    "improvements_none": "No improvements needed — all 26 evaluable items (H+A+B+C+D+E+F+G 중 N/A 제외) 완전 준수. 6 N/A는 신규 기능(A-01), ref API 불필요(B-05), breaking 없음(D-04/D-05), MIT 패키지(F-02)로 정당."
+  },
+  "rubricMetadata": {
+    "rubricItemsTotal": 32,
+    "evaluableItems": 26,
+    "naItems": 6,
+    "verificationDate": "2026-05-14",
+    "verificationMethod": "Coverage Verifier (tw-grid-diagnose) / G-004 specify-score"
+  },
+  "moduleId": "MOD-GRID-09",
+  "tier": "medium",
+  "yesCount": 29,
+  "noCount": 0,
+  "naCount": 6,
+  "denominator": 29,
+  "score": 0,
+  "passed": false,
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "tier=medium",
+      "yesCount=29",
+      "noCount=0",
+      "naCount=6",
+      "denominator=29",
+      "score=0 (fallback)",
+      "passed=false",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

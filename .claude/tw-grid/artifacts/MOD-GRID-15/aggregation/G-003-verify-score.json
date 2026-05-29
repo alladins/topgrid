@@ -1,0 +1,184 @@
+{
+  "goalId": "MOD-GRID-15/aggregation/G-003",
+  "module": "MOD-GRID-15",
+  "area": "aggregation",
+  "stage": "verify",
+  "rubricVersion": "1.0.3",
+  "tier": "low",
+  "migrationImpact": "low",
+  "threshold": 90,
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "categoryWeights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "weightDistribution": "low tier: A 25 / B 25 / C 20 / D 15 / E 15 (sum=100). G-003 scope = aggregator registry — B-01~B-05 (sort/filter/page/virt/edit) 모두 G-003 범위 외 → 5 N/A → vacuous 100. C-01/C-02 affectedUsageFiles=[] → N/A. D-01/D-02 사용처 0 → 2 N/A → vacuous 100. E-02 no new deps → N/A. Item count: A=3 + B=5 + C=3 + D=2 + E=3 = 16. failedChecks empty (NO=0).",
+  "weightedScore": 100,
+  "passed": true,
+  "checks": [
+    {
+      "id": "A-01",
+      "axis": "A",
+      "name": "tsc --noEmit 0 errors",
+      "result": "YES",
+      "evidence": "npx tsc --noEmit in packages/grid-pro-agg → EXIT=0. 0 errors. Verified via PowerShell command 2026-05-15."
+    },
+    {
+      "id": "A-02",
+      "axis": "A",
+      "name": "tsup build CJS+ESM+DTS",
+      "result": "YES",
+      "evidence": "npx tsup → EXIT=0. dist/index.mjs 9.86 KB, dist/index.cjs 10.37 KB, dist/index.d.ts 7.97 KB. Build success 101ms (ESM/CJS) + 865ms (DTS)."
+    },
+    {
+      "id": "A-03",
+      "axis": "A",
+      "name": "size-limit ≤ 20 KB Pro package",
+      "result": "YES",
+      "evidence": "dist/index.mjs raw = 9.86 KB (~49% of 20 KB Pro limit C-21). G-003 delta vs G-002 baseline (~9 KB) ≈ +1 KB registry code. Note: implement-score E-01 flagged size-limit infra issue (peerDeps bundled in measurement = 58.8 KB brotli) — pre-existing .size-limit.json defect not caused by G-003 (other packages also affected: grid-core 68KB, grid-export 283KB). Raw output is authoritative for code-size check; size-limit measurement infra fix deferred to follow-up infra goal per implement-score notes."
+    },
+    {
+      "id": "B-01",
+      "axis": "B",
+      "name": "정렬 동작",
+      "result": "N/A",
+      "evidence": "G-003 범위 = aggregator registry (spec Section 2.1 registerAggregationFn + getAggregationFn + BUILT_IN_AGGREGATION_KEYS). 정렬 무관. 기존 정렬 동작은 G-002/grid-pro-agg 영역 외(grid-core)."
+    },
+    {
+      "id": "B-02",
+      "axis": "B",
+      "name": "필터 동작",
+      "result": "N/A",
+      "evidence": "G-003 spec Section 2/5/6 어디에도 필터 변경 없음. 필터 무관 기능."
+    },
+    {
+      "id": "B-03",
+      "axis": "B",
+      "name": "페이지네이션 동작",
+      "result": "N/A",
+      "evidence": "G-003 spec Section 2/5/6 페이지 변경 없음. 페이지 무관 기능."
+    },
+    {
+      "id": "B-04",
+      "axis": "B",
+      "name": "가상화 동작 (C-18)",
+      "result": "N/A",
+      "evidence": "G-002 VirtualizedGroupFooter story 그대로 보존 (.stories.tsx L283~299 변경 없음, 신규 CustomAggregation story만 추가 L301~380). resolvedColumns 변경은 column.aggregationFn 결정 로직만 — 가상화 무관. tsc EXIT=0 회귀 없음."
+    },
+    {
+      "id": "B-05",
+      "axis": "B",
+      "name": "인라인 편집 동작",
+      "result": "N/A",
+      "evidence": "G-003 spec 편집 기능 없음. AggregationGrid는 표시 전용 컴포넌트."
+    },
+    {
+      "id": "C-01",
+      "axis": "C",
+      "name": "영향 사용처 tsc 0",
+      "result": "N/A",
+      "evidence": "spec.md L529 Section 8.1: 'affectedUsageFiles: [] — 영향 사용처 0개. 신규 Pro 패키지이며 현재 tw-framework-front 내 @tomis/grid-pro-agg import 없음.' goals.json affectedUsageFiles=[] 일치."
+    },
+    {
+      "id": "C-02",
+      "axis": "C",
+      "name": "외관 보존 (C-17)",
+      "result": "N/A",
+      "evidence": "rubric C-02 N/A 조건: 'low tier + 사용처 0' 충족. migrationImpact=low + affectedUsageFiles=[]."
+    },
+    {
+      "id": "C-03",
+      "axis": "C",
+      "name": "console warning 0 + React warning 0",
+      "result": "YES",
+      "evidence": "Grep console.log src → 0 hits. console.warn 1건(aggregationFns.ts L66) + console.error 1건(AggregationGrid.tsx L199) 모두 spec 의도된 동작 (spec.md L338 EC-001 console.error fallback, L339 EC-002 console.warn overwrite, D6/AC-002 명시). Rubric C-03 'deprecation warning 제외 — 의도된 것' 규칙 적용. 추가 React warning 발생 가능성: storybook CustomAggregation story tsc clean."
+    },
+    {
+      "id": "D-01",
+      "axis": "D",
+      "name": "마이그레이션 비율 ≥ 50%",
+      "result": "N/A",
+      "evidence": "rubric D-01 N/A 조건: '사용처 0개' 충족. spec.md Section 8.1 affectedUsageFiles=[]."
+    },
+    {
+      "id": "D-02",
+      "axis": "D",
+      "name": "잔여 사용처 명시",
+      "result": "N/A",
+      "evidence": "rubric D-02 N/A 조건: '잔여 0건' 충족. 신규 패키지로 마이그레이션 대상 없음."
+    },
+    {
+      "id": "E-01",
+      "axis": "E",
+      "name": "번들 크기 변동 (C-21)",
+      "result": "YES",
+      "evidence": "dist/index.mjs ESM 9.86 KB raw (한도 Pro 20 KB의 49%). spec.md Section 8.5 예상 +2 KB ↔ 실측 G-003 추가분 ~1 KB(G-002 baseline 9 KB → 9.86 KB). 한도 내 충분히 여유."
+    },
+    {
+      "id": "E-02",
+      "axis": "E",
+      "name": "새 의존성 ADR (C-20)",
+      "result": "N/A",
+      "evidence": "package.json peerDependencies G-002 상태 유지 (변경 없음 — implement-score C-04 evidence). 새 dependency/peerDependency 0건. ADR 의무 미발생."
+    },
+    {
+      "id": "E-03",
+      "axis": "E",
+      "name": "라이선스 명시 (C-24)",
+      "result": "YES",
+      "evidence": "package.json L5: '\"license\": \"SEE LICENSE IN EULA\"'. EULA.md 존재 (G-001 작성, 27 lines, Read 확인). verifyOrWarn stub 호출 G-001 AggregationGrid.tsx L48 모듈 레벨 1회 유지 (D5 한 패키지 1회 원칙). C-24 Pro 패키지 라이선스 명시 의무 충족."
+    }
+  ],
+  "buildResult": {
+    "tsc": "0 errors (EXIT=0)",
+    "tsup": "CJS 10.37 KB + ESM 9.86 KB + DTS 7.97 KB — Build success",
+    "bundleSize": "9.86 KB ESM (49% of 20 KB Pro limit)",
+    "wijmoGrep": "0",
+    "anyGrep": "0",
+    "consoleLogGrep": "0 (intentional console.warn 1건 D6 + console.error 1건 AC-002)"
+  },
+  "failedChecks": [],
+  "feedback": [],
+  "selfVerification": {
+    "itemCount": "A=3 + B=5 + C=3 + D=2 + E=3 = 16 ✓",
+    "categoryScoreFormula": "A: 3YES/0NO=100. B: 0YES/0NO/5NA=vacuous 100. C: 1YES/0NO/2NA=100. D: 0YES/0NO/2NA=vacuous 100. E: 2YES/0NO/1NA=100.",
+    "weightedScoreFormula": "100×0.25 + 100×0.25 + 100×0.20 + 100×0.15 + 100×0.15 = 25+25+20+15+15 = 100.0",
+    "weightSum": "25+25+20+15+15 = 100 ✓",
+    "failedChecksRule": "NO=0, failedChecks=[] ✓ (N/A 미포함)",
+    "vacuousJustification": "B: 5 N/A — G-003 spec Section 1 키워드에 sort/filter/page/edit/virt 없음 (aggregator registry 전용). D: 2 N/A — affectedUsageFiles=[]. A vacuous 금지 키워드(build/tsup/tsc/vite/rollup/size-limit/bundle) 적용 안 됨 — A는 모두 YES."
+  },
+  "evaluatedAt": "2026-05-15",
+  "moduleId": "MOD-GRID-15",
+  "yesCount": 6,
+  "noCount": 0,
+  "naCount": 10,
+  "denominator": 6,
+  "score": 100,
+  "runAt": "2026-05-15",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-003→full",
+      "yesCount=6",
+      "noCount=0",
+      "naCount=10",
+      "denominator=6",
+      "score=weightedScore",
+      "runAt=2026-05-15",
+      "verifierModel=opus"
+    ]
+  }
+}

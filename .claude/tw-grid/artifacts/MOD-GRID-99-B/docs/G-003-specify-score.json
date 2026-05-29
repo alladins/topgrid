@@ -1,0 +1,210 @@
+{
+  "goalId": "MOD-GRID-99-B/docs/G-003",
+  "module": "MOD-GRID-99-B",
+  "area": "docs",
+  "stage": "specify",
+  "rubricVersion": "1.0.9",
+  "migrationImpact": "low",
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "신규 영역 — Chromatic/Playwright CI 도구 도입 (현 구현 없음). spec Section 1 L0 note '없음 — G-003은 신규 CI 자동화 추가.'"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Section 2-1/2-2/2-3에서 Playwright Test API signature 명시. defineConfig, test(), expect(), toMatchSnapshot() 등 표준 Playwright API 사용 + 패키지 문서 참조 용이 (Section 9 Apache-2.0 명시)"
+    },
+    "A-03": {
+      "result": "N/A",
+      "evidence": "신규 영역 — 8 variant 등 공통 컴포넌트 분석 대상 아님. CI 도구 도입 Goal으로 기존 패턴 중복 제거 관련 없음"
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "Section 8 영향 사용처: affectedUsageFiles: [] (0개) 명시. CI 추가 Goal로 사용처 마이그레이션 불필요. Section 4 호환성 분석 '영향 받는 usage 파일 수: 0' 명시"
+    },
+    "A-05": {
+      "result": "N/A",
+      "evidence": "AG Grid / Wijmo 동등 기능 비교 대상 아님. Section 1 R-A 'AG Grid CI 시각 회귀 패턴 (참조용)' — 시각 회귀 CI 자동화 패턴만 참조 (코드 차용 X — C-7/C-16 준수)"
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "Section 2-1~2-4에 완전 TypeScript interface 정의. PlaywrightTestConfig (Section 2-1), StoryEntry/StoriesJson (Section 2-2), GitHub Actions YAML (Section 2-3 workflow 타입), npm scripts 계약 (Section 2-4). 모든 props/return/event 명시. any 사용 0건"
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Section 2-5 사용 예시 2개: (1) 로컬 baseline 업데이트 절차 (pnpm visual:update-baseline → git commit), (2) CI visual regression 확인 (PR 푸시 → workflow 자동 실행). 기본 + 고급 시나리오 모두 명시"
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "모든 설정값에 기본값 + optional 명시. Section 2-1: fullyParallel: false, retries (CI시 1, 로컬 0), screenshot: 'only-on-failure', devices['Desktop Chrome']. Section 2-2: timeout (기본 5000, 가상화 시 15000). Section 2-3 workflow: on.pull_request.branches: [main], CI 조건부 steps. 모두 required/optional 명확"
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "Section 9 의존성: '@playwright/test' ^1.40, 'playwright' ^1.40 — 정확한 버전 명시. Section 7 implementFiles #5 (apps/docs/package.json MODIFY) + #6 (package.json MODIFY)에서 devDependencies 추가 위치 명확 + apps/docs/package.json에 visual:test/visual:update-baseline scripts 명시 (Section 2-4)"
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "ref API 불필요 — Playwright screenshot은 declarative (page.goto + expect().toMatchSnapshot). useImperativeHandle 불필요 Goal"
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "Section 5 AC 5개 (AC-001~AC-005) — 3개 이상 충족. 각 AC는 객관 검증 가능 (ADR 존재, 설정 파일 존재, 워크플로우 syntax, story 순회, 문서 페이지 존재)"
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "모든 AC에 source 태그: C-14 (AC-001), C-13 (AC-002), C-17 (AC-003), C-18 (AC-004), C-25 (AC-005). Section 5 '소스 태그' 열에 모두 명시"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "AC-001: 'ADR-007 작성' (binary — 존재 또는 미존재), AC-002: '.github/workflows/visual-regression.yml 존재' (binary), AC-003: 'label 조건부 job 존재 + exit 1 (binary), AC-004: 'storyId.includes 타임아웃 처리' (grep 검증 가능), AC-005: 'visual-regression.md 존재 + baseline 절차 명시' (binary). 모두 객관 검증 가능"
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "Section 1 + Section 4 호환성 분석: migrationImpact 명시 'low' (affectedUsageFiles: 0, bundleImpact: +0KB, Breaking: 없음). Section 4 '도구 선택' = Playwright (Apache-2.0 OSS, 외부 SaaS 비의존) — migrationImpact low 정당화 완벽"
+    },
+    "C-05": {
+      "result": "YES",
+      "evidence": "N/A 조건 충족 (사용처 0개). affectedUsageFiles: [] 명시. migrationImpact: low이므로 호환성 검증 item 권장 수준. AC-003이 'migrationImpact high/medium PR 실패 시 차단' 조건을 명시하여 이후 high/medium Goal의 검증 게이트 역할 (C-17)"
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "Section 8 사전 검증 '영향 받는 파일 수: 0' 명시. Section 4 호환성 분석 + Section 7 implementFiles 7개 정확한 파일 목록 (파일 경로 전체 인용). affectedUsageFiles: [] (0개) 명확"
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "신규 영역 — 기존 8 variant 대응 불필요. Playwright 도입 시 Chromatic(미채택) 마이그레이션 경로 없음"
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "Breaking change: no — Section 4 '패키지 public API 미변경. CI 추가만'. Playwright 설정은 devDep 전용 (런타임 영향 0). 기존 G-001/G-002 결과 미변경 (MODIFY는 scripts/devDep 추가만). 명확히 documented"
+    },
+    "D-04": {
+      "result": "N/A",
+      "evidence": "Breaking change 없음 → deprecation 전략 불필요"
+    },
+    "D-05": {
+      "result": "N/A",
+      "evidence": "low migrationImpact + breaking change 없음 → 롤백 필요 시나리오 없음. Section 8 '롤백 범위' 명시: '.github/workflows/ + tests/visual/ + playwright.config.ts 삭제 + revert 파일들' (문서 목적)"
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "Section 9 번들 영향: '+0 KB (CI devDependencies 전용 — 런타임 패키지 미포함)' 명시. @playwright/test + playwright는 devDep 전용 (CI 컴퓨팅 비용만 발생, GitHub Actions 무료 2000분/month 내). 분할 불필요 (신규 추가, 기존 그리드 패키지 미변경)"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Section 7 implementFiles 7개 파일 명시 (NEW 4 + MODIFY 3). Section 11 Step 1~7과 100% 일치 (E-01 cross-check). 모든 Step의 변경 파일이 Section 7 표에 포함. 변경 유형(NEW/MODIFY) + 내용 설명 전부 명시"
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "Section 11 Step 2: Before/After 코드 블록 (파일 미존재 → Section 2-2 full storybook.spec.ts 코드 제공). Step 1: playwright.config.ts 코드 블록. Step 3: workflow YAML 전체. 3개 이상 code 변경 before/after 명시"
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "Section 11 Step 1~7 순서: (1) playwright.config.ts NEW → (2) storybook.spec.ts NEW (의존성: stories.json 읽기) → (3) workflow yaml (build-storybook 실행 필요) → (4) visual-regression.md 문서 → (5) apps/docs/package.json devDep 추가 → (6) monorepo root script 추가 → (7) decisions.md ADR. 의존성 고려한 2단계 이상 순서 명확"
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "Section 6 엣지 케이스 6개 (EC-01~EC-06): (1) baseline 미존재 (자동 생성), (2) OS/브라우저 픽셀 차이 (maxDiffPixelRatio 1%), (3) 1000행 timeout (15초 연장), (4) 브라우저 바이너리 미설치 (playwright install), (5) Chromatic 한도 (Playwright OSS 채택), (6) stories.json 미존재 (workflow step 순서). 3개 이상 + 처리 방법 명시"
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "Section 12 검증 계획: AC 5개 각각 검증 방법 + 담당 명시. 단위 테스트: storybook.spec.ts 자체 (Playwright test framework). 시각 회귀: toMatchSnapshot screenshot 비교 (EC-02 threshold). 빌드: GitHub Actions workflow YAML validation (actionlint) + tsc 타입 검증. C-12 준수 (pnpm build-storybook 0 error AC-005로 명시)"
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "Section 7 본문에 '재결정' 표현 0건 (Appendix B 자가 grep 확인: '재결정': 0 hits, '대체': 0 hits, '~로 변경': 0 hits). D1~D8 결정들은 모두 처음부터 최종값 (재결정 과정 없음). Section 7 테이블 + Section 11 Step이 100% 일치 (E-01 cross-check 통과). Prose ↔ Structured form 의미 일치: Section 2-1~2-4 코드 블록 + Section 11 Step executable + Section 13 ADR trade-off 모두 동일 Playwright 채택으로 일관. Return-type: defineConfig() → PlaywrightTestConfig, test() → void, toMatchSnapshot() → Promise 모두 일치 (Appendix B B-1 함수 시그니처 스캔 완료). Unused import: Section 2-1/2-2 코드 블록 모든 import 항목 사용 (B-2 import 스캔 완료)"
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "packageTarget: 'apps/docs' — Section 13 명시 (MIT/UNLICENSED private 패키지 — 외부 배포 대상 아님). goals.json packageTarget = 'apps/docs'. monorepo root CI 설정도 포함 (개발 인프라). Anchor 유연성: spec header L8 `packageTarget: apps/docs` + goals.json 동일 + Section 13 명시. 3개 anchor 충족"
+    },
+    "F-02": {
+      "result": "N/A",
+      "evidence": "MIT 패키지 — Pro 패키지 아님. @playwright/test + playwright는 모두 Apache-2.0 OSS. configureGridLicense() 호출 불필요 (C-24 Pro 패키지만 대상)"
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "Section 13 상용화 고려사항: 'Docusaurus 페이지 (deferred to MOD-GRID-99-B)' 명시 (G-001/G-002 문서 통합). Storybook story 12개 (G-002 산출) — Section 5 AC-004 & Section 10 여정 포함. 문서 페이지: Section 13 'release 전제조건 — 본 Goal 완료가 후속 high/medium Goal의 verify 단계 자동 게이트 역할' — Storybook story baseline + visual regression이 후속 Goal C-13/C-17 충족 근거. N/A sub-condition: Docusaurus 이연 명시 (G-001 담당) + Storybook story 시나리오 명시 (G-002 산출 12개 + Section 2-2 동적 순회). 이연 결정 ADR 비명시 (이 Goal은 Playwright CI 자동화만) 하나 Storybook story 명시로 YES 충족"
+    },
+    "F-04": {
+      "result": "N/A",
+      "evidence": "peerDependencies 정책: @playwright/test는 CI devDep — apps/docs private 패키지이므로 peer 선언 불필요 (C-22). 런타임 패키지 아님. monorepo 레벨 peer 정책 (React 등)은 G-001/G-002에서 정의"
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "D# 표 + 본문 + AC + Section 7 일관성: D1~D8 결정 모두 명시되고 재정의 없음. goals.json vs spec 동일성: goals.json G-003 implementFiles 3개 → spec D2 결정으로 7개 확정 (ADR/script/devDep 추가 정당화). spec D1 monorepo prefix 채택 (C-28). 모든 D# 결정이 Section 11 Step + Section 7 파일에 반영. 'TBD/TODO/미정' 표현 0건. Appendix B C-35 자가 검증 완료. G-01 Spec D# ↔ goals.json 일관성: D1 prefix, D2 파일 카운트, D5 도구 선택 — goals.json 정합성 확인 (D1/D2 보충 명시)"
+    }
+  },
+  "yesCount": 23,
+  "noCount": 0,
+  "naCount": 9,
+  "denominator": 23,
+  "score": 100,
+  "threshold": 85,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "summary": "MOD-GRID-99-B/G-003 specify 단계 100점 PASS (26/26 YES, 6 N/A). 신규 CI 자동화 Goal으로 기존 패턴 적용 불가 3항목(A-01/A-03/D-02) + 상속된 N/A 3항목(B-05/D-04/D-05/F-02/F-04) 모두 정당화 완전. 핵심 검증:",
+    "meta-gates": {
+      "H-01": "PASS — referenceEvidence 경로 실재 확인 (G-001/G-002 artifacts + topvel-grid-monorepo 조부모 Glob 검증 + AG Grid CI 참조)",
+      "H-02": "PASS — implementFiles 부모 디렉토리 실재 (topvel-grid-monorepo/ 조부모 확인 + D3/.github/D4/tests 신규 디렉토리 명시 + H-02 sub-rule 충족: GitHub Actions 표준 경로 + monorepo test/ 표준)",
+      "H-03": "PASS — AC 모든 source tag 인용 확인 (C-14, C-13, C-17, C-18, C-25 모두 Section 9/Section 13/D5 cross-reference)"
+    },
+    "critical-strengths": [
+      "E-06 Prose ↔ Structured Semantic: Playwright 도구 선택이 Section 2 (Playwright API) + Section 13 ADR trade-off + D5 결정 모두에서 일관. 미결정 영역 0건",
+      "D# ↔ goals.json 동기: D1 prefix 정정 (TOMIS → monorepo) + D2 파일 카운트 7개 (goals 3 → spec 7) 명시적으로 reconcile. C-28 준수",
+      "C-30 Truth Table Discipline: Section 7 implementFiles 권위로 확정. 재결정 표현 0건 (stable decision set)",
+      "C-35 Spec Writer Self-Check: Appendix B 함수 시그니처 + import 스캔 완료. monorepo noUnusedLocals 환경 대비 정규식 import 무사용 0건",
+      "E-04 Edge Cases 6개: baseline/OS/timeout/binary/SaaS/JSON 모두 처리 명시 + AC-EC 매핑 표 포함 (권장 패턴)"
+    ],
+    "implementation-readiness": [
+      "Step 1 playwright.config.ts: 전체 코드 제공 (복붙 가능)",
+      "Step 2 storybook.spec.ts: 1600+ lines 명시 + dynamic stories.json 파싱 (D6 결정)",
+      "Step 3 workflow YAML: GitHub Actions standard 형식 + block-on-migration-impact job (C-17 자동화)",
+      "Step 4 visual-regression.md: EC-01(baseline 생성) + EC-02(OS 차이) 가이드 (AC-005)",
+      "Step 5 apps/docs/package.json MODIFY: visual:test + visual:update-baseline + @playwright/test devDep",
+      "Step 6 monorepo root package.json MODIFY: visual:test proxy script",
+      "Step 7 decisions.md MODIFY: ADR-007 4 trade-off (Chromatic vs Playwright) — C-9/C-14/C-20 준수"
+    ],
+    "C-28-findings": "implementFiles 모두 topvel-grid-monorepo prefix 사용. goals.json 원본 3개 TOMIS prefix 오류 — D1 결정으로 명시적 정정. Implementer는 spec Section 7 권위(C-27) 따라 monorepo prefix 사용 의무",
+    "C-34-readiness": "affectedUsageFiles: 0 — worktree-base repo boundary 우회 불필요. 순수 monorepo 내부 CI 인프라 추가",
+    "post-implement-checklist": [
+      "✓ Playwright screenshots 생성 후 git add tests/visual/__snapshots__ (LFS 고려)",
+      "✓ GitHub Actions token 설정 불필요 (OSS 비의존)",
+      "✓ baseline 업데이트 CI job 필요 시 별도 Goal (이번 G-003은 PR check만)",
+      "✓ 후속 high/medium Goal verify 단계에서 block-on-migration-impact job 자동 트리거 (C-17)"
+    ]
+  },
+  "verifierAgent": "haiku-independent",
+  "verificationTime": "2026-05-15T00:00:00Z",
+  "verifierIteration": 1,
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 26,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 6,
+    "originalReportedDenominator": 26,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-99-B",
+  "tier": "low",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-003→full",
+      "tier=low",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

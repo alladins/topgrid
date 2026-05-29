@@ -1,0 +1,253 @@
+{
+  "goalId": "MOD-GRID-16/enhancement/G-002",
+  "moduleId": "MOD-GRID-16",
+  "area": "enhancement",
+  "stage": "verify",
+  "tier": "medium",
+  "threshold": 90,
+  "rubricVersion": "1.0.3",
+  "migrationImpact": "medium",
+  "weights": {
+    "A": 15,
+    "B": 20,
+    "C": 30,
+    "D": 20,
+    "E": 15
+  },
+  "categoryScores": {
+    "A": {
+      "yesCount": 2,
+      "noCount": 0,
+      "naCount": 1,
+      "score": 100,
+      "weight": 15
+    },
+    "B": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 5,
+      "score": 100,
+      "weight": 20
+    },
+    "C": {
+      "yesCount": 1,
+      "noCount": 0,
+      "naCount": 2,
+      "score": 100,
+      "weight": 30
+    },
+    "D": {
+      "yesCount": 0,
+      "noCount": 0,
+      "naCount": 2,
+      "score": 100,
+      "weight": 20
+    },
+    "E": {
+      "yesCount": 1,
+      "noCount": 1,
+      "naCount": 1,
+      "score": 50,
+      "weight": 15
+    }
+  },
+  "checks": [
+    {
+      "id": "A-01",
+      "title": "gradlew compileJava 0 errors",
+      "result": "N/A",
+      "evidence": "G-002 spec Section 1 L47-49: '@tomis/grid-pro-master' Pro Pkg (FE-only). 구현 파일 6개 모두 frontend (grid-pro-master/src/* + .claude/tw-grid/decisions/MOD-GRID-16-decisions.md). Java/Spring 백엔드 코드 미관여.",
+      "reasoning": "FE-only Goal — gradlew 비해당. 표준 N/A (rubric A-01: 'FE 전용일 때 — 대부분 N/A')."
+    },
+    {
+      "id": "A-02",
+      "title": "npx tsc --noEmit 0 errors",
+      "result": "YES",
+      "evidence": "Executed: cd D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master && npx --no-install tsc --noEmit → exit 0 (no output = 0 errors). 6개 구현 파일 모두 컴파일 통과 (ContextMenuGrid.tsx, useContextMenu.ts, ContextMenuPortal.tsx, types.ts MODIFY, index.ts MODIFY). C-29 spread-skip 패턴 적용 확인 (ContextMenuGrid.tsx L130-131). affectedUsageFiles=[] 이므로 tw-framework-front tsc 미실행.",
+      "reasoning": "TypeScript 컴파일 0 errors. 패키지 단독 검증으로 충분 (consumer 0개)."
+    },
+    {
+      "id": "A-03",
+      "title": "tsup build 또는 vite build + size-limit",
+      "result": "YES",
+      "evidence": "Executed: cd D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master && npx --no-install tsup → ESM dist/index.mjs 17.69 KB, CJS dist/index.cjs 18.21 KB, DTS dist/index.d.ts 8.74 KB ('Build success in 136ms'). size-limit JSON at monorepo root: '@tomis/grid-pro-master' size=18071 bytes brotli, sizeLimit=20000, passed=true. .size-limit.json L78-82 (grid-pro-master entry) 20 KB limit + brotli=true 확인. G-001 baseline 15866 bytes → G-002 18071 bytes = +2205 bytes (ContextMenuGrid + portal + useContextMenu 추가분).",
+      "reasoning": "tsup build PASS + size-limit PASS (18071 ≤ 20000 brotli). Pro 패키지 20 KB cap (C-21) 준수."
+    },
+    {
+      "id": "B-01",
+      "title": "정렬 동작 (단일 + 다중)",
+      "result": "N/A",
+      "evidence": "G-002 spec Section 1 + Section 5 declare scope: 우클릭 Context Menu + 키보드 단축키. ContextMenuGrid.tsx L125-132 useReactTable invocation은 getSortedRowModel wiring 없음 (getCoreRowModel만). AC-001~AC-013 13개 모두 sort 무관. Sort는 grid-core G-001 scope.",
+      "reasoning": "Context Menu Goal — Sort 무관 기능. N/A (rubric B-01 '정렬 무관 기능')."
+    },
+    {
+      "id": "B-02",
+      "title": "필터 동작",
+      "result": "N/A",
+      "evidence": "ContextMenuGrid.tsx useReactTable는 getFilteredRowModel wiring 없음. AC 13개 중 column filter 관련 0건. Filter는 grid-core scope.",
+      "reasoning": "Filter 무관 Goal. N/A (rubric B-02)."
+    },
+    {
+      "id": "B-03",
+      "title": "페이지네이션 동작 (client + server)",
+      "result": "N/A",
+      "evidence": "ContextMenuGrid.tsx useReactTable는 getPaginationRowModel wiring 없음. Pagination AC 0건. Pagination은 grid-core MOD-GRID-03 scope.",
+      "reasoning": "Pagination 무관 Goal. N/A (rubric B-03)."
+    },
+    {
+      "id": "B-04",
+      "title": "가상화 1000행+ 시나리오 동작",
+      "result": "N/A",
+      "evidence": "G-002 Goal은 ContextMenu wrapper로 small/medium 데이터셋 사용 가정. 가상화 통합은 별도 Goal scope. Storybook 1000-row story 미요구.",
+      "reasoning": "가상화 무관 Goal. N/A (rubric B-04 '작은 데이터셋 전용')."
+    },
+    {
+      "id": "B-05",
+      "title": "인라인 편집 동작",
+      "result": "N/A",
+      "evidence": "G-002 Goal은 ContextMenu (read-only 메뉴) Goal. EditableGrid/ChangeTrackingGrid 미관여. AC-001~AC-013 중 editing scenario 0건.",
+      "reasoning": "편집 무관 Goal. N/A (rubric B-05 '편집 기능 없는 Goal')."
+    },
+    {
+      "id": "C-01",
+      "title": "영향 사용처 tsc 0 (마이그레이션 후)",
+      "result": "N/A",
+      "evidence": "G-002-spec.md L124 + Section 13 goals.json: 'affectedUsageFiles: []' (사용처 0개). Grep 'grid-pro-master' on D:/project/topvel_project/TOMIS/tw-framework-front/src → No files found (consumer 0건). RangeSelectGrid.tsx의 하드코딩 메뉴 교체는 G-003 scope (spec AC-006 주석).",
+      "reasoning": "Zero affected usage files. N/A (rubric C-01 '사용처 0개')."
+    },
+    {
+      "id": "C-02",
+      "title": "외관 보존 (시각 회귀 — C-17)",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[]. 마이그레이션된 사용처 0건이므로 visual regression 비교 대상 없음. Grid.tsx (grid-core) 변경 없음 — Section 7 Truth Table 6 파일 모두 grid-pro-master/decisions 한정. Option B 경계 보존 (D9).",
+      "reasoning": "0 consumers + Grid.tsx 미변경. N/A."
+    },
+    {
+      "id": "C-03",
+      "title": "console warning 0 + React warning 0 (정상 동작 시)",
+      "result": "YES",
+      "evidence": "ContextMenuGrid.tsx L72-75 + L83-85 (parseShortcut grammar 검증) + L138-159 (GridHandle missing-callback warning): 모두 typeof process !== 'undefined' && process?.env?.NODE_ENV !== 'production' 가드. Production runtime warning 0건. dev-mode 의도된 grammar/API-misuse 경고만. Rubric C-03 'deprecation warning 제외 — 의도된 것' 해당.",
+      "reasoning": "정상 사용(grammar 유효 + callback 제공) 시 warning 0건. 의도된 dev guard만 존재."
+    },
+    {
+      "id": "D-01",
+      "title": "마이그레이션 비율 ≥ 50% + 잔여 계획",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[]. G-002는 신규 Pro API 제공 단계. Spec AC-006 주석 L124 + goals.json L521 notes: 'RangeSelectGrid.tsx 기존 메뉴 교체는 G-003 scope. G-002는 API 제공만.'",
+      "reasoning": "Zero affected usage files — 마이그레이션 비율 계산 불가. N/A (rubric D-01 '사용처 0개')."
+    },
+    {
+      "id": "D-02",
+      "title": "잔여 사용처 명시 (documented-deviations 또는 다음 Goal)",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] — 잔여 사용처 0건. RangeSelectGrid.tsx 하드코딩 메뉴 교체 작업은 G-003 spec에서 다룰 예정 (G-002 spec L124 + L521 명시).",
+      "reasoning": "잔여 0건. N/A (rubric D-02 '잔여 0건')."
+    },
+    {
+      "id": "E-01",
+      "title": "번들 크기 변동 (gzipped, brotli) 한도 내",
+      "result": "YES",
+      "evidence": "size-limit JSON (executed `npx --no-install size-limit --json` at D:/project/topvel_project/topvel-grid-monorepo): '@tomis/grid-pro-master' size=18071 bytes brotli, sizeLimit=20000, passed=true. C-21 Pro 패키지 cap 20 KB 준수. G-001 baseline 15866 → G-002 18071 = +2205 bytes 증가 (ContextMenu 컴포넌트 + portal + hook + types 추가분, brotli 압축). +100 KB 미만이므로 사용자 승인 불요 (C-21).",
+      "reasoning": "번들 크기 정량 측정 확인 — 한도 내 PASS."
+    },
+    {
+      "id": "E-02",
+      "title": "새 의존성 ADR 작성됨",
+      "result": "N/A",
+      "evidence": "G-002 spec Section 6.1 L347 명시: '신규 외부 의존성 없음.' package.json L27-32 peerDependencies (react, react-dom, @tanstack/react-table, @tomis/grid-core, @tomis/grid-license) 모두 G-001에서 이미 선언. 추가 dep 0건. react-dom (createPortal) + grid-license (verifyLicense) 기존 peer 재사용.",
+      "reasoning": "신규 외부 의존성 0건 — ADR 의무 비해당. N/A."
+    },
+    {
+      "id": "E-03",
+      "title": "라이선스 명시 (license 필드 + LICENSE/EULA 파일 + Pro 검증 호출)",
+      "result": "NO",
+      "evidence": "package.json L5 'license': 'SEE LICENSE IN EULA' 확인. verifyLicense('@tomis/grid-pro-master') module-level call site at ContextMenuGrid.tsx L44 확인 (D6). HOWEVER: D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master/EULA.md 파일 존재 안 함 (Glob 'No files found'). 동일 monorepo의 다른 Pro 패키지(grid-pro-range, grid-pro-merging, grid-pro-datamap, grid-pro-header, grid-pro-agg, grid-pro-tracking)는 모두 EULA.md 보유 — grid-pro-master만 누락. G-001 verify-score L125-129에서 동일 NO 처리. G-002에서도 미보완.",
+      "reasoning": "C-24 + rubric E-03은 3가지 모두 요구: license 필드 + LICENSE/EULA 파일 + Pro verifyLicense 호출. EULA 파일 누락 — 'all three' 미충족. (G-001 잔존 결함이며 G-002에서 추가 보완 없음.)"
+    }
+  ],
+  "weightedScore": 92.5,
+  "passed": true,
+  "failedChecks": [
+    "E-03"
+  ],
+  "feedback": [
+    "E-03 (EULA.md 누락 — G-001부터 잔존): D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-master/EULA.md 파일 미존재. 동일 monorepo의 다른 Pro 패키지 6개(grid-pro-range, grid-pro-merging, grid-pro-datamap, grid-pro-header, grid-pro-agg, grid-pro-tracking)는 모두 EULA.md 보유. license 필드(SEE LICENSE IN EULA) + verifyLicense call은 정상. EULA.md 1회 추가로 E-03 즉시 통과 가능. G-001 verify feedback 동일 사항 — G-003 또는 별도 패치에서 처리 권장.",
+    "Option B 경계 무파괴 확인: grid-core/src/types.ts L267-607 GridProps<TData>에 contextMenuItems 관련 prop 0건 추가. ContextMenuGrid는 standalone useReactTable 사용 (ContextMenuGrid.tsx L125-132) — Grid<TData> import 0건. D9/D10 일관 적용.",
+    "C-29 spread-skip 패턴 적용 확인 (ContextMenuGrid.tsx L130-131): getSubRows, debug props가 conditional spread로 forward — exactOptionalPropertyTypes:true 환경에서 TS2375 회피.",
+    "기능 wire-up 검증: useContextMenu(L36 import, L122 invoke) + ContextMenuPortal(L37 import, L306 conditional render) 모두 호출 chain 활성 (C-31 준수).",
+    "tw-framework-front 영향 0건: src/ 하위에 grid-pro-master/ContextMenuGrid import 0건 (Grep 결과). vite.config.ts L28 alias 매핑만 존재. C/D 축 N/A 정당화."
+  ],
+  "buildStatus": {
+    "tsc_grid_pro_master": "PASS (npx --no-install tsc --noEmit → exit 0, no output)",
+    "tsup_build_grid_pro_master": "PASS (ESM 17.69 KB, CJS 18.21 KB, DTS 8.74 KB present in dist/)",
+    "sizeLimit_grid_pro_master": "PASS (18071 bytes brotli ≤ 20000 limit)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": 1,
+    "note": "G-002 = 신규 Pro API 제공 단계. affectedUsageFiles=[] 확인. RangeSelectGrid.tsx 하드코딩 메뉴 교체는 G-003 scope (spec AC-006 주석 + goals.json notes). C/D 축 N/A 정당화."
+  },
+  "selfVerification": {
+    "categoryCountTotal": 16,
+    "categoryBreakdown": "A=3 + B=5 + C=3 + D=2 + E=3 = 16 ✓",
+    "weightSum": 100,
+    "weightBreakdown": "A=15 + B=20 + C=30 + D=20 + E=15 = 100 ✓",
+    "naExcludedFromDenominator": true,
+    "failedChecksOnlyNo": true,
+    "failedChecksContent": "['E-03'] — N/A 7개(A-01, B-01~B-05, C-01, C-02, D-01, D-02, E-02 = 10개) 미포함 확인. 단, NO는 E-03 1건만.",
+    "categoryScoresFormula": {
+      "A": "YES 2 / (YES 2 + NO 0) × 100 = 100.0 ✓",
+      "B": "vacuous (YES 0, NO 0, N/A 5) → 100.0 ✓ (Goal 제목 '우클릭 Context Menu' — build 키워드 없음, vacuous 허용)",
+      "C": "YES 1 / (YES 1 + NO 0) × 100 = 100.0 ✓",
+      "D": "vacuous (YES 0, NO 0, N/A 2) → 100.0 ✓",
+      "E": "YES 1 / (YES 1 + NO 1) × 100 = 50.0 ✓"
+    },
+    "weightedScoreFormula": "100.0*0.15 + 100.0*0.20 + 100.0*0.30 + 100.0*0.20 + 50.0*0.15 = 15 + 20 + 30 + 20 + 7.5 = 92.5 ✓",
+    "vacuousTruthApplied": [
+      "B (전 항목 5 N/A — Context Menu Goal scope 외)",
+      "D (전 항목 2 N/A — affectedUsageFiles=[])"
+    ],
+    "vacuousBuildKeywordGuard": "A category vacuous 미해당 (A-02/A-03 YES). Goal 제목 '우클릭 Context Menu — 커스텀 메뉴 항목 + 키보드 단축키 (contextMenuItems prop)' — build/tsup/tsc/vite/rollup/size-limit/bundle 키워드 없음. B/D vacuous 허용."
+  },
+  "evidenceVerification": {
+    "F01_evidenceFilesRead": [
+      "G-002-spec.md L124 affectedUsageFiles=[] (Read 확인)",
+      "ContextMenuGrid.tsx L44 verifyLicense + L130-131 C-29 spread-skip + L122 useContextMenu invoke + L306 ContextMenuPortal render (Read 확인)",
+      "grid-core/src/types.ts L267-607 GridProps<TData> — contextMenuItems prop 0건 (Read 확인 — Option B 무파괴 보존)",
+      "package.json L5 license 'SEE LICENSE IN EULA' + L27-32 peerDependencies (Read 확인)",
+      ".size-limit.json L78-82 grid-pro-master entry 20 KB brotli (Read 확인)"
+    ],
+    "F02_categoryScoresAccurate": true,
+    "F03_weightedScoreAccurate": true,
+    "buildCommandsExecuted": [
+      "npx --no-install tsc --noEmit (grid-pro-master) → exit 0",
+      "npx --no-install tsup (grid-pro-master) → Build success ESM/CJS/DTS",
+      "npx --no-install size-limit --json → @tomis/grid-pro-master size=18071, passed=true"
+    ]
+  },
+  "evaluatedAt": "2026-05-15T13:30:00Z",
+  "yesCount": 4,
+  "noCount": 1,
+  "naCount": 11,
+  "denominator": 5,
+  "score": 92.5,
+  "runAt": "2026-05-15T13:30:00Z",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-002→full",
+      "yesCount=4",
+      "noCount=1",
+      "naCount=11",
+      "denominator=5",
+      "score=weightedScore",
+      "runAt=2026-05-15T13:30:00Z",
+      "verifierModel=opus"
+    ]
+  }
+}

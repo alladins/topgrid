@@ -1,0 +1,277 @@
+{
+  "goalId": "MOD-GRID-14/header/G-002",
+  "moduleId": "MOD-GRID-14",
+  "area": "header",
+  "stage": "specify",
+  "rubricVersion": "1.0.7",
+  "specPath": "D:/project/topvel_project/TOMIS/.claude/tw-grid/artifacts/MOD-GRID-14/header/G-002-spec.md",
+  "verifiedAt": "2026-05-15T09:42:00Z",
+  "checks": [
+    {
+      "id": "H-01",
+      "title": "referenceEvidence 경로 실재",
+      "result": "YES",
+      "evidence": "spec.md L122-128: L0='tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx', L1=TanStack API(column.getStart/getIsPinned), L2=N/A, L3=N/A, R-A/R-W 모두 명시. Glob 확인: topvel-grid-monorepo/packages/grid-pro-header/src/* 실재. L0는 존재성 미확인이나(spec에서만 참조) SPECIFY 평가 범위 외(H-01 Section 1 L0/L1/L2/L3/R-A/R-W 경로만, NEW 산출물 제외 — rubric v1.0.7 명확화). Section 1에 명시된 경로는 모두 프로젝트 컨벤션 일치."
+    },
+    {
+      "id": "H-02",
+      "title": "implementFiles 경로 합리성",
+      "result": "YES",
+      "evidence": "spec.md §7: MODIFY 대상 2개 파일(MultiRowHeader.tsx, types.ts) 부모 디렉토리 D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-header/src/ 실재 확인(Glob). 파일명 컨벤션 일치(SPA 컴포넌트). D1 결정으로 prefix 수정(TOMIS → topvel-grid-monorepo) — 조부모 D:/project/topvel_project/topvel-grid-monorepo/ 실재(G-001 동일 결정), spec Section 8.2 무파괴 검증 명시(§11.1: '기존 렌더링 구조 변경 없음 — 추가만 허용')"
+    },
+    {
+      "id": "H-03",
+      "title": "AC 출처 태그 검증",
+      "result": "YES",
+      "evidence": "spec.md §3 §5.1 §5.2: 모든 AC에 source 태그 포함(C-2/C-5/C-12/C-16). §11.3 Functional Wiring 테이블에서 신규 유틸별 호출 위치 명시. 각 출처가 spec 내 다른 섹션에서 인용됨(예: AC-001 source C-5 → §9.3 'Tailwind + inline style'에서 설명)"
+    },
+    {
+      "id": "A-01",
+      "title": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "spec.md §1.1: L0='tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx' 명시 + L48-70 L0 증거 3건 추가(BudMast01Page.tsx L48, data-table.tsx L566, BudRevn01Page.tsx L280 패턴: '<thead className=\"sticky top-0 ... z-10\">'. L1.2 MultiRowHeader.tsx L57+L70-94 기존 구현 코드 인용(sticky 없음 현황)"
+    },
+    {
+      "id": "A-02",
+      "title": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "spec.md §1.3: column.getStart('left'), column.getIsPinned(), table.getLeftLeafColumns(), header.column, header.subHeaders, header.column.getStart() 모두 명시 + 역할 설명. §5.2, §11.2, §11.4 에서 실제 호출 시그니처(예: 'header.column.getStart('left') ?? header.subHeaders[0]?.column.getStart('left') ?? 0') 명시"
+    },
+    {
+      "id": "A-03",
+      "title": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "N/A",
+      "evidence": "G-002는 G-001 MultiRowHeader의 내부 기능 확장(sticky+pinning). 8 variant 중복 패턴은 G-001 specify 단계에서 분석 완료(goals.json G-001 describe). G-002는 신규 영역이 아니라 기존 MultiRowHeader 강화 — N/A 정당화(rubric v1.0.5 A-03 N/A 조건: '신규 영역')"
+    },
+    {
+      "id": "A-04",
+      "title": "L3 영향 사용처 카운트 명시",
+      "result": "YES",
+      "evidence": "spec.md §8: 'affectedUsageFiles: [] — 0건' 명시 + 근거('G-002는 MultiRowHeader 내부 구현 변경 + optional props 추가만 수행'). goals.json G-002 affectedUsageFiles=[] 확인(§1.4 'L3 영향 사용처: 0건')"
+    },
+    {
+      "id": "A-05",
+      "title": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "spec.md §1.5: R-A='AG Grid Community: sticky headers ✅, column pinning ✅ (publish-aggrid-analysis.md 확인)'. §1.6: R-W='Wijmo frozenColumns 패턴 개념 참조(publish-wijmo-analysis.md §3) — 개념만 참조, 코드 차용 금지 (C-16)'. 각 R 출처 근거 명시"
+    },
+    {
+      "id": "B-01",
+      "title": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "spec.md §5.1: MultiRowHeaderProps<TData> interface 정확히 정의. enableStickyHeader?: boolean (AC-001), frozenColumns?: number (AC-002). 모든 props에 JSDoc 설명 포함. 기존 Table<TData> 참조로 return type 명시"
+    },
+    {
+      "id": "B-02",
+      "title": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "spec.md §2 (사용자 여정): 기본 사용('import + TanStack 테이블 + <MultiRowHeader table={table} enableStickyHeader frozenColumns={2} />' 예시) + 마이그레이션 경로 3단계(§10.3) 포함. §11.2 코드 예시 2개(✅ 올바른 패턴 + ❌ 금지 패턴). §11.4 fallback 구현 코드"
+    },
+    {
+      "id": "B-03",
+      "title": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "spec.md §5.1: 모든 props optional(enableStickyHeader?, frozenColumns?). AC-001 'enableStickyHeader 미제공 시: sticky 클래스 없음' 명시. D3 결정 'CSS 변수 기본값 40px fallback' 명시. EC-06 'CSS 변수 미정의 시 40px 기본값 fallback'"
+    },
+    {
+      "id": "B-04",
+      "title": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "spec.md §5.1: 'types.ts MODIFY' 명시. index.ts L38: 'export type { MultiRowHeaderProps } from './types'' 명시. §7 implementFiles: 'types.ts' 경로 'D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-header/src/types.ts' 정확히 명시"
+    },
+    {
+      "id": "B-05",
+      "title": "ref API + imperative handle 명시 (해당 시)",
+      "result": "N/A",
+      "evidence": "spec.md §5: MultiRowHeaderProps interface에 ref 필드 없음. G-002는 선언적 컴포넌트(table prop 기반) — useImperativeHandle 불필요. rubric v1.0.5 B-05 N/A: 'ref 불필요 (선언적 컴포넌트)'"
+    },
+    {
+      "id": "C-01",
+      "title": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md §3 + goals.json G-002: AC-001~AC-006 6개 명시. 각 AC는 목표 기준 (sticky 헤더, frozenColumns 오프셋, CSS 변수, Wijmo ban, tsc 0 error, Storybook)"
+    },
+    {
+      "id": "C-02",
+      "title": "각 AC에 출처 태그 (L0/L1/L2/L3/R-A/R-W)",
+      "result": "YES",
+      "evidence": "spec.md §3 + goals.json G-002: 모든 AC에 source 태그 포함. AC-001(C-5), AC-002(C-2), AC-003(C-5), AC-004(C-16), AC-005(C-12), AC-006(C-25). rubric v1.0.7 C-02: 'tags like (L1: ...) 또는 (C-N)' 확인"
+    },
+    {
+      "id": "C-03",
+      "title": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "spec.md §3: AC-001 '다단 헤더 각 행에 sticky 고정 적용' 객관 (display sticky top-0 확인), AC-002 '왼쪽 고정 컬럼 left 오프셋 계산' 객관 (left: Npx 확인), AC-005 'tsc --noEmit 0 error' binary (0 or N), AC-006 'Storybook story 1개' 객관. 주관 표현 없음"
+    },
+    {
+      "id": "C-04",
+      "title": "migrationImpact 명시 (high/medium/low)",
+      "result": "YES",
+      "evidence": "spec.md 헤더: 'migrationImpact: low' + 근거('optional props 추가만, breaking: false'). goals.json G-002: 'migrationImpact: low' 확인. 사유 명시(§10.1: 'Breaking Change 없음')"
+    },
+    {
+      "id": "C-05",
+      "title": "AC에 호환성 검증 항목 포함",
+      "result": "YES",
+      "evidence": "spec.md §3 AC-005: 'tsc --noEmit 0 error (packages/grid-pro-header)'. §12.1: 'TypeScript 검증' + 명령어. affectedUsageFiles: 0건이므로(C-6 N/A 예외 조건) 호환성 검증은 내부 타입 안정성(tsc)로 충분 → YES"
+    },
+    {
+      "id": "D-01",
+      "title": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "YES",
+      "evidence": "spec.md §8: 'affectedUsageFiles: [] — 0건' 정확히 명시. goals.json G-002 affectedUsageFiles=[] 확인. breaking: false이므로 기존 MultiRowHeader 호출자 변경 불필요"
+    },
+    {
+      "id": "D-02",
+      "title": "기존 변형 대응표 (Section 3)",
+      "result": "N/A",
+      "evidence": "spec.md §3: 'D-02 결정: frozenColumns 오프셋 전략' 결정 테이블 존재. 그러나 8 variant 대응표는 G-001 specify에서 분석 완료. G-002는 신규 기능(sticky+pinning) 추가 — '대응할 variant 없음' N/A 조건 충족(rubric v1.0.5 D-02)"
+    },
+    {
+      "id": "D-03",
+      "title": "Breaking change 명시 (Section 4)",
+      "result": "YES",
+      "evidence": "spec.md §10.1: 'Breaking Change: 없음 (breaking: false)'. §10.1 직후: '신규 props enableStickyHeader, frozenColumns 모두 optional. 기존 <MultiRowHeader table={table} /> 호출은 동작 변경 없음' 명확히"
+    },
+    {
+      "id": "D-04",
+      "title": "Deprecation 전략 (Section 4)",
+      "result": "N/A",
+      "evidence": "spec.md §10.2: 'Deprecation Strategy: 없음. G-002는 기존 API 확장이며 제거/대체 없음'. breaking: false이므로 deprecation 불필요 (rubric v1.0.5 D-04 N/A)"
+    },
+    {
+      "id": "D-05",
+      "title": "롤백 전략 (Section 8.4)",
+      "result": "N/A",
+      "evidence": "spec.md: migrationImpact: low, affectedUsageFiles: 0건. rolling back은 단순히 enableStickyHeader=false + frozenColumns=undefined로 G-001 동작 복원 가능(optional props). 직시 롤백 전략 명시 불필요 (rubric v1.0.5 D-05 N/A: 'low tier + 사용처 0')"
+    },
+    {
+      "id": "D-06",
+      "title": "번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "spec.md §9.1: 'grid-pro-header G-001(+5 KB) + G-002(+2 KB) = 총 7 KB, 한도 ≤ 20 KB'. spec.md §7: 번들 영향 '+2 KB (sticky + pinning 오프셋 계산)'. §12.2 검증: 'pnpm --filter ... build' + 'dist/index.mjs 크기 확인' 명시"
+    },
+    {
+      "id": "E-01",
+      "title": "파일별 변경 명세 (NEW/MODIFY)",
+      "result": "YES",
+      "evidence": "spec.md §7 implementFiles 테이블: MODIFY 2건(MultiRowHeader.tsx, types.ts) 명시 + 설명. D1 결정(prefix 수정)으로 경로 수정됨. §5.2, §5.3에서 각 파일별 변경 포인트(A/B/C 위치) 상세 + §11.1 '추가만 허용' 원칙. §7 vs §11 일관성: §11 Step A(sticky <tr> 처리) + B(frozen <th> 처리) + C(colSpan 유지)가 §7 MODIFY 2개 파일에 매칭 ✓"
+    },
+    {
+      "id": "E-02",
+      "title": "Before/After 코드 스니펫 (최소 1개)",
+      "result": "YES",
+      "evidence": "spec.md §5.2: Before 코드 블록(기존 L57 <thead>, L70-94 기존 렌더링) 명시 + A/B/C 3개 섹션에 After 코드 스니펫(sticky className 추가, frozen left 오프셋 처리). §11.2 C-29 패턴 ✅/❌ 2개 코드 블록. §11.4 fallback 구현 코드"
+    },
+    {
+      "id": "E-03",
+      "title": "구현 순서 2단계 이상 (의존성 고려)",
+      "result": "YES",
+      "evidence": "spec.md §11.1: 'MODIFY 원칙 — 기존 렌더링 구조 유지'. §11.3 'Functional Wiring' 테이블: step 1(enableStickyHeader prop 처리), step 2(frozenColumns prop 처리), step 3(cross-import 없음) 암시적 순서. §5.2 A/B/C 위치별 수정 순서(A: <tr> sticky, B: <th> frozen, C: colSpan 유지)"
+    },
+    {
+      "id": "E-04",
+      "title": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md §6: EC-01~EC-07 7개 명시. EC-01(enableStickyHeader 미제공), EC-02(frozenColumns=0), EC-03(frozenColumns > 실제 컬럼 수), EC-04(3단 이상 헤더), EC-05(그룹 셀 frozen 경계), EC-06(CSS 변수 미정의), EC-07(frozen+sticky 혼합). 각 EC에 기대 동작 명시"
+    },
+    {
+      "id": "E-05",
+      "title": "검증 계획 (Section 12)",
+      "result": "YES",
+      "evidence": "spec.md §12: 4개 검증 항목. §12.1 'TypeScript 검증' (tsc --noEmit 명령어), §12.2 '번들 크기 검증' (pnpm build), §12.3 '시나리오 검증 체크리스트' (5개 항목: enableStickyHeader 없음, 단독, +frozenColumns, 3단, EC-05), §12.4 'Wijmo import 0건 검증' (grep)"
+    },
+    {
+      "id": "E-06",
+      "title": "Section 7 Re-decision ↔ Final Table Consistency",
+      "result": "YES",
+      "evidence": "spec.md §7 직전(§1.2+§5.2+D 결정들): '재결정' 표현은 D1(prefix 수정)만. D1 직후 §7 Table이 수정된 경로(topvel-grid-monorepo/packages/...) 100% 반영. MODIFY 2건(MultiRowHeader.tsx, types.ts) 변경 파일 일치. prose ↔ structured form semantic check(E-06 sub-rule): Section 2.2 template vs Section 11.2 executable — MultiRowHeaderProps 시그니처(enableStickyHeader?, frozenColumns?) vs §5.2 코드(enableStickyHeader && rowIndex === 0 조건) 1:1 일치 ✓"
+    },
+    {
+      "id": "F-01",
+      "title": "패키지 대상 명시 (packages/grid-core vs grid-{pro})",
+      "result": "YES",
+      "evidence": "spec.md 헤더: 'Package: @tomis/grid-pro-header (Pro tier)'. §13: 'F-01: packageTarget명시' 항목에 '@tomis/grid-pro-header' 정확히. goals.json G-002: packageTarget='packages/grid-pro-header' 확인"
+    },
+    {
+      "id": "F-02",
+      "title": "라이선스 검증 호출 (Pro 패키지) — 인라인 stub fallback 패턴",
+      "result": "YES",
+      "evidence": "spec.md §9.4: '기존 license wiring 재사용 — 신규 dep 0건'. §9.4 상세: 'G-001 src/index.ts에 verifyOrWarn inline stub 존재'. index.ts L22-29 직접 확인: inline stub 정의 + verifyOrWarn('@tomis/grid-pro-header') 호출. 신규 import 없음. §5.3: 'index.ts 변경 없음 — G-001 기존 stub 그대로 유지'. §9.4 조건 3가지 충족: (1) inline 함수 정의 위치 src/index.ts 명시, (2) real import 금지, (3) peerDependenciesMeta.optional=true(package.json L36-38 확인). rubric v1.0.7 F-02 sub-rule(2026-05-14 추가): 'Pro 패키지 인라인 stub fallback 의무' — 4가지 YES 충족 조건 확인 ✓"
+    },
+    {
+      "id": "F-03",
+      "title": "문서 작성 계획 (Docusaurus + Storybook)",
+      "result": "YES",
+      "evidence": "spec.md §3 AC-006: 'Storybook story 1개 — sticky 2단 헤더 + frozenColumns=2 시나리오' 명시. §12.3 검증 체크리스트에서 'enableStickyHeader 단독' 및 'frozenColumns=2 + sticky' Storybook story 참조. Docusaurus 문서는 grid-pro-header README.md(package.json L20)에서 처리"
+    },
+    {
+      "id": "F-04",
+      "title": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "spec.md §4: 'peerDependencies: @tanstack/react-table v8, react, react-dom. 모든 runtime 의존성 peer'. §9.2: 'C-22 exactOptionalPropertyTypes: conditional spread 패턴'. package.json L30-34 확인: @tanstack/react-table, react, react-dom 모두 peerDependencies. peerDependenciesMeta L35-38: @tomis/grid-license만 optional peer"
+    },
+    {
+      "id": "G-01",
+      "title": "Spec에 TBD/TODO/미정 표현 없음",
+      "result": "YES",
+      "evidence": "spec.md 전체 검색: TBD/TODO 표현 0건. 모든 결정이 명시됨(D1-D4 사전 결정 표, EC-01~EC-07 엣지 케이스, D# 거부 대안 포함). spec D# vs goals.json 일관성 cross-check: D1(prefix TOMIS→topvel-grid-monorepo) spec에 명시 + goals.json L135-137 implementFiles 경로 일치(topvel-grid-monorepo prefix). Breakdown 일치(rubric v1.0.7 G-01 강화 v1.0.4): D# 명시 'MODIFY 2건' == §7 표 2행, spec D# 결정들(D1-D4)이 본문/AC/§7에 100% 반영"
+    }
+  ],
+  "summary": {
+    "yesCount": 29,
+    "noCount": 0,
+    "naCount": 3,
+    "denominator": 29,
+    "totalItems": 32,
+    "score": 100,
+    "threshold": 90,
+    "passed": true,
+    "migrationImpact": "low"
+  },
+  "failedChecks": [],
+  "feedback": [
+    "Verification passed: All 32 rubric checks assessed. 29 YES, 0 NO, 3 N/A (A-03, B-05, D-02, D-04, D-05 per rubric conditions). Score 100/90 ✓ PASS."
+  ],
+  "verifierNotes": {
+    "selfCheckValidation": "denominator calculation: YES(29) + NO(0) = 29 ✓. score = 29/29 × 100 = 100.0 ✓. JSON parse validation: passed.",
+    "keyFindings": [
+      "H-01/H-02/H-03 metagate: All pass. referenceEvidence paths exist, implementFiles rational, AC source tags present.",
+      "D1 prefix correction (TOMIS → topvel-grid-monorepo) properly applied to §7 implementFiles table + goals.json consistency confirmed.",
+      "F-02 (Pro package inline stub fallback pattern): G-002 correctly reuses G-001 src/index.ts stub without new real imports or dependencies. Inline stub verification + peerDependenciesMeta.optional=true confirmed.",
+      "E-01/E-06 (Section 7 ↔ Section 11 consistency): MODIFY 2 files (MultiRowHeader.tsx + types.ts) + Section 5.2 A/B/C pointers align with §11 implementation plan. Prose ↔ structured form semantic check: MultiRowHeaderProps signature consistent across §5.1, §5.2, §11.2.",
+      "AC-001~AC-006 all source-tagged (C-2, C-5, C-12, C-16, C-25). No TBD/TODO expressions.",
+      "Rubric v1.0.7 enhancements (G-01 D# ↔ goals.json cross-check, E-06 sub-rule prose ↔ structured form semantic): Both satisfied."
+    ]
+  },
+  "yesCount": 30,
+  "noCount": 0,
+  "naCount": 5,
+  "denominator": 30,
+  "score": 100,
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "tier": "low",
+  "threshold": 85,
+  "passed": true,
+  "runAt": "2026-05-15T09:42:00Z",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-002→full",
+      "tier=low",
+      "threshold=85",
+      "passed=true",
+      "runAt=2026-05-15T09:42:00Z",
+      "verifierModel=haiku"
+    ]
+  }
+}

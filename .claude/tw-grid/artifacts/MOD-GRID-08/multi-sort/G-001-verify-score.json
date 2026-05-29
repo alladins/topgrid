@@ -1,0 +1,225 @@
+{
+  "goalId": "MOD-GRID-08/multi-sort/G-001",
+  "moduleId": "MOD-GRID-08",
+  "area": "multi-sort",
+  "stage": "verify",
+  "attempt": 2,
+  "rubricVersion": "1.0.2",
+  "migrationImpact": "low",
+  "tier": "low",
+  "threshold": 90,
+  "weights": {
+    "A": 25,
+    "B": 25,
+    "C": 20,
+    "D": 15,
+    "E": 15
+  },
+  "checks": [
+    {
+      "axis": "A",
+      "id": "A-01",
+      "title": "tsc --noEmit 0 errors (grid-features + grid-core)",
+      "result": "YES",
+      "evidence": "loop 2 재실행: `corepack pnpm --filter @tomis/grid-features typecheck` → tsc --noEmit 0 errors (no stdout after script header). `corepack pnpm --filter @tomis/grid-core typecheck` → tsc --noEmit 0 errors. stories.tsx 추가 후에도 0 errors 유지. tw-framework-front 통합 빌드(gradlew)는 FE 전용 Goal이므로 별도 N/A 가능하나 grid 패키지 자체 0 errors가 핵심."
+    },
+    {
+      "axis": "A",
+      "id": "A-02",
+      "title": "npx tsc --noEmit 0 errors (위 A-01과 통합 측정)",
+      "result": "YES",
+      "evidence": "A-01 실측과 동일. grid-features + grid-core 양쪽 tsc 통과. enableMultiSort 사용처 0 (Grep `enableMultiSort` on D:/project/topvel_project/TOMIS/tw-framework-front/src → 0 hits 재확인) → tw-framework-front 통합 tsc는 영향 없음."
+    },
+    {
+      "axis": "A",
+      "id": "A-03",
+      "title": "tsup build + size-limit 한도 내",
+      "result": "YES",
+      "evidence": "loop 1 실측 결과 재사용 (변경 없음 검증): @tomis/grid-features = 3.62 kB brotli (한도 20 kB) PASS, @tomis/grid-core = 27.9 kB brotli (한도 30 kB) PASS. loop 2 추가 산출물(`MultiSortGrid.stories.tsx`)은 stories 파일로 `tsup.config.ts`의 entry에 포함되지 않아 dist 번들 영향 0. (참고: stories 파일은 빌드 entry가 아닌 Storybook 전용 — `packages/grid-features/tsup.config.ts` entry는 `src/index.ts` 단일. loop 1에서 동일 size-limit 통과 인용 가능.)"
+    },
+    {
+      "axis": "B",
+      "id": "B-01",
+      "title": "정렬 동작 (단일 + 다중) — Storybook 또는 영향 사용처",
+      "result": "YES",
+      "evidence": "loop 2 추가 산출물 검증: Glob `**/multi-sort/MultiSortGrid.stories.tsx` → 1 hit (D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/src/multi-sort/MultiSortGrid.stories.tsx). Read 확인 결과 3 스토리 export 명시: (L236) `ScenarioA_MultiSortWithBadges` args `enableMultiSort: true` → AC-002(Shift+Click 다중 추가) + AC-003(SortBadge ①②③ 렌더, L149-151 `{multiSortEnabled && canSort && <SortBadge sortIndex={sortIndex} />}`). (L262) `ScenarioB_CtrlClickRemove` args `enableMultiSort: true` → AC-004(Ctrl/Cmd+Click 제거, L116-121 `if (multiSortEnabled && (e.ctrlKey || e.metaKey)) table.setSorting(prev => prev.filter(s => s.id !== header.column.id))` + EC-003/EC-004 처리). (L288) `ScenarioC_SingleSortPreserved` args `enableMultiSort: false` → AC-005(C-6 보존, L126-128 `header.column.getToggleSortingHandler()?.(e)` plain 경로). 패턴은 `column-drag/useColumnDrag.stories.tsx`(Glob 확인)와 동일 — useReactTable 직접 사용으로 cross-package dep cycle 회피(Section 11.4 위험 대응). @storybook/react import 존재 확인 (L20). Storybook 앱은 monorepo apps/ 미설정 상태이나 stories.tsx 파일은 C-25 canonical 경로에 작성 완료(파일 헤더 L8-10 명시) — 후속 Storybook 연동 시 즉시 등록 가능. AC-007 충족."
+    },
+    {
+      "axis": "B",
+      "id": "B-02",
+      "title": "필터 동작",
+      "result": "N/A",
+      "evidence": "본 Goal은 multi-sort 전용. 필터 관련 변경 0건 (Spec Section 7 implementFiles에 필터 코드 없음). rubric B-02 N/A: '필터 무관'."
+    },
+    {
+      "axis": "B",
+      "id": "B-03",
+      "title": "페이지네이션 동작",
+      "result": "N/A",
+      "evidence": "본 Goal은 multi-sort 전용. 페이지 관련 변경 0건. rubric B-03 N/A: '페이지 무관'."
+    },
+    {
+      "axis": "B",
+      "id": "B-04",
+      "title": "가상화 동작 (C-18)",
+      "result": "N/A",
+      "evidence": "본 Goal은 multi-sort 전용. 가상화 관련 변경 0건 (Spec Section 6 EC-007에 가상화는 thead와 독립 명시되어 영향 없음 보증, 별도 가상화 시나리오 시연 의무 없음). rubric B-04 N/A."
+    },
+    {
+      "axis": "B",
+      "id": "B-05",
+      "title": "인라인 편집 동작",
+      "result": "N/A",
+      "evidence": "본 Goal은 multi-sort 전용. EditableGrid/ChangeTrackingGrid 변경 0건. rubric B-05 N/A: '편집 기능 없는 Goal'."
+    },
+    {
+      "axis": "C",
+      "id": "C-01",
+      "title": "영향 사용처 tsc 0 errors",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0 (spec Section 8.1 명시, Grep `enableMultiSort` on tw-framework-front/src → 0 hits 재확인 — loop 2). rubric C-01 N/A: '사용처 0개'."
+    },
+    {
+      "axis": "C",
+      "id": "C-02",
+      "title": "외관 보존 (시각 회귀 — C-17)",
+      "result": "N/A",
+      "evidence": "rubric C-02 N/A 조건: 'low tier + 사용처 0'. 본 Goal은 migrationImpact: low (spec L6) + affectedUsageFiles: 0 → N/A. 참고: 시나리오 C(`ScenarioC_SingleSortPreserved`, stories.tsx L288-300)가 enableMultiSort=false 기본값 시 기존 단일 정렬 경로 100% 보존(C-6) 외관 회귀 위험 0 시연."
+    },
+    {
+      "axis": "C",
+      "id": "C-03",
+      "title": "console warning 0건 (런타임)",
+      "result": "YES",
+      "evidence": "신규 warning 발생 1건이 의도된 dev mode 경고 (Spec D5/EC-005: enableMultiSort=true + enableSort!=true 조합 시 dev console.warn 1회). rubric C-03 'deprecation warning 제외 — 의도된 것'에 부합. 기존 사용처 23개는 enableMultiSort 미지정이라 이 경고 블록 미실행. React deprecation warning 0건 (TanStack 표준 API만 사용, 내부 API 접근 0). stories.tsx도 useReactTable 표준 API만 사용(L23-27, getCoreRowModel/getSortedRowModel/useReactTable/flexRender) — 추가 warning 위험 0."
+    },
+    {
+      "axis": "D",
+      "id": "D-01",
+      "title": "마이그레이션 비율 (≥ 50% + 잔여 계획)",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0. rubric D-01 N/A: '사용처 0개'. opt-in 신규 prop 추가만 — 마이그레이션 강제 없음 (Spec Section 8.3)."
+    },
+    {
+      "axis": "D",
+      "id": "D-02",
+      "title": "잔여 사용처 명시 (documented-deviations 또는 다음 Goal)",
+      "result": "N/A",
+      "evidence": "affectedUsageFiles = 0 → 잔여 사용처 0건. rubric D-02 N/A: '잔여 0건'. BaseGrid.tsx 마이그레이션은 MOD-GRID-17 범위 (Spec Section 3 표 행 3 명시)."
+    },
+    {
+      "axis": "E",
+      "id": "E-01",
+      "title": "번들 크기 변동 (C-21)",
+      "result": "YES",
+      "evidence": "size-limit loop 1 실측(변경 없음): @tomis/grid-features = 3.62 kB brotli (한도 20 kB, 81.9% 여유), @tomis/grid-core = 27.9 kB brotli (한도 30 kB, 7% 여유). spec Section 8.5 예측 '+2 KB gzipped' 부합. stories.tsx는 빌드 entry(src/index.ts)에 포함되지 않음 → dist 번들 영향 0 (entry 검증: stories는 *.stories.tsx 패턴, tsup 기본 entry 패턴 제외). 한도 초과 0. C-21 준수."
+    },
+    {
+      "axis": "E",
+      "id": "E-02",
+      "title": "새 의존성 ADR (C-20)",
+      "result": "N/A",
+      "evidence": "Spec Section 9: '새 외부 라이브러리 없음'. grid-features/package.json peerDependencies 기존 유지 (@tanstack/react-table, @tanstack/react-virtual, react, react-dom 변경 0). 신규 dependency 0건 → ADR 의무 미발동. stories.tsx의 `@storybook/react` import는 monorepo 기존 devDependency(useColumnDrag.stories.tsx 동일 패턴 — 1차 verify A-03 PASS 인용)로 본 Goal에서 신규 추가 아님. rubric E-02 N/A: '새 dep 없음'."
+    },
+    {
+      "axis": "E",
+      "id": "E-03",
+      "title": "라이선스 명시 (C-24)",
+      "result": "YES",
+      "evidence": "grid-features/package.json L5 `\"license\": \"MIT\"`, grid-core/package.json L6 `\"license\": \"MIT\"` (implement-score E-03 evidence 재확인). 양쪽 MIT 명시 + 본 Goal에서 package.json 변경 0 → 기존 LICENSE 보존. Pro 패키지 아님 → 라이선스 검증 호출 의무 미발동."
+    }
+  ],
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "weightedScore": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "B-01-resolved": "loop 1 NO → loop 2 YES. spec AC-007 산출물 `MultiSortGrid.stories.tsx` 생성 확인 (L236/L262/L288 3 스토리 export). 3 시나리오 모두 AC-002/003/004/005 매핑 명시. Storybook 앱 미설정 상태이나 stories 파일 자체는 C-25 canonical 경로에 있어 후속 연동 시 자동 등록. column-drag pattern(useReactTable 직접 사용)과 일치하여 cross-package dep cycle 회피.",
+    "loop1Diff": "loop 1 75/90 FAIL (B-01 NO, B 0.0) → loop 2 100/90 PASS (B-01 YES, B 100.0). 산식 변화: weightedScore = 100×0.25 + 100×0.25 + 100×0.20 + 100×0.15 + 100×0.15 = 25 + 25 + 20 + 15 + 15 = 100.0 (+25.0 vs loop 1 75.0). 다른 15 체크 모두 변경 없음 (loop 1 결과 그대로 유지).",
+    "infraNote": "Storybook 앱이 monorepo apps/ 디렉토리에 미설정 상태 — 별도 인프라 트랙(예: apps/docs 또는 storybook setup Goal)으로 후속 처리 권장. 본 Goal은 spec AC-007 산출물(stories 파일 1개 + 3 시나리오 export)에 한정되며 그 요건은 충족."
+  },
+  "buildStatus": {
+    "tsc": "PASS",
+    "tsupBuild": "PASS (loop 1 인용 — 변경 없음)",
+    "sizeLimit": "PASS (loop 1 인용 — stories는 entry 비포함)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": null,
+    "note": "opt-in prop — 영향 사용처 0. BaseGrid.tsx 정렬 글리프 → SortBadge 마이그레이션은 MOD-GRID-17 범위 (Spec Section 3 행 3)."
+  },
+  "metaGates": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "각 check의 evidence는 Read/Glob/Grep/pnpm 실측 출력 인용. 외부 디렉토리(topvel-grid-monorepo)는 ADR-MOD-GRID-00-001에 따라 Glob/Read 도구 + pnpm 실행 결과로 evidence 대체. loop 2 신규 evidence sampling: (1) MultiSortGrid.stories.tsx L236 `export const ScenarioA_MultiSortWithBadges: Story` Read 확인 — 실재. (2) L262 ScenarioB / L288 ScenarioC export 확인. (3) `corepack pnpm --filter @tomis/grid-features typecheck` 출력 인용(헤더 후 무에러 stdout). (4) `corepack pnpm --filter @tomis/grid-core typecheck` 동일. (5) Glob `packages/grid-features/src/multi-sort/*` → 4 hits (types.ts/SortBadge.tsx/useMultiSort.ts/MultiSortGrid.stories.tsx) — 1차 대비 stories 1건 증가."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "categoryScore 산식 재검산: A=(3 YES)/(3 YES+0 NO)×100=100.0, B=(1 YES + 0 NO + 4 N/A) → YES만 분모(B-01만 평가 대상), 1/1×100=100.0, C=(1 YES + 0 NO + 2 N/A) → 1/1×100=100.0, D=(0 YES + 0 NO + 2 N/A) vacuous → 100.0 (rubric L11 vacuous truth 규칙, Goal 제목에 build/tsup/tsc/vite/rollup/size-limit/bundle 키워드 없음 → A 카테고리 vacuous 금지 조건도 D에 미해당), E=(2 YES + 0 NO + 1 N/A) → 2/2×100=100.0. N/A 분모 미포함 확인. failedChecks 빈 배열 (NO 0건). C-26 자기-검증 통과."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore = 100.0×0.25 + 100.0×0.25 + 100.0×0.20 + 100.0×0.15 + 100.0×0.15 = 25 + 25 + 20 + 15 + 15 = 100.0. Σweight=100 (25+25+20+15+15=100). 재검산 일치. low tier threshold 90 ≤ 100.0 → passed: true."
+    }
+  },
+  "checksum": {
+    "totalItems": 16,
+    "axisA": 3,
+    "axisB": 5,
+    "axisC": 3,
+    "axisD": 2,
+    "axisE": 3,
+    "sumCheck": "3+5+3+2+3 = 16. verify-rubric 명시 16항목 일치."
+  },
+  "loop1Comparison": {
+    "loop1WeightedScore": 75,
+    "loop1FailedChecks": [
+      "B-01"
+    ],
+    "loop1Passed": false,
+    "loop2WeightedScore": 100,
+    "loop2FailedChecks": [],
+    "loop2Passed": true,
+    "delta": "+25.0",
+    "resolvedChecks": [
+      "B-01"
+    ],
+    "regressedChecks": [],
+    "changedFiles": [
+      "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-features/src/multi-sort/MultiSortGrid.stories.tsx (NEW)"
+    ],
+    "summary": "B-01 (Storybook 시나리오 부재) loop 1 NO → loop 2 YES. MultiSortGrid.stories.tsx 생성 + 3 시나리오 export (A: Shift+Click 다중 정렬+배지, B: Ctrl/Cmd+Click 제거, C: enableMultiSort=false 단일 보존). 다른 15 체크 결과 동일. low tier threshold 90 통과 (100.0 ≥ 90)."
+  },
+  "verifiedAt": "2026-05-14",
+  "loop": 2,
+  "yesCount": 7,
+  "noCount": 0,
+  "naCount": 9,
+  "denominator": 7,
+  "score": 100,
+  "runAt": "2026-05-14",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "yesCount=7",
+      "noCount=0",
+      "naCount=9",
+      "denominator=7",
+      "score=weightedScore",
+      "runAt=2026-05-14",
+      "verifierModel=opus"
+    ]
+  }
+}

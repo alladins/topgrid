@@ -1,0 +1,238 @@
+{
+  "moduleId": "MOD-GRID-13",
+  "moduleName": "Cell Merging — 같은 값 연속 셀 자동 병합 (rowSpan)",
+  "area": "merging",
+  "phase": "discovered",
+  "licenseTier": "Pro",
+  "packageTarget": "packages/grid-pro-merging",
+  "description": "동일 값을 가진 연속 셀을 자동 병합(rowSpan)하는 기능. column.mergeRows prop으로 비교 함수 지정, td rowSpan 계산 + 다음 N-1 셀 skip 렌더링. 정렬 변경 시 자동 재계산, react-virtual 호환(C-18). Wijmo AllowMerging enum 패턴을 참조해 TanStack 위에 자체 구현 (C-16 코드 차용 X). Pro 패키지 — grid-license 런타임 검증 필수 (MOD-GRID-99-A).",
+  "version": "1.0",
+  "createdAt": "2026-05-13",
+  "updatedAt": "2026-05-13",
+  "goals": [
+    {
+      "goalId": "G-001",
+      "title": "column.mergeRows prop API + rowSpan 자동 계산 렌더러 (핵심 병합 엔진)",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "dependsOn": ["MOD-GRID-01/G-001", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "페이지 개발자가 column 정의에 mergeRows: true 또는 mergeRows: (a, b) => boolean을 설정하면, 동일 값(또는 비교 함수 결과 true)의 연속 행 셀이 자동으로 병합(rowSpan)되어 표시되어야 한다.",
+      "userJourneySteps": [
+        "1. import { createColumns } from '@tomis/grid-core'",
+        "2. const columns = createColumns<Row>([{ id: 'dept', name: '부서', mergeRows: true }])",
+        "3. <Grid data={rows} columns={columns} enableMerging /> — mergeRows: true이면 dept 값 동일한 연속 셀 자동 병합",
+        "4. 커스텀 비교: mergeRows: (a, b) => a.dept === b.dept && a.year === b.year",
+        "5. 병합된 td에 rowSpan={n} 적용, 다음 n-1 행의 해당 셀은 null 반환 (skip 렌더링)",
+        "6. Pro 패키지 import 시 grid-license 검증 자동 실행 (MOD-GRID-99-A)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "column 타입 확장: mergeRows?: boolean | ((prev: TData, curr: TData) => boolean) — TypeScript strict, no any (C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "computeMergeSpans(rows: TData[], mergeColumns: string[], compareFn?) → Map<string, number> — 각 셀(rowIdx+'_'+colId)에 rowSpan 값 저장. C-1 준수 (추측 없이 실제 rows 기반 계산)", "source": "C-1" },
+        { "id": "AC-003", "criteria": "병합된 셀 td에 rowSpan={span} 적용. skip 셀(rowSpan 0)은 null 반환 (DOM 제거). 모든 TanStack 표준 API 사용 (flexRender, getCoreRowModel — C-2)", "source": "C-2" },
+        { "id": "AC-004", "criteria": "enableMerging prop false(기본) 시 병합 없음 — 기존 Grid 동작 완전 보존 (C-6 호환성)", "source": "C-6" },
+        { "id": "AC-005", "criteria": "Pro 패키지: package.json `\"license\": \"SEE LICENSE IN EULA\"` + EULA.md 존재 + import 시 grid-license 검증 호출 (C-24)", "source": "C-24" },
+        { "id": "AC-006", "criteria": "@mescius/wijmo* import 0건 (C-16 절대 준수). referenceEvidence.R-W: AllowMerging enum 개념 학습만, 코드 차용 X", "source": "C-16" },
+        { "id": "AC-007", "criteria": "decisions/MOD-GRID-13-decisions.md에 API 시그니처 결정 ADR 작성 (C-14 의무) — 대안: 선언적 boolean vs 비교 함수, vs CSS-only 접근, trade-off 2개+ 포함", "source": "C-14" },
+        { "id": "AC-008", "criteria": "C-12: tsc --noEmit 0 error (packages/grid-pro-merging)", "source": "C-12" },
+        { "id": "AC-009", "criteria": "C-25: Storybook story 1개 — 기본 mergeRows: true 시나리오 + 비교 함수 커스텀 시나리오", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 신규 Pro 패키지)",
+        "L1": "자체 설계: computeMergeSpans 함수 + React td rowSpan 렌더링. TanStack getCoreRowModel data 기반",
+        "L2": "(N/A)",
+        "L3": "(N/A — affectedUsageFiles 없음)",
+        "R-A": "AG Grid Row Spanning (Enterprise) — rowSpan callback 패턴 참조 (publish-aggrid-analysis.md). 우리는 자체 계산 엔진",
+        "R-W": "Wijmo AllowMerging enum (None/Cells/ColumnHeaders/RowHeaders/All) 개념 학습 (publish-wijmo-analysis.md §4) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 Pro 패키지 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/package.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/EULA.md",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/computeMergeSpans.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/MergingGrid.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/.size-limit.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/tsconfig.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/MergingGrid.stories.tsx",
+        "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-13-decisions.md"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+5 KB (types + computeMergeSpans + MergingGrid 렌더러)",
+        "package": "grid-pro-merging",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRun": "2026-05-15", "feedback": [] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRun": "2026-05-15", "feedback": [] },
+        "verify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRun": "2026-05-15", "feedback": [] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-15",
+        "reviewer": "opus",
+        "improvementsMade": [
+          {
+            "file": ".claude/tw-grid/constraints.md",
+            "change": "C-24 Pattern Catalog Note 추가 — grid-license 인라인 stub fallback 패턴 (2 occurrences: grid-pro-tracking, grid-pro-merging). 환경 제약(pnpm symlinks 부재 + MOD-GRID-99-A 미완료) 대응 의무·금지·검증 방법 명시. 3rd occurrence 시 정책 승격 검토 트리거 명시."
+          },
+          {
+            "file": ".claude/tw-grid/rubric/implement-rubric.md",
+            "change": "F-05 판정 기준에 3번째 카테고리 'Environmental constraint drift' 추가. promptSpecDrift[] 기록 의무 명시 + resolution 객체 형식 템플릿 제공. Value drift / Structural reference error / Environmental constraint drift 세 분류 확립. G-001 grid-license 사례를 canonical example로 인용."
+          }
+        ],
+        "patternsObserved": [
+          "P-1: Pro 패키지의 grid-license 의존 — pnpm workspace symlinks 부재 환경에서 namespace import 자체 TS2307. 인라인 no-op stub fallback이 monorepo 일관성 (grid-pro-tracking 선행 사례) + tsc 0 errors + MOD-GRID-99-A 완료 후 1줄 교체 경로 모두 충족.",
+          "P-2: 환경 제약 drift는 기존 Value drift / Structural reference error 어느 카테고리에도 깔끔하게 매핑되지 않음. F-05 분류 확장으로 Implementer 자율 정정 + ADR 보강 + promptSpecDrift 기록 의무를 canonical workflow로 확립.",
+          "P-3: spec body Section 11.2 가 namespace import 패턴 예시를 그대로 유지 (ADR-MOD-GRID-13-002만 인라인 stub으로 갱신). G-003 implementer가 spec body 먼저 읽으면 동일 drift 반복 위험. spec 본문 재작성은 self-review scope 외 — 본 harnessReview에서만 경고.",
+          "P-4: computeMergeSpans (Map<string, number>, 키 `${rowIdx}_${colId}`) 알고리즘은 G-002 (hierarchical) + G-003 (sort recompute) 모두 동일 파일 확장으로 재사용. 별도 catalog 항목 불필요 — ADR-MOD-GRID-13-003 내 정의 + 후속 Goal이 같은 파일 MODIFY 패턴."
+        ],
+        "summary": "G-001 specify/implement/verify 3 stage 100/100/100 PASS. 단일 substantive signal은 environmental constraint 기인 grid-license stub fallback (2 occurrences). C-24 Pattern Catalog Note + implement-rubric F-05 3rd category 확장으로 후속 Pro 패키지(MOD-GRID-12/14/15) 사전 차단. 3rd occurrence 시 C-33 정책 승격 검토. G-002/G-003은 computeMergeSpans + MergingGrid 동일 파일 확장 — drift 위험 낮음, 단 spec body Section 11.2 namespace import 예시 잔존은 G-003 implementer 주의 필요."
+      }
+    },
+    {
+      "goalId": "G-002",
+      "title": "복수 컬럼 계층 병합 (hierarchical merge — 좌측 컬럼 기준)",
+      "priority": "P1",
+      "migrationImpact": "low",
+      "dependsOn": ["MOD-GRID-13/G-001", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "여러 컬럼에 mergeRows를 동시에 설정하면, 좌측 컬럼 값이 동일한 범위 안에서만 우측 컬럼을 병합하는 계층 병합이 적용되어야 한다. (예: 부서 컬럼 병합 범위 내에서 팀 컬럼 병합)",
+      "userJourneySteps": [
+        "1. columns: [{ id: 'dept', mergeRows: true }, { id: 'team', mergeRows: true }, { id: 'name' }]",
+        "2. dept가 같은 범위 내에서 team도 같으면 team 셀 병합",
+        "3. dept가 달라지면 team 병합 범위 자동 종료 (계층 독립)",
+        "4. [NOTE: 'mergePriority 옵션' 제안은 spec D3/ADR-MOD-GRID-13-007에서 거부됨. 우선순위는 columns 배열 순서(암시적)로 결정 — 별도 MergePriorityConfig 타입 없음. promptSpecDrift 기록됨.]"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "computeMergeSpans가 hierarchical 모드 지원: 복수 mergeRows 컬럼 처리 시 좌측(낮은 index) 컬럼의 병합 범위 경계를 우측 컬럼에 전파. TypeScript strict, no any (C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "단일 컬럼 mergeRows와 동일 함수로 처리 (G-001 computeMergeSpans 확장) — 분기 로직 최소화 (C-2 TanStack 표준 API 유지)", "source": "C-2" },
+        { "id": "AC-003", "criteria": "@mescius/wijmo* import 0건 (C-16). Wijmo AllowMerging 계층 개념 학습만, 코드 차용 X", "source": "C-16" },
+        { "id": "AC-004", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-005", "criteria": "C-25: Storybook story 1개 — dept/team 계층 병합 시나리오 (1000행+ C-18 가상화 포함)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 신규)",
+        "L1": "자체 설계: 좌측 컬럼 span 경계 전파 알고리즘",
+        "L2": "(N/A)",
+        "L3": "(N/A)",
+        "R-A": "AG Grid Column Spanning (Enterprise) 패턴 참조 (publish-aggrid-analysis.md)",
+        "R-W": "Wijmo AllowMerging.Cells 계층 개념 (publish-wijmo-analysis.md §4) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/computeMergeSpans.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/MergingGrid.stories.tsx",
+        "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-13-decisions.md"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+2 KB (hierarchical 분기 로직)",
+        "package": "grid-pro-merging",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRun": "2026-05-15", "feedback": [] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRun": "2026-05-15", "feedback": [] },
+        "verify": { "status": "done", "threshold": 85, "loops": 1, "maxLoops": 3, "score": 100, "lastRun": "2026-05-15", "feedback": [] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-15",
+        "reviewer": "opus",
+        "improvementsMade": [
+          {
+            "file": ".claude/tw-grid/rubric/implement-rubric.md",
+            "change": "v1.0.9: A-05 Coverage Verifier 의무 추가 — binding AC sub-clause 미구현 시 deferredAcs[] 존재 확인 + PARTIAL 처리. G-004 + G-002 2-instance pattern (C-30↔AC-binding loophole)."
+          }
+        ],
+        "patternsObserved": [
+          "P-1: AC sub-clause deferral without deferredAcs[] — 2nd occurrence (G-004 AC-004/005, G-002 AC-005 C-18). G-003 is the followup Goal for react-virtual integration.",
+          "P-2: goals.json userJourneySteps can propose API names (mergePriority 옵션) that spec D-table decisions reject. Cross-check goals.json step-level API language against spec D-table is necessary for future G-NNN implementers.",
+          "P-3: ancestorBoundary algorithm (MODIFY-only, no NEW files) — cleanest G-NNN pattern so far. Drop-in replacement with identical function signature + regression invariant ADR-008 ensures safe extension without breaking callers."
+        ],
+        "summary": "G-002 specify/implement/verify 3 stage 100/100/100 PASS (low tier, threshold 85). Substantive signals: (1) AC-005 C-18 sub-clause deferral without deferredAcs[] — self-review patched + rubric A-05 v1.0.9 strengthened. (2) goals.json userJourneySteps[3] mergePriority API proposal rejected by spec D3/ADR-007 — added to promptSpecDrift[] retroactively. G-003 inherits computeMergeSpans.ts MODIFY + adds react-virtual integration — G-001 harnessReview P-3 warning still applies (spec body Section 11.2 namespace import example)."
+      }
+    },
+    {
+      "goalId": "G-003",
+      "title": "정렬/필터 변경 시 병합 자동 재계산 + 가상화 호환 (C-18)",
+      "priority": "P0",
+      "migrationImpact": "low",
+      "dependsOn": ["MOD-GRID-13/G-001", "MOD-GRID-13/G-002", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "사용자가 컬럼 헤더를 클릭해 정렬하거나 필터를 변경하면, 변경된 행 순서에 맞게 셀 병합이 즉시 재계산되어야 한다. react-virtual과 함께 사용해도 병합 셀이 정확히 렌더링되어야 한다.",
+      "userJourneySteps": [
+        "1. Grid에서 dept 컬럼 정렬 → sorted rows 기준 computeMergeSpans 재실행",
+        "2. 정렬 전 A/A/B → 정렬 후 A/A/B 또는 B/A/A — 각 순서에 맞게 rowSpan 재계산",
+        "3. enableVirtualization=true 시 visible rows 범위 내 rowSpan 정합성 유지",
+        "4. react-virtual estimateSize와 rowSpan 계산이 충돌하지 않음 (고정 행 높이 가정 제한 문서화)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "TanStack sorting/filtering state 변경 시 useMemo/useEffect로 computeMergeSpans 재실행 — dependency array 정확 (C-2 표준 API, C-4 strict)", "source": "C-2" },
+        { "id": "AC-002", "criteria": "C-18 가상화 호환: enableVirtualization=true 시 @tanstack/react-virtual overscan 범위 포함 visible rows로 병합 계산. position:absolute 셀 사용 금지 (C-18)", "source": "C-18" },
+        { "id": "AC-003", "criteria": "rowSpan > 1 셀이 가상화 스크롤 경계를 넘을 때 처리 방침 문서화 (limitations) — 구현 제한 없음 시 truncate to visible 범위 허용", "source": "C-18" },
+        { "id": "AC-004", "criteria": "@mescius/wijmo* import 0건 (C-16)", "source": "C-16" },
+        { "id": "AC-005", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-006", "criteria": "C-25: Storybook story 1개 — 정렬 변경 + 병합 재계산 인터랙션 시나리오 (1000행+ 가상화 포함 C-18)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 신규 Pro 패키지)",
+        "L1": "자체 설계: TanStack getSortedRowModel/getFilteredRowModel 결과 rows 기반 재계산. useMemo 의존성 배열 = [sorting, columnFilters, data]",
+        "L2": "(N/A)",
+        "L3": "(N/A)",
+        "R-A": "AG Grid Row Spanning 재계산 패턴 참조 (publish-aggrid-analysis.md)",
+        "R-W": "Wijmo AllowMerging 정렬 시 재계산 동작 (publish-wijmo-analysis.md §3) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/MergingGrid.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/src/MergingGrid.stories.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-merging/package.json",
+        "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-13-decisions.md"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+1 KB (재계산 로직은 G-001 computeMergeSpans 확장)",
+        "package": "grid-pro-merging",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 2, "maxLoops": 3, "score": 100, "lastRun": "2026-05-15", "feedback": [] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100, "lastRun": "2026-05-15", "feedback": [] },
+        "verify": { "status": "done", "threshold": 85, "loops": 1, "maxLoops": 3, "score": 100, "lastRun": "2026-05-15", "feedback": [] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-15",
+        "reviewer": "opus",
+        "improvementsMade": [
+          {
+            "file": ".claude/tw-grid/artifacts/MOD-GRID-13/merging/G-003-implement-score.json",
+            "change": "F-06 evidence corrected: removed 'illustrative pseudocode' self-dismissal language. specCodeDefects[] populated with 1 entry documenting spec EC-004 + Section 11.2 orphan cell pseudocode logic inversion + implementer's corrected logic (low severity). feedback.specCodeDefectAutonomouslyResolved 1-line added. F-06 obligation now complete per rubric body. Patch precedent: G-002 self-review deferredAcs[] retroactive patch."
+          }
+        ],
+        "patternsObserved": [
+          "P-1 (positive, validated): A-05 v1.0.9 acceptedDeferredAcs binding flow end-to-end. G-002 deferred AC-005 C-18 sub-clause → G-003 implement-score.json acceptedDeferredAcs ID match → AC-002 (useVirtualizer integration) + AC-006 (SortAndRecompute 1000+ row story) jointly fulfill. Closes G-002 R-1 cascading risk.",
+          "P-2 (loophole, 1st occurrence): F-06 'illustrative pseudocode' self-dismissal. Implementer correctly inferred spec EC-004 + Section 11.2 orphan cell pseudocode logic inversion and applied corrected logic, but recorded specCodeDefects=[] citing spec disclaimer ('pseudocode for clarity'). F-06 rubric body has no disclaimer-exemption clause. Patched retroactively (G-002 deferredAcs[] precedent applied). 2nd occurrence would justify F-06 clarification: 'spec disclaimer (illustrative/pseudocode/conceptual) 무관 specCodeDefects[] 기록 의무'.",
+          "P-3 (validated/contained): goals.json discover-stage drift 3rd occurrence in MOD-GRID-13 (G-001 prefix, G-002 mergePriority API, G-003 implementFiles count 2 vs spec Section 7 5). Each caught earlier in pipeline. G-003 caught by specify-rubric v1.0.6 G-01 cross-check at spec loop 0 → 93.1 FAIL → loop 1 PASS. Policy working as designed — no escalation needed.",
+          "P-4 (cross-Goal discipline): D2 inline-stub-only spec body pattern carried correctly through G-001/G-002/G-003. G-001 harnessReview P-3 warning (namespace import example in spec body) did not materialize in G-003 implement (verified: MergingGrid.tsx grep `import \\* as gridLicense` = 0). C-24 Pattern Catalog Note + spec D2 reinforcement effective.",
+          "P-5 (algorithm reuse): computeMergeSpans.ts unchanged in G-003 — D4 'whole-rows precompute' strategy lets G-001/G-002 algorithm handle TanStack sort+filter rows from getRowModel() directly. ADR-009 useMemo deps anti-duplication pattern ([rows, mergeColumns, enableMerging] only, NOT [sorting, columnFilters, ...]) reusable in MOD-GRID-12 (DataMap) / MOD-GRID-15 (Aggregation) when those Pro packages add sort-aware re-computation. ADR-011 (rowSpan-virtualization-boundary L-01) correctly scoped package-local — body-row rowSpan + virtualization intersection unique to MOD-GRID-13; no cross-module catalog promotion."
+        ],
+        "summary": "G-003 specify/implement/verify 3 stage 100/100/100 PASS (low tier, threshold 85). Closes MOD-GRID-13 MERGING area (G-001+G-002+G-003 all 100/100/100). Single substantive improvement: F-06 specCodeDefects[] under-reporting via 'illustrative pseudocode' self-dismissal — patched retroactively in implement-score.json (G-002 deferredAcs[] precedent). G-002 deferred AC-005 C-18 sub-clause end-to-end resolution validates A-05 v1.0.9 binding flow. goals.json drift 3rd occurrence caught by specify-rubric v1.0.6 G-01 cross-check — policy contained. No new rubric/constraint additions: 1st-occurrence F-06 disclaimer-exemption pattern noted for future watch; L-01 rowSpan-virtualization-boundary correctly stays package-local ADR-011. Next module steps: sticky first-cell mitigation deferred to separate Goal/PRD (ADR-011 alternative 2)."
+      }
+    }
+  ]
+}

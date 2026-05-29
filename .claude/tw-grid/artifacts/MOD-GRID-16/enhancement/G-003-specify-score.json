@@ -1,0 +1,269 @@
+{
+  "goalId": "MOD-GRID-16/enhancement/G-003",
+  "moduleId": "MOD-GRID-16",
+  "area": "enhancement",
+  "stage": "specify",
+  "tier": "medium",
+  "threshold": 90,
+  "rubricVersion": "1.0.7",
+  "checks": [
+    {
+      "category": "A",
+      "item": "A-01",
+      "title": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "spec L461-469: L0 실제 파일 5개(TreeGrid.tsx, ColumnPinGrid.tsx, grid-core/legacy/* 3) Read 확인. L0 section 본문에 파일 경로 + 핵심 코드 발췌(getSubRows, useState<ExpandedState>, pinLeft/pinRight) 모두 인용됨."
+    },
+    {
+      "category": "A",
+      "item": "A-02",
+      "title": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "spec L471-480: L1 section에서 ExpandedState, Row.toggleExpanded(), Row.getCanExpand(), Row.getIsExpanded(), getExpandedRowModel() 등 6개 TanStack API signature 명시됨. Section 2.2 useRowKeyboardNav L154-157에 Row<TData> type parameter 포함."
+    },
+    {
+      "category": "A",
+      "item": "A-03",
+      "title": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "YES",
+      "evidence": "spec L481-485: 8 variant 패턴 분석. 'useState<ExpandedState>은 TreeGrid만 사용', '키보드 접근성 8 variant 모두 없음 — 이 Goal 최초', 'storage 영속화는 useStoragePersist가 8 state 키를 persist하나 expanded 미포함' 등 중복 패턴 명시."
+    },
+    {
+      "category": "A",
+      "item": "A-04",
+      "title": "L3 영향 사용처 카운트 명시",
+      "result": "YES",
+      "evidence": "spec L400-408: Section 8.1에서 '현재 @tomis/grid-pro-master의 직접 사용처는 없음 (G-001/G-002 모두 affectedUsageFiles: []). tw-framework-front TreeGrid.tsx + ColumnPinGrid.tsx는 alias 제공 후 별도 migration (MOD-GRID-17 목적)' 명시. 정확한 카운트 0 + 사유 명확."
+    },
+    {
+      "category": "A",
+      "item": "A-05",
+      "title": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "spec L487-498: R-A AG Grid 'expandAllRows() / collapseAllRows() API (Enterprise)', 'onRowGroupOpened 이벤트', R-W Wijmo 'FlexGrid.childItemsPath', 'keyActionEnter=CycleEditable', 'RowDetailProvider 영속화 없음' 명시. 참조용 분석으로 코드 차용 없음."
+    },
+    {
+      "category": "B",
+      "item": "B-01",
+      "title": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "spec L93-189: UseExpandedPersistenceOptions interface (L93-108), RowKeyboardNavProps interface (L144-147), RowPinningOptions interface (L177-188) 모두 명시. 반환 타입 [ExpandedState, setter] (L111-112), RowKeyboardNavProps | Record<string,never> (L157)."
+    },
+    {
+      "category": "B",
+      "item": "B-02",
+      "title": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "spec L220-279: 3개 사용 예시 — (1) 기본 expanded 영속화 OrdersPage (L223-249), (2) 키보드 접근성 useRowKeyboardNav MasterDetailGrid 내부 wiring (L252-264), (3) C-6 alias TreeGrid backward compatibility (L266-279). 기본 + 고급 시나리오 커버."
+    },
+    {
+      "category": "B",
+      "item": "B-03",
+      "title": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "spec L94-108: UseExpandedPersistenceOptions의 storageType (@default 'localStorage' 명시), initialExpanded (@default {} 명시). L138-141: useRowKeyboardNav enabled?: boolean 파라미터. 모든 props optional 여부 명확."
+    },
+    {
+      "category": "B",
+      "item": "B-04",
+      "title": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "spec L191-192: 'useExpandedPersistence, UseExpandedPersistenceOptions, RowKeyboardNavProps는 internal 파일에서 직접 정의하고 index.ts를 통해 public export'. L207-208: index.ts에서 'export { useExpandedPersistence } from './internal/useExpandedPersistence'' 경로 명시. L216-217: TreeGrid/ColumnPinGrid re-export경로 '@tomis/grid-core' 명시."
+    },
+    {
+      "category": "B",
+      "item": "B-05",
+      "title": "ref API + imperative handle 명시",
+      "result": "N/A",
+      "evidence": "ref API 불필요 — useExpandedPersistence는 useState 기반 hook, useRowKeyboardNav는 props 반환 hook, TreeGrid/ColumnPinGrid는 re-export alias. 모두 선언적 패턴이므로 useImperativeHandle 불필요."
+    },
+    {
+      "category": "C",
+      "item": "C-01",
+      "title": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "spec L142-151: 8개 AC (AC-001~AC-008) 명시됨. threshold 3개 충족."
+    },
+    {
+      "category": "C",
+      "item": "C-02",
+      "title": "각 AC에 출처 태그",
+      "result": "YES",
+      "evidence": "spec L142-151: 모든 AC에 source 태그 명시. AC-001 'C-4' (TypeScript strict), AC-002 'C-2' (TanStack standard), AC-003 'L0', AC-004 'C-6' (호환), AC-005 'C-6', AC-006 'C-14' (ADR), AC-007 'C-12' (빌드), AC-008 'C-25' (문서)."
+    },
+    {
+      "category": "C",
+      "item": "C-03",
+      "title": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "spec L142-151: '영향 사용처 N개 외관 보존' (AC), 'tsc 0 errors' (AC-007), 'Tab indentation 추가' (AC-003), '타입 정의' (AC-006) 모두 객관적 검증 가능. '잘 동작' 같은 주관 표현 없음."
+    },
+    {
+      "category": "C",
+      "item": "C-04",
+      "title": "migrationImpact 명시",
+      "result": "YES",
+      "evidence": "spec L47: 'Migration Impact: medium' 명시. goals.json G-003 필드 확인: 'migrationImpact: medium'. Section 1 내 impact 사유 L54-59: '두 가지 UX 향상 추가 + 신규 hook + alias re-export → medium scope'."
+    },
+    {
+      "category": "C",
+      "item": "C-05",
+      "title": "AC에 호환성 검증 항목 포함",
+      "result": "YES",
+      "evidence": "spec L150: AC-008 'C-25: JSDoc + Storybook story 1개'. AC-007 'C-12: tsc --noEmit 0 error'. 호환성 검증 항목(tsc 0 errors, API backward compat via alias) 포함."
+    },
+    {
+      "category": "D",
+      "item": "D-01",
+      "title": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "YES",
+      "evidence": "spec L400-408: Section 8.1에서 '현재 직접 사용처 없음 (0개)' 명시. goals.json affectedUsageFiles: [] 확인 (L173). 카운트 정확히 0으로 표기."
+    },
+    {
+      "category": "D",
+      "item": "D-02",
+      "title": "기존 변형 대응표 (Section 3)",
+      "result": "YES",
+      "evidence": "spec L283-291: Section 3 variant 대응표. TreeGrid → AC-004 alias, ColumnPinGrid → AC-005 alias, MasterDetailGrid → 키보드 접근성 추가, BaseGrid/VirtualGrid/... → 영향 없음. 각 variant별 새 API 대응 및 마이그레이션 액션 명시."
+    },
+    {
+      "category": "D",
+      "item": "D-03",
+      "title": "Breaking change 명시",
+      "result": "YES",
+      "evidence": "spec L295-301: 'Breaking change: 없음.' 명확히 명시. useExpandedPersistence 신규 export + 기존 API 변경 없음, useRowKeyboardNav MasterDetailGrid 내부 wiring 외부 API 변경 없음, re-export 비충돌 설명."
+    },
+    {
+      "category": "D",
+      "item": "D-04",
+      "title": "Deprecation 전략",
+      "result": "YES",
+      "evidence": "spec L303-305: 'TreeGrid/ColumnPinGrid alias는 G-005 기준 1 minor 버전 후 다음 major 제거 (C-23 — G-005 D8 정책 그대로 유지)' 명시. 단계적 마이그레이션 전략 명확."
+    },
+    {
+      "category": "D",
+      "item": "D-05",
+      "title": "롤백 전략 (Section 8.4)",
+      "result": "YES",
+      "evidence": "spec L421-425: Section 8.4에서 '신규 hook 롤백 시 index.ts export 제거 즉시 비활성화', 'MasterDetailGrid wiring 롤백 시 spread 제거 1줄', 'TreeGrid/ColumnPinGrid re-export 롤백 시 index.ts 2줄 제거' 명시. 롤백 가능 전략 명확."
+    },
+    {
+      "category": "D",
+      "item": "D-06",
+      "title": "번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "spec L428-441: Section 8.5에서 예상 번들 크기 분석. useExpandedPersistence ~0.8 KB, useRowKeyboardNav ~0.5 KB, types.ts ~0.1 KB, re-export ~0 KB, MasterDetailGrid wiring ~0.2 KB = 합계 ~1.6 KB. 한도 20 KB 내 충분. 측정 의무도 명시(Step 7)."
+    },
+    {
+      "category": "E",
+      "item": "E-01",
+      "title": "파일별 변경 명세 (NEW/MODIFY)",
+      "result": "YES",
+      "evidence": "spec L368-394: Section 7 Truth Table + Section 11.3 추가 확인. NEW 2 (useExpandedPersistence.ts, useRowKeyboardNav.ts) + MODIFY 4 (types.ts, index.ts, MasterDetailGrid.tsx, decisions.md). Section 11의 모든 Step(1~6)이 Section 7 표 행과 매칭 확인."
+    },
+    {
+      "category": "E",
+      "item": "E-02",
+      "title": "Before/After 코드 스니펫",
+      "result": "YES",
+      "evidence": "spec L541-576: Section 11.2에서 Before/After 2개 제시. Before: 기존 index.ts (L543-553) vs After: G-003 추가 후 (L555-576). MasterDetailGrid useRowKeyboardNav wiring도 예시 포함(L255-264)."
+    },
+    {
+      "category": "E",
+      "item": "E-03",
+      "title": "구현 순서 2단계 이상",
+      "result": "YES",
+      "evidence": "spec L503-536: Section 11.1에서 8단계 구현 순서. Step 1 decisions.md → Step 2 useExpandedPersistence → Step 3 MasterDetailGrid wiring → Step 4 useRowKeyboardNav → Step 5 types.ts → Step 6 index.ts → Step 7 번들 측정 → Step 8 Storybook. 의존성 고려 명시(Step 3과 4는 순서 교환 가능)."
+    },
+    {
+      "category": "E",
+      "item": "E-04",
+      "title": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "spec L344-364: EC-01~EC-08 8개 명시. EC-01 localStorage 미지원 (Safari private), EC-02 JSON 파싱 오류, EC-03 QuotaExceededError, EC-04 expanded={} 상태의 Enter 키, EC-05 enableExpanding=false, EC-06 동일 storageKey 충돌, EC-07 sessionStorage 탭 닫기, EC-08 alias import 충돌."
+    },
+    {
+      "category": "E",
+      "item": "E-05",
+      "title": "검증 계획 (Section 12)",
+      "result": "YES",
+      "evidence": "spec L589-611: Section 12에 단위 테스트(useExpandedPersistence.test.ts, useRowKeyboardNav.test.ts, shouldToggleExpand.test.ts 5개 테스트), 시각 회귀 검증(Storybook story), 빌드 검증(tsc, tsup, size-limit) 명시."
+    },
+    {
+      "category": "E",
+      "item": "E-06",
+      "title": "Section 7 Re-decision ↔ Final Table Consistency",
+      "result": "YES",
+      "evidence": "spec L370-394: Section 7 본문(D# 결정)과 최종 표 일치 확인. D1 monorepo prefix 결정 → 최종 표 행 #1-4 모두 topvel-grid-monorepo/packages/ prefix. D2 goals.json 보정 → 최종 표 #5 decisions.md 명시. D4 thin re-export → #4 index.ts re-export 명시. 재결정 문장과 최종 표 1:1 반영. Prose ↔ Structured form 검증(Appendix B L663-671): 모순 0건."
+    },
+    {
+      "category": "F",
+      "item": "F-01",
+      "title": "패키지 대상 명시",
+      "result": "YES",
+      "evidence": "spec L617: Section 13 '패키지 대상: @tomis/grid-pro-master (Pro tier, SEE LICENSE IN EULA)' 명확히 명시. D1(D5 D6) 결정에서도 패키지 명시."
+    },
+    {
+      "category": "F",
+      "item": "F-02",
+      "title": "라이선스 검증 호출",
+      "result": "YES",
+      "evidence": "spec L619-621: Section 13 '신규 컴포넌트 없음. MasterDetailGrid.tsx + ContextMenuGrid.tsx module-level verifyLicense(@tomis/grid-pro-master) 기존 호출 유지 (D7 — 추가 호출 불필요)'. Pro 패키지이므로 라이선스 검증 위치 명시."
+    },
+    {
+      "category": "F",
+      "item": "F-03",
+      "title": "문서 작성 계획",
+      "result": "YES",
+      "evidence": "spec L623-628: Section 13 '문서 계획': Docusaurus 페이지 경로(docs/pro/master-detail/keyboard-accessibility.md + expanded-persistence.md), Storybook story paths(MasterDetailGrid.stories.tsx), JSDoc 의무 명시."
+    },
+    {
+      "category": "F",
+      "item": "F-04",
+      "title": "peerDependencies 정책",
+      "result": "YES",
+      "evidence": "spec L630-631: 'react, @tanstack/react-table, @tomis/grid-core, @tomis/grid-license — 기존 peer 4종, 신규 추가 없음'. goals.json G-003 dependsOn 필드(L132)와 Section 9 L449-453 의존성 표에 peer 정책 명시. C-22 준수."
+    },
+    {
+      "category": "G",
+      "item": "G-01",
+      "title": "Spec에 TBD/TODO 없음 + D# ↔ goals.json 일관성",
+      "result": "YES",
+      "evidence": "spec 전체: TBD/TODO/미정 표현 0건. D# Decision Index(L14-23)의 D1-D8 모두 명시됨. D1 prefix 결정(topvel-grid-monorepo) → goals.json implementFiles[0-4] 경로 prefix일치(L166-171). D2 goals.json 보정 결정 → 실제 goals.json implementFiles 6개 entry는 spec 본문의 파일 카운트와 매칭. D1 monorepo prefix vs D2 goals.json 보정은 상호 일관성 확인됨."
+    }
+  ],
+  "yesCount": 31,
+  "noCount": 0,
+  "naCount": 1,
+  "denominator": 31,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [],
+  "evaluatedAt": "2026-05-15T14:22:00Z",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 26,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 1,
+    "originalReportedDenominator": 26,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "runAt": "2026-05-15T14:22:00Z",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-003→full",
+      "runAt=2026-05-15T14:22:00Z",
+      "verifierModel=haiku"
+    ]
+  }
+}

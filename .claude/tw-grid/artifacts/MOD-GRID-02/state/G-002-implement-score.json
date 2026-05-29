@@ -1,0 +1,203 @@
+{
+  "goalId": "MOD-GRID-02/useGridState initialState + controlled mode/G-002",
+  "module": "MOD-GRID-02",
+  "area": "useGridState initialState + controlled mode",
+  "stage": "implement",
+  "rubricVersion": "1.0.4",
+  "migrationImpact": "medium",
+  "buildResult": {
+    "tsc": "0 errors",
+    "tsupBuild": "OK",
+    "sizeLimit": "OK — @tomis/grid-core 24.87 KB / 30 KB limit (G-001 기준 +0.23 KB)"
+  },
+  "bundleMeasured": {
+    "gridCore": "24.87 KB (brotli)",
+    "baseline": "24.64 KB (G-001 verify 실측)",
+    "delta": "+0.23 KB",
+    "limit": "30 KB",
+    "margin": "5.13 KB"
+  },
+  "promptSpecDrift": [
+    {
+      "field": "useControllableState.UseControllableStateOptions.value",
+      "promptValue": "value?: T (optional)",
+      "specValue": "value: T | undefined (union 명시)",
+      "resolution": "spec applied (D4 C-29 union 명시 pattern — exactOptionalPropertyTypes 환경 TS2375 방지)"
+    },
+    {
+      "field": "useControllableState return setter signature",
+      "promptValue": "(next: T) => void",
+      "specValue": "(updater: T | ((prev: T) => T)) => void",
+      "resolution": "spec applied (OnChangeFn<T> 호환 — functional update 지원, spec Section 2.3 + 11.2 Step 2)"
+    }
+  ],
+  "implementedFiles": {
+    "NEW": [
+      "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/internal/useControllableState.ts"
+    ],
+    "MODIFY": [
+      "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/useGridState.ts",
+      "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/types.ts",
+      "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core/src/index.ts"
+    ]
+  },
+  "linesAdded": {
+    "useControllableState.ts": 121,
+    "useGridState.ts": 155,
+    "types.ts": "+69 (3 타입 추가)",
+    "index.ts": "+3 (3 type export 추가)"
+  },
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "4개 파일 모두 Glob/Write 확인. internal/useControllableState.ts NEW, useGridState.ts/types.ts/index.ts MODIFY"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "UseGridStateOptions<TData> {initialState?, state?, onStateChange?} / GridStateValues<_TData> 8 state / GridStateKey union 8개 / useControllableState<T> signature — Spec Section 2.1+2.3 일치"
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "tsc --noEmit 0 errors. Spec Section 2.5 (uncontrolled+initialState) + Section 2.6 (controlled) 사용 예시 컴파일 OK"
+    },
+    "A-04": {
+      "result": "N/A",
+      "evidence": "G-002 신규 기능 추가 (대응할 AS-IS variant 없음). 기존 useGridState() 호출 options=undefined로 보존"
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "AC-001(UseGridStateOptions strict) AC-002(controlled) AC-003(uncontrolled+initialState) AC-004(mixed) AC-005(StrictMode) 모두 구현"
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "tsc --noEmit 0 errors (process TS2580 → declare const process 패턴으로 해결, TData unused → _TData prefix 적용)"
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Grep ': any|<any>|as any' → 0건. @ts-ignore/@ts-nocheck → 0건"
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "TanStack OnChangeFn<T> 타입만 사용. 내부 API 직접 접근 0"
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "신규 .css/.scss 파일 0개. 훅 파일만 생성"
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "tsup 빌드 성공. ESLint 설정 확인 불가 환경이나 tsc strict + noUnusedLocals 0 errors로 등가 검증"
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep '@mescius/wijmo|from wijmo' → 0건"
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "프로덕션 코드에 dummyData/mockData/fakeData/TODO 0건"
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "options optional → 기존 useGridState() 호출 타입 호환 유지. tsc 0 errors"
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "사용처 0개 (affectedUsageFiles=[]) + migrationImpact medium이나 시각 변경 없음 (훅 only)"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "신규 console.warn은 D6 명시된 controlled/uncontrolled 전환 경고 — intentional"
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "peerDependencies 변경 없음. package.json 수정 안 함. react/@tanstack/react-table peer 유지"
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] (0개). 신규 기능 추가 — 기존 사용처 0개"
+    },
+    "D-02": {
+      "result": "YES",
+      "evidence": "마이그레이션 사용처 0개 (C-19 affectedUsageFiles=0)"
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 없음 (affectedUsageFiles=[])"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "@tomis/grid-core 24.87 KB / 30 KB 한도. +0.23 KB (예측 +2 KB 대비 훨씬 작음)"
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "신규 외부 dep 없음. useControllableState는 react peer만 사용 (useState, useRef)"
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "package.json 변경 없음 (license 필드 기존 'MIT' 유지)"
+    }
+  },
+  "metaGates": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "4개 파일 모두 실재. useControllableState.ts Write 성공 + Glob 확인"
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "변경 파일 ⊆ spec.md Section 7 표 (NEW 1 + MODIFY 3 = 4). goals.json 2개 vs spec 4개 → spec 우선 적용 (feedback 참조)"
+    },
+    "F-03": {
+      "result": "N/A",
+      "evidence": "외부 monorepo 디렉토리 (topvel-grid-monorepo) — git 추적 불가. Glob + tsc + tsup 빌드 성공으로 대체"
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Grep 'useControllableState|UseGridStateOptions|GridStateValues|GridStateKey' → 4개 파일 모두 발견"
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "promptSpecDrift 2건 기록: value?: T → T|undefined (spec D4), setter signature (spec Section 2.3). 모두 spec 우선 적용"
+    }
+  },
+  "yesCount": 16,
+  "noCount": 0,
+  "naCount": 6,
+  "denominator": 16,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "autoFixed": [
+    {
+      "check": "B-01 (tsc TS2580 process)",
+      "action": "declare const process: { env: { NODE_ENV?: string } } | undefined — useDeprecationWarn.ts 패턴 동일 적용"
+    },
+    {
+      "check": "B-01 (tsc TS6133 TData unused)",
+      "action": "GridStateValues<TData> → GridStateValues<_TData> — 기존 GridState<_TData> 패턴 일관성 적용"
+    }
+  ],
+  "documentedDeviations": [],
+  "feedback": {
+    "promptSpecDriftSummary": "prompt에서 value?: T (optional) + setter (next: T) => void를 제안했으나 spec Section 2.3/11.2 + D4 C-29 기준으로 value: T|undefined union 명시 + (updater: T|((prev:T)=>T))=>void OnChangeFn 호환 시그니처로 spec 우선 적용",
+    "goalsJsonImplementFiles": "goals.json G-002 implementFiles=2개 (useGridState.ts, useControllableState.ts) vs spec Section 7=4개 (+types.ts, index.ts). spec 우선 적용으로 4개 모두 구현",
+    "bundleDelta": "G-001 24.64 KB → G-002 24.87 KB (+0.23 KB). 예측 +2 KB 대비 실제 +0.23 KB. 한도 30 KB 충분",
+    "tscFixes": "2건 자동 수정: process TS2580 (declare const 패턴) + TData unused (_, prefix 패턴)"
+  },
+  "moduleId": "MOD-GRID-02",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-002→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

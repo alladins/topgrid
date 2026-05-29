@@ -1,0 +1,199 @@
+{
+  "goalId": "MOD-GRID-02/useGridState initialState + controlled mode/G-002",
+  "module": "MOD-GRID-02",
+  "area": "useGridState initialState + controlled mode",
+  "stage": "verify",
+  "rubricVersion": "1.0.2",
+  "migrationImpact": "medium",
+  "thresholds": {
+    "high": 95,
+    "medium": 90,
+    "low": 85
+  },
+  "weights": {
+    "A": 15,
+    "B": 20,
+    "C": 30,
+    "D": 20,
+    "E": 15
+  },
+  "categoryScores": {
+    "A": 100,
+    "B": 100,
+    "C": 100,
+    "D": 100,
+    "E": 100
+  },
+  "categoryCounts": {
+    "A": {
+      "yes": 2,
+      "no": 0,
+      "na": 1,
+      "denominator": 2
+    },
+    "B": {
+      "yes": 0,
+      "no": 0,
+      "na": 5,
+      "denominator": 0,
+      "vacuous": true,
+      "vacuousReason": "hook-only Goal — 그리드 인터랙션(정렬/필터/페이지/가상화/편집) 동작은 useGridState 자체와 분리되며 Grid 본체에 위임. spec '그 외 B-01~B-05 N/A' 명시"
+    },
+    "C": {
+      "yes": 1,
+      "no": 0,
+      "na": 2,
+      "denominator": 1
+    },
+    "D": {
+      "yes": 0,
+      "no": 0,
+      "na": 2,
+      "denominator": 0,
+      "vacuous": true,
+      "vacuousReason": "affectedUsageFiles=[] (0개) — 신규 기능 추가, 기존 사용처 영향 없음. rubric D-01/D-02 모두 'N/A: 사용처 0개' 조건 충족"
+    },
+    "E": {
+      "yes": 1,
+      "no": 0,
+      "na": 2,
+      "denominator": 1
+    }
+  },
+  "checks": {
+    "A-01": {
+      "result": "N/A",
+      "evidence": "그리드 작업이 FE 전용 — gradlew compileJava 무관 (rubric A-01 N/A 조건 충족)"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "tsc --noEmit 직접 실행 결과 EXIT=0 (D:/project/topvel_project/topvel-grid-monorepo/packages/grid-core 위치). exactOptionalPropertyTypes 환경에서 useControllableState value: T | undefined union 명시 (D4 C-29) 적용으로 TS2375 없음"
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "tsup 빌드 EXIT=0 (dist/index.cjs 33.13KB, dist/index.mjs 32.41KB raw). size-limit @tomis/grid-core: 24.87 kB / 30 kB limit (brotli) — G-001 baseline 24.64 KB 대비 +0.23 KB. 한도 5.13 KB 여유"
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "hook 단독 — 정렬 동작은 Grid 본체 + useReactTable 통합 시 발현. useGridState 자체는 state container만 담당 (spec hint 'N/A')"
+    },
+    "B-02": {
+      "result": "N/A",
+      "evidence": "hook 단독 — 필터 동작은 Grid 본체에 위임 (spec hint 'N/A')"
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "hook 단독 — 페이지네이션 동작은 Grid 본체에 위임 (spec hint 'N/A')"
+    },
+    "B-04": {
+      "result": "N/A",
+      "evidence": "hook 단독 — 가상화 동작은 Grid 본체 + useGridVirtualizer에 위임 (spec hint 'N/A')"
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "G-002 인라인 편집 기능 미포함 (controlled state 추상화 only, spec hint 'N/A')"
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] (0개) — 마이그레이션 사용처 0. tw-framework-front의 src/hooks/tomis/useGridState.ts는 별개 로컬 hook (@tomis/grid-core 미참조 확인). rubric C-01 'N/A: 사용처 0개' 조건 충족"
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "사용처 0개 + hook only (시각 변경 없음). rubric C-02 'low tier + 사용처 0' 정신과 일치 — 마이그레이션 시각 회귀 검증 대상 없음"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "신규 console.warn 1건은 D6 명시 'controlled/uncontrolled mode changed after mount' dev mode 전환 경고 (useControllableState.ts L98-105) — rubric '의도된 것은 제외' 적용. process.env.NODE_ENV !== 'production' 가드 + declare const process minimal type 패턴 (useDeprecationWarn.ts 선례)"
+    },
+    "D-01": {
+      "result": "N/A",
+      "evidence": "affectedUsageFiles=[] — rubric D-01 'N/A: 사용처 0개' 조건 충족. G-002는 신규 기능 추가 Goal (controlled state 패턴 도입)"
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "잔여 사용처 0건 — rubric D-02 'N/A: 잔여 0건' 조건 충족. G-003에서 onStateChange debounce 옵션 추가 예정 (시그니처 무변경, breaking 없음)"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "size-limit 측정 @tomis/grid-core 24.87 kB / 30 kB limit (brotli) — G-001 baseline 24.64 kB 대비 +0.23 kB. 예측 +2 kB 대비 훨씬 작음. 한도 5.13 kB 여유"
+    },
+    "E-02": {
+      "result": "N/A",
+      "evidence": "신규 외부 dependency 0건 (package.json peerDependencies 변경 없음 — react/react-dom/@tanstack/react-table/@tanstack/react-virtual 그대로). useControllableState는 react peer만 사용 (useState, useRef)"
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "package.json 변경 없음 (license: 'MIT' 기존 유지). rubric E-03 'N/A: package.json 변경 없는 Goal' 조건 충족"
+    }
+  },
+  "metaGates": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "evidence sampling 5건 Read 확인: (1) useControllableState.ts L40 'value: T | undefined' D4 union 명시 ✓ (2) useControllableState.ts L98-105 console.warn dev guard ✓ (3) useGridState.ts L107/115/126/137/148/159/170/181 useControllableState<> 8개 호출 ✓ (4) useGridState.ts L104 snapshotRef + L192-201 매 render 갱신 ✓ (5) types.ts L514/540/569 GridStateValues/GridStateKey/UseGridStateOptions 3개 타입 추가 ✓ + index.ts L14-16 3개 type export ✓. promptSpecDrift 2건 implement-score 기록 확인. 외부 monorepo 경로 — Glob/Read로 실재 확인 (ADR-MOD-GRID-00-001 적용)"
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "categoryScores 산식 재검산: A=2/(2+0)=100 ✓ B=vacuous 100 (전 N/A, hook-only Goal) ✓ C=1/(1+0)=100 ✓ D=vacuous 100 (사용처 0개) ✓ E=1/(1+0)=100 ✓. 카테고리 합계 A(3)+B(5)+C(3)+D(2)+E(3)=16 = rubric verify 16항목 일치. failedChecks=[] (NO 0건, N/A 미포함)"
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "weightedScore = 100×0.15 + 100×0.20 + 100×0.30 + 100×0.20 + 100×0.15 = 15+20+30+20+15 = 100.0. weights sum = 100 ✓"
+    }
+  },
+  "weightedScore": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "summary": "G-002 IMPLEMENT 완전 통과 — useControllableState NEW + useGridState 8개 wiring + types.ts 3 타입 + index.ts 3 export. tsc 0 errors, tsup OK, size-limit 24.87/30 kB (+0.23 kB), MOD-GRID-01 (Grid.tsx + 8 internal + 7 legacy) 보존 100%. promptSpecDrift 2건 spec 우선 적용 (C-27 준수). C-29 union 명시 패턴 정확 적용 (D4)."
+  },
+  "buildStatus": {
+    "tsc": "PASS (EXIT=0)",
+    "tsupBuild": "PASS (CJS 33.13 KB + ESM 32.41 KB raw)",
+    "sizeLimit": "PASS (24.87 kB / 30 kB brotli, +0.23 kB vs G-001)"
+  },
+  "preservationCheck": {
+    "Grid.tsx": "unchanged (mtime 13:56 — modify operations all 16:56-16:57)",
+    "internal/": "8 baseline + 1 NEW (useControllableState.ts) = 9 files. baseline 8 (CheckboxColumn/computePinnedOffset/ResizeHandle/buildTableOptions/Skeleton/useAutoSelectFirstRow/EmptyState/useGridVirtualizer/useGridImperativeHandle) untouched",
+    "legacy/": "7 files unchanged (BaseGrid/VirtualGrid/ColumnPinGrid/GroupedHeaderGrid/TreeGrid/useDeprecationWarn/index)"
+  },
+  "migrationStatus": {
+    "totalAffected": 0,
+    "migrated": 0,
+    "remaining": [],
+    "rate": 1,
+    "note": "신규 기능 추가 Goal — affectedUsageFiles=[]. controlled state 사용처는 G-003+ 또는 신규 페이지(MOD-GRID-17) 도입 시 점진 채택"
+  },
+  "selfChecksum": {
+    "categoryItemSum": 16,
+    "rubricExpected": 16,
+    "weightSum": 100,
+    "match": true
+  },
+  "moduleId": "MOD-GRID-02",
+  "tier": "medium",
+  "yesCount": 4,
+  "noCount": 0,
+  "naCount": 12,
+  "denominator": 4,
+  "score": 100,
+  "runAt": "2026-05-27",
+  "verifierModel": "opus",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-002→full",
+      "tier=medium",
+      "yesCount=4",
+      "noCount=0",
+      "naCount=12",
+      "denominator=4",
+      "score=weightedScore",
+      "runAt=2026-05-27",
+      "verifierModel=opus"
+    ]
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "goalId": "MOD-GRID-12/datamap/G-001",
+  "module": "MOD-GRID-12",
+  "area": "datamap",
+  "stage": "specify",
+  "rubricVersion": "1.0.6",
+  "migrationImpact": "medium",
+  "threshold": 90,
+  "metaGates": {
+    "H-01": {
+      "result": "YES",
+      "evidence": "spec.md L209-214 Section 5 cites: L0='EditableGrid.tsx L79-93, L80' (Verified: Glob found D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx); R-A='publish-aggrid-analysis.md L113-116' (Verified: Glob found .claude/tw-grid/references/publish-aggrid-analysis.md); R-W='publish-wijmo-analysis.md §4 L142, L195' (Verified: Glob found .claude/tw-grid/references/publish-wijmo-analysis.md). All L0/R-A/R-W paths exist."
+    },
+    "H-02": {
+      "result": "YES",
+      "evidence": "Section 7 implementFiles (L254-263): Monorepo paths (D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/...) — parent directory verified via Bash ls: directory exists with src/, dist/, package.json, tsconfig.json. TOMIS internal path (D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/...) — parent directory verified via Bash ls: existing MOD-GRID-00~06-decisions.md files present (will create MOD-GRID-12-decisions.md). Both parent directories real, satisfying H-02 requirements. C-28 compliance: D2 decision (L21) explicitly corrects goals.json TOMIS/packages → topvel-grid-monorepo/packages prefix."
+    },
+    "H-03": {
+      "result": "YES",
+      "evidence": "goals.json AC-001 through AC-009 (lines 31-41) all include 'source' field: AC-001 (C-4), AC-002 (C-4), AC-003 (C-2), AC-004 (C-6), AC-005 (C-24), AC-006 (C-16), AC-007 (C-14), AC-008 (C-12), AC-009 (C-25). spec.md Section 5 (L206-224) cross-references these sources in implementation guidance. AC source tags complete and referenced."
+    }
+  },
+  "metaGatesPassed": true,
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "Section 1 (L30) and Section 5 (L209) cite L0: EditableGrid.tsx L79-93 meta.selectOptions pattern with actual line number and code reference confirmed via Read."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Section 3.2 (L116-140) provides TanStack ColumnDef import and createDataMap<TItem> signature with proper generic type syntax."
+    },
+    "A-03": {
+      "result": "N/A",
+      "evidence": "G-001 defines new Pro package API contract. No existing 8 variants in grid-pro-datamap to extract patterns from. This is greenfield development."
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "Section 1.4 (L54-60) explicitly lists scope and affects EditableGrid.tsx. goals.json affectedUsageFiles (L63-65) confirms 1 affected file."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "Section 5 R-A (L213): 'publish-aggrid-analysis.md L113-116'; R-W (L214): 'publish-wijmo-analysis.md §4 L142, L195'. Both reference libraries documented with path and section citations."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "Section 3.1 DataMap interface (L106-113), Section 3.2 PathOrAccessor type and CreateDataMapOptions (L122-130), Section 3.3 TomisColumnDef (L156-169) all define explicit types. Zero 'any' usage."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Four distinct code examples: (1) Section 1.3 User Journey basic createDataMap; (2) Section 10.2 L340 keyof path; (3) Section 10.2 L344 function path; (4) Section 10.2 L347 TomisColumnDef assignment. Covers basic and advanced scenarios."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "Section 3.1 L106: 'DataMap<TItem = unknown>' default. Section 3.3 L161, L168: dataMap and selectOptions marked '?' optional. All optional/required clearly declared."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "Section 3 specifies export location 'packages/grid-pro-datamap/src/types.ts' (L97, L119, L145). Section 7 L258 confirms types.ts as NEW file."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "DataMap is pure interface, not component. No useImperativeHandle needed."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep for @ts-ignore/@ts-nocheck/: any/as any/<any>/declare const yields no actual violations. L189 explains: '(gridLicense as { verifyGridLicense?: () => void })' is structural type assertion (not 'as any'). Section 13 L398 confirms compliance."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "goals.json AC-001 through AC-009: 9 criteria, exceeding 3 minimum."
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "goals.json each AC has 'source' field with C-## or L## tags. All 9 ACs tagged."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "All AC are objectively verifiable: no any (tsc), path support (type check), interface extension (assignment), EULA (file check), no wijmo (grep), ADR (read), tsc 0 error, Storybook story (file check)."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "spec.md L9 'migrationImpact: medium' matches goals.json L17. Justified: new Pro package, 1 affected usage file, 1 minor deprecation path for selectOptions alias."
+    },
+    "C-05": {
+      "result": "YES",
+      "evidence": "AC-006 specifies no wijmo imports. AC-004 specifies selectOptions backward compatibility via 1 minor alias retention."
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "Section 1.4 mentions EditableGrid.tsx. Section 8 L182-190 lists 1 affected file with exact path. goals.json L63-65 confirms."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "G-001 is new package, not variant modification. No 8-variant translation table needed. D7 (L26) explains scope."
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "Section 4 L197 'Breaking Change: false' and 'selectOptions alias 1 minor 유지'. Migration path: 'EditableGrid selectOptions → column.dataMap'."
+    },
+    "D-04": {
+      "result": "YES",
+      "evidence": "Section 4 L197 specifies selectOptions deprecation: '1 minor 유지 후 제거'."
+    },
+    "D-05": {
+      "result": "YES",
+      "evidence": "D6 (L25) documents feature-detect pattern `verifyGridLicense?.()`. Section 3.4 L182 implements safe optional call. Rollback: EditableGrid unchanged per L201."
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "Section 11 L364 '+3 KB' with ≤ 20 KB limit. Measured at IMPLEMENT stage per rubric."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Section 7 L254-263: 5 NEW + 1 MODIFY, all labeled. All files have status marker."
+    },
+    "E-02": {
+      "result": "NO",
+      "evidence": "Rubric E-02 requires 'Section 11에 핵심 변경의 Before/After 코드 블록'. Spec Section 11 (L360) is '번들 영향', not implementation steps. Section 10.2 has type-check examples, not Before/After transformation guidance. Spec lacks implementation narrative showing existing column pattern → new column.dataMap usage with code."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "G-001 is API definition (no rendering), all files created in single parallel step. No sequential dependency exists."
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "Section 12 L373-380 lists 4 risks: R-1 grid-license import, R-2 intersection fields, R-3 covariance, R-4 EULA template. ≥3 edge cases covered."
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "Section 10 L316-330 specifies AC verification with methods. Section 10.2 provides type-check template. Covers tsc, grep, read validation."
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "Section 7 text contains no re-decision keywords (grep search: 재결정/변경 대상/대체/수정함 = 0 hits). Write set table unchanged and final."
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "spec.md L7 'licenseTier: Pro'. Section 1.4 'Pro 패키지'. goals.json L7 'licenseTier: Pro'. Package clearly identified."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "D6 (L25) specifies grid-license verification pattern. Section 3.4 L178-182 implements `verifyGridLicense?.()` call. C-24 met."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "AC-009 (goals.json L40): 'C-25: Storybook story 1개'. Documentation requirement specified."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Section 9 L291-301 documents package.json peers: '@tanstack/react-table', 'react', 'react-dom' as peerDependencies. C-22 compliance."
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "Grep for TBD/TODO/미정 = 0 matches. Section 13 L383-405 all items [x] checked. No unresolved items."
+    }
+  },
+  "yesCount": 28,
+  "noCount": 1,
+  "naCount": 4,
+  "categoryCount": {
+    "A": 5,
+    "B": 6,
+    "C": 5,
+    "D": 6,
+    "E": 6,
+    "F": 4,
+    "G": 1,
+    "total": 33
+  },
+  "denominator": 29,
+  "score": 96.6,
+  "passed": true,
+  "failedChecks": [
+    "E-02"
+  ],
+  "feedback": {
+    "E-02": "Spec Section 11 (L360-368) titled '번들 영향', not implementation steps. Rubric E-02 requires Section 11 with Before/After code showing existing pattern transformation. Recommend: add Section 11 '구현 계획' before bundle section with code showing (Before) existing EditableGrid selectOptions pattern → (After) new column.dataMap = createDataMap(...) usage. Reference MOD-GRID-01/G-001, MOD-GRID-04/G-001 for expected narrative structure."
+  },
+  "selfVerification": {
+    "naExcludedFromDenominator": true,
+    "naItems": [
+      "A-03",
+      "B-05",
+      "D-02",
+      "E-03"
+    ],
+    "naCount": 4,
+    "denominator": 29,
+    "denominatorCalculation": "YES(28) + NO(1) = 29. N/A(4) excluded from denominator.",
+    "failedChecksOnlyContainsNO": true,
+    "failedChecksCount": 1,
+    "categorySumEquals33": true,
+    "categorySum": "A(5) + B(6) + C(5) + D(6) + E(6) + F(4) + G(1) = 33 ✓",
+    "scoreFormulaCheck": "yesCount(28) / denominator(29) × 100 = 96.55 ≈ 96.6",
+    "scoreFormulaVerification": "96.6 × 29 / 100 = 27.99 ≈ 28 ✓ (within ±0.5 tolerance)",
+    "jsonParseSuccess": true
+  },
+  "verifiedAt": "2026-05-15",
+  "notes": "Corrected previous verifier errors: (1) H-01 refs verified via Glob in correct paths (.claude/tw-grid/references/); (2) H-02 parent directory exists (confirmed Bash ls); (3) E-02 single NO for missing Before/After narrative (not structural error). Score 96.6/100 with medium impact threshold 90 — PASS.",
+  "moduleId": "MOD-GRID-12",
+  "tier": "medium",
+  "runAt": "2026-05-15",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-001→full",
+      "tier=medium",
+      "runAt=2026-05-15",
+      "verifierModel=haiku"
+    ]
+  }
+}

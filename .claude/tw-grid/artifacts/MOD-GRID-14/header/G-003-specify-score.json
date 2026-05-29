@@ -1,0 +1,188 @@
+{
+  "goalId": "MOD-GRID-14/header/G-003",
+  "module": "MOD-GRID-14",
+  "area": "header",
+  "stage": "specify",
+  "rubricVersion": "1.0.8",
+  "migrationImpact": "low",
+  "threshold": 90,
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "Section 1 — Goal ID (G-003), Title ('그룹 헤더 자식 컬럼 visibility 일괄 토글 + GroupedHeaderGrid alias (C-6)'), User Story (L19-26: 사용자 클릭 시 일괄 숨김/표시 토글)"
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Section 1 User Journey Steps (L23-27): 4단계 구체적 시나리오 — Grid prop 설정 → 클릭 → 토글 → alias 호환"
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "Section 2 Acceptance Criteria 테이블: AC-001~006 6개 항목, 모두 testable ('~가 호출된다', '~가 표시된다', tsc 0 errors, Storybook story)"
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "Section 4 — affectedUsageFiles 1개 명시 (tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx). C-34 boundary note (L99): 'TOMIS base repo에 있어 worktree 경계 외부' 명시"
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "Section 1 — migrationImpact: 'low', Breaking: 'false' (L29-30 header 명시)"
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "Section 7 파일 테이블 (L394-402): 7개 파일 목록. D1 Decision (L378-379) = 'goals.json G-003 implementFiles는 모두 TOMIS/packages 형태로 저장되어 있으나 실제 경로는 topvel-grid-monorepo/packages' — corrected prefix 적용 후 7개 파일 모두 topvel-grid-monorepo 기준"
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Section 5 — MultiRowHeaderProps interface (L115-127), GroupedHeaderGridProps interface (L133-143). TypeScript 엄격 타입 + 주석 포함"
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "Section 6.1 (L169-229): enableGroupToggle BEFORE/AFTER 비교 (L177-186), groupClickHandler 예시 (L192-200), colSpan override (L222-229). Section 6.5 (L346-362): GroupedHeaderGrid.tsx 교체 BEFORE/AFTER"
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "Section 4 Dep resolution path (L102-106): vite.config.ts L26 인용 ('`@tomis/grid-pro-header`: path.resolve(__dirname, `../../topvel-grid-monorepo/packages/grid-pro-header/src`)') — Read 검증 (vite.config.ts 실제 L26 동일 경로 확인)"
+    },
+    "B-05": {
+      "result": "YES",
+      "evidence": "Section 5.1 MultiRowHeaderProps (L115-127): enableGroupToggle?: boolean — optional prop. C-29 exact optional 준수 (Section 11.2 CORRECT/WRONG 예시 L523-536)"
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "Section 2 Acceptance Criteria: AC-001~006 6개 (≥3). 모두 binary testable"
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "Section 2 AC 테이블 (L37-44): 모든 AC에 Source Constraint column 명시. AC-001(C-2, C-4), AC-002(C-5), AC-003(C-6, C-23), AC-004(C-16), AC-005(C-12), AC-006(C-25)"
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "Section 2 AC 표현 — 'enableGroupToggle?: boolean prop — 그룹 헤더 클릭 시 TanStack column.toggleVisibility() 자식 일괄 호출' (객관), '그룹 접힘 시 그룹 헤더 셀 colSpan=1 + 아이콘 표시' (객관), 'tsc --noEmit 0 error' (binary). 주관 표현 0건"
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "Section 1 header (L29): 'migrationImpact: low'. goals.json L174: 'migrationImpact: low' — 일치. 사유: 신규 패키지 Pro tier, 기존 기능 강화 (group toggle), affectedUsageFiles 1개만"
+    },
+    "C-05": {
+      "result": "YES",
+      "evidence": "AC-005 (L189): 'C-12: tsc --noEmit 0 error (packages/grid-pro-header 전체)' — 호환성 검증 항목. C-34 (L99): tw-framework-front 외부 경로 워크트리 경계 주의 명시 — 호환성 고려"
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "Section 7 D# 결정: D1(L378-379 — goals.json prefix 수정), D2(L381-383 — enableGroupToggle MultiRowHeader만), D3(L385-387 — legacy alias 역방향 dep 없음), D4(L389-391 — package.json NO CHANGE) = 4개 결정"
+    },
+    "D-02": {
+      "result": "YES",
+      "evidence": "D2 (L381-383): '결론: enableGroupToggle prop은 MultiRowHeader에만 추가한다 → grid-core/Grid.tsx cross-package 배선 불필요' (cross-package 대안 거부). D3 (L385-387): '역방향 의존 발생 → GridPaginationOptions 인라인 정의' (reverse dep 대안 거부). D4: peerDeps 완전성"
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "Section 7 C-30 Truth Table 검증 (L403-404): '위 테이블의 모든 경로는 D1 corrected prefix(topvel-grid-monorepo/packages) 사용. goals.json의 잘못된 TOMIS/packages 경로는 D1에 의해 corrected됨. 산문과 테이블 간 모순 없음.'"
+    },
+    "D-04": {
+      "result": "YES",
+      "evidence": "Section 3.1 (L50-56) 최상위에 load-bearing finding 명시: 'Grid.tsx renders inline <thead> (does NOT call MultiRowHeader)' — L268-348 인라인 렌더링 직접 확인 → D2 결정 근거"
+    },
+    "D-05": {
+      "result": "YES",
+      "evidence": "Section 9.1 (L434): 'ADR-MOD-GRID-14-002' 인용. Section 8 (L419): 'ADR-MOD-GRID-14-002 (Pro 인라인 stub fallback ADR)' 명시. 실제 decisions.md ADR-MOD-GRID-14-002 존재 확인 (Read 검증 완료)"
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "Section 7 D1 Decision (L378-379): 'goals.json G-003 implementFiles는 모두 TOMIS/packages 형태로 저장되어 있으나 실제 경로는 topvel-grid-monorepo/packages' — C-28 위반 인식 + D1 결정으로 corrected"
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Section 12 Edge Cases 테이블 (L562-571): EC-01~05 5개 (≥3). 모두 구체적 시나리오 + 기대 동작 명시"
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "Section 12 EC-02 (L567-568): '부분 접힘 상태(일부 visible, 일부 hidden) → every(c => !c.getIsVisible()) = false → 전체 접힘(false) 실행. 명확한 UX' — 구체적 처리 명시"
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "Section 12 EC-05 (L570): 'enableGroupToggle=false (기본값/미설정) → G-001/G-002 동작 완전 보존. onClick=undefined, colSpan=TanStack 계산값, 아이콘 없음' — breaking false, backward compat 보증"
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "Section 4 (L99, '이 파일은 TOMIS base repo에 있어 worktree 경계 외부'). Section 6.5 (L364, 'C-34 경계 주의: 이 파일은 TOMIS base repo 내부에 있어 현재 worktree 경계 외부'). Appendix A Risk Assessment (L659) C-34 Likelihood 명시"
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "Section 10.3 Visual Regression (L476-502): 검증 방법 3가지 명시 (Tailwind className grep, Storybook story diff, @mescius/wijmo import 0건 grep)"
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "Section 7 본문에 '재결정', '변경', '수정함' 표현 0건. Section 10.1 (L455-460): '항목 보존 여부' 테이블로 보존/변경 명시. 재결정 과정 기술 없으므로 E-06 trigger 미발동 → YES (prep 조건 충족, 모순 0건)"
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "Section 9.3 (L450-451): 'EULA.md — G-001에서 생성, G-003에서 수정 없음. package.json \"license\": \"SEE LICENSE IN EULA\" 동일' — packageTarget 암시적 Pro tier 확인. goals.json L7 'packageTarget: packages/grid-pro-header' 명시"
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "Section 9.1 (L429-436): F-02-1~4 모두 ✅ YES 명시. (F-02-1) verifyOrWarn G-001 src/index.ts L27-30 인라인 정의 유지. (F-02-2) real import 금지 — G-003 index.ts 수정 GroupedHeaderGrid re-export만. (F-02-3) peerDeps G-001 완료. (F-02-4) ADR-MOD-GRID-14-002 G-001에서 작성, G-003 spec 인용"
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "AC-006 (L190): 'C-25: Storybook story 1개 — 그룹 토글 + GroupedHeaderGrid alias 동일 동작 시나리오' 명시. Section 10.3 (L493-495): 'Storybook story diff' 검증 방법 명시"
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Section 7 D4 (L389-391): 'package.json NO CHANGE (D1 corrected path)'. Section 7 테이블 (L399): 'EULA.md … NO CHANGE'. Section 5.3 (L149-161): '@tanstack/react-table peerDeps 스탠다드' 명시"
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "Section 7 D# 결정 표 (L393-402) 모든 항목 명시. TBD/TODO 표현 0건. 'pending'은 goals.json 원본 상태, spec 내 '추후 결정' 같은 미정 표현 0건. 모든 파일/액션/수정 유형 specification 완료"
+    },
+    "H-01": {
+      "result": "YES",
+      "evidence": "Section 1 referenceEvidence (L411-420): L0 (GroupedHeaderGrid.tsx), L1 (TanStack APIs), R-A (publish-aggrid-analysis.md), R-W (publish-wijmo-analysis.md §4), ADR-MOD-GRID-14-002 모두 Glob/Read 검증 완료. 경로 실재 + 내용 일치 확인"
+    },
+    "H-02": {
+      "result": "YES",
+      "evidence": "Section 7 implementFiles 7개 파일: 조부모 디렉토리 'D:/project/topvel_project/topvel-grid-monorepo/' 존재 (Glob 검증). NEW 파일(legacy/GroupedHeaderGrid.tsx)의 부모 디렉토리는 'src/legacy/' — 신규 생성 정상. 컨벤션('packages/grid-pro-header/src/legacy/...') 프로젝트 구조와 일치"
+    },
+    "H-03": {
+      "result": "YES",
+      "evidence": "Section 2 AC 테이블 (L37-44) 6개 모두 Source Constraint 태그 명시: AC-001(C-2, C-4), AC-002(C-5), AC-003(C-6, C-23), AC-004(C-16), AC-005(C-12), AC-006(C-25). 모두 spec 다른 섹션에서 실제 인용됨 (Section 5, 6, 10, 11, 13)"
+    }
+  },
+  "yesCount": 35,
+  "noCount": 0,
+  "naCount": 0,
+  "denominator": 35,
+  "score": 100,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {},
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 32,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 0,
+    "originalReportedDenominator": 32,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-14",
+  "tier": "low",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-003→full",
+      "tier=low",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

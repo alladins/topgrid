@@ -1,0 +1,544 @@
+{
+  "moduleId": "MOD-GRID-12",
+  "moduleName": "DataMap — 셀 단위 lookup (foreign key display)",
+  "area": "datamap",
+  "phase": "discovered",
+  "licenseTier": "Pro",
+  "packageTarget": "packages/grid-pro-datamap",
+  "description": "Wijmo DataMap(코드→레이블 매핑 + 편집 시 드롭다운)을 TanStack 셀 렌더러 위에 자체 구현한다. 표시 셀에서 코드 값을 레이블로 변환하고, 편집 셀에서 드롭다운을 자동 생성한다. 동적 비동기 옵션 로드 + 캐싱을 지원한다. 기존 EditableGrid의 selectOptions 마이그레이션 alias 포함. Pro 패키지 — 라이선스 검증 런타임(MOD-GRID-99-A) 필수 연동.",
+  "version": "1.0",
+  "createdAt": "2026-05-13",
+  "updatedAt": "2026-05-13",
+  "goals": [
+    {
+      "goalId": "G-001",
+      "title": "DataMap API 설계 — createDataMap(items, valuePath, displayPath) + column-level dataMap prop",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-01/G-001", "MOD-GRID-05/G-001", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "페이지 개발자가 createDataMap({ items: statusList, valuePath: 'code', displayPath: 'label' }) 를 생성하고 column 정의에 dataMap 프로퍼티로 전달하면, 해당 컬럼의 표시 셀이 코드 값 대신 레이블로 렌더링되어야 한다.",
+      "userJourneySteps": [
+        "1. import { createDataMap } from '@tomis/grid-pro-datamap'",
+        "2. const statusMap = createDataMap({ items: [{ code: '1', label: '활성' }, { code: '2', label: '비활성' }], valuePath: 'code', displayPath: 'label' })",
+        "3. columns 정의: { id: 'status', header: '상태', dataMap: statusMap, ... }",
+        "4. 표시 셀: cell.getValue() → statusMap.getDisplay(value) → '활성' 렌더",
+        "5. createDataMap 반환: DataMap 객체 — getDisplay(value): string | undefined + getItems(): DataMapItem[]",
+        "6. column-level dataMap prop은 ColumnDef 확장 타입으로 정의 (TanStack ColumnDef metadata 활용)",
+        "7. selectOptions(기존 EditableGrid) 마이그레이션 alias: selectOptions: string[] → createDataMap({ items: arr, valuePath: 'value', displayPath: 'label' }) 자동 변환 (F-12-06, C-6)",
+        "8. Pro 패키지 import 시 grid-license 검증 (C-24)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "DataMap<TItem> 타입: { getDisplay(value: unknown): string | undefined; getItems(): TItem[]; getValue(display: string): unknown } — no any (C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "createDataMap<TItem>({ items: TItem[]; valuePath: keyof TItem | ((item: TItem) => unknown); displayPath: keyof TItem | ((item: TItem) => string) }): DataMap<TItem> — 함수형 path 지원 (C-4)", "source": "C-4" },
+        { "id": "AC-003", "criteria": "TomisColumnDef<TData> extends TanStack ColumnDef<TData> — `dataMap?: DataMap<unknown> | ((row: TData) => DataMap<unknown>)` 필드 추가 (TanStack metadata 확장, C-2 표준 API 준수)", "source": "C-2" },
+        { "id": "AC-004", "criteria": "selectOptions alias: column.selectOptions: string[] → 내부 createDataMap 변환 (기존 EditableGrid.tsx selectOptions C-6 1 minor 호환). F-12-06 마이그레이션 alias", "source": "C-6" },
+        { "id": "AC-005", "criteria": "Pro 패키지: package.json `\"license\": \"SEE LICENSE IN EULA\"` + EULA.md 존재 + import 시 grid-license 검증 호출 (C-24 의무)", "source": "C-24" },
+        { "id": "AC-006", "criteria": "@mescius/wijmo* import 0건 (C-16). Wijmo DataMap(itemsSource/displayMemberPath/selectedValuePath) 개념 학습만 (publish-wijmo-analysis.md §2, §4) — 참조만, 코드 차용 X", "source": "C-16" },
+        { "id": "AC-007", "criteria": "decisions/MOD-GRID-12-decisions.md ADR — DataMap API 시그니처 결정 (대안: Map<value,label> 단순 객체 vs DataMap 클래스 vs Zod enum), trade-off 포함 (C-14)", "source": "C-14" },
+        { "id": "AC-008", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-009", "criteria": "C-25: Storybook story 1개 (코드→레이블 표시 + selectOptions alias 시나리오)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx (selectOptions prop — alias 대상)",
+        "L1": "자체 설계. TanStack ColumnDef metadata 확장 패턴",
+        "L2": "(N/A — 신규 Pro 패키지)",
+        "L3": "(N/A — 사용처는 MOD-GRID-17에서 마이그레이션)",
+        "R-A": "AG Grid Community cellEditor refData / cellEditorParams.values 패턴 참조 (publish-aggrid-analysis.md) — 우리는 자체 DataMap",
+        "R-W": "Wijmo DataMap class(itemsSource + displayMemberPath + selectedValuePath) 개념 학습 (publish-wijmo-analysis.md §4) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "selectOptions alias 1 minor 유지 (C-23, C-6)",
+        "migrationPath": "EditableGrid selectOptions → column.dataMap = createDataMap(...)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/DataMap.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/createDataMap.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/EULA.md",
+        "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-12-decisions.md",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/index.ts"
+      ],
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx"
+      ],
+      "bundleImpact": {
+        "expected": "+3 KB (DataMap 클래스 + createDataMap)",
+        "package": "grid-pro-datamap",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 96.6, "rubricVersion": "1.0.6", "lastRun": "2026-05-15", "feedback": ["E-02: Section 11 Before/After 코드 부재 — 차후 보완 권장 (Section 11이 '번들 영향'에 위치, 구현 단계 코드 narrative 누락)"] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100.0, "rubricVersion": "1.0.7", "lastRun": "2026-05-15", "feedback": ["D6 grid-license import pattern replaced with inline stub (environment constraint: @tomis/grid-license not resolvable without package.json dep + pnpm install; D7 forbids G-001 package.json changes). Sibling precedent: grid-pro-tracking + grid-pro-range. ADR-003 documents rationale.", "D4 spec prose TomisColumnMeta undefined reference — resolved via C-30 truth table (intersection pattern from Section 3.3 + ADR-002).", "Bundle: ESM 995B, CJS 1023B — actual 1KB vs spec estimate +3KB."] },
+        "verify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100.0, "rubricVersion": "1.0.3", "lastRun": "2026-05-15", "weightedScore": 100.0, "categoryScores": { "A": 100.0, "B": 100.0, "C": 100.0, "D": 100.0, "E": 100.0 }, "feedback": ["All 5 axes pass; B/C/D vacuous (G-001 = API/type design, sourced 0). Bundle 1KB << 20KB limit. EditableGrid.tsx unchanged (per spec Section 4). All 3 independent agent scores converge (Implementer 100, implement-verifier 100, verify 100)."] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-15",
+        "reviewer": "opus",
+        "scoreConvergence": "all_three_pass — specify 96.6 (E-02 NO 1건, autonomously deferred 단일 gap), implement 100, implement-verifier 100, verify 100. 3 independent agents 만장일치 — 환각 risk 0.",
+        "improvements": [
+          {
+            "target": "constraints.md",
+            "type": "add",
+            "id": "C-33",
+            "summary": "Pro 패키지 grid-license 검증 inline stub 패턴 정책화. 모노레포 누적 4 occurrences (grid-pro-tracking, grid-pro-range, grid-pro-datamap, grid-pro-merging) → 3 occurrence policy 진입 조건 충족. D6/D7/C-12 3 제약 동시 충족 불가 → transitional 표준 패턴 채택. MOD-GRID-99-A/G-002 출하 시 sunset."
+          },
+          {
+            "target": "decisions/MOD-GRID-00-decisions.md",
+            "type": "add",
+            "id": "ADR-MOD-GRID-00-012",
+            "summary": "Pro 패키지 inline stub 패턴 cross-module catalog. C-33 과 1:1 매핑. 후속 Pro 패키지 spec writer 가 MOD-GRID-12 ADR-003 module-local instance 외에도 본 ADR 인용 가능. Sunset migration 단계 명시."
+          },
+          {
+            "target": "specify-rubric.md",
+            "type": "clarify",
+            "id": "E-02 v1.0.7",
+            "summary": "Before/After 위치 비특정화 — Section 11 한정 검증 제거. MOD-GRID-03/07/09/11/12 G-001 5건에서 Section 11 명칭이 '번들 영향'/'참조 분석'/'마이그레이션 경로' 등 다른 용도로 사용된 사례 차단. Content-based grep 검증 (Before/After keyword + 인접 code fence). brand new API Goal 의 `Before: (N/A — 신규 API)` 명시 패턴 허용."
+          }
+        ],
+        "deferredImprovements": [
+          {
+            "candidate": "D4 TomisColumnMeta 미정의 → spec writer 자가-검증 강화",
+            "reason": "단일 occurrence (1=anecdote). C-30 truth table 로 Implementer 자율 해결 성공. 재발 시 specify B-06 또는 신규 룰 검토. 현 시점 정책화 부적격."
+          },
+          {
+            "candidate": "1차 specify Verifier H-01/H-02 환각 (잘못된 디렉토리 검색) → 룰 강화",
+            "reason": "기존 H-01 v1.0.6 라인 인용 의무 + H-02 외부 디렉토리 예외 룰로 충분히 차단. 2차 Verifier 재호출 시 정정됨. 추가 강화 부적격."
+          },
+          {
+            "candidate": "Section 11 명명 표준화 (구현 계획 / 번들 영향 / 참조 분석 등 free-form)",
+            "reason": "14 G-001 spec 중 5건이 비-구현계획 명칭 사용. cross-Goal pattern 이나 본 Self-Review 범위 외 (spec writer prompt 템플릿 작업). 별도 retrospective trigger 권장."
+          },
+          {
+            "candidate": "specify-score.json artifact 영속화 (loop 재실행 시 최신 상태 반영)",
+            "reason": "G-001-specify-score.json 디스크 파일 = score:0/metaGatesPassed:false (1차 실패 시도). goals.json L72 = score:96.6 (2차 성공 재실행). 디스크 score 파일이 stale 한 상태. tw-grid-state-sync tool 또는 loop tool 의 artifact 갱신 룰 검토 필요. 본 Self-Review 범위 외 (tooling 작업)."
+          }
+        ],
+        "patterns": [
+          {
+            "name": "Pro 패키지 inline license stub",
+            "occurrences": 4,
+            "status": "promoted_to_policy (C-33 + ADR-MOD-GRID-00-012)",
+            "sunset": "MOD-GRID-99-A/G-002 출하 시 deprecated"
+          },
+          {
+            "name": "Spec C-30 truth table 자율 해결 (D4 TomisColumnMeta 미정의)",
+            "occurrences": 1,
+            "status": "working_as_designed (Implementer F-06 자율 정정 + specCodeDefects[] 보고)",
+            "note": "재발 시 specify B-06 강화 또는 신규 룰 trigger"
+          }
+        ],
+        "scoreArtifactNote": "G-001-specify-score.json on disk = score:0 (1st-attempt failed). goals.json L72 specify.score=96.6 (2nd-attempt success — durable). 본 Self-Review 는 goals.json feedback 을 권위로 사용."
+      }
+    },
+    {
+      "goalId": "G-002",
+      "title": "표시 셀 코드→레이블 변환 렌더러 + 행 단위 동적 DataMap (cell-level dataMap 함수)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-12/G-001", "MOD-GRID-05/G-001", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "그리드 표시 셀에서 column.dataMap을 통해 코드 값(1)이 레이블('활성')로 자동 변환되고, 행 단위 동적 dataMap(row => getMapByDept(row.dept))을 사용하여 같은 컬럼이라도 행마다 다른 옵션셋을 표시할 수 있어야 한다.",
+      "userJourneySteps": [
+        "1. DataMapCell 렌더러: cell.getValue() → column.dataMap.getDisplay(value) → 레이블 텍스트 렌더",
+        "2. 행 단위 동적 dataMap: column.dataMap = (row: TData) => DataMap<unknown> — flexRender 시 row.original 주입",
+        "3. getDisplay 결과 없음 → 원본 value 그대로 표시 (fallback)",
+        "4. TomisColumnDef type: 'datamap' → 자동으로 DataMapCell 렌더러 매핑 (MOD-GRID-04 columnFactory 통합)",
+        "5. F-12-02 column-level display + F-12-03 cell-level dynamic dataMap 모두 처리"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "DataMapCell 렌더러 컴포넌트: ({ getValue, column, row }) → dataMap.getDisplay(getValue()) || String(getValue()) — fallback 포함 (no any — C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "column.dataMap 가 함수 ((row: TData) => DataMap<unknown>) 일 때 row.original 주입하여 행마다 다른 DataMap 사용 (F-12-03 cell-level dynamic dataMap)", "source": "L1" },
+        { "id": "AC-003", "criteria": "TomisColumnDef type: 'datamap' → MOD-GRID-04 createColumns 내부에서 DataMapCell 자동 매핑 (columnFactory 연동). dataMap prop 없으면 경고 (C-4 타입 수준 강제 가능 시)", "source": "L1" },
+        { "id": "AC-004", "criteria": "DataMapCell 가상화 호환 (C-18) — 스크롤 시 불필요한 DataMap 탐색 최소화 (useMemo 또는 Map 내부 캐시 활용)", "source": "C-18" },
+        { "id": "AC-005", "criteria": "@mescius/wijmo* import 0건 (C-16)", "source": "C-16" },
+        { "id": "AC-006", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-007", "criteria": "C-25: Storybook story 1개 (정적 dataMap + 동적 행 단위 dataMap 시나리오)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 신규 기능)",
+        "L1": "자체 설계. TanStack flexRender 기반 cell 렌더러 (C-2 표준 API)",
+        "L2": "(N/A)",
+        "L3": "(N/A)",
+        "R-A": "AG Grid Community cellRenderer 패턴 참조 — 우리는 자체 DataMapCell",
+        "R-W": "Wijmo Column dataMap 바인딩 표현식 개념 학습 (publish-wijmo-analysis.md §4) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/DataMapCell.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/index.ts"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+2 KB (DataMapCell 렌더러)",
+        "package": "grid-pro-datamap",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 96.3, "feedback": ["F-03 NO: Docusaurus 페이지 경로 누락. 96.3 >= 90 threshold 통과."] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100.0, "feedback": [] },
+        "verify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100.0, "feedback": [] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-15",
+        "reviewer": "opus",
+        "scoreConvergence": "all_three_pass — specify 96.3 (F-03 NO 1건, Docusaurus 페이지 경로 누락 단일 gap, 96.3 >= 90 threshold 통과), implement 100, implement-verifier 100, verify 100. 3 독립 Agent 만장일치 — 환각 risk 0. v1.0.7 E-02 location-decoupling 정책 효력 검증 완료 (Section 11 Before/After 정상 작동).",
+        "improvements": [],
+        "deferredImprovements": [
+          {
+            "candidate": "specify-rubric F-03 — Docusaurus 페이지 경로 강제 완화 (MOD-GRID-99-B docs infra 출하 전 Storybook story 단독 명시로 부분 YES 허용)",
+            "reason": "단일 occurrence (1=anecdote). G-002 spec Section 13.4에 Storybook story 경로 + 2 시나리오 명시되었으나 Docusaurus 페이지 경로만 누락 → F-03 NO. MOD-GRID-99-B(docs infra) 미출하 상태이며, 후속 Pro 패키지 spec writer가 동일 패턴 재발 가능 (C-33 license stub 패턴과 유사한 transitional accommodation 후보). 단, 현재 1 occurrence만으로 정책 변경 부적격 — 2nd/3rd occurrence 누적 시 rubric clarify 검토. threshold 90 통과(96.3)하므로 IMPLEMENT 진행 차단 영향 없음."
+          },
+          {
+            "candidate": "Spec AC criteria prose ↔ Section 3.x API contract code template semantic consistency check (specify B-07 신설 또는 E-01 확장)",
+            "reason": "G-002 implement-score specCodeDefects[1]: AC-001 prose 'dataMap.getDisplay(getValue()) || String(getValue())' 의미(empty string label fallback coercion) vs Section 3.2 API contract code 'label !== undefined ? label : String(value ?? \"\")' 의미(empty string label preserve). Implementer가 C-30 truth table 룰로 Section 3.2 우선 적용 + F-06 specCodeDefects 자율 보고(정상 절차). 단일 G-002 occurrence (1=anecdote). 기존 E-01 v1.0.7가 Section 2 template ↔ Section 11.2 executable signature만 cover. AC 본문 텍스트 ↔ Section 3 API contract code semantic 일치 검증은 미커버. 2nd/3rd occurrence 누적 시 specify B-07 또는 E-01 의미 일치 axis 확장 검토."
+          },
+          {
+            "candidate": "Cross-Goal/cross-package AC deferral 패턴 (AC-003 type:'datamap' literal → MOD-GRID-04 columnFactory rendererRegistry 통합)",
+            "reason": "단일 occurrence (1=anecdote). G-002 AC-003이 grid-core 패키지 rendererRegistry 수정 필요 → G-002 implementFiles(grid-pro-datamap) 범위 외 → D-4 pre-decision으로 defer + spec Section 5 AC-003 deferral note + implement-score documentedDeviations[] 정상 처리. 후속 Pro 패키지 createColumns 통합 시 동일 cross-package deferral 패턴 재발 가능(예: MOD-GRID-13 grid-pro-merging, MOD-GRID-14 등). 3 occurrence 누적 시 cross-module ADR 명문화(예: ADR-MOD-GRID-00-013 'cross-package AC deferral pattern') 검토."
+          },
+          {
+            "candidate": "Self-Review 자동화 — loop tool 후 harnessReview 필드 자동 생성/null fallback 명시",
+            "reason": "G-001 harnessReview 작성됨 vs G-002 harnessReview null(본 Self-Review로 채움). tw-grid loop tool의 Self-Review stage 자동 호출 누락 또는 수동 trigger 의존. 본 Self-Review 범위 외 (tooling 작업). 후속 retro 또는 별도 tooling Goal에서 검토."
+          }
+        ],
+        "patterns": [
+          {
+            "name": "F-03 Docusaurus 경로 강제 요건 vs MOD-GRID-99-B 미출하 환경",
+            "occurrences": 1,
+            "status": "anecdote",
+            "note": "G-002 첫 발생 — MOD-GRID-12/G-001 specify는 F-03 YES (Storybook + Docusaurus 모두 명시). cross-spec 누적 audit 필요. 3 occurrence 도달 시 transitional rule 정책화 검토."
+          },
+          {
+            "name": "Spec AC prose ↔ Section 3.x API contract code semantic drift",
+            "occurrences": 1,
+            "status": "anecdote",
+            "note": "G-002 AC-001 || vs Section 3.2 !== undefined. Implementer F-06 specCodeDefects[] 자율 정정 + C-30 truth table 정상 절차로 흡수. 2nd occurrence 시 pattern, 3rd 시 B-07 promotion 검토."
+          },
+          {
+            "name": "Cross-Goal/cross-package AC deferral (AC → 별 패키지 통합)",
+            "occurrences": 1,
+            "status": "anecdote",
+            "note": "AC-003 type:'datamap' → MOD-GRID-04 columnFactory rendererRegistry. D-4 pre-decision + documented deviation 정상 처리. 후속 Pro 패키지 createColumns 통합 시 재발 가능(MOD-GRID-13/14 등). 3 occurrence 시 cross-module ADR 명문화 검토."
+          },
+          {
+            "name": "Verify D 카테고리 vacuous truth — 신규 기능 affectedUsageFiles:[]",
+            "occurrences": "8+ (이미 ADR-MOD-GRID-00-002 phased rollout 정책)",
+            "status": "policy_reconfirmed",
+            "note": "MOD-GRID-02 6/6 hook-only + MOD-GRID-12/G-001 + MOD-GRID-12/G-002 누적. ADR-MOD-GRID-00-002 phased rollout intent 일관 적용. MOD-GRID-17 사용처 채택 phase 시작 시 자동 만료 예정. G-002가 추가 데이터포인트로 정책 일관성 재확인."
+          },
+          {
+            "name": "Pro 패키지 inline license stub (verifyOrWarn) — 사용처 적용",
+            "occurrences": "5+ (이미 C-33 + ADR-MOD-GRID-00-012 정책)",
+            "status": "policy_reconfirmed",
+            "note": "G-002는 패키지 진입점이 아니므로 별도 stub 호출 없음(D-6). 기존 G-001 src/index.ts inline stub 통해 패키지 수준 라이선스 검증 자동 적용. C-33 sunset 조건(MOD-GRID-99-A/G-002 출하 시) 유효."
+          }
+        ],
+        "scoreConvergenceNote": "G-002 3-stage 만장일치 (96.3 / 100 / 100 / 100): specify Verifier F-03 NO 1건 외 26 YES + 6 N/A (denominator 27). implement + implement-verifier 모두 17 YES + 7 N/A. verify는 16 항목 5축, D vacuous=100. 3 독립 Agent 산식 자기-검증 통과. 패턴 카운터 모두 anecdote 또는 기존 정책 재확인 — 신규 rubric/constraint 추가 없음."
+      }
+    },
+    {
+      "goalId": "G-003",
+      "title": "편집 셀 드롭다운 자동 생성 — DataMapEditor (filter-typing + 옵션 list rendering)",
+      "priority": "P0",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-12/G-001", "MOD-GRID-12/G-002", "MOD-GRID-05/G-001", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "편집 가능 컬럼에 dataMap이 설정된 경우, 사용자가 셀을 클릭하거나 F2를 누르면 드롭다운이 열리고, 타이핑으로 옵션을 필터링할 수 있어야 한다. 옵션 선택 시 저장되는 값은 코드(valuePath), 표시는 레이블(displayPath)이어야 한다.",
+      "userJourneySteps": [
+        "1. 편집 모드 진입 → DataMapEditor 컴포넌트 렌더 (InlineEditCell 확장)",
+        "2. <input> 초기값 = 현재 display 레이블 (value → getDisplay)",
+        "3. 사용자 타이핑 → dataMap.getItems()를 displayPath로 필터링한 드롭다운 목록 렌더",
+        "4. 목록 클릭 또는 Enter → 선택한 item의 valuePath 값을 cell에 저장 (코드 저장)",
+        "5. Escape → 편집 취소, 이전 코드 값 복원",
+        "6. 드롭다운 포지션: Tailwind absolute, z-50, Radix Popper 또는 직접 위치 계산",
+        "7. 목록 최대 높이 제한 (max-h-48 overflow-y-auto — Tailwind)"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "DataMapEditor 컴포넌트: { value, dataMap, onCommit, onCancel } props. onCommit(newValue: unknown) — valuePath 값 반환 (코드 저장, 레이블 표시 — no any C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "filter-typing: input onChange → dataMap.getItems().filter(item => getDisplay(item).includes(query)) → 목록 갱신. 대소문자 구분 없는 검색 (F-12-04 편집 드롭다운)", "source": "L1" },
+        { "id": "AC-003", "criteria": "드롭다운 스타일: Tailwind 'absolute z-50 bg-white border border-gray-200 rounded shadow-md max-h-48 overflow-y-auto' — CSS 신규 파일 생성 금지 (C-5)", "source": "C-5" },
+        { "id": "AC-004", "criteria": "키보드 네비게이션: 드롭다운 열린 상태에서 ArrowDown/Up → 포커스 이동, Enter → 선택, Escape → 닫기 (F-11-08 키보드 UX 일관성)", "source": "L1" },
+        { "id": "AC-005", "criteria": "MOD-GRID-05 InlineEditCell과 통합: column.dataMap이 있으면 InlineEditCell 대신 DataMapEditor 자동 선택 (renderer registry — F-05-06)", "source": "L1" },
+        { "id": "AC-006", "criteria": "@mescius/wijmo* import 0건 (C-16). Wijmo DataMap 편집 드롭다운 개념 학습 (publish-wijmo-analysis.md §4) — 참조만, 코드 차용 X", "source": "C-16" },
+        { "id": "AC-007", "criteria": "C-12: tsc --noEmit 0 error", "source": "C-12" },
+        { "id": "AC-008", "criteria": "C-25: Storybook story 1개 (편집 드롭다운 + filter-typing + 키보드 네비게이션 시나리오)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx (selectOptions 기반 드롭다운 — DataMapEditor로 대체 대상)",
+        "L1": "자체 설계. React input + absolute 드롭다운 패턴",
+        "L2": "(N/A)",
+        "L3": "(N/A)",
+        "R-A": "AG Grid Community agSelectCellEditor 패턴 참조 — 우리는 자체 DataMapEditor",
+        "R-W": "Wijmo DataMap 편집 모드(자동 드롭다운) 개념 학습 (publish-wijmo-analysis.md §4) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "EditableGrid selectOptions 1 minor alias 유지 (C-23, C-6)",
+        "migrationPath": "EditableGrid selectOptions → column.dataMap = createDataMap(...)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/DataMapEditor.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/index.ts"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+3 KB (DataMapEditor 드롭다운 컴포넌트)",
+        "package": "grid-pro-datamap",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100.0, "rubricVersion": "1.0.7", "lastRun": "2026-05-15", "feedback": [] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100.0, "rubricVersion": "1.0.x", "lastRun": "2026-05-15", "feedback": ["specCodeDefect: Section 3.4 filter pattern getDisplay(item) 사용 — DataMap.ts 내부 Map 은 value 키 기준. 정정: getLabelFromItem? optional prop 추가 (Section 11.3 명시 승인 — non-breaking). Implementer 자율 정정 + 독립 verifier 수렴 (100/100)."] },
+        "verify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100.0, "rubricVersion": "1.0.x", "lastRun": "2026-05-15", "weightedScore": 100.0, "categoryScores": { "A": 100.0, "B": 100.0, "C": 100.0, "D": 100.0, "E": 100.0 }, "feedback": ["3 독립 Agent (implementer/implement-verifier/verify) 100/100 만장일치. D 축 vacuous (affectedUsageFiles=[]). F-06 specCodeDefects 자율 정정 + AC-005 cross-package deferral 일관 기록."] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-15",
+        "reviewer": "opus",
+        "scoreConvergence": "all_three_pass — specify 100, implement 100, implement-verifier 100, verify 100. 4 독립 점수 만장일치 (specify Verifier + Implementer + Coverage Verifier + Verify). F-06 specCodeDefects 자율 정정 (Section 3.4 getDisplay(item) 결함 → Section 11.3 explicit alternative getLabelFromItem prop 채택) + AC-005 cross-package deferral (MOD-GRID-04/05 renderer registry) 정상 documented. 환각 risk 0.",
+        "improvements": [],
+        "deferredImprovements": [
+          {
+            "candidate": "Spec AC prose ↔ Section 3.x API contract code semantic drift → specify B-07 신설 또는 E-01 의미 일치 axis 확장",
+            "reason": "2 occurrences = pattern (anecdote→pattern→policy). G-002 AC-001 prose '|| String(getValue())' vs Section 3.2 'label !== undefined ? label : ...' semantic drift + G-003 Section 3.4 filter pattern `dataMap.getDisplay(item)` (DataMap 내부 Map 이 valuePath(item) 코드 키 저장 — item 객체 직접 키 불가) dead branch. 두 occurrence 모두 Implementer F-06 자율 정정 + specCodeDefects[] 정상 보고 + 독립 Verifier 수렴 (100/100). pattern 단계 — 3rd occurrence (예: MOD-GRID-12/G-004 또는 다른 Pro 패키지) 누적 시 specify B-07 신설 또는 E-01 의미 일치 axis 확장 정책화 검토. 현 시점 정책 변경 부적격."
+          },
+          {
+            "candidate": "Cross-Goal/cross-package AC deferral 패턴 → cross-module ADR 명문화 (ADR-MOD-GRID-00-013 후보)",
+            "reason": "2 occurrences = pattern. G-002 AC-003 type:'datamap' → MOD-GRID-04 columnFactory rendererRegistry deferral (D-4 pre-decision) + G-003 AC-005 column.dataMap auto-detect → MOD-GRID-04/05 EditableCell.tsx + renderer registry deferral (D-3 pre-decision). 두 occurrence 모두 spec D# pre-decision 표 + Section 5 deferral note + implement-score documentedDeviations[] 정상 처리. 후속 Pro 패키지 createColumns 통합 시 동일 cross-package deferral 패턴 재발 가능(MOD-GRID-13 grid-pro-merging, MOD-GRID-14 등). 3rd occurrence 누적 시 cross-module ADR 명문화(예: ADR-MOD-GRID-00-013 'cross-package AC deferral pattern') 검토."
+          },
+          {
+            "candidate": "verify-rubric D 카테고리 항목 수 drift (rubric L7 명시 합계 16 = D=2 vs 운영 D=3) — rubric 문구 정합성 정정",
+            "reason": "단일 occurrence (1=anecdote). G-003 verify-score selfCheck.categoryItemSumCheck 에서 rubric L7 명시 'A(3)+B(5)+C(3)+D(2)+E(3)=16' vs 실제 운영 'D=3 (D-01/D-02/D-03)' 차이 자기 발견 (점수 동일 — D vacuous → 100.0 영향 없음). task prompt 와 implement-score/implement-verifier-score 모두 D=3 운영. rubric L7 합계 문구 정합성 정정 후보 (verify-rubric 1줄 갱신). 본 Self-Review 범위 외 (rubric maintenance) — 별도 retrospective trigger 권장."
+          },
+          {
+            "candidate": "DataMapEditor UX 패턴(키보드 네비게이션 + IME composition + ARIA combobox) cross-Pro-package 재사용 카탈로그",
+            "reason": "단일 occurrence (1=anecdote). G-003 DataMapEditor 가 useRef + onKeyDown + onCompositionStart/End + ARIA role=combobox/listbox/option 패턴을 자체 구현 (C-22 외부 UI 라이브러리 미사용). 후속 Pro 패키지 (MOD-GRID-09 filter UI, MOD-GRID-13 grid-pro-merging 등) 가 동일 UX 컴포넌트 (Popover, Menu 등) 자체 구현 시 동일 패턴 재발 가능. 2nd/3rd occurrence 누적 시 cross-Pro-package UX 패턴 카탈로그(예: shared internal `_useKeyboardComboboxNav` 유틸 또는 README 패턴 가이드) 정책화 검토. 현 시점 1 occurrence — anecdote 단계 유지."
+          }
+        ],
+        "patterns": [
+          {
+            "name": "Spec AC prose ↔ Section 3.x API contract code semantic drift",
+            "occurrences": 2,
+            "status": "pattern",
+            "note": "G-002 AC-001 || vs Section 3.2 !== undefined (label fallback coercion) + G-003 Section 3.4 dataMap.getDisplay(item) 직접 호출 (DataMap Map keyed by valuePath(item) — item 객체 직접 키 불가 dead branch). 두 occurrence 모두 Implementer F-06 specCodeDefects[] 자율 정정 + C-30 truth table 정상 절차 흡수. 3rd occurrence 시 specify B-07 신설 또는 E-01 의미 일치 axis 확장 promotion 검토."
+          },
+          {
+            "name": "Cross-Goal/cross-package AC deferral (AC → 별 패키지 통합)",
+            "occurrences": 2,
+            "status": "pattern",
+            "note": "G-002 AC-003 type:'datamap' → MOD-GRID-04 columnFactory rendererRegistry (D-4) + G-003 AC-005 column.dataMap auto-detect → MOD-GRID-04/05 EditableCell.tsx + renderer registry (D-3). 두 occurrence 모두 spec D# pre-decision + documented deviation 정상 처리. 후속 Pro 패키지 createColumns 통합 시 재발 가능 (MOD-GRID-13/14 등). 3rd occurrence 시 cross-module ADR 명문화(ADR-MOD-GRID-00-013 후보) 검토."
+          },
+          {
+            "name": "Pro 패키지 inline license stub (verifyOrWarn) — 사용처 적용",
+            "occurrences": "6+ (이미 C-33 + ADR-MOD-GRID-00-012 정책)",
+            "status": "policy_reconfirmed",
+            "note": "G-001 src/index.ts inline stub 도입 → G-002 + G-003 패키지 진입점 아님 → 별도 stub 호출 없이 G-001 stub 통한 패키지 수준 라이선스 검증 자동 적용. G-003 spec D-7 + Section 5 C-33 인용으로 명시적 비추가 결정. C-33 sunset 조건(MOD-GRID-99-A/G-002 출하 시) 유효. 누적 occurrence 증가 — 정책 안정성 재확인."
+          },
+          {
+            "name": "Verify D 카테고리 vacuous truth — 신규 기능 affectedUsageFiles:[]",
+            "occurrences": "9+ (이미 ADR-MOD-GRID-00-002 phased rollout 정책)",
+            "status": "policy_reconfirmed",
+            "note": "MOD-GRID-02 6/6 hook-only + MOD-GRID-12/G-001 + MOD-GRID-12/G-002 + MOD-GRID-12/G-003 누적. ADR-MOD-GRID-00-002 phased rollout intent 일관 적용. MOD-GRID-17 사용처 채택 phase 시작 시 자동 만료 예정. G-003 가 추가 데이터포인트로 정책 일관성 재확인."
+          },
+          {
+            "name": "F-03 Docusaurus 경로 명시 — G-002 anecdote 1 occurrence 후 G-003 spec writer 자율 해소",
+            "occurrences": "1 failure (G-002) + 1 correction (G-003)",
+            "status": "pattern_self_resolved",
+            "note": "G-002 F-03 NO (Docusaurus 페이지 경로 누락) 단일 anecdote 후 — G-003 spec writer 가 D-6 pre-decision + Section 13.5 Docusaurus 경로 'docs/grid-pro/datamap/DataMapEditor.mdx' 명시적 적용 → F-03 YES. spec writer 가 G-002 deferred candidate (F-03 강제 완화)에 의존하지 않고 자가 해소. 룰 변경 부적격 (failure 1 + correction 1 — policy 변경 threshold 미달). 후속 Pro 패키지 spec writer 가 동일 패턴 재발할 가능성은 유지하나, G-003 self-resolution 가 1 데이터포인트로 baseline 형성."
+          }
+        ],
+        "scoreConvergenceNote": "G-003 4-stage 만장일치 (specify 100 / implement 100 / implement-verifier 100 / verify 100): specify Verifier 27 YES + 9 N/A (denominator 27, H-01/H-02/H-03 모두 YES, B-06 spec code template C-4/C-29 compliance 통과). implement Coverage Verifier 15 YES + 9 N/A (denominator 15, F-06 specCodeDefects 자율 정정 + promptSpecDrift=[]). implement-verifier (haiku 독립) 16 YES + 8 N/A (denominator 16, C-32 migrationImpact='medium' goals.json 직접 인용 확인). verify 5축 (A=100, B=100, C=100 with C-02 보수적 N/A, D=vacuous=100, E=100, weightedScore=100). 4 독립 Agent 산식 자기-검증 통과 (C-26). 패턴 카운터 2건 pattern 단계 진입 (specCodeDefects + cross-package AC deferral) — 3rd occurrence 시 정책화 trigger 발동. 신규 rubric/constraint 추가 없음 (additive-only policy 준수)."
+      }
+    },
+    {
+      "goalId": "G-004",
+      "title": "동적 옵션 비동기 로드 + 캐싱 (async DataMap) + Pro 라이선스 런타임 완전 통합",
+      "priority": "P1",
+      "migrationImpact": "medium",
+      "dependsOn": ["MOD-GRID-12/G-001", "MOD-GRID-12/G-002", "MOD-GRID-12/G-003", "MOD-GRID-99-A/G-001"],
+      "overallStatus": "completed",
+      "userStory": "서버에서 코드 목록을 가져오는 경우, createAsyncDataMap({ loader: () => fetch('/api/codes') }) 를 사용하면 최초 편집 시 비동기로 목록을 로드하고, 이후 같은 컬럼 접근 시 캐시를 사용해야 한다.",
+      "userJourneySteps": [
+        "1. const deptMap = createAsyncDataMap({ loader: () => fetch('/api/depts').then(r => r.json()), valuePath: 'deptId', displayPath: 'deptName' })",
+        "2. 첫 번째 편집 진입 → loader() 호출 → Promise resolve → items 캐시 저장",
+        "3. DataMapEditor 로딩 중 spinner 표시 (Tailwind animate-spin)",
+        "4. 이후 같은 DataMap 인스턴스 → 캐시된 items 즉시 사용",
+        "5. cache.invalidate() API로 강제 갱신 가능",
+        "6. Pro 라이선스 검증 완전 통합 검증 (패키지 전체 C-24 점검)",
+        "7. size-limit 검증: grid-pro-datamap ≤ 20 KB"
+      ],
+      "acceptanceCriteria": [
+        { "id": "AC-001", "criteria": "createAsyncDataMap<TItem>({ loader: () => Promise<TItem[]>; valuePath; displayPath; staleTime?: number }): AsyncDataMap<TItem> — DataMap<TItem> 인터페이스 구현 (no any — C-4)", "source": "C-4" },
+        { "id": "AC-002", "criteria": "AsyncDataMap 내부 상태: 'idle'|'loading'|'loaded'|'error'. 로딩 중 DataMapEditor → 스피너 표시 (Tailwind 'animate-spin' — C-5). 에러 시 fallback 빈 목록 (F-12-05)", "source": "C-5" },
+        { "id": "AC-003", "criteria": "캐싱: staleTime(ms, 기본 5분) 내 재호출 시 캐시 반환. invalidate() → 캐시 초기화 + 다음 접근 시 재로드", "source": "L1" },
+        { "id": "AC-004", "criteria": "Pro 패키지 전체 검증: import 시 grid-license 검증 호출 확인 (C-24). @mescius/wijmo* 0건 (C-16). size-limit grid-pro-datamap ≤ 20 KB (C-21)", "source": "C-24" },
+        { "id": "AC-005", "criteria": "decisions/MOD-GRID-12-decisions.md ADR 완성 — async 캐싱 전략 결정 (대안: SWR/react-query 통합 vs 자체 Map 캐시), trade-off 포함 (C-14)", "source": "C-14" },
+        { "id": "AC-006", "criteria": "@mescius/wijmo* import 0건 (C-16)", "source": "C-16" },
+        { "id": "AC-007", "criteria": "C-12: tsc --noEmit 0 error (packages/grid-pro-datamap 전체)", "source": "C-12" },
+        { "id": "AC-008", "criteria": "C-25: Storybook story 2개 — (a) createAsyncDataMap 로딩/캐시 시나리오, (b) 전체 통합 시나리오 (정적 + 동적 DataMap 혼합)", "source": "C-25" }
+      ],
+      "referenceEvidence": {
+        "L0": "(N/A — 신규 기능)",
+        "L1": "자체 설계. Map 기반 메모리 캐시 + staleTime 검사",
+        "L2": "(N/A)",
+        "L3": "(N/A)",
+        "R-A": "AG Grid Community cellEditorParams.values async 패턴 참조 — 우리는 자체 AsyncDataMap",
+        "R-W": "Wijmo DataMap async itemsSource 개념 학습 (publish-wijmo-analysis.md §4) — 참조만, 코드 차용 X (C-16)"
+      },
+      "compatibilityPolicy": {
+        "breaking": false,
+        "deprecationStrategy": "신규 기능 — alias 불필요",
+        "migrationPath": "(N/A)"
+      },
+      "implementFiles": [
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/createAsyncDataMap.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/internal/asyncCache.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/__stories__/AsyncDataMap.stories.tsx",
+        "D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-12-decisions.md",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/DataMapEditor.tsx",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/types.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/src/index.ts",
+        "D:/project/topvel_project/topvel-grid-monorepo/packages/grid-pro-datamap/package.json",
+        "D:/project/topvel_project/topvel-grid-monorepo/docs/grid-pro/datamap/createAsyncDataMap.mdx"
+      ],
+      "affectedUsageFiles": [],
+      "bundleImpact": {
+        "expected": "+2 KB (createAsyncDataMap + asyncCache — 합계 ≤ 10 KB grid-pro-datamap 전체)",
+        "package": "grid-pro-datamap",
+        "limit": "≤ 20 KB per Pro 패키지 (C-21)"
+      },
+      "stages": {
+        "specify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100.0, "rubricVersion": "1.0.7", "lastRun": "2026-05-15", "feedback": [] },
+        "implement": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100.0, "rubricVersion": "1.0.x", "lastRun": "2026-05-15", "feedback": ["promptSpecDrift 5건 (AsyncDataMap.state property vs getState method 등) 모두 spec 권위 적용. promptSpecDrift[] 기록. Implementer + 독립 verifier 100/100 수렴. C-31 Wiring Audit 완벽 (buildAsyncCache import + 3 invocation). 번들 +0.63 KB (예상 +2 KB 이내, 누적 ~7 KB / 20 KB 한도)."] },
+        "verify": { "status": "done", "threshold": 90, "loops": 1, "maxLoops": 3, "score": 100.0, "rubricVersion": "1.0.x", "lastRun": "2026-05-15", "weightedScore": 100.0, "categoryScores": { "A": 100.0, "B": 100.0, "C": 100.0, "D": 100.0, "E": 100.0 }, "feedback": ["3 독립 Agent (implementer 100 + implement-verifier 100 + verify 100) 만장일치. D vacuous (affectedUsageFiles=[]). PowerShell 실측 tsc EXIT:0 + size-limit 1.82 kB/20 kB + eslint EXIT:0. ADR-MOD-GRID-12-002 async 캐싱 결정 기록. C-33 inline stub 보존."] }
+      },
+      "harnessReview": {
+        "reviewedAt": "2026-05-15",
+        "reviewer": "opus",
+        "scoreConvergence": "all_four_pass — specify 100 / implement 100 / implement-verifier 100 / verify 100. 4 독립 Agent 만장일치 (specify Verifier + Implementer + Coverage Verifier + Verify). 환각 risk 0. promptSpecDrift 5건 (AsyncDataMap.state property vs getState() method, getError() spec 미포함, pendingPromise 위치 분리, buildAsyncCache factory name, duck typing 'state' in + 'load' in 패턴) 모두 spec 권위 적용 (C-27 절차 정확 준수, F-05 통과). specCodeDefects=[] (spec 내부 코드 결함 0건 — F-06 통과). C-31 Wiring Audit 완벽 (buildAsyncCache import L15 + 호출 L45 + cache.get/set/invalidate 3 invocation L71/L83/L95). ADR-MOD-GRID-12-002 async 캐싱 전략 (3 대안 비교 + trade-off 표) 신규 추가. C-33 inline stub 보존.",
+        "improvements": [],
+        "deferredImprovements": [
+          {
+            "candidate": "Spec AC prose ↔ Section 3.x API contract code semantic drift → specify B-07 신설 또는 E-01 의미 일치 axis 확장",
+            "reason": "누적 2 occurrences = pattern 단계 유지 (G-002 AC-001 '||' vs Section 3.2 '!== undefined' + G-003 Section 3.4 'getDisplay(item)' dead branch). G-004 에서는 본 sub-pattern 미재현 — 3rd occurrence 미달. G-004 의 5 drift 는 모두 main prompt vs spec 차이 (F-05 promptSpecDrift 영역) 이며 spec 내부 AC prose vs Section 3 코드 모순 (F-06 specCodeDefects 영역) 과 다른 axis. 두 axis 혼동 금지. 정책화 부적격 — 후속 Goal (다른 Pro 패키지 또는 MOD-GRID-13+) 3rd occurrence 누적 시 재검토."
+          },
+          {
+            "candidate": "Cross-Goal/cross-package AC deferral 패턴 → cross-module ADR 명문화 (ADR-MOD-GRID-00-013 후보)",
+            "reason": "누적 2 occurrences = pattern 단계 유지 (G-002 AC-003 type:'datamap' → MOD-GRID-04 columnFactory rendererRegistry + G-003 AC-005 column.dataMap auto-detect → MOD-GRID-04/05 EditableCell.tsx + renderer registry). G-004 는 self-contained — cross-package AC deferral 회피 (D-7 결정으로 자기 완결: createAsyncDataMap.ts + asyncCache.ts + 기존 grid-pro-datamap 내부 통합). 3rd occurrence 미달. 후속 Pro 패키지 createColumns 통합 (MOD-GRID-13/14 등) 시 재발 가능성 유지. 정책화 부적격."
+          },
+          {
+            "candidate": "specify-rubric F-03 — Docusaurus 페이지 경로 강제 완화 (MOD-GRID-99-B docs infra 출하 전 transitional rule)",
+            "reason": "누적 1 failure (G-002) + 2 self-resolutions (G-003 D-6 + G-004 D-6) = 1 genuine occurrence. spec writer가 G-003/G-004 에서 D-6 pre-decision 으로 자율 해소 — 룰 변경 없이 시스템 자체 학습 입증. 3 occurrence threshold 미달 + 자체 학습으로 자동 차단 가능성 입증. 정책화 부적격. MOD-GRID-99-B (docs infra) 출하 시 자동 만료 예정 — 별도 transitional rule 불필요."
+          },
+          {
+            "candidate": "DataMapEditor UX 패턴 (키보드 네비게이션 + IME composition + ARIA combobox + onStateChange subscription) cross-Pro-package 재사용 카탈로그",
+            "reason": "누적 1 occurrence (G-003) + G-004 DataMapEditor MODIFY (duck typing + asyncState useState + onStateChange 구독 + animate-spin spinner 추가) — anecdote 단계 유지. 본 G-004 추가분은 G-003 기반 컴포넌트 확장이며 신규 UX 패턴 추출 아님. 3rd occurrence (다른 Pro 패키지가 자체 Popover/Menu/Combobox 구현) 누적 시 cross-Pro-package UX 카탈로그 (`_useKeyboardComboboxNav` shared 유틸 또는 README 패턴 가이드) 정책화 검토. 정책화 부적격."
+          },
+          {
+            "candidate": "harnessReview 자동 작성 — loop tool 후 Self-Review stage 자동 호출",
+            "reason": "G-002 harnessReview null (수동 Self-Review 로 채움) + G-004 동일 패턴. tw-grid loop tool 의 Self-Review stage 자동 호출 누락. 단일 tooling gap (1 anecdote). 본 Self-Review 범위 외 (tooling 작업). 후속 retro 또는 별도 tooling Goal 에서 검토."
+          },
+          {
+            "candidate": "MOD-GRID-12 모듈 완료 → MOD-GRID-13 grid-pro-merging 진입 시 4 Goal 누적 패턴 카탈로그 인용 의무",
+            "reason": "MOD-GRID-12 4/4 Goal 모두 score 100 + 환각 1건 (G-001 1차 verifier H-01/H-02 정정됨, G-002~G-004 무) — 모듈 종결 시점에서 cross-module pattern catalog 활용 가치 입증. 단, 본 Self-Review 범위 외 (cross-module orchestration). MOD-GRID-13 spec writer 가 본 모듈 harnessReview patterns + deferredImprovements 를 참조 의무로 설정하려면 별도 ADR 또는 tw-grid orchestrator 강화 필요. 정책화 부적격 (1 데이터포인트)."
+          }
+        ],
+        "patterns": [
+          {
+            "name": "Pro 패키지 inline license stub (verifyOrWarn)",
+            "occurrences": "7+ (이미 C-33 + ADR-MOD-GRID-00-012 정책)",
+            "status": "policy_reconfirmed",
+            "note": "G-001 src/index.ts inline stub 도입 → G-002/G-003/G-004 패키지 진입점 아님 → 별도 stub 호출 없이 G-001 stub 통한 패키지 수준 라이선스 검증 자동 적용. G-004 D-7 + Section 5 C-33 인용으로 명시적 비추가 결정. 4 Goal × 1 모듈 = 4 occurrences (모듈 내) + 전체 모노레포 누적 7+ occurrences (grid-pro-tracking + grid-pro-range × 3 + grid-pro-datamap × 4 + grid-pro-merging). C-33 sunset 조건 (MOD-GRID-99-A/G-002 출하 시) 유효. 누적 데이터포인트 증가 — 정책 안정성 재확인."
+          },
+          {
+            "name": "Verify D 카테고리 vacuous truth — 신규 기능 affectedUsageFiles:[]",
+            "occurrences": "10+ (이미 ADR-MOD-GRID-00-002 phased rollout 정책)",
+            "status": "policy_reconfirmed",
+            "note": "MOD-GRID-02 6/6 hook-only + MOD-GRID-12/G-001~G-004 누적. ADR-MOD-GRID-00-002 phased rollout intent 일관 적용. MOD-GRID-17 사용처 채택 phase 시작 시 자동 만료 예정. G-004 가 모듈 4번째 데이터포인트로 정책 일관성 재확인. 10+ occurrences 시점에서도 정책 변경 시도 0 — phased rollout 의 anchor stability 입증."
+          },
+          {
+            "name": "promptSpecDrift 자율 정정 + 보고 (F-05 정상 절차)",
+            "occurrences": "1 (모듈 내 G-004 single bulk occurrence)",
+            "status": "working_as_designed",
+            "note": "G-004 5 drift (state property vs getState method, getError 미포함, pendingPromise 위치, buildAsyncCache factory name, duck typing pattern) — 모두 메인 prompt vs spec value drift (F-05 영역). Implementer 가 spec 우선 적용 + implement-score JSON promptSpecDrift[] 5 객체 기록 + feedback 1줄 요약 — C-27 + F-05 (v1.0.8) 절차 정확 준수. 5 drift 가 단일 Goal 내 발생 — bulk drift 처리의 첫 데이터포인트. F-05 정책 변경 trigger 부적격 (existing rule 완벽 작동). MOD-GRID-12 모듈 외 추가 발생 시 retro 검토."
+          },
+          {
+            "name": "Spec AC prose ↔ Section 3.x API contract code semantic drift (F-06 specCodeDefects)",
+            "occurrences": "2 (G-002 + G-003)",
+            "status": "pattern",
+            "note": "G-002 AC-001 '|| String(getValue())' vs Section 3.2 'label !== undefined ? ...' + G-003 Section 3.4 'dataMap.getDisplay(item)' (DataMap valuePath(item) keyed Map — item 객체 직접 키 불가 dead branch). 두 occurrence 모두 Implementer F-06 specCodeDefects[] 자율 정정 + C-30 truth table 정상 절차 흡수. G-004 에서는 본 sub-pattern 미재현 (specCodeDefects=[]) — 3rd occurrence 미달. pattern 단계 유지. 3rd occurrence (다른 Pro 패키지 또는 MOD-GRID-13+) 누적 시 specify B-07 신설 또는 E-01 의미 일치 axis 확장 promotion 검토."
+          },
+          {
+            "name": "Cross-Goal/cross-package AC deferral (AC → 별 패키지 통합)",
+            "occurrences": "2 (G-002 + G-003)",
+            "status": "pattern",
+            "note": "G-002 AC-003 type:'datamap' → MOD-GRID-04 columnFactory rendererRegistry (D-4) + G-003 AC-005 column.dataMap auto-detect → MOD-GRID-04/05 EditableCell.tsx + renderer registry (D-3). G-004 는 self-contained (D-7 결정으로 grid-pro-datamap 내부 완결 — DataMapEditor MODIFY + createAsyncDataMap NEW + asyncCache NEW + types/index.ts MODIFY) — cross-package deferral 회피. 3rd occurrence 미달. pattern 단계 유지. 후속 Pro 패키지 createColumns 통합 (MOD-GRID-13/14 등) 시 재발 가능 — 3rd occurrence 누적 시 cross-module ADR (ADR-MOD-GRID-00-013 'cross-package AC deferral pattern') 명문화 검토."
+          },
+          {
+            "name": "F-03 Docusaurus 경로 명시 — spec writer 자체 학습",
+            "occurrences": "1 failure (G-002) + 2 self-resolutions (G-003 + G-004)",
+            "status": "pattern_self_resolved",
+            "note": "G-002 F-03 NO (Docusaurus 페이지 경로 누락) 단일 anecdote 후 — G-003 spec writer 가 D-6 pre-decision + Section 13.5 'docs/grid-pro/datamap/DataMapEditor.mdx' 명시. G-004 spec writer 가 동일 D-6 pre-decision + Section 7 행 'docs/grid-pro/datamap/createAsyncDataMap.mdx' NEW 명시. spec writer 가 G-002 deferred candidate (F-03 강제 완화)에 의존하지 않고 자가 해소 — 시스템 자체 학습 입증. 룰 변경 부적격 (1 failure + 2 corrections — policy 변경 threshold 미달). 후속 Pro 패키지 spec writer 가 동일 패턴 재발할 가능성은 유지하나, G-003/G-004 self-resolution 누적으로 baseline 형성."
+          },
+          {
+            "name": "DataMapEditor cross-Goal MODIFY (G-003 NEW → G-004 동기/비동기 통합 MODIFY)",
+            "occurrences": "1 (G-004)",
+            "status": "anecdote",
+            "note": "G-003 에서 DataMapEditor.tsx NEW (동기 DataMap 전용) → G-004 에서 동일 파일 MODIFY (duck typing 'state' in + 'load' in dataMap + asyncState useState + onStateChange 구독 + animate-spin spinner). 기존 G-003 동기 경로 unchanged + AsyncDataMap 분기만 추가 (C-6 호환성 절대 + surgical changes). cross-Goal MODIFY 패턴은 cross-package AC deferral 대안 — self-contained 구현 가능 시 권장. 1 occurrence — anecdote 단계 유지. 후속 Goal 에서 동일 패턴 재발 시 cross-Goal MODIFY best practice 카탈로그 검토 가능."
+          }
+        ],
+        "moduleRetrospective": {
+          "moduleId": "MOD-GRID-12",
+          "moduleName": "DataMap — 셀 단위 lookup (foreign key display)",
+          "totalGoals": 4,
+          "completed": 4,
+          "averageScores": {
+            "specify": 98.2,
+            "implement": 100.0,
+            "implementVerifier": 100.0,
+            "verify": 100.0
+          },
+          "specifyDetail": { "G-001": 96.6, "G-002": 96.3, "G-003": 100.0, "G-004": 100.0 },
+          "cumulativeBundle": "1.82 KB brotli / 20 KB Pro 한도 (9.1% 사용 — 18.18 KB 잉여)",
+          "bundleGrowth": { "G-001": "1.00 KB", "G-002": "1.00 KB (+0)", "G-003": "1.19 KB (+0.19)", "G-004": "1.82 KB (+0.63)" },
+          "externalDepsAdded": 0,
+          "peerDepsChanged": 0,
+          "adrCount": 4,
+          "adrList": [
+            "ADR-MOD-GRID-12-001: DataMap API 시그니처 (G-001)",
+            "ADR-MOD-GRID-12-002: Async 캐싱 전략 (G-004) — SWR vs react-query vs 자체 Map 3 대안 비교",
+            "ADR-MOD-GRID-00-012: Pro 패키지 inline license stub 카탈로그 (G-001 → cross-module promote)",
+            "C-33 신설 (G-001) — Pro 패키지 license stub 정책 codify"
+          ],
+          "hallucinationsDetected": 1,
+          "hallucinationsResolved": 1,
+          "hallucinationDetail": "G-001 1차 specify Verifier H-01/H-02 환각 (잘못된 디렉토리 검색) — 2차 Verifier 재호출 시 정정됨. G-002/G-003/G-004 합계 9 독립 Agent 모두 수렴 — 환각 0건. C-26 (산식 자기-검증) + H-01 라인 인용 의무 정책으로 9 Agent 모두 차단.",
+          "constraintsAdded": ["C-33 (G-001 → 모노레포 누적 4 occurrences = policy)"],
+          "adrCrossModuleAdded": ["ADR-MOD-GRID-00-012 (Pro 패키지 inline stub 카탈로그)"],
+          "rubricChangesApplied": ["specify-rubric E-02 v1.0.7 (G-001 → Before/After 위치 비특정화)"],
+          "rubricChangesDeferred": [
+            "specify B-07 또는 E-01 의미 일치 axis 확장 (2 occurrences = pattern, 3rd 누적 시 검토)",
+            "ADR-MOD-GRID-00-013 cross-package AC deferral 명문화 (2 occurrences = pattern, 3rd 누적 시 검토)",
+            "specify F-03 transitional rule (1 failure + 2 self-corrections — 자체 학습 입증, 정책화 불필요)"
+          ],
+          "agentRunsTotal": 16,
+          "agentRunsDetail": "4 Goal × 4 stage (specify-verify + implementer + implement-verifier + verify) = 16 독립 Agent 호출. specify Verifier H-01/H-02/H-03 메타게이트 모두 통과. F-01~F-07 메타게이트 모두 통과. C-26 산식 자기-검증 모두 통과. C-32 migrationImpact ↔ goals.json 정합성 4/4 일치.",
+          "convergenceQuality": "환각 1건 / 16 Agent = 6.25% 1차 환각률. 정정 후 100% 수렴. 환각 1건도 G-001 (모듈 첫 Goal) 에서만 발생 — G-002~G-004 9 Agent 모두 1차 만장일치. 모듈 진행에 따른 시스템 안정화 입증.",
+          "additiveOnlyPolicyHonored": true,
+          "additiveOnlyDetail": "MOD-GRID-12 모듈 4 Goal 진행 중 신규 constraint 1건 (C-33), cross-module ADR 1건 (ADR-MOD-GRID-00-012), rubric 1건 (specify E-02 v1.0.7) 추가. 기존 항목 삭제/완화 0건. 모두 G-001 self-review 단일 시점 신설 — G-002~G-004 는 신규 추가 0건 (정책 안정화 입증). additive-only policy 4 Goal 일관 준수.",
+          "phasedRolloutCompliance": "ADR-MOD-GRID-00-002 phased rollout 정책 4/4 Goal 일관 적용: 모든 Goal affectedUsageFiles=[] (사용처 채택 = MOD-GRID-17 phase). D 카테고리 vacuous truth = 100 4 Goal 일관. MOD-GRID-17 사용처 채택 phase 시작 시 자동 만료 예정.",
+          "nextModule": "MOD-GRID-13 (grid-pro-merging — 추정 진행 중) 또는 다음 우선순위 Pro 패키지 모듈",
+          "scoreConvergenceNote": "MOD-GRID-12 4 Goal × 4 Agent stage = 16 독립 Agent 만장일치 통과 (1 환각 정정 후). specify 평균 98.2 (G-001 96.6 E-02 NO 1건 + G-002 96.3 F-03 NO 1건 + G-003 100 + G-004 100). implement/implement-verifier/verify 평균 모두 100.0. 4 Goal 모두 threshold 90 (medium tier) PASS. 패턴 카운터: policy_reconfirmed 2건 (C-33 + D-vacuous) + pattern 2건 (F-06 specCodeDefects + cross-package AC deferral) + pattern_self_resolved 1건 (F-03 Docusaurus) + anecdote 2건 (G-004 promptSpecDrift bulk + cross-Goal MODIFY). 신규 정책화 trigger 발동 0건. additive-only policy 일관 준수."
+        },
+        "harnessReviewNote": "improvements=[] 의도된 결과 — G-004 가 노출한 신규 gap 0건. promptSpecDrift 5건은 기존 F-05 (v1.0.8) 규정 정확 작동으로 완전 처리됨. F-06 specCodeDefects=[] (spec 내부 코드 결함 0건). 3-occurrence policy 진입 조건 미달 (F-06 sub-pattern 2 occurrences pattern + cross-package AC deferral 2 occurrences pattern + F-03 self-resolved 1 failure). 모듈 종결 시점 cumulative pattern catalog audit 결과: 7개 패턴 중 정책화 후보 0건 — additive-only 정책 4 Goal 일관 준수. 본 Self-Review 의 main 산출물은 moduleRetrospective (cross-module 안정성 baseline) 이며 신규 ID 할당은 없음. 다음 Pro 패키지 모듈 (MOD-GRID-13+) spec writer 가 본 patterns + deferredImprovements 를 참조하여 3rd occurrence 누적 검출 책임."
+      }
+    }
+  ]
+}

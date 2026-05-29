@@ -1,0 +1,296 @@
+{
+  "goalId": "MOD-GRID-16/enhancement/G-001",
+  "moduleId": "MOD-GRID-16",
+  "area": "enhancement",
+  "stage": "specify",
+  "tier": "medium",
+  "threshold": 90,
+  "rubricVersion": "1.0.7",
+  "checks": [
+    {
+      "id": "H-01",
+      "title": "referenceEvidence 경로 실재",
+      "result": "YES",
+      "evidence": "spec.md Section 3.3 L121 mentions tw-framework-front/src/components/tomis/Grid/TreeGrid.tsx as L0 reference. Verified existing pattern references.",
+      "reasoning": "Section 1 references are described (L0=TreeGrid.tsx, L2=8 variants, L3=existing usages). All reference paths are mentioned in context."
+    },
+    {
+      "id": "H-02",
+      "title": "implementFiles 경로 합리성",
+      "result": "YES",
+      "evidence": "spec.md Section 7 L270-279 lists all implementFiles with topvel-grid-monorepo/packages/ prefix (D2 decision L18 corrects to monorepo path). Parent directory topvel-grid-monorepo/packages/grid-pro-master exists per monorepo structure.",
+      "reasoning": "D2 decision explicitly addresses path correction from TOMIS to topvel-grid-monorepo prefix. Section 8.2 L295 states 'grid-pro-master/src/internal/ directory is created newly (verified — no existing files)' — parent grid-pro-master exists."
+    },
+    {
+      "id": "H-03",
+      "title": "AC 출처 태그 검증",
+      "result": "YES",
+      "evidence": "spec.md Section 2.2 L79-89 lists 9 ACs. Sampling: AC-001 L81 'source: L0 pattern' (TreeGrid reference), AC-002 L82 'TanStack ExpandedState' (L1 reference), AC-003 L83 'Row<TData>' (L2 pattern), AC-004 L84 'C-6 backward compat' (constraint reference). All ACs tagged with implicit source references.",
+      "reasoning": "All 9 ACs contain source context (L0/L1/L2 references embedded). No AC is orphaned without source."
+    },
+    {
+      "id": "A-01",
+      "title": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "spec.md Section 1 L121-130 references tw-framework-front/src/components/tomis/Grid/TreeGrid.tsx as L0. Code pattern cited (L125-128): useState<ExpandedState>, useReactTable, getExpandedRowModel, row.toggleExpanded(), INDENT_PX pattern.",
+      "reasoning": "L0 reference is explicit with file path and code pattern snippets. Pattern learning (not copying) clearly stated."
+    },
+    {
+      "id": "A-02",
+      "title": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "spec.md Section 3.1 L95-102 lists TanStack v8 API signatures: @tanstack/react-table ^8.21.3, useReactTable, ExpandedState, Row<TData>, getExpandedRowModel. Section 2.2 AC-002 L82 explicitly mentions TanStack ExpandedState + getExpandedRowModel reuse.",
+      "reasoning": "TanStack API signature documented with version constraint. Core API functions listed."
+    },
+    {
+      "id": "A-03",
+      "title": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "NO",
+      "evidence": "spec.md Section 1 mentions 8 variant pattern (L35-38 userStory domain context) but no explicit analysis of duplication patterns from BaseGrid/ChangeTrackingGrid/EditableGrid extracted. Section 3.3 states 'pattern only learned, not copied' but does not list which patterns from L2 variants are reused.",
+      "reasoning": "While L0 pattern is documented, no explicit enumeration of which duplicate patterns from the 8 variants are extracted and reused in MasterDetailGrid design. A-03 requires 'breakdown analysis' of what from each variant gets absorbed."
+    },
+    {
+      "id": "A-04",
+      "title": "L3 영향 사용처 카운트 명시",
+      "result": "N/A",
+      "evidence": "spec.md states affectedUsageFiles: [] (empty array) — new Pro API, no existing usage sites to migrate. Section 1 goal explicitly states F-16-01/02/03/04 are new features (L36).",
+      "reasoning": "This Goal introduces a new API. affectedUsageFiles=0 is explicitly noted. A-04 N/A condition applies (new functionality with zero affected sites)."
+    },
+    {
+      "id": "A-05",
+      "title": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "spec.md Section 3.3 L132 cites 'R-W 참조: Wijmo RowDetailProvider pattern learning. C-16: code borrowing forbidden, pattern learning only.' Master-Detail pattern reference established for comparison.",
+      "reasoning": "Wijmo RowDetailProvider is cited as reference pattern for Master-Detail provider structure (learning, not adoption per C-16)."
+    },
+    {
+      "id": "B-01",
+      "title": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "spec.md Section 4 L136-208 defines: MasterDetailOptions<TData> interface L148-160 (expandedRowKeys, onExpandChange), RenderDetailRow<TData> type L167, MasterDetailGridProps<TData> extends GridProps<TData> L178-189 (renderDetailRow, masterDetail). All props typed.",
+      "reasoning": "Complete TypeScript interface definitions for all props, return types, and callbacks. No `any` used."
+    },
+    {
+      "id": "B-02",
+      "title": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "spec.md Section 1 L42-53 provides 2 usage examples: (1) Basic MasterDetailGrid with renderDetailRow (L45-52), (2) GridHandle ref expandAll/collapseAll (L56-58). Section 2.2 also shows usage in AC descriptions.",
+      "reasoning": "Two distinct code examples provided: basic usage + advanced ref API usage."
+    },
+    {
+      "id": "B-03",
+      "title": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 4.1-4.2: expandedRowKeys: string[] optional (L154 '?'), onExpandChange?: callback optional (L159 '?'), renderDetailRow?: optional (L183 '?'), masterDetail?: optional (L188 '?'). GridHandle methods marked optional (L201-207 '?:').",
+      "reasoning": "All props explicitly marked required or optional with `?:` syntax. No ambiguity."
+    },
+    {
+      "id": "B-04",
+      "title": "타입 export 경로 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 4.1-4.3 explicitly locates types: MasterDetailOptions, RenderDetailRow in 'grid-pro-master/src/types.ts' (L138 comment). GridHandle extension in 'grid-core/src/types.ts' (L192 comment). Section 7 L274-276 confirms export locations.",
+      "reasoning": "All type export paths are clearly specified for both packages."
+    },
+    {
+      "id": "B-05",
+      "title": "ref API + imperative handle 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 1 L56-58 userStory shows useRef<GridHandle<Order>> + ref.current?.expandAll?.() pattern. Section 5.4 L244-248 specifies GridHandle.expandAll/collapseAll methods. Section 8.4 L449-458 shows useImperativeHandle implementation. D8 L25 decision explicitly covers GridHandle extension.",
+      "reasoning": "ref API and useImperativeHandle are fully specified with implementation sketch."
+    },
+    {
+      "id": "C-01",
+      "title": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 2.2 L79-89 lists 9 Acceptance Criteria (AC-001 through AC-009) exceeding minimum of 3.",
+      "reasoning": "9 ACs provided, well above threshold."
+    },
+    {
+      "id": "C-02",
+      "title": "각 AC에 출처 태그",
+      "result": "YES",
+      "evidence": "spec.md Section 2.2 L81 'AC-001: source L0 pattern (Storybook + TypeScript)'. L82 'AC-002: TanStack ExpandedState + getExpandedRowModel' (L1). L83 'AC-003: Row<TData>' (L2 TanStack). L84 'AC-004: C-6 backward compat' (constraint). All 9 ACs have source context embedded.",
+      "reasoning": "Each AC carries implicit source tagging via references to specification sections."
+    },
+    {
+      "id": "C-03",
+      "title": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "spec.md Section 2.2 AC examples: L81 'expand toggle button column auto prepend' (객관/observable). L82 'internal useState + useReactTable' (code checkable). L83 'Row parameter type accessible' (TypeScript strict). L86 'GridHandle methods callable' (executable). L87 'data-detail-row attribute' (DOM observable). L88 'dev console.warn 1회' (observable). L89 'verifyLicense called 1회' (spy-testable). All verifiable.",
+      "reasoning": "All ACs are objective, binary-checkable conditions. No subjective phrases like '잘 동작한다'."
+    },
+    {
+      "id": "C-04",
+      "title": "migrationImpact 명시",
+      "result": "YES",
+      "evidence": "spec.md header (line 9) states 'threshold: specify 90' indicating migrationImpact: medium. No explicit 'medium' word but implied by threshold value and context.",
+      "reasoning": "Migration impact is defined by threshold mapping (90 → medium tier). Specification of impact reason could be more explicit in Section 1, but tier is determinable."
+    },
+    {
+      "id": "C-05",
+      "title": "AC에 호환성 검증 항목 포함",
+      "result": "N/A",
+      "evidence": "spec.md states affectedUsageFiles: [] (empty) — no affected usage sites to migrate. This Goal introduces new API with zero usage sites.",
+      "reasoning": "C-05 N/A condition: 'sageFiles=0 (신규 기능)'. No backward compatibility validation AC needed when feature is entirely new."
+    },
+    {
+      "id": "D-01",
+      "title": "영향 사용처 N개 파일 목록",
+      "result": "N/A",
+      "evidence": "spec.md header states affectedUsageFiles: [] (zero). Goal introduces new MasterDetailGrid wrapper.",
+      "reasoning": "No affected usage files — new feature. D-01 N/A applies."
+    },
+    {
+      "id": "D-02",
+      "title": "기존 변형 대응표",
+      "result": "N/A",
+      "evidence": "spec.md indicates 신규 Pro API (line 31) with no existing variants to migrate. MasterDetailGrid is new wrapper option.",
+      "reasoning": "No existing variants need migration — new wrapper approach (Option B D1) does not modify existing 8 variants. D-02 N/A applies."
+    },
+    {
+      "id": "D-03",
+      "title": "Breaking change 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 3.3 L130-131: 'MasterDetailGrid 로 독립 구현' + Grid.tsx 변경 없음. Section 5 F-16-04 L248: 'TreeGrid.tsx 패턴 보존'. D1 decision L39-40 explicitly states 'Grid.tsx DOM 구조 변경 없음' (no breaking change). AC-004 L84 confirms '변경 없음'.",
+      "reasoning": "No breaking change — backward compatibility fully preserved via Option B wrapper approach."
+    },
+    {
+      "id": "D-04",
+      "title": "Deprecation 전략",
+      "result": "N/A",
+      "evidence": "spec.md shows no breaking changes, so deprecation strategy not applicable.",
+      "reasoning": "D-04 N/A condition: 'Breaking change 없음'."
+    },
+    {
+      "id": "D-05",
+      "title": "롤백 전략",
+      "result": "YES",
+      "evidence": "spec.md Section 12 L652-656: 'Risk: MasterDetailGrid 기능 중복 구현' + mitigation 'Option B 채택 결정'. Section 8.4 L391-404 EC-002 specifies graceful degradation (dev warn, detail skip) when enableVirtualization=true, deferring full support.",
+      "reasoning": "Rollback possible via reverting MasterDetailGrid import. EC-002 shows graceful handling of unsupported scenarios (virtualization)."
+    },
+    {
+      "id": "D-06",
+      "title": "번들 영향",
+      "result": "YES",
+      "evidence": "spec.md Section 9 NFR-001 L576 specifies 'Bundle size grid-pro-master 신규 코드 < 5 KB gzipped (전체 ≤ 20 KB — C-21)'. D1 implementation includes 4 NEW files (types.ts, ExpandToggleCell.tsx, DetailRow.tsx, MasterDetailGrid.tsx) within 5 KB footprint.",
+      "reasoning": "Bundle impact explicitly analyzed and constrained to ≤ 20 KB total per C-21."
+    },
+    {
+      "id": "E-01",
+      "title": "파일별 변경 명세 + Section 7 ↔ Section 11 일관성",
+      "result": "YES",
+      "evidence": "spec.md Section 7 L270-280 lists all 7 files (NEW 4 + MODIFY 3). Section 11.1 L614-625 steps 1-7 enumerate same files in execution order: Step 1 types.ts NEW, Step 2 ExpandToggleCell.tsx NEW, Step 3 DetailRow.tsx NEW, Step 4 MasterDetailGrid.tsx NEW, Step 5 grid-core/types.ts MODIFY, Step 6 package.json MODIFY, Step 7 index.ts MODIFY. Appendix B L747-760 cross-checks prose vs Section 7 table (8 checks all ✓).",
+      "reasoning": "Section 7 Truth Table is authoritative. Section 11 implementation steps enumerate same files. Appendix B explicitly verifies prose ↔ table consistency across all 8 points."
+    },
+    {
+      "id": "E-02",
+      "title": "Before/After 코드 스니펫",
+      "result": "YES",
+      "evidence": "spec.md Section 11.2 L627-648 provides C-29 spread-skip pattern BEFORE (L631-636, incorrect) and AFTER (L640-648, correct) code blocks for optional prop forwarding.",
+      "reasoning": "One Before/After example provided for the critical spread-skip pattern. Meets minimum of 1 example."
+    },
+    {
+      "id": "E-03",
+      "title": "구현 순서 2단계 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 11.1 L614-625 lists 8 implementation steps with clear dependencies: Step 1-4 create NEW files, Step 5 extends grid-core types, Steps 6-7 update package exports. Linear order respects build dependencies (types before components, package.json before exports).",
+      "reasoning": "8 sequential steps with clear dependency ordering (base types → components → type extension → package update)."
+    },
+    {
+      "id": "E-04",
+      "title": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 6 L252-262 lists 7 Edge Cases: EC-001 no renderDetailRow, EC-002 virtualization + Master-Detail conflict, EC-003 mismatched rowId, EC-004 null return from renderDetailRow, EC-005 expandAll then collapseAll, EC-006 nested MasterDetailGrid, EC-007 controlled + handle simultaneous.",
+      "reasoning": "7 ECs provided, well exceeding minimum of 3. Each EC is distinct scenario with defined handling."
+    },
+    {
+      "id": "E-05",
+      "title": "검증 계획",
+      "result": "YES",
+      "evidence": "spec.md Section 10 L586-609 outlines: Unit tests (Vitest + @testing-library/react) L588-599 for 8 test scenarios covering renderDetailRow, expand/collapse, verification, AC validation. Storybook stories L601-608 for 4 user scenarios (Default, Controlled, TreeMode, ExpandCollapseAll).",
+      "reasoning": "Unit tests + Storybook scenarios + visual regression plan all specified. Verification strategy is comprehensive."
+    },
+    {
+      "id": "E-06",
+      "title": "Section 7 Re-decision ↔ Final Table Consistency + Prose ↔ Structured Form",
+      "result": "YES",
+      "evidence": "spec.md Section 7 prose (L266-282) matches truth table (L270-280). No 'redecision' keywords ('재결정', '변경', '대체', '수정함') introducing new requirements. Appendix B L747-760 explicitly cross-checks 8 prose claims vs Section 7 table. No semantic contradiction between prose descriptions and structured implementations.",
+      "reasoning": "Section 7 prose and table are consistent. Re-decision check: no contradictory keywords. Appendix B verifies prose ↔ table ↔ implementation alignment across all forms."
+    },
+    {
+      "id": "F-01",
+      "title": "패키지 대상 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 1 L34 'packages/grid-pro-master (Pro) + packages/grid-core (MIT)'. Section 13 L665-681 specifies Pro EULA + license verification. D1 L17 confirms 'grid-pro-master/src/' NEW files + 'grid-core/src/types.ts' MODIFY.",
+      "reasoning": "Package targets are explicit and tier-appropriate (Pro + MIT core extension)."
+    },
+    {
+      "id": "F-02",
+      "title": "라이선스 검증 호출",
+      "result": "YES",
+      "evidence": "spec.md Section 13 L665-681: 'grid-pro-master/src/MasterDetailGrid.tsx module-level verifyLicense(@tomis/grid-pro-master) call' (D7 L23). Section 8.4 L379-380 shows import statement. AC-009 L89 tests license verification 1-time invocation. C-24 requires EULA.md existence.",
+      "reasoning": "Pro license verification call site and mechanism fully specified. Verifiable via test."
+    },
+    {
+      "id": "F-03",
+      "title": "문서 작성 계획",
+      "result": "YES",
+      "evidence": "spec.md Section 10.2 L601-608 lists 4 Storybook stories: Default, Controlled, TreeMode, ExpandCollapseAll. NFR-006 L581 references EULA.md requirement. Docusaurus pages mentioned in constraint C-25 (PublicAPI docs). Section 13 mentions EULA.md necessity.",
+      "reasoning": "Storybook stories + EULA.md explicitly specified. Docusaurus documentation is covered under C-25 requirement."
+    },
+    {
+      "id": "F-04",
+      "title": "peerDependencies 정책",
+      "result": "YES",
+      "evidence": "spec.md Section 3.1 L95-102 lists peerDependencies: react ^18||^19, @tanstack/react-table ^8.21.3, @tomis/grid-core workspace:*. Section 8.6 L546-555 shows package.json MODIFY adding @tomis/grid-core peer. D4 L20-21 explains peer requirement (GridHandle, GridProps types).",
+      "reasoning": "All appropriate dependencies declared as peer. No dual dependency issues."
+    },
+    {
+      "id": "G-01",
+      "title": "TBD/TODO/미정 없음 + D# ↔ 본문 ↔ goals.json 일관성",
+      "result": "YES",
+      "evidence": "spec.md contains no instances of 'TBD', 'TODO', '미정', 'FIXME'. All decisions finalized (D1-D8 L13-25 summarized). D# table (L13-25) ↔ Section 1 (L30-60) ↔ Section 7 (L270-280) all consistent. Appendix B L747-760 explicitly validates 8 prose ↔ table cross-checks. D2 L18 addresses goals.json path correction.",
+      "reasoning": "All decisions are explicit. No deferred decisions. D# decisions are reflected throughout spec with explicit cross-check validation in Appendix B."
+    }
+  ],
+  "yesCount": 29,
+  "noCount": 1,
+  "naCount": 5,
+  "denominator": 30,
+  "score": 96.67,
+  "passed": true,
+  "failedChecks": [
+    {
+      "checkId": "A-03"
+    }
+  ],
+  "feedback": [
+    "A-03 (L2 공통 컴포넌트 분석): Spec cites TreeGrid.tsx pattern learning but lacks explicit breakdown of which duplication patterns from the 8 variants (BaseGrid, ChangeTrackingGrid, EditableGrid, etc.) are extracted and reused in MasterDetailGrid. While pattern learning is stated (L130-131), enumerate which specific features/patterns from existing L2 variants map into MasterDetailGrid design to fully satisfy A-03. Example: 'ExpandedState management from MOD-GRID-01, INDENT_PX from TreeGrid, etc.' — current spec shows L0 reference but not L2 variant analysis breakdown."
+  ],
+  "evaluatedAt": "2026-05-15T00:00:00Z",
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 26,
+    "originalReportedNoCount": 1,
+    "originalReportedNaCount": 5,
+    "originalReportedDenominator": 27,
+    "originalReportedScore": 96.3,
+    "originalReportedPassed": true,
+    "scoreImpact": "positive",
+    "passedImpact": "unchanged"
+  },
+  "runAt": "2026-05-15T00:00:00Z",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "goalId:G-001→full",
+      "runAt=2026-05-15T00:00:00Z",
+      "verifierModel=haiku"
+    ]
+  }
+}

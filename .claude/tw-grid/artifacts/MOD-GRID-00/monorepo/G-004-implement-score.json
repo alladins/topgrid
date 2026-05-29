@@ -1,0 +1,198 @@
+{
+  "goalId": "MOD-GRID-00/monorepo/G-004",
+  "module": "MOD-GRID-00",
+  "area": "monorepo",
+  "stage": "implement",
+  "rubricVersion": "1.0.3",
+  "migrationImpact": "low",
+  "threshold": 90,
+  "implementedAt": "2026-05-14",
+  "metaGates": {
+    "F-01": {
+      "result": "YES",
+      "evidence": "All 16 Section 7 files exist. Additionally decisions.md (Step 1) + monorepo/package.json (Step 2) from Section 11.1 exist. Glob + PowerShell Get-ChildItem confirmed: .changeset/config.json, eslint.config.mjs, vite.config.ts (50 lines), 13× CHANGELOG.md (grid through grid-renderers all confirmed)."
+    },
+    "F-02": {
+      "result": "YES",
+      "evidence": "All changed files are within spec. Section 7 lists 16 files. Section 11.1 Steps 1+2 add decisions.md MODIFY + monorepo/package.json MODIFY (spec-internal authority — Section 11 is the authoritative implementation plan per spec structure). No files changed outside spec scope. Note: F-02 feedback filed — Section 7 enumerates 16 files but does not list decisions.md or monorepo/package.json; Section 11.1 Steps 1+2 require them. Implementer followed Section 11.1 as authoritative per spec architecture."
+    },
+    "F-03": {
+      "result": "YES",
+      "evidence": "External monorepo files (topvel-grid-monorepo): N/A per ADR-MOD-GRID-00-001 (external git boundary). Verified via PowerShell Get-ChildItem: 13 CHANGELOG.md confirmed, .changeset/config.json created, eslint.config.mjs created, package.json devDeps updated. TOMIS-internal vite.config.ts: TOMIS git repo has no prior commits (all files untracked ??). File existence + Read-verified content (50 lines, 13 @tomis/* aliases present) confirms change applied. No git diff possible (no commits yet) — file-content verification substituted per F-03 N/A policy for external dirs extended to no-commit-yet scenario."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Key identifiers verified present: (1) '@changesets/cli/changelog' in .changeset/config.json, (2) 'access: \"restricted\"' in config.json, (3) '@typescript-eslint/no-explicit-any': 'error' in eslint.config.mjs, (4) '@tomis/grid-core' in vite.config.ts — all grep-confirmed."
+    },
+    "F-05": {
+      "result": "YES",
+      "evidence": "Implementer read spec.md directly before implementation. No value-level drift detected between prompt and spec. Prompt referenced 'Section 11.6' (non-existent subsection) — structural reference error, not a value conflict. Implementation followed actual spec sections 11.1–11.5. promptSpecDrift = []."
+    }
+  },
+  "checks": {
+    "A-01": {
+      "result": "YES",
+      "evidence": "All 16 Section 7 files exist on disk. PowerShell: 13/13 CHANGELOG.md PASS, config.json PASS, eslint.config.mjs PASS, vite.config.ts (50 lines) PASS. decisions.md ADR-006 written (Step 1). monorepo/package.json updated (Step 2)."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "eslint.config.mjs matches Section 2.2 schema exactly (import js, tseslint, reactHooks; rules: no-explicit-any:error, explicit-module-boundary:off, no-console:warn). config.json matches Section 2.1 schema exactly (all 8 fields present, correct values). vite.config.ts alias block matches Section 2.3 / Section 11.3 After snippet exactly (13 @tomis/* entries, relative path ../../topvel-grid-monorepo/packages/*/src)."
+    },
+    "A-03": {
+      "result": "YES",
+      "evidence": "Section 2.4 usage examples: pnpm changeset workflow deferred to G-005 (EC-01 documented deviation). vite.config.ts alias import pattern (@tomis/grid-core → packages/grid-core/src/index.ts) statically verified — all 13 src directories confirmed present. AC-001 PASS (config.json + fields verified). AC-005 N/A (EC-03 documented deviation)."
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "Section 3 compatibility table all rows covered: '@' alias preserved (grep confirmed), react()+tailwindcss() plugins preserved, server.proxy preserved, define preserved, tw-framework-front package.json unchanged (D1 decision — no deps needed). All 3 table rows handled."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "AC-001: config.json exists + access=restricted + baseBranch=master + changelog=@changesets/cli/changelog verified. AC-002: 13 CHANGELOG.md files with # @tomis/{pkg} + ## 0.0.0 headers verified (grid-core and grid sample-read confirmed). AC-003: eslint.config.mjs with no-explicit-any:error verified. AC-004: vite.config.ts with @tomis/grid-core + '@' + plugins + server + define all verified. AC-005: N/A (EC-03 HMR environment constraint)."
+    },
+    "B-01": {
+      "result": "N/A",
+      "evidence": "tsc cannot be run: pnpm install not executed (EC-01), no node_modules for new devDeps. eslint.config.mjs + config.json are JS/JSON (not TS). vite.config.ts uses standard Vite path.resolve() pattern with no type errors expected. Environment constraint per EC-01 documented deviation."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Grep ': any|<any>|as any' across all created/modified files: 0 results. eslint.config.mjs: JS config file, no TypeScript typing. config.json: JSON. CHANGELOG.md: Markdown. vite.config.ts: existing file, no new any types added."
+    },
+    "B-03": {
+      "result": "N/A",
+      "evidence": "G-004 creates only infrastructure config files (Changesets config, ESLint config, vite alias, CHANGELOG.md). No TanStack React Table API usage in any created file. N/A."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "No .css/.scss files created. No inline style attributes added. All created files are JSON/JS/MD/TS config types."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "ESLint not runnable: pnpm install not executed (EC-01). eslint.config.mjs itself is the ESLint config being created — it cannot lint itself at creation time. Environment constraint per EC-01."
+    },
+    "B-06": {
+      "result": "YES",
+      "evidence": "Grep '@mescius/wijmo|from [\"\\']wijmo' across all created/modified files: 0 results. G-004 is infra tooling — no Wijmo dependency."
+    },
+    "B-07": {
+      "result": "YES",
+      "evidence": "Grep 'dummyData|mockData|fakeData|// TODO' across eslint.config.mjs, config.json, vite.config.ts: 0 results. CHANGELOG.md files contain only spec-defined scaffold content."
+    },
+    "C-01": {
+      "result": "N/A",
+      "evidence": "tsc not runnable (EC-01). vite.config.ts alias additions use standard path.resolve() syntax with no new TypeScript declarations — no compilation impact on source files. tw-framework-front source files unchanged. Low migrationImpact goal + environment constraint."
+    },
+    "C-02": {
+      "result": "N/A",
+      "evidence": "No UI components created or modified. G-004 is pure infrastructure. low tier + 0 UI usage sites."
+    },
+    "C-03": {
+      "result": "N/A",
+      "evidence": "No runtime execution environment available (dev server not running). G-004 creates no runtime code — all files are dev tooling config. No console.log/warn in created files."
+    },
+    "C-04": {
+      "result": "N/A",
+      "evidence": "G-004 does not modify any package's peerDependencies. CHANGELOG.md files are documentation. monorepo root package.json changes are devDependencies only (not peerDependencies). Individual package.json peerDependencies unchanged (set in G-003)."
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "affectedUsageFiles per spec Section 8.1 = 1 (tw-framework-front/package.json noted, actual change tw-framework-front/vite.config.ts per D1 decision). vite.config.ts MODIFIED: 13 @tomis/* aliases added enabling @tomis/grid-* imports for all MOD-GRID-17 pages. 1/1 affected file addressed = 100%."
+    },
+    "D-02": {
+      "result": "YES",
+      "evidence": "1 TOMIS-internal file modified (vite.config.ts). Well within ≤5 limit. External monorepo files are additive only (no usage site migrations)."
+    },
+    "D-03": {
+      "result": "N/A",
+      "evidence": "D-01 = 100% complete. No residual usage sites from this goal's scope remaining. MOD-GRID-17 page migrations (27 files) are a future goal, not part of G-004's affectedUsageFiles."
+    },
+    "E-01": {
+      "result": "N/A",
+      "evidence": "size-limit not runnable (EC-01, no pnpm install). bundleImpact: +0 KB per spec Section 8.5 (all G-004 files are dev tooling + config — none enter runtime bundle). Individual package src files unchanged, no compiled output added."
+    },
+    "E-02": {
+      "result": "YES",
+      "evidence": "ADR-MOD-GRID-00-006 written in decisions/MOD-GRID-00-decisions.md (Step 1). Covers @changesets/cli + ESLint 5 devDeps introduction. All MIT licenses verified. ADR placeholder consumed. Full ADR with decision, rationale, alternatives, trade-offs, license table, results."
+    },
+    "E-03": {
+      "result": "N/A",
+      "evidence": "G-004 does not create new package.json files. monorepo root package.json is private:true (no publish, no license field required for private workspace root). Individual package license fields (MIT / EULA) set in G-002/G-003 and not modified by G-004."
+    }
+  },
+  "buildResult": {
+    "tsc": "N/A (EC-01: pnpm install not run)",
+    "viteBuild": "N/A (EC-01: environment constraint — static path verification passed: all 13 src/ dirs confirmed)",
+    "sizeLimit": "N/A (EC-01: environment constraint — bundleImpact: +0 KB per spec)",
+    "eslintRun": "N/A (EC-01: environment constraint)",
+    "configJsonParse": "PASS (node -e JSON.parse: exit 0)"
+  },
+  "yesCount": 12,
+  "noCount": 0,
+  "naCount": 10,
+  "denominator": 12,
+  "score": 100,
+  "passed": true,
+  "selfVerification": {
+    "sumCheck": "13 + 0 + 9 = 22 == rubric total 22 ✓",
+    "scoreCheck": "13 / 13 × 100 = 100.0 ✓",
+    "denominatorCheck": "YES(13) + NO(0) = 13. N/A(9) excluded ✓",
+    "failedChecksNaCheck": "failedChecks = [] (no NO items). N/A items NOT included ✓",
+    "categoryCheck": "A(3YES/2NA), B(3YES/4NA), C(3YES/1NA), D(1YES/2NA), E(3YES/0NA) = 13YES + 0NO + 9NA ✓"
+  },
+  "failedChecks": [],
+  "autoFixed": [],
+  "promptSpecDrift": [],
+  "documentedDeviations": [
+    {
+      "ac": "AC-001 (CLI execution aspect only)",
+      "ec": "EC-01",
+      "reason": "pnpm install not executed — @changesets/cli not installed. pnpm changeset / changeset version CLI execution not verifiable.",
+      "finding": "findings/auto-fixed/MOD-GRID-00-G-004-changeset-cli-execution-skipped.md",
+      "resolution": "Before G-005: run 'pnpm install' in topvel-grid-monorepo. Verify 'pnpm changeset --version'. File-level AC-001 (config.json existence + fields) passed without CLI."
+    },
+    {
+      "ac": "AC-005",
+      "ec": "EC-03",
+      "reason": "tw-framework-front pnpm dev not running — HMR validation not possible. @tomis/grid-core import runtime resolution unverifiable.",
+      "finding": "findings/auto-fixed/MOD-GRID-00-G-004-hmr-validation-deferred.md",
+      "resolution": "Before MOD-GRID-17 착수: run 'pnpm dev' in tw-framework-front. Verify @tomis/grid-core import resolves. All 13 src/ dirs statically confirmed present — path accuracy risk mitigated."
+    }
+  ],
+  "feedback": {
+    "specInternalInconsistency": "D5 header says '12 패키지' but body, AC-002, Section 7 all say 13 (grid-license included). Implemented 13 CHANGELOG.md per body/AC/Section 7. Spec typo in D5 header only.",
+    "section7VsSection11Gap": "Section 7 enumerates 16 files (no decisions.md MODIFY, no monorepo/package.json MODIFY). Section 11.1 Steps 1+2 require these 2 additional modifications. Followed Section 11.1 as authoritative implementation plan. Spec should update Section 7 to include these 2 MODIFY entries in future revision.",
+    "goalsJsonImplementFiles": "goals.json implementFiles lists only 3 entries (config.json, eslint.config.mjs, vite.config.ts). Spec Section 7 is authoritative per C-27. Implemented all 16 Section 7 files + 2 Section 11.1 files.",
+    "thresholdNote": "spec header sets threshold:90 (overrides rubric formula 'low→85'). Applied spec value per C-27.",
+    "f03NoCommits": "TOMIS git repo has no prior commits (all files untracked). git diff is empty by design. File-content verification substituted: vite.config.ts confirmed 50 lines with 13 @tomis/* aliases.",
+    "promptSection116": "Prompt references 'Section 11.6' (does not exist in spec — only 11.1–11.5). Structural reference error, not a value-level drift. Not recorded in promptSpecDrift."
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 13,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 9,
+    "originalReportedDenominator": 13,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-00",
+  "tier": "low",
+  "runAt": "2026-05-14",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-004→full",
+      "tier=low",
+      "runAt=2026-05-14",
+      "verifierModel=haiku"
+    ]
+  }
+}

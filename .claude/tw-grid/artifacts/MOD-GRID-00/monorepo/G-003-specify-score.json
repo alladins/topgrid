@@ -1,0 +1,350 @@
+{
+  "goalKey": "MOD-GRID-00/monorepo/G-003",
+  "stage": "specify",
+  "reVerified": true,
+  "reVerificationReason": "1차 Verifier H-01 메타게이트 환각 거부 (TOMIS 경로 분실). 2차 재검증: spec.md L32 정확 경로 Read 확인 + 물리적 Test-Path 실재 확인 + 모든 implementFiles 경로 Bash 존재 검증 완료",
+  "rubricVersion": "1.0.2",
+  "rubricDate": "2026-05-13",
+  "verifierModel": "haiku",
+  "verificationDate": "2026-05-13T14:35Z",
+  "checks": [
+    {
+      "checkId": "A-01",
+      "category": "A",
+      "title": "L0 현 구현 파일 명시 + 패턴 인용",
+      "result": "YES",
+      "evidence": "spec.md Section 1 L0 라인 32: 'D:/project/topvel_project/TOMIS/tw-framework-front/package.json' — Read 도구 확인 (라인 1~50). 파일 실재. React/TanStack 버전 정확히 인용: react ^19.1.0, @tanstack/react-table ^8.21.3, @tanstack/react-virtual ^3.13.24"
+    },
+    {
+      "checkId": "A-02",
+      "category": "A",
+      "title": "L1 TanStack v8 API signature 인용",
+      "result": "YES",
+      "evidence": "spec.md Section 1 L1 (51~81줄): '각 package.json 실측 버전' 표 + 12개 패키지 peerDependencies 상태. L1: canonical-modules.json 라인 87. TanStack peer API 정책 명시"
+    },
+    {
+      "checkId": "A-03",
+      "category": "A",
+      "title": "L2 공통 컴포넌트 분석 (8 variant 중복 추출)",
+      "result": "N/A",
+      "evidence": "신규 인프라 Goal. 8 variant 중복 패턴 분석 대상 아님. spec.md 라인 83: peerDependencies는 variant 무관"
+    },
+    {
+      "checkId": "A-04",
+      "category": "A",
+      "title": "L3 영향 사용처 카운트 명시",
+      "result": "N/A",
+      "evidence": "spec.md Section 1 L3: affectedUsageFiles: [] — 0개 명시"
+    },
+    {
+      "checkId": "A-05",
+      "category": "A",
+      "title": "R-A AG Grid + R-W Wijmo 동등 기능 참조",
+      "result": "YES",
+      "evidence": "spec.md Section 1 R-A (100~111줄): AG Grid peerDependencies JSON 인용. R-W (113~124줄): Wijmo peerDependencies 패턴 인용"
+    },
+    {
+      "checkId": "B-01",
+      "category": "B",
+      "title": "TypeScript interface 정의 (props/return/events)",
+      "result": "YES",
+      "evidence": "spec.md Section 2: peerDependencies JSON 스키마 4종 (2.1~2.4) + .size-limit.json 스키마 (2.5) 정의"
+    },
+    {
+      "checkId": "B-02",
+      "category": "B",
+      "title": "사용 예시 코드 최소 2개",
+      "result": "YES",
+      "evidence": "spec.md Section 2.6: 예시 1 (pnpm add), 예시 2 (size-limit CI). 각 shell 명령 + 결과"
+    },
+    {
+      "checkId": "B-03",
+      "category": "B",
+      "title": "기본값 + optional 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 2.3: peerDependenciesMeta.optional: true. Section 2.4: optional 선언"
+    },
+    {
+      "checkId": "B-04",
+      "category": "B",
+      "title": "타입 export 경로 명시",
+      "result": "N/A",
+      "evidence": "package.json 메타데이터 Goal — TypeScript export 해당 없음"
+    },
+    {
+      "checkId": "B-05",
+      "category": "B",
+      "title": "ref API + imperative handle 명시",
+      "result": "N/A",
+      "evidence": "인프라 Goal — ref API 해당 없음"
+    },
+    {
+      "checkId": "C-01",
+      "category": "C",
+      "title": "AC 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 5: AC-001~AC-005 = 5개"
+    },
+    {
+      "checkId": "C-02",
+      "category": "C",
+      "title": "각 AC에 출처 태그 (L0/L1/L2/L3/R-A/R-W/C-NN)",
+      "result": "YES",
+      "evidence": "spec.md Section 5 표: AC-001(C-22), AC-002(C-22), AC-003(C-22 D1), AC-004(C-21), AC-005(C-21). 모두 출처 태그 + 섹션 인용"
+    },
+    {
+      "checkId": "C-03",
+      "category": "C",
+      "title": "binary 검증 가능",
+      "result": "YES",
+      "evidence": "모든 AC binary 검증: Read/Glob/Grep 메서드 명시 + 객관 결과"
+    },
+    {
+      "checkId": "C-04",
+      "category": "C",
+      "title": "migrationImpact 명시 (high/medium/low)",
+      "result": "YES",
+      "evidence": "spec.md 헤더: migrationImpact: low. 사유: 126~128줄 명시"
+    },
+    {
+      "checkId": "C-05",
+      "category": "C",
+      "title": "AC에 호환성 검증 항목 포함",
+      "result": "N/A",
+      "evidence": "사용처 0개 (신규 인프라). spec.md: affectedUsageFiles: []"
+    },
+    {
+      "checkId": "D-01",
+      "category": "D",
+      "title": "영향 사용처 N개 파일 목록 (Section 8.1)",
+      "result": "YES",
+      "evidence": "spec.md Section 8.1: affectedUsageFiles = 0 명시. 패키지 메타데이터만 수정"
+    },
+    {
+      "checkId": "D-02",
+      "category": "D",
+      "title": "기존 변형 대응표 (Section 3)",
+      "result": "N/A",
+      "evidence": "신규 인프라 Goal. 기존 variant 미영향"
+    },
+    {
+      "checkId": "D-03",
+      "category": "D",
+      "title": "Breaking change 명시 (Section 4)",
+      "result": "YES",
+      "evidence": "spec.md Section 4.1: Breaking change: NO 명시 + 사유"
+    },
+    {
+      "checkId": "D-04",
+      "category": "D",
+      "title": "Deprecation 전략 (Section 4)",
+      "result": "N/A",
+      "evidence": "Breaking change 없음"
+    },
+    {
+      "checkId": "D-05",
+      "category": "D",
+      "title": "롤백 전략 (Section 8.4)",
+      "result": "N/A",
+      "evidence": "low tier + 사용처 0 (N/A 조건). spec.md: 8.4 명시"
+    },
+    {
+      "checkId": "D-06",
+      "category": "D",
+      "title": "번들 영향 (Section 8.5)",
+      "result": "YES",
+      "evidence": "spec.md Section 8.5: bundleImpact: +0 KB. (1) peerDependencies = npm metadata. (2) size-limit = devDep. (3) tsup external 일관성"
+    },
+    {
+      "checkId": "E-01",
+      "category": "E",
+      "title": "파일별 변경 명세 (NEW/MODIFY)",
+      "result": "YES",
+      "evidence": "spec.md Section 7: 14개 파일 목록 (1 NEW + 13 MODIFY). 절대경로 + 변경범위 명시"
+    },
+    {
+      "checkId": "E-02",
+      "category": "E",
+      "title": "Before/After 코드 스니펫 (최소 1개)",
+      "result": "YES",
+      "evidence": "spec.md Section 11: Step 4 grid-core Before/After (594~622줄). Step 5/6 추가 예시"
+    },
+    {
+      "checkId": "E-03",
+      "category": "E",
+      "title": "구현 순서 2단계 이상 (의존성 고려)",
+      "result": "YES",
+      "evidence": "spec.md Section 11: 8단계 명시 (Step 1~8). 각 의존성 명시"
+    },
+    {
+      "checkId": "E-04",
+      "category": "E",
+      "title": "엣지 케이스 3개 이상",
+      "result": "YES",
+      "evidence": "spec.md Section 6: EC-01~EC-04 (4개). EC↔AC 매핑 표 (399~406줄)"
+    },
+    {
+      "checkId": "E-05",
+      "category": "E",
+      "title": "검증 계획 (Section 12)",
+      "result": "YES",
+      "evidence": "spec.md Section 12: V-01~V-11 검증 계획. 방법/기대결과 명시"
+    },
+    {
+      "checkId": "F-01",
+      "category": "F",
+      "title": "패키지 대상 명시",
+      "result": "YES",
+      "evidence": "spec.md Section 13.1: 13개 패키지 MIT/Pro EULA 분류"
+    },
+    {
+      "checkId": "F-02",
+      "category": "F",
+      "title": "라이선스 검증 호출 (Pro 패키지)",
+      "result": "N/A",
+      "evidence": "이 Goal은 런타임 코드 없음. spec.md 13.2: N/A"
+    },
+    {
+      "checkId": "F-03",
+      "category": "F",
+      "title": "문서 작성 계획",
+      "result": "YES",
+      "evidence": "spec.md Section 13.4: 문서화 계획 명시 (ADR-007, README.md, Docusaurus)"
+    },
+    {
+      "checkId": "F-04",
+      "category": "F",
+      "title": "peerDependencies 정책 (C-22)",
+      "result": "YES",
+      "evidence": "spec.md Section 9.2: peerDependencies 선언 (12개 패키지). react/react-dom/@tanstack/react-table 필수. optional 명시"
+    },
+    {
+      "checkId": "G-01",
+      "category": "G",
+      "title": "Spec에 TBD/TODO/미정 표현 없음",
+      "result": "YES",
+      "evidence": "전체 spec 검색: TBD/TODO 없음. 모든 결정 명시. G-002 학습 적용 (Section 8.5, EC↔AC 매핑)"
+    }
+  ],
+  "selfVerification": {
+    "duty1_categoryCount": {
+      "expected": 31,
+      "actual": 31,
+      "categories": {
+        "A": 5,
+        "B": 5,
+        "C": 5,
+        "D": 6,
+        "E": 5,
+        "F": 4,
+        "G": 1
+      },
+      "match": true
+    },
+    "duty2_denominatorExclusion": {
+      "formula": "denominator = YES + NO (N/A 제외)",
+      "yesCount": 21,
+      "noCount": 0,
+      "naCount": 9,
+      "na_items": [
+        "A-03",
+        "A-04",
+        "B-04",
+        "B-05",
+        "C-05",
+        "D-02",
+        "D-04",
+        "D-05",
+        "F-02"
+      ],
+      "denominator": 21,
+      "match": true
+    },
+    "duty3_scoreFormula": {
+      "formula": "score = YES / denominator × 100",
+      "calculation": "21 / 21 × 100 = 100.0",
+      "reverseCheck": "100.0 × 21 / 100 = 21 (== yesCount) ✓",
+      "match": true
+    },
+    "duty4_failedChecksIntegrity": {
+      "rule": "NO 결과만 포함. N/A 절대 미포함",
+      "count": 0,
+      "match": true
+    }
+  },
+  "yesCount": 22,
+  "noCount": 0,
+  "naCount": 9,
+  "denominator": 22,
+  "score": 100,
+  "scoreFormulaVerification": {
+    "formula": "score = YES / (YES + NO) × 100",
+    "yesCount": 21,
+    "noCount": 0,
+    "denominator": 21,
+    "calculation": "21 / 21 × 100 = 100.0",
+    "reverseCheck": "100.0 × 21 / 100 = 21 ✓",
+    "match": true
+  },
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": [],
+  "metaGates": {
+    "H-01_referenceEvidence": {
+      "result": "YES",
+      "l0_path": "D:/project/topvel_project/TOMIS/tw-framework-front/package.json",
+      "l0_verified": "Read 도구로 파일 전체 읽음 (라인 1~50 내용 확인). react ^19.1.0, @tanstack/react-table ^8.21.3, @tanstack/react-virtual ^3.13.24 버전 정확히 인용됨",
+      "l1_paths_verified": "13개 packages/*/package.json — Bash ls 확인. canonical-modules.json — 파일 실재 확인",
+      "l2_verified": "신규 인프라 (N/A 합리적)",
+      "l3_verified": "affectedUsageFiles=0 명시 (경로 없음)",
+      "overall": true
+    },
+    "H-02_implementFiles": {
+      "result": "YES",
+      "validation": "13개 package.json 절대경로 D:/project/topvel_project/topvel-grid-monorepo/packages/{pkg}/package.json. 부모 Bash ls 확인. .size-limit.json 루트. 외부 디렉토리 ADR-001: 조부모 D:/project/topvel_project/ 실재 ✓",
+      "overall": true
+    },
+    "H-03_acSourceTags": {
+      "result": "YES",
+      "validation": "모든 AC 출처 태그 + 섹션 인용. AC-001(C-22), AC-002(C-22), AC-003(C-22 D1), AC-004(C-21), AC-005(C-21)",
+      "overall": true
+    }
+  },
+  "correctionFromFirstRun": {
+    "firstRunError": "H-01 메타게이트 환각: L0 경로를 'D:/project/topvel_project/tw-framework-front/package.json' (TOMIS 분실)로 오독",
+    "correctPath": "D:/project/topvel_project/TOMIS/tw-framework-front/package.json (spec.md L32 정확)",
+    "verification": "Read 도구로 직접 확인 + 물리적 Test-Path 실재",
+    "lesson": "외부 디렉토리 ADR-001 정책: 경로가 TOMIS 내부면 반드시 전체 경로 (TOMIS 포함) 인용 필수. Verifier는 Read 도구로 원본 spec.md 라인을 인용할 때 정확성 검증 의무"
+  },
+  "auditMetadata": {
+    "auditedAt": "2026-05-27",
+    "auditedBy": "옵션 D Patcher (Pattern C 일괄)",
+    "reason": "yesCount/naCount/denominator 분류 정정 (score 무영향)",
+    "originalReportedYesCount": 21,
+    "originalReportedNoCount": 0,
+    "originalReportedNaCount": 9,
+    "originalReportedDenominator": 21,
+    "originalReportedScore": 100,
+    "originalReportedPassed": true,
+    "scoreImpact": "none",
+    "passedImpact": "unchanged"
+  },
+  "moduleId": "MOD-GRID-00",
+  "area": "monorepo",
+  "goalId": "MOD-GRID-00/monorepo/G-003",
+  "tier": "low",
+  "runAt": "2026-05-13T14:35Z",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "area+",
+      "goalId+ (from filename)",
+      "tier=low",
+      "runAt=2026-05-13T14:35Z"
+    ]
+  }
+}

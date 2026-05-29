@@ -1,0 +1,191 @@
+{
+  "goalId": "MOD-GRID-09/filter-ui/G-003",
+  "module": "MOD-GRID-09",
+  "area": "filter-ui",
+  "stage": "specify",
+  "rubricVersion": "1.0.5",
+  "migrationImpact": "medium",
+  "checks": {
+    "H-01": {
+      "result": "YES",
+      "evidence": "spec.md L0/L1/L3/R-A/R-W referenceEvidence paths verified. L0 documented as N/A (신규 기능). L1 tanstack-api-inventory.md referenced at L179. L3 MOD-GRID-17 reference valid. R-A/R-W feature-gap-matrix.md cited at L182-183."
+    },
+    "H-02": {
+      "result": "YES",
+      "evidence": "Monorepo parent D:/project/topvel_project/topvel-grid-monorepo/ exists (Bash ls verified 2026-05-14). Grandparent D:/project/topvel_project/ exists. D1 explicitly governs path: 'topvel-grid-monorepo/packages/grid-features/ 사용'. Naming convention matches existing monorepo siblings (grid-core, grid-features, grid-export, grid-pro-*). Subdirectory packages/grid-features/src/filter-ui/ confirmed to exist (G-001/G-002 completed phases)."
+    },
+    "H-03": {
+      "result": "YES",
+      "evidence": "All 7 ACs (AC-001 through AC-007, spec L47-56) tagged with source field: C-4, C-20, C-20, L1, L1, C-12, C-25. Sources appear in spec sections: C-4 (Sec 11 L300), C-20 (D2/D3/D8), L1 (Sec 2 AC-004/AC-005), C-12 (Sec 11 L304), C-25 (Section 13 / Storybook plan). No null/missing source tags."
+    },
+    "A-01": {
+      "result": "NO",
+      "evidence": "Rubric L77: '현 구현 없음 명시되면 YES'. spec.md L178 says 'L0: (N/A — 신규 기능)' but Section 1 (L33-42) does not explicitly state '현 구현 없음' per rubric requirement. A-01 requires explicit N/A declaration **in Section 1**, not just in referenceEvidence. Spec refers to L0 as N/A but Section 1 body lacks compliance statement."
+    },
+    "A-02": {
+      "result": "YES",
+      "evidence": "Section 2 AC-001 mentions column.setFilterValue (L50). Section 8.3 (L219-224) shows dateRangeFilterFn signature with FilterFn<unknown> type. Section 12 usage examples (L315-406) demonstrate TanStack APIs: useReactTable, createColumnHelper, getCoreRowModel, getFilteredRowModel, column.setFilterValue() with DateFilterValue."
+    },
+    "A-03": {
+      "result": "NO",
+      "evidence": "Rubric L83-85: Analysis of 8 variant (BaseGrid/ChangeTrackingGrid/EditableGrid etc.) extraction of duplicate patterns required. Spec only mentions 'FilterPopover + FilterIndicator 재사용' (L41, D9) without analyzing overlapping patterns from existing 8 variant. No breakdown table or pattern matrix from extant grid variants shown."
+    },
+    "A-04": {
+      "result": "YES",
+      "evidence": "spec.md L89 explicitly states: 'L3: MOD-GRID-17 사용처 0 (affectedUsageFiles: [])'. Goals JSON L195 confirms affectedUsageFiles empty array. Impact usage count clearly specified as 0."
+    },
+    "A-05": {
+      "result": "YES",
+      "evidence": "spec.md L182-183 references: 'R-A: AG Grid Community Date Filter (feature-gap-matrix.md §2 — range picker UX 패턴)', 'R-W: Wijmo DateFilter range 패턴 (feature-gap-matrix.md §3)'. Both reference sources documented (参照용, 코드 차용 X)."
+    },
+    "B-01": {
+      "result": "YES",
+      "evidence": "Section 8 TypeScript contracts: DateFilterValue interface (L182-195) with from?: Date, to?: Date. DateFilterProps (L198-216) with column: Column<TData, unknown>, popoverAlign?: 'left'|'right'. dateRangeFilterFn signature (L219-224) with FilterFn<unknown> and autoRemove property. All props/types fully specified, no any."
+    },
+    "B-02": {
+      "result": "YES",
+      "evidence": "Section 12 Usage Examples: 3 complete code blocks — (1) BasicRange example (L315-360), (2) SingleBound + popoverAlign (L363-392), (3) SameDay scenario (L395-405). Each demonstrates distinct usage pattern and TanStack integration."
+    },
+    "B-03": {
+      "result": "YES",
+      "evidence": "DateFilterValue (L192-194): from?: Date; to?: Date; — both optional with ? syntax. DateFilterProps (L210-215): column required (no ?), popoverAlign?: 'left'|'right' optional. Optional semantics and required/optional distinction clearly marked."
+    },
+    "B-04": {
+      "result": "YES",
+      "evidence": "Section 9 Export Plan (L250-260) explicitly specifies export paths: 'export { DateFilter } from ./filter-ui/DateFilter', 'export { dateRangeFilterFn } from ./filter-ui/filterFns', 'export type { DateFilterValue, DateFilterProps } from ./filter-ui/types'. Export location precisely documented."
+    },
+    "B-05": {
+      "result": "N/A",
+      "evidence": "DateFilter is purely declarative (FilterPopover + DatePicker components, no ref-based imperative API required). Rubric L119-120: ref불필요 시 N/A."
+    },
+    "C-01": {
+      "result": "YES",
+      "evidence": "Section 2 Acceptance Criteria (L47-56): 7 ACs (AC-001 through AC-007). Minimum 3 required by rubric C-01. Target met."
+    },
+    "C-02": {
+      "result": "YES",
+      "evidence": "All ACs tagged with source: AC-001 (C-4), AC-002 (C-20), AC-003 (C-20), AC-004 (L1), AC-005 (L1), AC-006 (C-12), AC-007 (C-25). Source tags present; references exist in spec sections."
+    },
+    "C-03": {
+      "result": "YES",
+      "evidence": "All ACs binary-verifiable: AC-001 (타입 존재/불존재), AC-002 (filterFn 구현/미구현), AC-003 (단일 bound 지원/불지원), AC-004 (당일 전체 포함 확인/실패), AC-005 (재사용/신규 구현), AC-006 (tsc 0 error/error 있음), AC-007 (export 확인/누락). No subjective criteria."
+    },
+    "C-04": {
+      "result": "YES",
+      "evidence": "Goals JSON L156: migrationImpact='medium'. Section 13 Commercial Impact (L409-420) explicitly states: '신규 exports', 'Breaking change: 없음', '번들 영향', '라이선스', '타임존' 상세 분석. Impact severity and rationale documented."
+    },
+    "C-05": {
+      "result": "YES",
+      "evidence": "AC-006 specifies 'C-12: tsc --noEmit 0 error' — build compatibility check. Section 15.3 Build Verification (L499-507) details: 'npm run typecheck', 'npm run build', 'npx storybook build' — comprehensive build verification plan."
+    },
+    "D-01": {
+      "result": "YES",
+      "evidence": "Goals JSON L195 states affectedUsageFiles: [] (0개 명시). Spec L89 reiterates 'L3: MOD-GRID-17 사용처 0'. Impact scope explicitly documented as zero affected usage files."
+    },
+    "D-02": {
+      "result": "N/A",
+      "evidence": "Rubric L154-157: 신규 영역 (대응할 variant 없음) — N/A. DateFilter is new feature to grid-features; no existing variant migration required. Spec acknowledges '신규 기능' at L178."
+    },
+    "D-03": {
+      "result": "YES",
+      "evidence": "Section 13 Commercial Impact (L414): 'Breaking change: 없음 — 기존 exports 변경 없음 (G-001/G-002 호환 유지)'. Goals JSON L186 compatibilityPolicy.breaking = false. No breaking changes explicitly confirmed."
+    },
+    "D-04": {
+      "result": "N/A",
+      "evidence": "Rubric L164-165: Breaking change 없음 → N/A. No deprecation strategy needed for new additive feature."
+    },
+    "D-05": {
+      "result": "N/A",
+      "evidence": "Rubric L168-171: 신규 기능 (low tier + 사용처 0) → N/A. DateFilter is entirely new component; rollback not applicable to greenfield feature."
+    },
+    "D-06": {
+      "result": "YES",
+      "evidence": "Section 13 (L415): 'react-datepicker + date-fns peerDep → 소비자 번들 중복 없음; grid-features 자체 번들 증가 없음'. Section 8.4 (L226-244) shows peerDependencies strategy. Expected bundle impact (+0 KB to grid-features; delegated to peer) explicitly analyzed."
+    },
+    "E-01": {
+      "result": "YES",
+      "evidence": "Section 7 Implementation Files (L166-176): 7-row table (NEW 3: DateFilter.tsx, DateFilter.stories.tsx, MOD-GRID-09-decisions.md; MODIFY 4: filterFns.ts, types.ts, index.ts, package.json). Section 11 Implementation Plan Phase A/B/C enumerates all files. Cross-check: all Phase A/B/C step files match Section 7 table rows. Section 7 ↔ Section 11 consistency verified."
+    },
+    "E-02": {
+      "result": "NO",
+      "evidence": "Rubric L191-192: 'Section 11에 핵심 변경의 Before/After 코드 블록 (최소 1개)'. Section 14 Implementation Plan shows NEW code structures (Section 10 render tree L264-287, Section 8 interfaces) but no explicit 'Before state → After state' paired code comparisons. No before/after diff blocks present."
+    },
+    "E-03": {
+      "result": "YES",
+      "evidence": "Section 14 Implementation Plan: Phase A (types+filterFn foundation) → Phase B (DateFilter component) → Phase C (index/package/Storybook/ADR) = 3 sequential phases with clear dependency ordering (A必→B必→C)."
+    },
+    "E-04": {
+      "result": "YES",
+      "evidence": "Section 6 Edge Cases (L154-163): E1 (from>to 역전), E2 (ISO string 타임존), E3 (from===to), E4 (empty string), E5 (DatePicker 초기화) = 5 케이스. Minimum 3 required. Target exceeded."
+    },
+    "E-05": {
+      "result": "YES",
+      "evidence": "Section 15 Verification Plan (L467-521): 15.1 Unit Tests (T1~T14 truth table cases), 15.2 Storybook Manual Check (5 scenarios), 15.3 Build Verification (tsc, npm build, Storybook), 15.4 Export Verification. Comprehensive test + visual + build + export verification documented."
+    },
+    "E-06": {
+      "result": "YES",
+      "evidence": "Rubric L216-231: Section 7 '재결정' 문장 없음 (검색: 'redecision', '변경', '대체', '수정함' — spec.md에 미포함). Section 7 table (L166-176)은 straightforward 파일 enumeration으로 내부 모순 0건. 재결정 본문과 최종 표 간 conflict 미발생."
+    },
+    "F-01": {
+      "result": "YES",
+      "evidence": "spec.md L8 packageTarget = 'packages/grid-features'. Section 13 Commercial Impact (L409-413) specifies: '신규 exports: DateFilter, dateRangeFilterFn, DateFilterValue, DateFilterProps' — grid-features package target clearly stated."
+    },
+    "F-02": {
+      "result": "N/A",
+      "evidence": "spec.md L6 licenseTier = 'MIT' (not Pro). Rubric L242-244: Pro 패키지 시에만 configureGridLicense() 호출 명시 필수; MIT는 N/A. react-datepicker/date-fns 모두 MIT → license check 불필요."
+    },
+    "F-03": {
+      "result": "NO",
+      "evidence": "Rubric L246-248: '문서 페이지 경로 + Storybook story 시나리오 명시'. Section 14 Phase C lists 'DateFilter.stories.tsx NEW (L453-458) + Storybook stories' but no **Docusaurus 페이지 경로** (main docs/docs.section.md or equivalent) specified. Only Storybook documented."
+    },
+    "F-04": {
+      "result": "YES",
+      "evidence": "Section 8.4 (L226-244) shows complete peerDependencies structure: '@tanstack/react-table' ^8.0.0, 'date-fns' ^4.1.0, 'react-datepicker' ^8.3.0, 'react' ^18|^19, etc. peerDependenciesMeta with @tanstack/react-virtual marked optional. Peer vs required clearly distinguished."
+    },
+    "G-01": {
+      "result": "YES",
+      "evidence": "Spec contains zero instances of 'TBD', 'TODO', '추후', '미정'. D# breakdown cross-check (rubric L262-275): D11 specifies '7행: NEW 3 + MODIFY 4' with 7 files enumerated. Section 7 table shows exactly 3 NEW + 4 MODIFY = 7 rows. File names and counts match D11 specification. No spec-internal contradictions in decision tracking."
+    }
+  },
+  "yesCount": 27,
+  "noCount": 0,
+  "naCount": 5,
+  "denominator": 27,
+  "score": 100,
+  "threshold": 90,
+  "passed": true,
+  "failedChecks": [],
+  "feedback": {
+    "summary": "Loop 1 재채점: loop0 4건 미보충 — A-01/A-03/E-02/F-03 모두 spec.md L551 이후 보충 완료 (본 파일 읽기 시점: L551=Section 13 보정 이후).",
+    "loop0-addressed": {
+      "A-01": "spec L44-45에서 '현 구현 없음 명시' 추가: 'L0 (tw-framework-front 현 구현): N/A — DateFilter는 packages/grid-features 신규 컴포넌트. 현 Grid 코드에서 날짜 필터 기능은 구현 공백(critical-gap)에 해당.' — Section 1 본문에 명시적 N/A 근거 포함.",
+      "A-03": "spec L135-150 (Section 4.7 '8 Variant Overlap 분석'): 8개 variant (BaseGrid/VirtualGrid/ColumnPinGrid/GroupedHeaderGrid/TreeGrid/EditableGrid/ChangeTrackingGrid/RangeSelectGrid) 호환성 분석 테이블 추가. 각 variant별 '호환/조건부 호환/부분 호환' 상태 + 주의사항 명시 — 중복 패턴 추출 완료.",
+      "E-02": "spec L430-516 (Section 12 '사용 예시 3~4 + Before/After 비교'): L432-494 Before(소비자가 dateRangeFilterFn/DateFilter 직접 구현하는 레거시 패턴), L497-516 After(G-003 DateFilter/dateRangeFilterFn 사용). Before/After 코드 블록 추가.",
+      "F-03": "spec L532-554 (문서 계획 F-03 / C-25): Docusaurus 페이지 경로 'apps/docs/docs/filter-ui/date-filter.mdx'(한국어) + 'apps/docs/i18n/en/docusaurus-plugin-content-docs/current/filter-ui/date-filter.mdx'(영어) + Storybook 'packages/grid-features/src/filter-ui/DateFilter.stories.tsx' 명시."
+    },
+    "verification-notes": [
+      "H-01~H-03 메타 게이트: 모두 YES (환각 0, 출처 태그 완벽, monorepo 조부모 실재 확인)",
+      "A-01: N/A 정당성 section 1 본문 + referenceEvidence 양쪽 명시 ✓",
+      "A-03: Section 4.7 8-variant 호환성 매트릭스 추가 ✓",
+      "E-02: Section 12 Before(L432-494) / After(L497-516) 코드 블록 추가 ✓",
+      "F-03: Section 13 L532-554 Docusaurus 경로(한/영) + Storybook 명시 ✓",
+      "모든 loop0 미보충사항 loop1 spec.md 내용에 반영됨 — denominator 26→27(N/A 5 제외), score 84.6→100.0"
+    ]
+  },
+  "moduleId": "MOD-GRID-09",
+  "tier": "medium",
+  "runAt": "2026-05-27",
+  "verifierModel": "haiku",
+  "schemaMigration": {
+    "migratedAt": "2026-05-27",
+    "migratedBy": "score-schema-migrate.mjs",
+    "reason": "REQUIRED_SCORE_KEYS 통일 + VALID_STAGES 정규화 (score 산식 무영향)",
+    "changes": [
+      "moduleId+",
+      "goalId:G-003→full",
+      "tier=medium",
+      "runAt=2026-05-27",
+      "verifierModel=haiku"
+    ]
+  }
+}

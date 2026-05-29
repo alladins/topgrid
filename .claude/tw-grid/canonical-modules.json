@@ -1,0 +1,666 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-05-13",
+  "phase": "approved",
+  "approvedAt": "2026-05-13",
+  "totals": {
+    "modules": 20,
+    "byCategory": {
+      "abstraction": 5,
+      "critical-gap": 4,
+      "wijmo-class": 6,
+      "enhancement": 1,
+      "migration": 1,
+      "infra": 3
+    },
+    "byPackageTarget": {
+      "packages/grid-core": 5,
+      "packages/grid-renderers": 1,
+      "packages/grid-export": 1,
+      "packages/grid-features": 3,
+      "packages/grid-pro-tracking": 1,
+      "packages/grid-pro-range": 1,
+      "packages/grid-pro-datamap": 1,
+      "packages/grid-pro-merging": 1,
+      "packages/grid-pro-header": 1,
+      "packages/grid-pro-agg": 1,
+      "packages/grid-pro-master": 1,
+      "packages/grid-license": 1,
+      "apps/docs": 1,
+      "root": 1
+    },
+    "totalAffectedUsageFiles": 27
+  },
+  "notes": [
+    "affectedUsageFiles는 Grep `BaseGrid|VirtualGrid|EditableGrid|GroupedHeaderGrid|TreeGrid|ColumnPinGrid|ChangeTrackingGrid|RangeSelectGrid|DataTable` 매칭 40 파일에서 variant 본체 8 + DataTable 5 = 13 파일을 제외한 27 페이지 파일.",
+    "license tier MIT vs Pro: grid-core/renderers/virtual/export/features/license-runtime은 MIT; grid-pro-* 6개는 Pro EULA.",
+    "마이그레이션 모듈(MOD-GRID-17)은 C-19 점진(≤5/Goal)에 따라 5 sub-goal로 분할 예정 (Phase 2 Goals에서 구체화).",
+    "expectedFeatures의 featureId 표기: F-{모듈번호 2자리}-{seq 2자리}. priority: P0 필수, P1 강한 후속, P2 추후."
+  ],
+  "modules": [
+    {
+      "moduleId": "MOD-GRID-00",
+      "moduleName": "모노레포 스캐폴딩 + 패키지 분할 + size-limit + Changesets",
+      "category": "infra",
+      "phase": "discovered",
+      "migrationImpact": "low",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "root",
+      "licenseTier": "-",
+      "affectedUsageFiles": [],
+      "referenceAGGrid": [],
+      "referenceWijmo": [],
+      "expectedFeatures": [
+        { "featureId": "F-00-01", "name": "pnpm workspaces or turborepo monorepo 설정", "priority": "P0" },
+        { "featureId": "F-00-02", "name": "packages/grid-* 13개 + apps/docs 폴더 생성", "priority": "P0" },
+        { "featureId": "F-00-03", "name": ".size-limit.json 패키지별 (C-21 한도 반영)", "priority": "P0" },
+        { "featureId": "F-00-04", "name": "Changesets 도구 (@changesets/cli) 설정 — C-23 semver", "priority": "P0" },
+        { "featureId": "F-00-05", "name": "tsup 또는 vite 빌드 파이프라인 (CJS+ESM dual)", "priority": "P0" },
+        { "featureId": "F-00-06", "name": "peerDependencies 정책 적용 (C-22) — react/react-dom/@tanstack/react-table/@tanstack/react-virtual/xlsx/jspdf", "priority": "P0" },
+        { "featureId": "F-00-07", "name": "TypeScript strict + 공유 tsconfig.base.json", "priority": "P0" },
+        { "featureId": "F-00-08", "name": "ESLint flat config + import 정렬 규칙", "priority": "P1" },
+        { "featureId": "F-00-09", "name": "tw-framework-front workspace alias (@topgrid/grid → packages/grid)", "priority": "P0" }
+      ],
+      "dependsOn": []
+    },
+    {
+      "moduleId": "MOD-GRID-01",
+      "moduleName": "공통 wrapper — variant 8 통합 (옵션 조합 기반 단일 <Grid>)",
+      "category": "abstraction",
+      "phase": "discovered",
+      "migrationImpact": "high",
+      "thresholds": { "specify": 95, "implement": 95, "verify": 95 },
+      "packageTarget": "packages/grid-core",
+      "licenseTier": "MIT",
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/SlipListPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/AdminSlipEditPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/hr/DailyAttendancePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/hr/AnnualLeaveStatusPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/admin/MenuManagePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/admin/OrgMasterPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/finance/FundStatusPage.tsx"
+      ],
+      "referenceAGGrid": [
+        "AggridTable.tsx (autoSelectFirstRow, clearSelectionKey, gridRef API)",
+        "ColDef defaultColDef pattern (sortable/filter/resizable 일괄 적용)"
+      ],
+      "referenceWijmo": [
+        "FlexGrid host 패턴 (g.frozenColumns, g.allowMerging, g.selectionMode)"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-01-01", "name": "<Grid data columns variant?> 단일 API + options 조합", "priority": "P0" },
+        { "featureId": "F-01-02", "name": "enableSort/enableFilter/enableSelection/enablePagination/enableVirtualization/enableInlineEdit/enableChangeTracking/enableColumnPinning 토글", "priority": "P0" },
+        { "featureId": "F-01-03", "name": "rowSelection prop (single/multi/none) — 체크박스 셀 자동 합성", "priority": "P0" },
+        { "featureId": "F-01-04", "name": "columnResizing on/off + columnResizeMode='onChange'", "priority": "P0" },
+        { "featureId": "F-01-05", "name": "Sticky header + sticky pinned columns (CSS sticky)", "priority": "P0" },
+        { "featureId": "F-01-06", "name": "Loading skeleton + empty state slot", "priority": "P0" },
+        { "featureId": "F-01-07", "name": "autoSelectFirstRow prop (AG 패턴)", "priority": "P0" },
+        { "featureId": "F-01-08", "name": "Imperative API ref — addRow/deleteRow/scrollTo/getSelection (useImperativeHandle)", "priority": "P0" },
+        { "featureId": "F-01-09", "name": "onRowClick/onRowDoubleClick/onCellClick props", "priority": "P0" },
+        { "featureId": "F-01-10", "name": "Tailwind 기반 스타일링 (C-5 — 인라인 style 금지)", "priority": "P0" },
+        { "featureId": "F-01-11", "name": "C-18 react-virtual 통합 — enableVirtualization=true 시 자동 wrapping", "priority": "P0" },
+        { "featureId": "F-01-12", "name": "기존 BaseGridProps 호환 alias (C-6 호환성)", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-00", "MOD-GRID-02"]
+    },
+    {
+      "moduleId": "MOD-GRID-02",
+      "moduleName": "useGridState — sort/filter/pagination/selection/pinning state 통합 훅",
+      "category": "abstraction",
+      "phase": "discovered",
+      "migrationImpact": "medium",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-core",
+      "licenseTier": "MIT",
+      "affectedUsageFiles": [],
+      "referenceAGGrid": [
+        "AgGridTableProps clearSelectionKey 패턴"
+      ],
+      "referenceWijmo": [
+        "CollectionView currentItem 추적"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-02-01", "name": "useGridState() → sorting/columnFilters/rowSelection/pagination/columnPinning/columnOrder/columnSizing/columnVisibility 통합 반환", "priority": "P0" },
+        { "featureId": "F-02-02", "name": "initialState prop + controlled mode (외부 state 주입)", "priority": "P0" },
+        { "featureId": "F-02-03", "name": "onStateChange unified callback (debounce 옵션)", "priority": "P1" },
+        { "featureId": "F-02-04", "name": "resetState() / resetSection(key) helper", "priority": "P0" },
+        { "featureId": "F-02-05", "name": "URL 동기화 helper (옵션) — search params 반영", "priority": "P2" },
+        { "featureId": "F-02-06", "name": "localStorage 영속화 helper (옵션, storage key 명시)", "priority": "P2" }
+      ],
+      "dependsOn": ["MOD-GRID-00"]
+    },
+    {
+      "moduleId": "MOD-GRID-03",
+      "moduleName": "페이지네이션 통합 (client + server 단일 props)",
+      "category": "abstraction",
+      "phase": "discovered",
+      "migrationImpact": "medium",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-core",
+      "licenseTier": "MIT",
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/DataTable/data-table.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/DataTable/data-table-pagination.tsx"
+      ],
+      "referenceAGGrid": [
+        "PaginationModule + paginationPageSize"
+      ],
+      "referenceWijmo": [
+        "Paging client + server 통합"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-03-01", "name": "pagination prop — mode: 'client' | 'server' | 'none'", "priority": "P0" },
+        { "featureId": "F-03-02", "name": "server 모드: totalCount + pageIndex 외부 제어, manualPagination 자동 활성", "priority": "P0" },
+        { "featureId": "F-03-03", "name": "pageSizeOptions 기본 [10,20,50,100] + custom", "priority": "P0" },
+        { "featureId": "F-03-04", "name": "페이지 표시 컴포넌트 (number/icon/dropdown 변형)", "priority": "P0" },
+        { "featureId": "F-03-05", "name": "showTotalCount prop — '전체 N건' 표시", "priority": "P0" },
+        { "featureId": "F-03-06", "name": "DataTablePagination.tsx 호환 마이그레이션 알리아스", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-01"]
+    },
+    {
+      "moduleId": "MOD-GRID-04",
+      "moduleName": "컬럼 팩토리 — type 분기 자동 + columnHelper",
+      "category": "abstraction",
+      "phase": "discovered",
+      "migrationImpact": "medium",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-core",
+      "licenseTier": "MIT",
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/DataTable/data-table-types.ts",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/DataTable/data-table.tsx"
+      ],
+      "referenceAGGrid": [
+        "ColDef field/headerName/width/flex 패턴"
+      ],
+      "referenceWijmo": [
+        "Column binding + dataType (Number/String/Date)"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-04-01", "name": "createColumns<TData>([{id,type,align,name,width,visibility,etc,...}]) 빌더", "priority": "P0" },
+        { "featureId": "F-04-02", "name": "type: 'checkbox'|'number'|'boolean'|'dateTime'|'date'|'text'|'badge'|'link'|'icon' 자동 cell renderer 매핑", "priority": "P0" },
+        { "featureId": "F-04-03", "name": "align/width/visibility/etc 메타 → ColumnDef 변환", "priority": "P0" },
+        { "featureId": "F-04-04", "name": "ColumnInfo 호환 alias (DataTable 마이그레이션용)", "priority": "P0" },
+        { "featureId": "F-04-05", "name": "TanStack columnHelper re-export + 우리 타입 확장 (`createTomisColumnHelper`)", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-01", "MOD-GRID-05"]
+    },
+    {
+      "moduleId": "MOD-GRID-05",
+      "moduleName": "셀 렌더러 표준 set (기존 8 흡수 + 신규)",
+      "category": "abstraction",
+      "phase": "discovered",
+      "migrationImpact": "high",
+      "thresholds": { "specify": 95, "implement": 95, "verify": 95 },
+      "packageTarget": "packages/grid-renderers",
+      "licenseTier": "MIT",
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/ButtonCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/BadgeCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/CheckCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/LinkCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/NumberCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/DateCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/IconCell.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/renderers/index.ts",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx"
+      ],
+      "referenceAGGrid": [
+        "components prop map (cellRenderer registry)",
+        "agTextCellEditor/agNumberCellEditor/agSelectCellEditor/agDateCellEditor"
+      ],
+      "referenceWijmo": [
+        "Cell Templates binding expressions",
+        "Conditional Formatting via formatItem"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-05-01", "name": "Button/Badge/Check/Link/Number/Date/Icon 7개 cell 표준화 (기존 흡수)", "priority": "P0" },
+        { "featureId": "F-05-02", "name": "Tag, Avatar, Progress 3개 신규 cell", "priority": "P1" },
+        { "featureId": "F-05-03", "name": "InlineEditCell (text/number/date/select/textarea) — EditableGrid 흡수", "priority": "P0" },
+        { "featureId": "F-05-04", "name": "cellClassName callback — conditional formatting", "priority": "P0" },
+        { "featureId": "F-05-05", "name": "formatter helpers — formatNumberString/formatDateTime 재사용", "priority": "P0" },
+        { "featureId": "F-05-06", "name": "renderer registry (`components` map) — 동적 lookup", "priority": "P0" },
+        { "featureId": "F-05-07", "name": "Storybook story 각 renderer 1+ (C-25)", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-00"]
+    },
+    {
+      "moduleId": "MOD-GRID-06",
+      "moduleName": "Excel/PDF Export (xlsx + jspdf peer)",
+      "category": "critical-gap",
+      "phase": "discovered",
+      "migrationImpact": "medium",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-export",
+      "licenseTier": "MIT",
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/DataTable/data-table.tsx"
+      ],
+      "referenceAGGrid": [
+        "CSV export (Community) — 우리는 XLSX 직접",
+        "Enterprise excelExport API 시그니처"
+      ],
+      "referenceWijmo": [
+        "FlexGridXlsxConverter export/import",
+        "FlexGridPdfConverter"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-06-01", "name": "exportToExcel(table, options) — xlsx 0.18+ 사용, sheet 이름/포맷 지정", "priority": "P0" },
+        { "featureId": "F-06-02", "name": "exportToPdf(table, options) — jspdf + autotable peer", "priority": "P1" },
+        { "featureId": "F-06-03", "name": "exportToCSV(table, options) — Native string", "priority": "P0" },
+        { "featureId": "F-06-04", "name": "선택된 행/필터링된 행만 export 옵션", "priority": "P0" },
+        { "featureId": "F-06-05", "name": "헤더 다중행 (GroupColumnDef) 처리", "priority": "P1" },
+        { "featureId": "F-06-06", "name": "한국어 column header 인코딩 (utf8) + 한국어 폰트 (PDF)", "priority": "P0" },
+        { "featureId": "F-06-07", "name": "DataTable buttonInfo.downloadAction 마이그레이션 alias", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-01"]
+    },
+    {
+      "moduleId": "MOD-GRID-07",
+      "moduleName": "컬럼 드래그 재정렬 (Header drag-and-drop)",
+      "category": "critical-gap",
+      "phase": "discovered",
+      "migrationImpact": "low",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-features",
+      "licenseTier": "MIT",
+      "affectedUsageFiles": [],
+      "referenceAGGrid": [
+        "Column Drag and Drop (Community)"
+      ],
+      "referenceWijmo": [
+        "Column Reordering"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-07-01", "name": "enableColumnReorder prop 활성", "priority": "P0" },
+        { "featureId": "F-07-02", "name": "TanStack columnOrder state 통합", "priority": "P0" },
+        { "featureId": "F-07-03", "name": "header에 drag handle + drop zone (dnd-kit/core peer)", "priority": "P0" },
+        { "featureId": "F-07-04", "name": "drag 중 visual indicator (placeholder line)", "priority": "P0" },
+        { "featureId": "F-07-05", "name": "pinned 컬럼은 reorder 불가 가드", "priority": "P0" },
+        { "featureId": "F-07-06", "name": "onColumnOrderChange callback", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-01", "MOD-GRID-02"]
+    },
+    {
+      "moduleId": "MOD-GRID-08",
+      "moduleName": "다중 정렬 (Shift+Click multi-sort) + UI",
+      "category": "critical-gap",
+      "phase": "discovered",
+      "migrationImpact": "low",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-features",
+      "licenseTier": "MIT",
+      "affectedUsageFiles": [],
+      "referenceAGGrid": [
+        "Multi Column Sort (Community)"
+      ],
+      "referenceWijmo": [
+        "Multi-column sorting on-demand"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-08-01", "name": "TanStack enableMultiSort 활성", "priority": "P0" },
+        { "featureId": "F-08-02", "name": "Shift+Click 헤더 → 정렬 우선순위 추가", "priority": "P0" },
+        { "featureId": "F-08-03", "name": "정렬 우선순위 번호 표시 (1, 2, 3 배지)", "priority": "P0" },
+        { "featureId": "F-08-04", "name": "Ctrl/Cmd+Click → 정렬 제거", "priority": "P0" },
+        { "featureId": "F-08-05", "name": "maxMultiSortColCount prop (기본 3)", "priority": "P1" }
+      ],
+      "dependsOn": ["MOD-GRID-01"]
+    },
+    {
+      "moduleId": "MOD-GRID-09",
+      "moduleName": "Filter UI — Excel-style + text/number/date range + global search",
+      "category": "critical-gap",
+      "phase": "discovered",
+      "migrationImpact": "medium",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-features",
+      "licenseTier": "MIT",
+      "affectedUsageFiles": [],
+      "referenceAGGrid": [
+        "Text/Number/Date Filter (Community)",
+        "Floating Filters (Community)"
+      ],
+      "referenceWijmo": [
+        "Filtering text/highlight/Excel-style",
+        "Full-text Searching"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-09-01", "name": "TextFilter (contains/equals/startsWith/endsWith)", "priority": "P0" },
+        { "featureId": "F-09-02", "name": "NumberFilter (=, !=, >, <, between)", "priority": "P0" },
+        { "featureId": "F-09-03", "name": "DateFilter (date range picker)", "priority": "P0" },
+        { "featureId": "F-09-04", "name": "SetFilter (Excel-style checkbox list — getFacetedUniqueValues 활용)", "priority": "P1" },
+        { "featureId": "F-09-05", "name": "FloatingFilter (row 아래 입력 - column별 자동 매핑)", "priority": "P1" },
+        { "featureId": "F-09-06", "name": "GlobalSearch box (`globalFilter` state)", "priority": "P0" },
+        { "featureId": "F-09-07", "name": "Filter Popover (column header 클릭) + clear/reset", "priority": "P0" },
+        { "featureId": "F-09-08", "name": "활성 필터 표시 (header에 인디케이터)", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-01", "MOD-GRID-02"]
+    },
+    {
+      "moduleId": "MOD-GRID-10",
+      "moduleName": "ChangeTracking + Mapping + Validator (Wijmo CollectionView 대체)",
+      "category": "wijmo-class",
+      "phase": "discovered",
+      "migrationImpact": "high",
+      "thresholds": { "specify": 95, "implement": 95, "verify": 95 },
+      "packageTarget": "packages/grid-pro-tracking",
+      "licenseTier": "Pro",
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/ChangeTrackingGrid.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/payroll/PayrollEditablePage.tsx"
+      ],
+      "referenceAGGrid": [
+        "Undo/Redo (Community)",
+        "Server-side row state (Enterprise — 우회)"
+      ],
+      "referenceWijmo": [
+        "CollectionView trackChanges/itemsAdded/itemsEdited/itemsRemoved",
+        "publish/src/components/common/wijmo-grid/useWijmoGridCrud.ts (개념 학습 only — C-16)"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-10-01", "name": "useChangeTracking<TData>(initialData, options) hook — added/edited/deleted 추적", "priority": "P0" },
+        { "featureId": "F-10-02", "name": "rowKey extractor (PK 식별)", "priority": "P0" },
+        { "featureId": "F-10-03", "name": "addRow(seed) / updateRow(key, patch) / deleteRow(key) imperative API", "priority": "P0" },
+        { "featureId": "F-10-04", "name": "hasChanges() / getChangeSet() / resetChanges() / commitChanges()", "priority": "P0" },
+        { "featureId": "F-10-05", "name": "Mapping (화면→BE 필드 변환) — string | (row) => any", "priority": "P0" },
+        { "featureId": "F-10-06", "name": "Validator (row → {valid,errors}) + 변경 직전 자동 호출", "priority": "P0" },
+        { "featureId": "F-10-07", "name": "행 status 시각 표시 — added(녹)/edited(황)/deleted(적, line-through)", "priority": "P0" },
+        { "featureId": "F-10-08", "name": "save(endpoint, options) — fetch 또는 주입 request (axios 호환)", "priority": "P0" },
+        { "featureId": "F-10-09", "name": "낙관적 업데이트 + 에러 시 롤백 (옵션)", "priority": "P1" },
+        { "featureId": "F-10-10", "name": "ChangeTrackingGrid alias (C-6 호환)", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-01", "MOD-GRID-05"]
+    },
+    {
+      "moduleId": "MOD-GRID-11",
+      "moduleName": "Cell Range Selection + Drag-fill + Clipboard + Keyboard nav (Excel-class)",
+      "category": "wijmo-class",
+      "phase": "discovered",
+      "migrationImpact": "medium",
+      "thresholds": { "specify": 95, "implement": 95, "verify": 95 },
+      "packageTarget": "packages/grid-pro-range",
+      "licenseTier": "Pro",
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx"
+      ],
+      "referenceAGGrid": [
+        "Range Selection (Enterprise)",
+        "Fill Handle (Enterprise)",
+        "Clipboard (Enterprise)"
+      ],
+      "referenceWijmo": [
+        "SelectionMode.CellRange",
+        "FlexGrid.selection / CellRange",
+        "publish/src/app/personal/commute-manage/organizeSchedule/page.tsx (drag-fill 흔적 — C-16 학습 only)"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-11-01", "name": "CellRange 모델 (start.row/col, end.row/col) + normalize", "priority": "P0" },
+        { "featureId": "F-11-02", "name": "마우스 drag 셀 범위 선택", "priority": "P0" },
+        { "featureId": "F-11-03", "name": "Shift+Click 범위 확장", "priority": "P0" },
+        { "featureId": "F-11-04", "name": "Ctrl/Cmd+Click 비연속 선택 (옵션)", "priority": "P1" },
+        { "featureId": "F-11-05", "name": "Drag-fill — 범위 우하단 핸들 + drag → 동일 값 fill (number/text), 시리즈 fill (1,2,3...)", "priority": "P0" },
+        { "featureId": "F-11-06", "name": "Ctrl+C 복사 (TSV 포맷, Excel paste 호환)", "priority": "P0" },
+        { "featureId": "F-11-07", "name": "Ctrl+V 붙여넣기 (TSV 파싱 → 셀 매트릭스)", "priority": "P1" },
+        { "featureId": "F-11-08", "name": "키보드 이동 — 방향키/Tab/Enter, Ctrl+방향 (data edge)", "priority": "P0" },
+        { "featureId": "F-11-09", "name": "F2 / Enter 셀 편집 시작", "priority": "P0" },
+        { "featureId": "F-11-10", "name": "RangeSelectGrid alias (C-6 호환)", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-01", "MOD-GRID-10"]
+    },
+    {
+      "moduleId": "MOD-GRID-12",
+      "moduleName": "DataMap — 셀 단위 lookup (foreign key display)",
+      "category": "wijmo-class",
+      "phase": "discovered",
+      "migrationImpact": "medium",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-pro-datamap",
+      "licenseTier": "Pro",
+      "affectedUsageFiles": [],
+      "referenceAGGrid": [
+        "cellEditor refData (Community)",
+        "cellEditorParams.values"
+      ],
+      "referenceWijmo": [
+        "DataMap class — itemsSource + displayMemberPath + selectedValuePath"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-12-01", "name": "DataMap 클래스 — itemsSource[] + valuePath + displayPath", "priority": "P0" },
+        { "featureId": "F-12-02", "name": "Column-level dataMap prop (display rendering)", "priority": "P0" },
+        { "featureId": "F-12-03", "name": "Cell-level dynamic dataMap (row → DataMap 함수)", "priority": "P0" },
+        { "featureId": "F-12-04", "name": "Editor mode — dropdown auto + filter typing", "priority": "P0" },
+        { "featureId": "F-12-05", "name": "Async dataMap (서버 lookup with cache)", "priority": "P1" },
+        { "featureId": "F-12-06", "name": "EditableGrid selectOptions 마이그레이션 alias", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-01", "MOD-GRID-05"]
+    },
+    {
+      "moduleId": "MOD-GRID-13",
+      "moduleName": "Cell Merging — 같은 값 연속 셀 자동 병합 (rowSpan)",
+      "category": "wijmo-class",
+      "phase": "discovered",
+      "migrationImpact": "low",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-pro-merging",
+      "licenseTier": "Pro",
+      "affectedUsageFiles": [],
+      "referenceAGGrid": [
+        "Row Spanning (Enterprise)",
+        "Column Spanning (Enterprise)"
+      ],
+      "referenceWijmo": [
+        "AllowMerging enum (None/Cells/ColumnHeaders/RowHeaders/All)"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-13-01", "name": "column.mergeRows: boolean | (a,b) => boolean", "priority": "P0" },
+        { "featureId": "F-13-02", "name": "rowSpan 자동 계산 + td rowSpan 렌더 (다음 N-1 셀 skip)", "priority": "P0" },
+        { "featureId": "F-13-03", "name": "복수 컬럼 병합 (hierarchical merge — 좌측 컬럼 기준)", "priority": "P1" },
+        { "featureId": "F-13-04", "name": "정렬 변경 시 자동 재계산", "priority": "P0" },
+        { "featureId": "F-13-05", "name": "Cell merging + virtualization 호환 (C-18)", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-01"]
+    },
+    {
+      "moduleId": "MOD-GRID-14",
+      "moduleName": "Multi-row Header (Column Groups) — TanStack GroupColumnDef 표준화",
+      "category": "wijmo-class",
+      "phase": "discovered",
+      "migrationImpact": "low",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-pro-header",
+      "licenseTier": "Pro",
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx"
+      ],
+      "referenceAGGrid": [
+        "Column Groups (Community)"
+      ],
+      "referenceWijmo": [
+        "FlexGrid columnHeaders.rows[] 직접 조작"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-14-01", "name": "createColumnGroup({header, columns:[...]}) helper", "priority": "P0" },
+        { "featureId": "F-14-02", "name": "그룹 헤더 행 자동 생성 (TanStack getHeaderGroups)", "priority": "P0" },
+        { "featureId": "F-14-03", "name": "그룹 헤더 sticky + colSpan", "priority": "P0" },
+        { "featureId": "F-14-04", "name": "그룹 헤더 클릭 → 자식 컬럼 일괄 visibility 토글 (옵션)", "priority": "P1" },
+        { "featureId": "F-14-05", "name": "GroupedHeaderGrid alias (C-6 호환)", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-01"]
+    },
+    {
+      "moduleId": "MOD-GRID-15",
+      "moduleName": "Aggregation — group footer + 함수 (sum/avg/min/max/custom)",
+      "category": "wijmo-class",
+      "phase": "discovered",
+      "migrationImpact": "low",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-pro-agg",
+      "licenseTier": "Pro",
+      "affectedUsageFiles": [],
+      "referenceAGGrid": [
+        "Aggregation (Enterprise) — sum/avg/min/max/count",
+        "Pivot Tables (Enterprise)"
+      ],
+      "referenceWijmo": [
+        "CollectionView GroupDescription + Aggregate function"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-15-01", "name": "TanStack getGroupedRowModel + grouping state 활성", "priority": "P0" },
+        { "featureId": "F-15-02", "name": "column.aggregationFn: 'sum'|'avg'|'min'|'max'|'count'|'unique' | custom", "priority": "P0" },
+        { "featureId": "F-15-03", "name": "Group footer 행 자동 렌더 (`<tfoot>` 또는 group row)", "priority": "P0" },
+        { "featureId": "F-15-04", "name": "Group panel UI (drag column → group) — 옵션", "priority": "P1" },
+        { "featureId": "F-15-05", "name": "Group expand/collapse (TanStack expanded state)", "priority": "P0" },
+        { "featureId": "F-15-06", "name": "Aggregation row 정렬 가능 (group 단위)", "priority": "P1" }
+      ],
+      "dependsOn": ["MOD-GRID-01", "MOD-GRID-02"]
+    },
+    {
+      "moduleId": "MOD-GRID-16",
+      "moduleName": "Master-Detail + TreeGrid + Context Menu + Row Pinning",
+      "category": "enhancement",
+      "phase": "discovered",
+      "migrationImpact": "medium",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-pro-master",
+      "licenseTier": "Pro",
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/TreeGrid.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/ColumnPinGrid.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx"
+      ],
+      "referenceAGGrid": [
+        "Master-Detail (Enterprise)",
+        "Tree Data (Enterprise) — 우회 패턴은 community",
+        "Context Menu (Enterprise)",
+        "Row Pinning (Community)"
+      ],
+      "referenceWijmo": [
+        "RowDetailProvider",
+        "TreeGrid (FlexGrid.childItemsPath)"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-16-01", "name": "renderDetailRow(row) prop — expanded 행 아래 자식 컴포넌트", "priority": "P0" },
+        { "featureId": "F-16-02", "name": "expandedRowKeys state + onExpandChange", "priority": "P0" },
+        { "featureId": "F-16-03", "name": "Tree mode — getSubRows + 자동 들여쓰기 + 토글 아이콘 (TreeGrid 흡수)", "priority": "P0" },
+        { "featureId": "F-16-04", "name": "전체 펼치기/접기 imperative API", "priority": "P0" },
+        { "featureId": "F-16-05", "name": "ContextMenu — right-click cell/row → menu items prop", "priority": "P0" },
+        { "featureId": "F-16-06", "name": "Row Pinning (top/bottom) — TanStack rowPinning state", "priority": "P1" },
+        { "featureId": "F-16-07", "name": "TreeGrid/ColumnPinGrid alias (C-6 호환)", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-01"]
+    },
+    {
+      "moduleId": "MOD-GRID-17",
+      "moduleName": "사용처 마이그레이션 (27 페이지) — C-19 점진 (≤5/Goal)",
+      "category": "migration",
+      "phase": "discovered",
+      "migrationImpact": "high",
+      "thresholds": { "specify": 95, "implement": 95, "verify": 95 },
+      "packageTarget": "tw-framework-front/src/pages/**",
+      "licenseTier": "-",
+      "affectedUsageFiles": [
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/AdminSlipEditPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/DailyMonthlyReportPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/ExpenseResearchCardPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/CashAdvanceSettlePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/CashAdvanceRequestPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/InterestIncomePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/finance/FundStatusPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/payroll/PayMmcd02Page.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/payroll/PayMmcd01Page.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/AdjustmentPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/FinancialCarryoverPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/SettlementSummaryPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/MonthlySettlementPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/ExpenseGeneralPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/ExpenseCardPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/SlipDailyStatusPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/EtaxReceivePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/VatSchedulePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/VatManagePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/SlipClosePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/SlipApprovePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/account/SlipListPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/admin/MenuManagePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/admin/OrgMasterPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/payroll/PayrollEditablePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/hr/InsEduc11HistoryPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/hr/DailyAttendancePage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/hr/InsEmpl22ContractListPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/tomis/hr/AnnualLeaveStatusPage.tsx",
+        "D:/project/topvel_project/TOMIS/tw-framework-front/src/pages/MyNotification/MyNotificationPage.tsx"
+      ],
+      "referenceAGGrid": [],
+      "referenceWijmo": [],
+      "expectedFeatures": [
+        { "featureId": "F-17-01", "name": "Goal 1 — account/Slip* (5 파일): SlipList/SlipClose/SlipApprove/SlipDailyStatus/SlipDailyMonthlyReport", "priority": "P0" },
+        { "featureId": "F-17-02", "name": "Goal 2 — account/Expense*+Vat* (5 파일): ExpenseGeneral/ExpenseCard/ExpenseResearchCard/VatManage/VatSchedule", "priority": "P0" },
+        { "featureId": "F-17-03", "name": "Goal 3 — account/Cash*+기타 (5 파일): CashAdvanceSettle/CashAdvanceRequest/InterestIncome/Adjustment/EtaxReceive", "priority": "P0" },
+        { "featureId": "F-17-04", "name": "Goal 4 — account/잔여 (5 파일): AdminSlipEdit/FinancialCarryover/SettlementSummary/MonthlySettlement/DailyMonthlyReport (중복 정리)", "priority": "P0" },
+        { "featureId": "F-17-05", "name": "Goal 5 — hr (4) + finance (1) (5 파일): InsEduc11History/DailyAttendance/InsEmpl22ContractList/AnnualLeaveStatus/FundStatus", "priority": "P0" },
+        { "featureId": "F-17-06", "name": "Goal 6 — payroll (3) + admin (2) + notification (1) (5+1=6 → 분할 또는 트리비얼 import-only 5 처리)", "priority": "P0" },
+        { "featureId": "F-17-07", "name": "각 Goal 마이그레이션 후 시각 회귀 검증 (C-13, C-17 — high/medium 의무)", "priority": "P0" },
+        { "featureId": "F-17-08", "name": "Deprecated alias 1 minor 버전 유지 (C-6, C-23)", "priority": "P0" },
+        { "featureId": "F-17-09", "name": "DataTable 사용처 마이그레이션 (data-table-* 5 파일 + 페이지) — 별도 Sub-track", "priority": "P1" }
+      ],
+      "dependsOn": ["MOD-GRID-01", "MOD-GRID-02", "MOD-GRID-03", "MOD-GRID-04", "MOD-GRID-05", "MOD-GRID-10", "MOD-GRID-14", "MOD-GRID-16"]
+    },
+    {
+      "moduleId": "MOD-GRID-99-A",
+      "moduleName": "Pro 패키지 라이선스 검증 런타임 (grid-license)",
+      "category": "infra",
+      "phase": "discovered",
+      "migrationImpact": "low",
+      "thresholds": { "specify": 90, "implement": 90, "verify": 90 },
+      "packageTarget": "packages/grid-license",
+      "licenseTier": "Pro",
+      "affectedUsageFiles": [],
+      "referenceAGGrid": [
+        "AG Grid Enterprise LicenseManager.setLicenseKey()"
+      ],
+      "referenceWijmo": [
+        "Wijmo setLicenseKey(domain key)"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-99A-01", "name": "setLicenseKey(key) global API", "priority": "P0" },
+        { "featureId": "F-99A-02", "name": "key 형식 = signed JWT 또는 HMAC(domain + expiry) — 알고리즘 결정 ADR (C-14)", "priority": "P0" },
+        { "featureId": "F-99A-03", "name": "Pro 패키지 import 시 자동 검증 (런타임)", "priority": "P0" },
+        { "featureId": "F-99A-04", "name": "유효 라이선스 없음 → console.warn + 워터마크 (block X — 부드러운 강제)", "priority": "P0" },
+        { "featureId": "F-99A-05", "name": "expiry 도래 60일 전 console.warn", "priority": "P1" },
+        { "featureId": "F-99A-06", "name": "각 grid-pro-* 패키지 package.json `\"license\": \"SEE LICENSE IN EULA\"` + EULA.md (C-24)", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-00"]
+    },
+    {
+      "moduleId": "MOD-GRID-99-B",
+      "moduleName": "문서 + 데모 (Docusaurus/Nextra + Storybook) — C-25 의무",
+      "category": "infra",
+      "phase": "discovered",
+      "migrationImpact": "low",
+      "thresholds": { "specify": 85, "implement": 85, "verify": 85 },
+      "packageTarget": "apps/docs",
+      "licenseTier": "-",
+      "affectedUsageFiles": [],
+      "referenceAGGrid": [
+        "ag-grid.com docs site (Docusaurus 풍)"
+      ],
+      "referenceWijmo": [
+        "developer.mescius.com/wijmo (페이지별 sample)"
+      ],
+      "expectedFeatures": [
+        { "featureId": "F-99B-01", "name": "Docusaurus 또는 Nextra 사이트 — apps/docs", "priority": "P0" },
+        { "featureId": "F-99B-02", "name": "API reference 자동 생성 (TypeDoc 기반)", "priority": "P0" },
+        { "featureId": "F-99B-03", "name": "Storybook (모든 패키지) — story 최소 1개/컴포넌트 (C-25)", "priority": "P0" },
+        { "featureId": "F-99B-04", "name": "Chromatic 또는 Playwright 시각 회귀 (C-13, C-17)", "priority": "P0" },
+        { "featureId": "F-99B-05", "name": "Live demo (CodeSandbox/StackBlitz 임베드)", "priority": "P1" },
+        { "featureId": "F-99B-06", "name": "마이그레이션 가이드 — variant별 from→to 표 + codemod 권장", "priority": "P0" },
+        { "featureId": "F-99B-07", "name": "한국어 + 영어 docs", "priority": "P1" },
+        { "featureId": "F-99B-08", "name": "각 패키지 README.md (C-25)", "priority": "P0" }
+      ],
+      "dependsOn": ["MOD-GRID-00", "MOD-GRID-01", "MOD-GRID-05"]
+    }
+  ]
+}
