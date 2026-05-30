@@ -30,7 +30,7 @@ const COMMIT_NOOP = (_v: string) => undefined;
 /** Default — text editType, view mode. */
 export const Default = {
   args: {
-    value: 'Hello TOMIS',
+    value: 'Hello topgrid',
     editType: 'text',
     isEditing: false,
     onStartEdit: NOOP,

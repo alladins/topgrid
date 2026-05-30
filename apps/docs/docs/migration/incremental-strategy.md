@@ -5,7 +5,7 @@ sidebar_position: 3
 
 # 증분 이전 전략 (C-19 기반)
 
-이 문서는 TOMIS Grid 컴포넌트를 `@topgrid/grid-core` 기반으로 이전할 때 적용하는
+이 문서는 레거시 Grid 컴포넌트를 `@topgrid/grid-core` 기반으로 이전할 때 적용하는
 **점진적(incremental) 마이그레이션 전략**을 설명한다.
 
 대량 일괄 변환은 충돌 위험과 롤백 비용이 크다. C-19 규칙에 따라 Goal 단위로 분할하고

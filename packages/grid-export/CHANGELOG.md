@@ -5,7 +5,7 @@
 ### Minor Changes
 
 - f5ea968: Add `exportRowsToExcel(rows, columns, options?)` — second entry alongside the existing
-  TanStack `Table<T>`-based `exportToExcel`. tw-framework-front's local `excelExport.ts`
+  TanStack `Table<T>`-based `exportToExcel`. The legacy local `excelExport.ts`
   util (67 LOC) is removed; its sole caller migrated to `@topgrid/grid-export`. ADR-005
   combo E-1 + F-1 + C-1 + M-2.
 - f5ea968: feat(grid-export): add exportToExcel + downloadExcel alias (MOD-GRID-06/G-001)
@@ -28,11 +28,11 @@
 
 ### Removed
 
-- `columnsToExcel` helper from `tw-framework-front/src/utils/tomis/excelExport.ts` (ADR-005 C-1 — production callers 0). Note: this helper was in the tw-front local util, not in this package.
+- `columnsToExcel` helper from the legacy local `excelExport.ts` util (ADR-005 C-1 — production callers 0). Note: this helper was in the legacy local util, not in this package.
 
 ### Migration
 
-- `tw-framework-front/src/utils/tomis/excelExport.ts` (67 LOC) deleted. Sole caller `BscEval01ListPage.tsx` migrated to `exportRowsToExcel` from this package.
+- The legacy local `excelExport.ts` util (67 LOC) deleted. Sole caller migrated to `exportRowsToExcel` from this package.
 
 ## 0.0.0
 

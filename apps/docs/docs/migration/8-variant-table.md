@@ -5,7 +5,7 @@ sidebar_position: 1
 
 # 8개 Grid 변형 → `<Grid>` 이전 가이드
 
-이 문서는 TOMIS `tw-framework-front`에서 사용하던 8개의 Grid 변형 컴포넌트를
+이 문서는 레거시 코드베이스에서 사용하던 8개의 Grid 변형 컴포넌트를
 `@topgrid/grid-core`의 통합 `<Grid>` 컴포넌트(및 관련 Pro 패키지)로 이전하는
 **참조 테이블**이다. 실제 파일 단위 이전은 MOD-GRID-17 이하 각 Goal에서 수행한다.
 
@@ -36,7 +36,7 @@ sidebar_position: 1
 ### Before: 원본 Props 인터페이스
 
 ```tsx
-// tw-framework-front/src/components/tomis/Grid/BaseGrid.tsx (실제 확인)
+// legacy BaseGrid.tsx
 interface BaseGridProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
@@ -92,7 +92,7 @@ import { Grid } from '@topgrid/grid-core';
 ### Before: 원본 Props 인터페이스
 
 ```tsx
-// tw-framework-front/src/components/tomis/Grid/VirtualGrid.tsx (실제 확인)
+// legacy VirtualGrid.tsx
 interface VirtualGridProps<TData> extends BaseGridProps<TData> {
   rowHeight?: number;       // default: 40
   containerHeight?: number; // default: 500
@@ -143,7 +143,7 @@ import { Grid } from '@topgrid/grid-core';
 ### Before: 원본 Props 인터페이스
 
 ```tsx
-// tw-framework-front/src/components/tomis/Grid/TreeGrid.tsx (실제 확인)
+// legacy TreeGrid.tsx
 interface TreeGridProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
@@ -191,7 +191,7 @@ import { TreeGrid } from '@topgrid/grid-core';
 ### Before: 원본 Props 인터페이스
 
 ```tsx
-// tw-framework-front/src/components/tomis/Grid/ColumnPinGrid.tsx (실제 확인)
+// legacy ColumnPinGrid.tsx
 interface ColumnPinGridProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];
@@ -239,12 +239,12 @@ import { ColumnPinGrid } from '@topgrid/grid-core';
 ## 5. EditableGrid
 
 **현재 상태**: 부분 이전 — `@topgrid/grid-renderers` + `@topgrid/grid-pro-tracking` import 사용 중,
-컴포넌트 쉘은 `tw-framework-front` 로컬에 유지
+컴포넌트 쉘은 레거시 로컬에 유지
 
 ### Before: 원본 Props 인터페이스
 
 ```tsx
-// tw-framework-front/src/components/tomis/Grid/EditableGrid.tsx (실제 확인)
+// legacy EditableGrid.tsx
 interface EditableGridProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, unknown>[];
@@ -306,7 +306,7 @@ function MyPage() {
 ### 확인된 파일 (실제 확인)
 
 ```tsx
-// tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx
+// legacy GroupedHeaderGrid.tsx
 export { GroupedHeaderGrid } from '@topgrid/grid-pro-header';
 export type { GroupedHeaderGridProps } from '@topgrid/grid-pro-header';
 ```
@@ -373,7 +373,7 @@ const changes = gridRef.current?.getChanges();
 ### 확인된 Props 인터페이스 (실제 확인)
 
 ```tsx
-// tw-framework-front/src/components/tomis/Grid/RangeSelectGrid.tsx
+// legacy RangeSelectGrid.tsx
 interface RangeSelectGridProps<TData> {
   data: TData[];
   columns: ColumnDef<TData>[];

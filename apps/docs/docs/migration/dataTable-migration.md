@@ -5,7 +5,7 @@ sidebar_position: 2
 
 # DataTable → `<Grid mode="server">` 이전 가이드
 
-`DataTable`은 TOMIS의 서버 페이지네이션 중심 범용 테이블 컴포넌트로,
+`DataTable`은 레거시의 서버 페이지네이션 중심 범용 테이블 컴포넌트로,
 8개 Grid 변형과 아키텍처가 다르다. `ColumnInfo`/`ButtonInfo`/`RowActionInfo`
 prop 구조를 사용하며, `listAction(act, value)` 단일 콜백으로 모든 액션을 처리한다.
 
@@ -17,7 +17,7 @@ prop 구조를 사용하며, `listAction(act, value)` 단일 콜백으로 모든
 ## DataTable 원본 Props 요약
 
 ```tsx
-// tw-framework-front/src/components/DataTable/data-table.tsx (실제 확인)
+// legacy data-table.tsx
 interface DataTableProps<TData> {
   data: TData[];
   pageingInfo: {          // 오타 유지 (레거시)
@@ -50,7 +50,7 @@ interface DataTableProps<TData> {
 ### ColumnInfo 원본 타입 (실제 확인)
 
 ```ts
-// tw-framework-front/src/components/DataTable/data-table-types.ts
+// legacy data-table-types.ts
 export interface ColumnInfo {
   id: string;
   type: string;      // 'text' | 'number' | 'date' | 'custom' | ...
@@ -173,7 +173,7 @@ function MyPage() {
 ### ButtonInfo 원본 타입 (실제 확인)
 
 ```ts
-// tw-framework-front/src/components/DataTable/data-table-types.ts
+// legacy data-table-types.ts
 export interface ButtonInfo {
   downloadEnable: boolean;
   downloadTitle: string;
@@ -232,7 +232,7 @@ const buttonInfo: ButtonInfo = {
 ### RowActionInfo 원본 타입 (실제 확인)
 
 ```ts
-// tw-framework-front/src/components/DataTable/data-table-types.ts
+// legacy data-table-types.ts
 export interface RowActionInfo {
   editEnable: boolean;
   editTitle: string;

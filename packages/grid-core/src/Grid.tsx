@@ -189,7 +189,7 @@ function GridInner<TData>(
       process?.env?.NODE_ENV !== 'production'
     ) {
       console.warn(
-        `[tomis/grid-core] enableVirtualization=true but virtualScrollHeight not provided. Using default ${DEFAULT_VIRTUAL_SCROLL_HEIGHT}px.`,
+        `[topgrid/grid-core] enableVirtualization=true but virtualScrollHeight not provided. Using default ${DEFAULT_VIRTUAL_SCROLL_HEIGHT}px.`,
       );
     }
     // mount 시 1회 (deps 의도적 비움) — virtualization 토글 빈도 낮음.
@@ -205,7 +205,7 @@ function GridInner<TData>(
       process?.env?.NODE_ENV !== 'production'
     ) {
       console.warn(
-        '[tomis/grid-core] enableMultiSort=true has no effect when enableSort is not true. Add enableSort to the Grid.',
+        '[topgrid/grid-core] enableMultiSort=true has no effect when enableSort is not true. Add enableSort to the Grid.',
       );
     }
     // mount 시 1회. eslint-disable-next-line react-hooks/exhaustive-deps

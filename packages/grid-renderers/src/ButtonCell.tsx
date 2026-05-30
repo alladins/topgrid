@@ -3,13 +3,13 @@ import type { JSX, MouseEvent, ReactNode } from 'react';
 /**
  * Props for {@link ButtonCell}.
  *
- * Absorbs tw-framework-front ButtonCell.tsx (L0 29 lines) with the variant
+ * Absorbs legacy ButtonCell with the variant
  * naming change (D2 — L0 `'primary' | 'danger' | 'ghost'` → spec
  * `'default' | 'destructive' | 'ghost'`). Visual output (Tailwind classes)
  * unchanged: `default`==L0 `primary`, `destructive`==L0 `danger`.
  *
  * R1 grep at implement time: 0 hardcoded `variant='primary'|'danger'` sites
- * across tw-framework-front/src — direct rename safe (no codemod needed).
+ * across the legacy source — direct rename safe (no codemod needed).
  *
  * `value` added as preferred prop; `label` retained as deprecated alias (ADR-014 amendment).
  *

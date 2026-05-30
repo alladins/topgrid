@@ -96,7 +96,7 @@ export const AllTypes: Story = {
 /**
  * WithLegacyColumnInfo — ColumnInfo[] 입력 호환 (AC-005).
  *
- * `tw-framework-front/data-table-types.ts`의 ColumnInfo와 동일 shape.
+ * 레거시 `data-table-types.ts`의 ColumnInfo와 동일 shape.
  * 기존 AS-IS 코드를 수정 없이 `createColumns()`에 전달 가능.
  */
 const legacyDefs: ColumnInfo[] = [

@@ -113,7 +113,7 @@ export function useExpandedPersistence(
       warnedUnavailable.current = true;
       if (isDev()) {
         console.warn(
-          '[tomis/grid-pro-master] useExpandedPersistence: storage unavailable, falling back to in-memory.',
+          '[topgrid/grid-pro-master] useExpandedPersistence: storage unavailable, falling back to in-memory.',
         );
       }
     }
@@ -133,7 +133,7 @@ export function useExpandedPersistence(
       warnedUnavailable.current = true;
       if (isDev()) {
         console.warn(
-          '[tomis/grid-pro-master] useExpandedPersistence: storage unavailable, falling back to in-memory.',
+          '[topgrid/grid-pro-master] useExpandedPersistence: storage unavailable, falling back to in-memory.',
         );
       }
     }
@@ -151,7 +151,7 @@ export function useExpandedPersistence(
           storageRef.current,
           storageKey,
           next,
-          isDev() ? 'tomis/grid-pro-master useExpandedPersistence' : undefined,
+          isDev() ? 'topgrid/grid-pro-master useExpandedPersistence' : undefined,
         );
         return next;
       });

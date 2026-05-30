@@ -3,7 +3,7 @@ import type { JSX, MouseEvent, ReactNode } from 'react';
 /**
  * Props for {@link IconCell}.
  *
- * Absorbs tw-framework-front IconCell.tsx (L0 29 lines). The icon is a
+ * Absorbs legacy IconCell. The icon is a
  * `ReactNode` prop (D3 — no lucide-react / react-icons peer added).
  * Consumers inject their own icon component instance.
  *

@@ -46,7 +46,7 @@ export type TomisColumnType =
   | 'progress';
 
 /**
- * TOMIS 표준 column 정의. TanStack `ColumnDef<TData>` 생성을 위한 입력 타입.
+ * 표준 column 정의. TanStack `ColumnDef<TData>` 생성을 위한 입력 타입.
  *
  * `type` 필드로 자동 renderer 분기. `createColumns<TData>(defs)` 소비용.
  *

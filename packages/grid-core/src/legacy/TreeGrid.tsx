@@ -1,7 +1,7 @@
 /**
  * `TreeGrid` — DEPRECATED alias of `<Grid enableExpanding>` (G-005 D11) + `defaultExpanded` (D5).
  *
- * AS-IS `tw-framework-front/src/components/tomis/Grid/TreeGrid.tsx` 의
+ * AS-IS legacy `TreeGrid` 의
  * `getSubRows + expandAll initial seed` 시그니처 보존.
  *
  * @remarks

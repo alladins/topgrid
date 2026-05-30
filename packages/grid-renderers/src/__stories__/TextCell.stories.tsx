@@ -20,7 +20,7 @@ export default meta;
 
 /** 일반 문자열 — 기본 사용. */
 export const Default = {
-  args: { value: 'Hello TOMIS' },
+  args: { value: 'Hello topgrid' },
 } as const;
 
 /** 추가 className 합성 — 의미적 색상 토큰 결합 가능. */

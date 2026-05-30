@@ -3,7 +3,7 @@
  *
  * MOD-GRID-04 G-001: DataTable `ColumnInfo` 호환 alias.
  *
- * `tw-framework-front/src/components/DataTable/data-table-types.ts`의
+ * 레거시 DataTable `data-table-types.ts`의
  * `ColumnInfo`와 동일 shape. `createColumns()` 가 이 타입도 수용함 (AC-005).
  *
  * @see createColumns
@@ -14,7 +14,7 @@
 /**
  * DataTable 호환 ColumnInfo 인터페이스.
  *
- * `tw-framework-front/src/components/DataTable/data-table-types.ts`와 동일 shape.
+ * 레거시 DataTable `data-table-types.ts`와 동일 shape.
  * 신규 코드에서는 `TomisColumnDef<TData>` 사용 권장.
  *
  * `createColumns()` 가 `ColumnInfo[]` 입력 시 내부에서 `TomisColumnDef`로 narrowing:
