@@ -24,7 +24,7 @@ setLicenseKey('YOUR-LICENSE-KEY');
 ```
 
 Without a valid license, the component will render a watermark.
-Contact [sales@topvel.com](mailto:sales@topvel.com) to obtain a license key.
+Contact [sales@platree.com](mailto:sales@platree.com) to obtain a license key.
 
 ## Peer Dependencies
 
@@ -95,8 +95,8 @@ const asyncMap = createAsyncDataMap({
 
 SEE LICENSE IN [EULA.md](./EULA.md)
 
-License terms subject to change. Contact [sales@topvel.com](mailto:sales@topvel.com) for current EULA.
+License terms subject to change. Contact [sales@platree.com](mailto:sales@platree.com) for current EULA.
 
 ---
 
-[Documentation](https://grid.tomis.dev) | [Pricing](https://topvel.com/grid/pricing)
+[Documentation](https://topgrid.platree.com) | [Pricing](https://topgrid.platree.com/pricing)

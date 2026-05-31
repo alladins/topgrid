@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'topgrid',
   tagline: 'Headless React grid',
-  url: 'https://grid.topgrid.dev',
+  url: 'https://topgrid.platree.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',

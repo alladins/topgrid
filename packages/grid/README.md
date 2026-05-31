@@ -112,4 +112,4 @@ the four MIT packages individually — see [MIT-only consumption](#mit-only-cons
 
 ---
 
-[Documentation](https://grid.tomis.dev) | [API Reference](https://grid.tomis.dev/api)
+[Documentation](https://topgrid.platree.com) | [API Reference](https://topgrid.platree.com/api)

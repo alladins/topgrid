@@ -42,8 +42,8 @@ Without a valid license key, Pro components will render with a watermark overlay
 
 SEE LICENSE IN EULA
 
-Contact [sales@topvel.com](mailto:sales@topvel.com) to obtain a license key.
+Contact [sales@platree.com](mailto:sales@platree.com) to obtain a license key.
 
 ---
 
-[Documentation](https://grid.tomis.dev) | [Pricing](https://topvel.com/grid/pricing)
+[Documentation](https://topgrid.platree.com) | [Pricing](https://topgrid.platree.com/pricing)

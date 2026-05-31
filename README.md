@@ -98,7 +98,7 @@ export function App() {
 | 구분 | 패키지 수 | 적용 | 사용 조건 |
 |------|--------|------|---------|
 | **MIT** | 4 | grid-core / grid-renderers / grid-features / grid-export | 자유 사용. npm public 배포 예정 |
-| **EULA Pro** | 8 | grid-license + 7 Pro 모듈 (tracking / range / datamap / merging / header / agg / master) | `setLicenseKey()` 호출 의무. 미설정 시 `<Watermark>` 자동 노출 (ADR-001). 별도 라이선스 키 발급 필요 ([sales@topvel.com](mailto:sales@topvel.com)) |
+| **EULA Pro** | 8 | grid-license + 7 Pro 모듈 (tracking / range / datamap / merging / header / agg / master) | `setLicenseKey()` 호출 의무. 미설정 시 `<Watermark>` 자동 노출 (ADR-001). 별도 라이선스 키 발급 필요 ([sales@platree.com](mailto:sales@platree.com)) |
 | **Meta facade** | 1 | grid | Pro 포함 → EULA. MIT-only 사용자는 facade 대신 4 MIT 패키지 직접 import |
 
 ### Watermark 정책 (ADR-001)
@@ -262,14 +262,14 @@ pnpm changeset publish      # npm publish (Pro 패키지는 access=restricted)
 | 아키텍처 · 설계 결정 | [`docs/internal/architecture.md`](./docs/internal/architecture.md) + [`docs/internal/modules/`](./docs/internal/modules/) |
 | API 레퍼런스 · 시작 가이드 | [`docs/internal/guides/`](./docs/internal/guides/) |
 
-> 외부 문서 사이트 (`grid.tomis.dev`) 는 별도 cycle 에서 publish 예정.
+> 외부 문서 사이트 (`topgrid.platree.com`) 는 별도 cycle 에서 publish 예정.
 
 ---
 
 ## License
 
 - **MIT (4 packages)**: `@topgrid/grid-core` / `@topgrid/grid-renderers` / `@topgrid/grid-features` / `@topgrid/grid-export` — `LICENSE` 파일 참조.
-- **EULA (9 packages)**: `@topgrid/grid` (meta) + `@topgrid/grid-license` + 7 Pro — 각 패키지 `EULA.md` 참조. 라이선스 키 발급: [sales@topvel.com](mailto:sales@topvel.com).
+- **EULA (9 packages)**: `@topgrid/grid` (meta) + `@topgrid/grid-license` + 7 Pro — 각 패키지 `EULA.md` 참조. 라이선스 키 발급: [sales@platree.com](mailto:sales@platree.com).
 
 ---
 
@@ -281,4 +281,4 @@ pnpm changeset publish      # npm publish (Pro 패키지는 access=restricted)
 
 ---
 
-[Documentation (예정)](https://grid.tomis.dev) | [API Reference (예정)](https://grid.tomis.dev/api) | [Contact](mailto:sales@topvel.com)
+[Documentation (예정)](https://topgrid.platree.com) | [API Reference (예정)](https://topgrid.platree.com/api) | [Contact](mailto:sales@platree.com)
