@@ -1,33 +1,26 @@
 ---
-title: Live 데모
+title: 예제
 sidebar_position: 4
 ---
 
-# Live 데모 — @topgrid/grid-core 이전 결과
+# 예제 — `@topgrid/grid` 사용 패턴
 
-이 페이지에서 `@topgrid/grid-core`의 주요 Grid 패턴을 직접 실행해볼 수 있다.
-3개의 StackBlitz 임베드를 제공하며, CSP 차단 환경을 위한 정적 코드 블록 fallback도 포함한다.
+자주 쓰는 Grid 패턴 3가지를 실제 동작하는 코드로 정리했다. 그대로 복사해
+React 프로젝트(`@topgrid/grid-core` 설치)에 붙여 실행할 수 있다.
+
+```bash
+pnpm add @topgrid/grid-core @tanstack/react-table
+# 변경 추적 예제는 추가로:
+pnpm add @topgrid/grid-pro-tracking @topgrid/grid-license
+```
 
 ---
 
-## Demo 1: Basic Grid (BaseGrid 이전 결과)
+## 예제 1: 기본 Grid
 
-`BaseGrid` → `<Grid mode="client">` 이전 결과 데모.
-클라이언트 페이지네이션, 다중 행 선택, 정렬이 포함된다.
-
-<iframe
-  src="https://stackblitz.com/edit/tomis-grid-basic?embed=1&file=src/App.tsx&hideNavigation=1"
-  style={{ width: '100%', height: '520px', border: '0', borderRadius: '8px' }}
-  title="tomis-grid-basic"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-/>
-
-<details>
-<summary>소스 코드 전체 보기 (CSP 차단 환경용)</summary>
+클라이언트 페이지네이션 + 다중 행 선택 + 정렬.
 
 ```tsx
-// src/App.tsx — tomis-grid-basic
 import { Grid } from '@topgrid/grid-core';
 import { type ColumnDef } from '@tanstack/react-table';
 
@@ -62,69 +55,45 @@ const columns: ColumnDef<Employee>[] = [
 
 export default function App() {
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">직원 목록</h1>
-      {/*
-       * Before (BaseGrid):
-       * <BaseGrid data={data} columns={columns} pagination={{ pageSize: 3 }}
-       *           rowSelection={{ mode: 'multi' }} />
-       *
-       * After (Grid mode="client"):
-       */}
-      <Grid
-        mode="client"
-        data={data}
-        columns={columns}
-        pagination={{ pageSize: 3 }}
-        rowSelection={{ mode: 'multi' }}
-        emptyText="조회 결과가 없습니다."
-      />
-    </div>
+    <Grid
+      data={data}
+      columns={columns}
+      enableSort
+      enablePagination
+      pagination={{ pageSize: 3 }}
+      rowSelection="multi"
+      emptyText="조회 결과가 없습니다."
+    />
   );
 }
 ```
 
-</details>
-
 ---
 
-## Demo 2: Virtualized Grid (VirtualGrid 이전 결과)
+## 예제 2: 가상화 Grid (대용량)
 
-`VirtualGrid` → `<Grid enableVirtualization>` 이전 결과 데모.
-1,000행 데이터를 가상화로 렌더링해 스크롤 성능을 보여준다.
-
-<iframe
-  src="https://stackblitz.com/edit/tomis-grid-virtualized?embed=1&file=src/App.tsx&hideNavigation=1"
-  style={{ width: '100%', height: '580px', border: '0', borderRadius: '8px' }}
-  title="tomis-grid-virtualized"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-/>
-
-<details>
-<summary>소스 코드 전체 보기 (CSP 차단 환경용)</summary>
+`enableVirtualization` 하나로 대용량 행을 가상화 렌더링한다(보이는 행만 DOM 유지).
 
 ```tsx
-// src/App.tsx — tomis-grid-virtualized
 import { Grid } from '@topgrid/grid-core';
 import { type ColumnDef } from '@tanstack/react-table';
 
-type Row = { id: number; col1: string; col2: string; col3: number };
+type Row = { id: number; item: string; category: string; value: number };
 
-// 1,000행 데이터 생성
+// 1,000행 생성
 const data: Row[] = Array.from({ length: 1000 }, (_, i) => ({
   id: i + 1,
-  col1: `항목_${i + 1}`,
-  col2: `카테고리_${(i % 10) + 1}`,
-  col3: Math.floor(Math.random() * 100000),
+  item: `항목_${i + 1}`,
+  category: `분류_${(i % 10) + 1}`,
+  value: (i * 137) % 100000,
 }));
 
 const columns: ColumnDef<Row>[] = [
-  { accessorKey: 'id',   header: '#',    size: 60  },
-  { accessorKey: 'col1', header: '항목', size: 200 },
-  { accessorKey: 'col2', header: '분류', size: 150 },
+  { accessorKey: 'id',       header: '#',    size: 60  },
+  { accessorKey: 'item',     header: '항목', size: 200 },
+  { accessorKey: 'category', header: '분류', size: 150 },
   {
-    accessorKey: 'col3',
+    accessorKey: 'value',
     header: '값',
     size: 120,
     cell: ({ getValue }) =>
@@ -134,70 +103,38 @@ const columns: ColumnDef<Row>[] = [
 
 export default function App() {
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-2">대용량 데이터 가상화 (1,000행)</h1>
-      <p className="text-sm text-gray-500 mb-4">
-        스크롤해도 DOM 요소가 재사용됩니다 (가상화).
-      </p>
-      {/*
-       * Before (VirtualGrid):
-       * <VirtualGrid data={data} columns={columns}
-       *              rowHeight={40} containerHeight={500} />
-       *
-       * After (Grid enableVirtualization):
-       */}
-      <Grid
-        mode="client"
-        enableVirtualization
-        data={data}
-        columns={columns}
-        rowHeight={40}
-        containerHeight={500}
-        emptyText="데이터가 없습니다."
-      />
-    </div>
+    <Grid
+      data={data}
+      columns={columns}
+      enableVirtualization
+      enableSort
+      emptyText="데이터가 없습니다."
+    />
   );
 }
 ```
 
-</details>
-
 ---
 
-## Demo 3: Change Tracking Grid (ChangeTrackingGrid compat → hook 패턴)
+## 예제 3: 변경 추적 (`useChangeTracking`)
 
-`ChangeTrackingGrid` compat shim API와 `useChangeTracking` hook 직접 사용 패턴 비교 데모.
-행 추가/수정/삭제 상태를 추적하고 변경 목록을 조회한다.
-
-<iframe
-  src="https://stackblitz.com/edit/tomis-grid-change-tracking?embed=1&file=src/App.tsx&hideNavigation=1"
-  style={{ width: '100%', height: '600px', border: '0', borderRadius: '8px' }}
-  title="tomis-grid-change-tracking"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-/>
-
-<details>
-<summary>소스 코드 전체 보기 (CSP 차단 환경용)</summary>
+행 단위 추가/수정/삭제를 추적하고, 서버 전송용 변경 집합(`getChangeSet`)을 만든다.
+Pro 패키지이므로 라이선스 키 설정이 필요하다(미설정 시 워터마크 표시).
 
 ```tsx
-// src/App.tsx — tomis-grid-change-tracking
-// 두 가지 패턴을 탭으로 비교한다:
-// (A) compat shim 그대로 사용 — 기존 코드 변경 없음
-// (B) useChangeTracking hook 직접 사용 — 더 세밀한 제어
-
-import { useRef, useState } from 'react';
 import { Grid } from '@topgrid/grid-core';
-import { ChangeTrackingGrid, type ChangeTrackingHandle } from '../Grid/ChangeTrackingGrid';
 import { useChangeTracking } from '@topgrid/grid-pro-tracking';
+import { setLicenseKey } from '@topgrid/grid-license';
 import { type ColumnDef } from '@tanstack/react-table';
+
+setLicenseKey('YOUR-LICENSE-KEY'); // 앱 시작 시 1회
 
 type Product = { id: string; name: string; price: number; stock: number };
 
 const initialData: Product[] = [
-  { id: 'P001', name: '노트북',   price: 1200000, stock: 50 },
-  { id: 'P002', name: '마우스',   price: 35000,   stock: 200 },
-  { id: 'P003', name: '키보드',   price: 120000,  stock: 150 },
+  { id: 'P001', name: '노트북', price: 1200000, stock: 50 },
+  { id: 'P002', name: '마우스', price: 35000,   stock: 200 },
+  { id: 'P003', name: '키보드', price: 120000,  stock: 150 },
 ];
 
 const columns: ColumnDef<Product>[] = [
@@ -207,45 +144,8 @@ const columns: ColumnDef<Product>[] = [
   { accessorKey: 'stock', header: '재고',     size: 100 },
 ];
 
-// ─── 패턴 A: compat shim 사용 (기존 코드 — 변경 없음) ───────────────────────
-function PatternA() {
-  const gridRef = useRef<ChangeTrackingHandle<Product>>(null);
-
-  return (
-    <div>
-      <div className="flex gap-2 mb-3">
-        <button
-          className="px-3 py-1 text-sm bg-green-500 text-white rounded"
-          onClick={() =>
-            gridRef.current?.addRow({ id: `P${Date.now()}`, name: '신규상품', price: 0, stock: 0 })
-          }
-        >
-          행 추가
-        </button>
-        <button
-          className="px-3 py-1 text-sm bg-blue-500 text-white rounded"
-          onClick={() => {
-            const changes = gridRef.current?.getChanges();
-            alert(JSON.stringify(changes, null, 2));
-          }}
-        >
-          변경 조회
-        </button>
-        <button
-          className="px-3 py-1 text-sm bg-gray-500 text-white rounded"
-          onClick={() => gridRef.current?.resetChanges()}
-        >
-          초기화
-        </button>
-      </div>
-      {/* ChangeTrackingGrid shim — ref API 100% 보존 */}
-      <ChangeTrackingGrid ref={gridRef} initialData={initialData} columns={columns} />
-    </div>
-  );
-}
-
-// ─── 패턴 B: useChangeTracking hook 직접 사용 (더 세밀한 제어) ───────────────
-function PatternB() {
+export default function App() {
+  // data + rowKey(필수) 로 추적 시작
   const tracking = useChangeTracking<Product>({
     data: initialData,
     rowKey: 'id',
@@ -253,99 +153,52 @@ function PatternB() {
 
   return (
     <div>
-      <div className="flex gap-2 mb-3">
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
         <button
-          className="px-3 py-1 text-sm bg-green-500 text-white rounded"
           onClick={() =>
             tracking.addRow({ id: `P${Date.now()}`, name: '신규상품', price: 0, stock: 0 })
           }
         >
           행 추가
         </button>
-        <button
-          className="px-3 py-1 text-sm bg-blue-500 text-white rounded"
-          onClick={() => alert(JSON.stringify(tracking.getChanges(), null, 2))}
-        >
-          변경 조회
+        <button onClick={() => tracking.updateRow('P001', { price: 1100000 })}>
+          P001 단가 수정
         </button>
-        <button
-          className="px-3 py-1 text-sm bg-gray-500 text-white rounded"
-          onClick={() => tracking.resetChanges()}
-        >
-          초기화
+        <button onClick={() => tracking.deleteRow('P002')}>P002 삭제</button>
+        <button onClick={() => console.log(tracking.getChangeSet())}>
+          변경 집합 출력
         </button>
+        <button onClick={() => tracking.resetChanges()}>초기화</button>
       </div>
-      <Grid
-        mode="client"
-        data={tracking.rows}
-        columns={columns}
-        onCellCommit={(rowIndex, colId, value) =>
-          tracking.updateRow(rowIndex, colId, value)
-        }
-      />
-      {/* 변경 요약 */}
-      <div className="mt-3 p-3 bg-gray-50 rounded text-sm">
-        추가: {tracking.getChanges().added.length}건 |
-        수정: {tracking.getChanges().edited.length}건 |
-        삭제: {tracking.getChanges().deleted.length}건
-      </div>
-    </div>
-  );
-}
 
-export default function App() {
-  const [tab, setTab] = useState<'A' | 'B'>('A');
+      <Grid data={tracking.rows} columns={columns} />
 
-  return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">변경 추적 Grid</h1>
-      <div className="flex gap-2 mb-4">
-        <button
-          className={`px-4 py-2 rounded ${tab === 'A' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => setTab('A')}
-        >
-          A: compat shim (기존 코드 유지)
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${tab === 'B' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
-          onClick={() => setTab('B')}
-        >
-          B: useChangeTracking hook (직접 사용)
-        </button>
+      <div style={{ marginTop: 12, fontSize: 14, color: '#555' }}>
+        추가 {tracking.added.length}건 · 수정 {tracking.edited.length}건 · 삭제 {tracking.deleted.length}건
       </div>
-      {tab === 'A' ? <PatternA /> : <PatternB />}
     </div>
   );
 }
 ```
 
-</details>
+`useChangeTracking` 반환값:
 
----
-
-## 로컬 실행 방법
-
-StackBlitz 임베드가 로드되지 않으면 위 fallback 코드를 로컬에서 실행할 수 있다.
-
-```bash
-# 모노레포 클론 후
-cd topgrid
-pnpm install
-
-# 개발 서버 (apps/docs)
-pnpm --filter docs dev
-
-# 또는 개별 패키지 개발
-pnpm --filter @topgrid/grid-core dev
-```
+| 멤버 | 설명 |
+|---|---|
+| `rows` | 추적이 반영된 현재 행 배열 (`<Grid data>`에 전달) |
+| `added` / `edited` / `deleted` | 변경된 행 목록 |
+| `addRow(seed)` | 행 추가 — 할당된 키를 동기 반환 |
+| `updateRow(key, patch)` | 부분 수정 |
+| `deleteRow(key)` | 삭제 |
+| `getChangeSet()` | 서버 전송용 변경 집합 생성 |
+| `resetChanges()` | 추적 초기화 |
 
 ---
 
 ## 관련 문서
 
+- [빠른 시작](/getting-started) — 설치와 기본 사용
+- [아키텍처](/architecture) — 13개 패키지 구성
 - [8개 Grid 변형 이전 가이드](./8-variant-table.md)
 - [DataTable 이전 가이드](./dataTable-migration.md)
-- [증분 이전 전략](./incremental-strategy.md)
 - [Deprecated Alias 목록](./deprecated-aliases.md)
-
-> **사이드바 등록**: G-001(Docusaurus 설정) PR에서 `sidebars.ts`에 이 문서를 추가한다 (D4).
