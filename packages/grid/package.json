@@ -1,9 +1,11 @@
 {
   "name": "@topgrid/grid",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "license": "SEE LICENSE IN EULA",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Meta package — aggregates all @topgrid/grid-* packages (MIT + Pro facade)",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",

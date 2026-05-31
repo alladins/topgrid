@@ -1,9 +1,11 @@
 {
   "name": "@topgrid/grid-pro-header",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "license": "SEE LICENSE IN EULA",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Pro: Multi-row Header (Column Groups)",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
