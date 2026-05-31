@@ -2,7 +2,7 @@
 
 Pro: Aggregation (group footer)
 
-Provides group-by aggregation for TOMIS Grid — compute sum, average, count, and custom aggregates per group, displayed in group footer rows.
+Provides group-by aggregation for topgrid — compute sum, average, count, and custom aggregates per group, displayed in group footer rows.
 
 ## Installation
 
