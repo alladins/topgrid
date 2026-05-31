@@ -60,7 +60,7 @@ Pro 패키지는 라이선스 키 미설정 시 `"Unlicensed @topgrid/grid"` wat
 | `GridPagination` | Component | 페이지네이션 |
 | `PageSizeSelect` | Component | 페이지 크기 선택 |
 | `TotalCount` | Component | 총 개수 표시 |
-| `createColumns` | Function | `TomisColumnDef[]` → TanStack `ColumnDef[]` 변환 |
+| `createColumns` | Function | `TopgridColumnDef[]` → TanStack `ColumnDef[]` 변환 |
 | `defaultRendererRegistry` / `registerRenderer` | Registry | type 기반 렌더러 디스패치 |
 | `useColumnDrag` / `DropIndicator` / `useColumnOrderPersist` | Hook/Component | 컬럼 드래그 reorder + 순서 영속화 |
 | `SortBadge` | Component | 다중 정렬 우선순위 배지 |
@@ -68,11 +68,11 @@ Pro 패키지는 라이선스 키 미설정 시 `"Unlicensed @topgrid/grid"` wat
 
 타입: `GridProps`, `GridHandle`, `GridScrollToOptions`, `BaseGridProps`,
 `CellClassNameCallback`, `RowClassNameCallback`, `GridState`, `UseGridStateOptions`,
-`PaginationMode`, `TomisColumnDef`, `TomisColumnType`, `RendererFn`,
+`PaginationMode`, `TopgridColumnDef`, `TopgridColumnType`, `RendererFn`,
 `ColumnPersistenceOptions` 등.
 
-> **deprecated (다음 메이저에서 제거 예정)**: `createTomisColumnHelper`,
-> `createGroupedColumns` / `TomisColumnGroup`, `useColumnPersistence`,
+> **deprecated (다음 메이저에서 제거 예정)**: `createTopgridColumnHelper`,
+> `createGroupedColumns` / `TopgridColumnGroup`, `useColumnPersistence`,
 > `ColumnVisibilityMenu`, 그리고 legacy 그리드 별칭 (`BaseGrid` / `VirtualGrid` /
 > `ColumnPinGrid` / `GroupedHeaderGrid` / `TreeGrid`). 신규 코드는 `Grid` +
 > `createColumns` 를 사용한다.
@@ -179,7 +179,7 @@ import { GridPagination, PageSizeSelect, TotalCount } from '@topgrid/grid-core';
 
 ### 1.6 `createColumns` (컬럼 팩토리)
 
-`TomisColumnDef[]` 를 받아 TanStack `ColumnDef[]` 로 변환한다. `type` 키로 셀
+`TopgridColumnDef[]` 를 받아 TanStack `ColumnDef[]` 로 변환한다. `type` 키로 셀
 렌더러를 자동 매핑한다 (렌더러 wiring 은 §2.5 참고).
 
 ```tsx

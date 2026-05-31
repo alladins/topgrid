@@ -10,7 +10,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { createColumns } from './createColumns';
 import { defaultRendererRegistry, registerRenderer } from './rendererRegistry';
-import type { TomisColumnDef } from './types';
+import type { TopgridColumnDef } from './types';
 import type { ColumnInfo } from '../legacy/ColumnInfo';
 
 afterEach(() => {
@@ -27,7 +27,7 @@ describe('createColumns', () => {
 
   // TC-02: text type → accessorKey: 'name', header: '이름'
   it('TC-02: text type column — accessorKey + header 매핑', () => {
-    const defs: TomisColumnDef<{ name: string }>[] = [
+    const defs: TopgridColumnDef<{ name: string }>[] = [
       { id: 'name', name: '이름', type: 'text', align: 'left', width: '100' },
     ];
     const result = createColumns(defs);
@@ -40,7 +40,7 @@ describe('createColumns', () => {
 
   // TC-03: number type → renderer 적용 (registry에 등록된 fn)
   it('TC-03: number type column — cell 렌더러 함수 할당', () => {
-    const defs: TomisColumnDef<{ count: number }>[] = [
+    const defs: TopgridColumnDef<{ count: number }>[] = [
       { id: 'count', name: '수량', type: 'number', align: 'right', width: '80' },
     ];
     const result = createColumns(defs);
@@ -51,7 +51,7 @@ describe('createColumns', () => {
 
   // TC-04: checkbox type → accessorKey 없음, enableSorting: false (AC-006, EC-08)
   it('TC-04: checkbox type — DisplayColumnDef, enableSorting: false', () => {
-    const defs: TomisColumnDef<Record<string, unknown>>[] = [
+    const defs: TopgridColumnDef<Record<string, unknown>>[] = [
       { id: 'sel', name: '', type: 'checkbox', align: 'center', width: '50' },
     ];
     const result = createColumns(defs);
@@ -63,7 +63,7 @@ describe('createColumns', () => {
 
   // TC-05: dateTime type + width:'200' → size: 200 (EC-03)
   it('TC-05: dateTime type + width 파싱 — size: 200', () => {
-    const defs: TomisColumnDef<{ dt: string }>[] = [
+    const defs: TopgridColumnDef<{ dt: string }>[] = [
       { id: 'dt', name: '일시', type: 'dateTime', align: 'center', width: '200' },
     ];
     const result = createColumns(defs);
@@ -79,7 +79,7 @@ describe('createColumns', () => {
     // 타입 우회하여 미등록 type 전달
     const defs = [
       { id: 'x', name: 'X', type: 'unknown_type', align: 'left', width: '100' },
-    ] as unknown as TomisColumnDef<Record<string, unknown>>[];
+    ] as unknown as TopgridColumnDef<Record<string, unknown>>[];
     const result = createColumns(defs);
     expect(result).toHaveLength(1);
     expect(warnSpy).toHaveBeenCalledWith(
@@ -103,7 +103,7 @@ describe('createColumns', () => {
 
   // TC-08: visibility: false — meta에 정보 없음, 호출 측이 columnVisibility 관리 (EC-05, OQ-01)
   it('TC-08: visibility: false — ColumnDef 자체에는 반영 안 됨 (OQ-01)', () => {
-    const defs: TomisColumnDef<{ name: string }>[] = [
+    const defs: TopgridColumnDef<{ name: string }>[] = [
       { id: 'name', name: '이름', type: 'text', align: 'left', width: '100', visibility: false },
     ];
     const result = createColumns(defs);
@@ -125,7 +125,7 @@ describe('createColumns', () => {
 
   // TC-10: 여러 type 혼합 배열 5개 — 각 index별 type 올바른 분기
   it('TC-10: 혼합 type 배열 — 각 column type 올바른 분기', () => {
-    const defs: TomisColumnDef<Record<string, unknown>>[] = [
+    const defs: TopgridColumnDef<Record<string, unknown>>[] = [
       { id: 'name', name: '이름', type: 'text', align: 'left', width: '100' },
       { id: 'count', name: '수량', type: 'number', align: 'right', width: '80' },
       { id: 'sel', name: '', type: 'checkbox', align: 'center', width: '50' },

@@ -7,7 +7,7 @@
  *
  * 본 story 는 cross-package wiring 통합 검증:
  *   - `import '@topgrid/grid-renderers'` 만 해도 `createColumns()` 가 실 컴포넌트 렌더.
- *   - `TomisColumnDef.type` 문자열 ID → registry lookup → adapter → cell 컴포넌트.
+ *   - `TopgridColumnDef.type` 문자열 ID → registry lookup → adapter → cell 컴포넌트.
  *
  * Wave 1 ADR-014 amendment v2 도 커버: LinkCell `value?` prop 사용 (label deprecated alias 보존).
  *
@@ -20,7 +20,7 @@
  */
 import type { Meta, StoryObj } from '@storybook/react';
 import { Grid, createColumns } from '@topgrid/grid-core';
-import type { TomisColumnDef } from '@topgrid/grid-core';
+import type { TopgridColumnDef } from '@topgrid/grid-core';
 // side-effect: grid-renderers wireDefaultRenderers() 호출 (6 슬롯 어댑터 등록)
 import '@topgrid/grid-renderers';
 
@@ -40,8 +40,8 @@ const mockData: ProductRow[] = [
   { id: 4, name: 'Widget D', price: 9750, releaseDate: '2025-02-08', status: 'ACTIVE', detailsUrl: 'https://example.com/widget-d' },
 ];
 
-// TomisColumnDef.type 문자열 ID → registry lookup → adapter → cell 컴포넌트
-const defs: TomisColumnDef<ProductRow>[] = [
+// TopgridColumnDef.type 문자열 ID → registry lookup → adapter → cell 컴포넌트
+const defs: TopgridColumnDef<ProductRow>[] = [
   { id: 'id', name: 'ID', type: 'number', align: 'right', width: '60' },
   { id: 'name', name: 'Name', type: 'text', align: 'left', width: '150' },
   { id: 'price', name: 'Price', type: 'number', align: 'right', width: '100' },

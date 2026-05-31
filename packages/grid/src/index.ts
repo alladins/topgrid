@@ -16,8 +16,8 @@
  *                                 Also skip `GroupedHeaderGrid`/`GroupedHeaderGridProps`
  *                                 — canonical source is `@topgrid/grid-pro-header` (legacy
  *                                 alias in grid-core is C-6 thin wrapper).
- *   - `@topgrid/grid-pro-datamap` — skip `TomisColumnDef` deprecation alias (ADR-006);
- *                                 canonical type lives in `@topgrid/grid-core`.
+ *   - `@topgrid/grid-pro-datamap` — skip `TopgridColumnDef` deprecation alias
+ *                                 (ADR-006); canonical type lives in `@topgrid/grid-core`.
  *
  * `export *` is used for the remaining 10 packages (no collisions detected by probe).
  *
@@ -29,8 +29,8 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // @topgrid/grid-core (MIT) — explicit re-export
 //   Skip:
-//     - 6 @deprecated APIs (ADR-013): createTomisColumnHelper, createGroupedColumns,
-//       TomisColumnGroup, useColumnPersistence, ColumnVisibilityMenu, ColumnVisibilityMenuProps
+//     - 6 @deprecated APIs (ADR-013): createTopgridColumnHelper, createGroupedColumns,
+//       TopgridColumnGroup, useColumnPersistence, ColumnVisibilityMenu, ColumnVisibilityMenuProps
 //     - defaultRendererRegistry / registerRenderer (canonical = grid-renderers, ADR-002)
 //     - GroupedHeaderGrid / GroupedHeaderGridProps (canonical = grid-pro-header)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -79,8 +79,8 @@ export type {
   GridPaginationProps,
   PageSizeSelectProps,
   TotalCountProps,
-  TomisColumnDef,
-  TomisColumnType,
+  TopgridColumnDef,
+  TopgridColumnType,
   RendererFn,
   RendererRegistry,
   ColumnInfo,
@@ -130,7 +130,7 @@ export * from '@topgrid/grid-pro-range';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // @topgrid/grid-pro-datamap (Pro) — explicit re-export
-//   Skip: TomisColumnDef (deprecation alias per ADR-006; canonical = grid-core)
+//   Skip: TopgridColumnDef (deprecation alias per ADR-006; canonical = grid-core)
 // ─────────────────────────────────────────────────────────────────────────────
 export type {
   CreateDataMapOptions,

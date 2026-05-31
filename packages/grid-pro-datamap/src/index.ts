@@ -5,7 +5,7 @@ checkLicense();
 // G-001: DataMap API public exports
 export type { CreateDataMapOptions, DataMap, DataMapCellProps, DataMapEditorProps, PathOrAccessor, DataMapColumnDef } from './types';
 // Deprecated alias — use DataMapColumnDef. Removed in next major (ADR-MOD-GRID-REFACTOR-2026-05-17-006, POL-COMPAT §3).
-export type { TomisColumnDef } from './types';
+export type { TopgridColumnDef } from './types';
 export { createDataMap } from './createDataMap';
 // G-002: DataMapCell renderer
 export { DataMapCell } from './DataMapCell';

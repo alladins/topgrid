@@ -7,7 +7,7 @@
  *
  * MOD-GRID-04 G-002: `createGroupedColumns<TData>(...groups)` 핵심 공개 API.
  *
- * `TomisColumnGroup<TData>[]`(rest args)를 받아 `ColumnDef<TData>[]` 반환.
+ * `TopgridColumnGroup<TData>[]`(rest args)를 받아 `ColumnDef<TData>[]` 반환.
  * TanStack `useReactTable({ columns })` 에 직접 주입 가능.
  * 다단 헤더(multi-row header)는 TanStack Table v8 `GroupColumnDef.columns` 중첩으로
  * 자동 지원 — `getHeaderGroups()`, `header.isPlaceholder`, `header.colSpan` 사용.
@@ -16,7 +16,7 @@
  * thin wrapper: 입력 rest args를 그대로 `ColumnDef<TData>[]`로 캐스팅하여 반환.
  * 내부에서 어떤 변환·정규화도 수행하지 않음 (G-001 hotfix 단일 경로 원칙 동일).
  *
- * @see TomisColumnGroup
+ * @see TopgridColumnGroup
  * @see createColumns
  * @see AC-002, D1, D2, D3, D4, D5
  */
@@ -36,7 +36,7 @@ import type { ColumnDef } from '@tanstack/react-table';
  *
  * @example
  * ```typescript
- * const group: TomisColumnGroup<Payroll> = {
+ * const group: TopgridColumnGroup<Payroll> = {
  *   header: '지급항목',
  *   columns: createColumns<Payroll>([
  *     { id: 'basePay', name: '기본급', type: 'number', align: 'right' },
@@ -46,7 +46,7 @@ import type { ColumnDef } from '@tanstack/react-table';
  * };
  * ```
  */
-export interface TomisColumnGroup<TData = unknown> {
+export interface TopgridColumnGroup<TData = unknown> {
   /** 그룹 헤더 레이블 */
   header: string;
   /** 그룹 내 리프(leaf) 컬럼 또는 중첩 그룹 컬럼 배열 */
@@ -54,13 +54,13 @@ export interface TomisColumnGroup<TData = unknown> {
 }
 
 /**
- * `TomisColumnGroup<TData>[]` rest args를 받아 `ColumnDef<TData>[]` 반환.
+ * `TopgridColumnGroup<TData>[]` rest args를 받아 `ColumnDef<TData>[]` 반환.
  *
  * @deprecated No production users. Will be removed in next major. (ADR-013)
  *
  * - 다단 헤더(multi-row header) 지원 — TanStack Table v8 `GroupColumnDef.columns` 중첩으로 자동 처리 (D2)
  * - thin wrapper: 입력 그대로 반환 (변환·정규화 없음, D1)
- * - enableColumnFilter / enablePinning 등 리프 컬럼 옵션은 `TomisColumnDef` 레벨에서 설정 (D3)
+ * - enableColumnFilter / enablePinning 등 리프 컬럼 옵션은 `TopgridColumnDef` 레벨에서 설정 (D3)
  * - `GroupedHeaderGrid.tsx` 호환성: TC-04 deep-equal 검증 (D4)
  * - Storybook D5 데모: `지급항목` + `basePay/bonus/totalPay` 2-level
  *
@@ -102,13 +102,13 @@ export interface TomisColumnGroup<TData = unknown> {
  * );
  * ```
  *
- * @see TomisColumnGroup
+ * @see TopgridColumnGroup
  * @see createColumns
  * @see GroupedHeaderGrid
  * @see D1, D2, D3, D4, D5
  */
 export function createGroupedColumns<TData = unknown>(
-  ...groups: Array<TomisColumnGroup<TData>>
+  ...groups: Array<TopgridColumnGroup<TData>>
 ): ColumnDef<TData>[] {
   return groups as ColumnDef<TData>[];
 }

@@ -7,7 +7,7 @@
  * registers `text`/`number`/`date`/`dateTime`/`badge`/`link`/`tag`/`progress` adapters via a
  * `import '@topgrid/grid-renderers'` side-effect (replacing 8 placeholders).
  * When grid-renderers is **not** imported, the placeholders below act as a
- * graceful fallback — every `TomisColumnType` still produces a renderable
+ * graceful fallback — every `TopgridColumnType` still produces a renderable
  * `ReactNode` (`String(value)` / Y-N for `boolean`). Module-load order matters:
  * consumer must `import '@topgrid/grid-renderers'` (typically once at app entry)
  * before rendering `<Grid>` to receive the adapters; otherwise placeholder
@@ -19,7 +19,7 @@
  * @see AC-003, D1, D5
  */
 
-import type { TomisColumnType, RendererFn, RendererRegistry } from './types';
+import type { TopgridColumnType, RendererFn, RendererRegistry } from './types';
 
 /**
  * 기본 rendererRegistry (Map).
@@ -40,7 +40,7 @@ import type { TomisColumnType, RendererFn, RendererRegistry } from './types';
  * @see registerRenderer
  * @see ADR-MOD-GRID-REFACTOR-2026-05-17-002 (cross-package wiring)
  */
-export const defaultRendererRegistry: RendererRegistry = new Map<TomisColumnType, RendererFn>([
+export const defaultRendererRegistry: RendererRegistry = new Map<TopgridColumnType, RendererFn>([
   // ADR-002 wired → NumberCell adapter (fallback: plain text).
   ['number', (info) => String(info.getValue() ?? '')],
   // Always Y/N — not wired by grid-renderers (no BooleanCell).
@@ -75,7 +75,7 @@ export const defaultRendererRegistry: RendererRegistry = new Map<TomisColumnType
  * (text/number/date/dateTime/badge/link) 을 wire 한다. 사용자 커스텀 renderer
  * 도 동일 API 로 덮어쓰기 가능 (마지막 호출이 우선).
  *
- * @param type - 등록할 `TomisColumnType`
+ * @param type - 등록할 `TopgridColumnType`
  * @param fn - cell renderer 함수
  * @param registry - 대상 registry (기본값: `defaultRendererRegistry`)
  *
@@ -93,7 +93,7 @@ export const defaultRendererRegistry: RendererRegistry = new Map<TomisColumnType
  * @see AC-003, D1, OQ-04
  */
 export function registerRenderer<TData = unknown>(
-  type: TomisColumnType,
+  type: TopgridColumnType,
   fn: RendererFn<TData>,
   registry: RendererRegistry<TData> = defaultRendererRegistry as RendererRegistry<TData>,
 ): void {

@@ -42,7 +42,7 @@ DataMapCell, DataMapEditor
 DataMap, AsyncDataMap, AsyncDataMapState,
 CreateDataMapOptions, CreateAsyncDataMapOptions,
 PathOrAccessor, DataMapColumnDef, DataMapCellProps, DataMapEditorProps,
-TomisColumnDef  // @deprecated — DataMapColumnDef 별칭 (§6.5)
+TopgridColumnDef  // @deprecated — DataMapColumnDef 별칭 (§6.5)
 ```
 
 ---
@@ -307,12 +307,12 @@ O(1) 이다. 따라서 `DataMapCell` 이 셀마다 매 렌더에서 `getDisplay`
 소스에는 이 필드를 소비해 `DataMap` 으로 자동 변환하는 로직이 **없다** — 실제 매핑은
 `dataMap` 으로 한다. 차기 메이저에서 제거 예정이므로 신규 코드는 `dataMap` 을 쓴다.
 
-### 6.5 `DataMapColumnDef` 명명과 `TomisColumnDef` 별칭
+### 6.5 `DataMapColumnDef` 명명과 `TopgridColumnDef` 별칭
 주 export 타입 이름은 `DataMapColumnDef` 다. 이는 (1) 타입의 기능(dataMap 확장)을
 이름에 드러내고, (2) `@topgrid/grid-core` 의 동명 타입(서로 다른 shape)과의 이름
-충돌을 피하기 위함이다. 이전 이름 `TomisColumnDef` 는 한 마이너 주기 동안
-`@deprecated` 별칭으로 유지되며 다음 메이저에서 제거된다. 두 이름은 동일 타입을
-가리키므로 기존 코드는 즉시 깨지지 않는다.
+충돌을 피하기 위함이다. scope rename 별칭 `TopgridColumnDef` 는 `@deprecated` 별칭으로
+유지되며 다음 메이저에서 제거된다. (옛 `TomisColumnDef` 별칭은 clean-break 로 이미 제거됨.)
+두 이름은 동일 타입을 가리키므로 기존 코드는 즉시 깨지지 않는다.
 
 ### 6.6 `getLabelFromItem` — 필터 레이블 도출 보정
 `DataMapEditor` 의 필터는 각 항목의 표시 레이블이 필요하다. 그러나 내부 Map 은

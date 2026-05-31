@@ -168,9 +168,9 @@ export function App() {
 |------|---------|--------|------|---------|
 | `LinkCell` `label` prop | `value` prop 사용 | `grid-renderers` | ADR-014 (D-partial) | next major |
 | `ButtonCell` `label` prop | `value` prop 사용 | `grid-renderers` | ADR-014 (D-partial) | next major |
-| `TomisColumnDef` (from `@topgrid/grid-pro-datamap`) | `DataMapColumnDef` import | `grid-pro-datamap` | ADR-006 | next major |
-| `createTomisColumnHelper` | `createColumns` 사용 | `grid-core` | ADR-013 | next major |
-| `createGroupedColumns` + `TomisColumnGroup` | `@topgrid/grid-pro-header` `GroupedHeaderGrid` | `grid-core` | ADR-013 | next major |
+| `TopgridColumnDef` (from `@topgrid/grid-pro-datamap`) | `DataMapColumnDef` import | `grid-pro-datamap` | ADR-006 | next major |
+| `createTopgridColumnHelper` | `createColumns` 사용 | `grid-core` | ADR-013 | next major |
+| `createGroupedColumns` + `TopgridColumnGroup` | `@topgrid/grid-pro-header` `GroupedHeaderGrid` | `grid-core` | ADR-013 | next major |
 | `useColumnPersistence` | `useStoragePersist` (storage adapter) | `grid-core` | ADR-013 | next major |
 | `ColumnVisibilityMenu` + `ColumnVisibilityMenuProps` | (재구현 권고 — Grid.tsx 내부 ref) | `grid-core` | ADR-013 | next major |
 

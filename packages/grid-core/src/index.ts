@@ -48,11 +48,11 @@ export type { TotalCountProps } from './pagination/TotalCount';
 // MOD-GRID-04: Column Factory (G-001)
 export { createColumns } from './column/createColumns';
 /** @deprecated No production users. Use `createColumns` or `createColumnHelper` from `@tanstack/react-table` directly. Removed in next major. (ADR-013) */
-export { createTomisColumnHelper } from './column/createTomisColumnHelper';
+export { createTopgridColumnHelper } from './column/createTopgridColumnHelper';
 export { defaultRendererRegistry, registerRenderer } from './column/rendererRegistry';
 export type {
-  TomisColumnDef,
-  TomisColumnType,
+  TopgridColumnDef,
+  TopgridColumnType,
   RendererFn,
   RendererRegistry,
 } from './column/types';
@@ -62,7 +62,7 @@ export type { ColumnInfo } from './legacy/ColumnInfo';
 /** @deprecated No production users. Will be removed in next major. (ADR-013) */
 export { createGroupedColumns } from './column/createGroupedColumns';
 /** @deprecated No production users. Will be removed in next major together with `createGroupedColumns`. (ADR-013) */
-export type { TomisColumnGroup } from './column/createGroupedColumns';
+export type { TopgridColumnGroup } from './column/createGroupedColumns';
 // MOD-GRID-04: Column Factory (G-003 — 컬럼 가시성 + 순서 영속화)
 /** @deprecated No production users outside grid-core. Superseded by ADR-007 storage adapter. Removed in next major. (ADR-013) */
 export { useColumnPersistence } from './column/useColumnPersistence';

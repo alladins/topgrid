@@ -7,7 +7,7 @@
  * `ColumnInfo`와 동일 shape. `createColumns()` 가 이 타입도 수용함 (AC-005).
  *
  * @see createColumns
- * @see TomisColumnDef
+ * @see TopgridColumnDef
  * @see AC-005, D3
  */
 
@@ -15,13 +15,13 @@
  * DataTable 호환 ColumnInfo 인터페이스.
  *
  * 레거시 DataTable `data-table-types.ts`와 동일 shape.
- * 신규 코드에서는 `TomisColumnDef<TData>` 사용 권장.
+ * 신규 코드에서는 `TopgridColumnDef<TData>` 사용 권장.
  *
- * `createColumns()` 가 `ColumnInfo[]` 입력 시 내부에서 `TomisColumnDef`로 narrowing:
- * - `type` 필드가 9종 `TomisColumnType` union 중 하나이면 그대로 사용
+ * `createColumns()` 가 `ColumnInfo[]` 입력 시 내부에서 `TopgridColumnDef`로 narrowing:
+ * - `type` 필드가 9종 `TopgridColumnType` union 중 하나이면 그대로 사용
  * - 그 외 string이면 `'text'` fallback (EC-04)
  *
- * @deprecated 신규 코드에서는 `TomisColumnDef<TData>` 사용 권장.
+ * @deprecated 신규 코드에서는 `TopgridColumnDef<TData>` 사용 권장.
  *
  * @example
  * ```typescript
@@ -35,14 +35,14 @@
  * ```
  *
  * @see createColumns
- * @see TomisColumnDef
+ * @see TopgridColumnDef
  */
 export interface ColumnInfo {
   /** column accessor key */
   id: string;
   /**
    * column 타입 (string — union 아님).
-   * `createColumns` 내부에서 `TomisColumnType` union으로 narrowing.
+   * `createColumns` 내부에서 `TopgridColumnType` union으로 narrowing.
    * 9종 외 값은 'text' fallback (EC-04).
    */
   type: string;

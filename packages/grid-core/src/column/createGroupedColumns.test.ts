@@ -7,7 +7,7 @@
 import { describe, it, expect } from 'vitest';
 import type { ColumnDef } from '@tanstack/react-table';
 import { createGroupedColumns } from './createGroupedColumns';
-import type { TomisColumnGroup } from './createGroupedColumns';
+import type { TopgridColumnGroup } from './createGroupedColumns';
 
 // ── 공통 리프 컬럼 픽스처 ──────────────────────────────────────────────────
 
@@ -28,13 +28,13 @@ const payrollLeafCols: ColumnDef<Record<string, unknown>>[] = [
 describe('TC-01: single group with empty columns array', () => {
   it('returns array of length 1, header correct, columns empty', () => {
     type Row = Record<string, unknown>;
-    const group: TomisColumnGroup<Row> = { header: '기본 정보', columns: [] };
+    const group: TopgridColumnGroup<Row> = { header: '기본 정보', columns: [] };
     const result = createGroupedColumns<Row>(group);
 
     expect(result).toHaveLength(1);
 
     // TanStack GroupColumnDef has `header` and `columns` fields
-    const g = result[0] as TomisColumnGroup<Row>;
+    const g = result[0] as TopgridColumnGroup<Row>;
     expect(g.header).toBe('기본 정보');
     expect(g.columns).toHaveLength(0);
   });
@@ -45,10 +45,10 @@ describe('TC-01: single group with empty columns array', () => {
 describe('TC-02: columns reference equality', () => {
   it('result[0].columns is the same reference as the input columns array', () => {
     type Row = Record<string, unknown>;
-    const group: TomisColumnGroup<Row> = { header: '기본 정보', columns: leafCols };
+    const group: TopgridColumnGroup<Row> = { header: '기본 정보', columns: leafCols };
     const result = createGroupedColumns<Row>(group);
 
-    const g = result[0] as TomisColumnGroup<Row>;
+    const g = result[0] as TopgridColumnGroup<Row>;
     // thin wrapper (D1): 내부 변환 없음 → same reference
     expect(g.columns).toBe(leafCols);
   });
@@ -59,8 +59,8 @@ describe('TC-02: columns reference equality', () => {
 describe('TC-03: two groups → length 2', () => {
   it('returns array of length 2 for two rest args', () => {
     type Row = Record<string, unknown>;
-    const g1: TomisColumnGroup<Row> = { header: '기본 정보', columns: leafCols };
-    const g2: TomisColumnGroup<Row> = { header: '급여 내역', columns: payrollLeafCols };
+    const g1: TopgridColumnGroup<Row> = { header: '기본 정보', columns: leafCols };
+    const g2: TopgridColumnGroup<Row> = { header: '급여 내역', columns: payrollLeafCols };
     const result = createGroupedColumns<Row>(g1, g2);
 
     expect(result).toHaveLength(2);
@@ -119,10 +119,10 @@ describe('TC-04: deep-equal fixture matching GroupedHeaderGrid.tsx L166-184 patt
 describe('TC-05: empty string header passes through', () => {
   it('empty string header is preserved as-is', () => {
     type Row = Record<string, unknown>;
-    const group: TomisColumnGroup<Row> = { header: '', columns: [] };
+    const group: TopgridColumnGroup<Row> = { header: '', columns: [] };
     const result = createGroupedColumns<Row>(group);
 
-    const g = result[0] as TomisColumnGroup<Row>;
+    const g = result[0] as TopgridColumnGroup<Row>;
     expect(g.header).toBe('');
   });
 });
@@ -134,7 +134,7 @@ describe('TC-06: N=5 rest args → length 5, order preserved', () => {
     type Row = Record<string, unknown>;
 
     const headers = ['A', 'B', 'C', 'D', 'E'];
-    const groups: Array<TomisColumnGroup<Row>> = headers.map((h) => ({
+    const groups: Array<TopgridColumnGroup<Row>> = headers.map((h) => ({
       header: h,
       columns: [],
     }));
@@ -143,7 +143,7 @@ describe('TC-06: N=5 rest args → length 5, order preserved', () => {
 
     expect(result).toHaveLength(5);
     headers.forEach((h, i) => {
-      const g = result[i] as TomisColumnGroup<Row>;
+      const g = result[i] as TopgridColumnGroup<Row>;
       expect(g.header).toBe(h);
     });
   });

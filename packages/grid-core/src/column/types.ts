@@ -28,11 +28,11 @@ import type { ReactNode } from 'react';
  * - `'tag'`: TagCell (ADR-002+018 wired — readonly string[]).
  * - `'progress'`: ProgressCell (ADR-002+018 wired — number|null|undefined).
  *
- * @see TomisColumnDef
+ * @see TopgridColumnDef
  * @see createColumns
  * @see AC-001
  */
-export type TomisColumnType =
+export type TopgridColumnType =
   | 'checkbox'
   | 'number'
   | 'boolean'
@@ -54,7 +54,7 @@ export type TomisColumnType =
  *
  * @example
  * ```typescript
- * const defs: TomisColumnDef<User>[] = [
+ * const defs: TopgridColumnDef<User>[] = [
  *   { id: 'name', name: '이름', type: 'text', align: 'left', width: '150' },
  *   { id: 'salary', name: '급여', type: 'number', align: 'right', width: '120' },
  *   { id: 'sel', name: '', type: 'checkbox', align: 'center', width: '50' },
@@ -63,21 +63,21 @@ export type TomisColumnType =
  * ```
  *
  * @see createColumns
- * @see TomisColumnType
+ * @see TopgridColumnType
  * @see AC-001, AC-002
  */
-export interface TomisColumnDef<TData = unknown> {
+export interface TopgridColumnDef<TData = unknown> {
   /**
    * column accessor key (TData 키와 일치). `'checkbox'` type은 무시됨 (AC-006).
    *
-   * 타입 파라미터 `TData`는 `createColumns<TData>(defs: TomisColumnDef<TData>[])` 에서
+   * 타입 파라미터 `TData`는 `createColumns<TData>(defs: TopgridColumnDef<TData>[])` 에서
    * accessor key 타입 안전성을 위해 바인딩됨 (`keyof TData & string`).
    */
   id: keyof TData extends never ? string : (keyof TData & string) | string;
   /** 표시 헤더명 */
   name: string;
   /** 자동 renderer 분기 type. AC-001 참조. */
-  type: TomisColumnType;
+  type: TopgridColumnType;
   /** 정렬 방향 — Tailwind class에 반영 ('left'|'center'|'right') */
   align: 'left' | 'center' | 'right';
   /** 픽셀 단위 너비 문자열 ('100', '200px' 등). 미제공 시 '100' 기본. */
@@ -117,7 +117,7 @@ export type RendererFn<TData = unknown> = (
 /**
  * type → RendererFn 매핑 타입.
  *
- * `Map<TomisColumnType, RendererFn<TData>>` 기반.
+ * `Map<TopgridColumnType, RendererFn<TData>>` 기반.
  * `any` 없음 (C-4). AG Grid `components` registry 패턴 참조 (L2: R-A).
  *
  * @typeParam TData - 행 데이터 타입
@@ -126,4 +126,4 @@ export type RendererFn<TData = unknown> = (
  * @see registerRenderer
  * @see AC-003
  */
-export type RendererRegistry<TData = unknown> = Map<TomisColumnType, RendererFn<TData>>;
+export type RendererRegistry<TData = unknown> = Map<TopgridColumnType, RendererFn<TData>>;

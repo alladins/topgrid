@@ -1,9 +1,9 @@
 /**
- * @topgrid/grid-core — createTomisColumnHelper.
+ * @topgrid/grid-core — createTopgridColumnHelper.
  *
  * MOD-GRID-04 G-001: TanStack `createColumnHelper<TData>()` 순수 re-export.
  *
- * **ADR-MOD-GRID-04-001**: `.tomisColumn()` wrapper 메서드 없음 (Option A).
+ * **ADR-MOD-GRID-04-001**: `.topgridColumn()` wrapper 메서드 없음 (Option A).
  * 이유: TanStack API 그대로 사용하면 학습 비용 0, 타입 보장 완벽.
  * `createColumns(defs)` 가 고수준 자동 분기 API,
  * 이 함수는 저수준 수동 컨트롤 경로로 공존.
@@ -14,9 +14,9 @@
  *
  * @example
  * ```typescript
- * import { createTomisColumnHelper } from '@topgrid/grid-core';
+ * import { createTopgridColumnHelper } from '@topgrid/grid-core';
  *
- * const helper = createTomisColumnHelper<User>();
+ * const helper = createTopgridColumnHelper<User>();
  *
  * const columns = [
  *   helper.accessor('name', {
@@ -39,4 +39,4 @@
  * @see ADR-MOD-GRID-04-001 — Option A 선택 근거 + trade-off
  * @see AC-004, D4
  */
-export { createColumnHelper as createTomisColumnHelper } from '@tanstack/react-table';
+export { createColumnHelper as createTopgridColumnHelper } from '@tanstack/react-table';

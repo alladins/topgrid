@@ -13,7 +13,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { createColumns } from './createColumns';
-import type { TomisColumnDef } from './types';
+import type { TopgridColumnDef } from './types';
 import type { ColumnInfo } from '../legacy/ColumnInfo';
 
 /** 스토리 표시용 column 정의 뷰어 */
@@ -49,7 +49,7 @@ const meta: Meta<typeof ColumnDefViewer> = {
     docs: {
       description: {
         component:
-          '`createColumns<TData>(defs)` 팩토리 함수 — `TomisColumnDef[]` 또는 `ColumnInfo[]`를 받아 TanStack `ColumnDef[]` 반환. MOD-GRID-04 G-001.',
+          '`createColumns<TData>(defs)` 팩토리 함수 — `TopgridColumnDef[]` 또는 `ColumnInfo[]`를 받아 TanStack `ColumnDef[]` 반환. MOD-GRID-04 G-001.',
       },
     },
   },
@@ -61,12 +61,12 @@ type Story = StoryObj<typeof ColumnDefViewer>;
 // ─── Story 1: AllTypes ──────────────────────────────────────────────────────
 
 /**
- * AllTypes — 9종 TomisColumnType 한 번에 렌더링.
+ * AllTypes — 9종 TopgridColumnType 한 번에 렌더링.
  *
  * placeholder renderer(MOD-GRID-05 pending)로 동작.
  * checkbox는 DisplayColumnDef (accessorKey 없음, enableSorting: false).
  */
-const allTypesDefs: TomisColumnDef<Record<string, unknown>>[] = [
+const allTypesDefs: TopgridColumnDef<Record<string, unknown>>[] = [
   { id: 'sel', name: '선택', type: 'checkbox', align: 'center', width: '50' },
   { id: 'name', name: '이름', type: 'text', align: 'left', width: '150' },
   { id: 'salary', name: '급여', type: 'number', align: 'right', width: '120' },
@@ -85,7 +85,7 @@ export const AllTypes: Story = {
     docs: {
       description: {
         story:
-          '9종 TomisColumnType 전부 한 번에 렌더링. checkbox는 DisplayColumnDef, 나머지는 AccessorKeyColumnDef.',
+          '9종 TopgridColumnType 전부 한 번에 렌더링. checkbox는 DisplayColumnDef, 나머지는 AccessorKeyColumnDef.',
       },
     },
   },
@@ -147,7 +147,7 @@ export const EmptyDefs: Story = {
  * - enableSorting 강제 false
  * - cell: placeholder (MOD-GRID-05 CheckboxCell pending)
  */
-const checkboxDefs: TomisColumnDef<Record<string, unknown>>[] = [
+const checkboxDefs: TopgridColumnDef<Record<string, unknown>>[] = [
   { id: 'sel', name: '선택', type: 'checkbox', align: 'center', width: '50' },
   { id: 'name', name: '이름', type: 'text', align: 'left', width: '200' },
 ];

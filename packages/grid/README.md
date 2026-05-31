@@ -37,7 +37,7 @@
 ```ts
 // Single entry — convenient for app-side consumers using both MIT and Pro features.
 import { Grid, createColumns, NumberCell, StatusBadgeCell, setLicenseKey } from '@topgrid/grid';
-import type { GridProps, TomisColumnDef } from '@topgrid/grid';
+import type { GridProps, TopgridColumnDef } from '@topgrid/grid';
 ```
 
 ```ts
@@ -80,14 +80,14 @@ canonicalizing exports:
 | Identifier | Canonical source | Reason |
 |------------|------------------|--------|
 | `defaultRendererRegistry`, `registerRenderer` | `@topgrid/grid-renderers` | grid-core's are placeholder fallback (ADR-002 D-3A) |
-| `TomisColumnDef` (type) | `@topgrid/grid-core` | grid-pro-datamap's alias is `@deprecated` (ADR-006) |
+| `TopgridColumnDef` (type) | `@topgrid/grid-core` | grid-pro-datamap's alias is `@deprecated` (ADR-006) |
 | `GroupedHeaderGrid`, `GroupedHeaderGridProps` | `@topgrid/grid-pro-header` | grid-core's `legacy/` are C-6 alias |
 
 The 6 `@deprecated` APIs from `@topgrid/grid-core` (per ADR-013) are **not** re-exported
 through the facade:
 
-- `createTomisColumnHelper`
-- `createGroupedColumns`, `TomisColumnGroup`
+- `createTopgridColumnHelper`
+- `createGroupedColumns`, `TopgridColumnGroup`
 - `useColumnPersistence`
 - `ColumnVisibilityMenu`, `ColumnVisibilityMenuProps`
 

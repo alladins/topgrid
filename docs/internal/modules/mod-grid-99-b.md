@@ -329,8 +329,8 @@ setLicenseKey('YOUR-LICENSE-KEY');   // 앱 진입점에서 1회. 미활성 시 
 - **라이선스 API의 정식 이름은 `setLicenseKey`** (`grid-license`의 실제 export).
   `initLicense`는 존재하지 않는다 — 문서 작성 시 주의.
 
-> `createTomisColumnHelper`, `ColumnInfo` 등은 실제 export 식별자이므로 README/예시에서
-> 그대로 사용한다.
+> `createTopgridColumnHelper`, `ColumnInfo` 등은 실제 export 식별자이므로 README/예시에서
+> 그대로 사용한다. (옛 `createTomisColumnHelper` 별칭은 clean-break 로 제거됨)
 
 ---
 

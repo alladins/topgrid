@@ -89,7 +89,7 @@ const asyncMap = createAsyncDataMap({
 | `DataMapEditor` | Dropdown editor for DataMap columns |
 | `DataMap` | Type for static data map |
 | `AsyncDataMap` | Type for async data map |
-| `TomisColumnDef` | Extended column definition type |
+| `DataMapColumnDef` | Extended column definition type (deprecated alias: `TopgridColumnDef`) |
 
 ## License
 

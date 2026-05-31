@@ -37,11 +37,11 @@ export interface CreateDataMapOptions<TItem> {
  * C-29: exactOptionalPropertyTypes=true — optional 필드는 undefined 명시 필요
  *
  * Note: intersection 패턴 채택 (ADR-002, spec Section 3.3, spec ADR-002).
- * D4 prose의 Omit<...>+'meta?: TomisColumnMeta' 안은 TomisColumnMeta 정의 누락으로 실현 불가 —
+ * D4 prose의 Omit<...>+'meta?: TopgridColumnMeta' 안은 TopgridColumnMeta 정의 누락으로 실현 불가 —
  * C-30: spec code template + ADR-002가 권위. spec feedback L1 참조.
  *
- * Renamed from TomisColumnDef (ADR-MOD-GRID-REFACTOR-2026-05-17-006, POL-COMPAT §3).
- * See TomisColumnDef deprecation alias below.
+ * Renamed from TopgridColumnDef (ADR-MOD-GRID-REFACTOR-2026-05-17-006, POL-COMPAT §3).
+ * See TopgridColumnDef deprecation alias below.
  */
 export type DataMapColumnDef<TData> = ColumnDef<TData, unknown> & {
   /**
@@ -63,7 +63,7 @@ export type DataMapColumnDef<TData> = ColumnDef<TData, unknown> & {
  * Retained as deprecation alias for one minor cycle (ADR-MOD-GRID-REFACTOR-2026-05-17-006, POL-COMPAT §3).
  * Will be removed in the next major version.
  */
-export type TomisColumnDef<TData> = DataMapColumnDef<TData>;
+export type TopgridColumnDef<TData> = DataMapColumnDef<TData>;
 
 /**
  * DataMapCellProps<TData>: DataMapCell 컴포넌트의 파라미터 타입 alias.

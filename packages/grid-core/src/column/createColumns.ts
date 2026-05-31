@@ -3,28 +3,28 @@
  *
  * MOD-GRID-04 G-001: `createColumns<TData>(defs)` 핵심 공개 API.
  *
- * `TomisColumnDef<TData>[] | ColumnInfo[]`를 받아 `ColumnDef<TData>[]` 반환.
+ * `TopgridColumnDef<TData>[] | ColumnInfo[]`를 받아 `ColumnDef<TData>[]` 반환.
  * TanStack `useReactTable({ columns })` 에 직접 주입 가능.
  *
- * @see TomisColumnDef
+ * @see TopgridColumnDef
  * @see rendererRegistry
  * @see AC-002, AC-003, AC-005, AC-006, AC-007, AC-008
  */
 
 import type { ColumnDef, CellContext } from '@tanstack/react-table';
-import type { TomisColumnDef, RendererRegistry } from './types';
+import type { TopgridColumnDef, RendererRegistry } from './types';
 import type { ColumnInfo } from '../legacy/ColumnInfo';
 import { defaultRendererRegistry } from './rendererRegistry';
 
 /**
- * ColumnInfo와 TomisColumnDef는 런타임 구조가 동일하다 (G-001 hotfix 2026-05-14).
+ * ColumnInfo와 TopgridColumnDef는 런타임 구조가 동일하다 (G-001 hotfix 2026-05-14).
  *
  * 두 인터페이스 모두 `id`/`name`/`type`/`align`/`width?` 형태 — 런타임 heuristic으로
- * 구분 불가능. TomisColumnDef.etc 필드를 옵셔널로 보유하므로 ColumnInfo의 etc:'primary'
+ * 구분 불가능. TopgridColumnDef.etc 필드를 옵셔널로 보유하므로 ColumnInfo의 etc:'primary'
  * 패턴도 동일 코드 경로에서 처리 가능. 미등록 type은 registry fallback + console.warn
  * 으로 처리(AC-007, EC-02, TC-06). 별도 narrowing 없이 단일 경로 사용.
  *
- * 이전 isColumnInfo()/normalizeColumnInfo() heuristic은 동일 shape의 TomisColumnDef를
+ * 이전 isColumnInfo()/normalizeColumnInfo() heuristic은 동일 shape의 TopgridColumnDef를
  * ColumnInfo로 오분류하여 미등록 type을 'text'로 silently coerce하던 결함을 제거.
  *
  * @see TC-06
@@ -32,22 +32,22 @@ import { defaultRendererRegistry } from './rendererRegistry';
  */
 
 /**
- * `TomisColumnDef<TData>[] | ColumnInfo[]` 를 받아 `ColumnDef<TData>[]` 반환.
+ * `TopgridColumnDef<TData>[] | ColumnInfo[]` 를 받아 `ColumnDef<TData>[]` 반환.
  *
  * - `type` 필드 기반 자동 renderer 분기 (rendererRegistry 조회, AC-003)
  * - `'checkbox'` type → DisplayColumnDef (accessorKey 없음, enableSorting 강제 false, AC-006)
  * - registry 미등록 type → plain text fallback + console.warn (AC-007, D1)
- * - `ColumnInfo[]` 입력 시 내부에서 `TomisColumnDef`로 narrowing (AC-005, D3)
+ * - `ColumnInfo[]` 입력 시 내부에서 `TopgridColumnDef`로 narrowing (AC-005, D3)
  * - `width`, `enableSorting`, `enableResizing`, `meta` 표준 매핑 (AC-008)
  *
  * @typeParam TData - 행 데이터 타입
- * @param defs - column 정의 배열. `TomisColumnDef<TData>[]` 또는 `ColumnInfo[]`.
+ * @param defs - column 정의 배열. `TopgridColumnDef<TData>[]` 또는 `ColumnInfo[]`.
  * @returns TanStack `ColumnDef<TData>[]` — `useReactTable({ columns })` 에 직접 주입 가능.
  *
  * @example
  * ```typescript
- * // TomisColumnDef 직접 사용 (권장)
- * const defs: TomisColumnDef<User>[] = [
+ * // TopgridColumnDef 직접 사용 (권장)
+ * const defs: TopgridColumnDef<User>[] = [
  *   { id: 'name', name: '이름', type: 'text', align: 'left', width: '150' },
  *   { id: 'salary', name: '급여', type: 'number', align: 'right', width: '120' },
  *   { id: 'sel', name: '', type: 'checkbox', align: 'center', width: '50' },
@@ -59,18 +59,18 @@ import { defaultRendererRegistry } from './rendererRegistry';
  * const columns = createColumns(legacyDefs);
  * ```
  *
- * @see TomisColumnDef
+ * @see TopgridColumnDef
  * @see ColumnInfo
  * @see defaultRendererRegistry
  * @see AC-002, AC-003, AC-005, AC-006, AC-007, AC-008
  */
 export function createColumns<TData = unknown>(
-  defs: TomisColumnDef<TData>[] | ColumnInfo[],
+  defs: TopgridColumnDef<TData>[] | ColumnInfo[],
 ): ColumnDef<TData>[] {
   return defs.map((raw) => {
-    // AC-005 hotfix (2026-05-14): ColumnInfo와 TomisColumnDef 구조 동일 — 단일 경로 처리.
+    // AC-005 hotfix (2026-05-14): ColumnInfo와 TopgridColumnDef 구조 동일 — 단일 경로 처리.
     // 미등록 type은 registry fallback + warn으로 처리 (TC-06, EC-02).
-    const def = raw as TomisColumnDef<TData>;
+    const def = raw as TopgridColumnDef<TData>;
 
     const baseWidth = parseInt((def.width ?? '100').trim(), 10);
     const isCheckbox = def.type === 'checkbox';

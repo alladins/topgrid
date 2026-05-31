@@ -10,7 +10,7 @@
 //   - button/avatar: required non-value prop (onClick/name) — registry adapter pattern unsuitable
 //     (widening cast would lie at runtime). Use column.cell direct wiring instead (ADR-018 D-3 X-B).
 //   - aliases (statusBadge/check): accessible via grid-renderers' own Record<string, CellComponent>
-//     (getRenderer/registerRenderer with string key). grid-core Map keyed by TomisColumnType
+//     (getRenderer/registerRenderer with string key). grid-core Map keyed by TopgridColumnType
 //     intentionally excludes alias keys — they're synonyms with zero added value (ADR-018 D-4 A-A).
 //
 // @see findings/wave3-adr-002-spec.md §3, §4

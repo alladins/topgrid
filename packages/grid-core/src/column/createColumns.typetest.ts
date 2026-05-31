@@ -11,7 +11,7 @@
 
 import type { ColumnDef } from '@tanstack/react-table';
 import { createColumns } from './createColumns';
-import type { TomisColumnDef } from './types';
+import type { TopgridColumnDef } from './types';
 import type { ColumnInfo } from '../legacy/ColumnInfo';
 
 /** 테스트용 사용자 타입 */
@@ -21,8 +21,8 @@ interface User {
   active: boolean;
 }
 
-// TC-T01: TomisColumnDef 타입 안전성 — 컴파일 통과
-const defs: TomisColumnDef<User>[] = [
+// TC-T01: TopgridColumnDef 타입 안전성 — 컴파일 통과
+const defs: TopgridColumnDef<User>[] = [
   { id: 'name', type: 'text', name: '이름', align: 'left', width: '100' },
   { id: 'salary', type: 'number', name: '급여', align: 'right', width: '120' },
   { id: 'active', type: 'boolean', name: '활성', align: 'center', width: '80' },
@@ -43,9 +43,9 @@ const legacyCols: ColumnDef<unknown>[] = createColumns(legacyDefs);
 void legacyCols;
 
 // TC-T03: type에 'any' 없음 — 잘못된 type은 TypeScript 오류 발생
-const badDef: TomisColumnDef<User> = {
+const badDef: TopgridColumnDef<User> = {
   id: 'x',
-  // @ts-expect-error — 'invalid_type'은 TomisColumnType union에 없음 (C-4 준수 확인)
+  // @ts-expect-error — 'invalid_type'은 TopgridColumnType union에 없음 (C-4 준수 확인)
   type: 'invalid_type',
   name: '잘못된 type',
   align: 'left',
