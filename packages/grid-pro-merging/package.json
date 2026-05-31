@@ -1,6 +1,6 @@
 {
   "name": "@topgrid/grid-pro-merging",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "license": "SEE LICENSE IN EULA",
   "publishConfig": {
@@ -33,7 +33,6 @@
   "peerDependencies": {
     "@tanstack/react-table": "^8.0.0",
     "@tanstack/react-virtual": "^3.0.0",
-    "@topgrid/grid-core": "workspace:*",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   },

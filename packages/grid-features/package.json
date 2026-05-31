@@ -1,6 +1,6 @@
 {
   "name": "@topgrid/grid-features",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "type": "module",
   "license": "MIT",
   "description": "Column reorder, multi-sort, filter UI features",
@@ -23,10 +23,8 @@
     "typecheck": "tsc --noEmit",
     "test": "echo TODO"
   },
-  "dependencies": {
-    "@topgrid/grid-core": "workspace:*"
-  },
   "peerDependencies": {
+    "@topgrid/grid-core": "workspace:*",
     "@tanstack/react-table": "^8.0.0",
     "@tanstack/react-virtual": "^3.0.0",
     "date-fns": "^4.1.0",
