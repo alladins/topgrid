@@ -1,0 +1,27 @@
+{
+  "id": "migration/deprecated-aliases",
+  "title": "Deprecated Alias 목록",
+  "description": "@topgrid/grid-core는 이전 Grid 변형 컴포넌트와의 하위 호환성을 위해",
+  "source": "@site/docs/migration/deprecated-aliases.md",
+  "sourceDirName": "migration",
+  "slug": "/migration/deprecated-aliases",
+  "permalink": "/en/migration/deprecated-aliases",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "title": "Deprecated Alias 목록",
+    "sidebar_position": 5
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "DataTable → Grid 이전 가이드",
+    "permalink": "/en/migration/dataTable-migration"
+  },
+  "next": {
+    "title": "증분 이전 전략",
+    "permalink": "/en/migration/incremental-strategy"
+  }
+}

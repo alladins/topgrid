@@ -1,4 +1,3 @@
-// spec body authority — C-33: this file follows spec Section 2-1 with C-5 drift applied (customCss: [])
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
@@ -17,38 +16,13 @@ const config: Config = {
     [
       'classic',
       {
-        docs: { sidebarPath: './sidebars.ts' },
+        docs: { sidebarPath: './sidebars.ts', routeBasePath: '/' },
         blog: false,
-        theme: { customCss: [] }, // C-5 drift: custom.css 신규 파일 금지 → 빈 배열
       } satisfies Preset.Options,
     ],
   ],
-  plugins: [
-    [
-      'docusaurus-plugin-typedoc',
-      {
-        // AC-002: 13개 패키지 TypeDoc entryPoints (spec Section 2-1)
-        entryPoints: [
-          '../../packages/grid/src/index.ts',
-          '../../packages/grid-core/src/index.ts',
-          '../../packages/grid-export/src/index.ts',
-          '../../packages/grid-features/src/index.ts',
-          '../../packages/grid-license/src/index.ts',
-          '../../packages/grid-pro-agg/src/index.ts',
-          '../../packages/grid-pro-datamap/src/index.ts',
-          '../../packages/grid-pro-header/src/index.ts',
-          '../../packages/grid-pro-master/src/index.ts',
-          '../../packages/grid-pro-merging/src/index.ts',
-          '../../packages/grid-pro-range/src/index.ts',
-          '../../packages/grid-pro-tracking/src/index.ts',
-          '../../packages/grid-renderers/src/index.ts',
-        ],
-        entryPointStrategy: 'packages',
-        out: 'api',
-        sidebar: { categoryLabel: 'API Reference' },
-      },
-    ],
-  ],
+  // NOTE: 자동 API 레퍼런스(docusaurus-plugin-typedoc)는 typedoc 버전 정합 이슈로
+  // 임시 비활성. 수기 문서 우선 배포 후 후속으로 복구 예정.
 };
 
 export default config;

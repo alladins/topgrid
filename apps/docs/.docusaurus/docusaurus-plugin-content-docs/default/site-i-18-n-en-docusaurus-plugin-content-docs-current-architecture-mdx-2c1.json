@@ -1,0 +1,23 @@
+{
+  "id": "architecture",
+  "title": "Architecture",
+  "description": "topgrid is a monorepo composed of 13 packages.",
+  "source": "@site/i18n/en/docusaurus-plugin-content-docs/current/architecture.mdx",
+  "sourceDirName": ".",
+  "slug": "/architecture",
+  "permalink": "/en/architecture",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Getting Started",
+    "permalink": "/en/getting-started"
+  },
+  "next": {
+    "title": "8개 Grid 변형 이전 가이드",
+    "permalink": "/en/migration/variant-table"
+  }
+}

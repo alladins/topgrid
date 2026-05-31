@@ -1,0 +1,23 @@
+{
+  "id": "architecture",
+  "title": "아키텍처",
+  "description": "topgrid는 13개 패키지로 구성된 monorepo 구조입니다.",
+  "source": "@site/docs/architecture.mdx",
+  "sourceDirName": ".",
+  "slug": "/architecture",
+  "permalink": "/architecture",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "시작하기",
+    "permalink": "/getting-started"
+  },
+  "next": {
+    "title": "8개 Grid 변형 이전 가이드",
+    "permalink": "/migration/variant-table"
+  }
+}

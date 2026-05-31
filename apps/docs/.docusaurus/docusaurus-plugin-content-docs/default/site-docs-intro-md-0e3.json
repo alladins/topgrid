@@ -1,0 +1,25 @@
+{
+  "id": "intro",
+  "title": "topgrid",
+  "description": "TanStack Table 기반의 headless React 그리드 솔루션. 표시·편집 셀 렌더러,",
+  "source": "@site/docs/intro.md",
+  "sourceDirName": ".",
+  "slug": "/",
+  "permalink": "/en/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 0,
+  "frontMatter": {
+    "slug": "/",
+    "title": "topgrid",
+    "sidebar_label": "소개",
+    "sidebar_position": 0
+  },
+  "sidebar": "tutorialSidebar",
+  "next": {
+    "title": "Getting Started",
+    "permalink": "/en/getting-started"
+  }
+}

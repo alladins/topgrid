@@ -1,0 +1,68 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/en/",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/en/",
+          "mainDocId": "intro",
+          "docs": [
+            {
+              "id": "architecture",
+              "path": "/en/architecture",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started",
+              "path": "/en/getting-started",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "intro",
+              "path": "/en/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "migration/dataTable-migration",
+              "path": "/en/migration/dataTable-migration",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "migration/deprecated-aliases",
+              "path": "/en/migration/deprecated-aliases",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "migration/incremental-strategy",
+              "path": "/en/migration/incremental-strategy",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "migration/live-demos",
+              "path": "/en/migration/live-demos",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "migration/variant-table",
+              "path": "/en/migration/variant-table",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/en/",
+                "label": "intro"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

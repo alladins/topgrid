@@ -1,0 +1,47 @@
+{
+  "/en/-661": {
+    "__comp": "5e95c892",
+    "__context": {
+      "plugin": "aba21aa0"
+    }
+  },
+  "/en/-4e0": {
+    "__comp": "a7bd4aaa",
+    "__props": "116e21e2"
+  },
+  "/en/-08f": {
+    "__comp": "a94703ab"
+  },
+  "/en/architecture-b91": {
+    "__comp": "17896441",
+    "content": "2c18401f"
+  },
+  "/en/getting-started-16e": {
+    "__comp": "17896441",
+    "content": "437c4343"
+  },
+  "/en/migration/dataTable-migration-16e": {
+    "__comp": "17896441",
+    "content": "38e397d0"
+  },
+  "/en/migration/deprecated-aliases-d40": {
+    "__comp": "17896441",
+    "content": "0c23a351"
+  },
+  "/en/migration/incremental-strategy-da1": {
+    "__comp": "17896441",
+    "content": "0dadf6c7"
+  },
+  "/en/migration/live-demos-489": {
+    "__comp": "17896441",
+    "content": "f6e9adfe"
+  },
+  "/en/migration/variant-table-85a": {
+    "__comp": "17896441",
+    "content": "f827d805"
+  },
+  "/en/-119": {
+    "__comp": "17896441",
+    "content": "0e384e19"
+  }
+}
