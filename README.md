@@ -1,4 +1,4 @@
-# tw-grid — `topvel-grid-monorepo`
+# topgrid
 
 TanStack Table v8 기반 React 19 / TypeScript grid 라이브러리. **MIT 4 패키지** + **Pro EULA 8 패키지** + **메타 facade 1 패키지** 구성.
 
@@ -112,9 +112,9 @@ export function App() {
 
 ---
 
-## Architecture Overview — Wave 1~5 (2026-05-17)
+## Architecture Overview
 
-본 모노레포는 5-wave refactor cycle 결과물입니다. 핵심 결정 (16 ADR + 잔존 4 + Phase 6) 은 `D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-REFACTOR-2026-05-17-decisions.md`.
+패키지 layering · 라이선스 게이트 · 레지스트리 와이어링 · 번들 예산 · cross-package 경계의 전체 설계는 [`docs/internal/architecture.md`](./docs/internal/architecture.md) 참조.
 
 ### 1. Renderer Registry Wiring (ADR-002 + ADR-018)
 
@@ -158,10 +158,6 @@ export function App() {
 
 10여 곳에 흩어진 row click handler 시그니처를 `(row: Row<TData>, event: React.MouseEvent) => void` 로 통일.
 
-### 6. tw-framework-front Integration (ADR-004 + ADR-005 + ADR-008)
-
-`tw-framework-front` 5 grid variant 가 monorepo legacy alias (BaseGrid / VirtualGrid / ColumnPinGrid / TreeGrid) 로 교체 + `excelExport.ts` → `@topgrid/grid-export` 위임 + `types/tomis/grid.ts` → grid-core re-export 단순화.
-
 ---
 
 ## Deprecation Paths
@@ -197,7 +193,7 @@ export function App() {
 | `react-datepicker` | `^8.3.0` | grid-features 전용 | 필수 |
 | `@topgrid/grid-core` | `workspace:*` | 4 패키지 peer (grid-renderers / grid-pro-tracking / grid-pro-merging / grid-pro-master) | 필수 |
 
-상세 (peer 이력 + Wave 별 변경분 + drift 해소) → `D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/MOD-GRID-00-decisions.md` (Amendment 섹션).
+상세 (peer 매트릭스 + 빌드/배포 인프라) → [`docs/internal/modules/mod-grid-00.md`](./docs/internal/modules/mod-grid-00.md).
 
 ---
 
@@ -245,15 +241,13 @@ pnpm changeset publish      # npm publish (Pro 패키지는 access=restricted)
 
 ### 패키지 추가 시 (peer 매트릭스 의무)
 
-신규 패키지 추가 시 `MOD-GRID-00-decisions.md` Amendment ADR-008 매트릭스를 참조해야 합니다. peer 범위 자율 결정 금지 (G-003 1차 drift 사례).
+신규 패키지 추가 시 [`docs/internal/modules/mod-grid-00.md`](./docs/internal/modules/mod-grid-00.md) 의 peer 매트릭스를 참조해야 합니다. peer 범위 자율 결정 금지.
 
 ---
 
 ## Contributing
 
-- **ADR Ledger**: `D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/ID-LEDGER.md` — 신규 ADR / Constraint / Goal ID 발급 전 조회 의무 (재사용 금지, MAIL-12 N=1 사례 반영).
-- **Constraints**: `D:/project/topvel_project/TOMIS/.claude/tw-grid/constraints/` — POL-* / C-1 ~ C-36 active.
-- **Rubric**: `D:/project/topvel_project/TOMIS/.claude/tw-grid/rubric/v1.0.6/` — Coverage Verifier 산식.
+- **Architecture**: 패키지 layering · 라이선스 게이트 · 설계 원칙은 [`docs/internal/architecture.md`](./docs/internal/architecture.md), 모듈별 상세는 [`docs/internal/modules/`](./docs/internal/modules/) 참조.
 - **Decisions**: 모든 architecture 결정은 ADR 형식 (대안 2개 이상 + Trade-off + 실행 조건 + 결과 체크리스트) 의무.
 
 ---
@@ -265,7 +259,8 @@ pnpm changeset publish      # npm publish (Pro 패키지는 access=restricted)
 | Storybook (개발 중) | `apps/docs/` — `pnpm -F docs build-storybook` |
 | Visual regression 절차 | `tests/visual/README.md` |
 | 패키지 별 API | `packages/{name}/README.md` |
-| ADR 결정 본문 | `D:/project/topvel_project/TOMIS/.claude/tw-grid/decisions/` |
+| 아키텍처 · 설계 결정 | [`docs/internal/architecture.md`](./docs/internal/architecture.md) + [`docs/internal/modules/`](./docs/internal/modules/) |
+| API 레퍼런스 · 시작 가이드 | [`docs/internal/guides/`](./docs/internal/guides/) |
 
 > 외부 문서 사이트 (`grid.tomis.dev`) 는 별도 cycle 에서 publish 예정.
 

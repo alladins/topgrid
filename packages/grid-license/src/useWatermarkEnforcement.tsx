@@ -32,7 +32,7 @@ function mountPortal(): void {
   if (typeof document === 'undefined') return;
   if (_portalContainer !== null) return; // already mounted
   _portalContainer = document.createElement('div');
-  _portalContainer.setAttribute('data-tomis-watermark', '');
+  _portalContainer.setAttribute('data-topgrid-watermark', '');
   document.body.appendChild(_portalContainer);
   _portalRoot = createRoot(_portalContainer);
   renderWatermark();
