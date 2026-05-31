@@ -4,7 +4,7 @@ Pro license validation runtime
 
 ## Overview
 
-`@topgrid/grid-license` is the runtime license validation module for TOMIS Grid Pro packages.
+`@topgrid/grid-license` is the runtime license validation module for topgrid Pro packages.
 All Pro packages (`@topgrid/grid-pro-*`) depend on this module to verify a valid license at runtime.
 
 > **Note**: This is an internal package. It is not published to npm separately. You do not need to install it directly — Pro packages include it as a dependency.

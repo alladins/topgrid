@@ -1,6 +1,6 @@
 // @topgrid/grid-renderers — EditableCell (MOD-GRID-05 / G-003, G-005)
 // Inline editable cell: text / number / date / select / textarea (5 editType).
-// Absorbs tw-framework-front EditableGrid.tsx L75-129 inline cell JSX.
+// Absorbs legacy EditableGrid inline cell JSX.
 //
 // @see Spec MOD-GRID-05/G-003 Section 2.1 / 2.2 / 2.3
 // @see ADR-MOD-GRID-05-004 (G-005) — initialDraft prop for keystroke-triggered editing
@@ -17,7 +17,7 @@ import {
 /**
  * Edit-mode input type — controls which native element is rendered.
  *
- * Widened (additive) from the L0 tw-framework-front `EditType`
+ * Widened (additive) from the legacy `EditType`
  * (`'text' | 'select' | 'date' | 'number'`) by adding `'textarea'` for
  * multi-line input. The L0 four members are preserved (subset).
  *

@@ -2,7 +2,7 @@
 
 Pro: DataMap (foreign key display)
 
-Provides DataMap support for TOMIS Grid — map raw code values to human-readable labels, support hierarchical (cascading) select editors, and async remote data lookup.
+Provides DataMap support for topgrid — map raw code values to human-readable labels, support hierarchical (cascading) select editors, and async remote data lookup.
 
 ## Installation
 

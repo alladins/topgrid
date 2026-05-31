@@ -1,7 +1,7 @@
 /**
  * `BaseGrid` — DEPRECATED alias of `<Grid>` (G-005 D11 props mapping).
  *
- * AS-IS `tw-framework-front/src/components/tomis/Grid/BaseGrid.tsx` (291L) 의
+ * AS-IS legacy `BaseGrid` 의
  * sort+filter ALWAYS wiring + pagination conditional 패턴을 유지.
  *
  * @deprecated 1 minor 버전 후 다음 major 에서 제거 (C-23). `<Grid>` 직접 사용 권장.

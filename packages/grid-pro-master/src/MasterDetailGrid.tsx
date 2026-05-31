@@ -234,7 +234,7 @@ function MasterDetailGridInner<TData>(
       addRow: (seed?: Partial<TData>) => {
         if (typeof process !== 'undefined' && process?.env?.NODE_ENV !== 'production') {
           if (props.onAddRow === undefined) {
-            console.warn('[tomis/grid-pro-master] addRow called but onAddRow prop is not provided.');
+            console.warn('[topgrid/grid-pro-master] addRow called but onAddRow prop is not provided.');
           }
         }
         props.onAddRow?.(seed);
@@ -242,7 +242,7 @@ function MasterDetailGridInner<TData>(
       deleteRow: (rowId: string | number) => {
         if (typeof process !== 'undefined' && process?.env?.NODE_ENV !== 'production') {
           if (props.onDeleteRow === undefined) {
-            console.warn('[tomis/grid-pro-master] deleteRow called but onDeleteRow prop is not provided.');
+            console.warn('[topgrid/grid-pro-master] deleteRow called but onDeleteRow prop is not provided.');
           }
         }
         props.onDeleteRow?.(rowId);
@@ -250,7 +250,7 @@ function MasterDetailGridInner<TData>(
       updateRow: (rowId: string | number, patch: Partial<TData>) => {
         if (typeof process !== 'undefined' && process?.env?.NODE_ENV !== 'production') {
           if (props.onUpdateRow === undefined) {
-            console.warn('[tomis/grid-pro-master] updateRow called but onUpdateRow prop is not provided.');
+            console.warn('[topgrid/grid-pro-master] updateRow called but onUpdateRow prop is not provided.');
           }
         }
         props.onUpdateRow?.(rowId, patch);

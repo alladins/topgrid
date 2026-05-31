@@ -2,7 +2,7 @@
 
 Pro: Cell Range Selection, Drag-fill, Clipboard
 
-Provides Excel-like cell range selection, drag-fill (auto-fill series), and clipboard copy/paste for TOMIS Grid.
+Provides Excel-like cell range selection, drag-fill (auto-fill series), and clipboard copy/paste for topgrid.
 
 ## Installation
 

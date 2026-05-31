@@ -1,7 +1,7 @@
 /**
  * `VirtualGrid` — DEPRECATED alias of `<Grid enableVirtualization>` (G-005 D11).
  *
- * AS-IS `tw-framework-front/src/components/tomis/Grid/VirtualGrid.tsx` 의
+ * AS-IS legacy `VirtualGrid` 의
  * `BaseGridProps + rowHeight + containerHeight` 시그니처 + defaults `40/500` 보존
  * (★ Grid `estimateSize=36`/`virtualScrollHeight=400` 와 다른 default — C-13 외관 회귀 방지).
  *

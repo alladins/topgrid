@@ -1,7 +1,7 @@
 /**
  * `ColumnPinGrid` — DEPRECATED alias of `<Grid enableColumnPinning>` (G-005 D11).
  *
- * AS-IS `tw-framework-front/src/components/tomis/Grid/ColumnPinGrid.tsx` 의
+ * AS-IS legacy `ColumnPinGrid` 의
  * `pinLeft: string[] + pinRight: string[] + sort only` (filter 미wiring) 보존.
  *
  * @deprecated 1 minor 버전 후 다음 major 에서 제거 (C-23). `<Grid enableColumnPinning>` 직접 사용 권장.

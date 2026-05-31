@@ -2,7 +2,7 @@
 
 Pro: Cell Merging (rowSpan) — column.mergeRows API + automatic rowSpan calculation
 
-Provides automatic cell merging for TOMIS Grid — detect consecutive cells with identical values and apply `rowSpan` so they visually merge into a single cell.
+Provides automatic cell merging for topgrid — detect consecutive cells with identical values and apply `rowSpan` so they visually merge into a single cell.
 
 ## Installation
 

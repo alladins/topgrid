@@ -3,13 +3,13 @@
  *
  * Wraps `useReactTable` + `MultiRowHeader` + tbody + pagination into a single
  * self-contained component, preserving the AS-IS GroupedHeaderGrid API surface
- * from tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx (L0).
+ * from the legacy GroupedHeaderGrid (L0).
  *
  * Behaviour and classNames are ported verbatim from L0 (C-17 visual preservation).
  * `verifyOrWarn` is intentionally absent here — it runs via index.ts side-effect.
  *
  * D3 decision: inline type aliases for GridPaginationOptions / GridRowSelectionOptions
- * to avoid reverse dependency on tw-framework-front.
+ * to avoid reverse dependency on the legacy source.
  *
  * @see G-003-spec.md Section 6.2 — legacy/GroupedHeaderGrid structure
  * @see C-6 — 1 minor version deprecation alias (breaking: false)

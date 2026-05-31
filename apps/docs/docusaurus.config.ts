@@ -3,9 +3,9 @@ import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
-  title: 'TOMIS Grid',
-  tagline: 'Headless React grid for TOMIS',
-  url: 'https://grid.tomis.dev',
+  title: 'topgrid',
+  tagline: 'Headless React grid',
+  url: 'https://grid.topgrid.dev',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',

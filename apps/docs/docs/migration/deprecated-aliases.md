@@ -154,7 +154,7 @@ import { GroupedHeaderGrid } from '@topgrid/grid-pro-header';
 <GroupedHeaderGrid data={data} columns={columnGroups} />
 ```
 
-> **참고**: `tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx`는
+> **참고**: 레거시 `GroupedHeaderGrid.tsx`는
 > 이미 `@topgrid/grid-pro-header`에서 re-export 중이므로 기존 상대 경로 import도
 > 올바른 구현을 사용한다.
 
@@ -210,8 +210,8 @@ import { EditableGrid } from '@topgrid/grid-core'; // TypeScript 에러
 import { EditableCell } from '@topgrid/grid-renderers';
 import { useChangeTracking } from '@topgrid/grid-pro-tracking';
 
-// 또는 tw-framework-front 로컬 쉘 import (이전 완료 전까지)
-import { EditableGrid } from '@/components/tomis/Grid/EditableGrid';
+// 또는 레거시 로컬 쉘 import (이전 완료 전까지)
+import { EditableGrid } from '@/components/legacy/Grid/EditableGrid';
 ```
 
 ### ChangeTrackingGrid
@@ -220,8 +220,8 @@ import { EditableGrid } from '@/components/tomis/Grid/EditableGrid';
 // ❌ 잘못된 방법 — grid-core에 alias 없음
 import { ChangeTrackingGrid } from '@topgrid/grid-core'; // TypeScript 에러
 
-// ✅ 올바른 방법 — tw-framework-front 로컬 compat shim (이미 완전 이전)
-import { ChangeTrackingGrid } from '@/components/tomis/Grid/ChangeTrackingGrid';
+// ✅ 올바른 방법 — 레거시 로컬 compat shim (이미 완전 이전)
+import { ChangeTrackingGrid } from '@/components/legacy/Grid/ChangeTrackingGrid';
 
 // 또는 hook 직접 사용
 import { useChangeTracking } from '@topgrid/grid-pro-tracking';
@@ -233,8 +233,8 @@ import { useChangeTracking } from '@topgrid/grid-pro-tracking';
 // ❌ 잘못된 방법 — grid-core에 alias 없음
 import { RangeSelectGrid } from '@topgrid/grid-core'; // TypeScript 에러
 
-// ✅ 올바른 방법 — tw-framework-front 로컬 wrapper (이미 완전 이전)
-import { RangeSelectGrid } from '@/components/tomis/Grid/RangeSelectGrid';
+// ✅ 올바른 방법 — 레거시 로컬 wrapper (이미 완전 이전)
+import { RangeSelectGrid } from '@/components/legacy/Grid/RangeSelectGrid';
 
 // 또는 pro 패키지 직접 사용
 import { RangeSelectGrid, useCellRange } from '@topgrid/grid-pro-range';

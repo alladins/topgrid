@@ -2,7 +2,7 @@
 
 Pro: ChangeTracking, Mapping, Validator
 
-Provides change tracking (dirty state) for TOMIS Grid — track edited cells and rows, build a changeset for server submission, and validate changes before commit.
+Provides change tracking (dirty state) for topgrid — track edited cells and rows, build a changeset for server submission, and validate changes before commit.
 
 ## Installation
 

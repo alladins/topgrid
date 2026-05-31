@@ -55,7 +55,7 @@ declare const process: { env: { NODE_ENV?: string } } | undefined;
  */
 function devWarn(msg: string): void {
   if (typeof process !== 'undefined' && process?.env?.NODE_ENV !== 'production') {
-    console.warn(`[tomis/grid-core] ${msg}`);
+    console.warn(`[topgrid/grid-core] ${msg}`);
   }
 }
 

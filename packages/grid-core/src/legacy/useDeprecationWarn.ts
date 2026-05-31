@@ -4,7 +4,7 @@
  * @remarks
  * - dev mode 1회 (`useRef` guard) — React 19 StrictMode 2회 effect + HMR re-mount 시도 폭주 차단.
  * - production silent (`process.env.NODE_ENV === 'production'` skip).
- * - 메시지 형식: `[tomis/grid-core] {name} is deprecated, migrate to <Grid>. See migration guide.`
+ * - 메시지 형식: `[topgrid/grid-core] {name} is deprecated, migrate to <Grid>. See migration guide.`
  * - `useGridImperativeHandle.ts` L41 dev guard 패턴과 일관 (single occurrence promotion 보류 — 본
  *   파일이 5 alias 공통 caller 가 되어 G-005 retro 시점 helper promotion 검토).
  *
@@ -24,7 +24,7 @@ export function useDeprecationWarn(name: string): void {
     if (typeof process === 'undefined' || process?.env?.NODE_ENV === 'production') return;
     fired.current = true;
     console.warn(
-      `[tomis/grid-core] ${name} is deprecated, migrate to <Grid>. See migration guide.`,
+      `[topgrid/grid-core] ${name} is deprecated, migrate to <Grid>. See migration guide.`,
     );
     // mount 시 1회 (deps 의도적 비움) — name 고정 + ref guard 로 StrictMode/HMR 호환.
     // eslint-disable-next-line react-hooks/exhaustive-deps

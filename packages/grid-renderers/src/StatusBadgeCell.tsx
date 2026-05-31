@@ -3,7 +3,7 @@ import type { JSX } from 'react';
 /**
  * Props for {@link StatusBadgeCell}.
  *
- * Absorbs tw-framework-front BadgeCell.tsx (L0 26 lines) with rename
+ * Absorbs legacy BadgeCell with rename
  * (BadgeCell → StatusBadgeCell — spec D1). Prop signature fully preserved.
  *
  * @see Spec MOD-GRID-05/G-002 Section 2.1
@@ -33,7 +33,7 @@ const DEFAULT_COLORS: Record<string, string> = {
  * Status badge cell — renders {@link value} as a Tailwind rounded-full chip
  * coloured by {@link colorMap} (or a 7-state default).
  *
- * Equivalent to the legacy `BadgeCell` exported via `tw-framework-front`;
+ * Equivalent to the legacy `BadgeCell`;
  * the shim there re-exports this component under the legacy name (D1 alias).
  */
 export function StatusBadgeCell({

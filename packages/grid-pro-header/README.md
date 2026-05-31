@@ -2,7 +2,7 @@
 
 Pro: Multi-row Header (Column Groups)
 
-Provides multi-row header (column group) support for TOMIS Grid — merge columns under shared group headers, with full TanStack Table column group API integration.
+Provides multi-row header (column group) support for topgrid — merge columns under shared group headers, with full TanStack Table column group API integration.
 
 ## Installation
 

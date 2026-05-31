@@ -3,7 +3,7 @@ import type { JSX, MouseEvent } from 'react';
 /**
  * Props for {@link LinkCell}.
  *
- * Absorbs tw-framework-front LinkCell.tsx (L0 16 lines).
+ * Absorbs legacy LinkCell.
  * - `onClick` weakened from required to optional (additive — Section 2.2 R2 risk-bound).
  * - `href` added (additive — AC-002 href|onClick union).
  * - `value` added as preferred prop; `label` retained as deprecated alias (ADR-014 amendment).

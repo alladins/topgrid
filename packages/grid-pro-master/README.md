@@ -2,7 +2,7 @@
 
 Pro: Master-Detail, TreeGrid, Context Menu
 
-Provides master-detail row expansion, tree grid, and right-click context menu for TOMIS Grid — expand rows to reveal nested detail content, display hierarchical tree data, and add context actions to rows.
+Provides master-detail row expansion, tree grid, and right-click context menu for topgrid — expand rows to reveal nested detail content, display hierarchical tree data, and add context actions to rows.
 
 ## Installation
 

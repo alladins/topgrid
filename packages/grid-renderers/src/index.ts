@@ -3,7 +3,6 @@
 // MOD-GRID-05 / G-002: StatusBadgeCell + LinkCell + ButtonCell + CheckCell + IconCell
 //                      + TagCell + AvatarCell + ProgressCell.
 // MOD-GRID-05 / G-003: EditableCell + rendererRegistry + CellClassNameCallback type.
-// Spec: D:/project/topvel_project/TOMIS/.claude/tw-grid/artifacts/MOD-GRID-05/renderer/G-003-spec.md
 
 export { TextCell, type TextCellProps } from './TextCell.js';
 export { NumberCell, type NumberCellProps } from './NumberCell.js';

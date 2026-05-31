@@ -207,7 +207,7 @@ export type GridColumnResizeMode = 'onChange' | 'onEnd';
  * - `'multi'`: 다중 선택 — 헤더 체크박스(전체 선택) + 행별 체크박스.
  * - `'none'`: 선택 비활성 — 체크박스 컬럼 합성 없음.
  *
- * BaseGrid `GridRowSelectionOptions.mode` 와 호환 (tw-framework-front 마이그레이션 alias 대응).
+ * BaseGrid `GridRowSelectionOptions.mode` 와 호환 (legacy alias 대응).
  */
 export type RowSelectionMode = 'single' | 'multi' | 'none';
 
@@ -760,7 +760,7 @@ export interface GridProps<TData> {
 /**
  * `BaseGridProps<TData>` — G-005 legacy alias 5종 공통 props 시그니처 (D11).
  *
- * AS-IS `tw-framework-front/src/types/tomis/grid.ts:16-26` 와 시그니처 동일 — monorepo 내
+ * AS-IS legacy grid 타입과 시그니처 동일 — 패키지 내
  * alias 호환을 위해 신규 정의 (외부 의존 0). 본 interface 는 `legacy/BaseGrid.tsx` +
  * `legacy/VirtualGrid.tsx` (extends) 에서 사용.
  *

@@ -3,7 +3,7 @@ import type { ChangeEvent, JSX, MouseEvent } from 'react';
 /**
  * Props for {@link CheckCell}.
  *
- * Absorbs tw-framework-front CheckCell.tsx (L0 22 lines). Markup preserved:
+ * Absorbs legacy CheckCell. Markup preserved:
  * native `<input type="checkbox">` (NOT an icon SVG — spec D9, AC-007).
  *
  * @see Spec MOD-GRID-05/G-002 Section 2.4

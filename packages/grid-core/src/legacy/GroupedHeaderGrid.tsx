@@ -1,7 +1,7 @@
 /**
  * `GroupedHeaderGrid` — DEPRECATED alias (G-005 D11). MOD-GRID-14 enhancement 후속 (D6).
  *
- * AS-IS `tw-framework-front/src/components/tomis/Grid/GroupedHeaderGrid.tsx` 의
+ * AS-IS legacy `GroupedHeaderGrid` 의
  * TanStack 표준 그룹 ColumnDef hierarchy + sort only wiring 보존.
  *
  * @remarks
