@@ -39,30 +39,43 @@ Contact [sales@platree.com](mailto:sales@platree.com) to obtain a license key.
 ```tsx
 import { setLicenseKey } from '@topgrid/grid-license';
 import { MultiRowHeader, createColumnGroup } from '@topgrid/grid-pro-header';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 setLicenseKey('YOUR-LICENSE-KEY');
 
-// Define column groups
-const columnGroups = createColumnGroup([
-  {
+// `createColumnGroup` takes a single config object and returns one
+// `GroupColumnDef`. Call it once per group and collect the results.
+const columns = [
+  createColumnGroup({
     header: 'Personal Info',
     columns: [
       { accessorKey: 'firstName', header: 'First Name' },
       { accessorKey: 'lastName', header: 'Last Name' },
     ],
-  },
-  {
+  }),
+  createColumnGroup({
     header: 'Contact',
     columns: [
       { accessorKey: 'email', header: 'Email' },
       { accessorKey: 'phone', header: 'Phone' },
     ],
-  },
-]);
+  }),
+];
 
 export function GroupedGrid({ data }) {
+  // `MultiRowHeader` renders a multi-row `<thead>` from a TanStack table
+  // instance — pass the instance via the single `table` prop.
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   return (
-    <MultiRowHeader columns={columnGroups} data={data} />
+    <table>
+      <MultiRowHeader table={table} />
+      {/* render <tbody> from table.getRowModel() as usual */}
+    </table>
   );
 }
 ```

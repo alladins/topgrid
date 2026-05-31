@@ -11,7 +11,7 @@
  *   - getSortedRowModel()   (enabled via enableGroupSort — G-004)
  *   - built-in aggregationFns: sum, avg(→mean), min, max, count
  *   - synthetic footer rows via GroupRow/FooterRow components (G-002)
- *   - optional row virtualization via @tanstack/react-virtual (G-002)
+ *   - row virtualization via @tanstack/react-virtual (required peer — statically imported) (G-002)
  *   - GroupPanel drag-and-drop grouping bar (G-004)
  *
  * NOT an extension of <Grid> — this is a self-contained component (spec Section 2).
@@ -62,7 +62,9 @@ type RowDescriptor<TData extends object> =
  *
  * Stack-based parent tracking (spec Section 11.4 fallback):
  * `getParentRow()` does not exist in TanStack v8. Instead, we maintain a
- * `groupStack` indexed by depth to track which group header is currently open.
+ * depth-comparison pop stack: before pushing a group row we pop any entries
+ * whose `depth >= row.depth`, so the stack top is always the open ancestor
+ * group header. (It is not an array indexed by depth.)
  *
  * Footer insertion trigger: a leaf row is the last in its group when:
  *   nextRow.depth < currentRow.depth  OR  no nextRow exists.
@@ -176,7 +178,9 @@ export function AggregationGrid<TData extends object>({
   const expandedState: ExpandedState = expanded === false ? {} : expanded;
 
   // EC-005: groupingState must be useState-backed so chip X click (uncontrolled mode)
-  // causes a re-render. Initialised from the `grouping` prop (which may change externally).
+  // causes a re-render. `useState(grouping)` seeds the initial value ONLY — there is no
+  // prop→state sync effect, so later changes to the `grouping` prop do not re-initialise
+  // this state. External grouping updates flow via `onGroupingChange` / the Group Panel.
   const [groupingState, setGroupingState] = useState<GroupingState>(grouping);
 
   // G-004: uncontrolled/controlled sorting state (D5, EC-007)

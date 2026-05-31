@@ -7,8 +7,9 @@
 - 패키지: `@topgrid/grid-pro-merging`
 - 분류: **Pro** (상용). 라이선스: `SEE LICENSE IN EULA`.
 - 의존: `@tanstack/react-table` / `react` / `react-dom` / `@topgrid/grid-core` 는
-  peer dependency. `@tanstack/react-virtual` 은 **optional peer**(가상화 미사용 시
-  미설치 환경에서도 동작). `@topgrid/grid-license` 는 런타임 라이선스 연동용 dependency.
+  peer dependency. `@tanstack/react-virtual` 도 **required peer** — `MergingGrid` 가
+  `useVirtualizer` 를 정적 import + 무조건 호출(hook 순서 보장)하므로 가상화 미사용
+  시에도 설치가 필요하다(§5.6). `@topgrid/grid-license` 는 런타임 라이선스 연동용 dependency.
 - TanStack v8 자체는 rowSpan 자동 계산을 제공하지 않으므로, 전체 데이터를 한 번에
   스캔하는 `computeMergeSpans` 엔진을 두어 rowSpan 을 계산한다.
 
@@ -238,10 +239,14 @@ visible + overscan 행만 `<tr>` 렌더링한다.
 별도 의존성으로 추가하는 것은 TanStack 내부 계산을 중복 추적하는 anti-pattern 이라
 배제했다.
 
-### 5.6 가상화 의존성 — optional peer
-`@tanstack/react-virtual` 은 `enableVirtualization=true` 일 때만 필요하므로 optional
-peerDependency 로 둔다(기본값 false → 미설치 환경에서도 패키지 동작). dependency 로
-넣으면 이중 번들이 발생하므로 peer 정책을 유지한다.
+### 5.6 가상화 의존성 — required peer
+`MergingGrid` 는 hook 순서 보장을 위해 `useVirtualizer` 를 모듈 최상위에서 정적
+import 하고 `enableVirtualization=false` 일 때도 `count: 0` 으로 **무조건 호출**한다
+(§4.2). 따라서 `@tanstack/react-virtual` 미설치 시 `enableVirtualization=false` 라도
+모듈 로드 자체가 실패하므로 **required peerDependency** 로 둔다. 진짜 optional 로
+만들려면 가상화 본문을 동적 import 로 분리해야 하나, hook 분리에 따르는 Suspense
+경계 도입이 동작을 바꾸므로 현 범위 밖이다. dependency 가 아닌 peer 로 두는 이유는
+이중 번들 회피다.
 
 ### 5.7 가상화 rowSpan 경계 한계 (문서화된 제약)
 flow 레이아웃 가상화에서 스크롤 아웃된 `<tr>` 은 DOM 에서 제거된다. rowSpan 시작
@@ -316,7 +321,7 @@ const hierarchicalColumns: MergingColumnDef<EmployeeRow>[] = [
   data={largeData}              // 1000행+
   columns={hierarchicalColumns}
   enableMerging
-  enableVirtualization          // optional peer @tanstack/react-virtual 필요
+  enableVirtualization          // required peer @tanstack/react-virtual 사용
   estimatedRowHeight={40}
   virtualOverscan={10}          // rowSpan 경계 완충 (§5.7)
 />;

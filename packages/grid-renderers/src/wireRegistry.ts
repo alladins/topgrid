@@ -1,5 +1,5 @@
 // @topgrid/grid-renderers — wireRegistry (ADR-MOD-GRID-REFACTOR-2026-05-17-002)
-// Side-effect wiring: registers 6 cell adapters into @topgrid/grid-core's
+// Side-effect wiring: registers 8 cell adapters into @topgrid/grid-core's
 // defaultRendererRegistry so `createColumns()` dispatches `type` → real cell.
 //
 // Wired slots (8): text / number / date / dateTime (bespoke +format) / badge / link (bespoke +null) / tag / progress.

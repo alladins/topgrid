@@ -32,6 +32,7 @@ function mountPortal(): void {
   if (typeof document === 'undefined') return;
   if (_portalContainer !== null) return; // already mounted
   _portalContainer = document.createElement('div');
+  // DOM marker for the singleton watermark portal container (one per document).
   _portalContainer.setAttribute('data-topgrid-watermark', '');
   document.body.appendChild(_portalContainer);
   _portalRoot = createRoot(_portalContainer);

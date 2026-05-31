@@ -14,11 +14,13 @@ export { useColumnDrag } from './column-drag/useColumnDrag';
 export { DropIndicator } from './column-drag/DropIndicator';
 /** @deprecated Moved to `@topgrid/grid-core` (ADR-009). Will be removed in next major. */
 export { useColumnOrderPersist } from './column-drag/useColumnOrderPersist';
+/** @deprecated Moved to `@topgrid/grid-core` (ADR-009). Will be removed in next major. */
 export type {
   UseColumnDragProps,
   UseColumnDragReturn,
   DragThProps,
 } from './column-drag/types';
+/** @deprecated Moved to `@topgrid/grid-core` (ADR-009). Will be removed in next major. */
 export type { UseColumnOrderPersistProps } from './column-drag/useColumnOrderPersist';
 
 // MOD-GRID-08: multi-sort
@@ -27,6 +29,7 @@ export { SortBadge } from './multi-sort/SortBadge';
 export { useMultiSort } from './multi-sort/useMultiSort';
 // ADR-009: SortClearButton + SortClearButtonProps moved to @topgrid/grid-core.
 // grid-features re-exports as deprecation alias (1 minor cycle).
+/** @deprecated Moved to `@topgrid/grid-core` (ADR-009). Will be removed in next major. */
 export { SortClearButton } from './multi-sort/SortClearButton';
 export type {
   UseMultiSortOptions,

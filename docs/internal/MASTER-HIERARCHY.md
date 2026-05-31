@@ -70,7 +70,7 @@
 |------|------|------------|----------|
 | `react` / `react-dom` | `^18 \|\| ^19` | 전 패키지 | 필수 |
 | `@tanstack/react-table` | `^8` | grid-license 외 전 패키지 | 필수 |
-| `@tanstack/react-virtual` | `^3` | grid-core 필수, 일부 패키지 | 대부분 optional |
+| `@tanstack/react-virtual` | `^3` | grid-core·grid-pro-merging 필수, 일부 패키지 | 패키지별 상이 |
 | `xlsx` | `^0.18.5` | grid-export(**필수**), meta(optional) | 패키지별 상이 |
 | `jspdf` / `jspdf-autotable` | `^2.5` / `^3.5` | grid-export, meta | optional |
 | `date-fns` / `react-datepicker` | `^4.1` / `^8.3` | grid-features 전용 | 필수 |
@@ -525,7 +525,7 @@
 | G4 | `packages/grid-features/src/index.ts:30` `SortClearButton` 재export | **G-stale**(deprecated 태그 비대칭 — G3 동형) | `SortClearButton` 컴포넌트 재export 만 `@deprecated` 누락 — 같은 블록 `SortBadge`(L25-26)·`SortBadgeProps`(L35-36)·`SortClearButtonProps`(L37-38)는 모두 태그, L28-29 주석·모듈 문서 §6 도 deprecation 별칭 명시함에도 컴포넌트 export 자신만 누락. 검증 가능 사실: 소스/문서 비대칭 | **gap(경미)** — 태그 보강 권장 |
 | G-deps-1 | `packages/grid-features/package.json` | **G-deps**(peer↔dependency 불일치) | `@topgrid/grid-core` 를 `workspace:*` **dependency** 로 선언 — §1.2/§1.3 은 renderers/features/export 가 grid-core 를 **peer** 로 둔다고 기술. features 는 peer 아닌 **hard dependency**(검증 가능 사실: `dependencies` 블록에 위치). 의도/타 패키지 일치 여부는 단정 않음 → §1.2 주의 각주로 반영 | **gap(manifest drift)** — 동작 영향 없음 |
 | G-deps-2 | `packages/grid-pro-merging/package.json` + `src/` | **G-deps**(미사용 peer) | `@topgrid/grid-core` 를 required peer 로 선언했으나 src 어디서도 import 하지 않음 — `MergingGrid` 는 `@tanstack/react-table` 로 자체 table 구성(mod-grid-10 `ChangeTrackingGrid` 의 `<Grid>` peer 합성과 대비). peer 선언 ↔ 실사용 불일치(검증 가능 사실: src import 0건) → §1.2 주의 각주로 반영 | **gap(manifest drift)** — 동작 영향 없음 |
-| G-vimport | `packages/grid-pro-merging/src/MergingGrid.tsx:9` | **G**(optional peer 정적 import) | `@tanstack/react-virtual` 은 `package.json` 에서 `optional:true` peer 이나 `MergingGrid.tsx:9` 가 `useVirtualizer` 를 **정적 top-level import** + L97 무조건 호출 → 미설치 환경에서는 `enableVirtualization=false` 라도 **모듈 로드 시 import 해소 실패**. mod-grid-13 §5.6/L11 의 "미설치 환경에서도 동작" 서술과 충돌(검증 가능 사실: 정적 import + 무조건 호출. 원인 단정 않음) | **gap — 동작 영향 있음**(§5.3 의 유일 실동작 이슈) |
+| G-vimport | `grid-pro-merging/src/MergingGrid.tsx:9` **+ `grid-pro-agg/src/AggregationGrid.tsx:37`** | **G**(optional peer 정적 import) | `@tanstack/react-virtual` 을 `package.json` 에서 `optional:true` peer 로 선언하나 두 패키지 모두 `useVirtualizer` 를 **정적 top-level import** + 무조건 호출(merging L97 / agg L294) → 미설치 환경에서는 `enableVirtualization=false` 라도 **모듈 로드 시 import 해소 실패**. (agg 는 본 감사가 처음 놓쳤다가 ①+② 정리 중 발견 — 동일 처방.) 검증 가능 사실: 정적 import + 무조건 호출 | **gap — 동작 영향 있음**(§5.3 유일 실동작 이슈군; **2026-06 두 패키지 모두 required peer 승격으로 해소** — §5.3) |
 | G-xlsx | `packages/grid/package.json` `peerDependencies.xlsx` | **G-stale**(manifest drift) | meta 가 `xlsx` 를 `^0.18.0` 로 선언하는데 §1.3·mod-grid-00 peer 매트릭스 SSoT 는 `^0.18.5`(meta optional)로 기술 → 두 값 불일치. SSoT 의 "실측보다 넓게 선언" 허용이 의도적 광역화일 수 있으나(원인 단정 않음), SSoT 명시 값과 meta 소스 값이 다르다는 점은 사실 | **gap(경미)** — 표기 정합 권장 |
 | G-selopt | `packages/grid-pro-datamap/src/types.ts:52-58` `DataMapColumnDef.selectOptions` | **G-stale**(deprecated 자리표시·주석) | `selectOptions?: string[]` 가 `@deprecated` 로 **선언만** 되고 소비 로직이 소스에 부재(types.ts 주석은 "createDataMap 내부 변환 구현" 이라 적었으나 `createDataMap`/`DataMapCell` 어디에도 참조 없음). 검증 가능 사실: 패키지 전체 `selectOptions` 소비처 0건. 원인(미구현 deprecated 자리표시)은 *유력*하나 단정 않음 | **gap(경미)** — 주석/필드 정리 권장 |
 | G-readme14 | `packages/grid-pro-header/README.md` L46·L65 | **G-stale**(README 예시) | `createColumnGroup([{...},{...}])`(배열 인자) + `<MultiRowHeader columns={...} data={...} />` 로 적었으나, 실제 `createColumnGroup` 은 **단일 config 객체** 1개(`createColumnGroup.ts` L44-51)·`MultiRowHeader` 는 **단일 `table` prop** 만(`MultiRowHeader.tsx` L97-102) 받음. mod-grid-14.md §2·§3 및 index.ts/소스 시그니처는 서로 일치, README 만 어긋남(검증 가능 사실) | **gap(경미)** — README 정정 권장 |
@@ -549,10 +549,13 @@
 - **동작 영향 없음(대다수)**: 소스 주석/README/JSDoc 의 stale wording(G1·G2·G-readme14·G-jsdoc16·G-selopt·G-docscss),
   `@deprecated` 태그 비대칭(G3·G4 — shim 파일 자체엔 태그 존재), manifest drift(G-deps-1·G-deps-2·G-xlsx),
   문서 누락(G-wmark), 의도적 임시 비활성(G-typedoc). 전부 public 문서·런타임 동작에 영향을 주지 않으며, 정정/보강만 권장한다.
-- **동작 영향 있음(1건)**: **G-vimport** — `grid-pro-merging` 의 `MergingGrid.tsx:9` 가 optional peer
-  `@tanstack/react-virtual` 을 정적 top-level import 하므로, 해당 peer 미설치 환경에서는 `enableVirtualization=false`
-  라도 모듈 로드 자체가 실패한다. optional peer 계약("미설치 시에도 기본 동작") 위반으로, 동적 import 또는
-  required peer 승격 중 택일이 필요하다.
+- **동작 영향 있음(2건, 모두 해소됨)**: **G-vimport** — `grid-pro-merging` 의 `MergingGrid.tsx:9` **와**
+  `grid-pro-agg` 의 `AggregationGrid.tsx:37`(둘째는 본 감사가 처음 놓쳤다가 ①+② 정리 중 발견) 가 optional peer
+  `@tanstack/react-virtual` 을 정적 top-level import + 무조건 호출하므로, 해당 peer 미설치 환경에서는
+  `enableVirtualization=false` 라도 모듈 로드 자체가 실패했다. optional peer 계약("미설치 시에도 기본 동작") 위반이었다.
+  **2026-06 해소**: 두 패키지 모두 안전 우선(동작 보존)으로 `peerDependenciesMeta` 의 react-virtual optional 을 제거해
+  **required peer 로 승격**, manifest 를 실제 무조건 호출 동작에 맞췄다(동적 import 분리는 Suspense 경계 도입으로
+  동작이 바뀌어 배제). mod-grid-13 §5.6 · mod-grid-15 의존절 도 정정.
 
 브랜딩은 전 패키지 `@topgrid` 단방향 clean(`data-topgrid-watermark` 는 정상 네이밍), 옛 `@tomis` 스코프·`data-tomis` 잔재는
 src 전반에 0건이다(mod-grid-99-a·99-b 확인). "누락처럼 보이는" 나머지 항목(N*)은 모듈 경계·예시 표현·문서화된 한계로,

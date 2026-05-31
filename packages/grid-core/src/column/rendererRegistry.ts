@@ -71,9 +71,9 @@ export const defaultRendererRegistry: RendererRegistry = new Map<TopgridColumnTy
  * L2: AG Grid `components` 주입 패턴 참조 (R-A).
  * `Map.set()` 사용 — `any` 없음 (C-4).
  *
- * ADR-002 의 `@topgrid/grid-renderers/wireRegistry.ts` 가 이 함수로 6 슬롯
- * (text/number/date/dateTime/badge/link) 을 wire 한다. 사용자 커스텀 renderer
- * 도 동일 API 로 덮어쓰기 가능 (마지막 호출이 우선).
+ * ADR-002 의 `@topgrid/grid-renderers/wireRegistry.ts` 가 이 함수로 8 슬롯
+ * (text/number/date/dateTime/badge/link/tag/progress) 을 wire 한다. 사용자 커스텀
+ * renderer 도 동일 API 로 덮어쓰기 가능 (마지막 호출이 우선).
  *
  * @param type - 등록할 `TopgridColumnType`
  * @param fn - cell renderer 함수

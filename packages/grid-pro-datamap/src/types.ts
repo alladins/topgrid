@@ -52,8 +52,10 @@ export type DataMapColumnDef<TData> = ColumnDef<TData, unknown> & {
   /**
    * 마이그레이션 alias: EditableGrid의 selectOptions 패턴을 column-level로 이관.
    * - 신규 형식: string[] (code 값 목록) — 기존 meta.selectOptions {value,label}[] 와 다름.
-   * - G-001: 타입 선언만. G-002/G-003: createDataMap 내부 변환 구현.
-   * @deprecated F-12-06: 1 minor 유지 후 column.dataMap 으로 완전 이전 (C-6, C-23)
+   * - **타입 선언만 존재하는 미구현 자리표시**: `createDataMap`/`DataMapCell` 어디에도
+   *   소비 로직이 없어(소스 내 참조 0건) 이 필드를 지정해도 런타임 동작이 없다.
+   *   값 매핑이 필요하면 `dataMap` 을 사용한다.
+   * @deprecated F-12-06: 미구현 자리표시. 1 minor 유지 후 column.dataMap 으로 완전 이전 (C-6, C-23)
    */
   selectOptions?: string[];
 };

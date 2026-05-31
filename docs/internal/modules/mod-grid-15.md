@@ -9,8 +9,8 @@ TanStack Table v8의 grouped / expanded / sorted row model을 감싸, 그룹 헤
 - 라이선스: **상용 (SEE LICENSE IN EULA)** — 무료 라이선스 사용 시 워터마크 표시
 - 의존:
   - `@tanstack/react-table` (^8) / `react` / `react-dom` 는 peer dependency
-  - `@tanstack/react-virtual` (^3) 는 **optional** peer dependency
-    (`enableVirtualization` 사용 시에만 필요)
+  - `@tanstack/react-virtual` (^3) 는 **required** peer dependency
+    (소스가 `useVirtualizer` 를 정적 import + 무조건 호출하므로 — merging 과 동일, §G-vimport)
   - `@topgrid/grid-license` 는 런타임 dependency (라이선스 검증·워터마크)
 - 스타일: Tailwind className 만 사용. 인라인 `style` 은 (1) 그룹 행 깊이별 들여쓰기
   width, (2) 가상화 spacer 행 height 등 동적 수치값에만 한정한다.

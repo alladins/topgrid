@@ -135,12 +135,15 @@ export interface ContextMenuItem<TData> {
 
   /**
    * Optional keyboard shortcut hint displayed on the right side of the label.
-   * When the wrapper div has focus and this key is pressed while the menu is open,
-   * the item's `onClick` is triggered (if not disabled).
+   * When the wrapper div has focus and this combination is pressed while the menu
+   * is open, the item's `onClick` is triggered (if not disabled).
    *
-   * Value is a single key string matched against `event.key` (case-insensitive).
+   * Grammar: `"[Modifier+]Key"` where Modifier ∈ {Ctrl, Alt, Shift} (combinable,
+   * e.g. `"Ctrl+Shift+E"`). The key is matched case-insensitively against
+   * `event.key`; modifier flags (`ctrlKey`/`altKey`/`shiftKey`) must match exactly.
+   * Invalid grammar (e.g. `"Ctrl+"`) is ignored (warns in dev).
    *
-   * @example `'E'` for the 'e' key, `'Delete'` for the Delete key
+   * @example `'E'` for the 'e' key, `'Delete'` for the Delete key, `'Ctrl+C'` for Ctrl+C
    */
   shortcut?: string;
 
