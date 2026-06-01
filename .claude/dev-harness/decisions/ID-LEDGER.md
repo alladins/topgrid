@@ -9,7 +9,7 @@
 | C-   | 004 | 제약 (C-001~003 시드됨) |
 | POL- | — | 정책 (POL-TANSTACK 시드됨) |
 | ADR- | 001 | 결정 (없음) |
-| LESS-| 001 | 교훈 (없음) |
+| LESS-| 002 | 교훈 (LESS-001 발급: public-identifier-contains-engine-substring @ MOD-GRID-19) |
 
 ## ADR 목록
 (없음 — 첫 Full 모듈에서 설계 분기 시 ADR-001 부터. trade-off 2+ 명시 의무.)

@@ -3,10 +3,10 @@
   "design": "docs/internal/DEV-HARNESS-DESIGN.md",
   "matrix": "docs/internal/MASTER-HIERARCHY.md",
   "seeded_from": "2026-06 gap audit (MASTER §5.2, 15 gaps)",
-  "counters": { "PAT": 4, "AP": 4, "C": 3, "POL": 1, "ADR": 0, "LESS": 0 },
+  "counters": { "PAT": 4, "AP": 4, "C": 3, "POL": 1, "ADR": 0, "LESS": 1 },
   "modules": {
     "MOD-GRID-18": { "package": "grid-pro-pivot", "tier": "Pro", "weight": "Full", "priority": "P0", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} },
-    "MOD-GRID-19": { "package": "grid-pro-chart", "tier": "Pro", "weight": "Full", "priority": "P0", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {}, "note": "optional chart lib → AP-001 선제검출 실증 대상" },
+    "MOD-GRID-19": { "package": "grid-pro-chart", "tier": "Pro", "weight": "Full", "priority": "P0", "phase": "done", "goals": { "G-1": "done", "G-2": "done", "G-3": "done", "G-4": "done" }, "done_gate": { "lesson": "LESS-001", "matrix_row": true, "index_updated": true }, "metrics": { "reused_patterns": ["PAT-001", "PAT-003", "PAT-004"], "ap_precaught": ["AP-001"], "ap_precaught_kind": "design-stage (no chart-lib surface) — NOT a verify-catch; indexed AP-001 gate is vacuous here (0 optional peers), firing guard = chart-lib-name grep proven by negative control (planted echarts import → 1 hit)", "new_lessons": ["LESS-001"], "render_verified": "renderToStaticMarkup: 4 sparkline types + empty/NaN + panel renderChart on/off + unlicensed watermark", "gaps_found": 0, "drift": 0 }, "note": "dev-harness 루프 첫 완주. 단일 클린 데이터포인트(설계와 일관) — 컴파운딩 일반화 금지." },
     "MOD-GRID-20": { "package": "grid-sizing", "tier": "MIT", "weight": "Lite", "priority": "P0", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} },
     "MOD-GRID-21": { "package": "grid-pro-panel", "tier": "Pro", "weight": "Full", "priority": "P0", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} },
     "MOD-GRID-22": { "package": "grid-pro-serverside", "tier": "Pro", "weight": "Full", "priority": "P1", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} },
