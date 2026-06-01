@@ -1,0 +1,26 @@
+{
+  "harness": "topgrid dev-harness",
+  "design": "docs/internal/DEV-HARNESS-DESIGN.md",
+  "matrix": "docs/internal/MASTER-HIERARCHY.md",
+  "seeded_from": "2026-06 gap audit (MASTER §5.2, 15 gaps)",
+  "counters": { "PAT": 4, "AP": 4, "C": 3, "POL": 1, "ADR": 0, "LESS": 0 },
+  "modules": {
+    "MOD-GRID-18": { "package": "grid-pro-pivot", "tier": "Pro", "weight": "Full", "priority": "P0", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} },
+    "MOD-GRID-19": { "package": "grid-pro-chart", "tier": "Pro", "weight": "Full", "priority": "P0", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {}, "note": "optional chart lib → AP-001 선제검출 실증 대상" },
+    "MOD-GRID-20": { "package": "grid-sizing", "tier": "MIT", "weight": "Lite", "priority": "P0", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} },
+    "MOD-GRID-21": { "package": "grid-pro-panel", "tier": "Pro", "weight": "Full", "priority": "P0", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} },
+    "MOD-GRID-22": { "package": "grid-pro-serverside", "tier": "Pro", "weight": "Full", "priority": "P1", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} },
+    "MOD-GRID-23": { "package": "grid-pro-edit-plus", "tier": "Pro", "weight": "Full", "priority": "P1", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} },
+    "MOD-GRID-24": { "package": "(core/renderers 확장)", "tier": "MIT", "weight": "Lite", "priority": "P1", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} },
+    "MOD-GRID-25": { "package": "(grid-export 확장)", "tier": "MIT", "weight": "Lite", "priority": "P1", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} },
+    "MOD-GRID-26": { "package": "grid-pro-sheet", "tier": "Pro", "weight": "Full", "priority": "P2", "phase": "planned", "goals": {}, "done_gate": { "lesson": false, "matrix_row": false, "index_updated": false }, "metrics": {} }
+  },
+  "baseline_metrics": {
+    "note": "2026-06 세션 산출 — 축적 추세의 기준선",
+    "modules_documented": 20,
+    "gaps_found": 15,
+    "gaps_resolved": 15,
+    "ap_precaught": 0,
+    "comment": "다음 모듈부터 reused_patterns·ap_precaught 가 오르고 turns 가 내려가면 축적 작동"
+  }
+}
