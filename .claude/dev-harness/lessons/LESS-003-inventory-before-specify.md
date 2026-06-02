@@ -2,7 +2,8 @@
 id: LESS-003
 signature: inventory-before-specify-collapses-scope
 first_seen: MOD-GRID-21 (grid-pro-panel) 2026-06
-status: lesson (N=1)
+recurrences: [MOD-GRID-21, MOD-GRID-25, MOD-GRID-24-G1]
+status: lesson (N=3 — validated; 별도 C-/AP- 승격 안 함, 이미 reuse-gate 페이즈(§3.1)+specify rubric 로 운영화됨 → 중복 회피)
 related: [PAT-001, ADR-001, "reuse-gate (DESIGN §3.1)"]
 ---
 
@@ -31,6 +32,19 @@ state 머신). 이는 (1) 중복 코드, (2) agg `GroupPanel` 과 동작 분기 
 4. 재사용 스펙트럼을 구분: MOD-18 = **어휘 재사용**(agg 키 상수, reducer 는 신규 — ADR-001),
    MOD-21 = **컴포넌트 재사용**(agg `GroupPanel` 통째 re-export). 둘 다 정직히 분류(억지 재사용 금지).
 
+## 재발 (promotion 판정 — N=3)
+- **MOD-GRID-25**(grid-export): 인벤토리가 §6.2 3 AC 를 축소·재정의 — 클립보드 헤더 "옵션"은 이미 무조건
+  포함→토글로, 셀 폰트/배경은 community xlsx 불가→네이티브 숫자서식으로. 신규는 다중시트뿐.
+- **MOD-GRID-24-G1**(표시 고도화): 인벤토리가 grid-core `rowClassName`/`cellClassName`(types.ts:47/59)
+  발견 → alternating·conditional 의 *메커니즘*이 이미 존재 → 신규 표면을 **선언적 룰 편의 레이어**(순수
+  `buildRowClassName`/`buildCellClassName`)로 축소. alternating 전용 prop = 신규 0(rowClassName 포섭).
+
+**판정**: N=2 초과. 그러나 본 lesson 의 처방("specify 전 reuse-gate 인벤토리")은 **이미 DESIGN §3.1
+reuse-gate 페이즈 + specify rubric("reuse-gate 결과 반영")로 기계화**돼 있다. 별도 `C-`/`AP-` 승격은
+같은 규칙의 **중복 인프라**가 되므로 하지 않는다(simplicity). 대신 본 lesson 을 "검증됨(N=3)"으로
+표시 — 반복 확인이 reuse-gate 의 가치를 실증.
+
 ## 출처
 MOD-GRID-21. spec `.claude/dev-harness/specs/MOD-GRID-21.md`(재사용 인벤토리 섹션),
 구현 `packages/grid-pro-panel/src/RowGroupPanel.tsx`. reuse-gate 의 **첫 실전 검증**.
+재발: MOD-GRID-25(specs/MOD-GRID-25.md), MOD-GRID-24-G1(specs/MOD-GRID-24.md).

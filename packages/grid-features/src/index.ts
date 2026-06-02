@@ -80,3 +80,14 @@ export type {
   GlobalSearchInputProps,
   FilterResetButtonProps,
 } from './filter-ui/types';
+
+// MOD-GRID-24 G-1: conditional formatting rule engine
+// (pure — compiles declarative rules to grid-core rowClassName/cellClassName callbacks)
+export {
+  buildRowClassName,
+  buildCellClassName,
+} from './conditional-format/buildConditionalFormat';
+export type {
+  RowFormatRule,
+  CellFormatRule,
+} from './conditional-format/types';
