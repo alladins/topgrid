@@ -25,15 +25,21 @@ react-dom/server 를 19 로 맞춰도 pivot 자신이 18 을 잡으므로 해소
   chart(MOD-19)는 grid-core 를 합성하지 않아(순수 SVG + grid-license 만) 단일 react 로
   마운트됐다 — 차이의 원인이 바로 cross-package 합성.
 
-## 올바른 형 (how to apply)
-다른 workspace 패키지(특히 grid-core)를 **합성**하는 모듈을 verify 할 때:
-1. **고유 로직은 순수 실행**으로 전수 검증 — 변환/reducer/컬럼빌더/셀 렌더 함수를 React 없이
-   직접 호출(피벗: computePivot·applyReducer·buildPivotColumns + `column.cell` 직접 호출로
-   라벨·포맷 산출 확인). 이게 모듈 고유 출력의 대부분이다.
-2. **셸의 react 동작은 동형 입증** — 워터마크/라이선스 게이트는 이미 실행검증된 동형 패턴
-   (chart `RangeChartPanel`)으로, `<Grid>` 위임은 grid-core 소스로 확인.
-3. **진짜 DOM 마운트가 꼭 필요하면** repo 의 react 메이저를 단일화(install 정렬)한 뒤 수행 —
-   단 이는 lockfile 변경이므로 verify 범위 밖, 별도 작업으로 분리.
+## 올바른 형 (how to apply) — 도구를 분리하라
+**핵심 교정**: node `renderToStaticMarkup` 은 grid-core 합성 컴포넌트에 **틀린 도구**다(chart 는
+grid-core 무합성이라 단일 react 로 됐을 뿐). 마운트는 **lockfile 정렬이 아니라 번들러 단일-react
+하네스**로 한다.
+1. **순수 로직 → node 직접 실행**: 변환/reducer/컬럼빌더/`column.cell` 등 React 무관 함수를 직접
+   호출(모듈 고유 출력의 대부분). 측정/렌더 등 host 능력은 PAT-005 로 주입해 순수화.
+2. **컴포넌트 마운트 → storybook/visual 하네스**: 이 repo 의 `apps/docs` storybook(`@storybook/
+   react-vite`, **단일 react 18.3.1**)이 vite dedupe 로 18/19 split 을 우회한다. 기존 Pro 그리드
+   (merging/range/master) 스토리가 이 경로로 `<Grid>` 합성을 렌더 중. → 합성 컴포넌트마다
+   `packages/<pkg>/stories/*.stories.tsx` 1개 추가 후 storybook 빌드/visual:test 로 실제 마운트.
+   (피벗: `packages/grid-pro-pivot/stories/PivotGrid.stories.tsx`.)
+3. **이 마운트는 게이트다**: grid-core 합성 컴포넌트(피벗·MOD-21 panel·24·26)는 **발행/‘done’ 선언
+   전 storybook 마운트 1회 필수**. 위임 패턴(column groups + `__kind` 합성행 + `rowClassName`)이
+   한 번도 브라우저에서 안 돌았다면 결함을 N 모듈 뒤에 발견하게 된다.
+4. lockfile 단일화(react 정렬)는 **불필요**(번들러가 해결) — 시도 금지.
 
 ## 탐지 (환경 점검)
 ```

@@ -9,6 +9,6 @@
 | PAT-002 | `registry-side-effect-injection` | import 시 side-effect 로 grid-core 레지스트리에 어댑터 주입(`sideEffects` 보존), `createColumns` 가 type→셀 디스패치 | grid-renderers wireDefaultRenderers → grid-core (MASTER §4) |
 | PAT-003 | `license-gate` | Pro 패키지 index module-load `checkLicense()` + 컴포넌트 `useLicenseStatus`/`<Watermark>` 소프트 인포스먼트 | 전 Pro 패키지, grid-license (MASTER §3 mod-grid-99-a) |
 | PAT-004 | `optional-peer-dynamic-import` | optional peer 는 정적 import 금지 — 동적 import 분리 또는 required 선언 | AP-001 의 올바른 형 |
-| PAT-005 | `host-capability-injection` | host/환경 전용 능력(차트 렌더·텍스트 측정 등)을 **함수 prop 으로 주입** → 패키지 코어는 순수·무의존·해당 host 없이 테스트가능. 브라우저 기본값은 별도 **SSR-guard 팩토리**로 분리(import 금지) | **N=2 승격**: chart `renderChart:(series)=>ReactNode`(MOD-19) + sizing `measureText:(text)=>number`+`createCanvasMeasureText()`(MOD-20). 효과: MOD-20 은 측정 주입으로 DOM 마운트 벽([[LESS-002]]) 자체가 없었음 |
+| PAT-005 | `host-capability-injection` | host/환경 전용 능력(차트 렌더·텍스트 측정 등)을 **함수 prop 으로 주입** → 패키지 코어는 순수·무의존·해당 host 없이 테스트가능 | **N=2 = 주입 코어**: chart `renderChart:(series)=>ReactNode`(MOD-19) + sizing `measureText:(text)=>number`(MOD-20). **부속(SSR-guard 기본 팩토리, 예 `createCanvasMeasureText`)은 N=1**(sizing 만; chart 는 기본값 없음) — 코어만 N=2 로 단정. 효과: MOD-20 은 측정 주입으로 DOM 마운트 벽([[LESS-002]])이 없었음 |
 
 (seed: MASTER §2 택소노미 7형 + §4 wiring + 2026-06 학습; PAT-005 = MOD-19/20 N=2 승격)

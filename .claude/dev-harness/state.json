@@ -19,7 +19,7 @@
     "policy": "batch — 단일 패키지 반복 발행 회피(meta @topgrid/grid facade bump + peerDep 0.x escalation footgun). 몇 모듈 누적 후 1회 coordinated 발행.",
     "pending": {
       "MOD-GRID-19": { "package": "grid-pro-chart", "ready": true, "gate": "rendered (renderToStaticMarkup 통과)" },
-      "MOD-GRID-18": { "package": "grid-pro-pivot", "ready": false, "gate": "BLOCKED — PivotGrid 실제 마운트 1회 필요(단일-react consumer dir 또는 docs app). 순수로직 26건 검증됐으나 컴포넌트 미마운트(P18-2)" }
+      "MOD-GRID-18": { "package": "grid-pro-pivot", "ready": false, "gate": "PivotGrid storybook 마운트 필요. 스토리 작성됨(packages/grid-pro-pivot/stories/PivotGrid.stories.tsx). 경로 = apps/docs storybook(단일 react 18.3.1) build + visual:test(playwright). 순수로직 26건은 검증됨(P18-2). 마운트 실행 후 ready=true." }
     },
     "facade": "발행 시 meta @topgrid/grid 의 dependencies + side-effect re-export 갱신 필요"
   },
