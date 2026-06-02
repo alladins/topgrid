@@ -48,7 +48,21 @@ node -e "console.log(require.resolve('react',{paths:['packages/grid-core']}))"
 # 두 경로의 버전이 다르면 DOM 마운트 검증 불가 → 순수+소스 검증 경로 사용
 ```
 
+## 정밀화 (MOD-GRID-24 G-2, 2026-06) — 벽은 *버전 불일치*지 grid-core 합성 자체가 아니다
+MOD-24 G-2(grid-core `<Grid>` + floating 행)는 node `renderToStaticMarkup` 으로 **마운트 성공**
+(8/8 검증, floating top/bottom 행·셀 렌더·byte-identical 회귀까지). 차이의 원인:
+- pivot(MOD-18)은 react@18 을 잡고 grid-core@19 를 합성 → **두 인스턴스 불일치** = Invalid hook call.
+- MOD-24 G-2 는 grid-core **자기 자신**이라, `react`+`react-dom/server` 를 **둘 다 grid-core 디렉터리
+  에서 resolve**(`{paths:[grid-core]}`) → 단일 19.2.6 인스턴스 → 정상.
+
+→ **교정된 규칙**: node 마운트 가능 여부 = "그 모듈이 잡는 react 버전 == 합성하는 패키지(grid-core)의
+react 버전" 인가. **단일 패키지(grid-core 확장) 또는 버전 정렬된 경우 node 마운트 OK** — react+react-dom
+을 같은 pkg dir 에서 resolve 하면 단일 인스턴스. **cross-package 메이저 불일치(pivot@18→core@19) 일
+때만 storybook 필요**. 즉 §올바른형 #2(storybook)는 *불일치 합성*에 한정; grid-core 자체/정렬 합성은
+node 로 충분(더 빠르고 CI 친화).
+
 ## 출처
 MOD-GRID-18 verify. spec `.claude/dev-harness/specs/MOD-GRID-18.md`,
-`packages/grid-pro-pivot/src/PivotGrid.tsx`(grid-core `<Grid>` 합성). [[LESS-001]] 과 함께
-"발행물·검증물 신뢰도" 군.
+`packages/grid-pro-pivot/src/PivotGrid.tsx`(grid-core `<Grid>` 합성). 정밀화: MOD-GRID-24 G-2
+(`packages/grid-core/src/internal/buildFloatingRows.ts` + Grid.tsx floating 행, node 마운트 성공).
+[[LESS-001]] 과 함께 "발행물·검증물 신뢰도" 군.

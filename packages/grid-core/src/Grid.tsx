@@ -25,6 +25,7 @@ import {
 import {
   flexRender,
   useReactTable,
+  type Row,
   type ColumnFiltersState,
   type ColumnOrderState,
   type ColumnPinningState,
@@ -40,6 +41,7 @@ import { useColumnDrag } from './internal/column-drag/useColumnDrag';
 import { DropIndicator } from './internal/column-drag/DropIndicator';
 import { SortClearButton } from './internal/multi-sort/SortClearButton';
 import { buildTableOptions } from './internal/buildTableOptions';
+import { buildFloatingRows } from './internal/buildFloatingRows';
 import { getPinnedCellStyle } from './internal/computePinnedOffset';
 import { EmptyState } from './internal/EmptyState';
 import { ResizeHandle } from './internal/ResizeHandle';
@@ -254,6 +256,50 @@ function GridInner<TData>(
     : 'overflow-x-auto rounded-lg border border-gray-200';
   const leafColCount = table.getAllLeafColumns().length;
 
+  // MOD-GRID-24 G-2: floating(고정) 행 — 소비자 공급 추가 행을 실제 Row 로 변환(셀은
+  // columnDef.cell 렌더러 통과). 미제공 시 빈 배열 → 렌더 0(기존 동작 불변).
+  const floatingTopRows = buildFloatingRows(table, props.floatingTopRows, 'top');
+  const floatingBottomRows = buildFloatingRows(
+    table,
+    props.floatingBottomRows,
+    'bottom',
+  );
+  // 본문 행과 동일한 셀 마크업으로 floating 행 1개를 렌더(sticky 고정).
+  // position: sticky 의 스크롤 고정 시각거동은 chromium 검증 대상(LESS-002).
+  const renderFloatingRow = (row: Row<TData>, position: 'top' | 'bottom') => {
+    const stickyStyle: CSSProperties =
+      position === 'top'
+        ? { position: 'sticky', top: 0, zIndex: 11 }
+        : { position: 'sticky', bottom: 0, zIndex: 11 };
+    return (
+      <tr
+        key={row.id}
+        data-floating={position}
+        className={`bg-gray-50 font-medium ${rowBorderClassName}`}
+        style={stickyStyle}
+      >
+        {row.getVisibleCells().map((cell) => {
+          const cellSize = cell.column.getSize();
+          const applyCellWidth = useResizing || usePinning || cellSize !== 150;
+          const pinnedCell = usePinning
+            ? getPinnedCellStyle(cell.column, table, 'tbody')
+            : { style: {}, className: '' };
+          const cellStyle: CSSProperties = { ...pinnedCell.style };
+          if (applyCellWidth) cellStyle.width = cellSize;
+          return (
+            <td
+              key={cell.id}
+              className={`px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className}`}
+              style={cellStyle}
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </td>
+          );
+        })}
+      </tr>
+    );
+  };
+
   return (
     <div className={`flex flex-col ${props.className ?? ''}`}>
       {props.columnPersistence !== undefined && (
@@ -374,6 +420,7 @@ function GridInner<TData>(
                  G-002 sticky thead + pinned column 는 같은 <table> 자식이라 모두 보존됨.
                  padding tr 은 aria-hidden + 빈 td 1개 (colSpan=leafColCount) — 시각 영향 0. */
               <>
+                {floatingTopRows.map((r) => renderFloatingRow(r, 'top'))}
                 {paddingTop > 0 && (
                   <tr style={{ height: paddingTop }} aria-hidden="true">
                     <td colSpan={leafColCount} />
@@ -434,9 +481,12 @@ function GridInner<TData>(
                     <td colSpan={leafColCount} />
                   </tr>
                 )}
+                {floatingBottomRows.map((r) => renderFloatingRow(r, 'bottom'))}
               </>
             ) : (
-              table.getRowModel().rows.map((row) => {
+              <>
+                {floatingTopRows.map((r) => renderFloatingRow(r, 'top'))}
+                {table.getRowModel().rows.map((row) => {
                 // G-006 D2: rowClassName callback.
                 const extraRowClass = props.rowClassName?.(row) ?? '';
                 return (
@@ -476,7 +526,9 @@ function GridInner<TData>(
                     })}
                   </tr>
                 );
-              })
+              })}
+                {floatingBottomRows.map((r) => renderFloatingRow(r, 'bottom'))}
+              </>
             )}
           </tbody>
         </table>

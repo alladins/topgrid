@@ -570,6 +570,30 @@ export interface GridProps<TData> {
    */
   rowClassName?: RowClassNameCallback<TData>;
 
+  // ─── MOD-GRID-24 G-2: floating(고정) 합계/요약 행 ───
+  /**
+   * 그리드 **상단**에 고정 표시할 소비자 공급 행 데이터 (MOD-GRID-24 G-2).
+   *
+   * AG Grid 의 `pinnedTopRowData` 와 동형 — 데이터 모델 *밖*의 추가 행(합계/요약 등).
+   * 컬럼 셀 렌더러(`columnDef.cell`)를 그대로 통과해 본문 행과 동일하게 표시되며,
+   * 본문이 스크롤돼도 `position: sticky` 로 고정된다.
+   *
+   * **집계 계산 안 함**: 소비자가 total 객체를 직접 제공(자동 집계는 `@topgrid/grid-pro-agg`/Pro).
+   * **상호작용 핀 아님**: 기존 행을 사용자가 핀하는 기능(`@topgrid/grid-pro-master`/Pro)과 별개.
+   * 미제공/빈 배열 → 렌더 없음(기존 동작 불변).
+   *
+   * @default undefined
+   */
+  floatingTopRows?: TData[];
+
+  /**
+   * 그리드 **하단**에 고정 표시할 소비자 공급 행 데이터 (MOD-GRID-24 G-2).
+   * `floatingTopRows` 와 동일 규약(하단 sticky).
+   *
+   * @default undefined
+   */
+  floatingBottomRows?: TData[];
+
   // ─── G-003 신규: 로딩 (D5/D8) ───
   /**
    * 로딩 상태. `true` 시 `<tbody>` 영역만 skeleton row 로 치환 (thead 보존 — D5).
