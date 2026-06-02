@@ -39,7 +39,11 @@ export async function copyToClipboard<TData>(
   table: Table<TData>,
   options?: ClipboardOptions,
 ): Promise<void> {
-  const { scope = 'filtered', emptyBehavior = 'skip' } = options ?? {};
+  const {
+    scope = 'filtered',
+    emptyBehavior = 'skip',
+    includeHeader = true,
+  } = options ?? {};
 
   // 1) 행 결정 (C-2: TanStack 표준 API — getRowsByScope 공유 헬퍼, D1)
   const rows = getRowsByScope(table, scope);
@@ -72,8 +76,10 @@ export async function copyToClipboard<TData>(
       .join('\t'),
   );
 
-  // 5) TSV 문자열 조립 (헤더 + 데이터, 줄바꿈 행 구분)
-  const tsvString = [headerRow, ...dataRows].join('\n');
+  // 5) TSV 문자열 조립 (includeHeader 시 헤더 + 데이터, 아니면 데이터만 — 줄바꿈 행 구분)
+  const tsvString = (includeHeader ? [headerRow, ...dataRows] : dataRows).join(
+    '\n',
+  );
 
   // 6) 클립보드 쓰기 (navigator.clipboard 우선, execCommand fallback — D6, EC-04)
   if (

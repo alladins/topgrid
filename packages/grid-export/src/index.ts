@@ -12,6 +12,9 @@ export { printGrid } from './printGrid';
 // ADR-005: Row-array based Excel export (non-Table entry)
 export { exportRowsToExcel } from './exportRowsToExcel';
 
+// MOD-GRID-25 G-2: 다중 시트 Excel export
+export { exportSheetsToExcel } from './exportSheetsToExcel';
+
 // Types
 export type {
   ExcelExportOptions,
@@ -23,6 +26,9 @@ export type {
   // ADR-005: Row-array export types
   ExcelColumn,
   ExportRowsOptions,
+  // MOD-GRID-25: 다중 시트 export types
+  ExcelSheet,
+  MultiSheetOptions,
 } from './types';
 
 // G-004 Types

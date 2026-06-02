@@ -35,6 +35,61 @@ export interface ExcelExportOptions {
    * @default 'skip'
    */
   emptyBehavior?: EmptyBehavior;
+  /**
+   * 컬럼별 네이티브 Excel number-format 코드 (MOD-GRID-25 G-1)
+   *
+   * key = 컬럼 id, value = Excel format 코드(예 `'#,##0.00'`, `'yyyy-mm-dd'`, `'0.0%'`).
+   * 해당 컬럼 데이터 셀에 `.z` 로 적용되어 셀이 Excel 안에서 numeric·정렬가능하게 유지된다.
+   * @default undefined (서식 미적용)
+   */
+  columnFormats?: Record<string, string>;
+  /**
+   * 컬럼별 폭 (MOD-GRID-25 G-1) — key = 컬럼 id, value = xlsx `wch` 단위 폭.
+   * 지정된 컬럼만 `!cols` 에 반영(미지정은 기본 폭).
+   * @default undefined
+   */
+  columnWidths?: Record<string, number>;
+}
+
+/**
+ * 다중 시트 Excel export 의 시트 1개 정의 (MOD-GRID-25 G-2)
+ *
+ * @see exportSheetsToExcel
+ */
+export interface ExcelSheet {
+  /** 시트명 (Excel 탭에 표시) */
+  name: string;
+  /**
+   * TanStack v8 Table 인스턴스 — 시트 내용 소스.
+   *
+   * 다중 시트는 본질적으로 **서로 다른 행 타입의 테이블을 한 배열에 섞으므로**(`Table<Person>` +
+   * `Table<Order>`), 단일 `TData` 로 묶을 수 없다. `Table<TData>` 는 `accessorFn` 의 함수
+   * 인자 반공변성 때문에 `Table<unknown>` 에 대입 불가(`Table<Person>` ↛ `Table<unknown>`).
+   * 이질 배열을 받으려면 `Table<any>` 가 유일한 실용 해법(TS 는 존재 타입 미지원).
+   * export 코드는 `getValue()` 결과를 `unknown` 으로만 다뤄 타입 안전을 유지한다.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  table: import('@tanstack/react-table').Table<any>;
+  /**
+   * export 대상 행 범위
+   * @default 'filtered'
+   */
+  scope?: ExportScope;
+  /** 컬럼별 네이티브 number-format (ExcelExportOptions.columnFormats 와 동일) */
+  columnFormats?: Record<string, string>;
+  /** 컬럼별 폭 (ExcelExportOptions.columnWidths 와 동일) */
+  columnWidths?: Record<string, number>;
+}
+
+/**
+ * `exportSheetsToExcel` 옵션 (MOD-GRID-25 G-2)
+ */
+export interface MultiSheetOptions {
+  /**
+   * 다운로드 파일명 (확장자 없으면 .xlsx 자동 추가)
+   * @default 'export.xlsx'
+   */
+  fileName?: string;
 }
 
 /**
@@ -165,6 +220,13 @@ export interface ClipboardOptions {
    * @default 'skip'
    */
   emptyBehavior?: EmptyBehavior;
+  /**
+   * 헤더 행 포함 여부 (MOD-GRID-25 G-3)
+   * - `true`: 첫 줄에 헤더 행 포함 (기본 — 기존 동작)
+   * - `false`: 데이터 행만 복사 (다른 영역에 붙여넣어 헤더 중복 방지)
+   * @default true
+   */
+  includeHeader?: boolean;
 }
 
 // ── ADR-005: Row-array export 타입 ────────────────────────────────────────

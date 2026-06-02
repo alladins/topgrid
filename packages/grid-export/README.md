@@ -57,6 +57,57 @@ exportRowsToExcel(rows, columns, {
 });
 ```
 
+### Excel — Native Number Formats & Column Widths
+
+Apply native Excel number-format codes (`.z`) per column. Cells stay **numeric and
+sortable** inside Excel (unlike pre-formatting values to strings). Optionally set
+column widths.
+
+```tsx
+import { exportToExcel } from '@topgrid/grid-export';
+
+exportToExcel(table, {
+  fileName: 'sales.xlsx',
+  columnFormats: {
+    price: '#,##0.00',     // 1,234.50
+    rate: '0.0%',          // 12.3%
+    orderedAt: 'yyyy-mm-dd', // applies only if the cell value is a Date / number
+  },
+  columnWidths: { name: 30, memo: 40 },
+});
+```
+
+> **Number formats apply to numeric cells only.** A format code is set on a cell
+> only when its value is a number (and `Date` values, which Excel stores as numeric
+> serials — so `'yyyy-mm-dd'` formats a `Date` but **not** an ISO date *string*).
+> String cells pass through unchanged: a format on a text value would be a no-op, so
+> it is skipped rather than silently stored. Format string-typed dates upstream, or
+> provide `Date`/number values.
+
+> **Cell styling limitation (font / background):** the `xlsx` community edition
+> (`^0.18.5`) **does not persist cell styles (`.s` — font, fill/background, borders)
+> on write** — they are silently dropped from the output file. `grid-export`
+> therefore exposes only what survives a real write→read round-trip: **number
+> formats (`.z`) and column widths (`!cols`)**. It does not claim font/background
+> support. For styled cells, a styling-capable writer (e.g. a Pro xlsx build) is
+> required.
+
+### Excel — Multiple Sheets
+
+Export several tables into one workbook, one sheet each. Each sheet reuses the same
+header-merge / scope / number-format behavior as single-sheet `exportToExcel`.
+
+```tsx
+import { exportSheetsToExcel, type ExcelSheet } from '@topgrid/grid-export';
+
+const sheets: ExcelSheet[] = [
+  { name: '주문', table: ordersTable, columnFormats: { total: '#,##0' } },
+  { name: '고객', table: customersTable, scope: 'selected' },
+];
+
+exportSheetsToExcel(sheets, { fileName: '월간보고.xlsx' });
+```
+
 ### CSV Export
 
 ```tsx
@@ -84,8 +135,11 @@ exportToPdf(table, {
 ```tsx
 import { copyToClipboard, printGrid } from '@topgrid/grid-export';
 
-// Copy selected data to clipboard
+// Copy selected data to clipboard (header row included by default)
 copyToClipboard(table);
+
+// Copy data rows only (no header) — useful when pasting under existing headers
+copyToClipboard(table, { includeHeader: false });
 
 // Print the grid
 printGrid(table, { title: 'Report' });
@@ -95,7 +149,8 @@ printGrid(table, { title: 'Report' });
 
 | Export | Description |
 |--------|-------------|
-| `exportToExcel` | Export grid data to Excel (.xlsx) — TanStack `Table<TData>` based |
+| `exportToExcel` | Export grid data to Excel (.xlsx) — TanStack `Table<TData>` based. Supports native number formats (`columnFormats`) + column widths |
+| `exportSheetsToExcel` | Export multiple tables into one multi-sheet workbook (.xlsx) |
 | `exportRowsToExcel` | Export row array to Excel (.xlsx) — raw `TData[]` + `ExcelColumn[]` based (ADR-005) |
 | `exportToCSV` | Export grid data to CSV |
 | `exportToPdf` | Export grid data to PDF |
