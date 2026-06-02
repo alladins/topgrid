@@ -7,4 +7,5 @@
 | LESS | signature | 한 줄 | 첫 발생 | 상태 |
 |------|-----------|-------|---------|------|
 | LESS-001 | `public-identifier-contains-engine-substring` | 공개 export 이름에 차트/엔진/브랜드 lib 부분문자열 우연 혼입(예 `RangeChartSeries`⊃`echarts`) → 발행물 엔진 grep 신뢰도 훼손 | MOD-GRID-19 | lesson(N=1) |
-| LESS-002 | `cross-package-react-major-split-blocks-dom-render` | workspace 가 react 18/19 동시 설치 → 다른 패키지(grid-core) 합성 모듈의 DOM 마운트 검증이 "Invalid hook call" 로 막힘. 순수+소스 검증으로 우회 | MOD-GRID-18 | lesson(N=1) |
+| LESS-002 | `cross-package-react-major-split-blocks-dom-render` | workspace 가 react 18/19 동시 설치 → 다른 패키지(grid-core/agg) 합성 모듈의 node DOM 마운트가 "Invalid hook call". **마운트 경로 = storybook 단일-react 하네스**(node 아님) | MOD-GRID-18 | lesson(N=2, MOD-21 RowGroupPanel 재확인) |
+| LESS-003 | `inventory-before-specify-collapses-scope` | specify 전 기존 표면 인벤토리 → 'Full' 모듈이 대부분-재사용으로 축소(MOD-21: 3중 2 기존). 건너뛰면 에이전트가 있는 걸 재구현 | MOD-GRID-21 | lesson(N=1) |
