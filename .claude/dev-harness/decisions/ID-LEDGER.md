@@ -8,8 +8,8 @@
 | AP-  | 005 | 안티패턴 (AP-001~004 시드됨) |
 | C-   | 004 | 제약 (C-001~003 시드됨) |
 | POL- | — | 정책 (POL-TANSTACK 시드됨) |
-| ADR- | 001 | 결정 (없음) |
-| LESS-| 002 | 교훈 (LESS-001 발급: public-identifier-contains-engine-substring @ MOD-GRID-19) |
+| ADR- | 002 | 결정 (ADR-001 발급: 피벗 reducer 로컬 vs 공유 @ MOD-GRID-18) |
+| LESS-| 003 | 교훈 (LESS-001 engine-substring @ MOD-19; LESS-002 react-major-split @ MOD-18) |
 
 ## ADR 목록
-(없음 — 첫 Full 모듈에서 설계 분기 시 ADR-001 부터. trade-off 2+ 명시 의무.)
+- **ADR-001** (MOD-GRID-18): 피벗 값 reducer = 로컬 구현 + agg 키 어휘만 재사용. 공유 추출은 N=2(소비자 2번째) 트리거. → `decisions/ADR-001-pivot-reducer-local-vs-shared.md`
