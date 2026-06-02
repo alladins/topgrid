@@ -37,6 +37,15 @@ rg -o "(?:export (?:type )?\{)[^}]+" packages/*/src/index.ts \
 신규 모듈에서 **2번째** 발생 시 → [[AP-001]] 옆 `AP-005` 로 승격(ANTIPATTERNS-INDEX 행 추가),
 본 lesson 은 그 근거로 남긴다.
 
+## 2번째 발생 (관련 — 동일 family, 별개 signature)
+MOD-GRID-20 implement 에서 주석 `"no watermarking"` 의 부분문자열 `watermark` 가 MIT-감사 grep
+(`checklicense|watermark|grid-license`)을 트립할 뻔함 → 에이전트가 **자가 감지·"no usage marks"
+로 개명**. 이는 본 lesson 의 *공개식별자×엔진* signature 와는 다른 표면(주석×라이선스용어)이지만
+같은 family = **"토큰 부분문자열이 guard grep 을 오트립"**. 시사: guard grep 추가 시 word-boundary/
+문맥 앵커 선호, guard 단어(engine·watermark/license·brand) 근처 명명/주석 시 부분문자열 점검.
+→ **컴파운딩 신호**: 에이전트가 본 lesson 인지를 무지시로 적용해 선제 회피(LESS-001 이 다음 모듈로
+전파된 증거). 동일 signature 의 실-shipped 재발이 생기면 그때 AP/C 로 승격.
+
 ## 출처
 MOD-GRID-19 implement 단계. spec `.claude/dev-harness/specs/MOD-GRID-19.md`,
-구현 `packages/grid-pro-chart/src/RangeChartPanel.tsx` (`RangeSeries`).
+구현 `packages/grid-pro-chart/src/RangeChartPanel.tsx` (`RangeSeries`). 2번째 발생: MOD-GRID-20.
