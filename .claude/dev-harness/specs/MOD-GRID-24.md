@@ -1,6 +1,7 @@
-# MOD-GRID-24 spec — 표시 고도화 (**Full**, **MIT**, partial per §10.3)
+# MOD-GRID-24 spec — 표시 고도화 (**MIT**, partial per §10.3 → **완료 {G-1,G-2}**)
 
-> dev-harness loop 6번째. weight=**Full**(컬럼 가상화가 진짜 hard — 단일-table padding-row 의 가로 아날로그·sticky 핀/resize/다단 헤더 상호작용·chromium 검증). **partial(§10.3)**: Goal 단위 점진. **본 라운드 = G-1 만**(conditional-format rule engine), 모듈은 §6 에 `구현중 (1/3)` 로 잔류(§3 이관 X).
+> dev-harness loop 6번째. **descope(advisor, G-2 완료 후)**: 원 §6.1 4-feature 버킷은 *응집 모듈이 아니었다* — reuse-gate 가 이를 실증(alternating=신규 0, conditional=grid-features, floating=grid-core 두 패키지로 분산). **컬럼(가로) 가상화는 grid-core 렌더-엔진 인프라 변경**(표시 helper 아님)이라 본 모듈에 속하지 않음 → **별도 모듈 MOD-GRID-27 로 재범위**(§6 planned). 따라서 본 모듈 = **{G-1, G-2} 로 확정 → 완료 → §3 이관**(첫 partial-module 완주).
+> **§3 이관 시 컬럼 가상화 주장 금지**(MOD-27 소관).
 > reuse-gate(specify 선행 인벤토리, [[LESS-003]]): grid-core 가 **이미** `RowClassNameCallback`/`CellClassNameCallback`(types.ts:47/59) + `rowClassName`/`cellClassName` prop 노출. → **alternating·conditional 의 *메커니즘*은 이미 존재**. 따라서:
 > - **alternating 행**: `rowClassName={(row)=> row.index%2 ? 'striped':''}` 로 이미 가능 → **신규 표면 0**(G-1 룰엔진이 포섭). 1줄 문서화만.
 > - **conditional formatting**: 메커니즘 존재 → **선언적 룰→className 편의 레이어**(순수)만 신규 = **G-1**.
@@ -20,14 +21,19 @@
 - **Out**: alternating 전용 prop(기존 `rowClassName` 포섭 — 신규 0), 집계 자동계산(Pro=grid-pro-agg), 행 핀(Pro=grid-pro-master).
 
 ## Goals
-- **G-1 조건부 서식 룰 엔진(순수) — ★본 라운드**: `grid-features` 에 신규.
+- **G-1 조건부 서식 룰 엔진(순수) — ✅ 완료**: `grid-features` 에 신규.
   - `RowFormatRule<TData> = { when: (data: TData, index: number) => boolean; className: string }`
   - `CellFormatRule<TData, TValue=unknown> = { when: (value: TValue, data: TData) => boolean; className: string }`
   - `buildRowClassName<TData>(rules: RowFormatRule<TData>[]): RowClassNameCallback<TData>` — `(row)` 에서 `row.original`/`row.index` 추출, 매칭 룰 className 공백 join, 무매칭 `undefined`.
   - `buildCellClassName<TData,TValue>(rules: CellFormatRule<TData,TValue>[]): CellClassNameCallback<TData>` — `(cell)` 에서 `cell.getValue()`/`cell.row.original` 추출, 동일 join 규칙.
   - 종결형(순수). grid-core 타입 import(type-only, peer). 외부 dep 0.
-- **G-2 floating 합계 행(후속, 미구현)**: 소비자 공급 행 sticky 상/하단. 집계 X. — planned.
-- **G-3 컬럼 가상화(후속·Full, 미구현)**: 가로 가상화. chromium 검증. — planned.
+- **G-2 floating 합계 행 — ✅ 완료**: `floatingTopRows?`/`floatingBottomRows?: TData[]`(grid-core Grid props). `internal/buildFloatingRows`(순수, `createRow` → 셀이 `columnDef.cell` 통과). 소비자 공급(집계 X = agg/Pro), 상호작용 핀 아님(= master/Pro). 종결형+연결형.
+- **G-3 컬럼 가상화 → MOD-GRID-27 로 재범위(본 모듈에서 제외)**: grid-core 렌더-엔진 인프라. 별도 모듈.
+
+## ★ pending-chromium (G-2 — 닫기 시점 정직 기록)
+node 검증으로 **구성/배치/회귀**는 완결(buildFloatingRows 8/8 + Grid render 8/8, byte-identical 회귀). **시각 스크롤 고정만** 브라우저 미검증:
+- **알려진 이슈(maybe 아님)**: 상단 floating 행 `position:sticky; top:0` ↔ sticky `<thead> top:0` **겹침**(헤더 위에 붙음). 올바른 offset = thead 높이. → MOD-27 또는 후속 폴리시에서 thead 높이 측정해 `top: <thead-h>` 적용 + chromium 확인. 하단(`bottom:0`)은 해당 없음.
+- story 추가: `packages/grid-core/stories/Grid.floating-rows.stories.tsx`(상/하단·하단만·회귀 없음 3종).
 
 ## AC (G-1 — 측정 가능, node 검증)
 1. `buildRowClassName([{when:(d,i)=>i%2===1, className:'striped'}])` → 짝/홀 행에 'striped' on/off(실제 headless TanStack Row 로 검증).

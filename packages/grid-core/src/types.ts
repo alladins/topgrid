@@ -582,6 +582,13 @@ export interface GridProps<TData> {
    * **상호작용 핀 아님**: 기존 행을 사용자가 핀하는 기능(`@topgrid/grid-pro-master`/Pro)과 별개.
    * 미제공/빈 배열 → 렌더 없음(기존 동작 불변).
    *
+   * @remarks
+   * - **데이터 0건 시 미표시**: floating 행은 본문 데이터 경로에서만 렌더되므로 `loading` 또는
+   *   `data` 가 비면 표시되지 않는다(빈 그리드에 합계 행만 뜨는 것 방지 — 의도된 동작).
+   * - **상단 sticky offset(검증 중)**: 상단 floating 행은 `position: sticky; top: 0` 인데 sticky
+   *   `<thead>` 도 `top: 0` 이라 헤더와 겹칠 수 있다(올바른 offset = thead 높이). 스크롤 고정
+   *   시각거동은 chromium 검증 대상(MOD-24 spec pending). 하단(`floatingBottomRows`)은 해당 없음.
+   *
    * @default undefined
    */
   floatingTopRows?: TData[];
