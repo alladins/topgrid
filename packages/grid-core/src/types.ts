@@ -585,9 +585,9 @@ export interface GridProps<TData> {
    * @remarks
    * - **데이터 0건 시 미표시**: floating 행은 본문 데이터 경로에서만 렌더되므로 `loading` 또는
    *   `data` 가 비면 표시되지 않는다(빈 그리드에 합계 행만 뜨는 것 방지 — 의도된 동작).
-   * - **상단 sticky offset(검증 중)**: 상단 floating 행은 `position: sticky; top: 0` 인데 sticky
-   *   `<thead>` 도 `top: 0` 이라 헤더와 겹칠 수 있다(올바른 offset = thead 높이). 스크롤 고정
-   *   시각거동은 chromium 검증 대상(MOD-24 spec pending). 하단(`floatingBottomRows`)은 해당 없음.
+   * - **상단 sticky offset**: 상단 floating 행은 측정된 `<thead>` 높이만큼 offset 된 `position:
+   *   sticky; top: <thead-height>` 로 헤더 *아래* 고정된다(겹침 없음). chromium 검증 완료
+   *   (`tests/visual/floating-thead.spec.ts` — 스크롤 후 행 top ≥ thead bottom).
    *
    * @default undefined
    */

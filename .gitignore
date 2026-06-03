@@ -43,3 +43,7 @@ yarn-error.log*
 .adr-009-backup/
 
 # Changesets — PR workflow standard, commit 보존 (consumed 후에만 제거)
+
+# Playwright test artifacts
+test-results/
+playwright-report/

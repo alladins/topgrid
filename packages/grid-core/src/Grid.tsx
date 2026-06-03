@@ -256,6 +256,15 @@ function GridInner<TData>(
     : 'overflow-x-auto rounded-lg border border-gray-200';
   const leafColCount = table.getAllLeafColumns().length;
 
+  // MOD-GRID-24 G-2 (thead-collision fix): sticky thead 높이를 측정해 상단 floating 행의
+  // sticky top offset 으로 사용 → 상단 floating 행이 헤더 위에 겹치지 않고 그 아래 고정된다.
+  const theadRef = useRef<HTMLTableSectionElement>(null);
+  const [theadHeight, setTheadHeight] = useState(0);
+  useEffect(() => {
+    const h = theadRef.current?.offsetHeight ?? 0;
+    setTheadHeight((prev) => (prev === h ? prev : h));
+  });
+
   // MOD-GRID-24 G-2: floating(고정) 행 — 소비자 공급 추가 행을 실제 Row 로 변환(셀은
   // columnDef.cell 렌더러 통과). 미제공 시 빈 배열 → 렌더 0(기존 동작 불변).
   const floatingTopRows = buildFloatingRows(table, props.floatingTopRows, 'top');
@@ -269,7 +278,7 @@ function GridInner<TData>(
   const renderFloatingRow = (row: Row<TData>, position: 'top' | 'bottom') => {
     const stickyStyle: CSSProperties =
       position === 'top'
-        ? { position: 'sticky', top: 0, zIndex: 11 }
+        ? { position: 'sticky', top: theadHeight, zIndex: 11 }
         : { position: 'sticky', bottom: 0, zIndex: 11 };
     return (
       <tr
@@ -314,7 +323,7 @@ function GridInner<TData>(
       )}
       <div ref={scrollContainerRef} className={containerClassName} style={containerStyle}>
         <table className={tableClassName}>
-          <thead className="bg-gray-50 sticky top-0 z-10">
+          <thead ref={theadRef} className="bg-gray-50 sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

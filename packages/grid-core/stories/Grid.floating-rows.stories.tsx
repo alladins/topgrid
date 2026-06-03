@@ -19,9 +19,9 @@ const data: SalesRow[] = [
 const totalRow: SalesRow = { region: '합계', q1: 260, q2: 315 };
 
 const columns = createColumns<SalesRow>([
-  { accessorKey: 'region', header: '지역' },
-  { accessorKey: 'q1', header: '1분기' },
-  { accessorKey: 'q2', header: '2분기' },
+  { id: 'region', name: '지역', type: 'text' },
+  { id: 'q1', name: '1분기', type: 'number' },
+  { id: 'q2', name: '2분기', type: 'number' },
 ]);
 
 const meta: Meta<typeof Grid> = {
@@ -47,6 +47,25 @@ export const FloatingBottomOnly: Story = {
     columns,
     data,
     floatingBottomRows: [totalRow],
+  },
+};
+
+// 스크롤 컨테이너에서 sticky 고정 검증용(가상화 → height+overflow:auto). thead-collision 확인 대상.
+const manyRows: SalesRow[] = Array.from({ length: 40 }, (_, i) => ({
+  region: `행${i + 1}`,
+  q1: i * 10,
+  q2: i * 12,
+}));
+
+export const FloatingScrollable: Story = {
+  name: '스크롤 시 상/하단 고정(가상화)',
+  args: {
+    columns,
+    data: manyRows,
+    floatingTopRows: [totalRow],
+    floatingBottomRows: [totalRow],
+    enableVirtualization: true,
+    virtualScrollHeight: 240,
   },
 };
 

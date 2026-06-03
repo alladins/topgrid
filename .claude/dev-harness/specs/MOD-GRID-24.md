@@ -30,10 +30,11 @@
 - **G-2 floating 합계 행 — ✅ 완료**: `floatingTopRows?`/`floatingBottomRows?: TData[]`(grid-core Grid props). `internal/buildFloatingRows`(순수, `createRow` → 셀이 `columnDef.cell` 통과). 소비자 공급(집계 X = agg/Pro), 상호작용 핀 아님(= master/Pro). 종결형+연결형.
 - **G-3 컬럼 가상화 → MOD-GRID-27 로 재범위(본 모듈에서 제외)**: grid-core 렌더-엔진 인프라. 별도 모듈.
 
-## ★ pending-chromium (G-2 — 닫기 시점 정직 기록)
-node 검증으로 **구성/배치/회귀**는 완결(buildFloatingRows 8/8 + Grid render 8/8, byte-identical 회귀). **시각 스크롤 고정만** 브라우저 미검증:
-- **알려진 이슈(maybe 아님)**: 상단 floating 행 `position:sticky; top:0` ↔ sticky `<thead> top:0` **겹침**(헤더 위에 붙음). 올바른 offset = thead 높이. → MOD-27 또는 후속 폴리시에서 thead 높이 측정해 `top: <thead-h>` 적용 + chromium 확인. 하단(`bottom:0`)은 해당 없음.
-- story 추가: `packages/grid-core/stories/Grid.floating-rows.stories.tsx`(상/하단·하단만·회귀 없음 3종).
+## ★ chromium 검증 (G-2 — 해소 완료)
+node 검증으로 **구성/배치/회귀** 완결(buildFloatingRows 8/8 + Grid render 8/8, byte-identical 회귀). **시각 스크롤 고정**은 chromium 으로 **해소**:
+- ~~알려진 이슈~~: 상단 floating 행 `top:0` ↔ sticky `<thead> top:0` 겹침. → **수정 완료**: `<thead>` 높이를 `useEffect` 로 측정(`theadRef.offsetHeight` → state)해 상단 floating 행 `sticky top: <thead-height>` 적용 → 헤더 *아래* 고정. 하단(`bottom:0`)은 해당 없음.
+- **chromium 검증**: `pnpm -F docs build-storybook` → static serve(:6006) → `tests/visual/floating-thead.spec.ts`(playwright/chromium): `FloatingScrollable` 스토리(가상화+40행) 스크롤 후 **top floating 행 top ≥ thead bottom**(겹침 0) PASS. **dev-harness 루프 첫 실제 chromium 검증** — LESS-002 의 storybook+chromium 하네스가 실제로 작동함을 실증.
+- story: `packages/grid-core/stories/Grid.floating-rows.stories.tsx`(상/하단·하단만·스크롤 가상화·회귀 4종). createColumns 는 `{id,name,type}` 형식 필수(`{accessorKey,header}` 는 비-string header→render throw, 스파이크가 검출).
 
 ## AC (G-1 — 측정 가능, node 검증)
 1. `buildRowClassName([{when:(d,i)=>i%2===1, className:'striped'}])` → 짝/홀 행에 'striped' on/off(실제 headless TanStack Row 로 검증).
