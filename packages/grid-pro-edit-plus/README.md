@@ -114,6 +114,26 @@ reps.forEach((rep) => {
 > range is index-based (`{row,col}`) while this is key-based. Map the range to `{ rowKeys,
 > columnIds }` in a small consumer adapter and pass the columns to `findMatches`.
 
+## Cell comments (G-4)
+
+Per-cell comments/notes persisted to `localStorage`/`sessionStorage` (SSR-safe). Keyed by
+`(rowKey, columnId)`.
+
+```tsx
+import { useCellComments } from '@topgrid/grid-pro-edit-plus';
+
+const notes = useCellComments({ storageKey: 'orders-notes' /*, storage: 'session', version: 1 */ });
+
+notes.setComment('r1', 'price', '검토 필요');
+notes.getComment('r1', 'price'); // '검토 필요'
+notes.deleteComment('r1', 'price');
+// notes.comments (ReadonlyMap), notes.clear()
+```
+
+> Persists on change, hydrates on mount. SSR / disabled-storage → in-memory no-op (no throw).
+> Corrupt or version-mismatched stored data is ignored (restored as empty). The pure key /
+> serialize helpers (`commentKey`, `serializeComments`, `deserializeComments`) are exported too.
+
 ## Roadmap
 
 | Goal | Status |
@@ -121,7 +141,7 @@ reps.forEach((rep) => {
 | G-1 validation rule engine | ✅ |
 | G-2 undo/redo stack (generic command stack over tracking mutators) | ✅ |
 | G-3 find & replace (key-based pure core; composes with G-2) | ✅ |
-| G-4 cell comments (storage-persisted) | planned |
+| G-4 cell comments (storage-persisted) | ✅ |
 
 ## License
 

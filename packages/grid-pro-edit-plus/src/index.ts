@@ -44,3 +44,17 @@ export {
   computeReplacements,
 } from './find-replace/findReplace.js';
 export type { FindOptions, CellMatch, Replacement } from './find-replace/types.js';
+
+// MOD-GRID-23 / G-4: cell comments + storage persistence. Self-contained (grid-core public
+// storage is GridState-shaped, internal/storage is non-public) — mirrors the storage envelope
+// convention, not the code (LESS-005). Pure serialize/key in ./comments/commentStore.
+export { useCellComments } from './comments/useCellComments.js';
+export {
+  commentKey,
+  serializeComments,
+  deserializeComments,
+} from './comments/commentStore.js';
+export type {
+  UseCellCommentsOptions,
+  CellCommentsAPI,
+} from './comments/types.js';
