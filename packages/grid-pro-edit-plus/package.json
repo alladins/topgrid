@@ -1,0 +1,39 @@
+{
+  "name": "@topgrid/grid-pro-edit-plus",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "SEE LICENSE IN EULA",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Pro: editing productivity — declarative validation rules (G-1), undo/redo, find&replace, cell comments",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "echo TODO"
+  },
+  "dependencies": {
+    "@topgrid/grid-license": "workspace:*"
+  },
+  "peerDependencies": {
+    "@topgrid/grid-core": "workspace:*",
+    "@topgrid/grid-pro-tracking": "workspace:*",
+    "@tanstack/react-table": "^8.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  }
+}

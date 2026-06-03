@@ -4,7 +4,7 @@
 
 | 접두 | 다음 번호 | 범위 |
 |------|----------|------|
-| PAT- | 006 | 패턴 (PAT-001~004 시드 + PAT-005 host-capability-injection @ MOD-19/20 N=2 승격) |
+| PAT- | 007 | 패턴 (PAT-001~004 시드 + PAT-005 host-capability-injection @ MOD-19/20 N=2 + PAT-006 declarative-rules-to-existing-contract-compiler @ MOD-24/23 G-1 N=2) |
 | AP-  | 005 | 안티패턴 (AP-001~004 시드됨) |
 | C-   | 004 | 제약 (C-001~003 시드됨) |
 | POL- | — | 정책 (POL-TANSTACK 시드됨) |
