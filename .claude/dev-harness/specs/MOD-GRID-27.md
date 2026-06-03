@@ -44,6 +44,12 @@ computeColumnWindow = 종결형(순수) · useColumnVirtualizer = 연동형(reac
 
 ## ★ Commit C 재개 플랜 (새 세션 — 헤더 윈도잉 + chromium 매트릭스)
 
+> ✅ **COMMIT C 완료** (2026-06): 헤더 윈도잉(`renderHeaderCell` 추출 + `renderWindowedHeaderCells`)
+> + 레이아웃 갭 시정(첫 chromium 이 검출: columnVirtEnabled 시 `table-layout:fixed`+`width=Σgetsize`,
+> width 항상 방출) + chromium 4/4 PASS(`tests/visual/column-virtualization.spec.ts`, 스토리
+> `stories/Grid.column-virtualized.stories.tsx`). OFF byte-identical 7/7 3회 재게이트 유지. 신규 [[LESS-006]].
+> MOD-GRID-27 = G-1+G-2 완주 → §3. **아래는 작업 당시 계획(이력 보존)**.
+
 > **현황**: G-1(순수 코어) + G-2 Commit A·B 완료·커밋. 작업 트리 clean. 남은 것 = Commit C.
 > **커밋**: G-1 `6d24d95` · A `346931f`(본문 라우팅, byte-identical 7/7) · B `bfdd804`(opt-in 배선) · 진행기록 `7bdbe3f`.
 

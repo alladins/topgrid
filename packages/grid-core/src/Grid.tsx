@@ -26,6 +26,7 @@ import {
 import {
   flexRender,
   useReactTable,
+  type Header,
   type Row,
   type ColumnFiltersState,
   type ColumnOrderState,
@@ -281,6 +282,10 @@ function GridInner<TData>(
     .map((c) => c.id);
   const columnWidths: Record<string, number> = {};
   for (const c of visibleLeaf) columnWidths[c.id] = c.getSize();
+  // Commit C: 컬럼 가상화 시 테이블을 전체 컬럼 폭으로 고정 → 컬럼이 getSize 너비를 그대로
+  // 가지며(table-layout:fixed) pad spacer 가 실제 스크롤 폭을 만든다. 미설정 시 auto 레이아웃이
+  // 컬럼을 컨테이너 폭으로 압축 → 윈도/pad px 계산과 어긋남(chromium 실증).
+  const totalColumnWidth = visibleLeaf.reduce((sum, c) => sum + c.getSize(), 0);
   const centerColumns = visibleLeaf.filter((c) => c.getIsPinned() === false);
   const centerSizes = centerColumns.map((c) => c.getSize());
   const fullWindowArgs = {
@@ -329,7 +334,10 @@ function GridInner<TData>(
       const cell = cellMap.get(id);
       if (!cell) return null;
       const cellSize = cell.column.getSize();
-      const applyCellWidth = useResizing || usePinning || cellSize !== 150;
+      // Commit C: 컬럼 가상화 시 width 항상 방출(table-layout:fixed 가 pad/윈도 px 와 일치하려면
+      // 모든 셀이 명시 너비를 가져야 함 — 핀/리사이즈 없는 default-150 그리드 대비).
+      const applyCellWidth =
+        useResizing || usePinning || columnVirtEnabled || cellSize !== 150;
       const pinnedCell = usePinning
         ? getPinnedCellStyle(cell.column, table, 'tbody')
         : { style: {}, className: '' };
@@ -413,6 +421,123 @@ function GridInner<TData>(
     );
   };
 
+  // MOD-GRID-27 G-2 (Commit C): 단일 `<th>` 렌더를 클로저로 추출 — flat 헤더 윈도잉이
+  // 본문 `renderWindowedCells` 와 동일 메커니즘으로 헤더 셀을 세그먼트 순서대로 방출하기 위함.
+  // 추출은 **verbatim**(OFF 경로 = `headers.map(renderHeaderCell)` → byte-identical 보존).
+  const renderHeaderCell = (header: Header<TData, unknown>): ReactElement => {
+    const canSort = header.column.getCanSort();
+    const sorted = header.column.getIsSorted();
+    const sortGlyph = sorted === 'asc' ? '▲' : sorted === 'desc' ? '▼' : '⇅';
+    // MOD-GRID-08: multi-sort badge index (0-based; -1 = not sorted).
+    const sortIndex = header.column.getSortIndex();
+    // D10: enableColumnResizing 또는 enableColumnPinning 시 항상 width 적용 (default 150 가드 제거).
+    const size = header.getSize();
+    // Commit C: 컬럼 가상화 시 헤더도 width 항상 방출(body applyCellWidth 와 동형).
+    const applyWidth =
+      useResizing || usePinning || columnVirtEnabled || size !== 150;
+    // D3: pinned 헤더 셀 sticky style + z-30 (thead × pinned intersection).
+    const pinned = usePinning
+      ? getPinnedCellStyle(header.column, table, 'thead')
+      : { style: {}, className: '' };
+    // exactOptionalPropertyTypes — width 만 조건부로 추가.
+    const combinedStyle: CSSProperties = { ...pinned.style };
+    if (applyWidth) combinedStyle.width = size;
+    // G-001 (MOD-GRID-07): 컬럼 드래그 재정렬 props (AC-001~AC-004).
+    // isPinned: column.getIsPinned() !== false → draggable=false + drop 무시 (AC-004).
+    const isPinned = header.column.getIsPinned() !== false;
+    const dragProps = getDragProps(header.column.id, isPinned);
+    // G-002 (MOD-GRID-07): keyboard handler per-header (AC-003, D8 focus-scoped).
+    const keyDownHandler = getKeyDownHandler(header.column.id, isPinned);
+
+    // MOD-GRID-08 AC-002/AC-004: multi-sort aware click handler.
+    // enableMultiSort=false (기본) 시 기존 단일 정렬 경로 100% 보존 (C-6).
+    const isMulti = props.enableMultiSort === true;
+    const handleHeaderClick = canSort
+      ? (e: ReactMouseEvent) => {
+          if (isMulti && (e.ctrlKey || e.metaKey)) {
+            // AC-004 / D4: Ctrl/Cmd+Click → 해당 컬럼 정렬 제거 (EC-003 Mac 지원).
+            table.setSorting((prev) =>
+              prev.filter((s) => s.id !== header.column.id),
+            );
+          } else if (isMulti && e.shiftKey) {
+            // AC-002: Shift+Click → 기존 정렬 유지하며 컬럼 추가 정렬.
+            // EC-004: Shift+Ctrl 동시 시 ctrlKey 먼저 체크하므로 여기 미도달.
+            header.column.toggleSorting(undefined, true);
+          } else {
+            // 기존 단일 정렬 경로 (enableMultiSort=false 또는 plain click).
+            header.column.getToggleSortingHandler()?.(e);
+          }
+        }
+      : undefined;
+    return (
+      <th
+        key={header.id}
+        colSpan={header.colSpan}
+        className={`relative px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap select-none ${
+          canSort ? 'cursor-pointer hover:bg-gray-100' : ''
+        } ${pinned.className}`}
+        style={combinedStyle}
+        onClick={handleHeaderClick}
+        draggable={dragProps.draggable}
+        onDragStart={(e) => dragProps.onDragStart(e.nativeEvent)}
+        onDragOver={(e) => dragProps.onDragOver(e.nativeEvent)}
+        onDragLeave={(e) => dragProps.onDragLeave(e.nativeEvent)}
+        onDrop={(e) => dragProps.onDrop(e.nativeEvent)}
+        onDragEnd={(e) => dragProps.onDragEnd(e.nativeEvent)}
+        tabIndex={0}
+        onKeyDown={(e) => keyDownHandler(e.nativeEvent)}
+        aria-roledescription={props.enableColumnReorder === true ? 'draggable column' : undefined}
+      >
+        {/* G-001 (MOD-GRID-07): drop 위치 시각 인디케이터 (AC-003, C-5 Tailwind). */}
+        <DropIndicator dragOverId={dragOverId} columnId={header.column.id} />
+        <div className="flex items-center gap-1">
+          {header.isPlaceholder
+            ? null
+            : flexRender(header.column.columnDef.header, header.getContext())}
+          {canSort && <span className="text-gray-400">{sortGlyph}</span>}
+          {/* AC-003 / MOD-GRID-08: 다중 정렬 우선순위 배지 (1/2/3). */}
+          {isMulti && canSort && <SortBadge sortIndex={sortIndex} />}
+        </div>
+        {useResizing && <ResizeHandle header={header} mode={resizeMode} />}
+      </th>
+    );
+  };
+
+  // MOD-GRID-27 G-2 (Commit C): flat 헤더 윈도잉 — 본문 `renderWindowedCells` 와 **동일 세그먼트
+  // 순서**([pinnedLeft][leftPad][windowCenter][rightPad][pinnedRight])로 `<th>` 방출 → 헤더가
+  // 바디와 같은 컬럼 집합·정렬·pad 폭을 갖는다. `columnVirtEnabled` 일 때만 사용(=flat 단일
+  // 헤더그룹 보장). pad `<th>` = aria-hidden spacer. center 외 컬럼은 핀(sticky)이라 항상 렌더.
+  const renderWindowedHeaderCells = (
+    headers: Header<TData, unknown>[],
+    window: ColumnWindow,
+  ): ReactElement[] => {
+    const headerMap = new Map(headers.map((hd) => [hd.column.id, hd] as const));
+    const nodes: ReactElement[] = [];
+    for (const id of window.pinnedLeftIds) {
+      const hd = headerMap.get(id);
+      if (hd) nodes.push(renderHeaderCell(hd));
+    }
+    if (window.leftPadPx > 0) {
+      nodes.push(
+        <th key="__cv_left_h" aria-hidden="true" style={{ width: window.leftPadPx }} />,
+      );
+    }
+    for (const id of window.windowCenterIds) {
+      const hd = headerMap.get(id);
+      if (hd) nodes.push(renderHeaderCell(hd));
+    }
+    if (window.rightPadPx > 0) {
+      nodes.push(
+        <th key="__cv_right_h" aria-hidden="true" style={{ width: window.rightPadPx }} />,
+      );
+    }
+    for (const id of window.pinnedRightIds) {
+      const hd = headerMap.get(id);
+      if (hd) nodes.push(renderHeaderCell(hd));
+    }
+    return nodes;
+  };
+
   return (
     <div className={`flex flex-col ${props.className ?? ''}`}>
       {props.columnPersistence !== undefined && (
@@ -426,86 +551,23 @@ function GridInner<TData>(
         </div>
       )}
       <div ref={scrollContainerRef} className={containerClassName} style={containerStyle}>
-        <table className={tableClassName}>
+        {/* Commit C: 컬럼 가상화 시 table-layout:fixed + 전체 컬럼 폭 → 컬럼이 getSize 너비를
+            유지하고 pad 가 실제 스크롤 폭을 만든다. (가로 스크롤 컨테이너 자체는 기존
+            overflow-x-auto 클래스/행가상화 inline overflow 가 제공 — P27 finding: Tailwind 미적용
+            소비자는 컨테이너 overflow 직접 지정 필요.) C-29 conditional spread. */}
+        <table
+          className={tableClassName}
+          {...(columnVirtEnabled
+            ? { style: { tableLayout: 'fixed' as const, width: totalColumnWidth } }
+            : {})}
+        >
           <thead ref={theadRef} className="bg-gray-50 sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  const canSort = header.column.getCanSort();
-                  const sorted = header.column.getIsSorted();
-                  const sortGlyph = sorted === 'asc' ? '▲' : sorted === 'desc' ? '▼' : '⇅';
-                  // MOD-GRID-08: multi-sort badge index (0-based; -1 = not sorted).
-                  const sortIndex = header.column.getSortIndex();
-                  // D10: enableColumnResizing 또는 enableColumnPinning 시 항상 width 적용 (default 150 가드 제거).
-                  const size = header.getSize();
-                  const applyWidth = useResizing || usePinning || size !== 150;
-                  // D3: pinned 헤더 셀 sticky style + z-30 (thead × pinned intersection).
-                  const pinned = usePinning
-                    ? getPinnedCellStyle(header.column, table, 'thead')
-                    : { style: {}, className: '' };
-                  // exactOptionalPropertyTypes — width 만 조건부로 추가.
-                  const combinedStyle: CSSProperties = { ...pinned.style };
-                  if (applyWidth) combinedStyle.width = size;
-                  // G-001 (MOD-GRID-07): 컬럼 드래그 재정렬 props (AC-001~AC-004).
-                  // isPinned: column.getIsPinned() !== false → draggable=false + drop 무시 (AC-004).
-                  const isPinned = header.column.getIsPinned() !== false;
-                  const dragProps = getDragProps(header.column.id, isPinned);
-                  // G-002 (MOD-GRID-07): keyboard handler per-header (AC-003, D8 focus-scoped).
-                  const keyDownHandler = getKeyDownHandler(header.column.id, isPinned);
-
-                  // MOD-GRID-08 AC-002/AC-004: multi-sort aware click handler.
-                  // enableMultiSort=false (기본) 시 기존 단일 정렬 경로 100% 보존 (C-6).
-                  const isMulti = props.enableMultiSort === true;
-                  const handleHeaderClick = canSort
-                    ? (e: ReactMouseEvent) => {
-                        if (isMulti && (e.ctrlKey || e.metaKey)) {
-                          // AC-004 / D4: Ctrl/Cmd+Click → 해당 컬럼 정렬 제거 (EC-003 Mac 지원).
-                          table.setSorting((prev) =>
-                            prev.filter((s) => s.id !== header.column.id),
-                          );
-                        } else if (isMulti && e.shiftKey) {
-                          // AC-002: Shift+Click → 기존 정렬 유지하며 컬럼 추가 정렬.
-                          // EC-004: Shift+Ctrl 동시 시 ctrlKey 먼저 체크하므로 여기 미도달.
-                          header.column.toggleSorting(undefined, true);
-                        } else {
-                          // 기존 단일 정렬 경로 (enableMultiSort=false 또는 plain click).
-                          header.column.getToggleSortingHandler()?.(e);
-                        }
-                      }
-                    : undefined;
-                  return (
-                    <th
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      className={`relative px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap select-none ${
-                        canSort ? 'cursor-pointer hover:bg-gray-100' : ''
-                      } ${pinned.className}`}
-                      style={combinedStyle}
-                      onClick={handleHeaderClick}
-                      draggable={dragProps.draggable}
-                      onDragStart={(e) => dragProps.onDragStart(e.nativeEvent)}
-                      onDragOver={(e) => dragProps.onDragOver(e.nativeEvent)}
-                      onDragLeave={(e) => dragProps.onDragLeave(e.nativeEvent)}
-                      onDrop={(e) => dragProps.onDrop(e.nativeEvent)}
-                      onDragEnd={(e) => dragProps.onDragEnd(e.nativeEvent)}
-                      tabIndex={0}
-                      onKeyDown={(e) => keyDownHandler(e.nativeEvent)}
-                      aria-roledescription={props.enableColumnReorder === true ? 'draggable column' : undefined}
-                    >
-                      {/* G-001 (MOD-GRID-07): drop 위치 시각 인디케이터 (AC-003, C-5 Tailwind). */}
-                      <DropIndicator dragOverId={dragOverId} columnId={header.column.id} />
-                      <div className="flex items-center gap-1">
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(header.column.columnDef.header, header.getContext())}
-                        {canSort && <span className="text-gray-400">{sortGlyph}</span>}
-                        {/* AC-003 / MOD-GRID-08: 다중 정렬 우선순위 배지 (1/2/3). */}
-                        {isMulti && canSort && <SortBadge sortIndex={sortIndex} />}
-                      </div>
-                      {useResizing && <ResizeHandle header={header} mode={resizeMode} />}
-                    </th>
-                  );
-                })}
+                {/* MOD-GRID-27 G-2: flat 헤더 윈도잉(ON) vs 전 헤더 렌더(OFF=byte-identical). */}
+                {columnVirtEnabled
+                  ? renderWindowedHeaderCells(headerGroup.headers, columnWindow)
+                  : headerGroup.headers.map(renderHeaderCell)}
               </tr>
             ))}
           </thead>

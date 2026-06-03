@@ -612,9 +612,14 @@ export interface GridProps<TData> {
    * **v1 제약**: **flat(단일 행) 헤더 전용** — 그룹/다단 헤더(`getHeaderGroups().length > 1`)에서는
    * colSpan 회계 복잡도로 자동 비활성(전 컬럼 렌더). 그룹 헤더 가상화는 v2.
    *
-   * **⚠️ 실험적(MOD-27 G-2 진행 중)**: 현재 본문(body) 가상화 배선 완료(off=기존과 byte-identical,
-   * SSR/미측정 시 전 컬럼 렌더). **헤더 가상화 + 브라우저 정렬 검증은 Commit C(chromium)에서 완성** —
-   * 그 전까지 `true` 로 켜면 가로 스크롤 시 헤더↔본문 정렬이 어긋날 수 있다. 완성 전 프로덕션 사용 비권장.
+   * **레이아웃**: `true` 시 `<table>` 은 `table-layout: fixed` + 전체 컬럼 폭(Σ`getSize()`)으로
+   * 고정되어 컬럼이 명시 너비를 정확히 유지한다(pad px 와 정렬 일치). 부수효과로 **셀 내용이 컬럼
+   * 너비를 넘으면 잘린다(clip)** — 가상화 그리드의 정상 거동. 가로 스크롤 컨테이너는 기존
+   * `overflow-x-auto`(또는 행 가상화의 `overflow:auto`)가 제공하므로 Tailwind 미적용 소비자는
+   * 컨테이너에 `overflow-x` 를 직접 지정해야 한다.
+   *
+   * **⚠️ 실험적**: 본문+헤더 가상화 배선 + chromium 정렬 매트릭스 완료(Commit C). off=기존과
+   * byte-identical, SSR/미측정 시 전 컬럼 렌더(안전 fallback).
    *
    * @default false
    */

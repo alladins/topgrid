@@ -738,10 +738,11 @@ PoC 후 단계적 결정.
 - descope(advisor): 원 4-feature 버킷은 비응집 — alternating=기존 `rowClassName` 포섭(신규 0), 조건부 서식=grid-features 순수 룰엔진(G-1), floating 합계행=grid-core props(G-2). **컬럼 가상화=렌더-엔진 인프라 → MOD-27 분리**.
 - 산출: `buildRowClassName`/`buildCellClassName`(grid-features, G-1) + `floatingTopRows`/`floatingBottomRows`(grid-core, G-2, `buildFloatingRows`). node 검증 G-1 5/5 + G-2 8/8(byte-identical 회귀) + **chromium 1/1**(thead-collision 수정 검증, `tests/visual/floating-thead.spec.ts`). 수확: reuse PAT-001, LESS-003 N=3, LESS-002 정밀화(grid-core node 마운트 + **chromium 하네스 실증**).
 
-**MOD-GRID-27 컬럼 가상화 (P1, grid-core 렌더-엔진 확장, MIT)** — 🔄 **구현중 (1/2)** (MOD-24 에서 분리)
+**MOD-GRID-27 컬럼 가상화 (P1, grid-core 렌더-엔진 확장, MIT)** — ✅ **구현됨 (G-1+G-2 완주 → §3)** (MOD-24 에서 분리)
 - Goal: 컬럼(가로) 가상화 — 화면 밖 center 컬럼 미렌더로 100+ 컬럼 렌더 비용 절감. 가로 padding-cell 패턴(세로 padding-row 의 가로 아날로그).
 - **G-1 완료**: `computeColumnWindow`(순수) — 핀-컬럼-항상-렌더 = **불변식**(fork 아님, advisor)으로 코어에 인코딩. `{renderedColumnIds:[...pinnedL,...windowCenter,...pinnedR], leftPadPx, rightPadPx}`(pad=center-only). + thin `useColumnVirtualizer`(가로 useVirtualizer). node 12/12(불변식·pad·순서·경계 전수). Grid.tsx 미접촉.
-- **G-2 진행 중**(advisor 3-commit 스테이징): **Commit A**(346931f) 본문 3경로를 `renderWindowedCells`(per-row Map)로 라우팅, full window, **byte-identical 7/7**(node renderToStaticMarkup). **Commit B**(bfdd804) `enableColumnVirtualization` opt-in + `useColumnVirtualizer`(가로) 배선, OFF byte-identical, ON=브라우저 측정 시 윈도잉(SSR 안전 fallback). **Commit C(별도 세션)**: 헤더 윈도잉(`renderHeaderCell` 추출+flat 헤더) + chromium 매트릭스(②핀 h-scroll 항상렌더 ③헤더↔바디 정렬 ④세로+가로 동시 ⑤resize). v1=flat-header(그룹헤더=v2).
+- **G-2 완료**(advisor 3-commit 스테이징): **Commit A**(346931f) 본문 3경로를 `renderWindowedCells`(per-row Map)로 라우팅, full window, **byte-identical 7/7**(node renderToStaticMarkup). **Commit B**(bfdd804) `enableColumnVirtualization` opt-in + `useColumnVirtualizer`(가로) 배선, OFF byte-identical, ON=브라우저 측정 시 윈도잉(SSR 안전 fallback). **Commit C**: 헤더 윈도잉(`renderHeaderCell` verbatim 추출 + `renderWindowedHeaderCells` flat 헤더, 본문과 동형 세그먼트) + **첫 chromium 이 Commit B 레이아웃 갭 검출**(table 전체폭 미설정→auto 압축→스크롤 죽음) → 게이트 시정(columnVirtEnabled 시 `table-layout:fixed`+`width=Σgetsize`, width 항상 방출). **chromium 매트릭스 5/5 PASS**(윈도 *이동* non-vacuous·핀 상존·헤더↔바디 nth-child x 정렬·세로+가로 동시·OFF 앵커). resize=비차단 미실시. v1=flat-header(그룹헤더=v2).
+  수확: reuse PAT-001 + `useGridVirtualizer` 패턴 mirror + TanStack 핀 API. 신규 **[[LESS-006]]**(node "안전 fallback" = ON 경로 미실행 → 브라우저 게이트 필수 + 단언은 *동적 윈도 이동*, 정적 count<N=vacuous). gap = §5.2 P27-1(스크롤 컨테이너 overflow=기존 overflow-x-auto 클래스 의존, 문서화).
 
 **MOD-GRID-25 export 고도화 (P1, grid-export 확장, MIT)** — ✅ **구현됨 → §3 `mod-grid-25` 참조** (dev-harness 5번째, 2번째 MIT/Lite)
 - Goal: Excel 셀 서식·다중 시트 export, 클립보드 헤더 옵션.
