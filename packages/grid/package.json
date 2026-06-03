@@ -43,7 +43,14 @@
     "@topgrid/grid-pro-merging": "workspace:*",
     "@topgrid/grid-pro-header": "workspace:*",
     "@topgrid/grid-pro-agg": "workspace:*",
-    "@topgrid/grid-pro-master": "workspace:*"
+    "@topgrid/grid-pro-master": "workspace:*",
+    "@topgrid/grid-sizing": "workspace:*",
+    "@topgrid/grid-pro-pivot": "workspace:*",
+    "@topgrid/grid-pro-chart": "workspace:*",
+    "@topgrid/grid-pro-panel": "workspace:*",
+    "@topgrid/grid-pro-edit-plus": "workspace:*",
+    "@topgrid/grid-pro-serverside": "workspace:*",
+    "@topgrid/grid-pro-sheet": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.0.0",

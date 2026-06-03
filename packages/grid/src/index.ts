@@ -1,8 +1,9 @@
 /**
  * @topgrid/grid — Meta package facade.
  *
- * Re-exports the public API of 13 underlying packages (4 MIT + 8 Pro + license).
+ * Re-exports the public API of 20 underlying packages (5 MIT + 14 Pro + license).
  * Activates per ADR-MOD-GRID-REFACTOR-2026-05-17-003 (Wave 4).
+ * 2026-06: added the 7 newer packages (sizing, pivot, chart, panel, edit-plus, serverside, sheet).
  *
  * Side-effect import of `@topgrid/grid-renderers` preserves cross-package wiring
  * established by ADR-002 (R-A) — `createColumns({ type: 'number' | ... })` dispatches
@@ -173,3 +174,42 @@ export * from '@topgrid/grid-pro-agg';
 //   above, so no collision.
 // ─────────────────────────────────────────────────────────────────────────────
 export * from '@topgrid/grid-pro-master';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// @topgrid/grid-sizing (MIT) — MOD-GRID-20
+// ─────────────────────────────────────────────────────────────────────────────
+export * from '@topgrid/grid-sizing';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// @topgrid/grid-pro-pivot (Pro) — MOD-GRID-18
+//   Note: pivot re-uses grid-pro-agg's key vocabulary (AggregationFnKey /
+//   BUILT_IN_AGGREGATION_KEYS) — same identity as grid-pro-agg above, no collision.
+// ─────────────────────────────────────────────────────────────────────────────
+export * from '@topgrid/grid-pro-pivot';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// @topgrid/grid-pro-chart (Pro) — MOD-GRID-19
+// ─────────────────────────────────────────────────────────────────────────────
+export * from '@topgrid/grid-pro-chart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// @topgrid/grid-pro-panel (Pro) — MOD-GRID-21
+//   Note: RowGroupPanel is a re-export of grid-pro-agg's GroupPanel under a new
+//   name — same identity, no collision.
+// ─────────────────────────────────────────────────────────────────────────────
+export * from '@topgrid/grid-pro-panel';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// @topgrid/grid-pro-edit-plus (Pro) — MOD-GRID-23
+// ─────────────────────────────────────────────────────────────────────────────
+export * from '@topgrid/grid-pro-edit-plus';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// @topgrid/grid-pro-serverside (Pro) — MOD-GRID-22 (SSRM)
+// ─────────────────────────────────────────────────────────────────────────────
+export * from '@topgrid/grid-pro-serverside';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// @topgrid/grid-pro-sheet (Pro) — MOD-GRID-26 (spreadsheet PoC)
+// ─────────────────────────────────────────────────────────────────────────────
+export * from '@topgrid/grid-pro-sheet';

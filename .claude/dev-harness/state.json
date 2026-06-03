@@ -24,7 +24,7 @@
       "minor_feature": { "grid-core": "0.2.0→0.3.0 (컬럼가상화+SSRM host touch)", "grid-export": "0.3.0→0.4.0 (MOD-25)", "grid-features": "0.5.0→0.6.0 (MOD-24)", "grid-pro-chart": "0.1.0→0.2.0 (MOD-19)", "grid-pro-edit-plus": "0.1.0→0.2.0 (MOD-23)", "grid-pro-panel": "0.1.0→0.2.0 (MOD-21)", "grid-pro-pivot": "0.1.0→0.2.0 (MOD-18)", "grid-sizing": "0.1.0→0.2.0 (MOD-20)" },
       "new_first_publish": { "grid-pro-serverside": "0.1.0 (MOD-22 SSRM)", "grid-pro-sheet": "0.1.0 (MOD-26 sheet PoC)" },
       "patch_peerdep_republish": { "grid-pro-master": "0.3.0→0.3.1", "grid-pro-tracking": "0.2.0→0.2.1", "grid-renderers": "0.2.0→0.2.1", "reason": "grid-core peerDep workspace:* → grid-core@0.3.0 일관성. grid-pro-merging은 grid-core 의존 없어 제외(메모리 stale)." },
-      "facade": "@topgrid/grid 0.3.0→0.4.0. **결정 보류(사용자)**: facade 는 13패키지 스냅샷 re-export — 신규 7개(serverside/sheet/pivot/chart/panel/edit-plus/sizing) 미포함. 메타에 추가할지는 외부 API 결정 → auto-add 안 함, 플래그만. grid-core props 변경=새 named export 아님 → 명시 re-export 유효.",
+      "facade": "@topgrid/grid 0.3.0→0.4.0. **사용자 결정=추가**: 신규 7개(sizing/pivot/chart/panel/edit-plus/serverside/sheet) facade 에 `export *` 추가(13→20 패키지). export 충돌 0(tsc+tsup 빌드 통과, 런타임 import 해결 확인: useServerSideData/useSheet/SheetGrid/PivotGrid/createSheet/useUndoRedo/createBlockCache). package.json deps 7개 추가. additive=minor(0.4.0) 유지.",
       "publish_cmd": "pnpm --filter \"@topgrid/*\" publish --access public --no-git-checks (travia71 Granular Token Bypass-2FA ON 필수, .npmrc 인증)"
     },
     "facade": "발행 시 meta @topgrid/grid 의 dependencies(workspace:* 자동) + 신규 패키지 추가 여부는 사용자 결정"

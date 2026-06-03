@@ -134,9 +134,15 @@ importers:
       '@topgrid/grid-pro-agg':
         specifier: workspace:*
         version: link:../grid-pro-agg
+      '@topgrid/grid-pro-chart':
+        specifier: workspace:*
+        version: link:../grid-pro-chart
       '@topgrid/grid-pro-datamap':
         specifier: workspace:*
         version: link:../grid-pro-datamap
+      '@topgrid/grid-pro-edit-plus':
+        specifier: workspace:*
+        version: link:../grid-pro-edit-plus
       '@topgrid/grid-pro-header':
         specifier: workspace:*
         version: link:../grid-pro-header
@@ -146,15 +152,30 @@ importers:
       '@topgrid/grid-pro-merging':
         specifier: workspace:*
         version: link:../grid-pro-merging
+      '@topgrid/grid-pro-panel':
+        specifier: workspace:*
+        version: link:../grid-pro-panel
+      '@topgrid/grid-pro-pivot':
+        specifier: workspace:*
+        version: link:../grid-pro-pivot
       '@topgrid/grid-pro-range':
         specifier: workspace:*
         version: link:../grid-pro-range
+      '@topgrid/grid-pro-serverside':
+        specifier: workspace:*
+        version: link:../grid-pro-serverside
+      '@topgrid/grid-pro-sheet':
+        specifier: workspace:*
+        version: link:../grid-pro-sheet
       '@topgrid/grid-pro-tracking':
         specifier: workspace:*
         version: link:../grid-pro-tracking
       '@topgrid/grid-renderers':
         specifier: workspace:*
         version: link:../grid-renderers
+      '@topgrid/grid-sizing':
+        specifier: workspace:*
+        version: link:../grid-sizing
       jspdf:
         specifier: ^2.5.0
         version: 2.5.2
