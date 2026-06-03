@@ -1,6 +1,6 @@
 {
   "name": "@topgrid/grid-export",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "license": "MIT",
   "description": "Excel, PDF, CSV export for grid data",
