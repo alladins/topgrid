@@ -18,6 +18,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
   type ReactElement,
   type Ref,
@@ -42,6 +43,7 @@ import { DropIndicator } from './internal/column-drag/DropIndicator';
 import { SortClearButton } from './internal/multi-sort/SortClearButton';
 import { buildTableOptions } from './internal/buildTableOptions';
 import { buildFloatingRows } from './internal/buildFloatingRows';
+import { computeColumnWindow, type ColumnWindow } from './internal/computeColumnWindow';
 import { getPinnedCellStyle } from './internal/computePinnedOffset';
 import { EmptyState } from './internal/EmptyState';
 import { ResizeHandle } from './internal/ResizeHandle';
@@ -265,6 +267,88 @@ function GridInner<TData>(
     setTheadHeight((prev) => (prev === h ? prev : h));
   });
 
+  // MOD-GRID-27 G-2 (Commit A): 컬럼 윈도우 — 본문/floating 셀 렌더를 단일 메커니즘으로 라우팅.
+  // 본 커밋은 **full window**(전 visible 컬럼, padding 0) → 출력 byte-identical. Commit B 에서
+  // enableColumnVirtualization 시 windowCenter+pad 로 전환. 핀 컬럼은 항상 렌더(불변식).
+  const visibleLeaf = table.getVisibleLeafColumns();
+  const fullColumnWindow: ColumnWindow = (() => {
+    const leafColumnIds = visibleLeaf.map((c) => c.id);
+    const pinnedLeftIds = visibleLeaf
+      .filter((c) => c.getIsPinned() === 'left')
+      .map((c) => c.id);
+    const pinnedRightIds = visibleLeaf
+      .filter((c) => c.getIsPinned() === 'right')
+      .map((c) => c.id);
+    const columnWidths: Record<string, number> = {};
+    for (const c of visibleLeaf) columnWidths[c.id] = c.getSize();
+    const centerCount =
+      leafColumnIds.length - pinnedLeftIds.length - pinnedRightIds.length;
+    return computeColumnWindow({
+      leafColumnIds,
+      columnWidths,
+      pinnedLeftIds,
+      pinnedRightIds,
+      centerStartIndex: 0,
+      centerEndIndex: centerCount - 1,
+    });
+  })();
+
+  // 한 행의 `<td>` 목록을 컬럼 윈도우 순서로 렌더(per-row Map 으로 O(n) 조회 — n² 회피).
+  // pad spacer 는 윈도우 px>0 일 때만(full window 에선 0 → 미방출 = byte-identical).
+  // opts: 본문 행 = handlers+cellClassName / floating 행 = 둘 다 없음(기존 마크업 보존).
+  const renderWindowedCells = (
+    row: Row<TData>,
+    window: ColumnWindow,
+    opts: { withHandlers: boolean; withCellClassName: boolean },
+  ): ReactElement[] => {
+    const cellMap = new Map(
+      row.getVisibleCells().map((c) => [c.column.id, c] as const),
+    );
+    const nodes: ReactElement[] = [];
+    if (window.leftPadPx > 0) {
+      nodes.push(
+        <td key="__cv_left" aria-hidden="true" style={{ width: window.leftPadPx }} />,
+      );
+    }
+    for (const id of window.renderedColumnIds) {
+      const cell = cellMap.get(id);
+      if (!cell) continue;
+      const cellSize = cell.column.getSize();
+      const applyCellWidth = useResizing || usePinning || cellSize !== 150;
+      const pinnedCell = usePinning
+        ? getPinnedCellStyle(cell.column, table, 'tbody')
+        : { style: {}, className: '' };
+      const cellStyle: CSSProperties = { ...pinnedCell.style };
+      if (applyCellWidth) cellStyle.width = cellSize;
+      const className = opts.withCellClassName
+        ? `px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className} ${props.cellClassName?.(cell) ?? ''}`
+        : `px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className}`;
+      nodes.push(
+        <td
+          key={cell.id}
+          className={className}
+          style={cellStyle}
+          {...(opts.withHandlers
+            ? {
+                onClick: (event: ReactMouseEvent<HTMLTableCellElement>) =>
+                  props.onCellClick?.(cell, row.original, event),
+                onKeyDown: (event: ReactKeyboardEvent<HTMLTableCellElement>) =>
+                  props.onCellKeyDown?.(cell, row.original, event),
+              }
+            : {})}
+        >
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </td>,
+      );
+    }
+    if (window.rightPadPx > 0) {
+      nodes.push(
+        <td key="__cv_right" aria-hidden="true" style={{ width: window.rightPadPx }} />,
+      );
+    }
+    return nodes;
+  };
+
   // MOD-GRID-24 G-2: floating(고정) 행 — 소비자 공급 추가 행을 실제 Row 로 변환(셀은
   // columnDef.cell 렌더러 통과). 미제공 시 빈 배열 → 렌더 0(기존 동작 불변).
   const floatingTopRows = buildFloatingRows(table, props.floatingTopRows, 'top');
@@ -274,7 +358,7 @@ function GridInner<TData>(
     'bottom',
   );
   // 본문 행과 동일한 셀 마크업으로 floating 행 1개를 렌더(sticky 고정).
-  // position: sticky 의 스크롤 고정 시각거동은 chromium 검증 대상(LESS-002).
+  // position: sticky 의 스크롤 고정 시각거동은 chromium 검증됨(MOD-24 G-2 / tests/visual).
   const renderFloatingRow = (row: Row<TData>, position: 'top' | 'bottom') => {
     const stickyStyle: CSSProperties =
       position === 'top'
@@ -287,23 +371,9 @@ function GridInner<TData>(
         className={`bg-gray-50 font-medium ${rowBorderClassName}`}
         style={stickyStyle}
       >
-        {row.getVisibleCells().map((cell) => {
-          const cellSize = cell.column.getSize();
-          const applyCellWidth = useResizing || usePinning || cellSize !== 150;
-          const pinnedCell = usePinning
-            ? getPinnedCellStyle(cell.column, table, 'tbody')
-            : { style: {}, className: '' };
-          const cellStyle: CSSProperties = { ...pinnedCell.style };
-          if (applyCellWidth) cellStyle.width = cellSize;
-          return (
-            <td
-              key={cell.id}
-              className={`px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className}`}
-              style={cellStyle}
-            >
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </td>
-          );
+        {renderWindowedCells(row, fullColumnWindow, {
+          withHandlers: false,
+          withCellClassName: false,
         })}
       </tr>
     );
@@ -455,32 +525,9 @@ function GridInner<TData>(
                         props.onRowDoubleClick?.(row.original, event)
                       }
                     >
-                      {row.getVisibleCells().map((cell) => {
-                        const cellSize = cell.column.getSize();
-                        const applyCellWidth =
-                          useResizing || usePinning || cellSize !== 150;
-                        const pinnedCell = usePinning
-                          ? getPinnedCellStyle(cell.column, table, 'tbody')
-                          : { style: {}, className: '' };
-                        const cellStyle: CSSProperties = { ...pinnedCell.style };
-                        if (applyCellWidth) cellStyle.width = cellSize;
-                        // G-006 D1: cellClassName callback.
-                        const extraCellClass = props.cellClassName?.(cell) ?? '';
-                        return (
-                          <td
-                            key={cell.id}
-                            className={`px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className} ${extraCellClass}`}
-                            style={cellStyle}
-                            onClick={(event) =>
-                              props.onCellClick?.(cell, row.original, event)
-                            }
-                            onKeyDown={(event) =>
-                              props.onCellKeyDown?.(cell, row.original, event)
-                            }
-                          >
-                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                          </td>
-                        );
+                      {renderWindowedCells(row, fullColumnWindow, {
+                        withHandlers: true,
+                        withCellClassName: true,
                       })}
                     </tr>
                   );
@@ -508,30 +555,9 @@ function GridInner<TData>(
                     onClick={(event) => props.onRowClick?.(row.original, event)}
                     onDoubleClick={(event) => props.onRowDoubleClick?.(row.original, event)}
                   >
-                    {row.getVisibleCells().map((cell) => {
-                      const cellSize = cell.column.getSize();
-                      const applyCellWidth = useResizing || usePinning || cellSize !== 150;
-                      // D3: pinned body 셀 sticky style + z-20.
-                      const pinnedCell = usePinning
-                        ? getPinnedCellStyle(cell.column, table, 'tbody')
-                        : { style: {}, className: '' };
-                      const cellStyle: CSSProperties = { ...pinnedCell.style };
-                      if (applyCellWidth) cellStyle.width = cellSize;
-                      // G-006 D1: cellClassName callback.
-                      const extraCellClass = props.cellClassName?.(cell) ?? '';
-                      return (
-                        <td
-                          key={cell.id}
-                          className={`px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className} ${extraCellClass}`}
-                          style={cellStyle}
-                          onClick={(event) => props.onCellClick?.(cell, row.original, event)}
-                          onKeyDown={(event) =>
-                            props.onCellKeyDown?.(cell, row.original, event)
-                          }
-                        >
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>
-                      );
+                    {renderWindowedCells(row, fullColumnWindow, {
+                      withHandlers: true,
+                      withCellClassName: true,
                     })}
                   </tr>
                 );
