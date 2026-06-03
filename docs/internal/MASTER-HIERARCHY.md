@@ -104,7 +104,9 @@
 ## 3. 모듈별 기능 매트릭스
 
 각 모듈 표 컬럼: **기능 / API 표면 / 분류 / 연결 관계 / 세부 / 상태**.
-전 20모듈을 모듈 번호 순서(`00 → 01 → 02 → 03 → 04 → renderers(05) → 06 → … → 17 → 99-a → 99-b`)로 채웠다.
+기반 20모듈을 모듈 번호 순서(`00 → 01 → … → 17 → 99-a → 99-b`)로 채운 뒤, dev-harness 이관 모듈
+(`18 pivot · 19 chart · 20 sizing · 21 panel · 25 export확장 · 24 표시고도화 · 23 edit-plus · 22 serverside ·
+27 컬럼가상화 · 26 sheet`)을 완주 순으로 append 했다. **전 모듈 §3 보유**(2026-06 매트릭스 완전성 검증 완료).
 모듈별로 발견된 gap 은 §3 표 안에 적지 않고 §5.2 에 집약한다.
 
 ### `mod-grid-00` — 모노레포 인프라 ✅ 채움
@@ -555,6 +557,56 @@
 | 라이선스(Pro) | index module-load `checkLicense()` | **권한가드** | PAT-003. grid-license runtime dependency. EULA.md | 첫 Pro since MOD-21 — MIT 2연속(20/25/24) 후 게이트 복귀 | 채움 |
 
 > dev-harness 수확: **reuse** = PAT-001 + PAT-003(라이선스) + 기존 계약(tracking `Validator`/`buildChangeSet`, grid-core `CellClassNameCallback`). **신규 = [[PAT-006]] 승격**(선언적 룰→기존 계약 컴파일러, N=2: MOD-24 G-1 + 본 G-1) + **[[LESS-005]]**(reuse-gate no-seam → host 수정 아닌 최소 primitive; PAT-006 음화 — G-2 undo/redo·G-4 storage 둘 다). [[LESS-003]] live-overlap(G-3 range 결합 해소). **4 AC 충족 방식**(advisor honesty-gate): ①add/edit/delete 충실(편집행 delete lossy=P23-1 문서화) ②columnId 스코핑(선택rect=어댑터) ③storage 영속 ④tracking Validator 경유(**buildChangeSet 실 round-trip 실증**). **AP 전수**: AP-001 vacuous(react/react-table required peer; grid-license required Pro dep; optional peer 0)·AP-003=0·AP-004 README↔index↔dist .d.ts 정합·`checkLicense` dist 존재·dist 금지어 0. node 검증 G1 8/G2 20/G3 15/G4 12. gap = §5.2 P23-1(문서화 한계, 비-defect).
+
+---
+
+### `mod-grid-22` — `@topgrid/grid-pro-serverside` (**Pro**) ✅ 채움 — dev-harness 이관(§6→§3, 첫 SSRM·3-Goal 완주)
+
+소스: `packages/grid-pro-serverside/src/{types.ts, internal/blockCache.ts, internal/serverSideController.ts, internal/treeCache.ts, internal/serverSideTreeController.ts, useServerSideData.ts, useServerSideTree.ts, index.ts}` + grid-core `{types.ts, internal/buildTableOptions.ts, internal/useGridVirtualizer.ts}`(host touch), spec `.claude/dev-harness/specs/MOD-GRID-22.md`. dev-harness 9번째. AG SSRM(server-side row model) 대응.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| datasource 계약 | `ServerSideDatasource<TData>`·`GetRowsRequest`·`GetRowsResult`·`SortModelItem`·`FilterModel` | **종결형**(계약) + 연동형 | 소비자↔서버 단일 seam. `getRows({startRow,endRow,sortModel,filterModel,groupKeys?,rowGroupCols?})→{rows,lastRow?}`. `lastRow`=끝 도달 시 절대 total(virtualizer 크기 선행 요구) | groupKeys/rowGroupCols **optional**(부재=flat 모드, G-1/G-2 후방호환). level=groupKeys.length, 그룹 vs leaf=level<rowGroupCols.length(AG 규약) | 채움 |
+| 순수 블록 캐시(G-1) | `createBlockCache`·`planBlocks`·`markLoading`·`acceptBlock`·`invalidate`·`materialize`·`clearBlock`·`blockIndexOf`·`blockBounds`·`isRowPlaceholder` | **종결형**(순수) | ★불변식=**query epoch stale-response 거부**(정렬/필터 변경 시 in-flight 옛 응답 폐기 — MOD-27 핀-불변식 동형, async race 를 node 에 못박음) | `planBlocks`=가시범위 필요 블록 중 미로드·in-flight 제외(1회/블록). `acceptBlock` epoch≠cache.epoch→폐기. `materialize`→placeholder 배열(LESS-005 형, 기존 `<Grid data>` 주입). node **26/26** | 채움 |
+| 무한스크롤 배선(G-2) | `useServerSideData(datasource,{blockSize,rowCount})→{gridProps,totalCount,refresh}`·React-free `createServerSideController` | **연동형** + 워크플로형 | virtualizer `onChange`→가시범위→`planBlocks`→`getRows`→`acceptBlock`(epoch)→`materialize`→setData. 데이터흐름=node 검증 컨트롤러로 분리, 훅=thin shell | AC① 스크롤→블록 1회·AC② 서버 정렬/필터·AC④ refresh 무효화. 컨트롤러 node **17/17**(epoch race 포함) + chromium **1/1**(실제 스크롤→블록 1회 lazy, DOM 적응형) | 채움 |
+| grid-core host touch(generic) | `manualSorting`·`manualFiltering`·`onSortingChange`·`onColumnFiltersChange` props + `virtualizerOptions.onChange` forward | **연결형** | grid-core 의 **generic** controlled/observable 표면 보완(SSRM 로직 0). manual*=`manualPagination` 미러(클라 row-model 억제), on*Change=onColumnPinning/Sizing 패턴, onChange=virtualizerOptions passthrough 완성 | **OFF byte-identical 7/7** + 회귀 6/6(비활성 시 무영향). **AC② manualSorting 억제 행동검증 7/7**(headless createTable: 활성정렬서 manual=입력순 유지/비-manual=정렬순=비-vacuous) | 채움 |
+| lazy 그룹/트리(G-3) | `useServerSideTree(datasource,{blockSize,rowGroupCols})→{gridProps,toggleGroup,refresh}`·`createServerSideTreeController`·`createTreeCache`/`toggleGroup`/`flattenTree`/`planTreeBlocks`/`acceptTreeBlock`·`TreeDisplayRow`/`SsrmRowMeta` | **종결형**(순수 트리) + 연동형 | **계층 캐시**=flat `Map<pathKey,BlockCacheState>`(각 노드 G-1 캐시 재사용, n-레벨) + `Set` expanded. ★불변식=자식 응답은 (a)전역 epoch AND (b)노드 맵 존재 시만 수락(collapse=purge→late 거부) | model A(flatten→display list→기존 `<Grid data>`, **grid-core host touch 0**). 그룹 토글=소비자 cell 렌더러(__ssrm meta). node **23/23 + gap 9/9**(sort-on-expanded: stale 폐기+확장 보존) + chromium **1/1 AC③**(펼침→자식 1회 lazy) | 채움 |
+| 라이선스(Pro) | index module-load `checkLicense()` | **권한가드** | PAT-003. grid-license runtime dependency. EULA.md | 첫 SSRM Pro 패키지 | 채움 |
+
+> dev-harness 수확: **reuse** = PAT-001 + PAT-005(getCell 류 materialize-injection) + PAT-003 + 기존 grid-core 행가상화/서버페이징/트리. **핵심 = epoch + node-existence 불변식**(async race 를 순수 코어에 못박음 — PAT 후보 *async-race-pinned-in-pure-core* N=2: G-2 epoch + G-3 node-existence). **[[LESS-006]] ×2 정면 적용**(매 Goal advisor 가 wired-but-unverified 검출→폐쇄: G-2 manualSorting 억제·G-3 sort-on-expanded — node 그린만으론 미검증인 경로를 headless/chromium 게이트로 폐쇄). **3 generic host touch**(SSRM 로직 0, OFF byte-identical 유지). **AP 전수**: AP-001 vacuous·AP-003=0·AP-004 export↔dist .d.ts(react-virtual peer 명시)·`checkLicense` dist·dist 금지어 0. v1 한계: rowCount-길이 placeholder 배열(LRU 0)·datasource 1회 캡처(memoize 권고)·purge-on-collapse 재fetch. gap 0(설계 한계만 문서화).
+
+---
+
+### `mod-grid-27` — 컬럼(가로) 가상화 (grid-core 렌더-엔진, **MIT**) ✅ 채움 — dev-harness 이관(§6→§3, MOD-24 에서 분리)
+
+소스: `packages/grid-core/src/{internal/computeColumnWindow.ts, internal/useColumnVirtualizer.ts, Grid.tsx, types.ts}` + `stories/Grid.column-virtualized.stories.tsx` + `tests/visual/column-virtualization.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-27.md`. dev-harness 8번째. AG column virtualization 대응. MOD-24 에서 분리(렌더-엔진 인프라).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 컬럼 윈도 순수 코어(G-1) | `computeColumnWindow(input)→{pinnedLeftIds,windowCenterIds,pinnedRightIds,leftPadPx,rightPadPx,renderedColumnIds}`·`ColumnWindow` | **종결형**(순수) | ★불변식=**핀 컬럼은 가상화 집합 미포함·항상 렌더**. padding=스킵된 *center* 너비만(핀 너비 0 기여) | center=leaf−pinned(순서보존). start/end=가로 virtualizer 인덱스 범위. node **12/12**(핀 불변식·pad=center-only·순서·경계·missing-width=0·clamp). Grid.tsx 미접촉 | 채움 |
+| 가로 virtualizer(G-1) | `useColumnVirtualizer(centerSizes,scrollRef,enabled,opts?)` | **연동형** | `useVirtualizer({horizontal:true,count,estimateSize,overscan})` — 세로 `useGridVirtualizer` mirror. enabled=false 시 count=0(rules-of-hooks) | react-virtual 기존 peer(신규 dep 0). `getVirtualItems()[0/last].index`→computeColumnWindow center 범위 | 채움 |
+| 본문 윈도잉(G-2 A/B) | `renderWindowedCells(row,window,opts)` — 본문 3경로(virtual/plain/floating) 라우팅 | **종결형** | per-row `Map<id,cell>`(O(n)). `[pinnedLeft][leftPad td][windowCenter][rightPad td][pinnedRight]` 세그먼트. `enableColumnVirtualization` opt-in + flat-header 게이트 | Commit A=full window byte-identical 라우팅, Commit B=opt-in 배선. **OFF byte-identical 7/7**(node renderToStaticMarkup). ON=브라우저 측정(SSR=안전 전컬럼 fallback) | 채움 |
+| 헤더 윈도잉 + 레이아웃(G-2 C) | `enableColumnVirtualization` prop(types.ts, experimental) · `renderHeaderCell`/`renderWindowedHeaderCells` · `<table>` `table-layout:fixed`+`width=Σgetsize`(게이트 시) | **종결형** + 연결형 | 헤더가 본문과 동형 세그먼트로 윈도잉(정렬 일치). **레이아웃 갭 시정**(첫 chromium 이 Commit B 비동작 검출: table 전체폭 미설정→auto 압축→스크롤 죽음) | `renderHeaderCell` verbatim 추출(OFF byte-identical) + columnVirtEnabled 시 table-layout:fixed·width 강제. **chromium 5/5**(윈도 *이동* non-vacuous·핀 상존·헤더↔바디 nth-child x 정렬·세로+가로 동시·OFF 앵커) | 채움 |
+| v1 한계(flat-header) | (설계 결정) | 종결형(부정) | 그룹/다단 헤더 + 컬럼 가상화 비양립 → flat leaf 헤더 전용(`getHeaderGroups().length>1` 시 자동 비활성=전 컬럼 렌더) | 그룹 헤더 가상화는 vN(colSpan 회계 복잡도). 스크롤 컨테이너 overflow=기존 overflow-x-auto 의존(Tailwind 미적용 소비자=직접 지정, §5.2 P27-1) | 채움 |
+
+> dev-harness 수확: **reuse** = PAT-001 + `useGridVirtualizer` 패턴 mirror + TanStack 핀 API(`getIsPinned`/getSize). **신규 = [[LESS-006]] 승격**(node "안전 fallback"=ON 경로 미실행→브라우저가 실제 게이트, 단언은 *동적 윈도 이동* 정적 count<N=vacuous 금지). **첫 chromium 이 Commit B 레이아웃 갭 검출**=node 그린≠동작의 실증. **MIT**(신규 패키지 0, 외부 dep 0). gap = §5.2 P27-1(Tailwind-less 컨테이너 overflow, 문서화). 분류: computeColumnWindow=종결형(순수)·useColumnVirtualizer=연동형.
+
+---
+
+### `mod-grid-26` — `@topgrid/grid-pro-sheet` (**Pro**, 스프레드시트 PoC) ✅ 채움 — dev-harness 이관(§6→§3, 첫 스프레드시트·PoC partial)
+
+소스: `packages/grid-pro-sheet/src/{types.ts, internal/cellAddress.ts, internal/parser.ts, internal/functions.ts, internal/evaluate.ts, internal/sheetEngine.ts, useSheet.ts, SheetGrid.tsx, index.ts}`, spec `.claude/dev-harness/specs/MOD-GRID-26.md`, ADR `.claude/dev-harness/decisions/ADR-002-*.md`. dev-harness 10번째. Wijmo FlexSheet·Handsontable 대응(PoC).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 값 모델 | `CellValue=number\|string\|boolean\|CellError`·`ErrorCode`(#DIV/0!/#CYCLE!/#REF!/#ERROR!)·`cellError`·`isCellError` | **종결형**(계약) | ★최우선 결정(advisor) — 모든 연산/함수가 error-aware **전파**. 깨진/순환 셀도 정의된 값(NaN/throw 0) | 평가기를 처음부터 error-aware 로 빌드(bolt-on 회피). AC② 재계산이 암묵 요구 | 채움 |
+| 수식 엔진(G-1) | `parseFormula`·`evaluate(ast,getCell)`·`extractRefs(ast)`·`compileCell`·`coerceLiteral`·`formatValue`·`parseA1`/`toA1`/`expandRange`·`Ast`/`CellGetter` | **종결형**(순수) | tokenize→재귀하강 parser→AST. `getCell` **주입**(PAT-005)→엔진이 셀 저장소 무관. `extractRefs`=같은 parse(G-2 재-parse 안 함) | `+−*/`·단항−·괄호·A1 참조·A1:B3 범위·함수호출. /0→#DIV/0!·비수치 산술→#ERROR!·범위 스칼라→#ERROR!·미지함수→#ERROR!. node **38/38** | 채움 |
+| 내장 함수 | `FUNCTIONS`(SUM/AVERAGE/MIN/MAX/COUNT) | **종결형**(순수) | **로컬 구현([[ADR-002]])** — 피벗 `BUILT_IN_REDUCERS` 재사용 불가(입력계약 상이: number[]+null vs error-aware CellValue[]+시트의미론) | error-aware(인자 에러 전파)·시트 의미론(SUM([])=0·AVERAGE([])=#DIV/0!·텍스트 무시). ADR-001 N=2 재독→still local | 채움 |
+| 의존 그래프 재계산(G-2) | `createSheet(onChange?)→{setCell,getValue,getRaw,getDisplay}`·`Sheet`/`SheetChange` | **워크플로형** + 종결형 | React-free 컨트롤러(node 검증). `extractRefs`→정/역방향 DAG. 편집 시 영향 셀(편집+전이 dependents)만 위상순 재계산(각 1회) | ★척추=**순환검출**(explicit visit-stack→#CYCLE!, **no stack overflow**)·전이 순서(다이아몬드 1회)·그래프 에러전파(#DIV/0! 전파+수정 복구). node **23/23** | 채움 |
+| thin 시트 그리드(G-3) | `useSheet()`·`SheetGrid({rows,cols})` | **연동형** + 트리거 | 셀=**수식 저장/값 표시**(stored≠rendered). grid-pro-range 재사용=`useCellRange`(선택)+`useClipboard`(copy=getDisplay=값/paste→setCell) | **편집 native**(double-click→raw 노출→Enter commit — useKeyboardEdit 부적합=reuse-gate finding). chromium **2/2**(라운드트립 + **copy=value** 비-vacuous) | 채움 |
+| 라이선스(Pro) | index module-load `checkLicense()` | **권한가드** | PAT-003. grid-license runtime dependency. EULA.md | 첫 스프레드시트 Pro 패키지 | 채움 |
+
+> dev-harness 수확: **reuse** = PAT-001 + **PAT-005**(getCell 주입으로 엔진 순수, N+1) + PAT-003 + grid-pro-range 편집/클립보드/범위(G-3). **신규 = [[ADR-002]]**(ADR-001 N=2 재독→로컬: 입력계약 error-aware≠number[]. **N=2≠자동추출**=재평가하라지 추출하라 아님, 깨끗한 컴파운딩 데이터포인트). **[[LESS-006]] ×3 적용**(매 Goal advisor 가 wired-but-unverified 검출: G-1 에러전파·G-2 척추·**G-3 clipboard copy=value glue**→폐쇄). **PoC partial**(§10.3): {G-1,G-2,G-3}→§3, 풀 시트 vN. **OUT(vN)**: 멀티탭 시트·셀 서식·상대참조 조정(copy/fill `$A$1`)·수백 함수. **AP 전수**: AP-001 vacuous(엔진 외부 런타임 import 0)·AP-004 export↔dist .d.ts·`checkLicense` dist·dist 금지어 0·eslint 0.
 
 ---
 
