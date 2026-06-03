@@ -42,5 +42,40 @@ grid-core 내부. peer 변경 0(react-virtual 기존). 신규 dependency 0.
 ## 분류 (MASTER §2)
 computeColumnWindow = 종결형(순수) · useColumnVirtualizer = 연동형(react-virtual wiring).
 
+## ★ Commit C 재개 플랜 (새 세션 — 헤더 윈도잉 + chromium 매트릭스)
+
+> **현황**: G-1(순수 코어) + G-2 Commit A·B 완료·커밋. 작업 트리 clean. 남은 것 = Commit C.
+> **커밋**: G-1 `6d24d95` · A `346931f`(본문 라우팅, byte-identical 7/7) · B `bfdd804`(opt-in 배선) · 진행기록 `7bdbe3f`.
+
+### 현재 코드 상태 (재개 시 읽을 것)
+- `packages/grid-core/src/internal/computeColumnWindow.ts` — 순수 코어. 출력 = `{pinnedLeftIds, windowCenterIds, pinnedRightIds, leftPadPx, rightPadPx, renderedColumnIds}`. node 18건 검증됨.
+- `packages/grid-core/src/internal/useColumnVirtualizer.ts` — 가로 virtualizer(center만).
+- `packages/grid-core/src/Grid.tsx`:
+  - 컬럼 파티션 계산(`visibleLeaf`/`pinnedLeftIds`/`pinnedRightIds`/`columnWidths`/`centerColumns`/`centerSizes`/`fullWindowArgs`) + `columnVirtEnabled`(flat-header 게이트) + `useColumnVirtualizer` 호출 + `columnWindow`(full|virtual) — 약 L257~ 영역.
+  - `renderWindowedCells(row, window, {withHandlers, withCellClassName})` — 본문 3경로(virtual/plain/floating)가 사용. **헤더는 아직 미사용**(전 헤더 렌더).
+  - `<thead>` L430~ : `getHeaderGroups().map(group => group.headers.map(header => <th>…large block…))` — **이 헤더 블록이 Commit C 대상**.
+- `props.enableColumnVirtualization`(types.ts, experimental 표기).
+
+### Commit C 작업 (순서)
+1. **헤더 윈도잉**:
+   - `<th>` 렌더 블록(L433~471 sort/drag/resize/colSpan)을 컴포넌트 내 `renderHeaderCell(header)` 클로저로 **verbatim 추출**.
+   - flat 헤더(`columnVirtEnabled` 且 `getHeaderGroups().length===1`)일 때만 윈도잉: 단일 헤더그룹의 `headers` 로 `Map<column.id, header>` 구성 → `renderWindowedCells` 와 동일 세그먼트 순서(`columnWindow.pinnedLeftIds`→leftPad `<th>`→`windowCenterIds`→rightPad `<th>`→`pinnedRightIds`)로 `<th>` 방출. pad `<th>` = `aria-hidden` + `style={{width: leftPadPx/rightPadPx}}`.
+   - 그룹 헤더 또는 off → 기존 `headers.map(renderHeaderCell)` 그대로(byte-identical).
+   - **게이트**: OFF byte-identical 재확인(아래 하네스). 헤더 추출이 출력 안 바꿈을 증명.
+2. **스토리**: `packages/grid-core/stories/Grid.floating-rows.stories.tsx` 또는 신규 — 20+ 컬럼(`createColumns([{id,name,type}…])` — **`{accessorKey,header}` 금지**: render throw, MOD-24 spike 교훈) + 핀(좌/우) + `enableColumnVirtualization: true` + 가로 스크롤 컨테이너(폭 제한). 세로+가로 동시 케이스도.
+3. **chromium 매트릭스**(`tests/visual/*.spec.ts`): 가로 스크롤 후 ①off-screen center 컬럼 미렌더(DOM에 없음) ②핀 좌/우 항상 존재 ③헤더↔바디 같은 컬럼 집합·정렬 ④pad 폭 합 일관 ⑤세로+가로 동시 ⑥resize 중. **non-vacuous** 단언(윈도잉 안 되면 실패).
+
+### chromium 실행 절차 (LESS-002 기록 — 검증됨)
+```
+pnpm -F docs build-storybook                              # storybook-static/ 생성(~40s)
+node <static-server> apps/docs/storybook-static 6006      # :6006 정적 서빙 (또는 pnpm -F docs storybook 개발서버)
+pnpm -F docs exec playwright test -c ../../playwright.config.ts <filter> --reporter=list
+#   ↑ @playwright/test 는 apps/docs cwd 에서만 resolve. story 는 #storybook-root 아래, iframe ?viewMode=story.
+#   서버 종료: PowerShell Get-NetTCPConnection -LocalPort 6006 → Stop-Process.
+```
+
+### OFF byte-identity 하네스 (Commit C 게이트 — 재생성용)
+node `renderToStaticMarkup` 로 grid-core 마운트(react 단일 resolve, LESS-002). committed 상태를 `git stash` 로 baseline 저장 → 편집 → 비교. 7케이스(basic/sortable/pinned/floating/virtual/pinnedFloating/empty) + 컬럼-virt-on 케이스. (이전 세션 `.bineq.mjs` 패턴 — 커밋 안 함, 재생성.)
+
 ## 수확 예상 (capture 시 검증 — G-1)
 reuse = **PAT-001**(순수 helper) + `useGridVirtualizer` 패턴(mirror) + TanStack 핀 API. floating-rows(MOD-24 G-2)·findReplace(MOD-23 G-3)에 이은 **"위험·가치를 순수 함수로 집중 → node 검증, 렌더는 thin"** 반복(PAT 후보? N 점검). 신규 lesson 후보 미정(클린일 수 있음). **partial**: G-1 코어 commit 후 **G-2 는 별도 세션**(advisor — 중심 파일 렌더 재작성, chromium 매트릭스).
