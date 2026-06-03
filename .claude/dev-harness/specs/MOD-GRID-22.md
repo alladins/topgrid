@@ -49,9 +49,12 @@
   - **캐시 무효화 API**(AC④): 정렬/필터 state 변경 → `invalidate`+epoch++ → 가시범위 재요청. `refresh()` 노출.
   - **검증**: mock-datasource 통합(node 가능 시) — *특정 블록* 행 출현 + getRows *정확히 1회/블록* 호출,
     epoch race(빠른 invalidate 후 옛 응답 도착 → 무시) 단언.
-- **G-3 lazy 그룹/트리 자식 fetch (AC③) — 별 Goal, deferrable/partial**:
-  - **계층 캐시**(flat 캐시의 파라미터화 아님 — 펼친 그룹마다 자체 자식 block-space 소유) + 서버 grouping params
-    (`groupKeys`/`rowGroupCols`). seam 이 flat 과 다름 → MOD-24/27 식 분리/연기. G-1·G-2 완료 후 defer 여부 결정.
+- **G-3 lazy 그룹/트리 자식 fetch (AC③) — ✅ 완료**:
+  - **계층 캐시** = flat `Map<pathKey, BlockCacheState>`(pathKey=`JSON.stringify(groupKeys)`, 각 노드가 G-1 캐시
+    재사용 — n-레벨 무료) + `Set<pathKey>` expanded. 서버 grouping params(`groupKeys`/`rowGroupCols` = `GetRowsRequest`
+    optional 추가, 부재=flat 후방호환). **척추 불변식**: 자식 응답은 (a)전역 epoch 일치 AND (b)노드 맵 존재 시만 수락
+    (collapse=purge → late 응답 거부). model A(flatten→display list→기존 `<Grid data>`, **grid-core host touch 0**)
+    + `useServerSideTree` 훅 + 스토리 그룹 cell 렌더러. node 23/23 + gap 9/9 + chromium AC③.
 
 ## AC
 1. **(G-2) 스크롤→블록 요청 1회/블록**: 같은 블록은 in-flight/loaded 중 재요청 0(`planBlocks` dedup).

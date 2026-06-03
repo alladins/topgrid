@@ -44,6 +44,34 @@ export type {
   ServerSideGridProps,
 } from './useServerSideData.js';
 
+// G-3 lazy grouping (hierarchical cache): pure tree core + React-free controller + thin hook.
+export {
+  createTreeCache,
+  pathKeyOf,
+  toggleGroup,
+  isExpanded,
+  invalidateTree,
+  ensureNode,
+  ensureVisibleNodes,
+  markTreeLoading,
+  acceptTreeBlock,
+  clearTreeBlock,
+  planTreeBlocks,
+  flattenTree,
+} from './internal/treeCache.js';
+export type { TreeBlockRequest } from './internal/treeCache.js';
+export { createServerSideTreeController } from './internal/serverSideTreeController.js';
+export type {
+  ServerSideTreeController,
+  ServerSideTreeControllerOptions,
+} from './internal/serverSideTreeController.js';
+export { useServerSideTree } from './useServerSideTree.js';
+export type {
+  UseServerSideTreeOptions,
+  UseServerSideTreeResult,
+  ServerSideTreeGridProps,
+} from './useServerSideTree.js';
+
 // Datasource contract + cache value types.
 export type {
   ServerSideDatasource,
@@ -55,4 +83,7 @@ export type {
   BlockStatus,
   BlockState,
   BlockCacheState,
+  SsrmRowMeta,
+  TreeDisplayRow,
+  TreeCacheState,
 } from './types.js';
