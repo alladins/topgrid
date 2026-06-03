@@ -5,13 +5,16 @@ sidebar_position: 4
 
 # 예제 — `@topgrid/grid` 사용 패턴
 
-자주 쓰는 Grid 패턴 3가지를 실제 동작하는 코드로 정리했다. 그대로 복사해
-React 프로젝트(`@topgrid/grid-core` 설치)에 붙여 실행할 수 있다.
+자주 쓰는 Grid 패턴을 실제 동작하는 코드로 정리했다. 그대로 복사해 React
+프로젝트에 붙여 실행할 수 있다. **인터랙티브 데모는 <a href="/storybook/" target="_blank" rel="noopener">Storybook 데모</a>** 에서
+실행해 볼 수 있다(전 패키지 ~30개 스토리).
 
 ```bash
 pnpm add @topgrid/grid-core @tanstack/react-table
 # 변경 추적 예제는 추가로:
 pnpm add @topgrid/grid-pro-tracking @topgrid/grid-license
+# 서버사이드 / 스프레드시트 예제는 추가로:
+pnpm add @topgrid/grid-pro-serverside @topgrid/grid-pro-sheet @tanstack/react-virtual
 ```
 
 ---
@@ -195,8 +198,133 @@ export default function App() {
 
 ---
 
+## 예제 4: 컬럼 가상화 (대량 컬럼)
+
+`enableColumnVirtualization` — 화면 밖 컬럼은 렌더하지 않아 100+ 컬럼 그리드의 렌더 비용을
+줄인다. **핀 컬럼은 가로 스크롤과 무관하게 항상 렌더**된다. 세로(`enableVirtualization`)와
+함께 쓰면 행·열 동시 가상화.
+
+```tsx
+import { Grid, createColumns } from '@topgrid/grid-core';
+
+type Row = Record<string, string>;
+
+// 50개 컬럼
+const columns = createColumns<Row>(
+  Array.from({ length: 50 }, (_, i) => ({
+    id: `c${i}`, name: `컬럼 ${i}`, type: 'text', width: '140',
+  })),
+);
+
+const data: Row[] = Array.from({ length: 200 }, (_, r) => {
+  const row: Row = {};
+  for (let i = 0; i < 50; i++) row[`c${i}`] = `${r}-${i}`;
+  return row;
+});
+
+export default function App() {
+  return (
+    <Grid
+      data={data}
+      columns={columns}
+      enableColumnVirtualization                              // 가로 가상화(opt-in)
+      enableColumnPinning
+      defaultColumnPinning={{ left: ['c0'], right: ['c49'] }} // 핀 컬럼은 항상 렌더
+      enableVirtualization                                    // 세로도 함께
+      virtualScrollHeight={400}
+    />
+  );
+}
+```
+
+---
+
+## 예제 5: 서버사이드 무한 스크롤 (SSRM)
+
+`@topgrid/grid-pro-serverside` — 대용량 서버 데이터를 블록 단위로 lazy 로드한다. 스크롤하면
+보이는 블록만 요청(1회/블록), 정렬/필터는 서버 파라미터로 전달된다. Pro 패키지(라이선스 필요).
+
+```tsx
+import { Grid } from '@topgrid/grid-core';
+import { useServerSideData } from '@topgrid/grid-pro-serverside';
+import type { ServerSideDatasource } from '@topgrid/grid-pro-serverside';
+import { setLicenseKey } from '@topgrid/grid-license';
+import { type ColumnDef } from '@tanstack/react-table';
+
+setLicenseKey('YOUR-LICENSE-KEY');
+
+type Row = { id: number; name: string; amount: number };
+
+// datasource — 실제로는 서버 호출. getRows 가 블록 요청을 받는다.
+const datasource: ServerSideDatasource<Row> = {
+  async getRows({ startRow, endRow, sortModel, filterModel }) {
+    const res = await fetch('/api/rows', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ startRow, endRow, sortModel, filterModel }),
+    });
+    const { rows, lastRow } = await res.json();
+    // lastRow = 끝에 도달했을 때의 전체 건수, 더 있으면 undefined
+    return { rows, lastRow };
+  },
+};
+
+const columns: ColumnDef<Row>[] = [
+  { accessorKey: 'id',     header: '#',    size: 80  },
+  { accessorKey: 'name',   header: '이름', size: 200 },
+  { accessorKey: 'amount', header: '금액', size: 150 },
+];
+
+export default function App() {
+  const { gridProps } = useServerSideData<Row>(datasource, {
+    blockSize: 100,     // 100행 단위 블록 lazy 로드
+    rowCount: 100_000,  // 초기 추정 총건수(lastRow 로 보정)
+  });
+  // gridProps = data(placeholder 배열) + enableVirtualization + manualSorting/Filtering
+  //            + onSortingChange/onColumnFiltersChange + virtualizerOptions
+  return <Grid columns={columns} {...gridProps} virtualScrollHeight={500} />;
+}
+```
+
+> 정렬/필터가 바뀌면 진행 중이던 이전 쿼리 응답은 자동 폐기된다(epoch 불변식 — 빠른 정렬
+> 토글 시 행 순서 손상 방지). lazy 그룹은 `useServerSideTree` 참고.
+
+---
+
+## 예제 6: 스프레드시트 (수식 셀)
+
+`@topgrid/grid-pro-sheet` — A1 참조 + 사칙연산 + `SUM/AVERAGE/MIN/MAX/COUNT` 수식. 셀은
+**수식을 저장하고 값을 표시**하며, 의존 셀이 바뀌면 자동 재계산된다(순환 참조 → `#CYCLE!`).
+Pro 패키지(라이선스 필요).
+
+```tsx
+import { SheetGrid } from '@topgrid/grid-pro-sheet';
+import { setLicenseKey } from '@topgrid/grid-license';
+
+setLicenseKey('YOUR-LICENSE-KEY');
+
+export default function App() {
+  // 셀을 더블클릭해 편집: =A1+A2, =SUM(A1:A3)*2, =1/0(→#DIV/0!) 등
+  return <SheetGrid rows={12} cols={6} />;
+}
+```
+
+순수 수식 엔진만 따로 쓸 수도 있다(그리드 없이):
+
+```tsx
+import { compileCell, evaluate, formatValue } from '@topgrid/grid-pro-sheet';
+
+const cells = { A1: 10, A2: 20, A3: 30 } as const;
+const compiled = compileCell('=SUM(A1:A3)*2'); // { kind:'formula', ast, refs:['A1','A2','A3'] }
+const value = evaluate(compiled.ast, (ref) => cells[ref] ?? ''); // 120
+formatValue(value); // "120"
+```
+
+---
+
 ## 관련 문서
 
+- <a href="/storybook/" target="_blank" rel="noopener">Storybook 데모</a> — 전 패키지 인터랙티브 컴포넌트 데모
 - [빠른 시작](/getting-started) — 설치와 기본 사용
 - [아키텍처](/architecture) — 13개 패키지 구성
 - [8개 Grid 변형 이전 가이드](./8-variant-table.md)

@@ -10,6 +10,7 @@
     "docs:clear": "docusaurus clear",
     "build": "docusaurus build",
     "build-storybook": "storybook build",
+    "build:site": "storybook build -o static/storybook && docusaurus build",
     "storybook": "storybook dev --port 6006",
     "visual:test": "playwright test",
     "visual:update-baseline": "playwright test --update-snapshots",

@@ -2,3 +2,6 @@
 # build artifacts
 build/
 .docusaurus/
+
+# bundled storybook (build:site artifact)
+static/storybook/
