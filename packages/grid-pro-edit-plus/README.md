@@ -53,12 +53,42 @@ const tracking = useChangeTracking<Row>({
 > `validate` returns `true` for **pass**, `false` for **violation**. Rules without a `field`
 > are row-level (message/commit-blocking only, no cell marking).
 
+## Undo / redo (G-2)
+
+A generic command stack over `grid-pro-tracking`'s public mutators. The reuse-gate found
+tracking exposes **no operation history / redo / state restore** (its `undoRow` restores the
+*mount snapshot*, not a step), so this is a minimal self-contained stack — **not** a tracking
+modification.
+
+```tsx
+import { useUndoRedo, makeUpdateCommand, makeAddCommand } from '@topgrid/grid-pro-edit-plus';
+
+const undoRedo = useUndoRedo();
+
+// perform the action, then record its command (the stack does not auto-execute)
+const key = tracking.addRow(seed);
+undoRedo.push(makeAddCommand(tracking, key, seed, 'id'));
+
+const prior = tracking.rows.find((r) => r.id === key)!; // value BEFORE the update
+tracking.updateRow(key, { name: 'new' });
+undoRedo.push(makeUpdateCommand(tracking, key, prior, { name: 'new' }));
+
+undoRedo.undo(); // reverts the update
+undoRedo.redo(); // re-applies it
+// undoRedo.canUndo / canRedo / clear()
+```
+
+> **Known limitation:** deleting an **already-edited existing row** cannot be faithfully undone —
+> tracking's `undoRow` would restore the mount snapshot and lose the in-session edits. `update`
+> and `add` are faithful; for delete-of-edited, push a custom `UndoRedoCommand` if you accept the
+> constraint. Faithful delete-undo would require a new seam in `grid-pro-tracking`.
+
 ## Roadmap
 
 | Goal | Status |
 |------|--------|
 | G-1 validation rule engine | ✅ |
-| G-2 undo/redo stack (builds on tracking `undoRow`/`__original`) | planned |
+| G-2 undo/redo stack (generic command stack over tracking mutators) | ✅ |
 | G-3 find & replace (reuses `grid-pro-range` clipboard/edit) | planned |
 | G-4 cell comments (storage-persisted) | planned |
 

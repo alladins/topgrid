@@ -20,3 +20,18 @@ export {
   buildValidationCellClass,
 } from './validation/buildValidation.js';
 export type { ValidationRule } from './validation/types.js';
+
+// MOD-GRID-23 / G-2: undo/redo — generic command stack + faithful tracking bindings.
+// REUSE-GATE returned NO SEAM (tracking exposes no operation history/redo/state restore,
+// see LESS-005) -> minimal self-contained command stack on top of tracking's public mutators,
+// NOT a tracking modification.
+export { useUndoRedo } from './undo-redo/useUndoRedo.js';
+export {
+  makeUpdateCommand,
+  makeAddCommand,
+} from './undo-redo/bindings.js';
+export type {
+  UndoRedoCommand,
+  UndoRedoAPI,
+  CommandStackState,
+} from './undo-redo/types.js';
