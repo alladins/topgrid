@@ -25,12 +25,18 @@ export interface ColumnWindowInput {
 }
 
 export interface ColumnWindow {
-  /** 렌더할 컬럼 id: `[...pinnedLeft, ...windowCenter, ...pinnedRight]`. */
-  renderedColumnIds: string[];
-  /** 윈도 앞 스킵된 center 컬럼 너비 합(px) — 핀 너비 미포함. */
+  /** 좌측 핀 컬럼 id(항상 렌더). */
+  pinnedLeftIds: string[];
+  /** 윈도 내 center 컬럼 id. */
+  windowCenterIds: string[];
+  /** 우측 핀 컬럼 id(항상 렌더). */
+  pinnedRightIds: string[];
+  /** 윈도 앞 스킵된 center 컬럼 너비 합(px) — 핀 너비 미포함. pinnedLeft 와 windowCenter *사이* spacer. */
   leftPadPx: number;
-  /** 윈도 뒤 스킵된 center 컬럼 너비 합(px) — 핀 너비 미포함. */
+  /** 윈도 뒤 스킵된 center 컬럼 너비 합(px) — 핀 너비 미포함. windowCenter 와 pinnedRight *사이* spacer. */
   rightPadPx: number;
+  /** 편의: 렌더 순서 `[...pinnedLeft, ...windowCenter, ...pinnedRight]`(pad 미포함). */
+  renderedColumnIds: string[];
 }
 
 export function computeColumnWindow(input: ColumnWindowInput): ColumnWindow {
@@ -47,12 +53,18 @@ export function computeColumnWindow(input: ColumnWindowInput): ColumnWindow {
   const centerIds = leafColumnIds.filter((id) => !pinned.has(id));
   const widthOf = (id: string): number => columnWidths[id] ?? 0;
 
+  const pinnedLeft = [...pinnedLeftIds];
+  const pinnedRight = [...pinnedRightIds];
+
   if (centerIds.length === 0) {
     // 전부 핀 — center 윈도 없음, padding 0.
     return {
-      renderedColumnIds: [...pinnedLeftIds, ...pinnedRightIds],
+      pinnedLeftIds: pinnedLeft,
+      windowCenterIds: [],
+      pinnedRightIds: pinnedRight,
       leftPadPx: 0,
       rightPadPx: 0,
+      renderedColumnIds: [...pinnedLeft, ...pinnedRight],
     };
   }
 
@@ -67,8 +79,11 @@ export function computeColumnWindow(input: ColumnWindowInput): ColumnWindow {
   for (let i = end + 1; i < centerIds.length; i++) rightPadPx += widthOf(centerIds[i]);
 
   return {
-    renderedColumnIds: [...pinnedLeftIds, ...windowCenter, ...pinnedRightIds],
+    pinnedLeftIds: pinnedLeft,
+    windowCenterIds: windowCenter,
+    pinnedRightIds: pinnedRight,
     leftPadPx,
     rightPadPx,
+    renderedColumnIds: [...pinnedLeft, ...windowCenter, ...pinnedRight],
   };
 }

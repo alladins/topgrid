@@ -44,6 +44,7 @@ import { SortClearButton } from './internal/multi-sort/SortClearButton';
 import { buildTableOptions } from './internal/buildTableOptions';
 import { buildFloatingRows } from './internal/buildFloatingRows';
 import { computeColumnWindow, type ColumnWindow } from './internal/computeColumnWindow';
+import { useColumnVirtualizer } from './internal/useColumnVirtualizer';
 import { getPinnedCellStyle } from './internal/computePinnedOffset';
 import { EmptyState } from './internal/EmptyState';
 import { ResizeHandle } from './internal/ResizeHandle';
@@ -271,27 +272,47 @@ function GridInner<TData>(
   // 본 커밋은 **full window**(전 visible 컬럼, padding 0) → 출력 byte-identical. Commit B 에서
   // enableColumnVirtualization 시 windowCenter+pad 로 전환. 핀 컬럼은 항상 렌더(불변식).
   const visibleLeaf = table.getVisibleLeafColumns();
-  const fullColumnWindow: ColumnWindow = (() => {
-    const leafColumnIds = visibleLeaf.map((c) => c.id);
-    const pinnedLeftIds = visibleLeaf
-      .filter((c) => c.getIsPinned() === 'left')
-      .map((c) => c.id);
-    const pinnedRightIds = visibleLeaf
-      .filter((c) => c.getIsPinned() === 'right')
-      .map((c) => c.id);
-    const columnWidths: Record<string, number> = {};
-    for (const c of visibleLeaf) columnWidths[c.id] = c.getSize();
-    const centerCount =
-      leafColumnIds.length - pinnedLeftIds.length - pinnedRightIds.length;
-    return computeColumnWindow({
-      leafColumnIds,
-      columnWidths,
-      pinnedLeftIds,
-      pinnedRightIds,
-      centerStartIndex: 0,
-      centerEndIndex: centerCount - 1,
-    });
-  })();
+  const leafColumnIds = visibleLeaf.map((c) => c.id);
+  const pinnedLeftIds = visibleLeaf
+    .filter((c) => c.getIsPinned() === 'left')
+    .map((c) => c.id);
+  const pinnedRightIds = visibleLeaf
+    .filter((c) => c.getIsPinned() === 'right')
+    .map((c) => c.id);
+  const columnWidths: Record<string, number> = {};
+  for (const c of visibleLeaf) columnWidths[c.id] = c.getSize();
+  const centerColumns = visibleLeaf.filter((c) => c.getIsPinned() === false);
+  const centerSizes = centerColumns.map((c) => c.getSize());
+  const fullWindowArgs = {
+    leafColumnIds,
+    columnWidths,
+    pinnedLeftIds,
+    pinnedRightIds,
+    centerStartIndex: 0,
+    centerEndIndex: centerColumns.length - 1,
+  };
+
+  // MOD-GRID-27 G-2: 컬럼(가로) 가상화. flat 헤더 전용(그룹 헤더면 자동 비활성). 핀 컬럼은
+  // center 가상화 집합에서 제외 → 항상 렌더(불변식). hook 은 rules-of-hooks 위해 항상 호출.
+  const isFlatHeader = table.getHeaderGroups().length <= 1;
+  const columnVirtEnabled =
+    props.enableColumnVirtualization === true && isFlatHeader;
+  const columnVirtualizer = useColumnVirtualizer(
+    centerSizes,
+    scrollContainerRef,
+    columnVirtEnabled,
+  );
+  let columnWindow: ColumnWindow = computeColumnWindow(fullWindowArgs);
+  if (columnVirtEnabled && columnVirtualizer) {
+    const items = columnVirtualizer.getVirtualItems();
+    if (items.length > 0) {
+      columnWindow = computeColumnWindow({
+        ...fullWindowArgs,
+        centerStartIndex: items[0].index,
+        centerEndIndex: items[items.length - 1].index,
+      });
+    }
+  }
 
   // 한 행의 `<td>` 목록을 컬럼 윈도우 순서로 렌더(per-row Map 으로 O(n) 조회 — n² 회피).
   // pad spacer 는 윈도우 px>0 일 때만(full window 에선 0 → 미방출 = byte-identical).
@@ -304,15 +325,9 @@ function GridInner<TData>(
     const cellMap = new Map(
       row.getVisibleCells().map((c) => [c.column.id, c] as const),
     );
-    const nodes: ReactElement[] = [];
-    if (window.leftPadPx > 0) {
-      nodes.push(
-        <td key="__cv_left" aria-hidden="true" style={{ width: window.leftPadPx }} />,
-      );
-    }
-    for (const id of window.renderedColumnIds) {
+    const renderCell = (id: string): ReactElement | null => {
       const cell = cellMap.get(id);
-      if (!cell) continue;
+      if (!cell) return null;
       const cellSize = cell.column.getSize();
       const applyCellWidth = useResizing || usePinning || cellSize !== 150;
       const pinnedCell = usePinning
@@ -323,7 +338,7 @@ function GridInner<TData>(
       const className = opts.withCellClassName
         ? `px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className} ${props.cellClassName?.(cell) ?? ''}`
         : `px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className}`;
-      nodes.push(
+      return (
         <td
           key={cell.id}
           className={className}
@@ -338,13 +353,32 @@ function GridInner<TData>(
             : {})}
         >
           {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </td>,
+        </td>
       );
+    };
+    // [pinnedLeft][leftPad][windowCenter][rightPad][pinnedRight] — pad 는 핀 사이에 위치.
+    const nodes: ReactElement[] = [];
+    for (const id of window.pinnedLeftIds) {
+      const n = renderCell(id);
+      if (n) nodes.push(n);
+    }
+    if (window.leftPadPx > 0) {
+      nodes.push(
+        <td key="__cv_left" aria-hidden="true" style={{ width: window.leftPadPx }} />,
+      );
+    }
+    for (const id of window.windowCenterIds) {
+      const n = renderCell(id);
+      if (n) nodes.push(n);
     }
     if (window.rightPadPx > 0) {
       nodes.push(
         <td key="__cv_right" aria-hidden="true" style={{ width: window.rightPadPx }} />,
       );
+    }
+    for (const id of window.pinnedRightIds) {
+      const n = renderCell(id);
+      if (n) nodes.push(n);
     }
     return nodes;
   };
@@ -371,7 +405,7 @@ function GridInner<TData>(
         className={`bg-gray-50 font-medium ${rowBorderClassName}`}
         style={stickyStyle}
       >
-        {renderWindowedCells(row, fullColumnWindow, {
+        {renderWindowedCells(row, columnWindow, {
           withHandlers: false,
           withCellClassName: false,
         })}
@@ -525,7 +559,7 @@ function GridInner<TData>(
                         props.onRowDoubleClick?.(row.original, event)
                       }
                     >
-                      {renderWindowedCells(row, fullColumnWindow, {
+                      {renderWindowedCells(row, columnWindow, {
                         withHandlers: true,
                         withCellClassName: true,
                       })}
@@ -555,7 +589,7 @@ function GridInner<TData>(
                     onClick={(event) => props.onRowClick?.(row.original, event)}
                     onDoubleClick={(event) => props.onRowDoubleClick?.(row.original, event)}
                   >
-                    {renderWindowedCells(row, fullColumnWindow, {
+                    {renderWindowedCells(row, columnWindow, {
                       withHandlers: true,
                       withCellClassName: true,
                     })}

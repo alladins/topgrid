@@ -601,6 +601,25 @@ export interface GridProps<TData> {
    */
   floatingBottomRows?: TData[];
 
+  // ─── MOD-GRID-27 G-2: 컬럼(가로) 가상화 ───
+  /**
+   * 컬럼(가로) 가상화 활성 (MOD-GRID-27). `true` 시 화면 밖 **center** 컬럼은 렌더하지 않고
+   * 좌/우 padding 셀로 가로 스크롤 폭만 유지한다 — 100+ 컬럼의 렌더 비용 절감.
+   *
+   * **핀 컬럼은 가상화 대상이 아니며 가로 스크롤과 무관하게 항상 렌더된다.** 미지정/`false` →
+   * 전 컬럼 렌더(기존 동작과 byte-identical).
+   *
+   * **v1 제약**: **flat(단일 행) 헤더 전용** — 그룹/다단 헤더(`getHeaderGroups().length > 1`)에서는
+   * colSpan 회계 복잡도로 자동 비활성(전 컬럼 렌더). 그룹 헤더 가상화는 v2.
+   *
+   * **⚠️ 실험적(MOD-27 G-2 진행 중)**: 현재 본문(body) 가상화 배선 완료(off=기존과 byte-identical,
+   * SSR/미측정 시 전 컬럼 렌더). **헤더 가상화 + 브라우저 정렬 검증은 Commit C(chromium)에서 완성** —
+   * 그 전까지 `true` 로 켜면 가로 스크롤 시 헤더↔본문 정렬이 어긋날 수 있다. 완성 전 프로덕션 사용 비권장.
+   *
+   * @default false
+   */
+  enableColumnVirtualization?: boolean;
+
   // ─── G-003 신규: 로딩 (D5/D8) ───
   /**
    * 로딩 상태. `true` 시 `<tbody>` 영역만 skeleton row 로 치환 (thead 보존 — D5).
