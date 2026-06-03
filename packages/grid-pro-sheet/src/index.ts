@@ -30,6 +30,12 @@ export { parseA1, toA1, expandRange } from './internal/cellAddress.js';
 export { createSheet } from './internal/sheetEngine.js';
 export type { Sheet, SheetChange } from './internal/sheetEngine.js';
 
+// G-3 thin React surface (reuses grid-pro-range editing/clipboard).
+export { useSheet } from './useSheet.js';
+export type { UseSheetResult } from './useSheet.js';
+export { SheetGrid } from './SheetGrid.js';
+export type { SheetGridProps } from './SheetGrid.js';
+
 // Value model + AST.
 export { cellError, isCellError } from './types.js';
 export type {

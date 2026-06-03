@@ -1,0 +1,130 @@
+/**
+ * `SheetGrid` — thin spreadsheet grid (MOD-GRID-26 G-3, PoC). Demonstrates the load-bearing
+ * spreadsheet property: a cell **stores a formula but displays a value** (stored ≠ rendered).
+ * Double-click a cell to edit its raw `=A1+A2`; commit re-parses + recalculates.
+ *
+ * REUSE ([[LESS-003]]) of `@topgrid/grid-pro-range`:
+ * - `useCellRange` — mouse range selection (highlight).
+ * - `useClipboard` — Ctrl+C/V; `getCellValue` = the **displayed value** (copy = value, PoC choice),
+ *   `onPaste` writes pasted text straight to `setCell`.
+ *
+ * PoC: absolute refs, value-copy (no relative-ref adjustment), inline edit via double-click/Enter.
+ */
+
+import { useCallback, useState, type CSSProperties, type KeyboardEvent } from 'react';
+import { useCellRange, useClipboard, isInRange } from '@topgrid/grid-pro-range';
+import type { CellUpdate } from '@topgrid/grid-pro-range';
+import { useSheet } from './useSheet.js';
+import { toA1 } from './internal/cellAddress.js';
+
+export interface SheetGridProps {
+  /** Number of rows (default 12). */
+  rows?: number;
+  /** Number of columns (default 6). */
+  cols?: number;
+}
+
+const cellStyle: CSSProperties = {
+  border: '1px solid #ddd',
+  padding: '2px 6px',
+  minWidth: 64,
+  height: 22,
+  fontFamily: 'sans-serif',
+  fontSize: 13,
+};
+const headerStyle: CSSProperties = { ...cellStyle, background: '#f3f4f6', textAlign: 'center', fontWeight: 600 };
+
+export function SheetGrid({ rows = 12, cols = 6 }: SheetGridProps): JSX.Element {
+  const { setCell, getDisplay, getRaw } = useSheet();
+  const [editing, setEditing] = useState<{ row: number; col: number } | null>(null);
+  const [editText, setEditText] = useState('');
+  const { range, handleMouseDown, handleMouseEnter, handleMouseUp } = useCellRange();
+
+  const refOf = (row: number, col: number): string => toA1(col, row);
+
+  const startEdit = useCallback(
+    (row: number, col: number) => {
+      setEditText(getRaw(refOf(row, col)));
+      setEditing({ row, col });
+    },
+    [getRaw],
+  );
+
+  const commit = useCallback(() => {
+    if (editing) setCell(refOf(editing.row, editing.col), editText);
+    setEditing(null);
+  }, [editing, editText, setCell]);
+
+  // REUSE: copy = displayed value; paste writes raw text to cells.
+  const { onKeyDown: clipboardKeyDown } = useClipboard({
+    selection: range,
+    activeCell: range?.start ?? null,
+    rowCount: rows,
+    colCount: cols,
+    getCellValue: (row, col) => getDisplay(refOf(row, col)),
+    onPaste: (cells: CellUpdate[]) => {
+      for (const u of cells) setCell(refOf(u.row, u.col), String(u.value));
+    },
+  });
+
+  const colHeaders = Array.from({ length: cols }, (_, c) => toA1(c, 0).replace(/[0-9]+$/, ''));
+
+  return (
+    <div
+      tabIndex={0}
+      onKeyDown={clipboardKeyDown}
+      onMouseUp={handleMouseUp}
+      style={{ display: 'inline-block', outline: 'none' }}
+    >
+      <table style={{ borderCollapse: 'collapse' }}>
+        <thead>
+          <tr>
+            <th style={headerStyle} />
+            {colHeaders.map((h) => (
+              <th key={h} style={headerStyle}>{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {Array.from({ length: rows }, (_, row) => (
+            <tr key={row}>
+              <th style={headerStyle}>{row + 1}</th>
+              {Array.from({ length: cols }, (_, col) => {
+                const ref = refOf(row, col);
+                const isEditing = editing?.row === row && editing?.col === col;
+                const selected = isInRange(row, col, range);
+                return (
+                  <td
+                    key={ref}
+                    data-cell={ref}
+                    onMouseDown={(e) => handleMouseDown(row, col, e.shiftKey)}
+                    onMouseEnter={() => handleMouseEnter(row, col)}
+                    onDoubleClick={() => startEdit(row, col)}
+                    style={{ ...cellStyle, background: selected ? '#dbeafe' : undefined }}
+                  >
+                    {isEditing ? (
+                      <input
+                        autoFocus
+                        data-testid={`edit-${ref}`}
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        onBlur={commit}
+                        onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                          if (e.key === 'Enter') commit();
+                          else if (e.key === 'Escape') setEditing(null);
+                        }}
+                        style={{ width: 60, border: 'none', font: 'inherit', outline: '2px solid #2563eb' }}
+                      />
+                    ) : (
+                      <span>{getDisplay(ref)}</span>
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
