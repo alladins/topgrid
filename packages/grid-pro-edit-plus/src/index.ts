@@ -29,6 +29,7 @@ export { useUndoRedo } from './undo-redo/useUndoRedo.js';
 export {
   makeUpdateCommand,
   makeAddCommand,
+  makeDeleteCommand,
 } from './undo-redo/bindings.js';
 export type {
   UndoRedoCommand,

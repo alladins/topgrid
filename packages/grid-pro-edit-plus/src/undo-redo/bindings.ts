@@ -70,3 +70,48 @@ export function makeAddCommand<TData>(
     },
   };
 }
+
+/**
+ * `deleteRow` 의 undo/redo 명령. undo 경로는 행이 **세션에서 추가된 행인지(`'added'`)** vs
+ * **기존 행인지(`'existing'`)** 에 따라 다르다:
+ * - `'added'`: undo = 포착한 행+키로 **재추가**(`addRow`), redo = `deleteRow`.
+ * - `'existing'`: undo = `undoRow(key)`(마운트 스냅샷 복원), redo = `deleteRow`.
+ *
+ * **한계([[LESS-005]], §5.2 P23-1)**: `'existing'` 의 undo 는 *마운트 스냅샷* 복원이므로 삭제 전
+ * 세션 편집이 있었다면 그 편집은 **손실**된다(편집되지 않은 기존 행에서만 충실). 편집된 기존 행의
+ * 충실한 삭제-undo 는 tracking 의 새 seam 이 필요하다.
+ *
+ * @param deletedRow `'added'` 재추가용 행 값(삭제 시점). `'existing'` 에서는 미사용.
+ * @param kind       삭제 전 행 종류.
+ * @param rowKeyField `'added'` 재추가 시 키 강제 주입 필드.
+ */
+export function makeDeleteCommand<TData>(
+  tracking: Pick<ChangeTrackingAPI<TData>, 'addRow' | 'deleteRow' | 'undoRow'>,
+  key: string,
+  deletedRow: TData,
+  kind: 'added' | 'existing',
+  rowKeyField: keyof TData & string,
+): UndoRedoCommand {
+  if (kind === 'added') {
+    const seedWithKey = { ...deletedRow, [rowKeyField]: key } as Partial<TData>;
+    return {
+      label: 'delete(added)',
+      redo: () => {
+        tracking.deleteRow(key);
+      },
+      undo: () => {
+        tracking.addRow(seedWithKey);
+      },
+    };
+  }
+  return {
+    label: 'delete(existing)',
+    redo: () => {
+      tracking.deleteRow(key);
+    },
+    undo: () => {
+      // restores the mount snapshot (faithful for an unedited existing row; see limitation).
+      tracking.undoRow(key);
+    },
+  };
+}

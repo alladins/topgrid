@@ -61,7 +61,9 @@ tracking exposes **no operation history / redo / state restore** (its `undoRow` 
 modification.
 
 ```tsx
-import { useUndoRedo, makeUpdateCommand, makeAddCommand } from '@topgrid/grid-pro-edit-plus';
+import {
+  useUndoRedo, makeUpdateCommand, makeAddCommand, makeDeleteCommand,
+} from '@topgrid/grid-pro-edit-plus';
 
 const undoRedo = useUndoRedo();
 
@@ -73,15 +75,20 @@ const prior = tracking.rows.find((r) => r.id === key)!; // value BEFORE the upda
 tracking.updateRow(key, { name: 'new' });
 undoRedo.push(makeUpdateCommand(tracking, key, prior, { name: 'new' }));
 
-undoRedo.undo(); // reverts the update
+const row = tracking.rows.find((r) => r.id === key)!;
+tracking.deleteRow(key);
+undoRedo.push(makeDeleteCommand(tracking, key, row, 'added', 'id')); // 'added' | 'existing'
+
+undoRedo.undo(); // reverts the last action
 undoRedo.redo(); // re-applies it
 // undoRedo.canUndo / canRedo / clear()
 ```
 
-> **Known limitation:** deleting an **already-edited existing row** cannot be faithfully undone —
-> tracking's `undoRow` would restore the mount snapshot and lose the in-session edits. `update`
-> and `add` are faithful; for delete-of-edited, push a custom `UndoRedoCommand` if you accept the
-> constraint. Faithful delete-undo would require a new seam in `grid-pro-tracking`.
+> **Delete fidelity:** `makeDeleteCommand` is faithful for **added** rows (undo re-adds with the
+> captured key) and **unedited existing** rows (undo = `undoRow`, restores the mount snapshot).
+> Deleting an **already-edited existing row** is the one lossy case — `undoRow` restores the
+> mount snapshot and drops the in-session edits. `update` and `add` are always faithful. Faithful
+> delete-undo of an edited row would require a new seam in `grid-pro-tracking`.
 
 ## Find & replace (G-3)
 
