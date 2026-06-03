@@ -170,11 +170,27 @@ export function buildTableOptions<TData>(
     }
   };
 
+  // MOD-GRID-22 (SSRM): Sorting/ColumnFilters 변경 시 internal state + 외부 콜백 통합
+  // (onColumnPinningChange/onColumnSizingChange 와 동형). SSRM 훅이 server 정렬/필터
+  // 파라미터를 도출하고 캐시를 무효화하는 신호로 사용. 미제공 시 기존 동작 불변.
+  const onSortingChange: OnChangeFn<SortingState> = (updater) => {
+    state.setSorting(updater);
+    if (props.onSortingChange) {
+      props.onSortingChange(updater);
+    }
+  };
+  const onColumnFiltersChange: OnChangeFn<ColumnFiltersState> = (updater) => {
+    state.setColumnFilters(updater);
+    if (props.onColumnFiltersChange) {
+      props.onColumnFiltersChange(updater);
+    }
+  };
+
   const options: Omit<TableOptions<TData>, 'data' | 'columns'> = {
     state: tableState,
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: state.setSorting,
-    onColumnFiltersChange: state.setColumnFilters,
+    onSortingChange,
+    onColumnFiltersChange,
     onRowSelectionChange,
     onPaginationChange,
     onColumnPinningChange,
@@ -192,13 +208,17 @@ export function buildTableOptions<TData>(
     enableExpanding: props.enableExpanding === true,
     // mode 유래 값 우선, 없으면 기존 manual prop 경로 (C-6 backward compat).
     manualPagination: paginationFromMode.tanstackOptions.manualPagination ?? (props.pagination?.manual === true),
+    // MOD-GRID-22 (SSRM): server 정렬/필터 시 클라이언트 row-model 억제(placeholder 배열 무손상).
+    manualSorting: props.manualSorting === true,
+    manualFiltering: props.manualFiltering === true,
     debugTable: props.debug === true,
   };
 
-  if (props.enableSort === true) {
+  // MOD-GRID-22: manual 시 클라이언트 정렬/필터 row-model 미장착(서버가 이미 적용).
+  if (props.enableSort === true && props.manualSorting !== true) {
     options.getSortedRowModel = getSortedRowModel();
   }
-  if (props.enableFilter === true) {
+  if (props.enableFilter === true && props.manualFiltering !== true) {
     options.getFilteredRowModel = getFilteredRowModel();
   }
   // paginationActive = enablePagination===true OR mode='client'|'server' (D5 결정).

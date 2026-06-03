@@ -23,7 +23,10 @@ import type {
   VisibilityState,
 } from '@tanstack/react-table';
 import type { PaginationMode } from './pagination/types';
-import type { ScrollToOptions as VirtualScrollToOptions } from '@tanstack/react-virtual';
+import type {
+  ScrollToOptions as VirtualScrollToOptions,
+  Virtualizer,
+} from '@tanstack/react-virtual';
 import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
 
 // ─── G-006 (MOD-GRID-01): cell/row className callback canonical types ───
@@ -713,6 +716,24 @@ export interface GridProps<TData> {
   /** ColumnPinning state 변경 콜백 (외부 영속화 또는 controlled mirror 용). */
   onColumnPinningChange?: OnChangeFn<ColumnPinningState>;
 
+  // ─── MOD-GRID-22 (SSRM): server-side sort/filter passthrough ───
+  // grid-core 의 *generic* server-mode 표면 보완(SSRM 전용 로직 0). manual* 는 `manualPagination`
+  // 미러, on*Change 콜백은 onColumnPinningChange/onColumnSizingChange 패턴과 동형.
+  /**
+   * Server 정렬: `true` 시 클라이언트 정렬 비활성(`getSortedRowModel` skip + `manualSorting`).
+   * 정렬 *UI/state* 는 유지(헤더 클릭 → `onSortingChange`)되 실제 정렬은 서버 위임. default `false`.
+   */
+  manualSorting?: boolean;
+  /**
+   * Server 필터: `true` 시 클라이언트 필터 비활성(`getFilteredRowModel` skip + `manualFiltering`).
+   * default `false`.
+   */
+  manualFiltering?: boolean;
+  /** Sorting state 변경 콜백 (server 정렬 파라미터 도출용; internal state 도 갱신). */
+  onSortingChange?: OnChangeFn<SortingState>;
+  /** ColumnFilters state 변경 콜백 (server 필터 파라미터 도출용; internal state 도 갱신). */
+  onColumnFiltersChange?: OnChangeFn<ColumnFiltersState>;
+
   // ─── G-003 (MOD-GRID-04): 컬럼 가시성 + 순서 영속화 ───
   /**
    * 컬럼 가시성 + 순서 localStorage 영속화 옵션 (G-003).
@@ -803,12 +824,18 @@ export interface GridProps<TData> {
    *
    * - `estimateSize`: 행 높이 추정 px (default `36`, BaseGrid `<td className="px-4 py-3">` 기준).
    * - `overscan`: viewport 위/아래 버퍼 행 수 (default `10`, VirtualGrid.tsx:102 동일).
+   * - `onChange`: virtualizer 변경 콜백(가시 범위 관찰 — MOD-22 SSRM 의 블록 fetch 트리거).
+   *   `useVirtualizer` 에 그대로 전달. generic passthrough(SSRM 전용 로직 0).
    *
    * @see G-004-spec.md Section 2.4 + D8
    */
   virtualizerOptions?: {
     estimateSize?: number;
     overscan?: number;
+    onChange?: (
+      instance: Virtualizer<HTMLDivElement, HTMLTableRowElement>,
+      sync: boolean,
+    ) => void;
   };
 }
 

@@ -17,6 +17,7 @@ pnpm add @topgrid/grid-pro-serverside
 |---------|---------|---------|
 | `@topgrid/grid-core` | `workspace:*` | Yes |
 | `@tanstack/react-table` | `^8.0.0` | Yes |
+| `@tanstack/react-virtual` | `^3.0.0` | Yes (public `virtualizerOptions.onChange` type) |
 | `react` / `react-dom` | `^18 \|\| ^19` | Yes |
 
 ## Datasource contract
@@ -35,6 +36,32 @@ const datasource: ServerSideDatasource<Row> = {
   },
 };
 ```
+
+## Usage (G-2)
+
+`useServerSideData` wires your datasource to `<Grid enableVirtualization>` — it observes the row
+virtualizer, lazy-loads blocks for the visible range, and returns props to spread onto the grid:
+
+```tsx
+import { Grid } from '@topgrid/grid-core';
+import { useServerSideData, isRowPlaceholder } from '@topgrid/grid-pro-serverside';
+
+function MyGrid() {
+  const { gridProps, totalCount, refresh } = useServerSideData<Row>(datasource, {
+    blockSize: 100,
+    rowCount: 100_000, // initial total; refined by getRows' lastRow
+  });
+  return <Grid columns={columns} {...gridProps} virtualScrollHeight={500} />;
+}
+```
+
+`gridProps` sets `enableVirtualization`, `manualSorting`/`manualFiltering` (so the grid never
+client-sorts the placeholder array), the `onSortingChange`/`onColumnFiltersChange` that re-query
+the server, and `virtualizerOptions.onChange` (the scroll → block-fetch trigger). Rows not yet
+loaded are `RowPlaceholder`s — detect with `isRowPlaceholder` in a cell renderer for skeletons.
+
+> The data-flow logic is also available React-free as `createServerSideController(datasource,
+> opts, onChange)` for custom integrations / testing.
 
 ## Block cache core (G-1)
 

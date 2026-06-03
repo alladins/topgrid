@@ -34,6 +34,15 @@ export interface UseGridVirtualizerOptions {
    * VirtualGrid.tsx:102 동일.
    */
   overscan?: number;
+
+  /**
+   * virtualizer 변경 콜백 — `useVirtualizer` 의 `onChange` 로 그대로 전달.
+   * MOD-22 SSRM 이 가시 범위를 관찰해 블록 fetch 를 트리거하는 데 사용(generic passthrough).
+   */
+  onChange?: (
+    instance: Virtualizer<HTMLDivElement, HTMLTableRowElement>,
+    sync: boolean,
+  ) => void;
 }
 
 /**
@@ -71,6 +80,8 @@ export function useGridVirtualizer<TData>(
     getScrollElement: () => scrollContainerRef.current,
     estimateSize: () => estimate, // D8: number → 함수 wrap (TanStack API 표준)
     overscan,
+    // MOD-22 SSRM: 가시 범위 관찰용 onChange 전달 (미지정 시 미전달 = 기존 동작 불변).
+    ...(options?.onChange ? { onChange: options.onChange } : {}),
   });
 
   return enabled ? virtualizer : null;

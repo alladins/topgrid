@@ -23,10 +23,26 @@ export {
   planBlocks,
   markLoading,
   acceptBlock,
+  clearBlock,
   invalidate,
   materialize,
   isRowPlaceholder,
 } from './internal/blockCache.js';
+
+// G-2 data-flow controller (node-verifiable, React-free) + thin wiring hook.
+export {
+  createServerSideController,
+} from './internal/serverSideController.js';
+export type {
+  ServerSideController,
+  ServerSideControllerOptions,
+} from './internal/serverSideController.js';
+export { useServerSideData } from './useServerSideData.js';
+export type {
+  UseServerSideDataOptions,
+  UseServerSideDataResult,
+  ServerSideGridProps,
+} from './useServerSideData.js';
 
 // Datasource contract + cache value types.
 export type {

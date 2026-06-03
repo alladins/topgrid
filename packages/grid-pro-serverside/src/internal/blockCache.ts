@@ -95,6 +95,25 @@ export function invalidate<TData>(cache: BlockCacheState<TData>): BlockCacheStat
   return { ...cache, epoch: cache.epoch + 1, blocks: new Map(), rowCount: null };
 }
 
+/**
+ * Drop an in-flight block so it can be re-requested — call on a **failed** `getRows` (the
+ * datasource contract says a rejected fetch leaves the block unloaded, re-requestable). No-op if
+ * the epoch has since changed (invalidate already cleared it) or the block is no longer loading,
+ * so a late failure can't disturb a fresh query.
+ */
+export function clearBlock<TData>(
+  cache: BlockCacheState<TData>,
+  blockIndex: number,
+  epoch: number,
+): BlockCacheState<TData> {
+  if (epoch !== cache.epoch) return cache;
+  const block = cache.blocks.get(blockIndex);
+  if (!block || block.status !== 'loading') return cache;
+  const blocks = new Map(cache.blocks);
+  blocks.delete(blockIndex);
+  return { ...cache, blocks };
+}
+
 /** Type guard for placeholder rows from {@link materialize}. */
 export function isRowPlaceholder(row: unknown): row is RowPlaceholder {
   return (

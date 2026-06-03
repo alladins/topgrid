@@ -32,6 +32,7 @@
   "peerDependencies": {
     "@topgrid/grid-core": "workspace:*",
     "@tanstack/react-table": "^8.0.0",
+    "@tanstack/react-virtual": "^3.0.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"
   }
