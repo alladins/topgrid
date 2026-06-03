@@ -464,6 +464,27 @@ importers:
         specifier: ^18.0.0 || ^19.0.0
         version: 18.3.1(react@18.3.1)
 
+  packages/grid-pro-sheet:
+    dependencies:
+      '@tanstack/react-table':
+        specifier: ^8.0.0
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
+      '@topgrid/grid-core':
+        specifier: workspace:*
+        version: link:../grid-core
+      '@topgrid/grid-license':
+        specifier: workspace:*
+        version: link:../grid-license
+      '@topgrid/grid-pro-range':
+        specifier: workspace:*
+        version: link:../grid-pro-range
+      react:
+        specifier: ^18.0.0 || ^19.0.0
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.0.0 || ^19.0.0
+        version: 18.3.1(react@18.3.1)
+
   packages/grid-pro-tracking:
     dependencies:
       '@tanstack/react-table':

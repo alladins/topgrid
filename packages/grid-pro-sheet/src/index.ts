@@ -1,0 +1,38 @@
+// @topgrid/grid-pro-sheet — public API
+// MOD-GRID-26 / G-1: spreadsheet PoC — pure formula engine + Pro scaffold.
+//
+// REUSE ([[LESS-003]]): G-3 will reuse grid-pro-range editing/clipboard/range. The pivot's
+// BUILT_IN_REDUCERS are NOT reused (ADR-002 / ADR-001 N=2 re-read): sheet functions are
+// error-aware with sheet semantics (SUM([])=0, AVERAGE([])=#DIV/0!), a different input contract
+// than the pivot's clean `number[]` + null-on-empty. The engine is pure (getCell injection =
+// PAT-005) and node-verified.
+//
+// AP-001 vacuous: no external/optional peer is imported by the engine (grid-license is a required
+// Pro runtime dep; react/range/grid-core are G-3 type-only peers).
+import { checkLicense } from '@topgrid/grid-license';
+
+// PAT-003 — module-load license gate.
+checkLicense();
+
+// G-1 pure formula engine.
+export { parseFormula } from './internal/parser.js';
+export {
+  evaluate,
+  extractRefs,
+  compileCell,
+  coerceLiteral,
+  formatValue,
+} from './internal/evaluate.js';
+export { FUNCTIONS } from './internal/functions.js';
+export { parseA1, toA1, expandRange } from './internal/cellAddress.js';
+
+// Value model + AST.
+export { cellError, isCellError } from './types.js';
+export type {
+  CellValue,
+  CellError,
+  ErrorCode,
+  Ast,
+  CellGetter,
+  CompiledCell,
+} from './types.js';

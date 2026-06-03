@@ -1,0 +1,145 @@
+/**
+ * Formula evaluator + ref extraction + cell compilation (MOD-GRID-26 G-1) — pure.
+ *
+ * `evaluate(ast, getCell)` resolves A1 refs through the injected {@link CellGetter}
+ * (PAT-005 host-capability-injection) so the engine never touches a cell store. Errors propagate
+ * through every operator and function. `extractRefs(ast)` reads the dependency set off the SAME
+ * parse (G-2 never re-parses).
+ */
+
+import {
+  cellError,
+  isCellError,
+  type Ast,
+  type CellValue,
+  type CellError,
+  type CellGetter,
+  type CompiledCell,
+} from '../types.js';
+import { expandRange } from './cellAddress.js';
+import { parseFormula } from './parser.js';
+import { FUNCTIONS } from './functions.js';
+
+/** Coerce a value to a number for arithmetic; non-numeric text → `#ERROR!`. */
+function toNumber(v: CellValue): number | CellError {
+  if (typeof v === 'number') return v;
+  if (typeof v === 'boolean') return v ? 1 : 0;
+  if (typeof v === 'string') {
+    if (v.trim() === '') return 0; // empty cell behaves as 0 in arithmetic (Excel)
+    const n = Number(v);
+    return Number.isFinite(n) ? n : cellError('#ERROR!');
+  }
+  return cellError('#ERROR!');
+}
+
+/** Evaluate one argument to a value list (a range expands; a scalar is a singleton). */
+function evalArgValues(ast: Ast, getCell: CellGetter): CellValue[] {
+  if (ast.kind === 'range') return expandRange(ast.from, ast.to).map(getCell);
+  return [evaluate(ast, getCell)];
+}
+
+/** Evaluate a formula AST to a scalar {@link CellValue}. Errors propagate; never throws. */
+export function evaluate(ast: Ast, getCell: CellGetter): CellValue {
+  switch (ast.kind) {
+    case 'num':
+      return ast.value;
+    case 'str':
+      return ast.value;
+    case 'bool':
+      return ast.value;
+    case 'ref':
+      return getCell(ast.ref);
+    case 'range':
+      return cellError('#ERROR!'); // a range has no scalar value
+    case 'unary': {
+      const v = evaluate(ast.operand, getCell);
+      if (isCellError(v)) return v;
+      const n = toNumber(v);
+      return isCellError(n) ? n : -n;
+    }
+    case 'binary': {
+      const l = evaluate(ast.left, getCell);
+      if (isCellError(l)) return l;
+      const r = evaluate(ast.right, getCell);
+      if (isCellError(r)) return r;
+      const ln = toNumber(l);
+      if (isCellError(ln)) return ln;
+      const rn = toNumber(r);
+      if (isCellError(rn)) return rn;
+      switch (ast.op) {
+        case '+': return ln + rn;
+        case '-': return ln - rn;
+        case '*': return ln * rn;
+        case '/': return rn === 0 ? cellError('#DIV/0!') : ln / rn;
+      }
+    }
+    // eslint-disable-next-line no-fallthrough
+    case 'call': {
+      const fn = FUNCTIONS[ast.name];
+      if (!fn) return cellError('#ERROR!');
+      const values = ast.args.flatMap((a) => evalArgValues(a, getCell));
+      return fn(values);
+    }
+  }
+}
+
+/** Cells this formula depends on (refs + expanded ranges), de-duplicated. */
+export function extractRefs(ast: Ast): string[] {
+  const refs = new Set<string>();
+  const walk = (a: Ast): void => {
+    switch (a.kind) {
+      case 'ref':
+        refs.add(a.ref);
+        break;
+      case 'range':
+        for (const r of expandRange(a.from, a.to)) refs.add(r);
+        break;
+      case 'unary':
+        walk(a.operand);
+        break;
+      case 'binary':
+        walk(a.left);
+        walk(a.right);
+        break;
+      case 'call':
+        a.args.forEach(walk);
+        break;
+      default:
+        break;
+    }
+  };
+  walk(ast);
+  return [...refs];
+}
+
+/** Coerce raw literal text → a {@link CellValue} (number / boolean / string; `""` for empty). */
+export function coerceLiteral(raw: string): CellValue {
+  if (raw === '') return '';
+  const upper = raw.toUpperCase();
+  if (upper === 'TRUE') return true;
+  if (upper === 'FALSE') return false;
+  const n = Number(raw);
+  if (raw.trim() !== '' && Number.isFinite(n)) return n;
+  return raw;
+}
+
+/** Compile a cell's raw input: a `=`-prefixed formula (parsed + refs), else a literal. */
+export function compileCell(raw: string): CompiledCell {
+  if (raw.startsWith('=')) {
+    try {
+      const ast = parseFormula(raw.slice(1));
+      return { kind: 'formula', ast, refs: extractRefs(ast) };
+    } catch {
+      return { kind: 'literal', value: cellError('#ERROR!') };
+    }
+  }
+  return { kind: 'literal', value: coerceLiteral(raw) };
+}
+
+/** Render a {@link CellValue} for display (errors → their code, booleans → TRUE/FALSE). */
+export function formatValue(v: CellValue): string {
+  if (isCellError(v)) return v.error;
+  if (typeof v === 'boolean') return v ? 'TRUE' : 'FALSE';
+  if (typeof v === 'number') return String(v);
+  return v;
+}
