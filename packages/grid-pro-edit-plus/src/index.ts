@@ -35,3 +35,12 @@ export type {
   UndoRedoAPI,
   CommandStackState,
 } from './undo-redo/types.js';
+
+// MOD-GRID-23 / G-3: find & replace — key-based pure core (rowKey/columnId), composes with
+// G-2 (computeReplacements outputs {rowKey, columnId, prior, next} -> updateRow + makeUpdateCommand).
+// NOT coupled to grid-pro-range (index-based coords differ); range-scoped find is a consumer adapter.
+export {
+  findMatches,
+  computeReplacements,
+} from './find-replace/findReplace.js';
+export type { FindOptions, CellMatch, Replacement } from './find-replace/types.js';

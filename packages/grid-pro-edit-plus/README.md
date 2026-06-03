@@ -83,13 +83,44 @@ undoRedo.redo(); // re-applies it
 > and `add` are faithful; for delete-of-edited, push a custom `UndoRedoCommand` if you accept the
 > constraint. Faithful delete-undo would require a new seam in `grid-pro-tracking`.
 
+## Find & replace (G-3)
+
+Key-based pure functions (`rowKey`/`columnId`) — same coordinate space as tracking and undo/redo,
+so they compose directly. Scope is limited by `columnIds`.
+
+```tsx
+import { findMatches, computeReplacements } from '@topgrid/grid-pro-edit-plus';
+
+const matches = findMatches(tracking.rows, (r) => r.id, ['name', 'note'], 'apple', {
+  caseSensitive: false,
+  matchMode: 'substring', // or 'whole'
+});
+
+// compose with G-2: apply replacements undoably
+const reps = computeReplacements(matches, 'apple', 'pear', { caseSensitive: false });
+reps.forEach((rep) => {
+  const priorRow = tracking.rows.find((r) => r.id === rep.rowKey)!;
+  tracking.updateRow(rep.rowKey, { [rep.columnId]: rep.next });
+  undoRedo.push(makeUpdateCommand(tracking, rep.rowKey, priorRow, { [rep.columnId]: rep.next }));
+});
+```
+
+> **Non-string cells:** matching is done against `String(value)`, and `replace` always produces a
+> **string** `next` (e.g. substring-replacing `120` yields `"XX0"`). `prior` keeps the original
+> typed value (for faithful undo). Restrict `columnIds` to text columns, or coerce in your
+> `updateRow` wiring, if you need to preserve cell types.
+>
+> **Selection-scoped find** (e.g. within a `grid-pro-range` `CellRange`) is **not coupled** here —
+> range is index-based (`{row,col}`) while this is key-based. Map the range to `{ rowKeys,
+> columnIds }` in a small consumer adapter and pass the columns to `findMatches`.
+
 ## Roadmap
 
 | Goal | Status |
 |------|--------|
 | G-1 validation rule engine | ✅ |
 | G-2 undo/redo stack (generic command stack over tracking mutators) | ✅ |
-| G-3 find & replace (reuses `grid-pro-range` clipboard/edit) | planned |
+| G-3 find & replace (key-based pure core; composes with G-2) | ✅ |
 | G-4 cell comments (storage-persisted) | planned |
 
 ## License
