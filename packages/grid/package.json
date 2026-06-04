@@ -50,7 +50,8 @@
     "@topgrid/grid-pro-panel": "workspace:*",
     "@topgrid/grid-pro-edit-plus": "workspace:*",
     "@topgrid/grid-pro-serverside": "workspace:*",
-    "@topgrid/grid-pro-sheet": "workspace:*"
+    "@topgrid/grid-pro-sheet": "workspace:*",
+    "@topgrid/grid-pro-filter": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.0.0",

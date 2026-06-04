@@ -213,3 +213,8 @@ export * from '@topgrid/grid-pro-serverside';
 // @topgrid/grid-pro-sheet (Pro) — MOD-GRID-26 (spreadsheet PoC)
 // ─────────────────────────────────────────────────────────────────────────────
 export * from '@topgrid/grid-pro-sheet';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// @topgrid/grid-pro-filter (Pro) — MOD-GRID-30 G-3 (multi-condition AND/OR filter)
+// ─────────────────────────────────────────────────────────────────────────────
+export * from '@topgrid/grid-pro-filter';

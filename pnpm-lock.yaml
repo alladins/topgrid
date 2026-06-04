@@ -149,6 +149,9 @@ importers:
       '@topgrid/grid-pro-edit-plus':
         specifier: workspace:*
         version: link:../grid-pro-edit-plus
+      '@topgrid/grid-pro-filter':
+        specifier: workspace:*
+        version: link:../grid-pro-filter
       '@topgrid/grid-pro-header':
         specifier: workspace:*
         version: link:../grid-pro-header
