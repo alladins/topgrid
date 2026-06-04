@@ -925,7 +925,10 @@
       },
       "ci_gate": "★grid-pro-pivot·grid-pro-sheet(·filter) test 가 node --experimental-strip-types/esbuild → CI Node ≥22.6 필수. grid-pro-sheet=esbuild devDep 추가.",
       "facade": "@topgrid/grid 에 grid-pro-filter export + 신규 공개 API(sortPivotRows/collapsePivotRows/transposePivotConfig·POSITIONAL_FUNCTIONS) 점검.",
-      "publish": "실제 publish=사용자(travia71 토큰). [[npm-publish-topgrid]]."
+      "publish": "실제 publish=사용자(travia71 토큰). [[npm-publish-topgrid]].",
+      "version_bumps_applied": "✅ DONE: grid-core 0.3→0.4·features 0.6→0.7·panel 0.2→0.3·pivot 0.2→0.3·sheet 0.1→0.2·grid(facade) 0.4→0.5. grid-pro-filter 0.1.0 신규 유지. 수동 0.x(changeset version 금지). 전 6패키지+facade build OK. ★pack-verify: grid-features peerDep workspace:*→grid-core \"0.4.0\" 정확 치환(major escalation 없음).",
+      "peerdep_note_resolved": "추가 patch-republish 불필요: prepared_batch(MOD-18~27) 포함 전 패키지 미발행 → 일괄 발행 시 모든 workspace:* peerDep 가 grid-core@0.4.0 으로 치환되어 자동 일관(이전 batch 의 patch-republish 는 grid-core 가 이미 발행돼 있을 때만 필요).",
+      "remaining": "남은 것=사용자의 실제 pnpm publish 만(travia71 Granular Token, Bypass-2FA ON). `pnpm --filter \"@topgrid/*\" publish --access public --no-git-checks`(이미 발행된 버전 skip). MOD-33 후 facade 0.5.0 반영됨. CI Node ≥22.6(strip-types/esbuild test)."
     },
     "policy": "batch — 단일 패키지 반복 발행 회피. **수동 0.x bump 전략**(changeset version 안 씀 → peerDep escalation footgun 회피, 메모리 [[changeset-peerdep-major-escalation]]). 몇 모듈 누적 후 1회 coordinated 발행.",
     "prepared_batch": {
