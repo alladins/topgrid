@@ -749,7 +749,13 @@ function GridInner<TData>(
           <SortClearButton onClear={() => { table.setSorting([]); }} />
         </div>
       )}
-      <div ref={scrollContainerRef} className={containerClassName} style={containerStyle}>
+      <div
+        ref={scrollContainerRef}
+        className={containerClassName}
+        // MOD-GRID-33 G-2: 오버레이 활성 시 inline position:relative(storybook Tailwind-less 서 'relative'
+        // 클래스 inert → 오버레이 absolute 가 컨테이너에 앵커되려면 inline 필수, P27-1).
+        style={props.loadingOverlay === true ? { ...containerStyle, position: 'relative' } : containerStyle}
+      >
         {/* Commit C: 컬럼 가상화 시 table-layout:fixed + 전체 컬럼 폭 → 컬럼이 getSize 너비를
             유지하고 pad 가 실제 스크롤 폭을 만든다. (가로 스크롤 컨테이너 자체는 기존
             overflow-x-auto 클래스/행가상화 inline overflow 가 제공 — P27 finding: Tailwind 미적용
@@ -758,6 +764,7 @@ function GridInner<TData>(
           {...gridContainerAttrs(headerRowCount, dataRowCount, leafColumnIds.length, selectionMode === 'multi')}
           tabIndex={0}
           onKeyDown={handleGridKeyDown}
+          {...(props.loadingOverlay === true ? { 'aria-busy': true } : {})}
           {...(activeCellId ? { 'aria-activedescendant': activeCellId } : {})}
           className={`${tableClassName} focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 focus-visible:outline-offset-[-2px]`}
           {...(columnVirtEnabled
@@ -889,6 +896,28 @@ function GridInner<TData>(
             )}
           </tbody>
         </table>
+        {/* MOD-GRID-33 G-2: loading 오버레이 — 기존 data 행 위에 덮는다(skeleton 치환과 달리 데이터 유지).
+            pointer-events:all 로 하부 상호작용 차단(watermark 의 pointer-events-none 와 반대). aria-busy 는
+            table(role=grid)에 부여(SR 신호). 스타일 inline(Tailwind class storybook inert). */}
+        {props.loadingOverlay === true && (
+          <div
+            data-testid="loading-overlay"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'rgba(255, 255, 255, 0.6)',
+              pointerEvents: 'all',
+              zIndex: 20,
+            }}
+          >
+            <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--topgrid-cell-text, #374151)' }}>
+              로딩 중…
+            </span>
+          </div>
+        )}
       </div>
 
       {showPagination && (

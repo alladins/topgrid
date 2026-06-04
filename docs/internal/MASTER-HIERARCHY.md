@@ -687,7 +687,7 @@
 | 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
 |------|----------|------|----------|------|------|
 | status-bar 카운트(G-1) | grid-pro-panel `statusBarCounts(table,labels?)`→StatusBarItem[] | 연결형 | ★row model 정확(total=getCoreRowModel·filtered=getFilteredRowModel·selected=getSelectedRowModel). StatusBar items 합성(fork 0) | browser-only 정직(순수 로직 0). chromium **1/1**(필터+선택 동시→**셋 다 발산** Set size=3, 오배선 검출). 회귀 45/45 | 채움 |
-| loading 오버레이(G-2) | grid-core `loadingOverlay?` additive | 연결형+트리거 | 기존 loading/Skeleton(MOD-03) 보존. data 행 DOM 잔존+aria-busy+pointer-events 차단 | 대기 |
+| loading 오버레이(G-2) | grid-core `loadingOverlay?` additive(컨테이너 inline relative+오버레이 div+table aria-busy) | 연결형+트리거 | 기존 loading/Skeleton(MOD-03) 독립. ★data 행 DOM 잔존(skeleton 과 유일 차이)+aria-busy+pointer-events:all 차단(watermark 반대) | browser-only 정직. chromium **2/2**(오버레이 data 잔존·역방향 skeleton additive). 회귀 47/47 | 채움 |
 | row drag(G-3) | 순수 `moveRow(rows,from,to)` + draggable 행 UI | 종결형+트리거 | useColumnDrag 아날로그. 가상화/정렬-활성=vN | 대기 |
 
 > dev-harness 수확: **★vacuity 함정 반대 방향(advisor)** — 표현형 UI 라 순수 로직 적음→"보임"식 vacuous chromium 위험→골마다 **행동/발산 단언**. G-1 = 세 카운트 발산(필터+선택 동시, Set size=3)=오배선/잘못 row model 검출. **순수 로직 0 = browser-only 정직**(node 테스트 지어내지 않음, floating filter 동형). reuse: StatusBar prop-driven 컨테이너 items 합성(fork 0). G-2 additive(기존 loading 보존)+aria-busy+pointer-events·G-3 moveRow 순수 spine, 가상화/정렬-활성 reorder=vN.

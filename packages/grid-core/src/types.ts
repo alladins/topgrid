@@ -647,6 +647,13 @@ export interface GridProps<TData> {
    */
   loadingRowCount?: number;
 
+  /**
+   * 로딩 오버레이 (MOD-GRID-33 G-2, default `false`). `loading`(skeleton 치환)과 달리 **기존 data 행을
+   * 그대로 둔 채** 그 위에 반투명 오버레이를 덮는다(기존 데이터를 유지하며 갱신 중임을 표시). `aria-busy`
+   * + pointer-events 차단(하부 상호작용 막음). `loading`(skeleton)과 독립·additive — 둘 다 기존 동작 불변.
+   */
+  loadingOverlay?: boolean;
+
   // ─── G-003 신규: 빈 상태 slot (D6/D7) ───
   /**
    * 빈 결과 상태 ReactNode slot.

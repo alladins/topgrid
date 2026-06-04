@@ -875,11 +875,11 @@
       "tier": "Pro(G-1)+MIT(G-2)",
       "weight": "Full(3-Goal) — G-1 done, G-2/G-3 pending",
       "priority": "차기로드맵 6순위(Misc UX, 마지막)",
-      "phase": "in-progress (G-1 done → G-2 다음)",
+      "phase": "in-progress (G-1·G-2 done → G-3 다음)",
       "spec": "specs/MOD-GRID-33.md",
       "goals": {
         "G-1": "done",
-        "G-2": "pending(loading 오버레이)",
+        "G-2": "done",
         "G-3": "pending(row drag)"
       },
       "version_note": "버전 미범프(릴리스 시 batch).",
@@ -888,6 +888,11 @@
         "surface": "statusBarCounts(table)→StatusBarItem[](total=getCoreRowModel·filtered=getFilteredRowModel·selected=getSelectedRowModel). StatusBar items 합성(fork 0)",
         "verified_browser": "chromium 1/1: 필터(3)+선택(2) 동시→total=5·filtered=3·selected=2 발산(Set size=3=오배선 검출). browser-only 정직(순수 로직 0). 회귀 45/45. typecheck 0.",
         "silent_divergence_closed": "row model 정확(core/filtered/selected) 명시."
+      },
+      "g2": {
+        "surface": "grid-core loadingOverlay? additive: 컨테이너 inline relative + </table> 뒤 오버레이(absolute inset-0·rgba 0.6·pointer-events:all 차단·z-20) + table aria-busy=true. 기존 loading(skeleton) 독립",
+        "verified_browser": "chromium 2/2(grid-loading-overlay.spec): ①★오버레이=기존 data 행 DOM 잔존(skeleton 과 유일 차이)+덮음+aria-busy+pointer-events≠none ②역방향 평범 loading=skeleton(additive 무회귀). 회귀 47/47. typecheck 0.",
+        "advisor_closed": "vacuity 회피: \"오버레이 보임\"=vacuous→data-in-DOM(skeleton 과 차이)+aria-busy(SR)+pointer-events 차단(watermark 반대) 단언. browser-only 정직(순수 로직 0)."
       }
     }
   },

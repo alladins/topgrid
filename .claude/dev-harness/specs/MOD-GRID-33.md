@@ -50,3 +50,13 @@ items 로 합성(컨테이너 fork 0). ★row model 정확: total=`getCoreRowMod
   **total=5·filtered=3·selected=2 셋 다 발산**(Set size=3 명시 단언=filtered→total 오배선/잘못된 row model 버그 검출).
   회귀 45/45. typecheck 0. (advisor: floating filter 처럼 node 테스트 지어내지 않음 — 순수 로직 0.)
 - **vacuity 회피**: "카운트 보임"=vacuous → **발산** 단언(G-2 faceted "count 단언" 교훈 재판).
+
+## G-2 결과 (완료 — 2026-06-05)
+**구현**: grid-core `loadingOverlay?` additive prop. 활성 시 컨테이너 inline position:relative(storybook
+Tailwind-less 서 'relative' class inert→inline 필수, P27-1) + `</table>` 뒤 오버레이 div(absolute inset-0,
+rgba(255,255,255,0.6), **pointer-events:all 하부 차단**=watermark 의 pointer-events-none 와 반대, z-20) + table
+(role=grid)에 **aria-busy=true**. 기존 `loading`(skeleton 치환, MOD-03)·`loadingOverlay` 독립.
+- **검증(browser-only — 정직)**: chromium **2/2**(grid-loading-overlay.spec.ts): ①★오버레이=**기존 data 행 DOM 잔존**
+  (skeleton 과의 유일 차이, "오버레이 보임"만으론 vacuous)+오버레이 덮음+aria-busy=true+pointer-events≠none ②역방향:
+  평범 `loading`=여전히 skeleton(데이터 치환·오버레이 0·aria-busy null)=additive 무회귀. 회귀 47/47. typecheck 0.
+- **i18n 후속**: 오버레이 텍스트 '로딩 중…' 하드코딩(GridLocale loadingText 키 추가는 후속).
