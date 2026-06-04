@@ -17,6 +17,7 @@
     "test": "echo TODO"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@docusaurus/core": "^3.0.0",
     "@docusaurus/preset-classic": "^3.0.0",
     "@docusaurus/types": "^3.0.0",
@@ -25,12 +26,13 @@
     "@storybook/addon-links": "^8.0.0",
     "@storybook/react": "^8.0.0",
     "@storybook/react-vite": "^8.0.0",
+    "axe-core": "^4.12.0",
     "docusaurus-plugin-typedoc": "^1.0.0",
     "playwright": "^1.40",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "storybook": "^8.0.0",
     "typedoc": "^0.27.0",
-    "typedoc-plugin-markdown": "^4.0.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "typedoc-plugin-markdown": "^4.0.0"
   }
 }

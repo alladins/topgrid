@@ -55,9 +55,11 @@ export interface EmptyStateProps {
 export function EmptyState({ colSpan, slot, text, defaultText }: EmptyStateProps): JSX.Element {
   // D7 우선순위: slot → text → defaultText. text === '' 도 사용자 의도 존중 (EC-03).
   const content: ReactNode = slot !== undefined ? slot : text !== undefined ? text : defaultText;
+  // MOD-GRID-28: role=grid 컨테이너 안의 빈-상태 행도 grid 계약(row→gridcell)을 충족해야 axe
+  // aria-required-children 위반이 없다(빈 그리드도 valid). 데이터 시퀀스 밖이라 aria-rowindex 미부여.
   return (
-    <tr>
-      <td colSpan={colSpan || 1} className="px-4 py-10 text-center text-gray-400">
+    <tr role="row">
+      <td role="gridcell" colSpan={colSpan || 1} className="px-4 py-10 text-center text-gray-400">
         {content}
       </td>
     </tr>

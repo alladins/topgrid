@@ -46,6 +46,16 @@ import { buildTableOptions } from './internal/buildTableOptions';
 import { buildFloatingRows } from './internal/buildFloatingRows';
 import { computeColumnWindow, type ColumnWindow } from './internal/computeColumnWindow';
 import { useColumnVirtualizer } from './internal/useColumnVirtualizer';
+import {
+  gridContainerAttrs,
+  headerRowAttrs,
+  columnHeaderAttrs,
+  dataRowAttrs,
+  gridCellAttrs,
+  dataRowAriaIndex,
+  visualColumnOrder,
+  buildAriaColIndex,
+} from './internal/ariaAttrs';
 import { getPinnedCellStyle } from './internal/computePinnedOffset';
 import { EmptyState } from './internal/EmptyState';
 import { ResizeHandle } from './internal/ResizeHandle';
@@ -319,6 +329,15 @@ function GridInner<TData>(
     }
   }
 
+  // MOD-GRID-28 G-1: WAI-ARIA grid 의미론(default-on). 절대 인덱스 = 척추 — 가상화 windowed 행/열도
+  // DOM 위치가 아닌 절대 aria-rowindex/colindex 를 보고한다. visualOrder = [핀좌, center, 핀우] 전체.
+  const headerRowCount = table.getHeaderGroups().length;
+  const dataRowCount = table.getRowModel().rows.length;
+  const ariaSelectable = selectionMode !== 'none';
+  const ariaColIndexOf = buildAriaColIndex(
+    visualColumnOrder(pinnedLeftIds, centerColumns.map((c) => c.id), pinnedRightIds),
+  );
+
   // 한 행의 `<td>` 목록을 컬럼 윈도우 순서로 렌더(per-row Map 으로 O(n) 조회 — n² 회피).
   // pad spacer 는 윈도우 px>0 일 때만(full window 에선 0 → 미방출 = byte-identical).
   // opts: 본문 행 = handlers+cellClassName / floating 행 = 둘 다 없음(기존 마크업 보존).
@@ -349,6 +368,7 @@ function GridInner<TData>(
       return (
         <td
           key={cell.id}
+          {...gridCellAttrs(ariaColIndexOf(cell.column.id))}
           className={className}
           style={cellStyle}
           {...(opts.withHandlers
@@ -407,8 +427,10 @@ function GridInner<TData>(
         ? { position: 'sticky', top: theadHeight, zIndex: 11 }
         : { position: 'sticky', bottom: 0, zIndex: 11 };
     return (
+      // MOD-GRID-28: floating(요약) 행은 데이터 시퀀스 밖이라 role="row" 만(aria-rowindex 미부여).
       <tr
         key={row.id}
+        role="row"
         data-floating={position}
         className={`bg-gray-50 font-medium ${rowBorderClassName}`}
         style={stickyStyle}
@@ -472,6 +494,7 @@ function GridInner<TData>(
     return (
       <th
         key={header.id}
+        {...columnHeaderAttrs(ariaColIndexOf(header.column.id), canSort, sorted)}
         colSpan={header.colSpan}
         className={`relative px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap select-none ${
           canSort ? 'cursor-pointer hover:bg-gray-100' : ''
@@ -556,14 +579,15 @@ function GridInner<TData>(
             overflow-x-auto 클래스/행가상화 inline overflow 가 제공 — P27 finding: Tailwind 미적용
             소비자는 컨테이너 overflow 직접 지정 필요.) C-29 conditional spread. */}
         <table
+          {...gridContainerAttrs(headerRowCount, dataRowCount, leafColumnIds.length, selectionMode === 'multi')}
           className={tableClassName}
           {...(columnVirtEnabled
             ? { style: { tableLayout: 'fixed' as const, width: totalColumnWidth } }
             : {})}
         >
           <thead ref={theadRef} className="bg-gray-50 sticky top-0 z-10">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
+            {table.getHeaderGroups().map((headerGroup, hgIndex) => (
+              <tr key={headerGroup.id} {...headerRowAttrs(hgIndex + 1)}>
                 {/* MOD-GRID-27 G-2: flat 헤더 윈도잉(ON) vs 전 헤더 렌더(OFF=byte-identical). */}
                 {columnVirtEnabled
                   ? renderWindowedHeaderCells(headerGroup.headers, columnWindow)
@@ -609,6 +633,7 @@ function GridInner<TData>(
                   return (
                     <tr
                       key={row.id}
+                      {...dataRowAttrs(dataRowAriaIndex(headerRowCount, virtualRow.index), ariaSelectable, row.getIsSelected())}
                       data-index={virtualRow.index}
                       ref={virtualizer!.measureElement}
                       className={`transition-colors ${isClickable ? 'cursor-pointer' : ''} ${
@@ -638,12 +663,13 @@ function GridInner<TData>(
             ) : (
               <>
                 {floatingTopRows.map((r) => renderFloatingRow(r, 'top'))}
-                {table.getRowModel().rows.map((row) => {
+                {table.getRowModel().rows.map((row, rowPos) => {
                 // G-006 D2: rowClassName callback.
                 const extraRowClass = props.rowClassName?.(row) ?? '';
                 return (
                   <tr
                     key={row.id}
+                    {...dataRowAttrs(dataRowAriaIndex(headerRowCount, rowPos), ariaSelectable, row.getIsSelected())}
                     data-index={row.index}
                     className={`transition-colors ${isClickable ? 'cursor-pointer' : ''} ${
                       row.getIsSelected() ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'

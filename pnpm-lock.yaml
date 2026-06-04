@@ -65,6 +65,9 @@ importers:
 
   apps/docs:
     devDependencies:
+      '@axe-core/playwright':
+        specifier: ^4.11.3
+        version: 4.11.3(playwright-core@1.60.0)
       '@docusaurus/core':
         specifier: ^3.0.0
         version: 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
@@ -89,6 +92,9 @@ importers:
       '@storybook/react-vite':
         specifier: ^8.0.0
         version: 8.6.18(react-dom@18.3.1)(react@18.3.1)(storybook@8.6.18)(typescript@5.8.3)(vite@6.4.2)
+      axe-core:
+        specifier: ^4.12.0
+        version: 4.12.0
       docusaurus-plugin-typedoc:
         specifier: ^1.0.0
         version: 1.4.2(typedoc-plugin-markdown@4.11.0)
@@ -751,6 +757,15 @@ packages:
     engines: {node: '>= 14.0.0'}
     dependencies:
       '@algolia/client-common': 5.52.1
+    dev: true
+
+  /@axe-core/playwright@4.11.3(playwright-core@1.60.0):
+    resolution: {integrity: sha512-h/kfksv4F0cVIDlKpT4700OehdRgpvuVskuQ2nb7/JmtWUXpe9ftHAPtwyXGvVSsa6SJ64A9ER7Zrzc/sIvC4w==}
+    peerDependencies:
+      playwright-core: '>= 1.0.0'
+    dependencies:
+      axe-core: 4.11.4
+      playwright-core: 1.60.0
     dev: true
 
   /@babel/code-frame@7.29.0:
@@ -6910,6 +6925,16 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       possible-typed-array-names: 1.1.0
+    dev: true
+
+  /axe-core@4.11.4:
+    resolution: {integrity: sha512-KunSNx+TVpkAw/6ULfhnx+HWRecjqZGTOyquAoWHYLRSdK1tB5Ihce1ZW+UY3fj33bYAFWPu7W/GRSmmrCGuxA==}
+    engines: {node: '>=4'}
+    dev: true
+
+  /axe-core@4.12.0:
+    resolution: {integrity: sha512-FTavr/7Ba0IptwGOPxnQvdyW2tAsdLBMTBXz7rKH6xJ2skpyxpBxyHkDdBs4lf69yRqYpkqCdfhnwS8YULGOmg==}
+    engines: {node: '>=4'}
     dev: true
 
   /babel-loader@9.2.1(@babel/core@7.29.0)(webpack@5.106.2):
