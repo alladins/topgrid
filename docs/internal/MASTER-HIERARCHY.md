@@ -652,6 +652,20 @@
 
 ---
 
+### `mod-grid-31` — pivot 상호작용 (sort / expand-collapse / runtime config, **Pro**, grid-pro-pivot) 🔶 진행 중 — G-1 채움, G-2/G-3 대기
+
+소스: `packages/grid-pro-pivot/src/{sortPivotRows.ts, buildPivotColumns.tsx, PivotGrid.tsx, index.ts}` + `stories/PivotInteraction.stories.tsx` + `tests/visual/pivot-interaction.spec.ts` + node `src/sortPivotRows.test.ts`, spec `.claude/dev-harness/specs/MOD-GRID-31.md`. dev-harness 14번째. 갭분석 Pivoting(미구현 10=최대 갭). MOD-18 정적 pivot 위에 런타임 상호작용 3축. computePivot/grid-core 무수정.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 값 정렬(G-1) | `sortPivotRows(model,leafKey,dir)`(순수) + `buildPivotColumns(model,sortOpts?)` + PivotGrid `enableSort?` | **종결형**(순수)+트리거 | ★세그먼트(data run, subtotal/grandTotal 종료) 내 정렬·합성행 앵커·null 하단. grid-core enableSort 미사용(평탄 전체 정렬=subtotal 섞임). MOD-18 보존(sortOpts/enableSort 기본 off) | 클릭 cycle asc→desc→해제. node spine **11/11**(2-행차원 fixture, kind 시퀀스 불변=앵커) + chromium **1/1**(asc Boston<NY·subtotal/grandTotal 앵커·desc 반전). 회귀 37/37 | 채움 |
+| expand/collapse(G-2) | `collapsePivotRows(model,collapsedKeys)`(순수) + subtotal 행 토글 | 종결형+트리거 | 하위 data 숨김·subtotal 대표 잔존. 모델 subtotal=그룹 하단→토글 상하반전(문서화). computePivot 미수정 | 대기 |
+| 런타임 config(G-3) | controlled config+onConfigChange + `transposePivotConfig`(rows↔columns swap) + pivotMode 토글 | 종결형+트리거 | computePivot 재실행(엔진 신규 0). grid-core controlled state 패턴 mirror | 대기 |
+
+> dev-harness 수확: **reuse** = MOD-18 computePivot/PivotModel/buildPivotColumns/Watermark 게이트(무수정). **신규 패턴**: 상호작용=`model.rows` flat 배열 순수 변환 → PivotGrid 가 변환행을 `<Grid data>` 전달(grid-core 미접촉=MOD-30 floating 과 다른 깔끔 seam). **★vacuity(advisor)**: subtotal 은 행차원 ≥2 에만 존재→모든 fixture/story **2-행차원**(앵커링 증명, 단일차원=이 모듈의 "list 비어있지 않음"). **scope 고정(advisor)**: G-1 정렬=within-group leaf 만(그룹 자체 계층 정렬=vN)·G-2 collapse 어포던스=subtotal 토글(상단 헤더 방출=computePivot 수정=MOD-18 위험, 회피). **computePivot emit 미수정**=MOD-18 보존 경계.
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의

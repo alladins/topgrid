@@ -18,12 +18,22 @@
 
 import type { ColumnDef } from '@tanstack/react-table';
 import { GRAND_TOTAL_COLUMN_KEY } from './computePivot';
+import type { PivotSortState } from './sortPivotRows';
 import type {
   PivotColumnNode,
   PivotConfig,
   PivotModel,
   PivotRow,
 } from './types';
+
+/**
+ * 값 헤더 정렬 어포던스 옵션(MOD-GRID-31 G-1). 지정 시 값 leaf 헤더가 클릭→정렬 + 인디케이터(▲▼).
+ * 미지정 시 헤더는 기존 plain string(MOD-18 동작 불변).
+ */
+export interface PivotSortOpts {
+  active: PivotSortState | null;
+  onSort: (leafKey: string) => void;
+}
 
 /** Render a numeric cell value; `null` → an em-dash placeholder. */
 function formatCellValue(value: unknown): string {
@@ -45,18 +55,48 @@ function rowKindLabel(row: PivotRow, firstRowField: string | undefined): string 
   return '';
 }
 
+/** Clickable value header with a sort indicator (MOD-GRID-31 G-1). Inline style — Tailwind inert in storybook. */
+function SortableValueHeader(
+  label: string,
+  leafKey: string,
+  sort: PivotSortOpts,
+): JSX.Element {
+  const active = sort.active !== null && sort.active.leafKey === leafKey;
+  const indicator = active ? (sort.active!.dir === 'asc' ? ' ▲' : ' ▼') : '';
+  return (
+    <button
+      type="button"
+      aria-label={`${label} 정렬`}
+      onClick={() => sort.onSort(leafKey)}
+      style={{
+        cursor: 'pointer',
+        background: 'none',
+        border: 'none',
+        font: 'inherit',
+        color: 'inherit',
+        padding: 0,
+      }}
+    >
+      {label}
+      {indicator}
+    </button>
+  );
+}
+
 /**
  * Build a value-cell accessor leaf column for a given (column-combo, value-def).
+ * With `sort`, the header is clickable (sort by this leaf key); without, a plain string (MOD-18).
  */
 function valueLeafColumn(
   comboKey: string,
   valueIndex: number,
   header: string,
+  sort?: PivotSortOpts,
 ): ColumnDef<PivotRow> {
   const accessorKey = `${comboKey}__${valueIndex}`;
   return {
     id: accessorKey,
-    header,
+    header: sort ? () => SortableValueHeader(header, accessorKey, sort) : header,
     accessorFn: (row) => row[accessorKey] ?? null,
     cell: (ctx) => formatCellValue(ctx.getValue()),
   };
@@ -69,25 +109,26 @@ function valueLeafColumn(
 function mapColumnNode(
   node: PivotColumnNode,
   valueDefs: PivotConfig['values'],
+  sort?: PivotSortOpts,
 ): ColumnDef<PivotRow> {
   if (node.children && node.children.length > 0) {
     return {
       id: `grp:${node.key}`,
       header: node.value,
-      columns: node.children.map((child) => mapColumnNode(child, valueDefs)),
+      columns: node.children.map((child) => mapColumnNode(child, valueDefs, sort)),
     };
   }
   // Leaf column combination: one value column per value-def.
   if (valueDefs.length === 1) {
     return {
-      ...valueLeafColumn(node.key, 0, node.value),
+      ...valueLeafColumn(node.key, 0, node.value, sort),
     };
   }
   return {
     id: `grp:${node.key}`,
     header: node.value,
     columns: valueDefs.map((vd, i) =>
-      valueLeafColumn(node.key, i, vd.label ?? vd.field),
+      valueLeafColumn(node.key, i, vd.label ?? vd.field, sort),
     ),
   };
 }
@@ -99,7 +140,10 @@ function mapColumnNode(
  * @returns Declarative `ColumnDef<PivotRow>[]` (leading row-dimension columns +
  *   nested value column groups + grand-total group).
  */
-export function buildPivotColumns(model: PivotModel): ColumnDef<PivotRow>[] {
+export function buildPivotColumns(
+  model: PivotModel,
+  sort?: PivotSortOpts,
+): ColumnDef<PivotRow>[] {
   const { config, columnTree } = model;
   const rowFields = config.rows;
   const valueDefs = config.values;
@@ -132,18 +176,18 @@ export function buildPivotColumns(model: PivotModel): ColumnDef<PivotRow>[] {
   // --- Column-dimension value groups (nested headers) ---
   if (columnTree.length > 0) {
     for (const node of columnTree) {
-      out.push(mapColumnNode(node, valueDefs));
+      out.push(mapColumnNode(node, valueDefs, sort));
     }
   } else {
     // No column dimensions → a single implicit value group under the '' combo.
     if (valueDefs.length === 1) {
-      out.push(valueLeafColumn('', 0, valueDefs[0].label ?? valueDefs[0].field));
+      out.push(valueLeafColumn('', 0, valueDefs[0].label ?? valueDefs[0].field, sort));
     } else {
       out.push({
         id: 'grp:values',
         header: 'Values',
         columns: valueDefs.map((vd, i) =>
-          valueLeafColumn('', i, vd.label ?? vd.field),
+          valueLeafColumn('', i, vd.label ?? vd.field, sort),
         ),
       });
     }
@@ -152,14 +196,14 @@ export function buildPivotColumns(model: PivotModel): ColumnDef<PivotRow>[] {
   // --- Trailing grand-total column group (row grand-total) ---
   if (valueDefs.length === 1) {
     out.push(
-      valueLeafColumn(GRAND_TOTAL_COLUMN_KEY, 0, 'Total'),
+      valueLeafColumn(GRAND_TOTAL_COLUMN_KEY, 0, 'Total', sort),
     );
   } else {
     out.push({
       id: 'grp:grandTotal',
       header: 'Total',
       columns: valueDefs.map((vd, i) =>
-        valueLeafColumn(GRAND_TOTAL_COLUMN_KEY, i, vd.label ?? vd.field),
+        valueLeafColumn(GRAND_TOTAL_COLUMN_KEY, i, vd.label ?? vd.field, sort),
       ),
     });
   }

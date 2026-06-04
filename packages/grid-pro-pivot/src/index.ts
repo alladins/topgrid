@@ -12,7 +12,10 @@ checkLicense();
 export { usePivot } from './usePivot.js';
 export { computePivot, GRAND_TOTAL_COLUMN_KEY } from './computePivot.js';
 export { PivotGrid, type PivotGridProps } from './PivotGrid.js';
-export { buildPivotColumns } from './buildPivotColumns.js';
+export { buildPivotColumns, type PivotSortOpts } from './buildPivotColumns.js';
+// MOD-GRID-31 G-1: pivot 결과 정렬(그룹 내, subtotal/grandTotal 앵커) 순수 변환.
+export { sortPivotRows } from './sortPivotRows.js';
+export type { PivotSortDirection, PivotSortState } from './sortPivotRows.js';
 export {
   applyReducer,
   isBuiltInAggregationKey,

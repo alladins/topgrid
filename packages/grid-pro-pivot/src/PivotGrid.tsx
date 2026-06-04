@@ -11,13 +11,14 @@
  * `<table>`; virtualization is delegated to `<Grid enableVirtualization>` (C-001).
  */
 
-import { useMemo, type JSX } from 'react';
+import { useMemo, useState, type JSX } from 'react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Grid, type RowClassNameCallback } from '@topgrid/grid-core';
 import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 
 import { computePivot } from './computePivot';
 import { buildPivotColumns } from './buildPivotColumns';
+import { sortPivotRows, type PivotSortState } from './sortPivotRows';
 import type { PivotConfig, PivotRow } from './types';
 
 /**
@@ -42,6 +43,11 @@ export interface PivotGridProps<TData extends Record<string, unknown>> {
   passthroughColumns?: ColumnDef<TData, unknown>[];
   /** Enable `<Grid>` virtualization (delegated — C-001, no react-virtual here). */
   enableVirtualization?: boolean;
+  /**
+   * Pivot 값 컬럼 정렬 활성 (MOD-GRID-31 G-1, default `false`). `true` 시 값 헤더가 클릭→그룹 내
+   * 정렬(subtotal/grandTotal 앵커, grid-core enableSort 아님). 미지정=MOD-18 동작(정적 헤더).
+   */
+  enableSort?: boolean;
   /** Outer wrapper className. */
   className?: string;
 }
@@ -74,9 +80,19 @@ export function PivotGrid<TData extends Record<string, unknown>>({
   pivotMode = true,
   passthroughColumns,
   enableVirtualization,
+  enableSort,
   className,
 }: PivotGridProps<TData>): JSX.Element {
   const lic = useLicenseStatus();
+
+  // MOD-GRID-31 G-1: 정렬 state(값 leafKey + 방향). 클릭 cycle asc→desc→해제.
+  const [sort, setSort] = useState<PivotSortState | null>(null);
+  const onSort = (leafKey: string): void =>
+    setSort((prev) => {
+      if (!prev || prev.leafKey !== leafKey) return { leafKey, dir: 'asc' };
+      if (prev.dir === 'asc') return { leafKey, dir: 'desc' };
+      return null; // desc → 해제
+    });
 
   // G-1/G-4: headless pivot model (memoised). Skipped entirely when pivotMode=false.
   const model = useMemo(
@@ -85,8 +101,18 @@ export function PivotGrid<TData extends Record<string, unknown>>({
   );
 
   const pivotColumns = useMemo(
-    () => (model ? buildPivotColumns(model) : []),
-    [model],
+    () =>
+      model
+        ? buildPivotColumns(model, enableSort === true ? { active: sort, onSort } : undefined)
+        : [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [model, enableSort, sort],
+  );
+
+  // MOD-GRID-31 G-1: 정렬 활성+활성 정렬 시 그룹 내 재정렬(subtotal/grandTotal 앵커). 아니면 원본.
+  const displayRows = useMemo(
+    () => (model && enableSort === true && sort ? sortPivotRows(model, sort.leafKey, sort.dir) : model?.rows ?? []),
+    [model, enableSort, sort],
   );
 
   const rootClassName = ['relative', className ?? ''].filter(Boolean).join(' ');
@@ -111,7 +137,7 @@ export function PivotGrid<TData extends Record<string, unknown>>({
   return (
     <div className={rootClassName}>
       <Grid<PivotRow>
-        data={model!.rows}
+        data={displayRows}
         columns={pivotColumns}
         rowClassName={rowClassName}
         {...(enableVirtualization !== undefined ? { enableVirtualization } : {})}
