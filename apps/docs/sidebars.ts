@@ -5,6 +5,7 @@ const sidebars: SidebarsConfig = {
     'intro',
     'getting-started',
     'architecture',
+    'comparison',
     {
       type: 'category',
       label: '마이그레이션',

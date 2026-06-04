@@ -26,6 +26,7 @@ const config: Config = {
       title: 'topgrid',
       items: [
         { type: 'doc', docId: 'intro', position: 'left', label: '문서' },
+        { type: 'doc', docId: 'comparison', position: 'left', label: '기능 비교' },
         { to: '/migration/live-demos', position: 'left', label: '예제' },
         // 인터랙티브 컴포넌트 데모(Storybook). `pnpm build:site` 가 static/storybook 으로
         // 빌드 → docusaurus build 가 /storybook/ 로 번들(href 라 onBrokenLinks 미검사).
