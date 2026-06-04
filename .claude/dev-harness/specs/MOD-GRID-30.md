@@ -87,3 +87,22 @@ current?.value useEffect 동기화=shared-state).
   `aria-label={`${label ?? column.id} 필터`}`(컬럼별 고유). 테스트: name/city 라벨 distinct 단언.
 - **virt 테스트 강화**: 기존 first/last(=핀, 항상정렬) 만 x-검사 → **center(windowed) 셀** x-match 추가(실제 drift
   리스크는 center). 동일 columnWindow 공유라 구조적 정렬이나 "관측된 정렬"로 승격.
+
+## G-2 결과 (완료 — 2026-06-04)
+**구현**: `buildTableOptions.ts` 의 `enableFilter` 게이트(`enableFilter===true && manualFiltering!==true`)에
+`getFacetedRowModel()` + `getFacetedUniqueValues()` 추가 → SelectFilter 의 `column.getFacetedUniqueValues()` 가
+OOTB 동작(이전엔 소비자가 직접 등록 안 하면 빈 리스트 silent-fail).
+- **설계 결정(advisor 검증)**: **facet ⊆ filter** 게이트(새 prop 아님). 근거: ①SelectFilter 가 동작 가능한 곳=
+  `enableFilter` 인 곳이므로 그 게이트에 묶으면 "out of the box" 보장 — 별도 `enableFaceted` prop 은 silent-fail 을
+  *이동*시킬 뿐 폐쇄 못 함(prop 안 켜면 또 빈 리스트). ②faceted 모델은 **lazy**(컬럼 facet 접근 시에만 계산) →
+  grid-core 는 `getFacetedUniqueValues()` 를 호출 안 함(소비자 SelectFilter 만 호출) → SelectFilter 없는 필터
+  그리드엔 계산 경로 자체가 없어 무비용(perf 테스트 불필요=측정할 경로 없음).
+- **검증(★LESS-006 — vacuity 회피)**: 양성 테스트가 **반드시 grid-core `<Grid>` 경유**. 기존 SelectFilter.stories
+  는 raw `useReactTable` 에 faceted 직접 wiring → grid-core 변경 없이도 통과(vacuous). 본 테스트는 `<Grid enableFilter>`
+  에 faceted 모델 **미공급**(prop 자체 없음) → 리스트가 채워지면 *오직* buildTableOptions wiring 때문(구조적 non-vacuous).
+  chromium **2/2**(tests/visual/grid-set-filter.spec.ts): ①city SelectFilter OOTB **distinct 값+count**(서울(3)/부산(2)/
+  대구(1), li 정확히 3개 — "리스트 비어있지 않음"이 아닌 **count 단언**=갭분석이 짚은 (count) 표시) ②선택→그리드 필터.
+  회귀 32/32. typecheck 0.
+- **getFacetedMinMaxValues 생략**(YAGNI): NumberFilter 는 수동 연산자 사용·소비자 0 → 미장착.
+- **한계(명시)**: `manualFiltering`(SSRM) 제외 — 클라 facet 은 서버-paged placeholder 위에선 부정확(server-provided
+  facet 필요). SSRM faceted=범위 밖(후속).

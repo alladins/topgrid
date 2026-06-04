@@ -15,6 +15,8 @@
 import {
   getCoreRowModel,
   getExpandedRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
@@ -220,6 +222,13 @@ export function buildTableOptions<TData>(
   }
   if (props.enableFilter === true && props.manualFiltering !== true) {
     options.getFilteredRowModel = getFilteredRowModel();
+    // MOD-GRID-30 G-2: faceted row models — SelectFilter 의 column.getFacetedUniqueValues() 를 OOTB
+    // 동작시킨다(이전엔 소비자가 직접 등록 안 하면 빈 리스트 silent-fail). enableFilter 게이트에 묶어
+    // facet ⊆ filter 보장(SelectFilter 가 동작 가능한 곳=enableFilter 인 곳이므로 "out of the box"). 모델은
+    // **lazy**(컬럼 facet 접근 시에만 계산) → SelectFilter 없는 필터 그리드엔 계산 경로 자체가 없어 무비용.
+    // manualFiltering(SSRM) 제외: 클라 facet 은 서버-paged placeholder 위에선 부정확(server-provided 필요=범위 밖).
+    options.getFacetedRowModel = getFacetedRowModel();
+    options.getFacetedUniqueValues = getFacetedUniqueValues();
   }
   // paginationActive = enablePagination===true OR mode='client'|'server' (D5 결정).
   // getPaginationRowModel: mode 유래 인스턴스 재사용 (있으면), 없으면 신규 생성.
