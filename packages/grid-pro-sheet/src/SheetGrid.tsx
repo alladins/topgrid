@@ -35,7 +35,7 @@ const cellStyle: CSSProperties = {
 const headerStyle: CSSProperties = { ...cellStyle, background: '#f3f4f6', textAlign: 'center', fontWeight: 600 };
 
 export function SheetGrid({ rows = 12, cols = 6 }: SheetGridProps): JSX.Element {
-  const { setCell, getDisplay, getRaw } = useSheet();
+  const { setCell, getDisplay, getRaw, undo, redo, canUndo, canRedo } = useSheet();
   const [editing, setEditing] = useState<{ row: number; col: number } | null>(null);
   const [editText, setEditText] = useState('');
   const { range, handleMouseDown, handleMouseEnter, handleMouseUp } = useCellRange();
@@ -76,6 +76,27 @@ export function SheetGrid({ rows = 12, cols = 6 }: SheetGridProps): JSX.Element 
       onMouseUp={handleMouseUp}
       style={{ display: 'inline-block', outline: 'none' }}
     >
+      {/* MOD-GRID-32 G-3: undo/redo 툴바(버튼 어포던스; disabled=canUndo/canRedo). */}
+      <div style={{ display: 'flex', gap: '4px', marginBottom: '4px' }}>
+        <button
+          type="button"
+          aria-label="실행 취소"
+          disabled={!canUndo}
+          onClick={undo}
+          style={{ padding: '2px 8px', fontSize: '12px', cursor: canUndo ? 'pointer' : 'default' }}
+        >
+          ↶ 취소
+        </button>
+        <button
+          type="button"
+          aria-label="다시 실행"
+          disabled={!canRedo}
+          onClick={redo}
+          style={{ padding: '2px 8px', fontSize: '12px', cursor: canRedo ? 'pointer' : 'default' }}
+        >
+          ↷ 재실행
+        </button>
+      </div>
       <table style={{ borderCollapse: 'collapse' }}>
         <thead>
           <tr>

@@ -114,6 +114,46 @@ test('MOD-32 G-2: text + math functions in the grid (recalc + range-arg guard)',
   await expect(cell('E1'), 'ROUND(range,…) → #ERROR! (per-arg boundary)').toHaveText('#ERROR!');
 });
 
+test('MOD-32 G-3: undo/redo reverts a cell edit and recomputes dependents', async ({
+  page,
+}) => {
+  await page.goto(FRAME(ID));
+  const root = page.locator('#storybook-root');
+  await root.locator('table').first().waitFor({ state: 'visible' });
+  const cell = (ref: string) => root.locator(`td[data-cell="${ref}"]`);
+  const undoBtn = root.locator('button[aria-label="실행 취소"]');
+  const redoBtn = root.locator('button[aria-label="다시 실행"]');
+
+  await expect(undoBtn, 'undo disabled at start').toBeDisabled();
+
+  await typeCell(page, root, 'A1', '10');
+  await typeCell(page, root, 'B1', '=A1*2');
+  await expect(cell('B1'), 'B1 = 20').toHaveText('20');
+  await typeCell(page, root, 'A1', '50');
+  await expect(cell('B1'), 'B1 recomputed → 100').toHaveText('100');
+
+  // ★ undo the A1 50-edit → A1 reverts AND the dependent B1 recomputes.
+  await expect(undoBtn).toBeEnabled();
+  await undoBtn.click();
+  await expect(cell('A1'), 'A1 reverted to 10').toHaveText('10');
+  await expect(cell('B1'), '★ dependent B1 recomputed → 20').toHaveText('20');
+
+  // redo re-applies.
+  await redoBtn.click();
+  await expect(cell('A1'), 'A1 redone to 50').toHaveText('50');
+  await expect(cell('B1'), 'B1 redone → 100').toHaveText('100');
+
+  // a NEW edit after undo truncates the redo future (redo disabled).
+  await undoBtn.click(); // back to A1=10, B1=20
+  await typeCell(page, root, 'A1', '3');
+  await expect(cell('B1'), 'new edit B1 → 6').toHaveText('6');
+  await expect(redoBtn, 'redo future truncated by new edit').toBeDisabled();
+
+  // undo all the way back → undo disabled again (cursor===0, the canUndo bottom edge).
+  while (await undoBtn.isEnabled()) await undoBtn.click();
+  await expect(undoBtn, 'undo disabled after undoing to the start').toBeDisabled();
+});
+
 test('grid-pro-range reuse: selection + clipboard copy = VALUE (not formula)', async ({
   page,
   context,

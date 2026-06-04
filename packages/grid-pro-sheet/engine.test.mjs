@@ -121,6 +121,52 @@ ok('POWER(2,10) → 1024', evalF('=POWER(2,10)') === 1024);
   ok('CONCATENATE ref → "hello world"', s.getValue('B1') === 'hello world');
 }
 
+// ── G-3: cell-edit undo/redo (raw snapshot command stack + recompute) ──
+{
+  const s = createSheet();
+  s.setCell('A1', '10');
+  s.setCell('B1', '=A1*2'); // depends on A1
+  ok('G-3 baseline B1 → 20', s.getValue('B1') === 20);
+
+  s.setCell('A1', '50');
+  ok('after edit B1 → 100', s.getValue('B1') === 100);
+
+  // ★ undo restores A1's prev raw AND recomputes the dependent B1.
+  ok('undo returns true', s.undo() === true);
+  ok('★ undo restores A1=10 (raw)', s.getRaw('A1') === '10');
+  ok('★ undo recomputes dependent B1 → 20', s.getValue('B1') === 20);
+
+  // redo re-applies.
+  ok('redo returns true', s.redo() === true);
+  ok('redo A1=50', s.getRaw('A1') === '50');
+  ok('redo dependent B1 → 100', s.getValue('B1') === 100);
+
+  // undo to the very first edit (B1 formula), then A1, then A1's creation.
+  ok('canUndo true', s.canUndo() === true);
+  s.undo(); // A1 50→10
+  s.undo(); // B1 formula → '' (its creation)
+  ok('undo B1 creation → B1 empty', s.getValue('B1') === '');
+  ok('A1 still 10', s.getValue('A1') === 10);
+
+  // redo past the branch, then a NEW edit truncates the redo future.
+  s.redo(); // B1 formula back
+  ok('redo restores B1 → 20', s.getValue('B1') === 20);
+  s.setCell('A1', '7'); // new edit at this cursor → truncates remaining redo
+  ok('new edit B1 recompute → 14', s.getValue('B1') === 14);
+  ok('redo future truncated (canRedo false)', s.canRedo() === false);
+
+  // exhaust undo.
+  ok('undo empty stack eventually returns false', (() => { let g = 0; while (s.undo()) g++; return s.undo() === false; })());
+}
+// no-op setCell does not create a history entry.
+{
+  const s = createSheet();
+  s.setCell('A1', '1');
+  s.setCell('A1', '1'); // same value → no-op, no history
+  ok('no-op setCell: single undo clears A1', s.undo() === true && s.getValue('A1') === '');
+  ok('no second undo (no-op left no entry)', s.canUndo() === false);
+}
+
 rmSync(out, { force: true });
 console.log(`sheet engine: ${pass} passed, ${fail} failed`);
 if (fail) throw new Error(`${fail} failed`);

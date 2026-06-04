@@ -31,6 +31,14 @@ export interface Sheet {
   getRaw(ref: string): string;
   /** Display string for a cell (errors → code). */
   getDisplay(ref: string): string;
+  /** MOD-GRID-32 G-3: 직전 셀 편집 취소(prev raw 재적용 + 재계산). 적용됐으면 true. */
+  undo(): boolean;
+  /** MOD-GRID-32 G-3: 취소한 편집 재적용. 적용됐으면 true. */
+  redo(): boolean;
+  /** 취소 가능 여부. */
+  canUndo(): boolean;
+  /** 재적용 가능 여부. */
+  canRedo(): boolean;
 }
 
 export function createSheet(onChange?: (changes: SheetChange[]) => void): Sheet {
@@ -111,15 +119,47 @@ export function createSheet(onChange?: (changes: SheetChange[]) => void): Sheet 
     return changes;
   };
 
+  // 셀 raw 적용 + 증분 재계산(history 기록 없음 — setCell/undo/redo 가 공유).
+  const applyCell = (ref: string, input: string): void => {
+    raw.set(ref, input);
+    const c = compileCell(input);
+    compiled.set(ref, c);
+    setForwardDeps(ref, c.kind === 'formula' ? c.refs : []);
+    const changes = recompute(downstream(ref));
+    if (onChange && changes.length > 0) onChange(changes);
+  };
+
+  // MOD-GRID-32 G-3: per-cell 편집 command 스택. raw Map 이 진실원천이고 한 setCell = 한 셀 단위 명령
+  // {ref, prev, next} 이라 undo = prev 재적용(증분 재계산이 dependents 처리), redo = next 재적용. 전체
+  // rebuild 불필요(명령이 원자적). cursor = 적용된 history 길이; [cursor..] = redo future.
+  const history: { ref: string; prev: string; next: string }[] = [];
+  let cursor = 0;
+
   return {
     setCell(ref, input) {
-      raw.set(ref, input);
-      const c = compileCell(input);
-      compiled.set(ref, c);
-      setForwardDeps(ref, c.kind === 'formula' ? c.refs : []);
-      const changes = recompute(downstream(ref));
-      if (onChange && changes.length > 0) onChange(changes);
+      const prev = raw.get(ref) ?? '';
+      if (prev === input) return; // no-op 은 history 에 안 남김
+      applyCell(ref, input);
+      history.length = cursor; // redo future 잘라냄(새 분기)
+      history.push({ ref, prev, next: input });
+      cursor++;
     },
+    undo() {
+      if (cursor === 0) return false;
+      cursor--;
+      const e = history[cursor]!;
+      applyCell(e.ref, e.prev);
+      return true;
+    },
+    redo() {
+      if (cursor >= history.length) return false;
+      const e = history[cursor]!;
+      applyCell(e.ref, e.next);
+      cursor++;
+      return true;
+    },
+    canUndo: () => cursor > 0,
+    canRedo: () => cursor < history.length,
     getValue,
     getRaw: (ref) => raw.get(ref) ?? '',
     getDisplay: (ref) => formatValue(getValue(ref)),

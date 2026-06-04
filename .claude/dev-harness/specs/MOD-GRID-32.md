@@ -83,3 +83,21 @@ flat 전개의 조용한 오독(ROUND(A1:A3,2)→digits 오독) 방지. POSITION
   recalc). chromium **4/4**(sheet-grid: G-1·G-2 + MOD-26 2 보존). G-2: UPPER/LEN/CONCATENATE/ROUND/MOD 표시·편집 재계산·
   ★range-arg→#ERROR! 시각. 회귀 43/43. typecheck 0.
 - **MOD-26 보존**: 기존 5함수(SUM 등)=flat-values 경로 불변. **vN**: VLOOKUP(range+lookup)·date·financial(엔진 shape 없음).
+
+## G-3 결과 (완료 — 2026-06-05) → MOD-32 = {G-1,G-2,G-3} 완주, §3 이관
+**구현**: createSheet 에 per-cell 편집 command 스택. raw Map=진실원천이고 한 setCell=한 셀 명령{ref,prev,next}이라
+undo=prev 재적용(증분 재계산이 dependents 처리)·redo=next. 전체 rebuild 불필요(명령 원자적). `applyCell` 추출
+(history 기록 없는 공유 경로) + cursor(적용 길이; [cursor..]=redo future). no-op(prev===input) 은 history 미기록. Sheet
+인터페이스 undo/redo/canUndo/canRedo. useSheet 노출(undo/redo 명시 bump=값 무변화 시도 cursor 반영). SheetGrid undo/redo
+툴바 버튼(disabled=canUndo/canRedo). reuse-gate: MOD-23 useUndoRedo=행-data command 계약 상이→self-contained 신규(LESS-005).
+- **검증**: node **66/66**(G-1·2 49 + G-3 17): ★undo→prev raw 복원+**dependent 재계산**·redo·새 편집 시 redo future 절단·
+  undo 소진·no-op 미기록. chromium **5/5**(sheet-grid: G-1·2·3 + MOD-26 2 보존). G-3: undo 버튼→셀 복원+★dependent 재계산·
+  redo·branch 절단(redo disabled). 회귀 44/44. typecheck 0.
+- **scope 고정(advisor #5)**: undo/redo(raw 스냅샷)만. **$A$1 절대구문+상대참조-on-fill=vN**(스코프 폭탄: ref 모델 absolute
+  flag + copy=수식텍스트 + 델타 재작성=3골).
+
+## 모듈 완주 요약
+3-Goal: G-1 비교+IF/논리(파서/evaluate, 의존그래프 구성상 정확) · G-2 text/math(positional per-arg, range-arg→#ERROR!) ·
+G-3 undo/redo(per-cell command 스택). MOD-26 엔진 심화, **characterization 회귀로 기존 동작 보존**. node 66 + chromium 5.
+LESS-006: ★recalc-through-IF(lazy⊥정적추적)·range-arg 경계·undo→dependent 재계산이 매 골 spine. advisor 후속(esbuild
+fragility·positional 경계·type-strict 의미) 폐쇄. vN: VLOOKUP/date/financial·$A$1+상대참조·멀티시트·셀서식.

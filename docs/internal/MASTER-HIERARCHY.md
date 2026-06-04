@@ -666,7 +666,7 @@
 
 ---
 
-### `mod-grid-32` — 스프레드시트 심화 (비교/논리 함수 · text/math · undo/redo, **Pro**, grid-pro-sheet) 🔶 진행 중 — G-1 채움, G-2/G-3 대기
+### `mod-grid-32` — 스프레드시트 심화 (비교/논리 함수 · text/math · undo/redo, **Pro**, grid-pro-sheet) ✅ 채움 — {G-1,G-2,G-3} 완주
 
 소스: `packages/grid-pro-sheet/src/{types.ts, internal/{parser,evaluate,functions}.ts}` + `engine.test.mjs`(node, esbuild 격리) + `tests/visual/sheet-grid.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-32.md`. dev-harness 15번째. 갭분석 Spreadsheet(미구현 9). MOD-26 PoC 엔진(5함수·의존그래프 재계산) 심화.
 
@@ -674,9 +674,9 @@
 |------|----------|------|----------|------|------|
 | 비교+논리/IF(G-1) | parser 비교 토큰+parseCompare · evaluate type-aware 비교+IF lazy · functions AND/OR/NOT | **종결형**(순수) | ★비교=기존 `binary` op 확장(새 노드 kind 금지=extractRefs 정적 walk 가 누락→recalc 깨짐, binary 면 수정 0). IF=call 유지+eval lazy(미평가 분기), parse/extractRefs 평범 call→세 분기 ref 추적 | 선행 characterization 회귀(엔진 커밋 테스트 0 보강). node **28/28**(characterization 11+비교 8+IF/논리 7+★recalc through IF 2) + chromium 3/3(IF/AND/비교 표시·recalc·lazy 1/0→safe). 회귀 42/42 | 채움 |
 | text/math 함수(G-2) | functions.ts `POSITIONAL_FUNCTIONS`: LEN/LEFT/RIGHT/MID/UPPER/LOWER/TRIM/CONCATENATE + ABS/ROUND/INT/MOD/POWER | 종결형 | evaluate call: 가변(SUM)=flat-values·위치=per-arg(`args.map(evaluate)`, 경계 보존). ★range 인자→#ERROR!(조용한 오독 방지). VLOOKUP/date/financial=vN | node 49/49(G-2 21+★range-arg→#ERROR!) + chromium 4/4(text/math 표시·재계산). MOD-26 보존. 회귀 43/43 | 채움 |
-| undo/redo(G-3) | createSheet history 스택(raw 스냅샷 복원+전체 재계산) | 워크플로형 | raw Map=진실원천. MOD-23 useUndoRedo=계약 상이→신규(LESS-005). $A$1+상대참조=vN | 대기 |
+| undo/redo(G-3) | createSheet per-cell command 스택(setCell={ref,prev,next}, undo=prev 재적용) + Sheet undo/redo/canUndo/canRedo + SheetGrid 툴바 | 워크플로형 | raw Map=진실원천(명령 원자적→전체 rebuild 불필요). MOD-23 useUndoRedo=계약 상이→신규(LESS-005). $A$1+상대참조=vN | node 66/66(★undo→prev+dependent 재계산·branch 절단) + chromium 5/5(undo 버튼→복원+재계산). 회귀 44/44 | 채움 |
 
-> dev-harness 수확: **reuse** = MOD-26 엔진(parser/evaluate/functions/sheetEngine·createSheet) 심화. **★아키텍처 통찰(advisor)**: 의존그래프를 *구성상* 맞히려면 비교를 **새 노드 kind 가 아니라 binary op 확장**(extractRefs 정적 walk → 모르는 kind=의존 ref 누락→recalc 깨짐). IF=call+eval lazy(lazy 평가 ⊥ 정적 의존추적 — 둘 다 필요: 미평가 분기인데도 cond ref 변경 시 재계산). **선행 characterization**(엔진 커밋 테스트 0=echo TODO 이던 것 — 파서 수술 전 현 동작 핀 후 green 유지). **검증 인프라**: 엔진 .js 크로스import 라 strip-types 불가→esbuild 격리 번들(i18n 식). G-3 scope 고정(advisor): undo/redo(raw 스냅샷)·$A$1+상대참조-on-fill=vN(스코프 폭탄).
+> dev-harness 수확: **reuse** = MOD-26 엔진(parser/evaluate/functions/sheetEngine·createSheet) 심화. **★아키텍처 통찰(advisor)**: 의존그래프를 *구성상* 맞히려면 비교를 **새 노드 kind 가 아니라 binary op 확장**(extractRefs 정적 walk → 모르는 kind=의존 ref 누락→recalc 깨짐). IF=call+eval lazy(lazy 평가 ⊥ 정적 의존추적 — 둘 다 필요: 미평가 분기인데도 cond ref 변경 시 재계산). G-2 positional 함수=per-arg(range 인자→#ERROR! 로 조용한 오독 방지, "계약 변경 0"은 reduce형만). G-3 undo/redo=per-cell command 스택(명령 원자적→전체 rebuild 불필요). **선행 characterization**(엔진 커밋 테스트 0=echo TODO→파서 수술 전 현 동작 핀 후 green 유지). **검증 인프라**: 엔진 .js 크로스import strip-types 불가→esbuild 격리 번들(i18n 식, esbuild devDep+bare import). node 66+chromium 5. **advisor 후속 폐쇄**: esbuild 경로 fragility·positional range-arg 경계·type-strict 동등 의미. **vN**: VLOOKUP/date/financial·$A$1+상대참조-on-fill·멀티시트·셀서식.
 
 ---
 
