@@ -106,3 +106,29 @@ OOTB 동작(이전엔 소비자가 직접 등록 안 하면 빈 리스트 silent
 - **getFacetedMinMaxValues 생략**(YAGNI): NumberFilter 는 수동 연산자 사용·소비자 0 → 미장착.
 - **한계(명시)**: `manualFiltering`(SSRM) 제외 — 클라 facet 은 서버-paged placeholder 위에선 부정확(server-provided
   facet 필요). SSRM faceted=범위 밖(후속).
+
+## G-3 결과 (완료 — 2026-06-04) → MOD-30 = {G-1,G-2,G-3} 완주, §3 이관
+**신규 Pro 패키지 `@topgrid/grid-pro-filter`**(PAT-003: grid-license dep + index `checkLicense()` + EULA, 13→14번째 Pro):
+- **순수 코어**(makeMultiFilterFn): base FilterFn 을 N번 호출→AND/OR reduce(LESS-005, 매칭 재구현 0). ★빈/불완전
+  조건은 reduce 전에 **base.autoRemove 로 제거**(textFilterFn 이 빈 값에 true 반환→OR 시 전체-행 붕괴 함정 차단).
+  `type FilterFn` 만 import(런타임 0)→node strip-types 직접 실행. multiTextFilterFn/multiNumberFilterFn = base 적용.
+- **UI**(MultiFilter): AG parity = **2 조건 + AND/OR**(N-row 빌더 over-build 회피). 코어는 N-general(공짜). FilterPopover
+  (generic) 재사용 + 조건 행 신규 thin(operator enum/값타입 재사용, TextFilter fork 안 함). PAT-003 watermark(useLicenseStatus).
+- **검증**: node spine 13/13(mock base 격리 — AND/OR + **★OR+빈 2번째 조건→채운 조건만(전체 아님)** + autoRemove).
+  chromium **4/4**(tests/visual/grid-multi-filter.spec.ts): ①OR 텍스트 union(김+이→2) ②AND 숫자 범위(≥80∧≤90→3)
+  ③**OR+빈 조건 실UI spine**(이 단독→1, 붕괴 없음) ④PAT-003 watermark(무라이선스→"Unlicensed" overlay). 회귀 36/36. typecheck 0.
+- **★발견·시정(빈-조건 함정의 숫자 판)**: 첫 chromium 이 score 컬럼이 **마운트 시 grid 를 비우는** 버그 검출 →
+  `Number('')===0` 이라 빈 숫자 조건이 `{=,0}`(유효값)로 set→numberFilterFn.autoRemove 가 안 지움→"score=0" 필터로
+  전 행 배제(자멸). 코어는 정상(dist 격리 검증)이라 **UI→core 계약 버그**(빈 숫자는 NaN 으로 보내야 autoRemove 가 제거).
+  시정: toCondition 에서 빈 입력→NaN(0 아님). advisor 의 "빈-조건 spine 처음부터" 강조가 instrument→검출로 이어짐.
+- **설계 사실(shared-state 아님)**: MultiFilterValue shape ≠ TextFilterValue → 컬럼은 단일·복합 filterFn 중 하나만
+  사용(배타적). G-1 floating↔popover 공유와 다름 — 분기 테스트 안 만듦.
+- **deferral**: advanced filter(cross-column 식 빌더, Enterprise) = vN. facade(@topgrid/grid) 신규 패키지 등록 = 릴리스 batch.
+
+### G-3 advisor 후속(커밋 fold)
+- **license 게이트 양방향 고정**: watermark 는 pointer-events-none 라 기능 안 막음 → "무라이선스→watermark"
+  단방향만 보면 useLicenseStatus 가 *항상* watermark 띄워도(유료 고객도) 통과. → **유효 라이선스(Default) story 에서
+  watermark 없음**도 단언(게이트를 license 상태에 고정). G-2 의 count 단언·테마 default+override 와 같은 비대칭 폐쇄.
+- **순수 코어 node 테스트 내구화**: 13-케이스 spine 을 `packages/grid-pro-filter/src/makeMultiFilterFn.test.ts` 로 커밋
+  (type-only import=react 0 → `node --experimental-strip-types`, package `test` script). chromium #3 은 OR+빈 1 케이스만
+  커버 → reduce 로직 변경 시 회귀 가드.

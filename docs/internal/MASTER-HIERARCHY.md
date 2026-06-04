@@ -638,17 +638,17 @@
 
 ---
 
-### `mod-grid-30` — 필터링 고도화 (floating / set·faceted / multi, **MIT**+Pro, grid-core+grid-features) 🔶 진행 중 — G-1 채움, G-2/G-3 대기
+### `mod-grid-30` — 필터링 고도화 (floating / set·faceted / multi, **MIT**+Pro, grid-core+grid-features+grid-pro-filter) ✅ 채움 — {G-1,G-2,G-3} 완주
 
-소스: `packages/grid-core/src/{Grid.tsx, types.ts}` + `packages/grid-features/src/filter-ui/FloatingFilters.tsx` + `packages/grid-features/stories/FloatingFilters.stories.tsx` + `tests/visual/grid-floating-filter.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-30.md`. dev-harness 13번째. 갭분석 필터링(MOD-09 popover 필터 위에 ❌/🟡 3축 폐쇄). MOD-09 filterFns+값타입 재사용.
+소스: `packages/grid-core/src/{Grid.tsx, types.ts, internal/buildTableOptions.ts}` + `packages/grid-features/src/filter-ui/FloatingFilters.tsx` + `packages/grid-pro-filter/src/{makeMultiFilterFn.ts, multiFilterFns.ts, MultiFilter.tsx, index.ts}` + stories(`grid-features/stories/{FloatingFilters,SetFilterFaceted}`, `grid-pro-filter/stories/MultiFilter`) + tests(`grid-floating-filter, grid-set-filter, grid-multi-filter`.spec.ts), spec `.claude/dev-harness/specs/MOD-GRID-30.md`. dev-harness 13번째. 갭분석 필터링(MOD-09 popover 필터 위에 ❌/🟡 3축 폐쇄). MOD-09 filterFns+값타입 재사용.
 
 | 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
 |------|----------|------|----------|------|------|
 | floating 필터(G-1) | grid-core `renderFloatingFilter?(column)` prop(=활성, cellClassName mirror) → thead floating `<tr>` · grid-features `TextFloatingFilter`/`NumberFloatingFilter` | **연결형**(plumbing) + 종결형(재사용) | ★floating 행=새 thead 행→MOD-27(컬럼virt 동일 윈도·핀 sticky)·MOD-28(ARIA: header 행 카운트+1·axe) 계약 상속. seam=PAT-005 render prop(grid-core MIT 유지). reuse=filterFns+값타입(LESS-005, popover fork 금지) | shared-state(popover write→floating 반영=단일 column.setFilterValue). chromium **4/4**(ARIA 정합 8=2+6+axe·텍스트/숫자 필터·shared-state·**컬럼virt 정렬**). 신규 pure 0(렌더배선)→browser-only. 회귀 30/30 | 채움 |
 | set/faceted(G-2) | `buildTableOptions.ts` enableFilter 게이트에 getFacetedRowModel()+getFacetedUniqueValues() | 연결형 | 🟡 shipped-but-inert(SelectFilter OOTB 빈 리스트) 폐쇄. ★facet⊆filter 게이트(새 prop=silent-fail 이동만). faceted lazy=비-SelectFilter 그리드 무비용 | ★LESS-006: 양성 테스트 grid-core `<Grid>` 경유(faceted 미공급)→non-vacuous. chromium **2/2**(OOTB 서울3/부산2/대구1 count·선택→필터). manualFiltering 제외. 회귀 32/32 | 채움 |
-| multi AND/OR(G-3) | 컬럼당 복수 조건 스택(순수 compound predicate + UI, Pro) | 종결형+트리거 | PAT-003. advanced(cross-column)=vN | 대기 |
+| multi AND/OR(G-3) | 신규 Pro `grid-pro-filter`: `makeMultiFilterFn(base)`(순수)·`multiTextFilterFn`/`multiNumberFilterFn`·`MultiFilter`(2조건+AND/OR UI) | 종결형(순수)+트리거 | PAT-003(license+checkLicense+EULA, 14번째 Pro). base FilterFn N번 호출→AND/OR reduce(LESS-005). ★빈 조건은 base.autoRemove 로 제거(OR 전체-행 붕괴 차단) | node spine 13/13(OR+빈→채운 조건만) + chromium **4/4**(OR텍스트·AND숫자범위·OR+빈 실UI·watermark). ★발견 시정: Number("")=0 빈 숫자 조건 자멸→NaN. advanced=vN. 회귀 36/36 | 채움 |
 
-> dev-harness 수확: **reuse** = MOD-09 filterFns+값타입(안정 계약) + MOD-27 computeColumnWindow + MOD-28 ARIA 헬퍼. **신규 패턴**: floating 행이 **3개 cross-module 계약 상속**(컬럼virt/핀/ARIA)을 매 검증(advisor — feature-level 갭분석이 못 짚는 interaction 제약). reuse-gate=popover 컴포넌트 fork 금지(LESS-005)→thin primitive. **finding(MOD-09)**: popover TextFilter inputValue mount-1회 init→floating→popover 표시 stale(column state 는 공유, sync=후속). 검증=browser(신규 pure 0=정직, LESS-006 위반 아님).
+> dev-harness 수확: **reuse** = MOD-09 filterFns+값타입(안정 계약) + MOD-27 computeColumnWindow + MOD-28 ARIA 헬퍼. **신규 패턴**: floating 행이 **3개 cross-module 계약 상속**(컬럼virt/핀/ARIA)을 매 검증(advisor — feature-level 갭분석이 못 짚는 interaction 제약). reuse-gate=popover 컴포넌트 fork 금지(LESS-005)→thin primitive(G-1 floating·G-3 조건 행 둘 다). **[[LESS-006]] ×3**: G-1 floating(상속 계약 검증), G-2 양성 테스트 grid-core `<Grid>` 경유=non-vacuous(raw 직접-wiring 회피), G-3 빈-조건 spine + **Number("")=0 빈 숫자 조건 자멸 검출**(첫 chromium 이 mount 시 grid 비움 잡음→UI→core 계약 버그=NaN 시정). G-2 설계: facet⊆filter 게이트(새 prop=silent-fail 이동만), faceted lazy=무비용. G-3 신규 Pro `grid-pro-filter`(14번째). **finding(MOD-09)**: popover TextFilter inputValue mount-1회 init→floating→popover 표시 stale(column state 공유, sync=후속). **deferral**: advanced filter(cross-column)=vN, facade 등록=릴리스 batch.
 
 ---
 

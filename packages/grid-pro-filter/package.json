@@ -1,0 +1,44 @@
+{
+  "name": "@topgrid/grid-pro-filter",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "SEE LICENSE IN EULA",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Pro: Multi-condition (AND/OR) column filtering — compound FilterFn + 2-condition builder UI",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types src/makeMultiFilterFn.test.ts",
+    "size": "size-limit"
+  },
+  "dependencies": {
+    "@topgrid/grid-license": "workspace:*"
+  },
+  "peerDependencies": {
+    "@topgrid/grid-core": "workspace:*",
+    "@topgrid/grid-features": "workspace:*",
+    "@tanstack/react-table": "^8.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@topgrid/grid-core": "workspace:*",
+    "@topgrid/grid-features": "workspace:*"
+  }
+}

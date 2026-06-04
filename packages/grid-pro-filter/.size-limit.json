@@ -1,0 +1,8 @@
+[
+  {
+    "name": "@topgrid/grid-pro-filter (ESM)",
+    "path": "dist/index.mjs",
+    "limit": "20 KB",
+    "gzip": true
+  }
+]
