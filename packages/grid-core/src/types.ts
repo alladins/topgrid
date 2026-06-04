@@ -9,6 +9,7 @@
 
 import type {
   Cell,
+  Column,
   ColumnDef,
   ColumnFiltersState,
   ColumnOrderState,
@@ -702,6 +703,13 @@ export interface GridProps<TData> {
    * (HC-safe 선택 표시는 별도 메커니즘).
    */
   theme?: Partial<GridTheme>;
+  /**
+   * Floating 필터 행 렌더 콜백(MOD-GRID-30 G-1). 지정 시 leaf 헤더행 아래 always-visible 필터 입력
+   * 행을 그린다(prop 존재=활성, `cellClassName` 관례 mirror). 컬럼당 1회 호출 — 보통 grid-features 의
+   * floating 입력 컴포넌트(`column.setFilterValue` 로 popover 와 동일 state 공유)를 반환. grid-core 는
+   * 구조 행 + 컬럼 윈도(가상화)·핀 sticky·ARIA 정합만 제공(grid-features 무의존=MIT). null 반환=빈 셀.
+   */
+  renderFloatingFilter?: (column: Column<TData, unknown>) => ReactNode;
 
   // ─── 트리 ───
   /** TanStack `getSubRows` — `enableExpanding=true` 시 사용. */

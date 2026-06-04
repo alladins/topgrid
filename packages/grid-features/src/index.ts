@@ -81,6 +81,9 @@ export type {
   FilterResetButtonProps,
 } from './filter-ui/types';
 
+// MOD-GRID-30 G-1: floating filters — always-visible inline inputs for grid-core renderFloatingFilter.
+export { TextFloatingFilter, NumberFloatingFilter } from './filter-ui/FloatingFilters';
+
 // MOD-GRID-24 G-1: conditional formatting rule engine
 // (pure — compiles declarative rules to grid-core rowClassName/cellClassName callbacks)
 export {

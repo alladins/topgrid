@@ -343,7 +343,11 @@ function GridInner<TData>(
 
   // MOD-GRID-28 G-1: WAI-ARIA grid 의미론(default-on). 절대 인덱스 = 척추 — 가상화 windowed 행/열도
   // DOM 위치가 아닌 절대 aria-rowindex/colindex 를 보고한다. visualOrder = [핀좌, center, 핀우] 전체.
-  const headerRowCount = table.getHeaderGroups().length;
+  // MOD-GRID-30 G-1: floating 필터 행은 추가 header 행으로 카운트 → aria-rowcount +1, 데이터
+  // aria-rowindex 도 dataRowAriaIndex(headerRowCount,…) 경유 +1 로 일관 shift(척추 유지). axe 검증.
+  const floatingFilterEnabled = props.renderFloatingFilter !== undefined;
+  const headerGroupCount = table.getHeaderGroups().length;
+  const headerRowCount = headerGroupCount + (floatingFilterEnabled ? 1 : 0);
   const dataRowCount = table.getRowModel().rows.length;
   const ariaSelectable = selectionMode !== 'none';
   const visualOrder = visualColumnOrder(
@@ -666,6 +670,66 @@ function GridInner<TData>(
     return nodes;
   };
 
+  // MOD-GRID-30 G-1: floating 필터 셀 — leaf 컬럼당 always-visible 입력 셀(<th role=columnheader>).
+  // 핀 sticky·width 는 헤더셀과 동형(같은 컬럼 정렬). 내용은 소비자 renderFloatingFilter(column) 주입
+  // (grid-features floating 입력). null 반환 시 빈 셀(필터 없는 컬럼).
+  const renderFloatingFilterCell = (header: Header<TData, unknown>): ReactElement => {
+    const col = header.column;
+    const size = header.getSize();
+    const applyWidth = useResizing || usePinning || columnVirtEnabled || size !== 150;
+    const pinned = usePinning
+      ? getPinnedCellStyle(col, table, 'thead')
+      : { style: {}, className: '' };
+    const cellStyle: CSSProperties = { ...pinned.style };
+    if (applyWidth) cellStyle.width = size;
+    return (
+      <th
+        key={header.id}
+        {...columnHeaderAttrs(ariaColIndexOf(col.id), false, false)}
+        className={`px-2 py-1 align-top font-normal normal-case ${pinned.className}`}
+        style={cellStyle}
+      >
+        {props.renderFloatingFilter!(col)}
+      </th>
+    );
+  };
+
+  // 컬럼 가상화 시 필터 셀도 본문/헤더와 **동일 윈도 세그먼트**로 방출(어긋남 방지).
+  const renderWindowedFloatingFilterCells = (
+    headers: Header<TData, unknown>[],
+    window: ColumnWindow,
+  ): ReactElement[] => {
+    const headerMap = new Map(headers.map((hd) => [hd.column.id, hd] as const));
+    const nodes: ReactElement[] = [];
+    for (const id of window.pinnedLeftIds) {
+      const hd = headerMap.get(id);
+      if (hd) nodes.push(renderFloatingFilterCell(hd));
+    }
+    if (window.leftPadPx > 0) {
+      nodes.push(
+        <th key="__ff_left" aria-hidden="true" style={{ width: window.leftPadPx }} />,
+      );
+    }
+    for (const id of window.windowCenterIds) {
+      const hd = headerMap.get(id);
+      if (hd) nodes.push(renderFloatingFilterCell(hd));
+    }
+    if (window.rightPadPx > 0) {
+      nodes.push(
+        <th key="__ff_right" aria-hidden="true" style={{ width: window.rightPadPx }} />,
+      );
+    }
+    for (const id of window.pinnedRightIds) {
+      const hd = headerMap.get(id);
+      if (hd) nodes.push(renderFloatingFilterCell(hd));
+    }
+    return nodes;
+  };
+
+  // leaf 헤더행(가장 깊은 그룹) = 필터 셀의 컬럼 소스(그룹 placeholder 없는 실제 leaf 컬럼).
+  const leafHeaderGroup = table.getHeaderGroups()[headerGroupCount - 1];
+  const leafHeaders = leafHeaderGroup ? leafHeaderGroup.headers : [];
+
   return (
     <div
       className={`flex flex-col ${props.className ?? ''}`}
@@ -719,6 +783,15 @@ function GridInner<TData>(
                   : headerGroup.headers.map(renderHeaderCell)}
               </tr>
             ))}
+            {/* MOD-GRID-30 G-1: floating 필터 행 — leaf 헤더행 아래 추가 header 행(aria-rowindex=
+                headerGroupCount+1). 컬럼 가상화 시 동일 윈도 경로. */}
+            {floatingFilterEnabled && (
+              <tr {...headerRowAttrs(headerGroupCount + 1)}>
+                {columnVirtEnabled
+                  ? renderWindowedFloatingFilterCells(leafHeaders, columnWindow)
+                  : leafHeaders.map(renderFloatingFilterCell)}
+              </tr>
+            )}
           </thead>
           <tbody className={tbodyClassName} style={bodyBgStyle}>
             {props.loading === true ? (
