@@ -1,5 +1,13 @@
 // @topgrid/grid-core — public API (MOD-GRID-01 / G-001 + G-002 + G-003 + G-004 + G-005 + MOD-GRID-02 / G-001~G-006).
 export { Grid } from './Grid';
+// MOD-GRID-29 i18n — consumers build localeText/icons overrides on top of the defaults.
+export {
+  defaultGridLocale,
+  defaultGridIcons,
+  resolveLocale,
+  resolveIcons,
+} from './internal/i18n';
+export type { GridLocale, GridIcons } from './internal/i18n';
 export { useGridState } from './useGridState'; // ★ MOD-GRID-02 G-001
 export { useUrlSync } from './useUrlSync'; // ★ MOD-GRID-02 G-005
 export { useStoragePersist } from './useStoragePersist'; // ★ MOD-GRID-02 G-006

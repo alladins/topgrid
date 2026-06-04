@@ -58,10 +58,7 @@ import {
   buildAriaColIndex,
 } from './internal/ariaAttrs';
 import { nextCell, isNavKey, type CellPos } from './internal/cellNavigation';
-import {
-  announceSortMessage,
-  announceSelectionMessage,
-} from './internal/liveAnnounce';
+import { resolveLocale, resolveIcons } from './internal/i18n';
 import { getPinnedCellStyle } from './internal/computePinnedOffset';
 import { EmptyState } from './internal/EmptyState';
 import { ResizeHandle } from './internal/ResizeHandle';
@@ -76,7 +73,6 @@ import { GridPagination } from './pagination/GridPagination';
 import type { GridHandle, GridProps } from './types';
 
 const DEFAULT_PAGE_SIZE = 20;
-const DEFAULT_EMPTY_TEXT = '데이터가 없습니다.';
 const DEFAULT_VIRTUAL_SCROLL_HEIGHT = 400; // G-004 D7
 
 // Node `process` global 의 minimal local declare — `@types/node` 미설치 환경에서
@@ -389,13 +385,16 @@ function GridInner<TData>(
   // 금지)하고 텍스트만 갱신해야 SR 이 알린다. 리전은 <table role=grid> **밖**(outer wrapper)에 둔다
   // (grid 자식이면 aria-required-children 위반). 초기 렌더는 skip(마운트 시 알림 방지). **셀 이동은
   // 알리지 않는다**(aria-activedescendant 가 이미 SR 발화 — 이중발화 회피). 정렬/선택만 알린다.
+  // MOD-GRID-29 G-1: i18n — chrome 문자열/아이콘은 기본(한국어) 위 부분 override. 미지정 키는 fallback.
+  const locale = resolveLocale(props.localeText);
+  const gridIcons = resolveIcons(props.icons);
   const [announcement, setAnnouncement] = useState('');
   const sortAnnouncedOnce = useRef(false);
   const selectAnnouncedOnce = useRef(false);
   useEffect(() => {
     if (!sortAnnouncedOnce.current) { sortAnnouncedOnce.current = true; return; }
     setAnnouncement(
-      announceSortMessage(sorting, (id) => {
+      locale.sortMessage(sorting, (id) => {
         const h = table.getColumn(id)?.columnDef.header;
         return typeof h === 'string' ? h : id;
       }),
@@ -404,7 +403,7 @@ function GridInner<TData>(
   }, [sorting]);
   useEffect(() => {
     if (!selectAnnouncedOnce.current) { selectAnnouncedOnce.current = true; return; }
-    setAnnouncement(announceSelectionMessage(Object.keys(rowSelection).length));
+    setAnnouncement(locale.selectionMessage(Object.keys(rowSelection).length));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowSelection]);
 
@@ -523,7 +522,7 @@ function GridInner<TData>(
   const renderHeaderCell = (header: Header<TData, unknown>): ReactElement => {
     const canSort = header.column.getCanSort();
     const sorted = header.column.getIsSorted();
-    const sortGlyph = sorted === 'asc' ? '▲' : sorted === 'desc' ? '▼' : '⇅';
+    const sortGlyph = sorted === 'asc' ? gridIcons.sortAscending : sorted === 'desc' ? gridIcons.sortDescending : gridIcons.sortNone;
     // MOD-GRID-08: multi-sort badge index (0-based; -1 = not sorted).
     const sortIndex = header.column.getSortIndex();
     // D10: enableColumnResizing 또는 enableColumnPinning 시 항상 width 적용 (default 150 가드 제거).
@@ -701,7 +700,7 @@ function GridInner<TData>(
                 colSpan={table.getAllLeafColumns().length}
                 slot={props.emptyState}
                 text={props.emptyText}
-                defaultText={DEFAULT_EMPTY_TEXT}
+                defaultText={locale.emptyText}
               />
             ) : isVirtual ? (
               /* G-004 D5: padding-row 패턴 (single-table + sticky/pinning 호환).
@@ -784,6 +783,9 @@ function GridInner<TData>(
         // C-29: exactOptionalPropertyTypes=true — optional prop은 조건부 spread로 전달 (undefined literal 직접 할당 금지).
         <GridPagination
           table={table}
+          rowsPerPageLabel={locale.rowsPerPage}
+          navLabels={{ firstPage: locale.firstPage, prevPage: locale.prevPage, nextPage: locale.nextPage, lastPage: locale.lastPage }}
+          {...(props.localeText?.totalCount !== undefined ? { totalCountFormat: props.localeText.totalCount } : {})}
           {...(props.pagination?.mode !== undefined ? { mode: props.pagination.mode } : {})}
           {...(props.pagination?.totalCount !== undefined ? { totalCount: props.pagination.totalCount } : {})}
           {...(props.pagination?.pageSizeOptions !== undefined ? { pageSizeOptions: props.pagination.pageSizeOptions } : {})}

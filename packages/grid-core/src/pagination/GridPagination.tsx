@@ -52,7 +52,20 @@ export interface GridPaginationProps<TData extends RowData> {
    * @since G-003 (MOD-GRID-03)
    */
   enableKeyboardNav?: boolean;
+  /** "페이지당 행 수:" 라벨 (i18n — MOD-GRID-29). */
+  rowsPerPageLabel?: string;
+  /** 전체 건수 텍스트 포매터 (i18n — MOD-GRID-29). */
+  totalCountFormat?: (total: number) => import('react').ReactNode;
+  /** 네비게이션 버튼 aria-label (i18n — MOD-GRID-29). 미지정 시 한국어 기본. */
+  navLabels?: { firstPage: string; prevPage: string; nextPage: string; lastPage: string };
 }
+
+const DEFAULT_NAV_LABELS = {
+  firstPage: '첫 페이지',
+  prevPage: '이전 페이지',
+  nextPage: '다음 페이지',
+  lastPage: '마지막 페이지',
+};
 
 /**
  * Pagination UI 컨테이너 컴포넌트.
@@ -66,7 +79,11 @@ export function GridPagination<TData extends RowData>({
   pageSizeOptions,
   showTotalCount,
   enableKeyboardNav,
+  rowsPerPageLabel,
+  totalCountFormat,
+  navLabels,
 }: GridPaginationProps<TData>): JSX.Element {
+  const navL = navLabels ?? DEFAULT_NAV_LABELS;
   const containerRef = useRef<HTMLDivElement>(null);
   const { pageIndex, pageSize } = table.getState().pagination;
 
@@ -115,15 +132,21 @@ export function GridPagination<TData extends RowData>({
           pageSize={pageSize}
           pageSizeOptions={effectivePageSizeOptions}
           onPageSizeChange={handlePageSizeChange}
+          {...(rowsPerPageLabel !== undefined ? { label: rowsPerPageLabel } : {})}
         />
-        {resolvedShowTotalCount && <TotalCount total={totalRows} />}
+        {resolvedShowTotalCount && (
+          <TotalCount
+            total={totalRows}
+            {...(totalCountFormat !== undefined ? { format: totalCountFormat } : {})}
+          />
+        )}
       </div>
       <div className="flex items-center gap-1">
         <button
           type="button"
           onClick={() => table.setPageIndex(0)}
           disabled={!table.getCanPreviousPage()}
-          aria-label="첫 페이지"
+          aria-label={navL.firstPage}
           className="px-2 py-1 rounded border border-gray-300 disabled:opacity-40 hover:bg-gray-100"
         >
           {'«'}
@@ -132,7 +155,7 @@ export function GridPagination<TData extends RowData>({
           type="button"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
-          aria-label="이전 페이지"
+          aria-label={navL.prevPage}
           className="px-2 py-1 rounded border border-gray-300 disabled:opacity-40 hover:bg-gray-100"
         >
           {'‹'}
@@ -146,7 +169,7 @@ export function GridPagination<TData extends RowData>({
           type="button"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
-          aria-label="다음 페이지"
+          aria-label={navL.nextPage}
           className="px-2 py-1 rounded border border-gray-300 disabled:opacity-40 hover:bg-gray-100"
         >
           {'›'}
@@ -155,7 +178,7 @@ export function GridPagination<TData extends RowData>({
           type="button"
           onClick={() => table.setPageIndex(pageCountValue - 1)}
           disabled={!table.getCanNextPage()}
-          aria-label="마지막 페이지"
+          aria-label={navL.lastPage}
           className="px-2 py-1 rounded border border-gray-300 disabled:opacity-40 hover:bg-gray-100"
         >
           {'»'}

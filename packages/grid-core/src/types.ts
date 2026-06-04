@@ -23,6 +23,7 @@ import type {
   VisibilityState,
 } from '@tanstack/react-table';
 import type { PaginationMode } from './pagination/types';
+import type { GridLocale, GridIcons } from './internal/i18n';
 import type {
   ScrollToOptions as VirtualScrollToOptions,
   Virtualizer,
@@ -683,6 +684,16 @@ export interface GridProps<TData> {
   className?: string;
   /** 빈 결과 안내 텍스트 (default `'데이터가 없습니다.'`). */
   emptyText?: string;
+
+  // ─── MOD-GRID-29: i18n / 아이콘 ───
+  /**
+   * grid chrome 문자열 현지화 — 부분 override. 미지정 키는 한국어 기본으로 fallback(raw key/undefined
+   * 안 냄). 영문화 예: `{ emptyText: 'No data', rowsPerPage: 'Rows per page:', totalCount: (n) => `${n} rows` }`.
+   * `defaultGridLocale` 를 import 해 위에 spread 도 가능.
+   */
+  localeText?: Partial<GridLocale>;
+  /** 정렬 표시 아이콘 glyph override(부분). 미지정은 기본(`▲▼⇅`)으로 fallback. */
+  icons?: Partial<GridIcons>;
 
   // ─── 트리 ───
   /** TanStack `getSubRows` — `enableExpanding=true` 시 사용. */

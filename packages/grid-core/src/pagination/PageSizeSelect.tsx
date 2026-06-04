@@ -18,6 +18,8 @@ export interface PageSizeSelectProps {
   pageSizeOptions: number[];
   /** pageSize 변경 콜백. */
   onPageSizeChange: (size: number) => void;
+  /** "페이지당 행 수:" 라벨 (i18n — MOD-GRID-29). 미지정 시 한국어 기본. */
+  label?: string;
 }
 
 /**
@@ -29,10 +31,11 @@ export const PageSizeSelect = memo(function PageSizeSelect({
   pageSize,
   pageSizeOptions,
   onPageSizeChange,
+  label,
 }: PageSizeSelectProps) {
   return (
     <div className="flex items-center gap-2">
-      <span>페이지당 행 수:</span>
+      <span>{label ?? '페이지당 행 수:'}</span>
       <select
         value={pageSize}
         onChange={(e) => onPageSizeChange(Number(e.target.value))}

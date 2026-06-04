@@ -625,6 +625,19 @@
 
 ---
 
+### `mod-grid-29` — i18n·테마 (grid chrome localization + icons, **MIT**, grid-core) 🔶 진행 중 — G-1 채움, G-2 대기
+
+소스: `packages/grid-core/src/{internal/i18n.ts, Grid.tsx, types.ts, pagination/{GridPagination,PageSizeSelect,TotalCount}.tsx}` + `stories/Grid.i18n.stories.tsx` + `tests/visual/grid-i18n.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-29.md`. dev-harness 12번째. 갭분석 2순위(i18n/테마). MOD-28 의 한국어 하드코딩 announce·HC 선택표시 의존을 해소.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| i18n resolver(G-1) | `internal/i18n.ts`(순수): `GridLocale`(emptyText·rowsPerPage·totalCount(n)·firstPage/prevPage/nextPage/lastPage·sortMessage·selectionMessage)·`GridIcons` + `resolveLocale`/`resolveIcons`(merge) · `localeText?`/`icons?` props | **종결형**(순수) + 연결형 | ★척추=**missing-key fallback**(partial override 가 complete default 위에 MERGE — 미override 키는 raw key/undefined 아닌 default). default-on(미지정=기존 한국어와 byte-동일) | 스레딩: EmptyState·sort glyph·live-announce·pagination(rowsPerPage·totalCount 포매터·nav aria-label 4). node **19/19**(esbuild 격리 번들) + **chromium 3/3**(부분 override: EN 라벨·nav aria-label 보임 & KO fallback 잔존 동시) + a11y 회귀 8/8 | 채움 |
+| 테마(G-2) | `themeToVars(theme)` + `theme?` prop + CSS `--topgrid-*` var | **종결형**(순수) + 연결형 | CSS custom property(Tailwind-class 아님 — storybook Tailwind-less 게이트). 다크 프리셋·HC-safe 선택(MOD-28 HC 갭 해소) | 1 surface spike→bulk 전환. 검증=browser computed-style | 대기 |
+
+> dev-harness 수확: **reuse** = PAT-001(grid-core 내부). **신규 = [[LESS-006]] i18n 변형**(advisor 캐치: pagination nav 버튼 aria-label 하드코딩 한국어→EN locale 사용자(MOD-28 스크린리더 청자) 한국어 청취 — 5-키 spine self-check 가 놓친 implicit req→GridLocale 에 nav 4키 추가해 해소). **검증분리**: i18n=node fallback-invariant(키 전수)·테마=browser computed-style(node 로 "themeable" 주장 금지). **명시 deferral**: ColumnVisibilityMenu aria-label(optional surface+자체 label prop idiom). **known-broken infra**(MOD-29 무관): `storybook.spec.ts`=playwright 1.60 `file.slice` API drift+baseline 0→전수 fail(미변경 스토리 동일, 미수리=scope creep). 회귀 0(targeted 21/21).
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
