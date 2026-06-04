@@ -14,5 +14,7 @@ import { checkLicense } from '@topgrid/grid-license';
 checkLicense();
 
 export { StatusBar, type StatusBarItem, type StatusBarProps } from './StatusBar.js';
+// MOD-GRID-33 G-1: status-bar 내장 카운트(total/filtered/selected) — StatusBar items 합성.
+export { statusBarCounts, type StatusBarCountLabels } from './statusBarCounts.js';
 export { ToolPanel, type ToolPanelColumn, type ToolPanelProps } from './ToolPanel.js';
 export { RowGroupPanel, type RowGroupPanelProps } from './RowGroupPanel.js';

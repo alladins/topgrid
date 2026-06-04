@@ -3,34 +3,936 @@
   "design": "docs/internal/DEV-HARNESS-DESIGN.md",
   "matrix": "docs/internal/MASTER-HIERARCHY.md",
   "seeded_from": "2026-06 gap audit (MASTER §5.2, 15 gaps)",
-  "counters": { "PAT": 6, "AP": 4, "C": 3, "POL": 1, "ADR": 2, "LESS": 6 },
+  "counters": {
+    "PAT": 6,
+    "AP": 4,
+    "C": 3,
+    "POL": 1,
+    "ADR": 2,
+    "LESS": 6
+  },
   "modules": {
-    "MOD-GRID-18": { "package": "grid-pro-pivot", "tier": "Pro", "weight": "Full", "priority": "P0", "phase": "done", "goals": { "G-1": "done", "G-2": "done", "G-3": "done", "G-4": "done", "G-5": "done" }, "done_gate": { "lesson": "LESS-002", "matrix_row": true, "index_updated": true }, "mount_verified": "true — 4 PivotGrid stories real-mounted in chromium under storybook single-react 18.3.1 (basic/multi-dim+subtotals/custom-reducer/passthrough), no Invalid hook call; delegation pattern validated for MOD-21/24/26 reuse", "metrics": { "reused_patterns": ["PAT-001", "PAT-003"], "reused_vocab": ["@topgrid/grid-pro-agg: AggregationFnKey", "BUILT_IN_AGGREGATION_KEYS"], "ap_precaught": ["AP-001"], "adr": ["ADR-001"], "new_lessons": ["LESS-002"], "render_verified": "26 pure checks (computePivot/reducers/buildPivotColumns/cell-labels) — AC-1/2/3/4/7", "dom_mount": "blocked by react 18/19 split (P18-2, not a product defect); shell evidenced via grid-core source + chart watermark parity", "subtotals": "shipped (2-axis, full)", "ap_swept": ["AP-001 grep+neg-control", "AP-002 deprecated=0", "AP-003 stale-count=0", "AP-004 README/JSDoc↔index parity run"], "compounding": "implement applied LESS-001 (no engine substring in exports) unprompted — 2nd data point of harness feeding a prior lesson forward", "gaps_found": 0, "findings": ["§5.2 P18-1 agg reuse boundary", "§5.2 P18-2 react-split verify gap", "§5.2 P18-3 empty-dimension limits"] }, "note": "dev-harness 2번째 완주(Full). 렌더 스파이크 = full <Grid> 위임. ADR-001 reducer 로컬." },
-    "MOD-GRID-19": { "package": "grid-pro-chart", "tier": "Pro", "weight": "Full", "priority": "P0", "phase": "done", "goals": { "G-1": "done", "G-2": "done", "G-3": "done", "G-4": "done" }, "done_gate": { "lesson": "LESS-001", "matrix_row": true, "index_updated": true }, "mount_verified": true, "metrics": { "reused_patterns": ["PAT-001", "PAT-003", "PAT-004"], "ap_precaught": ["AP-001"], "ap_precaught_kind": "design-stage (no chart-lib surface) — NOT a verify-catch; indexed AP-001 gate is vacuous here (0 optional peers), firing guard = chart-lib-name grep proven by negative control (planted echarts import → 1 hit)", "new_lessons": ["LESS-001"], "render_verified": "renderToStaticMarkup: 4 sparkline types + empty/NaN + panel renderChart on/off + unlicensed watermark", "gaps_found": 0, "drift": 0 }, "note": "dev-harness 루프 첫 완주. 단일 클린 데이터포인트(설계와 일관) — 컴파운딩 일반화 금지." },
-    "MOD-GRID-20": { "package": "grid-sizing", "tier": "MIT", "weight": "Lite", "priority": "P0", "phase": "done", "goals": { "G-1": "done", "G-2": "done", "G-3": "done", "G-4": "done" }, "done_gate": { "lesson": "PAT-005 (pattern promotion)", "matrix_row": true, "index_updated": true }, "mount_verified": "n/a — no React component (pure helpers + injected measurement); full public API executed (13 checks)", "metrics": { "reused_patterns": ["PAT-001"], "new_patterns": ["PAT-005 host-capability-injection (N=2 with MOD-19 renderChart)"], "tier_firsts": ["first MIT module (no PAT-003 license gate)", "first Lite/partial-loop run"], "ap_swept": ["AP-001=0 (no external import)", "AP-002 deprecated=0", "AP-003 stale-count=0", "AP-004 README 8 ids ↔ index.ts parity run"], "render_verified": "13 pure checks (parse/distribute/sizeToFit/autoSize/SSR-fallback) — NO DOM wall thanks to measureText injection (PAT-005)", "compounding": "agent self-applied LESS-001 awareness (reworded 'watermark' comment to avoid guard-grep trip) — lesson propagated unprompted", "gaps_found": 0 }, "note": "dev-harness 3번째 완주. 첫 MIT/Lite. PAT-005 승격. 측정 주입으로 verify DOM 벽 0." },
-    "MOD-GRID-21": { "package": "grid-pro-panel", "tier": "Pro", "weight": "Full", "priority": "P0", "phase": "done", "goals": { "G-1": "done", "G-2": "done", "G-3": "done", "G-4": "done" }, "done_gate": { "lesson": "LESS-003", "matrix_row": true, "index_updated": true }, "mount_verified": "true — StatusBar/ToolPanel node-mounted (react18) + 3 panels chromium-mounted via storybook (incl RowGroupPanel = agg GroupPanel composition), no Invalid hook call", "metrics": { "reused_patterns": ["PAT-001"], "reused_components": ["@topgrid/grid-pro-agg GroupPanel (re-export as RowGroupPanel, 0 reimpl)"], "new_components": ["StatusBar"], "new_lessons": ["LESS-003"], "milestone": "reuse-gate first real validation (inventory→0 reimplementation enforced by AC+grep)", "ap_swept": ["AP-001=0", "AP-002 deprecated=0 (ColumnVisibilityMenu avoided)", "AP-003=0", "AP-004 README 6 ids↔index parity run", "reuse grep: 0 own drag handler"], "gaps_found": 0 }, "note": "dev-harness 4번째. reuse-gate 첫 실증. RowGroupPanel=agg GroupPanel 재export(컴포넌트 재사용). 신규=StatusBar 1개." },
-    "MOD-GRID-22": { "package": "grid-pro-serverside", "tier": "Pro", "weight": "Full (3-Goal 완주)", "priority": "P1", "phase": "done (3-Goal 완주 → §3)", "spec": "specs/MOD-GRID-22.md", "goals": { "G-1": "done", "G-2": "done", "G-3": "done" }, "done_gate": { "lesson": "LESS-006 정면 적용 ×3(G-1 epoch / G-2 manualSorting 억제 / G-3 sort-on-expanded — 매 Goal advisor 가 wired-but-unverified 경로 검출→폐쇄). PAT 후보 async-race-pinned-in-pure-core(epoch+node-existence) N=2(G-2 epoch+G-3 node-existence) 승격 점검 가능.", "matrix_row": true, "index_updated": true }, "host_touches": "grid-core 3개(generic 완성, SSRM 로직 0 — advisor): ①manualSorting/manualFiltering(manualPagination 미러, 클라이언트 row-model 억제) ②onSortingChange/onColumnFiltersChange(onColumnPinning/Sizing 패턴 미러, 쿼리변경 신호) ③virtualizerOptions.onChange forward(가시범위 관찰). 'SSRM이 grid-core controlled/observable 표면 갭을 드러냄→generic 보완은 전 소비자 이득'. OFF byte-identical 7/7 + 회귀(floating/column-virt) 6/6.", "design": "advisor: 첫 SSRM. reuse-gate(LESS-003)=grid-core 행가상화/서버페이징/트리 기존 → 신규=블록 lazy 로드만. 핵심 불변식=query epoch stale-response 거부(MOD-27 핀-불변식 동형, async race 를 node 에 못박음). Goal seam=AC③(lazy group=계층캐시→별 Goal/defer). datasource=grid-pro-serverside, materialize→placeholder 배열→기존 <Grid enableVirtualization>(코어 scroll-path 미접촉, LESS-005 형).", "g1": { "scaffold": "신규 Pro 패키지 grid-pro-serverside(PAT-003: checkLicense module-load + grid-license dep + EULA.md, edit-plus 미러). 첫 Pro since MOD-23.", "surface": ["ServerSideDatasource/GetRowsRequest/GetRowsResult/SortModelItem/FilterModel (datasource 계약)", "createBlockCache/blockIndexOf/blockBounds", "planBlocks(dedup)", "markLoading/acceptBlock(epoch 거부)/invalidate(epoch++)", "materialize(→placeholder 배열)/isRowPlaceholder", "RowPlaceholder/BlockCacheState (types)"], "design_note": "순수(React/네트워크 0) 전이함수=새 state 반환(blocks Map 복사, 무변이). epoch=쿼리 generation; invalidate 시 bump+clear; acceptBlock 은 responseEpoch≠cache.epoch 면 폐기(state === 반환). total/last-row 신호=GetRowsResult.lastRow(끝 도달시 절대 total).", "verified": "node 26/26(dist import — checkLicense throw 없음 확인): 블록산술(index/bounds/size가드)·planBlocks dedup(in-flight/loaded 제외·경계·역순정규화·음수)·**epoch 거부 불변식(stale 폐기 state===, fresh 수락, late-stale-after-fresh 재거부)**·lastRow→rowCount·materialize(length=total·loaded real·missing placeholder·블록경계·rowIndex·total0)", "ap_swept": ["PAT-003 checkLicense dist 2회(import+call)", "dist 금지어(TOMIS/topvel/내부경로)=0", "AP-001 vacuous(core=type-only import만, 런타임 external 0; grid-license=required Pro dep)", "AP-004 9 named export ↔ dist .d.ts 정합"], "tsc": "0 + tsup(CJS/ESM/dts) clean" }, "g2": { "design": "advisor: datasource=grid-pro-serverside, materialize→placeholder 배열→기존 <Grid enableVirtualization>(코어 scroll-path 미접촉). 데이터흐름을 React-free ServerSideController(node 검증)로 분리 + thin useServerSideData 훅(state만). viewport=virtualizerOptions.onChange forward, 정렬/필터=on*Change 콜백(placeholder-driven 대신 — advisor: 가장 generic·소비자 cell 미접촉·dedup 검증 용이).", "surface": ["useServerSideData(datasource,{blockSize,rowCount})→{gridProps,totalCount,refresh}", "createServerSideController(datasource,opts,onChange) (React-free, node 검증·고급 통합)", "ServerSideGridProps(spread: data/enableVirtualization/manualSorting/manualFiltering/onSortingChange/onColumnFiltersChange/virtualizerOptions.onChange)", "clearBlock(실패 재요청)"], "verified_node": "ServerSideController 17/17(mock datasource·deferred promise): AC① 1회/블록+dedup(in-flight/loaded/sub-range/re-visit)·범위[start,end)·AC② sortModel/filterModel 전달·**epoch(sort mid-flight stale 폐기·fresh 수락)**·AC④ refresh+lastRow→totalCount", "verified_ac2_suppression": "**AC② manualSorting 억제 행동검증 7/7**(headless createTable, advisor 게이트): 활성 n-desc 정렬에서 manualSorting:true→행 입력순[3,1,2] 유지(placeholder 무손상), false→[3,2,1] 정렬(비-vacuous 대조). getSortedRowModel/getFilteredRowModel skip 확인. node block-math/epoch 가 AC② 억제를 검증 못 함을 advisor 가 잡음(LESS-006 AC②판) → 이 테스트로 폐쇄.", "verified_browser": "**chromium 1/1 AC① 게이트**(tests/visual/serverside-ssrm.spec.ts, LESS-006 실제 게이트): 실제 스크롤이 가시 블록 lazy 1회 fetch(DOM 가시인덱스 적응형 — 동적 행측정 대응)·행 출현·전량 미로드(lazy)·중복 0. 스토리 ServerSide.stories.tsx(mock datasource, __ssrmCalls 노출, 1000행/블록50).", "ap_swept": ["PAT-003 checkLicense dist 2회", "dist 금지어 0(serverside+core)", "AP-001 vacuous(react/react-table/react-virtual=peer; optional 0)", "AP-004 신규 export ↔ dist .d.ts 정합 + react-virtual peer 명시(공개 onChange 타입)", "OFF byte-identical 7/7 + 회귀 6/6"], "v1_limits": "rowCount-길이 placeholder 배열(LRU 0)·datasource 1회 캡처(memoize 권고, 문서화)" }, "g3": { "design": "advisor: lazy 그룹=계층 캐시(flat 의 파라미터화 아님). 구조=**flat Map<pathKey, BlockCacheState>**(pathKey=JSON.stringify(groupKeys)) + Set<pathKey> expanded → 각 노드가 **G-1 캐시 재사용**, n-레벨 무료(2~3레벨 테스트). 통합=model A(가시 트리 flatten→display list→기존 <Grid enableVirtualization data>, grid-core host touch **0**). 그룹 토글=스토리 cell 렌더러(__ssrm meta 읽어 depth 들여쓰기+토글). 별 훅 useServerSideTree(flat 훅 미오염).", "invariant": "★ G-3 척추: 자식 응답은 **(a) 전역 epoch 일치 AND (b) 노드가 맵에 존재** 시만 수락. (a)=정렬/필터/그룹 변경(invalidateTree epoch++, expanded 유지). (b)=expand→fetch→**collapse**(purge)-before-resolve → late 응답 '노드 없음' 거부. MOD-27 핀/G-2 epoch 동형.", "surface": ["useServerSideTree(datasource,{blockSize,rowGroupCols})→{gridProps,toggleGroup,refresh}", "createServerSideTreeController (React-free, node 검증)", "순수 트리코어: createTreeCache/toggleGroup/invalidateTree/ensureVisibleNodes/planTreeBlocks/acceptTreeBlock/flattenTree/pathKeyOf", "GetRowsRequest+optional groupKeys/rowGroupCols(후방호환=부재 시 flat)", "TreeDisplayRow/SsrmRowMeta(__ssrm: group/level/groupKeys/expanded)"], "verified_node": "트리 코어+컨트롤러 23/23(flatten 초기 placeholder·root accept·expand/collapse·**epoch reject (a)**·**node-existence reject (b)=collapse-before-resolve late drop**·3-레벨 n-level·컨트롤러 dedup/expand/collapse) + **gap-closing 9/9**(invalidateTree expanded 유지·다중블록(대형그룹 내 스크롤 block 1)·**sort-on-expanded: stale 자식 epoch 폐기+새 sortModel+확장 보존→자식 재요청**)", "verified_browser": "**chromium 1/1 AC③**(tests/visual/serverside-tree.spec.ts): 펼침 전 자식 미fetch(lazy)→펼침 시 자식블록 1회 fetch+자식 출현→접힘 시 숨김→재펼침 재fetch(≤2=purge-on-collapse). 형제 미펼침 그룹 lazy 유지.", "ap_swept": ["grid-core host touch 0(advisor 예측 적중)", "dist 금지어 0", "AP-001 vacuous(treeCache=internal import만)", "AP-004 G-3 export ↔ dist .d.ts 정합", "G-2 flat 회귀 0(serverside-ssrm green=optional-field 후방호환)"], "v1_limits": "purge-on-collapse(재펼침 재fetch)·onChange 당 walkTree 다회·String() 그룹키·그룹 자식 count=첫 블록 lastRow 필요(미도달 시 placeholder blockSize)" } },
-    "MOD-GRID-23": { "package": "grid-pro-edit-plus", "tier": "Pro", "weight": "Full", "priority": "P1", "phase": "done", "weight": "Pro/Full (4-Goal 완주)", "spec": "specs/MOD-GRID-23.md", "goals": { "G-1": "done", "G-2": "done", "G-3": "done", "G-4": "done" }, "done_gate": { "lesson": "PAT-006 승격(G-1) + LESS-005(G-2/G-4)", "matrix_row": true, "index_updated": true }, "completion_gate": "advisor honesty-check 통과 후 §3 이관. 2건 선제 시정: (1) AC① over-collapse — delete 바인딩 누락이었으나 added/미편집-existing 은 충실 → makeDeleteCommand 추가(편집행 delete 만 lossy=P23-1). (2) AC④ — 내 validator+재구현 filter 로 '가정'했던 커밋차단을 tracking 실 buildChangeSet round-trip 으로 실증(LESS-004 자기적용). 둘 다 node 6/6 추가검증.", "partial": "완주 — advisor: Pro/Full 4-Goal. §6→§3 이관 완료. AC 충족 방식 honest 기록(over-claim 0).", "g4": { "design": "self-contained 셀 코멘트(grid-core public storage=GridState형 부적합, internal/storage=비-public → 결합 안 함, LESS-005 규약 재사용). 순수 commentStore(commentKey=JSON.stringify([rowKey,columnId]) 충돌없음, serialize/deserialize 버전봉투+손상가드) + useCellComments(SSR-guard localStorage/session, effect persist).", "surface": ["useCellComments({storageKey,storage?,version?})", "commentKey", "serializeComments/deserializeComments", "UseCellCommentsOptions/CellCommentsAPI"], "verified": "12/12 node(dist 순수 + mock Storage 전체 왕복): key 충돌없음/round-trip unicode·특수문자/null·corrupt·version-mismatch·non-string·missing-c → empty/persist→hydrate 왕복/delete persist/unknown key. 훅 글루는 tested 순수함수 위 표준 패턴", "ap_swept": ["AP-001 vacuous(react required peer; storage 표준 API)", "AP-003=0", "AP-004 README↔index↔dist", "dist 금지어 0"] }, "g3": { "design": "advisor: key 기반 순수 코어(rowKey/columnId — tracking·G-2 동일 좌표계 → 바로 조합). range(index 기반 {row,col}) 결합 안 함 — 선택영역 검색은 소비자 어댑터(range CellRange→{rowKeys,columnIds}). §6.1 'range 재사용' 가정은 reuse-gate 가 해소(LESS-003 again, 신규 lesson 0).", "surface": ["findMatches(rows,getRowKey,columnIds,query,opts)", "computeReplacements(matches,query,replacement,opts)→{rowKey,columnId,prior,next}", "FindOptions/CellMatch/Replacement"], "composition": "computeReplacements 출력 {rowKey,columnId,prior,next} → tracking.updateRow + makeUpdateCommand(G-2) 로 undo 가능 적용. G-1/G-2/G-3 조합 입증(prior 포착이 핵심 설계)", "non_string_cells": "매칭=String(value), replace next=항상 문자열(숫자 120 부분치환 '12'→'XX' ⇒ 'XX0'), prior=원본 타입 보존. 문서화(LESS-004 류 silent coercion 회피). null/undefined 셀 skip", "verified": "15/15 node(dist): columnId 스코핑/대소문자/substring·whole/null skip/빈query/**비-문자열 셀(number) 매칭+치환 coercion**/case-insensitive replace/G-2 조합 shape/whole verbatim", "ap_swept": ["AP-001 vacuous(find-replace 런타임 import 0=완전 순수)", "AP-003=0", "AP-004 README↔index↔dist", "dist 금지어 0"] }, "g2": { "design": "advisor: Option B 제네릭 command 스택(tracking 위, tracking 0 수정). reuse-gate=NO SEAM(tracking 닫힌 reducer, 히스토리/redo/상태복원 미노출) → LESS-005. 충실 바인딩만: makeUpdateCommand(이전값 포착)/makeAddCommand(redo 포착키 강제재주입). 편집된 행 delete=문서화 한계(§5.2 P23-1).", "surface": ["useUndoRedo()", "makeUpdateCommand", "makeAddCommand", "UndoRedoCommand/UndoRedoAPI/CommandStackState"], "verified": "14/14 node(--experimental-strip-types, 순수 commandStack+bindings+mock tracking): INV-1 push가 redo비움 / INV-2 add-redo 포착키 재사용(새UUID 아님) / INV-3 update-undo 이전 patched-field 복원 / 통합 add→update undo·redo 왕복 순서. 순수/훅 분리(훅은 ref+bump=StrictMode 이중실행 회피)", "ap_swept": ["AP-001 vacuous(react required peer; tracking type-only)", "AP-003=0", "AP-004 README↔index↔dist .d.ts", "dist 금지어 0"], "new_lessons": ["LESS-005 reuse-gate-no-seam-build-minimal-primitive (PAT-006 음화)"], "pat_006_note": "G-2 는 PAT-006 비적용(기존 계약 아닌 gap) — advisor: 강제 적용 금지" }, "mount_verified": "n/a — pure helpers (no React component). 8/8 node 검증 + AC-3/5 대입성(annotated 반환타입 + tsc).", "metrics": { "reuse_gate": "grid-pro-tracking 인벤토리(LESS-003 live-overlap): Validator<TData> 계약 + getChangeSet().errors 커밋차단 이미 존재 → G-1=선언적 룰→Validator/CellClassNameCallback 컴파일러만 신규. undoRow/resetChanges/__original 도 기존(undo/redo 절반). placement=신규 Pro 패키지 grid-pro-edit-plus", "reused_patterns": ["PAT-001", "PAT-003(라이선스 게이트 — 첫 Pro since MOD-21, MIT 2연속 후 복귀)"], "new_patterns": ["PAT-006 declarative-rules-to-existing-contract-compiler (N=2 승격: MOD-24 G-1 buildRow/CellClassName + 본 G-1 buildValidator/buildValidationCellClass)"], "reused_contracts": ["@topgrid/grid-pro-tracking Validator (커밋차단 무료 재사용)", "@topgrid/grid-core CellClassNameCallback (시각표시)", "MOD-24 buildCellClassName 동형"], "g1_surface": ["buildValidator", "buildValidationCellClass", "ValidationRule (grid-pro-edit-plus/validation)"], "g1_verified": "8/8 node(dist + real headless cells): valid/single·multi 위반 errors(룰순서)/tracking-Validator 커밋제외 시뮬/cell-class custom·default·undefined. AC-3·5 대입성 = annotated 반환타입(Validator/CellClassNameCallback) + 패키지 tsc 통과로 증명", "g1_ap_swept": ["AP-001 vacuous (tracking/grid-core type-only peer; grid-license=required Pro dep; optional peer 0)", "AP-003 카운트 0", "AP-004 README↔index↔dist .d.ts 정합", "PAT-003 checkLicense dist 존재", "dist 금지어 0"], "less_003": "live-overlap 4번째 데이터포인트(validation·undo/redo 둘 다 기존 위 축소). reuse-gate 페이즈로 이미 운영화 — 승격 안 함", "tier_note": "첫 Pro since MOD-21 — PAT-003 재적용(checkLicense module-load + grid-license runtime dep + EULA.md). MIT 2연속(20→25→24) 후 Pro 게이트 복귀 데이터포인트" }, "note": "dev-harness 7번째. 첫 Pro since MOD-21. PAT-006 승격(선언적 룰→기존 계약 컴파일러 N=2). reuse-gate 가 검증 메커니즘=tracking 기존 발견 → G-1=순수 컴파일러만." },
-    "MOD-GRID-24": { "package": "grid-features/conditional-format + grid-core floating rows", "tier": "MIT", "weight": "Full→partial-complete({G-1,G-2})", "priority": "P1", "phase": "done", "spec": "specs/MOD-GRID-24.md", "goals": { "G-1": "done", "G-2": "done" }, "done_gate": { "lesson": "LESS-002 정밀화 + LESS-003 N=3 (clean — 신규 실패 lesson 0; capture 가 기존 자산 강화)", "matrix_row": true, "index_updated": true }, "mount_verified": "true (node + chromium) — grid-core <Grid>+floating 행 renderToStaticMarkup 마운트(node, react@19 단일 resolve) + G-1 5/5 node. **chromium 1/1**: thead-collision 수정(thead 높이 측정→상단 floating top offset) 검증 — build-storybook→serve→playwright(tests/visual/floating-thead.spec.ts) 스크롤 후 top floating≥thead bottom PASS. dev-harness 첫 실제 chromium 검증(LESS-002 하네스 실증). 스파이크가 story createColumns 형식 버그({accessorKey,header}→render throw)도 검출·수정.", "descope": "advisor: 원 §6.1 4-feature 버킷 비응집(reuse-gate 가 실증 — alternating 신규0/conditional→features/floating→core 두 패키지 분산). 컬럼 가상화 = grid-core 렌더-엔진 인프라 → MOD-GRID-27 로 분리(planned). 본 모듈 = {G-1,G-2} 확정 → 첫 partial-module 완주 → §3 이관.", "metrics": { "reuse_gate": "grid-core 이미 RowClassNameCallback/CellClassNameCallback(types.ts:47/59)+rowClassName/cellClassName prop → alternating/conditional 메커니즘 기존. G-1=선언적 룰→콜백 순수 편의레이어만 신규. duplicate-check: conditional-format helper 0건. placement=grid-features(§6.1 괄호 'core/renderers' 정정 — 순수 add-on→features)", "reused_patterns": ["PAT-001"], "g1_surface": ["buildRowClassName", "buildCellClassName", "RowFormatRule", "CellFormatRule (grid-features/conditional-format)"], "g1_render_verified": "5 AC node 검증(real headless TanStack rows/cells via createTable): alternating(index)/multi-match join+무매칭 undefined/cell rule via getValue/predicate row.original 접근. AC-5 대입성 = 반환타입이 grid-core 콜백타입으로 명시 annotation → 패키지 tsc 통과가 증명. tsc 0 + tsup(CJS/ESM/dts)", "g1_ap_swept": ["AP-001 외부 import 0(grid-core 타입 type-only)", "AP-003 카운트 0", "dist 금지어 0"], "lesson_recurrence": "LESS-003(inventory-before-specify) 3번째 데이터포인트(N=3, MOD-21/25/24-G1) → reuse-gate 페이즈로 이미 운영화돼 C-/AP- 승격 안 함(중복 회피)", "g2_surface": ["floatingTopRows?: TData[]", "floatingBottomRows?: TData[] (Grid props)", "internal/buildFloatingRows (pure, createRow)"], "g2_design": "AG-style 소비자공급 추가행(집계계산X=agg/Pro경계, 상호작용핀X=master/Pro경계). 명칭 floatingTopRows/floatingBottomRows (rowPinning 섀도잉 회피 — advisor). createRow 로 실제 Row→셀이 columnDef.cell 통과(raw값 직접렌더 회피)", "g2_verified": "buildFloatingRows 8/8 node(--experimental-strip-types: count/order/ids/cell-renderer/undefined·empty→[]) + Grid render 8/8 node(renderToStaticMarkup react@19 단일resolve): top/bottom 위치·셀값·position:sticky·순서(top<data<bottom)·**byte-identical 회귀(withFloat - floating<tr> == baseline)**. sticky 스크롤 *시각거동*만 pending-chromium(story 추가: stories/Grid.floating-rows.stories.tsx)", "g2_ap_swept": ["AP-001 vacuous(@tanstack/react-table=required peer)", "AP-003 카운트 0", "AP-004 floating props ↔ dist .d.ts(TreeGrid chunk) 정합", "dist 금지어 0"], "less_002_refined": "node 마운트 성공 → LESS-002 정밀화: 벽은 cross-pkg react 버전 불일치(pivot@18→core@19)지 grid-core 합성 자체 아님. 단일pkg/정렬 합성은 react+react-dom 같은 dir resolve 시 node OK(storybook은 불일치합성 한정)" } },
-    "MOD-GRID-25": { "package": "(grid-export 확장)", "tier": "MIT", "weight": "Lite", "priority": "P1", "phase": "done", "spec": "specs/MOD-GRID-25.md", "goals": { "G-1": "done", "G-2": "done", "G-3": "done", "G-4": "done" }, "done_gate": { "lesson": "LESS-004", "matrix_row": true, "index_updated": true }, "mount_verified": "n/a — no React component (pure export functions). 15 AC checks via node writeFile→readFile round-trip (real headless TanStack table via createTable) + clipboard toggle (navigator stub). all pass.", "metrics": { "reused_patterns": ["PAT-001"], "reused_helpers": ["getRowsByScope", "buildHeaderRows (extracted to internal/ for single↔multi-sheet share)"], "tier_firsts": ["2nd MIT/Lite (after MOD-20) — no license gate path re-confirmed"], "new_lessons": ["LESS-004 pinned-dep-edition-feature-silent-noop"], "reuse_gate": "grid-export 인벤토리(LESS-003 동형): AC① 셀스타일 = community xlsx(.s strip 실측)로 폰트/배경 불가 → 네이티브 숫자서식(.z)+폭으로 재정의; AC③ 클립보드 헤더 이미 무조건 포함 → 토글로 축소; AC② 다중시트만 진짜 신규", "xlsx_boundary_proof": ".z(number-format)+!cols(width) survive write→read, .s(font/fill) stripped → {patternType:'none'} (xlsx@0.18.5 community, empirically verified per harness P6)", "render_verified": "15 pure/e2e checks: .z applied+numeric preserved+survives roundtrip / !cols width / no .s emitted / multi-sheet names+content / empty-sheets warn+no-file / clipboard includeHeader true+false / regression: omitted-options identical to pre-MOD-25", "ap_swept": ["AP-001 vacuous (xlsx=required peer optional:false; jspdf optional 미접촉; neg-control: xlsx static import is correct)", "AP-002 deprecated=0", "AP-003 hardcoded-count=0", "AP-004 README↔index↔dist .d.ts 시그니처 정합 run", "dist 금지어(TOMIS/topvel/@tomis)=0"], "gaps_found": 1, "findings": ["§5.2 P25-1 exportRowsToExcel .s no-op (pre-existing, surgical 미수정·기록만 → LESS-004)"], "compounding": "LESS-003(inventory-before-specify)을 reuse-gate 에서 자발 적용 → 3 AC 중 2개 축소/재정의(=MOD-21 의 3중2 재사용 패턴 2번째 데이터포인트). verify 가 LESS-004 를 새로 생성(외부 lib edition 경계를 round-trip 으로 확정). advisor review 가 2건 선제 차단: (1) `.z` on string-typed 셀 = silent no-op(LESS-004 동형 재발) → numeric(`t:'n'`) 가드 추가+README 정정, LESS-004 를 같은 모듈 내에서 자기적용; (2) `Table<unknown>` 이질 다중시트 대입 불가(exactOptional+accessorFn 반공변) → `Table<any>`(eslint-disable+근거주석)로 consumer `Table<Person>` 대입성 확보. 둘 다 node tsc/round-trip 으로 재검증." }, "note": "dev-harness 5번째. 2번째 MIT/Lite. 빌더 추출로 단일↔다중 시트 재사용. 폰트/배경은 community xlsx 한계로 문서화(no silent no-op). reuse-gate 가 Full 스케치를 thin-but-real Lite 로 축소." },
-    "MOD-GRID-26": { "package": "grid-pro-sheet", "tier": "Pro", "weight": "Full(PoC 3-Goal)→partial(PoC→§3, 풀 시트 vN)", "priority": "P2", "phase": "done (PoC 3-Goal 완주 → §3; 풀 시트 vN)", "spec": "specs/MOD-GRID-26.md", "goals": { "G-1": "done", "G-2": "done", "G-3": "done" }, "done_gate": { "lesson": "LESS-006 ×3 또 적용(G-1 에러전파/G-2 척추/G-3 clipboard glue — advisor 매 Goal wired-but-unverified 검출). ADR-002 발급. PAT 후보 error-aware-value-propagation N=1.", "matrix_row": true, "index_updated": true }, "design": "advisor: 첫 스프레드시트(별제품급 PoC). ★값 모델 우선=CellValue(number|string|boolean|CellError) error-aware 전파. ★척추(G-2)=순환검출(#CYCLE! no stack overflow)·전이 재계산 순서(각1회)·그래프 에러전파. ADR-001 N=2 재독→ADR-002 still local(입력계약 error-aware≠number[]).", "g1": { "scaffold": "신규 Pro 패키지 grid-pro-sheet(PAT-003: checkLicense+grid-license+EULA). dev-harness 10번째.", "surface": ["값 모델: CellValue/CellError/ErrorCode/cellError/isCellError", "parseFormula(tokenize→재귀하강 parser→Ast)", "evaluate(ast, getCell) — getCell 주입(PAT-005), error-aware 전파", "extractRefs(ast) — 같은 parse 에서 의존셀(G-2 재-parse 안 함)", "compileCell(raw)→{literal|formula+refs}", "FUNCTIONS(SUM/AVERAGE/MIN/MAX/COUNT, error-aware, 시트의미론=SUM([])=0/AVG([])=#DIV/0!)", "parseA1/toA1/expandRange/coerceLiteral/formatValue"], "adr": "ADR-002(ADR-001 N=2 재독): 피벗 BUILT_IN_REDUCERS 재사용 불가(number[]+null-on-empty vs CellValue[] error-aware+시트의미론, 입력계약 상이) → 로컬. N=2≠자동추출(재평가하라지 추출하라 아님). ID-LEDGER ADR 002 발급.", "verified": "node 38/38(dist): A1 helpers(parse/to/range)·산술 우선순위/단항/괄호/나눗셈·A1 참조(getCell 주입)·빈셀→0·SUM/AVERAGE/MIN/MAX/COUNT·mixed args·composition·text 무시·빈범위 SUM=0/AVG=#DIV/0!·**에러전파(#DIV/0!·#ERROR!·인자전파·SUM 전파·미지함수·범위-스칼라)**·extractRefs(중첩/dedup/literal)·compileCell(formula/literal/bad-syntax→#ERROR!)·coerceLiteral·formatValue·isCellError", "ap_swept": ["PAT-003 checkLicense dist 2", "dist 금지어 0", "AP-001 vacuous(엔진 외부 런타임 import 0=순수; grid-license=index 만)", "AP-004 9 export ↔ dist .d.ts"], "tsc": "0 + tsup clean" }, "g2": { "design": "React-free createSheet 컨트롤러(node 검증) — 셀 저장소+정방향/역방향 의존 그래프. 편집 시 영향 셀(편집셀+전이 dependents)만 위상순 재계산(각 1회). 순환=explicit visit-stack(evaluate 재귀 안 함→stack overflow 없음), 백엣지 구간 전부 #CYCLE! 마킹. getCell=values 캐시(에러 전파 자동).", "surface": ["createSheet(onChange?)→{setCell,getValue,getRaw,getDisplay}", "SheetChange(재계산 순서)"], "verified": "node 23/23(dist): 편집→상류 재계산·**전이 순서[A1,B1,C1] 각1회**·다이아몬드(D1 1회·B1/C1 후)·**순환검출(A1↔B1·self·3-cycle→#CYCLE! no stack overflow)**·순환해제 복구·**그래프 에러전파(#DIV/0! A1→B1→C1, 수정시 복구)**·SUM 범위멤버 편집 재계산", "spine": "advisor 척추 3종(순환/순서/에러전파) 전부 컨트롤러 레벨 검증(LESS-006: G-3 chromium 전 node 게이트)", "ap_swept": ["dist 금지어 0", "AP-001 vacuous(sheetEngine internal import만)", "AP-004 createSheet ↔ dist .d.ts"] }, "g3": { "design": "thin React 표면. 셀=수식 저장/값 표시(stored≠rendered). useSheet(createSheet 위 version bump) + SheetGrid 컴포넌트. **reuse-gate(LESS-003) honest 결과**: grid-pro-range 재사용 = **useCellRange(선택) + useClipboard(copy=getDisplay=값/onPaste→setCell)**. **편집은 native**(double-click→raw 노출→Enter commit) — useKeyboardEdit 는 콜백 라우터라 수식-vs-값 편집 모델에 안 맞음(LESS-003형 부분적합 finding, 억지 재사용 안 함=ADR-002 정신).", "surface": ["useSheet()→{setCell,getDisplay,getRaw}", "SheetGrid({rows,cols}) — td[data-cell] 셀, double-click 편집, useCellRange 선택 하이라이트, useClipboard Ctrl+C/V"], "verified": "**chromium 2/2**(tests/visual/sheet-grid.spec.ts): ①라운드트립=리터럴/수식셀 =A1+A2 값30 표시(stored≠rendered)/SUM(A1:A3)=60/상류 A1=100 편집→B1=120,B2=150 재계산/#DIV/0! 표출/편집 시 raw 수식 노출(양방향). ②**copy=value**(advisor 게이트: clipboard glue wired-but-unverified→폐쇄): B1 복사→D5 붙여넣기=값30(raw 면 D1+D2=0). useCellRange 선택 transitively 검증(복사에 필수).", "ap_swept": ["PAT-003 checkLicense dist 2", "dist 금지어 0", "AP-001 vacuous(react/range=required peer; optional 0)", "AP-004 useSheet/SheetGrid ↔ dist .d.ts", "eslint 0", "회귀 9/9(전 visual)"], "honest_scope": "AC③ '편집/클립보드 재사용' = 클립보드+선택 재사용 / 편집 native(useKeyboardEdit 부적합, reuse-gate finding). copy=value(formula 복사·상대참조 조정=vN out)." } },
-    "MOD-GRID-27": { "package": "(grid-core 렌더-엔진 확장)", "tier": "MIT", "weight": "Full", "priority": "P1", "phase": "done", "spec": "specs/MOD-GRID-27.md", "goals": { "G-1": "done", "G-2": "done" }, "done_gate": { "lesson": "LESS-006 (node-fallback-blind-to-browser-gated-feature, N=1)", "matrix_row": true, "index_updated": true }, "gaps_found": 1, "findings": ["§5.2 P27-1 컬럼 가상화 스크롤 컨테이너 overflow=기존 overflow-x-auto Tailwind 클래스 의존 → Tailwind 미적용 소비자는 컨테이너 overflow-x 직접 지정 필요(table-width 게이트와 달리 제품 미수정·문서화만, advisor)"], "origin": "MOD-24 에서 분리(advisor) — 컬럼(가로) 가상화는 표시 helper 아닌 grid-core 렌더-엔진 인프라.", "g1": { "design": "advisor: 핀-컬럼-항상-렌더는 fork 아닌 **불변식** → 순수 코어에 인코딩+node 검증. computeColumnWindow(leaf+widths+pinnedL/R+center range → {renderedColumnIds:[...pinnedL,...windowCenter,...pinnedR], leftPadPx, rightPadPx}; pad=center-only). + thin useColumnVirtualizer(horizontal useVirtualizer, useGridVirtualizer mirror). **Grid.tsx 미접촉**. v1=flat-header(그룹헤더 가상화=v2).", "verified": "12/12 node(--experimental-strip-types, 순수): 핀 불변식(윈도 제외돼도 핀 렌더)·pad=center-only(핀너비 0기여)·순서(L→center→R)·경계(start/end/whole/empty-center/pinnedR-only/no-pin/single)·missing-width=0·out-of-range clamp", "ap_swept": ["AP-001 vacuous(computeColumnWindow import 0=순수; useColumnVirtualizer→react-virtual=grid-core 기존 peer)", "AP-003=0", "dist 금지어 0", "AP-004 n/a(내부 helper, public 표면 미변경 — wiring=G-2)"], "reused_patterns": ["PAT-001", "useGridVirtualizer 패턴 mirror"], "no_promotion": "'순수코어+thin shell→node검증' = 하네스 방법론(PAT 강제승격 안 함 — advisor over-fit 경고)" }, "g2": { "design": "advisor 3-commit 스테이징(각 commit=깨끗한 경계, byte-identical 게이트). computeColumnWindow 출력을 구조화(pinnedLeftIds/windowCenterIds/pinnedRightIds + pads) → pad 는 핀 *사이* 배치.", "commit_A": "346931f — 본문 3경로(virtual/plain/floating) 셀 렌더를 renderWindowedCells(per-row Map, O(n)) 로 라우팅(full window, pad=0). **byte-identical 7케이스**(renderToStaticMarkup, LESS-002 node 마운트). 헤더 미접촉. 구조 변경만, 동작 0.", "commit_B": "(이 커밋) enableColumnVirtualization opt-in prop + useColumnVirtualizer(가로) 배선 + columnWindow(full|virtual) 본문 적용. flat-header 게이트(그룹헤더 자동 비활성). **OFF byte-identical 재확인**(7케이스). computeColumnWindow 구조화 출력 6/6 node 재검증. ON 윈도잉=브라우저 측정 필요(node SSR 은 안전하게 전 컬럼 렌더 — 미측정시 fallback, 확인됨). prop=experimental 표기.", "commit_C": "완료 — (1) renderHeaderCell verbatim 추출(Edit1, OFF byte-identical 7/7) → (2) renderWindowedHeaderCells(본문 renderWindowedCells 동형 세그먼트 순서) + columnVirtEnabled 게이트(Edit2, OFF byte-identical 재확인) → (3) **레이아웃 갭 시정**: 첫 chromium 이 Commit B 비동작 검출(table 전체폭 미설정→table-layout:auto 가 22×140 컬럼을 600px 컨테이너로 압축→스크롤 죽음). 게이트 변경: columnVirtEnabled 시 `<table>` table-layout:fixed + width=Σgetsize, applyWidth/applyCellWidth 에 `||columnVirtEnabled`(default-150 미핀 그리드 width 강제). OFF byte-identical 7/7 유지(columnVirtOn 만 변경=예상). prop JSDoc clip/overflow 정직 문서화 → LESS-006.", "chromium_matrix": "5/5 PASS (tests/visual/column-virtualization.spec.ts, storybook+playwright): ①윈도 *이동*(combined 스토리 2200px 스크롤 후 라벨 C00,C01..C08,C21 → C00,C13..C20,C21 — non-vacuous) + 핀 좌/우 상존 ②헤더↔바디 nth-child x 정렬(tr[data-index] 대상, hn==bn 셀수 동일) ③세로+가로 동시(col<22 & row<100) ④column-only 본문 분기 브라우저 마운트(스크롤 미단언=overflow Tailwind-inert P27-1, windowed<22 만) ⑤OFF 비-vacuity 앵커(전 22 렌더). 스크롤 검증=combined 스토리(인라인 overflow:auto). resize=비차단 미실시(advisor #6, P27 후속). 회귀: floating-thead PASS(헤더 추출 무해).", "verified": "computeColumnWindow 6/6 node + OFF byte-identical 7/7(Edit1·Edit2·레이아웃변경 3회 재게이트) + chromium 4/4. 스토리: stories/Grid.column-virtualized.stories.tsx(22컬럼·엣지핀·column/combined/off 3종)." } },
-    "MOD-GRID-28": { "package": "(grid-core 접근성)", "tier": "MIT", "weight": "Full(3-Goal)", "priority": "차기로드맵 1순위(COMMERCIAL-GAP a11y, table-stakes 최대 갭)", "phase": "done (3-Goal 완주 → §3)", "spec": "specs/MOD-GRID-28.md", "goals": { "G-1": "done", "G-2": "done", "G-3": "done" }, "done_gate": { "lesson": "LESS-006 ×3(G-1 그룹헤더 aria-colindex=0 / G-2 out-of-window nav / G-3 nav 이중발화 — 매 Goal advisor 가 wired-but-unverified 검출→폐쇄). 차기 로드맵(COMMERCIAL-GAP) 첫 모듈.", "matrix_row": true, "index_updated": true }, "design": "advisor: ★불변식1=role-completeness(role=grid면 row/cell role+positional 전부=같은 Goal, 부분 ARIA grid는 무-ARIA보다 나쁨). ★불변식2(척추)=가상화 하 절대 aria-rowindex/colindex(DOM 위치 아님, row=virtualItems.index/col=computeColumnWindow 절대). default-on(비파괴 attr 추가만). axe-core 게이트(role grep=vacuous=LESS-006).", "g1": { "surface": ["internal/ariaAttrs.ts(순수): gridContainerAttrs·dataRowAriaIndex·visualColumnOrder·buildAriaColIndex·columnHeaderAttrs·dataRowAttrs·gridCellAttrs·headerRowAttrs·toAriaSort", "Grid.tsx 배선: <table role=grid aria-rowcount/colcount [aria-multiselectable]> · 헤더 tr role=row+aria-rowindex · th role=columnheader+aria-colindex+aria-sort · 데이터 tr role=row+aria-rowindex+[aria-selected] · td role=gridcell+aria-colindex · floating/empty=role=row만"], "verified_node": "ariaAttrs 23/23(척추: windowed 행 절대 aria-rowindex 50→52(DOM 2 아님)·pinned-right 절대 aria-colindex 5)", "verified_browser": "**axe-core chromium 5/5**(tests/visual/grid-a11y.spec.ts): ①grid 계약 위반 0(virtual)+aria-rowcount/colcount ②척추 절대인덱스 non-vacuous ③**그룹헤더(aria-colindex=0 0개·헤더행 aria-rowindex 1&2·첫데이터 3·axe-clean)** ④plain axe ⑤empty axe", "advisor_blocker_closed": "그룹/다단 헤더 aria-colindex=0(무효, default-on이라 전 그룹소비자 무효 grid 발행) → columnHeaderAttrs 가 비-leaf(colIndex 0) 시 aria-colindex 생략(0⟺비-leaf sentinel 안전) + 그룹 스토리 axe 검증으로 폐쇄(LESS-006 또 적용). empty-state=role=row/gridcell 부여(빈 grid 계약 충족).", "ap_swept": ["dist 금지어 0", "AP-001 vacuous(ariaAttrs 외부 import 0=순수)", "eslint 0(사전 theadHeight useEffect 경고만)", "회귀 12/12(default-on 무영향)"], "v1_limits": "페이지네이션 aria-rowindex=현재 페이지 상대(AG viewport 동형, axe-clean)·aria-colspan=vN" }, "g2": { "design": "advisor: ★focus 모델=**aria-activedescendant**(roving tabindex 아님 — 가상화 시 active 셀 unmount→focus가 body로 붕괴; activedescendant는 안정 컨테이너(table tabIndex=0)에 focus 유지, AG Grid 동일). reuse-gate: range useKeyboardNav 는 Pro·범위결합·Home/End/PageUp/PageDown 없음 → 추출 시 shipped Pro 수정 → **신규 MIT 순수 코어 + 중복 정직 기록(LESS-005)**. 척추=절대좌표 nextCell(window 밖→scroll-into-view).", "surface": ["internal/cellNavigation.ts(순수): nextCell(current,key,mods,bounds)→{row,col}|null · isNavKey", "Grid.tsx: <table tabIndex=0 aria-activedescendant onKeyDown(nav)> · td id=${gridId}-${cell.id}+active 링 · scroll-into-view effect · 헤더 th Space/Enter 정렬"], "scope": "advisor: 화살표/Home/End/Ctrl+Home/End/PageUp/PageDown/Tab wrap/Enter + Space/Enter 헤더정렬(🟡 갭 폐쇄). 편집트리거(F2/타이핑)=OUT(Pro 경계). aria-live=G-3.", "verified_node": "nextCell 28/28(척추: windowed row 20 ArrowDown→absolute 21·PageDown absolute·clamp/Home/End/Ctrl-edge/Tab wrap/Enter/empty-null)", "verified_browser": "**chromium 2/2**(grid-a11y.spec.ts G-2): ①**out-of-window nav**(advisor 핵심 게이트, non-vacuous): 6×PageDown 으로 active 셀 초기윈도 밖→scroll-into-view 후 셀 mount(activedescendant 유효 id)·**focus=role=grid 유지(body 붕괴 아님)**·nav 계속 동작·axe-valid ②Space/Enter 헤더→aria-sort none→ascending→descending", "ap_swept": ["dist 금지어 0", "AP-001 vacuous(cellNavigation 외부 import 0)", "eslint 0(사전 useEffect 경고만)", "회귀 10/10(column-virt/floating/serverside/sheet)"], "reuse_finding": "range useKeyboardNav(Pro) 재사용 불가(Pro 결합+키 부족) → MIT 신규(중복=clamp/wrap 수준, 정직 기록). LESS-005 형(host=Pro 수정 회피)." }, "g3": { "design": "advisor: ★척추=live-region **라이프사이클**(메시지 텍스트 아님 — 순수 코어는 trivial). (a)mount 시 present+빈 채(조건부 렌더 금지, 텍스트만 갱신) (b)<table role=grid> **밖**(grid 자식이면 aria-required-children 위반=G-1 axe 게이트 자멸) (c)초기렌더 skip-ref. **nav 알림 안 함**(aria-activedescendant 이미 SR 발화→이중발화). 정렬/선택만. i18n=한국어 하드코딩(MOD-29). HC defer.", "surface": ["internal/liveAnnounce.ts(순수): announceSortMessage(sorting,labelOf)·announceSelectionMessage(count)·announceFilterMessage(visibleCount)", "Grid.tsx: outer wrapper <div role=status aria-live=polite aria-atomic sr-only>{announcement}</div> + sorting/rowSelection effect(skip-first ref) + table focus-visible 링"], "verified_node": "liveAnnounce 8/8(sort none/asc/desc/multi 외N개/label fallback·select 0/N·filter)", "verified_browser": "**chromium 1/1**(grid-a11y.spec.ts G-3): ①리전 present+**empty at mount**(조건부 렌더 아님) ②Enter-정렬→텍스트='정렬…' ③체크박스→텍스트='…선택' ④**★nav(Arrow) 시 텍스트 불변**(advisor non-vacuous: activedescendant 이중발화 방지 — out-of-window 단언의 G-3 등가물)", "hc_note": "high-contrast=focus outline 은 forced-colors 존중(OK). **선택 행 bg-blue-50 은 forced-colors 에서 평탄화→HC 시 시각 구분 불가**(aria-selected 로 SR 경로는 커버, 시각 갭). forced-colors-safe 선택 표시는 **MOD-29 테마 의존**. focus-visible 링=additive.", "ap_swept": ["dist 금지어 0", "AP-001 vacuous(liveAnnounce type-only import)", "eslint 0", "회귀 10/10"] } },
-    "MOD-GRID-29": {"package":"(grid-core i18n·테마)","tier":"MIT","weight":"Full(2-Goal: i18n + 테마)","priority":"차기로드맵 2순위(COMMERCIAL-GAP i18n/테마)","phase":"done (2-Goal 완주 → §3)","spec":"specs/MOD-GRID-29.md","goals":{"G-1":"done","G-2":"done"},"design":"advisor: i18n=resolver merge(missing-key fallback spine, 키 누락 시 raw key/undefined 금지=LESS-006 i18n trap). 테마(G-2)=CSS custom property(Tailwind-class 아님 — storybook Tailwind-less 게이트 불가). 검증분리: i18n=node fallback-invariant, 테마=browser computed-style.","g1":{"surface":["internal/i18n.ts(순수): GridLocale(emptyText·rowsPerPage·totalCount(n)·firstPage/prevPage/nextPage/lastPage·sortMessage·selectionMessage)·GridIcons(sortAsc/Desc/None) + resolveLocale/resolveIcons(merge=fallback)","Grid.tsx 배선: EmptyState(locale.emptyText)·sort glyph(gridIcons)·live-announce(locale.sortMessage/selectionMessage)·GridPagination(rowsPerPageLabel·totalCountFormat·navLabels 4종)","PageSizeSelect(label?)·TotalCount(format?)·GridPagination(navLabels? aria-label 4)"],"verified_node":"i18n fallback-invariant 19/19(esbuild 격리 번들 — i18n.ts extensionless liveAnnounce import 가 strip-types ESM 와 불화→번들 후 import). 부분 override 시 override 키 변경+미override 키 KO fallback 동시 단언.","verified_browser":"chromium 3/3(Grid.i18n.stories: 부분 override EN rowsPerPage+nav aria-label 보임 & KO totalCount/나머지 nav fallback 동시 · totalCount 포매터 override · emptyText override) + a11y 회귀 8/8 = 11/11 green. typecheck 0.","advisor_blocker_closed":"pagination nav 버튼 aria-label 하드코딩 한국어 → EN locale 사용자(MOD-28 스크린리더 청자) 한국어 청취. 5-키 spine self-check 가 놓친 implicit req → GridLocale 에 nav 4키 추가해 해소(deferral 아님, LESS-006 i18n 변형).","deferral":"ColumnVisibilityMenu aria-label \"컬럼 표시 설정\"·\"숨길 컬럼 없음\" 미국지화(명시): optional surface + 자체 triggerLabel/menuLabel prop 패턴 보유(locale-object 와 idiom 상이). 후속 처리.","known_broken_infra":"tests/visual/storybook.spec.ts(per-story toMatchSnapshot)=playwright 1.60 file.slice API drift + baseline 0 → 전수 fail. 내 변경 무관(미변경 스토리 동일 fail). MOD-29 범위서 미수리(scope creep).","ap_swept":["dist 금지어 미검(빌드 OK)","AP-001 vacuous(i18n.ts type-only react-table import=순수)","typecheck 0","회귀 a11y 8/8 + 전체 targeted 21/21(default-on 무영향: label??default·format?:default·navLabels 기본=기존 하드코딩과 동일 문자열)"]},"done_gate":{"lesson":"LESS-006 i18n변형(G-1 nav aria-label) + ★구조통찰 vars⊥HC(G-2: forced-colors 가 var-소스 색도 override→테마는 HC 무익, HC-safe 선택=별도 outline 메커니즘). 매 sub-commit advisor 가 wired-but-unverified/implicit-req 검출.","matrix_row":true,"index_updated":true},"g2":{"staging":"advisor 3-commit: A spike(f7f0ccf, header bg 1surface 메커니즘 증명) · B bulk(2e72678, 5정적 surface+darkTheme) · C HC-safe 선택(outline).","surface":["internal/theme.ts(순수): themeToVars(theme)→override 키만 inline --topgrid-* 객체 · GridTheme(headerBg·headerText·bodyBg·cellText·border 5정적키) · darkTheme 프리셋","Grid.tsx: root div style=themeVars · thead/floating bg·th color·tbody bg·td color·container border = var(--topgrid-x,<기본hex>) · 선택행 inline outline(HC-safe)"],"design":"advisor: ★vars⊥HC — forced-colors 는 literal/var 무관 background/color/border 강제 override→테마=HC 무익. HC-safe 선택=구조적 outline(forced-colors 가 outline-color 만 시스템색 remap=유지). 메커니즘=inline CSS var(P27-1: Tailwind-class storybook 서 inert). markup 변경(class→inline)→byte-identical 아님, 불변식=visual computed-style.","verified_browser":"chromium 5(tests/visual/grid-theme.spec.ts): ①default 5-surface 무회귀 ②headerBg override→rgb(255,0,0) ③HC-safe 선택(선택행 outline normal+forced-colors:active emulateMedia 양쪽·비선택 none) ④dark 5-surface flip ⑤**cross-feature guard**(cellClassName 색 .tg-red 가 테마 cellText 이김 — red-green 실증). spec 명시 준수: themeToVars node \"themeable\" 주장 금지→전 주장 browser.","hc_gap_closed":"MOD-28 G-3 hc_note 의 \"선택행 bg-blue-50 forced-colors 평탄화→HC 시각 구분 불가\" 갭 = 선택행 inline outline 으로 해소(forced-colors:active 단언으로 실증).","limits":"selection bg(:hover)·focus(:focus-visible)=pseudo-state inline 불가→기본 blue 유지(다크 가독·HC outline 커버). row divider(divide util)·pagination/empty=미테마. selection 색 themeable=후속(shipped CSS).","ap_swept":["typecheck 0","AP-001 vacuous(theme.ts 외부 런타임 import 0)","회귀 targeted 26/26","cross-feature guard red-green(inline>class 회귀 실증→inherited fix)"],"advisor_closeout":"★cross-feature 회귀(blocking): bulk 서 cellText/headerText 를 per-td/th inline 으로 넣어 inline>class → 소비자 cellClassName(MOD-24 조건부서식) 색 조용히 덮임(plain-셀 게이트 못 봄=LESS-006 cross-feature). fix=색을 tbody/thead inherited 로 이동(상속색=cascade 최약→셀 class 가 이김). red-green 실증(.tg-red 스토리). 회귀 26/26.","finding_mod28":"active-cell 링(activeClass=Tailwind outline-* class)은 Tailwind-less storybook/비-Tailwind 소비자서 inert(시각 링 안 보임). MOD-28 가 focus/activedescendant 만 검증·시각 미검증=unverified ship(선택 outline 과 동일 inert-class fail mode). MOD-28 후속 inline 화 필요(MOD-29 범위 밖). §5.2 후보."},"version_note":"버전 미범프(릴리스 시 batch 0.x bump, MOD-28/G-1 동일)."},
-    "MOD-GRID-30": {"package":"(grid-core+grid-features 필터링)","tier":"MIT(G-1/G-2)+Pro(G-3)","weight":"Full(3-Goal: floating MIT + faceted MIT + multi Pro)","priority":"차기로드맵 3순위(COMMERCIAL-GAP 필터링)","phase":"done (3-Goal 완주 → §3)","spec":"specs/MOD-GRID-30.md","goals":{"G-1":"done","G-2":"done","G-3":"done"},"version_note":"버전 미범프(릴리스 시 batch 0.x bump).","design":"advisor: floating 행=새 thead 행 → MOD-27(컬럼virt/핀)·MOD-28(ARIA/axe) 계약 상속(갭분석엔 없는 feature-level 제약). reuse-gate: filterFns+값타입=안정 계약 재사용·popover 컴포넌트 fork 금지(LESS-005)→thin always-visible primitive. seam=renderFloatingFilter render prop(cellClassName mirror=PAT-005). 검증분리: floating=browser(렌더 배선, 신규 pure 0)·multi(G-3)=node(compound). advanced=vN(scope).","g1":{"surface":["grid-core: renderFloatingFilter?(column) prop → thead leaf 행 아래 floating <tr>. renderFloatingFilterCell(핀 sticky+width 헤더 동형)/renderWindowedFloatingFilterCells(컬럼virt 동일 윈도). ARIA: floating=추가 header 행(headerRowCount += enabled→aria-rowcount+1·데이터 aria-rowindex 일관+1·셀=columnheader)","grid-features: TextFloatingFilter/NumberFloatingFilter(값타입+filterFns 재사용=LESS-005·inline 스타일·current?.value useEffect 동기화=shared-state)"],"verified_browser":"chromium 4/4(tests/visual/grid-floating-filter.spec.ts): ①floating=header 행 ARIA(thead 2행·aria-rowcount 8=2+6·데이터 aria-rowindex 3)+axe clean(input 행이 grid 계약 무파손)+텍스트→행필터 ②숫자(=)필터 ③shared-state(popover write→floating input 반영=단일 column state) ④컬럼virt 정렬(floating 셀=헤더와 동일 윈도, 핀 좌/우 x 일치·셀수 일치). 회귀 30/30. typecheck 0.","verified_node":"신규 pure logic 0(정직) — computeColumnWindow(MOD-27)·filterFns(MOD-09) 재사용하는 렌더 배선이라 browser-only. (LESS-006: 검증 안 한 게 아니라 새 순수코어가 없음)","advisor_closed":"floating 행=새 thead 행→MOD-27/28 계약 상속 셋 다 검증(virt 정렬·핀 sticky·axe·aria-rowindex 정합). \"input 이 필터한다\"=vacuous done 회피.","finding_mod09":"popover TextFilter inputValue=mount 1회 init·외부 미동기화→floating→popover 표시 방향 stale(근본 column state 는 공유). MOD-09 후속 sync.","ap_swept":["typecheck 0(grid-core+grid-features)","회귀 targeted 30/30","floatingFilterEnabled 게이트→기존 그리드(미설정) headerRowCount 불변=무영향"]},"g2":{"surface":"buildTableOptions.ts: enableFilter 게이트(enableFilter && !manualFiltering)에 getFacetedRowModel()+getFacetedUniqueValues() 추가 → SelectFilter OOTB","design":"advisor: facet ⊆ filter 게이트(새 prop 아님). enableFaceted prop 은 silent-fail 을 이동만 함→폐쇄 못 함. SelectFilter 동작처=enableFilter 처이므로 그 게이트=OOTB 보장. faceted lazy(컬럼 접근 시만 계산, grid-core 는 미호출)→비-SelectFilter 필터 그리드 무비용(측정 경로 없음=perf 테스트 불필요).","verified_browser":"chromium 2/2(grid-set-filter.spec.ts) ★LESS-006: 양성 테스트가 grid-core <Grid enableFilter>(faceted 미공급, prop 없음) 경유 → 리스트 채워지면 오직 buildTableOptions wiring(구조적 non-vacuous, 기존 SelectFilter.stories 의 raw 직접-wiring 과 대조). ①OOTB distinct+count(서울3/부산2/대구1, li 3개=count 단언) ②선택→필터. 회귀 32/32. typecheck 0.","yagni":"getFacetedMinMaxValues 생략(NumberFilter 수동 연산자·소비자 0)","limit":"manualFiltering(SSRM) 제외=클라 facet 은 server-paged placeholder 위 부정확(server-provided 필요, 범위 밖)"},"done_gate":{"lesson":"LESS-006 ×3(G-1 floating=새 thead 행이 MOD-27/28 계약 상속 셋 다 검증·G-2 양성 테스트 <Grid> 경유 non-vacuous·G-3 빈-조건 spine + Number(\"\")=0 자멸 검출). 매 goal advisor 가 vacuity/implicit-req 검출.","matrix_row":true,"index_updated":true},"g3":{"package":"신규 @topgrid/grid-pro-filter(PAT-003, 14번째 Pro): grid-license dep + index checkLicense() + EULA","surface":["순수 makeMultiFilterFn(base): base 를 N번 호출→AND/OR reduce. 빈 조건은 base.autoRemove 로 reduce 전 제거(빈 값 true→OR 전체-행 붕괴 차단). type-only import→node strip-types. multiTextFilterFn/multiNumberFilterFn.","MultiFilter UI: 2 조건+AND/OR(AG parity, 코어는 N-general). FilterPopover 재사용+조건 행 신규 thin(LESS-005). PAT-003 watermark."],"verified_node":"spine 13/13(mock base 격리: AND/OR + ★OR+빈 2번째→채운 조건만(전체 아님) + autoRemove)","verified_browser":"chromium 4/4(grid-multi-filter.spec.ts): ①OR 텍스트 union(김+이→2) ②AND 숫자 범위(≥80∧≤90→3) ③OR+빈 실UI spine(이→1, 붕괴 없음) ④PAT-003 watermark(무라이선스→Unlicensed overlay). 회귀 36/36. typecheck 0.","found_fixed":"★빈-조건 함정의 숫자 판: 첫 chromium 이 score 컬럼 마운트 시 grid 비움 검출 → Number(\"\")===0 이라 빈 숫자 조건 {=,0}(유효값)로 set→numberFilterFn.autoRemove 미제거→전 행 배제. 코어 정상(dist 격리 확인)=UI→core 계약 버그. 시정: toCondition 빈 입력→NaN. advisor \"빈-조건 spine 처음부터\" 강조→instrument→검출.","design_fact":"shared-state 아님: MultiFilterValue shape ≠ TextFilterValue→컬럼 단일·복합 배타적(분기 테스트 없음).","deferral":"advanced filter(cross-column 빌더, Enterprise)=vN. facade 신규 패키지 등록=릴리스 batch."}},
-    "MOD-GRID-31": {"package":"grid-pro-pivot(상호작용 확장, Pro 기존)","tier":"Pro","weight":"Full(3-Goal: sort + collapse + runtime config)","priority":"차기로드맵 4순위(COMMERCIAL-GAP Pivoting 최대 갭)","phase":"done (3-Goal 완주 → §3)","spec":"specs/MOD-GRID-31.md","goals":{"G-1":"done","G-2":"done","G-3":"done"},"version_note":"버전 미범프(릴리스 시 batch).","design":"advisor: 모든 상호작용=model.rows flat PivotRow[] 순수 변환 + interaction state, PivotGrid 가 변환행을 <Grid data> 전달(grid-core 미접촉). computePivot emit 미수정(MOD-18 회귀 경계). ★vacuity: subtotal 은 행차원 ≥2 에만 존재→모든 fixture/story 2-행차원(앵커링 증명, 단일차원=vacuous). config 골=controlled+computePivot 재실행(엔진 신규 0).","g1":{"surface":["sortPivotRows(model,leafKey,dir)(순수): 세그먼트(연속 data run, subtotal/grandTotal 종료) 내 data 만 값 셀 정렬, 합성행 앵커, null 하단","buildPivotColumns(model,sortOpts?): 값 leaf 헤더 클릭 버튼(▲▼) — sortOpts 미지정=plain string(MOD-18 불변). PivotGrid enableSort? opt-in + 정렬 state(asc→desc→해제) + sortPivotRows 적용. grid-core enableSort 미사용(평탄 전체 정렬 회피)"],"verified_node":"spine 11/11(src/sortPivotRows.test.ts, 손수 2-행차원 fixture=emit 순서 미러, strip-types: 세그먼트 내 정렬·kind 시퀀스 불변=앵커·grandTotal 끝·null 하단·asc/desc)","verified_browser":"chromium 1/1(pivot-interaction.spec.ts): 값 헤더 클릭→asc Boston(90)<NY(300)·subtotal/grandTotal 앵커(kind 시퀀스 불변·subtotal idx2 East·grandTotal 마지막)·재클릭 desc 반전. 회귀 37/37. typecheck 0.","scope_fixed":"그룹 자체를 subtotal 값으로 정렬(계층 정렬)=vN. within-group leaf 정렬만.","mod18_preserved":"buildPivotColumns sortOpts 미지정=헤더 불변·PivotGrid enableSort off=정적 동작","test_finding":"chromium 행 kind 식별: data 행 hover:bg-gray-50 가 bg-gray-50 substring 충돌→font-medium(subtotal)/font-semibold(grandTotal)로 식별"},"g2":{"surface":["collapsePivotRows(rows, collapsedIds)(순수): subtotal(__id∈set)의 후손 행 제거(임의 중첩: 앞 연속 depth>subtotal depth, 첫 depth≤d 정지). subtotal 대표 잔존·grandTotal 불변","buildPivotColumns(model,sort?,collapse?): subtotal 행-dim 셀 클릭 chevron(▶/▼)(collapse 미지정=plain=MOD-18). PivotGrid enableCollapse? opt-in + collapsedIds state 토글"],"composition":"★advisor: displayRows = collapse(sort(rows)) 체인(둘 순수, collapse=id 필터 순서 무관). 합성 동시 검증.","verified_node":"spine 11/11(collapsePivotRows.test.ts 2-행차원: 후손 숨김·subtotal 대표 잔존·grandTotal 불변·재확장 복원·★collapse(sort) 체인=정렬 후 같은 그룹 숨김)","verified_browser":"chromium(pivot-interaction collapse): East 토글→data 2행 숨김·subtotal 잔존·재확장 복원 + ★합성(sort asc→collapse East→재확장 시 East data 여전히 Boston<NY 정렬=collapse(sort) 동시 활성). 회귀 39/39. typecheck 0.","affordance_note":"모델 subtotal=그룹 하단 방출(상단 헤더 없음)→토글이 위 후손 숨김(AG 상하반전, computePivot 수정=MOD-18 위험 회피). 문서화 한계.","mod18_preserved":"collapse 미지정=subtotal 라벨 plain·enableCollapse off=정적"},"done_gate":{"lesson":"LESS-006 ×3+후속: 매 골 2-행차원 fixture(앵커링 non-vacuous) + advisor 후속(G-1 nested-column 헤더 경로·G-2 3-dim 중첩 분기·G-3 transpose 시 stale-id 리셋 합성 함정) 폐쇄. computePivot/grid-core 무수정=MOD-18 보존.","matrix_row":true,"index_updated":true},"g3":{"surface":["transposePivotConfig(config)(순수): rows↔columns swap(values 보존, involution)","PivotGrid enableConfigControls? 툴바([⇄전치][pivot 토글]) + onConfigChange?. controls 활성 시 config/pivotMode 내부 state 소유(props=초기값, MOD-18 controlled 와 배타적). computePivot 재사용(엔진 신규 0)"],"reset_advisor":"★config 변경(transpose)→computePivot 재실행→__id 재배정·leafKey 변경→stale id 엉뚱 그룹 숨김. applyConfig 가 sort/collapse state 리셋(setSort null+setCollapsedIds new Set). pivotMode 토글은 config 불변=같은 __id→미리셋.","verified_node":"transpose 5/5(swap·involution·values 보존·원본 불변)","verified_browser":"chromium 2(pivot-interaction): ①★transpose 리셋(collapse East→4행→전치→1행→복귀→6행=리셋 증명, 미리셋이면 stale 재collapse=4행) ②pivotMode 토글(pivot↔passthrough). 회귀 41/41. typecheck 0.","mod18_preserved":"enableConfigControls off→props.config/pivotMode 직접(controlled 불변)"},"module_summary":"3-Goal 전부 model.rows/config 순수 변환 + PivotGrid 배선, computePivot/grid-core 무수정(MOD-18 보존). node spine 35(sort11+collapse19+transpose5)+chromium 5. deferral: 계층 정렬·pivot panel drag·column collapse=vN."},
-    "MOD-GRID-32": {"package":"grid-pro-sheet(엔진 심화, Pro 기존)","tier":"Pro","weight":"Full(3-Goal: 비교/IF + text/math + undo/redo)","priority":"차기로드맵 5순위(COMMERCIAL-GAP Spreadsheet)","phase":"done (3-Goal 완주 → §3)","spec":"specs/MOD-GRID-32.md","goals":{"G-1":"done","G-2":"done","G-3":"done"},"version_note":"버전 미범프(릴리스 시 batch).","design":"advisor: ★비교=binary op 확장(새 노드 kind 금지 — extractRefs 정적 walk 가 모르는 kind=의존 ref 누락→recalc 깨짐. binary 면 수정 0). IF=call 유지+eval lazy(미평가 분기), parse/extractRefs 평범 call→세 분기 ref 정적 추적(lazy⊥정적추적). 비교 toNumber 우회(type-aware). 선행 characterization 회귀(엔진 커밋 테스트 0). G-3 scope 고정: undo/redo(raw 스냅샷), $A$1+상대참조-on-fill=vN(스코프 폭탄).","g1":{"surface":["types.ts Ast binary op 확장(<>= <= >= <>) + parser 토크나이저 비교(2자 우선)+parseCompare(최저 precedence)","evaluate type-aware 비교 분기(toNumber 우회: 동등=타입+값·순서 str↔str lexical/else 수치→boolean) + IF eval lazy special-case + functions AND/OR/NOT(eager 에러전파)"],"verified_node":"engine.test.mjs 28/28(esbuild 격리 번들 — 엔진 .js 크로스import strip-types 불가): characterization 11(MOD-26 동작 핀, 파서 수술 전후 green) + 비교 8 + IF/논리 7 + ★recalc through IF 2(A1 변경→B1 재계산, lazy⊥정적추적) + lazy 단락","verified_browser":"chromium 3/3(sheet-grid.spec): MOD-26 2 보존 + G-1(IF/AND/비교 표시·★recalc through IF·IF lazy 1/0→safe). 회귀 42/42. typecheck 0.","architecture":"advisor #1: 비교 binary op 확장→extractRefs 수정 0(의존그래프 구성상 정확). IF call+lazy→세 분기 ref 추적."},"g2":{"surface":"functions.ts POSITIONAL_FUNCTIONS(per-arg): text LEN/LEFT/RIGHT/MID/UPPER/LOWER/TRIM/CONCATENATE(number→string)·math ABS/INT/ROUND/MOD/POWER. evaluate call: 가변=flat-values·위치=ast.args.map(evaluate) per-arg(경계 보존)","advisor_closed":"★#2: range 인자→evaluate(range)=#ERROR! 전파(flat 전개의 조용한 오독 방지). \"계약 변경 0\"은 reduce형만, 위치 함수는 per-arg 예외.","verified_node":"engine 49/49(G-1 28+G-2 21: text 10·math 8+★range-arg ROUND(A1:A3,2)→#ERROR!+scalar 정상+ref recalc)","verified_browser":"chromium 4/4(sheet-grid: G-1·G-2+MOD-26 2 보존). UPPER/LEN/CONCATENATE/ROUND/MOD 표시·편집 재계산·★range-arg→#ERROR!. 회귀 43/43. typecheck 0.","vN":"VLOOKUP(range+lookup)·date·financial=엔진 shape 없음"},"done_gate":{"lesson":"LESS-006 ×3: ★recalc-through-IF(lazy⊥정적추적)·positional range-arg 경계(→#ERROR!)·undo→dependent 재계산. characterization 회귀로 MOD-26 엔진 보존. advisor 아키텍처(비교=binary op 확장→extractRefs 수정 0)+후속(esbuild fragility/positional 경계/type-strict 의미) 폐쇄.","matrix_row":true,"index_updated":true},"g3":{"surface":"createSheet per-cell command 스택(raw=진실원천, setCell={ref,prev,next}, undo=prev 재적용+증분 재계산, redo=next, no-op 미기록). applyCell 추출. Sheet undo/redo/canUndo/canRedo. useSheet 노출(명시 bump). SheetGrid undo/redo 툴바","reuse":"MOD-23 useUndoRedo=행-data command 계약 상이→self-contained 신규(LESS-005)","verified_node":"engine 66/66(G-3 17: ★undo→prev raw+dependent 재계산·redo·redo future 절단·소진·no-op 미기록)","verified_browser":"chromium 5/5(sheet-grid: G-1·2·3+MOD-26 2 보존). undo 버튼→복원+★dependent 재계산·redo·branch 절단. 회귀 44/44. typecheck 0.","scope":"advisor #5: undo/redo(raw 스냅샷)만. $A$1+상대참조-on-fill=vN(스코프 폭탄)"},"module_summary":"3-Goal MOD-26 엔진 심화(characterization 회귀로 보존). node 66+chromium 5. vN: VLOOKUP/date/financial·$A$1+상대참조·멀티시트·셀서식."}
+    "MOD-GRID-18": {
+      "package": "grid-pro-pivot",
+      "tier": "Pro",
+      "weight": "Full",
+      "priority": "P0",
+      "phase": "done",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done",
+        "G-4": "done",
+        "G-5": "done"
+      },
+      "done_gate": {
+        "lesson": "LESS-002",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "mount_verified": "true — 4 PivotGrid stories real-mounted in chromium under storybook single-react 18.3.1 (basic/multi-dim+subtotals/custom-reducer/passthrough), no Invalid hook call; delegation pattern validated for MOD-21/24/26 reuse",
+      "metrics": {
+        "reused_patterns": [
+          "PAT-001",
+          "PAT-003"
+        ],
+        "reused_vocab": [
+          "@topgrid/grid-pro-agg: AggregationFnKey",
+          "BUILT_IN_AGGREGATION_KEYS"
+        ],
+        "ap_precaught": [
+          "AP-001"
+        ],
+        "adr": [
+          "ADR-001"
+        ],
+        "new_lessons": [
+          "LESS-002"
+        ],
+        "render_verified": "26 pure checks (computePivot/reducers/buildPivotColumns/cell-labels) — AC-1/2/3/4/7",
+        "dom_mount": "blocked by react 18/19 split (P18-2, not a product defect); shell evidenced via grid-core source + chart watermark parity",
+        "subtotals": "shipped (2-axis, full)",
+        "ap_swept": [
+          "AP-001 grep+neg-control",
+          "AP-002 deprecated=0",
+          "AP-003 stale-count=0",
+          "AP-004 README/JSDoc↔index parity run"
+        ],
+        "compounding": "implement applied LESS-001 (no engine substring in exports) unprompted — 2nd data point of harness feeding a prior lesson forward",
+        "gaps_found": 0,
+        "findings": [
+          "§5.2 P18-1 agg reuse boundary",
+          "§5.2 P18-2 react-split verify gap",
+          "§5.2 P18-3 empty-dimension limits"
+        ]
+      },
+      "note": "dev-harness 2번째 완주(Full). 렌더 스파이크 = full <Grid> 위임. ADR-001 reducer 로컬."
+    },
+    "MOD-GRID-19": {
+      "package": "grid-pro-chart",
+      "tier": "Pro",
+      "weight": "Full",
+      "priority": "P0",
+      "phase": "done",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done",
+        "G-4": "done"
+      },
+      "done_gate": {
+        "lesson": "LESS-001",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "mount_verified": true,
+      "metrics": {
+        "reused_patterns": [
+          "PAT-001",
+          "PAT-003",
+          "PAT-004"
+        ],
+        "ap_precaught": [
+          "AP-001"
+        ],
+        "ap_precaught_kind": "design-stage (no chart-lib surface) — NOT a verify-catch; indexed AP-001 gate is vacuous here (0 optional peers), firing guard = chart-lib-name grep proven by negative control (planted echarts import → 1 hit)",
+        "new_lessons": [
+          "LESS-001"
+        ],
+        "render_verified": "renderToStaticMarkup: 4 sparkline types + empty/NaN + panel renderChart on/off + unlicensed watermark",
+        "gaps_found": 0,
+        "drift": 0
+      },
+      "note": "dev-harness 루프 첫 완주. 단일 클린 데이터포인트(설계와 일관) — 컴파운딩 일반화 금지."
+    },
+    "MOD-GRID-20": {
+      "package": "grid-sizing",
+      "tier": "MIT",
+      "weight": "Lite",
+      "priority": "P0",
+      "phase": "done",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done",
+        "G-4": "done"
+      },
+      "done_gate": {
+        "lesson": "PAT-005 (pattern promotion)",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "mount_verified": "n/a — no React component (pure helpers + injected measurement); full public API executed (13 checks)",
+      "metrics": {
+        "reused_patterns": [
+          "PAT-001"
+        ],
+        "new_patterns": [
+          "PAT-005 host-capability-injection (N=2 with MOD-19 renderChart)"
+        ],
+        "tier_firsts": [
+          "first MIT module (no PAT-003 license gate)",
+          "first Lite/partial-loop run"
+        ],
+        "ap_swept": [
+          "AP-001=0 (no external import)",
+          "AP-002 deprecated=0",
+          "AP-003 stale-count=0",
+          "AP-004 README 8 ids ↔ index.ts parity run"
+        ],
+        "render_verified": "13 pure checks (parse/distribute/sizeToFit/autoSize/SSR-fallback) — NO DOM wall thanks to measureText injection (PAT-005)",
+        "compounding": "agent self-applied LESS-001 awareness (reworded 'watermark' comment to avoid guard-grep trip) — lesson propagated unprompted",
+        "gaps_found": 0
+      },
+      "note": "dev-harness 3번째 완주. 첫 MIT/Lite. PAT-005 승격. 측정 주입으로 verify DOM 벽 0."
+    },
+    "MOD-GRID-21": {
+      "package": "grid-pro-panel",
+      "tier": "Pro",
+      "weight": "Full",
+      "priority": "P0",
+      "phase": "done",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done",
+        "G-4": "done"
+      },
+      "done_gate": {
+        "lesson": "LESS-003",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "mount_verified": "true — StatusBar/ToolPanel node-mounted (react18) + 3 panels chromium-mounted via storybook (incl RowGroupPanel = agg GroupPanel composition), no Invalid hook call",
+      "metrics": {
+        "reused_patterns": [
+          "PAT-001"
+        ],
+        "reused_components": [
+          "@topgrid/grid-pro-agg GroupPanel (re-export as RowGroupPanel, 0 reimpl)"
+        ],
+        "new_components": [
+          "StatusBar"
+        ],
+        "new_lessons": [
+          "LESS-003"
+        ],
+        "milestone": "reuse-gate first real validation (inventory→0 reimplementation enforced by AC+grep)",
+        "ap_swept": [
+          "AP-001=0",
+          "AP-002 deprecated=0 (ColumnVisibilityMenu avoided)",
+          "AP-003=0",
+          "AP-004 README 6 ids↔index parity run",
+          "reuse grep: 0 own drag handler"
+        ],
+        "gaps_found": 0
+      },
+      "note": "dev-harness 4번째. reuse-gate 첫 실증. RowGroupPanel=agg GroupPanel 재export(컴포넌트 재사용). 신규=StatusBar 1개."
+    },
+    "MOD-GRID-22": {
+      "package": "grid-pro-serverside",
+      "tier": "Pro",
+      "weight": "Full (3-Goal 완주)",
+      "priority": "P1",
+      "phase": "done (3-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-22.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "done_gate": {
+        "lesson": "LESS-006 정면 적용 ×3(G-1 epoch / G-2 manualSorting 억제 / G-3 sort-on-expanded — 매 Goal advisor 가 wired-but-unverified 경로 검출→폐쇄). PAT 후보 async-race-pinned-in-pure-core(epoch+node-existence) N=2(G-2 epoch+G-3 node-existence) 승격 점검 가능.",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "host_touches": "grid-core 3개(generic 완성, SSRM 로직 0 — advisor): ①manualSorting/manualFiltering(manualPagination 미러, 클라이언트 row-model 억제) ②onSortingChange/onColumnFiltersChange(onColumnPinning/Sizing 패턴 미러, 쿼리변경 신호) ③virtualizerOptions.onChange forward(가시범위 관찰). 'SSRM이 grid-core controlled/observable 표면 갭을 드러냄→generic 보완은 전 소비자 이득'. OFF byte-identical 7/7 + 회귀(floating/column-virt) 6/6.",
+      "design": "advisor: 첫 SSRM. reuse-gate(LESS-003)=grid-core 행가상화/서버페이징/트리 기존 → 신규=블록 lazy 로드만. 핵심 불변식=query epoch stale-response 거부(MOD-27 핀-불변식 동형, async race 를 node 에 못박음). Goal seam=AC③(lazy group=계층캐시→별 Goal/defer). datasource=grid-pro-serverside, materialize→placeholder 배열→기존 <Grid enableVirtualization>(코어 scroll-path 미접촉, LESS-005 형).",
+      "g1": {
+        "scaffold": "신규 Pro 패키지 grid-pro-serverside(PAT-003: checkLicense module-load + grid-license dep + EULA.md, edit-plus 미러). 첫 Pro since MOD-23.",
+        "surface": [
+          "ServerSideDatasource/GetRowsRequest/GetRowsResult/SortModelItem/FilterModel (datasource 계약)",
+          "createBlockCache/blockIndexOf/blockBounds",
+          "planBlocks(dedup)",
+          "markLoading/acceptBlock(epoch 거부)/invalidate(epoch++)",
+          "materialize(→placeholder 배열)/isRowPlaceholder",
+          "RowPlaceholder/BlockCacheState (types)"
+        ],
+        "design_note": "순수(React/네트워크 0) 전이함수=새 state 반환(blocks Map 복사, 무변이). epoch=쿼리 generation; invalidate 시 bump+clear; acceptBlock 은 responseEpoch≠cache.epoch 면 폐기(state === 반환). total/last-row 신호=GetRowsResult.lastRow(끝 도달시 절대 total).",
+        "verified": "node 26/26(dist import — checkLicense throw 없음 확인): 블록산술(index/bounds/size가드)·planBlocks dedup(in-flight/loaded 제외·경계·역순정규화·음수)·**epoch 거부 불변식(stale 폐기 state===, fresh 수락, late-stale-after-fresh 재거부)**·lastRow→rowCount·materialize(length=total·loaded real·missing placeholder·블록경계·rowIndex·total0)",
+        "ap_swept": [
+          "PAT-003 checkLicense dist 2회(import+call)",
+          "dist 금지어(TOMIS/topvel/내부경로)=0",
+          "AP-001 vacuous(core=type-only import만, 런타임 external 0; grid-license=required Pro dep)",
+          "AP-004 9 named export ↔ dist .d.ts 정합"
+        ],
+        "tsc": "0 + tsup(CJS/ESM/dts) clean"
+      },
+      "g2": {
+        "design": "advisor: datasource=grid-pro-serverside, materialize→placeholder 배열→기존 <Grid enableVirtualization>(코어 scroll-path 미접촉). 데이터흐름을 React-free ServerSideController(node 검증)로 분리 + thin useServerSideData 훅(state만). viewport=virtualizerOptions.onChange forward, 정렬/필터=on*Change 콜백(placeholder-driven 대신 — advisor: 가장 generic·소비자 cell 미접촉·dedup 검증 용이).",
+        "surface": [
+          "useServerSideData(datasource,{blockSize,rowCount})→{gridProps,totalCount,refresh}",
+          "createServerSideController(datasource,opts,onChange) (React-free, node 검증·고급 통합)",
+          "ServerSideGridProps(spread: data/enableVirtualization/manualSorting/manualFiltering/onSortingChange/onColumnFiltersChange/virtualizerOptions.onChange)",
+          "clearBlock(실패 재요청)"
+        ],
+        "verified_node": "ServerSideController 17/17(mock datasource·deferred promise): AC① 1회/블록+dedup(in-flight/loaded/sub-range/re-visit)·범위[start,end)·AC② sortModel/filterModel 전달·**epoch(sort mid-flight stale 폐기·fresh 수락)**·AC④ refresh+lastRow→totalCount",
+        "verified_ac2_suppression": "**AC② manualSorting 억제 행동검증 7/7**(headless createTable, advisor 게이트): 활성 n-desc 정렬에서 manualSorting:true→행 입력순[3,1,2] 유지(placeholder 무손상), false→[3,2,1] 정렬(비-vacuous 대조). getSortedRowModel/getFilteredRowModel skip 확인. node block-math/epoch 가 AC② 억제를 검증 못 함을 advisor 가 잡음(LESS-006 AC②판) → 이 테스트로 폐쇄.",
+        "verified_browser": "**chromium 1/1 AC① 게이트**(tests/visual/serverside-ssrm.spec.ts, LESS-006 실제 게이트): 실제 스크롤이 가시 블록 lazy 1회 fetch(DOM 가시인덱스 적응형 — 동적 행측정 대응)·행 출현·전량 미로드(lazy)·중복 0. 스토리 ServerSide.stories.tsx(mock datasource, __ssrmCalls 노출, 1000행/블록50).",
+        "ap_swept": [
+          "PAT-003 checkLicense dist 2회",
+          "dist 금지어 0(serverside+core)",
+          "AP-001 vacuous(react/react-table/react-virtual=peer; optional 0)",
+          "AP-004 신규 export ↔ dist .d.ts 정합 + react-virtual peer 명시(공개 onChange 타입)",
+          "OFF byte-identical 7/7 + 회귀 6/6"
+        ],
+        "v1_limits": "rowCount-길이 placeholder 배열(LRU 0)·datasource 1회 캡처(memoize 권고, 문서화)"
+      },
+      "g3": {
+        "design": "advisor: lazy 그룹=계층 캐시(flat 의 파라미터화 아님). 구조=**flat Map<pathKey, BlockCacheState>**(pathKey=JSON.stringify(groupKeys)) + Set<pathKey> expanded → 각 노드가 **G-1 캐시 재사용**, n-레벨 무료(2~3레벨 테스트). 통합=model A(가시 트리 flatten→display list→기존 <Grid enableVirtualization data>, grid-core host touch **0**). 그룹 토글=스토리 cell 렌더러(__ssrm meta 읽어 depth 들여쓰기+토글). 별 훅 useServerSideTree(flat 훅 미오염).",
+        "invariant": "★ G-3 척추: 자식 응답은 **(a) 전역 epoch 일치 AND (b) 노드가 맵에 존재** 시만 수락. (a)=정렬/필터/그룹 변경(invalidateTree epoch++, expanded 유지). (b)=expand→fetch→**collapse**(purge)-before-resolve → late 응답 '노드 없음' 거부. MOD-27 핀/G-2 epoch 동형.",
+        "surface": [
+          "useServerSideTree(datasource,{blockSize,rowGroupCols})→{gridProps,toggleGroup,refresh}",
+          "createServerSideTreeController (React-free, node 검증)",
+          "순수 트리코어: createTreeCache/toggleGroup/invalidateTree/ensureVisibleNodes/planTreeBlocks/acceptTreeBlock/flattenTree/pathKeyOf",
+          "GetRowsRequest+optional groupKeys/rowGroupCols(후방호환=부재 시 flat)",
+          "TreeDisplayRow/SsrmRowMeta(__ssrm: group/level/groupKeys/expanded)"
+        ],
+        "verified_node": "트리 코어+컨트롤러 23/23(flatten 초기 placeholder·root accept·expand/collapse·**epoch reject (a)**·**node-existence reject (b)=collapse-before-resolve late drop**·3-레벨 n-level·컨트롤러 dedup/expand/collapse) + **gap-closing 9/9**(invalidateTree expanded 유지·다중블록(대형그룹 내 스크롤 block 1)·**sort-on-expanded: stale 자식 epoch 폐기+새 sortModel+확장 보존→자식 재요청**)",
+        "verified_browser": "**chromium 1/1 AC③**(tests/visual/serverside-tree.spec.ts): 펼침 전 자식 미fetch(lazy)→펼침 시 자식블록 1회 fetch+자식 출현→접힘 시 숨김→재펼침 재fetch(≤2=purge-on-collapse). 형제 미펼침 그룹 lazy 유지.",
+        "ap_swept": [
+          "grid-core host touch 0(advisor 예측 적중)",
+          "dist 금지어 0",
+          "AP-001 vacuous(treeCache=internal import만)",
+          "AP-004 G-3 export ↔ dist .d.ts 정합",
+          "G-2 flat 회귀 0(serverside-ssrm green=optional-field 후방호환)"
+        ],
+        "v1_limits": "purge-on-collapse(재펼침 재fetch)·onChange 당 walkTree 다회·String() 그룹키·그룹 자식 count=첫 블록 lastRow 필요(미도달 시 placeholder blockSize)"
+      }
+    },
+    "MOD-GRID-23": {
+      "package": "grid-pro-edit-plus",
+      "tier": "Pro",
+      "weight": "Pro/Full (4-Goal 완주)",
+      "priority": "P1",
+      "phase": "done",
+      "spec": "specs/MOD-GRID-23.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done",
+        "G-4": "done"
+      },
+      "done_gate": {
+        "lesson": "PAT-006 승격(G-1) + LESS-005(G-2/G-4)",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "completion_gate": "advisor honesty-check 통과 후 §3 이관. 2건 선제 시정: (1) AC① over-collapse — delete 바인딩 누락이었으나 added/미편집-existing 은 충실 → makeDeleteCommand 추가(편집행 delete 만 lossy=P23-1). (2) AC④ — 내 validator+재구현 filter 로 '가정'했던 커밋차단을 tracking 실 buildChangeSet round-trip 으로 실증(LESS-004 자기적용). 둘 다 node 6/6 추가검증.",
+      "partial": "완주 — advisor: Pro/Full 4-Goal. §6→§3 이관 완료. AC 충족 방식 honest 기록(over-claim 0).",
+      "g4": {
+        "design": "self-contained 셀 코멘트(grid-core public storage=GridState형 부적합, internal/storage=비-public → 결합 안 함, LESS-005 규약 재사용). 순수 commentStore(commentKey=JSON.stringify([rowKey,columnId]) 충돌없음, serialize/deserialize 버전봉투+손상가드) + useCellComments(SSR-guard localStorage/session, effect persist).",
+        "surface": [
+          "useCellComments({storageKey,storage?,version?})",
+          "commentKey",
+          "serializeComments/deserializeComments",
+          "UseCellCommentsOptions/CellCommentsAPI"
+        ],
+        "verified": "12/12 node(dist 순수 + mock Storage 전체 왕복): key 충돌없음/round-trip unicode·특수문자/null·corrupt·version-mismatch·non-string·missing-c → empty/persist→hydrate 왕복/delete persist/unknown key. 훅 글루는 tested 순수함수 위 표준 패턴",
+        "ap_swept": [
+          "AP-001 vacuous(react required peer; storage 표준 API)",
+          "AP-003=0",
+          "AP-004 README↔index↔dist",
+          "dist 금지어 0"
+        ]
+      },
+      "g3": {
+        "design": "advisor: key 기반 순수 코어(rowKey/columnId — tracking·G-2 동일 좌표계 → 바로 조합). range(index 기반 {row,col}) 결합 안 함 — 선택영역 검색은 소비자 어댑터(range CellRange→{rowKeys,columnIds}). §6.1 'range 재사용' 가정은 reuse-gate 가 해소(LESS-003 again, 신규 lesson 0).",
+        "surface": [
+          "findMatches(rows,getRowKey,columnIds,query,opts)",
+          "computeReplacements(matches,query,replacement,opts)→{rowKey,columnId,prior,next}",
+          "FindOptions/CellMatch/Replacement"
+        ],
+        "composition": "computeReplacements 출력 {rowKey,columnId,prior,next} → tracking.updateRow + makeUpdateCommand(G-2) 로 undo 가능 적용. G-1/G-2/G-3 조합 입증(prior 포착이 핵심 설계)",
+        "non_string_cells": "매칭=String(value), replace next=항상 문자열(숫자 120 부분치환 '12'→'XX' ⇒ 'XX0'), prior=원본 타입 보존. 문서화(LESS-004 류 silent coercion 회피). null/undefined 셀 skip",
+        "verified": "15/15 node(dist): columnId 스코핑/대소문자/substring·whole/null skip/빈query/**비-문자열 셀(number) 매칭+치환 coercion**/case-insensitive replace/G-2 조합 shape/whole verbatim",
+        "ap_swept": [
+          "AP-001 vacuous(find-replace 런타임 import 0=완전 순수)",
+          "AP-003=0",
+          "AP-004 README↔index↔dist",
+          "dist 금지어 0"
+        ]
+      },
+      "g2": {
+        "design": "advisor: Option B 제네릭 command 스택(tracking 위, tracking 0 수정). reuse-gate=NO SEAM(tracking 닫힌 reducer, 히스토리/redo/상태복원 미노출) → LESS-005. 충실 바인딩만: makeUpdateCommand(이전값 포착)/makeAddCommand(redo 포착키 강제재주입). 편집된 행 delete=문서화 한계(§5.2 P23-1).",
+        "surface": [
+          "useUndoRedo()",
+          "makeUpdateCommand",
+          "makeAddCommand",
+          "UndoRedoCommand/UndoRedoAPI/CommandStackState"
+        ],
+        "verified": "14/14 node(--experimental-strip-types, 순수 commandStack+bindings+mock tracking): INV-1 push가 redo비움 / INV-2 add-redo 포착키 재사용(새UUID 아님) / INV-3 update-undo 이전 patched-field 복원 / 통합 add→update undo·redo 왕복 순서. 순수/훅 분리(훅은 ref+bump=StrictMode 이중실행 회피)",
+        "ap_swept": [
+          "AP-001 vacuous(react required peer; tracking type-only)",
+          "AP-003=0",
+          "AP-004 README↔index↔dist .d.ts",
+          "dist 금지어 0"
+        ],
+        "new_lessons": [
+          "LESS-005 reuse-gate-no-seam-build-minimal-primitive (PAT-006 음화)"
+        ],
+        "pat_006_note": "G-2 는 PAT-006 비적용(기존 계약 아닌 gap) — advisor: 강제 적용 금지"
+      },
+      "mount_verified": "n/a — pure helpers (no React component). 8/8 node 검증 + AC-3/5 대입성(annotated 반환타입 + tsc).",
+      "metrics": {
+        "reuse_gate": "grid-pro-tracking 인벤토리(LESS-003 live-overlap): Validator<TData> 계약 + getChangeSet().errors 커밋차단 이미 존재 → G-1=선언적 룰→Validator/CellClassNameCallback 컴파일러만 신규. undoRow/resetChanges/__original 도 기존(undo/redo 절반). placement=신규 Pro 패키지 grid-pro-edit-plus",
+        "reused_patterns": [
+          "PAT-001",
+          "PAT-003(라이선스 게이트 — 첫 Pro since MOD-21, MIT 2연속 후 복귀)"
+        ],
+        "new_patterns": [
+          "PAT-006 declarative-rules-to-existing-contract-compiler (N=2 승격: MOD-24 G-1 buildRow/CellClassName + 본 G-1 buildValidator/buildValidationCellClass)"
+        ],
+        "reused_contracts": [
+          "@topgrid/grid-pro-tracking Validator (커밋차단 무료 재사용)",
+          "@topgrid/grid-core CellClassNameCallback (시각표시)",
+          "MOD-24 buildCellClassName 동형"
+        ],
+        "g1_surface": [
+          "buildValidator",
+          "buildValidationCellClass",
+          "ValidationRule (grid-pro-edit-plus/validation)"
+        ],
+        "g1_verified": "8/8 node(dist + real headless cells): valid/single·multi 위반 errors(룰순서)/tracking-Validator 커밋제외 시뮬/cell-class custom·default·undefined. AC-3·5 대입성 = annotated 반환타입(Validator/CellClassNameCallback) + 패키지 tsc 통과로 증명",
+        "g1_ap_swept": [
+          "AP-001 vacuous (tracking/grid-core type-only peer; grid-license=required Pro dep; optional peer 0)",
+          "AP-003 카운트 0",
+          "AP-004 README↔index↔dist .d.ts 정합",
+          "PAT-003 checkLicense dist 존재",
+          "dist 금지어 0"
+        ],
+        "less_003": "live-overlap 4번째 데이터포인트(validation·undo/redo 둘 다 기존 위 축소). reuse-gate 페이즈로 이미 운영화 — 승격 안 함",
+        "tier_note": "첫 Pro since MOD-21 — PAT-003 재적용(checkLicense module-load + grid-license runtime dep + EULA.md). MIT 2연속(20→25→24) 후 Pro 게이트 복귀 데이터포인트"
+      },
+      "note": "dev-harness 7번째. 첫 Pro since MOD-21. PAT-006 승격(선언적 룰→기존 계약 컴파일러 N=2). reuse-gate 가 검증 메커니즘=tracking 기존 발견 → G-1=순수 컴파일러만."
+    },
+    "MOD-GRID-24": {
+      "package": "grid-features/conditional-format + grid-core floating rows",
+      "tier": "MIT",
+      "weight": "Full→partial-complete({G-1,G-2})",
+      "priority": "P1",
+      "phase": "done",
+      "spec": "specs/MOD-GRID-24.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "done_gate": {
+        "lesson": "LESS-002 정밀화 + LESS-003 N=3 (clean — 신규 실패 lesson 0; capture 가 기존 자산 강화)",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "mount_verified": "true (node + chromium) — grid-core <Grid>+floating 행 renderToStaticMarkup 마운트(node, react@19 단일 resolve) + G-1 5/5 node. **chromium 1/1**: thead-collision 수정(thead 높이 측정→상단 floating top offset) 검증 — build-storybook→serve→playwright(tests/visual/floating-thead.spec.ts) 스크롤 후 top floating≥thead bottom PASS. dev-harness 첫 실제 chromium 검증(LESS-002 하네스 실증). 스파이크가 story createColumns 형식 버그({accessorKey,header}→render throw)도 검출·수정.",
+      "descope": "advisor: 원 §6.1 4-feature 버킷 비응집(reuse-gate 가 실증 — alternating 신규0/conditional→features/floating→core 두 패키지 분산). 컬럼 가상화 = grid-core 렌더-엔진 인프라 → MOD-GRID-27 로 분리(planned). 본 모듈 = {G-1,G-2} 확정 → 첫 partial-module 완주 → §3 이관.",
+      "metrics": {
+        "reuse_gate": "grid-core 이미 RowClassNameCallback/CellClassNameCallback(types.ts:47/59)+rowClassName/cellClassName prop → alternating/conditional 메커니즘 기존. G-1=선언적 룰→콜백 순수 편의레이어만 신규. duplicate-check: conditional-format helper 0건. placement=grid-features(§6.1 괄호 'core/renderers' 정정 — 순수 add-on→features)",
+        "reused_patterns": [
+          "PAT-001"
+        ],
+        "g1_surface": [
+          "buildRowClassName",
+          "buildCellClassName",
+          "RowFormatRule",
+          "CellFormatRule (grid-features/conditional-format)"
+        ],
+        "g1_render_verified": "5 AC node 검증(real headless TanStack rows/cells via createTable): alternating(index)/multi-match join+무매칭 undefined/cell rule via getValue/predicate row.original 접근. AC-5 대입성 = 반환타입이 grid-core 콜백타입으로 명시 annotation → 패키지 tsc 통과가 증명. tsc 0 + tsup(CJS/ESM/dts)",
+        "g1_ap_swept": [
+          "AP-001 외부 import 0(grid-core 타입 type-only)",
+          "AP-003 카운트 0",
+          "dist 금지어 0"
+        ],
+        "lesson_recurrence": "LESS-003(inventory-before-specify) 3번째 데이터포인트(N=3, MOD-21/25/24-G1) → reuse-gate 페이즈로 이미 운영화돼 C-/AP- 승격 안 함(중복 회피)",
+        "g2_surface": [
+          "floatingTopRows?: TData[]",
+          "floatingBottomRows?: TData[] (Grid props)",
+          "internal/buildFloatingRows (pure, createRow)"
+        ],
+        "g2_design": "AG-style 소비자공급 추가행(집계계산X=agg/Pro경계, 상호작용핀X=master/Pro경계). 명칭 floatingTopRows/floatingBottomRows (rowPinning 섀도잉 회피 — advisor). createRow 로 실제 Row→셀이 columnDef.cell 통과(raw값 직접렌더 회피)",
+        "g2_verified": "buildFloatingRows 8/8 node(--experimental-strip-types: count/order/ids/cell-renderer/undefined·empty→[]) + Grid render 8/8 node(renderToStaticMarkup react@19 단일resolve): top/bottom 위치·셀값·position:sticky·순서(top<data<bottom)·**byte-identical 회귀(withFloat - floating<tr> == baseline)**. sticky 스크롤 *시각거동*만 pending-chromium(story 추가: stories/Grid.floating-rows.stories.tsx)",
+        "g2_ap_swept": [
+          "AP-001 vacuous(@tanstack/react-table=required peer)",
+          "AP-003 카운트 0",
+          "AP-004 floating props ↔ dist .d.ts(TreeGrid chunk) 정합",
+          "dist 금지어 0"
+        ],
+        "less_002_refined": "node 마운트 성공 → LESS-002 정밀화: 벽은 cross-pkg react 버전 불일치(pivot@18→core@19)지 grid-core 합성 자체 아님. 단일pkg/정렬 합성은 react+react-dom 같은 dir resolve 시 node OK(storybook은 불일치합성 한정)"
+      }
+    },
+    "MOD-GRID-25": {
+      "package": "(grid-export 확장)",
+      "tier": "MIT",
+      "weight": "Lite",
+      "priority": "P1",
+      "phase": "done",
+      "spec": "specs/MOD-GRID-25.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done",
+        "G-4": "done"
+      },
+      "done_gate": {
+        "lesson": "LESS-004",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "mount_verified": "n/a — no React component (pure export functions). 15 AC checks via node writeFile→readFile round-trip (real headless TanStack table via createTable) + clipboard toggle (navigator stub). all pass.",
+      "metrics": {
+        "reused_patterns": [
+          "PAT-001"
+        ],
+        "reused_helpers": [
+          "getRowsByScope",
+          "buildHeaderRows (extracted to internal/ for single↔multi-sheet share)"
+        ],
+        "tier_firsts": [
+          "2nd MIT/Lite (after MOD-20) — no license gate path re-confirmed"
+        ],
+        "new_lessons": [
+          "LESS-004 pinned-dep-edition-feature-silent-noop"
+        ],
+        "reuse_gate": "grid-export 인벤토리(LESS-003 동형): AC① 셀스타일 = community xlsx(.s strip 실측)로 폰트/배경 불가 → 네이티브 숫자서식(.z)+폭으로 재정의; AC③ 클립보드 헤더 이미 무조건 포함 → 토글로 축소; AC② 다중시트만 진짜 신규",
+        "xlsx_boundary_proof": ".z(number-format)+!cols(width) survive write→read, .s(font/fill) stripped → {patternType:'none'} (xlsx@0.18.5 community, empirically verified per harness P6)",
+        "render_verified": "15 pure/e2e checks: .z applied+numeric preserved+survives roundtrip / !cols width / no .s emitted / multi-sheet names+content / empty-sheets warn+no-file / clipboard includeHeader true+false / regression: omitted-options identical to pre-MOD-25",
+        "ap_swept": [
+          "AP-001 vacuous (xlsx=required peer optional:false; jspdf optional 미접촉; neg-control: xlsx static import is correct)",
+          "AP-002 deprecated=0",
+          "AP-003 hardcoded-count=0",
+          "AP-004 README↔index↔dist .d.ts 시그니처 정합 run",
+          "dist 금지어(TOMIS/topvel/@tomis)=0"
+        ],
+        "gaps_found": 1,
+        "findings": [
+          "§5.2 P25-1 exportRowsToExcel .s no-op (pre-existing, surgical 미수정·기록만 → LESS-004)"
+        ],
+        "compounding": "LESS-003(inventory-before-specify)을 reuse-gate 에서 자발 적용 → 3 AC 중 2개 축소/재정의(=MOD-21 의 3중2 재사용 패턴 2번째 데이터포인트). verify 가 LESS-004 를 새로 생성(외부 lib edition 경계를 round-trip 으로 확정). advisor review 가 2건 선제 차단: (1) `.z` on string-typed 셀 = silent no-op(LESS-004 동형 재발) → numeric(`t:'n'`) 가드 추가+README 정정, LESS-004 를 같은 모듈 내에서 자기적용; (2) `Table<unknown>` 이질 다중시트 대입 불가(exactOptional+accessorFn 반공변) → `Table<any>`(eslint-disable+근거주석)로 consumer `Table<Person>` 대입성 확보. 둘 다 node tsc/round-trip 으로 재검증."
+      },
+      "note": "dev-harness 5번째. 2번째 MIT/Lite. 빌더 추출로 단일↔다중 시트 재사용. 폰트/배경은 community xlsx 한계로 문서화(no silent no-op). reuse-gate 가 Full 스케치를 thin-but-real Lite 로 축소."
+    },
+    "MOD-GRID-26": {
+      "package": "grid-pro-sheet",
+      "tier": "Pro",
+      "weight": "Full(PoC 3-Goal)→partial(PoC→§3, 풀 시트 vN)",
+      "priority": "P2",
+      "phase": "done (PoC 3-Goal 완주 → §3; 풀 시트 vN)",
+      "spec": "specs/MOD-GRID-26.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "done_gate": {
+        "lesson": "LESS-006 ×3 또 적용(G-1 에러전파/G-2 척추/G-3 clipboard glue — advisor 매 Goal wired-but-unverified 검출). ADR-002 발급. PAT 후보 error-aware-value-propagation N=1.",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "design": "advisor: 첫 스프레드시트(별제품급 PoC). ★값 모델 우선=CellValue(number|string|boolean|CellError) error-aware 전파. ★척추(G-2)=순환검출(#CYCLE! no stack overflow)·전이 재계산 순서(각1회)·그래프 에러전파. ADR-001 N=2 재독→ADR-002 still local(입력계약 error-aware≠number[]).",
+      "g1": {
+        "scaffold": "신규 Pro 패키지 grid-pro-sheet(PAT-003: checkLicense+grid-license+EULA). dev-harness 10번째.",
+        "surface": [
+          "값 모델: CellValue/CellError/ErrorCode/cellError/isCellError",
+          "parseFormula(tokenize→재귀하강 parser→Ast)",
+          "evaluate(ast, getCell) — getCell 주입(PAT-005), error-aware 전파",
+          "extractRefs(ast) — 같은 parse 에서 의존셀(G-2 재-parse 안 함)",
+          "compileCell(raw)→{literal|formula+refs}",
+          "FUNCTIONS(SUM/AVERAGE/MIN/MAX/COUNT, error-aware, 시트의미론=SUM([])=0/AVG([])=#DIV/0!)",
+          "parseA1/toA1/expandRange/coerceLiteral/formatValue"
+        ],
+        "adr": "ADR-002(ADR-001 N=2 재독): 피벗 BUILT_IN_REDUCERS 재사용 불가(number[]+null-on-empty vs CellValue[] error-aware+시트의미론, 입력계약 상이) → 로컬. N=2≠자동추출(재평가하라지 추출하라 아님). ID-LEDGER ADR 002 발급.",
+        "verified": "node 38/38(dist): A1 helpers(parse/to/range)·산술 우선순위/단항/괄호/나눗셈·A1 참조(getCell 주입)·빈셀→0·SUM/AVERAGE/MIN/MAX/COUNT·mixed args·composition·text 무시·빈범위 SUM=0/AVG=#DIV/0!·**에러전파(#DIV/0!·#ERROR!·인자전파·SUM 전파·미지함수·범위-스칼라)**·extractRefs(중첩/dedup/literal)·compileCell(formula/literal/bad-syntax→#ERROR!)·coerceLiteral·formatValue·isCellError",
+        "ap_swept": [
+          "PAT-003 checkLicense dist 2",
+          "dist 금지어 0",
+          "AP-001 vacuous(엔진 외부 런타임 import 0=순수; grid-license=index 만)",
+          "AP-004 9 export ↔ dist .d.ts"
+        ],
+        "tsc": "0 + tsup clean"
+      },
+      "g2": {
+        "design": "React-free createSheet 컨트롤러(node 검증) — 셀 저장소+정방향/역방향 의존 그래프. 편집 시 영향 셀(편집셀+전이 dependents)만 위상순 재계산(각 1회). 순환=explicit visit-stack(evaluate 재귀 안 함→stack overflow 없음), 백엣지 구간 전부 #CYCLE! 마킹. getCell=values 캐시(에러 전파 자동).",
+        "surface": [
+          "createSheet(onChange?)→{setCell,getValue,getRaw,getDisplay}",
+          "SheetChange(재계산 순서)"
+        ],
+        "verified": "node 23/23(dist): 편집→상류 재계산·**전이 순서[A1,B1,C1] 각1회**·다이아몬드(D1 1회·B1/C1 후)·**순환검출(A1↔B1·self·3-cycle→#CYCLE! no stack overflow)**·순환해제 복구·**그래프 에러전파(#DIV/0! A1→B1→C1, 수정시 복구)**·SUM 범위멤버 편집 재계산",
+        "spine": "advisor 척추 3종(순환/순서/에러전파) 전부 컨트롤러 레벨 검증(LESS-006: G-3 chromium 전 node 게이트)",
+        "ap_swept": [
+          "dist 금지어 0",
+          "AP-001 vacuous(sheetEngine internal import만)",
+          "AP-004 createSheet ↔ dist .d.ts"
+        ]
+      },
+      "g3": {
+        "design": "thin React 표면. 셀=수식 저장/값 표시(stored≠rendered). useSheet(createSheet 위 version bump) + SheetGrid 컴포넌트. **reuse-gate(LESS-003) honest 결과**: grid-pro-range 재사용 = **useCellRange(선택) + useClipboard(copy=getDisplay=값/onPaste→setCell)**. **편집은 native**(double-click→raw 노출→Enter commit) — useKeyboardEdit 는 콜백 라우터라 수식-vs-값 편집 모델에 안 맞음(LESS-003형 부분적합 finding, 억지 재사용 안 함=ADR-002 정신).",
+        "surface": [
+          "useSheet()→{setCell,getDisplay,getRaw}",
+          "SheetGrid({rows,cols}) — td[data-cell] 셀, double-click 편집, useCellRange 선택 하이라이트, useClipboard Ctrl+C/V"
+        ],
+        "verified": "**chromium 2/2**(tests/visual/sheet-grid.spec.ts): ①라운드트립=리터럴/수식셀 =A1+A2 값30 표시(stored≠rendered)/SUM(A1:A3)=60/상류 A1=100 편집→B1=120,B2=150 재계산/#DIV/0! 표출/편집 시 raw 수식 노출(양방향). ②**copy=value**(advisor 게이트: clipboard glue wired-but-unverified→폐쇄): B1 복사→D5 붙여넣기=값30(raw 면 D1+D2=0). useCellRange 선택 transitively 검증(복사에 필수).",
+        "ap_swept": [
+          "PAT-003 checkLicense dist 2",
+          "dist 금지어 0",
+          "AP-001 vacuous(react/range=required peer; optional 0)",
+          "AP-004 useSheet/SheetGrid ↔ dist .d.ts",
+          "eslint 0",
+          "회귀 9/9(전 visual)"
+        ],
+        "honest_scope": "AC③ '편집/클립보드 재사용' = 클립보드+선택 재사용 / 편집 native(useKeyboardEdit 부적합, reuse-gate finding). copy=value(formula 복사·상대참조 조정=vN out)."
+      }
+    },
+    "MOD-GRID-27": {
+      "package": "(grid-core 렌더-엔진 확장)",
+      "tier": "MIT",
+      "weight": "Full",
+      "priority": "P1",
+      "phase": "done",
+      "spec": "specs/MOD-GRID-27.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "done_gate": {
+        "lesson": "LESS-006 (node-fallback-blind-to-browser-gated-feature, N=1)",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "gaps_found": 1,
+      "findings": [
+        "§5.2 P27-1 컬럼 가상화 스크롤 컨테이너 overflow=기존 overflow-x-auto Tailwind 클래스 의존 → Tailwind 미적용 소비자는 컨테이너 overflow-x 직접 지정 필요(table-width 게이트와 달리 제품 미수정·문서화만, advisor)"
+      ],
+      "origin": "MOD-24 에서 분리(advisor) — 컬럼(가로) 가상화는 표시 helper 아닌 grid-core 렌더-엔진 인프라.",
+      "g1": {
+        "design": "advisor: 핀-컬럼-항상-렌더는 fork 아닌 **불변식** → 순수 코어에 인코딩+node 검증. computeColumnWindow(leaf+widths+pinnedL/R+center range → {renderedColumnIds:[...pinnedL,...windowCenter,...pinnedR], leftPadPx, rightPadPx}; pad=center-only). + thin useColumnVirtualizer(horizontal useVirtualizer, useGridVirtualizer mirror). **Grid.tsx 미접촉**. v1=flat-header(그룹헤더 가상화=v2).",
+        "verified": "12/12 node(--experimental-strip-types, 순수): 핀 불변식(윈도 제외돼도 핀 렌더)·pad=center-only(핀너비 0기여)·순서(L→center→R)·경계(start/end/whole/empty-center/pinnedR-only/no-pin/single)·missing-width=0·out-of-range clamp",
+        "ap_swept": [
+          "AP-001 vacuous(computeColumnWindow import 0=순수; useColumnVirtualizer→react-virtual=grid-core 기존 peer)",
+          "AP-003=0",
+          "dist 금지어 0",
+          "AP-004 n/a(내부 helper, public 표면 미변경 — wiring=G-2)"
+        ],
+        "reused_patterns": [
+          "PAT-001",
+          "useGridVirtualizer 패턴 mirror"
+        ],
+        "no_promotion": "'순수코어+thin shell→node검증' = 하네스 방법론(PAT 강제승격 안 함 — advisor over-fit 경고)"
+      },
+      "g2": {
+        "design": "advisor 3-commit 스테이징(각 commit=깨끗한 경계, byte-identical 게이트). computeColumnWindow 출력을 구조화(pinnedLeftIds/windowCenterIds/pinnedRightIds + pads) → pad 는 핀 *사이* 배치.",
+        "commit_A": "346931f — 본문 3경로(virtual/plain/floating) 셀 렌더를 renderWindowedCells(per-row Map, O(n)) 로 라우팅(full window, pad=0). **byte-identical 7케이스**(renderToStaticMarkup, LESS-002 node 마운트). 헤더 미접촉. 구조 변경만, 동작 0.",
+        "commit_B": "(이 커밋) enableColumnVirtualization opt-in prop + useColumnVirtualizer(가로) 배선 + columnWindow(full|virtual) 본문 적용. flat-header 게이트(그룹헤더 자동 비활성). **OFF byte-identical 재확인**(7케이스). computeColumnWindow 구조화 출력 6/6 node 재검증. ON 윈도잉=브라우저 측정 필요(node SSR 은 안전하게 전 컬럼 렌더 — 미측정시 fallback, 확인됨). prop=experimental 표기.",
+        "commit_C": "완료 — (1) renderHeaderCell verbatim 추출(Edit1, OFF byte-identical 7/7) → (2) renderWindowedHeaderCells(본문 renderWindowedCells 동형 세그먼트 순서) + columnVirtEnabled 게이트(Edit2, OFF byte-identical 재확인) → (3) **레이아웃 갭 시정**: 첫 chromium 이 Commit B 비동작 검출(table 전체폭 미설정→table-layout:auto 가 22×140 컬럼을 600px 컨테이너로 압축→스크롤 죽음). 게이트 변경: columnVirtEnabled 시 `<table>` table-layout:fixed + width=Σgetsize, applyWidth/applyCellWidth 에 `||columnVirtEnabled`(default-150 미핀 그리드 width 강제). OFF byte-identical 7/7 유지(columnVirtOn 만 변경=예상). prop JSDoc clip/overflow 정직 문서화 → LESS-006.",
+        "chromium_matrix": "5/5 PASS (tests/visual/column-virtualization.spec.ts, storybook+playwright): ①윈도 *이동*(combined 스토리 2200px 스크롤 후 라벨 C00,C01..C08,C21 → C00,C13..C20,C21 — non-vacuous) + 핀 좌/우 상존 ②헤더↔바디 nth-child x 정렬(tr[data-index] 대상, hn==bn 셀수 동일) ③세로+가로 동시(col<22 & row<100) ④column-only 본문 분기 브라우저 마운트(스크롤 미단언=overflow Tailwind-inert P27-1, windowed<22 만) ⑤OFF 비-vacuity 앵커(전 22 렌더). 스크롤 검증=combined 스토리(인라인 overflow:auto). resize=비차단 미실시(advisor #6, P27 후속). 회귀: floating-thead PASS(헤더 추출 무해).",
+        "verified": "computeColumnWindow 6/6 node + OFF byte-identical 7/7(Edit1·Edit2·레이아웃변경 3회 재게이트) + chromium 4/4. 스토리: stories/Grid.column-virtualized.stories.tsx(22컬럼·엣지핀·column/combined/off 3종)."
+      }
+    },
+    "MOD-GRID-28": {
+      "package": "(grid-core 접근성)",
+      "tier": "MIT",
+      "weight": "Full(3-Goal)",
+      "priority": "차기로드맵 1순위(COMMERCIAL-GAP a11y, table-stakes 최대 갭)",
+      "phase": "done (3-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-28.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "done_gate": {
+        "lesson": "LESS-006 ×3(G-1 그룹헤더 aria-colindex=0 / G-2 out-of-window nav / G-3 nav 이중발화 — 매 Goal advisor 가 wired-but-unverified 검출→폐쇄). 차기 로드맵(COMMERCIAL-GAP) 첫 모듈.",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "design": "advisor: ★불변식1=role-completeness(role=grid면 row/cell role+positional 전부=같은 Goal, 부분 ARIA grid는 무-ARIA보다 나쁨). ★불변식2(척추)=가상화 하 절대 aria-rowindex/colindex(DOM 위치 아님, row=virtualItems.index/col=computeColumnWindow 절대). default-on(비파괴 attr 추가만). axe-core 게이트(role grep=vacuous=LESS-006).",
+      "g1": {
+        "surface": [
+          "internal/ariaAttrs.ts(순수): gridContainerAttrs·dataRowAriaIndex·visualColumnOrder·buildAriaColIndex·columnHeaderAttrs·dataRowAttrs·gridCellAttrs·headerRowAttrs·toAriaSort",
+          "Grid.tsx 배선: <table role=grid aria-rowcount/colcount [aria-multiselectable]> · 헤더 tr role=row+aria-rowindex · th role=columnheader+aria-colindex+aria-sort · 데이터 tr role=row+aria-rowindex+[aria-selected] · td role=gridcell+aria-colindex · floating/empty=role=row만"
+        ],
+        "verified_node": "ariaAttrs 23/23(척추: windowed 행 절대 aria-rowindex 50→52(DOM 2 아님)·pinned-right 절대 aria-colindex 5)",
+        "verified_browser": "**axe-core chromium 5/5**(tests/visual/grid-a11y.spec.ts): ①grid 계약 위반 0(virtual)+aria-rowcount/colcount ②척추 절대인덱스 non-vacuous ③**그룹헤더(aria-colindex=0 0개·헤더행 aria-rowindex 1&2·첫데이터 3·axe-clean)** ④plain axe ⑤empty axe",
+        "advisor_blocker_closed": "그룹/다단 헤더 aria-colindex=0(무효, default-on이라 전 그룹소비자 무효 grid 발행) → columnHeaderAttrs 가 비-leaf(colIndex 0) 시 aria-colindex 생략(0⟺비-leaf sentinel 안전) + 그룹 스토리 axe 검증으로 폐쇄(LESS-006 또 적용). empty-state=role=row/gridcell 부여(빈 grid 계약 충족).",
+        "ap_swept": [
+          "dist 금지어 0",
+          "AP-001 vacuous(ariaAttrs 외부 import 0=순수)",
+          "eslint 0(사전 theadHeight useEffect 경고만)",
+          "회귀 12/12(default-on 무영향)"
+        ],
+        "v1_limits": "페이지네이션 aria-rowindex=현재 페이지 상대(AG viewport 동형, axe-clean)·aria-colspan=vN"
+      },
+      "g2": {
+        "design": "advisor: ★focus 모델=**aria-activedescendant**(roving tabindex 아님 — 가상화 시 active 셀 unmount→focus가 body로 붕괴; activedescendant는 안정 컨테이너(table tabIndex=0)에 focus 유지, AG Grid 동일). reuse-gate: range useKeyboardNav 는 Pro·범위결합·Home/End/PageUp/PageDown 없음 → 추출 시 shipped Pro 수정 → **신규 MIT 순수 코어 + 중복 정직 기록(LESS-005)**. 척추=절대좌표 nextCell(window 밖→scroll-into-view).",
+        "surface": [
+          "internal/cellNavigation.ts(순수): nextCell(current,key,mods,bounds)→{row,col}|null · isNavKey",
+          "Grid.tsx: <table tabIndex=0 aria-activedescendant onKeyDown(nav)> · td id=${gridId}-${cell.id}+active 링 · scroll-into-view effect · 헤더 th Space/Enter 정렬"
+        ],
+        "scope": "advisor: 화살표/Home/End/Ctrl+Home/End/PageUp/PageDown/Tab wrap/Enter + Space/Enter 헤더정렬(🟡 갭 폐쇄). 편집트리거(F2/타이핑)=OUT(Pro 경계). aria-live=G-3.",
+        "verified_node": "nextCell 28/28(척추: windowed row 20 ArrowDown→absolute 21·PageDown absolute·clamp/Home/End/Ctrl-edge/Tab wrap/Enter/empty-null)",
+        "verified_browser": "**chromium 2/2**(grid-a11y.spec.ts G-2): ①**out-of-window nav**(advisor 핵심 게이트, non-vacuous): 6×PageDown 으로 active 셀 초기윈도 밖→scroll-into-view 후 셀 mount(activedescendant 유효 id)·**focus=role=grid 유지(body 붕괴 아님)**·nav 계속 동작·axe-valid ②Space/Enter 헤더→aria-sort none→ascending→descending",
+        "ap_swept": [
+          "dist 금지어 0",
+          "AP-001 vacuous(cellNavigation 외부 import 0)",
+          "eslint 0(사전 useEffect 경고만)",
+          "회귀 10/10(column-virt/floating/serverside/sheet)"
+        ],
+        "reuse_finding": "range useKeyboardNav(Pro) 재사용 불가(Pro 결합+키 부족) → MIT 신규(중복=clamp/wrap 수준, 정직 기록). LESS-005 형(host=Pro 수정 회피)."
+      },
+      "g3": {
+        "design": "advisor: ★척추=live-region **라이프사이클**(메시지 텍스트 아님 — 순수 코어는 trivial). (a)mount 시 present+빈 채(조건부 렌더 금지, 텍스트만 갱신) (b)<table role=grid> **밖**(grid 자식이면 aria-required-children 위반=G-1 axe 게이트 자멸) (c)초기렌더 skip-ref. **nav 알림 안 함**(aria-activedescendant 이미 SR 발화→이중발화). 정렬/선택만. i18n=한국어 하드코딩(MOD-29). HC defer.",
+        "surface": [
+          "internal/liveAnnounce.ts(순수): announceSortMessage(sorting,labelOf)·announceSelectionMessage(count)·announceFilterMessage(visibleCount)",
+          "Grid.tsx: outer wrapper <div role=status aria-live=polite aria-atomic sr-only>{announcement}</div> + sorting/rowSelection effect(skip-first ref) + table focus-visible 링"
+        ],
+        "verified_node": "liveAnnounce 8/8(sort none/asc/desc/multi 외N개/label fallback·select 0/N·filter)",
+        "verified_browser": "**chromium 1/1**(grid-a11y.spec.ts G-3): ①리전 present+**empty at mount**(조건부 렌더 아님) ②Enter-정렬→텍스트='정렬…' ③체크박스→텍스트='…선택' ④**★nav(Arrow) 시 텍스트 불변**(advisor non-vacuous: activedescendant 이중발화 방지 — out-of-window 단언의 G-3 등가물)",
+        "hc_note": "high-contrast=focus outline 은 forced-colors 존중(OK). **선택 행 bg-blue-50 은 forced-colors 에서 평탄화→HC 시 시각 구분 불가**(aria-selected 로 SR 경로는 커버, 시각 갭). forced-colors-safe 선택 표시는 **MOD-29 테마 의존**. focus-visible 링=additive.",
+        "ap_swept": [
+          "dist 금지어 0",
+          "AP-001 vacuous(liveAnnounce type-only import)",
+          "eslint 0",
+          "회귀 10/10"
+        ]
+      }
+    },
+    "MOD-GRID-29": {
+      "package": "(grid-core i18n·테마)",
+      "tier": "MIT",
+      "weight": "Full(2-Goal: i18n + 테마)",
+      "priority": "차기로드맵 2순위(COMMERCIAL-GAP i18n/테마)",
+      "phase": "done (2-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-29.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "design": "advisor: i18n=resolver merge(missing-key fallback spine, 키 누락 시 raw key/undefined 금지=LESS-006 i18n trap). 테마(G-2)=CSS custom property(Tailwind-class 아님 — storybook Tailwind-less 게이트 불가). 검증분리: i18n=node fallback-invariant, 테마=browser computed-style.",
+      "g1": {
+        "surface": [
+          "internal/i18n.ts(순수): GridLocale(emptyText·rowsPerPage·totalCount(n)·firstPage/prevPage/nextPage/lastPage·sortMessage·selectionMessage)·GridIcons(sortAsc/Desc/None) + resolveLocale/resolveIcons(merge=fallback)",
+          "Grid.tsx 배선: EmptyState(locale.emptyText)·sort glyph(gridIcons)·live-announce(locale.sortMessage/selectionMessage)·GridPagination(rowsPerPageLabel·totalCountFormat·navLabels 4종)",
+          "PageSizeSelect(label?)·TotalCount(format?)·GridPagination(navLabels? aria-label 4)"
+        ],
+        "verified_node": "i18n fallback-invariant 19/19(esbuild 격리 번들 — i18n.ts extensionless liveAnnounce import 가 strip-types ESM 와 불화→번들 후 import). 부분 override 시 override 키 변경+미override 키 KO fallback 동시 단언.",
+        "verified_browser": "chromium 3/3(Grid.i18n.stories: 부분 override EN rowsPerPage+nav aria-label 보임 & KO totalCount/나머지 nav fallback 동시 · totalCount 포매터 override · emptyText override) + a11y 회귀 8/8 = 11/11 green. typecheck 0.",
+        "advisor_blocker_closed": "pagination nav 버튼 aria-label 하드코딩 한국어 → EN locale 사용자(MOD-28 스크린리더 청자) 한국어 청취. 5-키 spine self-check 가 놓친 implicit req → GridLocale 에 nav 4키 추가해 해소(deferral 아님, LESS-006 i18n 변형).",
+        "deferral": "ColumnVisibilityMenu aria-label \"컬럼 표시 설정\"·\"숨길 컬럼 없음\" 미국지화(명시): optional surface + 자체 triggerLabel/menuLabel prop 패턴 보유(locale-object 와 idiom 상이). 후속 처리.",
+        "known_broken_infra": "tests/visual/storybook.spec.ts(per-story toMatchSnapshot)=playwright 1.60 file.slice API drift + baseline 0 → 전수 fail. 내 변경 무관(미변경 스토리 동일 fail). MOD-29 범위서 미수리(scope creep).",
+        "ap_swept": [
+          "dist 금지어 미검(빌드 OK)",
+          "AP-001 vacuous(i18n.ts type-only react-table import=순수)",
+          "typecheck 0",
+          "회귀 a11y 8/8 + 전체 targeted 21/21(default-on 무영향: label??default·format?:default·navLabels 기본=기존 하드코딩과 동일 문자열)"
+        ]
+      },
+      "done_gate": {
+        "lesson": "LESS-006 i18n변형(G-1 nav aria-label) + ★구조통찰 vars⊥HC(G-2: forced-colors 가 var-소스 색도 override→테마는 HC 무익, HC-safe 선택=별도 outline 메커니즘). 매 sub-commit advisor 가 wired-but-unverified/implicit-req 검출.",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "g2": {
+        "staging": "advisor 3-commit: A spike(f7f0ccf, header bg 1surface 메커니즘 증명) · B bulk(2e72678, 5정적 surface+darkTheme) · C HC-safe 선택(outline).",
+        "surface": [
+          "internal/theme.ts(순수): themeToVars(theme)→override 키만 inline --topgrid-* 객체 · GridTheme(headerBg·headerText·bodyBg·cellText·border 5정적키) · darkTheme 프리셋",
+          "Grid.tsx: root div style=themeVars · thead/floating bg·th color·tbody bg·td color·container border = var(--topgrid-x,<기본hex>) · 선택행 inline outline(HC-safe)"
+        ],
+        "design": "advisor: ★vars⊥HC — forced-colors 는 literal/var 무관 background/color/border 강제 override→테마=HC 무익. HC-safe 선택=구조적 outline(forced-colors 가 outline-color 만 시스템색 remap=유지). 메커니즘=inline CSS var(P27-1: Tailwind-class storybook 서 inert). markup 변경(class→inline)→byte-identical 아님, 불변식=visual computed-style.",
+        "verified_browser": "chromium 5(tests/visual/grid-theme.spec.ts): ①default 5-surface 무회귀 ②headerBg override→rgb(255,0,0) ③HC-safe 선택(선택행 outline normal+forced-colors:active emulateMedia 양쪽·비선택 none) ④dark 5-surface flip ⑤**cross-feature guard**(cellClassName 색 .tg-red 가 테마 cellText 이김 — red-green 실증). spec 명시 준수: themeToVars node \"themeable\" 주장 금지→전 주장 browser.",
+        "hc_gap_closed": "MOD-28 G-3 hc_note 의 \"선택행 bg-blue-50 forced-colors 평탄화→HC 시각 구분 불가\" 갭 = 선택행 inline outline 으로 해소(forced-colors:active 단언으로 실증).",
+        "limits": "selection bg(:hover)·focus(:focus-visible)=pseudo-state inline 불가→기본 blue 유지(다크 가독·HC outline 커버). row divider(divide util)·pagination/empty=미테마. selection 색 themeable=후속(shipped CSS).",
+        "ap_swept": [
+          "typecheck 0",
+          "AP-001 vacuous(theme.ts 외부 런타임 import 0)",
+          "회귀 targeted 26/26",
+          "cross-feature guard red-green(inline>class 회귀 실증→inherited fix)"
+        ],
+        "advisor_closeout": "★cross-feature 회귀(blocking): bulk 서 cellText/headerText 를 per-td/th inline 으로 넣어 inline>class → 소비자 cellClassName(MOD-24 조건부서식) 색 조용히 덮임(plain-셀 게이트 못 봄=LESS-006 cross-feature). fix=색을 tbody/thead inherited 로 이동(상속색=cascade 최약→셀 class 가 이김). red-green 실증(.tg-red 스토리). 회귀 26/26.",
+        "finding_mod28": "active-cell 링(activeClass=Tailwind outline-* class)은 Tailwind-less storybook/비-Tailwind 소비자서 inert(시각 링 안 보임). MOD-28 가 focus/activedescendant 만 검증·시각 미검증=unverified ship(선택 outline 과 동일 inert-class fail mode). MOD-28 후속 inline 화 필요(MOD-29 범위 밖). §5.2 후보."
+      },
+      "version_note": "버전 미범프(릴리스 시 batch 0.x bump, MOD-28/G-1 동일)."
+    },
+    "MOD-GRID-30": {
+      "package": "(grid-core+grid-features 필터링)",
+      "tier": "MIT(G-1/G-2)+Pro(G-3)",
+      "weight": "Full(3-Goal: floating MIT + faceted MIT + multi Pro)",
+      "priority": "차기로드맵 3순위(COMMERCIAL-GAP 필터링)",
+      "phase": "done (3-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-30.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "version_note": "버전 미범프(릴리스 시 batch 0.x bump).",
+      "design": "advisor: floating 행=새 thead 행 → MOD-27(컬럼virt/핀)·MOD-28(ARIA/axe) 계약 상속(갭분석엔 없는 feature-level 제약). reuse-gate: filterFns+값타입=안정 계약 재사용·popover 컴포넌트 fork 금지(LESS-005)→thin always-visible primitive. seam=renderFloatingFilter render prop(cellClassName mirror=PAT-005). 검증분리: floating=browser(렌더 배선, 신규 pure 0)·multi(G-3)=node(compound). advanced=vN(scope).",
+      "g1": {
+        "surface": [
+          "grid-core: renderFloatingFilter?(column) prop → thead leaf 행 아래 floating <tr>. renderFloatingFilterCell(핀 sticky+width 헤더 동형)/renderWindowedFloatingFilterCells(컬럼virt 동일 윈도). ARIA: floating=추가 header 행(headerRowCount += enabled→aria-rowcount+1·데이터 aria-rowindex 일관+1·셀=columnheader)",
+          "grid-features: TextFloatingFilter/NumberFloatingFilter(값타입+filterFns 재사용=LESS-005·inline 스타일·current?.value useEffect 동기화=shared-state)"
+        ],
+        "verified_browser": "chromium 4/4(tests/visual/grid-floating-filter.spec.ts): ①floating=header 행 ARIA(thead 2행·aria-rowcount 8=2+6·데이터 aria-rowindex 3)+axe clean(input 행이 grid 계약 무파손)+텍스트→행필터 ②숫자(=)필터 ③shared-state(popover write→floating input 반영=단일 column state) ④컬럼virt 정렬(floating 셀=헤더와 동일 윈도, 핀 좌/우 x 일치·셀수 일치). 회귀 30/30. typecheck 0.",
+        "verified_node": "신규 pure logic 0(정직) — computeColumnWindow(MOD-27)·filterFns(MOD-09) 재사용하는 렌더 배선이라 browser-only. (LESS-006: 검증 안 한 게 아니라 새 순수코어가 없음)",
+        "advisor_closed": "floating 행=새 thead 행→MOD-27/28 계약 상속 셋 다 검증(virt 정렬·핀 sticky·axe·aria-rowindex 정합). \"input 이 필터한다\"=vacuous done 회피.",
+        "finding_mod09": "popover TextFilter inputValue=mount 1회 init·외부 미동기화→floating→popover 표시 방향 stale(근본 column state 는 공유). MOD-09 후속 sync.",
+        "ap_swept": [
+          "typecheck 0(grid-core+grid-features)",
+          "회귀 targeted 30/30",
+          "floatingFilterEnabled 게이트→기존 그리드(미설정) headerRowCount 불변=무영향"
+        ]
+      },
+      "g2": {
+        "surface": "buildTableOptions.ts: enableFilter 게이트(enableFilter && !manualFiltering)에 getFacetedRowModel()+getFacetedUniqueValues() 추가 → SelectFilter OOTB",
+        "design": "advisor: facet ⊆ filter 게이트(새 prop 아님). enableFaceted prop 은 silent-fail 을 이동만 함→폐쇄 못 함. SelectFilter 동작처=enableFilter 처이므로 그 게이트=OOTB 보장. faceted lazy(컬럼 접근 시만 계산, grid-core 는 미호출)→비-SelectFilter 필터 그리드 무비용(측정 경로 없음=perf 테스트 불필요).",
+        "verified_browser": "chromium 2/2(grid-set-filter.spec.ts) ★LESS-006: 양성 테스트가 grid-core <Grid enableFilter>(faceted 미공급, prop 없음) 경유 → 리스트 채워지면 오직 buildTableOptions wiring(구조적 non-vacuous, 기존 SelectFilter.stories 의 raw 직접-wiring 과 대조). ①OOTB distinct+count(서울3/부산2/대구1, li 3개=count 단언) ②선택→필터. 회귀 32/32. typecheck 0.",
+        "yagni": "getFacetedMinMaxValues 생략(NumberFilter 수동 연산자·소비자 0)",
+        "limit": "manualFiltering(SSRM) 제외=클라 facet 은 server-paged placeholder 위 부정확(server-provided 필요, 범위 밖)"
+      },
+      "done_gate": {
+        "lesson": "LESS-006 ×3(G-1 floating=새 thead 행이 MOD-27/28 계약 상속 셋 다 검증·G-2 양성 테스트 <Grid> 경유 non-vacuous·G-3 빈-조건 spine + Number(\"\")=0 자멸 검출). 매 goal advisor 가 vacuity/implicit-req 검출.",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "g3": {
+        "package": "신규 @topgrid/grid-pro-filter(PAT-003, 14번째 Pro): grid-license dep + index checkLicense() + EULA",
+        "surface": [
+          "순수 makeMultiFilterFn(base): base 를 N번 호출→AND/OR reduce. 빈 조건은 base.autoRemove 로 reduce 전 제거(빈 값 true→OR 전체-행 붕괴 차단). type-only import→node strip-types. multiTextFilterFn/multiNumberFilterFn.",
+          "MultiFilter UI: 2 조건+AND/OR(AG parity, 코어는 N-general). FilterPopover 재사용+조건 행 신규 thin(LESS-005). PAT-003 watermark."
+        ],
+        "verified_node": "spine 13/13(mock base 격리: AND/OR + ★OR+빈 2번째→채운 조건만(전체 아님) + autoRemove)",
+        "verified_browser": "chromium 4/4(grid-multi-filter.spec.ts): ①OR 텍스트 union(김+이→2) ②AND 숫자 범위(≥80∧≤90→3) ③OR+빈 실UI spine(이→1, 붕괴 없음) ④PAT-003 watermark(무라이선스→Unlicensed overlay). 회귀 36/36. typecheck 0.",
+        "found_fixed": "★빈-조건 함정의 숫자 판: 첫 chromium 이 score 컬럼 마운트 시 grid 비움 검출 → Number(\"\")===0 이라 빈 숫자 조건 {=,0}(유효값)로 set→numberFilterFn.autoRemove 미제거→전 행 배제. 코어 정상(dist 격리 확인)=UI→core 계약 버그. 시정: toCondition 빈 입력→NaN. advisor \"빈-조건 spine 처음부터\" 강조→instrument→검출.",
+        "design_fact": "shared-state 아님: MultiFilterValue shape ≠ TextFilterValue→컬럼 단일·복합 배타적(분기 테스트 없음).",
+        "deferral": "advanced filter(cross-column 빌더, Enterprise)=vN. facade 신규 패키지 등록=릴리스 batch."
+      }
+    },
+    "MOD-GRID-31": {
+      "package": "grid-pro-pivot(상호작용 확장, Pro 기존)",
+      "tier": "Pro",
+      "weight": "Full(3-Goal: sort + collapse + runtime config)",
+      "priority": "차기로드맵 4순위(COMMERCIAL-GAP Pivoting 최대 갭)",
+      "phase": "done (3-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-31.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "version_note": "버전 미범프(릴리스 시 batch).",
+      "design": "advisor: 모든 상호작용=model.rows flat PivotRow[] 순수 변환 + interaction state, PivotGrid 가 변환행을 <Grid data> 전달(grid-core 미접촉). computePivot emit 미수정(MOD-18 회귀 경계). ★vacuity: subtotal 은 행차원 ≥2 에만 존재→모든 fixture/story 2-행차원(앵커링 증명, 단일차원=vacuous). config 골=controlled+computePivot 재실행(엔진 신규 0).",
+      "g1": {
+        "surface": [
+          "sortPivotRows(model,leafKey,dir)(순수): 세그먼트(연속 data run, subtotal/grandTotal 종료) 내 data 만 값 셀 정렬, 합성행 앵커, null 하단",
+          "buildPivotColumns(model,sortOpts?): 값 leaf 헤더 클릭 버튼(▲▼) — sortOpts 미지정=plain string(MOD-18 불변). PivotGrid enableSort? opt-in + 정렬 state(asc→desc→해제) + sortPivotRows 적용. grid-core enableSort 미사용(평탄 전체 정렬 회피)"
+        ],
+        "verified_node": "spine 11/11(src/sortPivotRows.test.ts, 손수 2-행차원 fixture=emit 순서 미러, strip-types: 세그먼트 내 정렬·kind 시퀀스 불변=앵커·grandTotal 끝·null 하단·asc/desc)",
+        "verified_browser": "chromium 1/1(pivot-interaction.spec.ts): 값 헤더 클릭→asc Boston(90)<NY(300)·subtotal/grandTotal 앵커(kind 시퀀스 불변·subtotal idx2 East·grandTotal 마지막)·재클릭 desc 반전. 회귀 37/37. typecheck 0.",
+        "scope_fixed": "그룹 자체를 subtotal 값으로 정렬(계층 정렬)=vN. within-group leaf 정렬만.",
+        "mod18_preserved": "buildPivotColumns sortOpts 미지정=헤더 불변·PivotGrid enableSort off=정적 동작",
+        "test_finding": "chromium 행 kind 식별: data 행 hover:bg-gray-50 가 bg-gray-50 substring 충돌→font-medium(subtotal)/font-semibold(grandTotal)로 식별"
+      },
+      "g2": {
+        "surface": [
+          "collapsePivotRows(rows, collapsedIds)(순수): subtotal(__id∈set)의 후손 행 제거(임의 중첩: 앞 연속 depth>subtotal depth, 첫 depth≤d 정지). subtotal 대표 잔존·grandTotal 불변",
+          "buildPivotColumns(model,sort?,collapse?): subtotal 행-dim 셀 클릭 chevron(▶/▼)(collapse 미지정=plain=MOD-18). PivotGrid enableCollapse? opt-in + collapsedIds state 토글"
+        ],
+        "composition": "★advisor: displayRows = collapse(sort(rows)) 체인(둘 순수, collapse=id 필터 순서 무관). 합성 동시 검증.",
+        "verified_node": "spine 11/11(collapsePivotRows.test.ts 2-행차원: 후손 숨김·subtotal 대표 잔존·grandTotal 불변·재확장 복원·★collapse(sort) 체인=정렬 후 같은 그룹 숨김)",
+        "verified_browser": "chromium(pivot-interaction collapse): East 토글→data 2행 숨김·subtotal 잔존·재확장 복원 + ★합성(sort asc→collapse East→재확장 시 East data 여전히 Boston<NY 정렬=collapse(sort) 동시 활성). 회귀 39/39. typecheck 0.",
+        "affordance_note": "모델 subtotal=그룹 하단 방출(상단 헤더 없음)→토글이 위 후손 숨김(AG 상하반전, computePivot 수정=MOD-18 위험 회피). 문서화 한계.",
+        "mod18_preserved": "collapse 미지정=subtotal 라벨 plain·enableCollapse off=정적"
+      },
+      "done_gate": {
+        "lesson": "LESS-006 ×3+후속: 매 골 2-행차원 fixture(앵커링 non-vacuous) + advisor 후속(G-1 nested-column 헤더 경로·G-2 3-dim 중첩 분기·G-3 transpose 시 stale-id 리셋 합성 함정) 폐쇄. computePivot/grid-core 무수정=MOD-18 보존.",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "g3": {
+        "surface": [
+          "transposePivotConfig(config)(순수): rows↔columns swap(values 보존, involution)",
+          "PivotGrid enableConfigControls? 툴바([⇄전치][pivot 토글]) + onConfigChange?. controls 활성 시 config/pivotMode 내부 state 소유(props=초기값, MOD-18 controlled 와 배타적). computePivot 재사용(엔진 신규 0)"
+        ],
+        "reset_advisor": "★config 변경(transpose)→computePivot 재실행→__id 재배정·leafKey 변경→stale id 엉뚱 그룹 숨김. applyConfig 가 sort/collapse state 리셋(setSort null+setCollapsedIds new Set). pivotMode 토글은 config 불변=같은 __id→미리셋.",
+        "verified_node": "transpose 5/5(swap·involution·values 보존·원본 불변)",
+        "verified_browser": "chromium 2(pivot-interaction): ①★transpose 리셋(collapse East→4행→전치→1행→복귀→6행=리셋 증명, 미리셋이면 stale 재collapse=4행) ②pivotMode 토글(pivot↔passthrough). 회귀 41/41. typecheck 0.",
+        "mod18_preserved": "enableConfigControls off→props.config/pivotMode 직접(controlled 불변)"
+      },
+      "module_summary": "3-Goal 전부 model.rows/config 순수 변환 + PivotGrid 배선, computePivot/grid-core 무수정(MOD-18 보존). node spine 35(sort11+collapse19+transpose5)+chromium 5. deferral: 계층 정렬·pivot panel drag·column collapse=vN."
+    },
+    "MOD-GRID-32": {
+      "package": "grid-pro-sheet(엔진 심화, Pro 기존)",
+      "tier": "Pro",
+      "weight": "Full(3-Goal: 비교/IF + text/math + undo/redo)",
+      "priority": "차기로드맵 5순위(COMMERCIAL-GAP Spreadsheet)",
+      "phase": "done (3-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-32.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "version_note": "버전 미범프(릴리스 시 batch).",
+      "design": "advisor: ★비교=binary op 확장(새 노드 kind 금지 — extractRefs 정적 walk 가 모르는 kind=의존 ref 누락→recalc 깨짐. binary 면 수정 0). IF=call 유지+eval lazy(미평가 분기), parse/extractRefs 평범 call→세 분기 ref 정적 추적(lazy⊥정적추적). 비교 toNumber 우회(type-aware). 선행 characterization 회귀(엔진 커밋 테스트 0). G-3 scope 고정: undo/redo(raw 스냅샷), $A$1+상대참조-on-fill=vN(스코프 폭탄).",
+      "g1": {
+        "surface": [
+          "types.ts Ast binary op 확장(<>= <= >= <>) + parser 토크나이저 비교(2자 우선)+parseCompare(최저 precedence)",
+          "evaluate type-aware 비교 분기(toNumber 우회: 동등=타입+값·순서 str↔str lexical/else 수치→boolean) + IF eval lazy special-case + functions AND/OR/NOT(eager 에러전파)"
+        ],
+        "verified_node": "engine.test.mjs 28/28(esbuild 격리 번들 — 엔진 .js 크로스import strip-types 불가): characterization 11(MOD-26 동작 핀, 파서 수술 전후 green) + 비교 8 + IF/논리 7 + ★recalc through IF 2(A1 변경→B1 재계산, lazy⊥정적추적) + lazy 단락",
+        "verified_browser": "chromium 3/3(sheet-grid.spec): MOD-26 2 보존 + G-1(IF/AND/비교 표시·★recalc through IF·IF lazy 1/0→safe). 회귀 42/42. typecheck 0.",
+        "architecture": "advisor #1: 비교 binary op 확장→extractRefs 수정 0(의존그래프 구성상 정확). IF call+lazy→세 분기 ref 추적."
+      },
+      "g2": {
+        "surface": "functions.ts POSITIONAL_FUNCTIONS(per-arg): text LEN/LEFT/RIGHT/MID/UPPER/LOWER/TRIM/CONCATENATE(number→string)·math ABS/INT/ROUND/MOD/POWER. evaluate call: 가변=flat-values·위치=ast.args.map(evaluate) per-arg(경계 보존)",
+        "advisor_closed": "★#2: range 인자→evaluate(range)=#ERROR! 전파(flat 전개의 조용한 오독 방지). \"계약 변경 0\"은 reduce형만, 위치 함수는 per-arg 예외.",
+        "verified_node": "engine 49/49(G-1 28+G-2 21: text 10·math 8+★range-arg ROUND(A1:A3,2)→#ERROR!+scalar 정상+ref recalc)",
+        "verified_browser": "chromium 4/4(sheet-grid: G-1·G-2+MOD-26 2 보존). UPPER/LEN/CONCATENATE/ROUND/MOD 표시·편집 재계산·★range-arg→#ERROR!. 회귀 43/43. typecheck 0.",
+        "vN": "VLOOKUP(range+lookup)·date·financial=엔진 shape 없음"
+      },
+      "done_gate": {
+        "lesson": "LESS-006 ×3: ★recalc-through-IF(lazy⊥정적추적)·positional range-arg 경계(→#ERROR!)·undo→dependent 재계산. characterization 회귀로 MOD-26 엔진 보존. advisor 아키텍처(비교=binary op 확장→extractRefs 수정 0)+후속(esbuild fragility/positional 경계/type-strict 의미) 폐쇄.",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "g3": {
+        "surface": "createSheet per-cell command 스택(raw=진실원천, setCell={ref,prev,next}, undo=prev 재적용+증분 재계산, redo=next, no-op 미기록). applyCell 추출. Sheet undo/redo/canUndo/canRedo. useSheet 노출(명시 bump). SheetGrid undo/redo 툴바",
+        "reuse": "MOD-23 useUndoRedo=행-data command 계약 상이→self-contained 신규(LESS-005)",
+        "verified_node": "engine 66/66(G-3 17: ★undo→prev raw+dependent 재계산·redo·redo future 절단·소진·no-op 미기록)",
+        "verified_browser": "chromium 5/5(sheet-grid: G-1·2·3+MOD-26 2 보존). undo 버튼→복원+★dependent 재계산·redo·branch 절단. 회귀 44/44. typecheck 0.",
+        "scope": "advisor #5: undo/redo(raw 스냅샷)만. $A$1+상대참조-on-fill=vN(스코프 폭탄)"
+      },
+      "module_summary": "3-Goal MOD-26 엔진 심화(characterization 회귀로 보존). node 66+chromium 5. vN: VLOOKUP/date/financial·$A$1+상대참조·멀티시트·셀서식."
+    },
+    "MOD-GRID-33": {
+      "package": "grid-pro-panel(G-1)·grid-core(G-2)·G-3 미정",
+      "tier": "Pro(G-1)+MIT(G-2)",
+      "weight": "Full(3-Goal) — G-1 done, G-2/G-3 pending",
+      "priority": "차기로드맵 6순위(Misc UX, 마지막)",
+      "phase": "in-progress (G-1 done → G-2 다음)",
+      "spec": "specs/MOD-GRID-33.md",
+      "goals": {
+        "G-1": "done",
+        "G-2": "pending(loading 오버레이)",
+        "G-3": "pending(row drag)"
+      },
+      "version_note": "버전 미범프(릴리스 시 batch).",
+      "design": "advisor: ★vacuity 함정 반대 방향 — 표현형 UI 라 순수 로직 적음→\"보임\"식 vacuous→골마다 행동/발산 단언. G-1 browser-only 정직(순수 로직 0). G-2 additive+aria-busy+pointer-events. G-3 moveRow 순수 spine+가상화/정렬-활성=vN.",
+      "g1": {
+        "surface": "statusBarCounts(table)→StatusBarItem[](total=getCoreRowModel·filtered=getFilteredRowModel·selected=getSelectedRowModel). StatusBar items 합성(fork 0)",
+        "verified_browser": "chromium 1/1: 필터(3)+선택(2) 동시→total=5·filtered=3·selected=2 발산(Set size=3=오배선 검출). browser-only 정직(순수 로직 0). 회귀 45/45. typecheck 0.",
+        "silent_divergence_closed": "row model 정확(core/filtered/selected) 명시."
+      }
+    }
   },
   "release_queue": {
-    "next_batch_checklist": {"scope":"MOD-28~32(차기 로드맵) — prepared_batch(MOD-18~27, 미발행) 와 함께 또는 후속 발행. MOD-33 이 다음이라 버전 bump 는 발행 직전 적용(조급 회피).","facade_registration":"✅ DONE(이 정리 턴): grid-pro-filter 를 facade(@topgrid/grid) index.ts export * + package.json dep 추가, typecheck 0 + build 성공(DTS 충돌 없음). 나머지 MOD-28~32 신규 export 는 기존 패키지의 export * 로 자동 재노출(facade 추가 불필요).","version_bumps_due_at_publish":{"grid-core":"0.3.0 → 0.4.0 minor (MOD-28 a11y·29 i18n/테마·30 G-1 floating/G-2 faceted)","grid-features":"0.6.0 → 0.7.0 minor (MOD-30 floating 입력)","grid-pro-pivot":"0.2.0 → 0.3.0 minor (MOD-31 상호작용)","grid-pro-sheet":"0.1.0 → 0.2.0 minor (MOD-32 엔진 심화)","grid-pro-filter":"0.1.0 신규 first-publish (MOD-30 G-3)","grid (facade)":"0.4.0 → minor (grid-pro-filter 추가 재export)","method":"수동 0.x bump(changeset version 금지=peerDep escalation 회피, [[changeset-peerdep-major-escalation]])."},"peerdep_patch_republish":"grid-core@0.4.0 일관성 위해 grid-core 의존 패키지(master/tracking/renderers + 전 Pro) patch republish 검토 — prepared_batch 패턴 동일. pnpm 이 이미 발행된 버전 skip.","ci_gate":"★grid-pro-pivot·grid-pro-sheet·grid-pro-filter 의 test script 가 node --experimental-strip-types/esbuild → CI Node ≥22.6 필수(아니면 pnpm -r test 실패). grid-pro-sheet=esbuild devDep 보유.","known_broken_infra":"tests/visual/storybook.spec.ts(toMatchSnapshot)=playwright 1.60 file.slice API drift+baseline 0→전수 fail. 릴리스 게이트 아님(targeted spec 가 실제 게이트). 별도 수리 필요(MOD 범위 밖).","publish":"실제 pnpm publish = 사용자(travia71 Granular Token, Bypass-2FA ON). 절차 [[npm-publish-topgrid]]. `pnpm --filter \"@topgrid/*\" publish --access public --no-git-checks`."},
-    "next_batch_checklist": {"scope":"MOD-28~32 (차기 로드맵/갭분석) — prepared_batch(MOD-18~27) 발행 후 또는 함께. advisor 가 3모듈 누적 캡처 권고.","modules":"MOD-28 a11y · MOD-29 i18n+테마 · MOD-30 필터링(floating/faceted/multi) · MOD-31 pivot 상호작용 · MOD-32 sheet 심화","version_bumps_due":{"grid-core":"minor (MOD-28 a11y + MOD-29 i18n/테마 + MOD-30 G-1 floating/G-2 faceted)","grid-features":"minor (MOD-30 G-1 floating TextFloatingFilter/NumberFloatingFilter)","grid-pro-pivot":"minor (MOD-31 sort/collapse/transpose)","grid-pro-sheet":"minor (MOD-32 비교/IF·text/math·undo/redo)","note":"수동 0.x bump(changeset version 금지). from→to 는 발행 시 현 버전 확인."},"new_package":{"grid-pro-filter":"신규 0.1.0 (MOD-30 G-3 multi, Pro). ★facade(@topgrid/grid) 등록 필요."},"ci_gate":"★grid-pro-pivot·grid-pro-sheet(·filter) test 가 node --experimental-strip-types/esbuild → CI Node ≥22.6 필수. grid-pro-sheet=esbuild devDep 추가.","facade":"@topgrid/grid 에 grid-pro-filter export + 신규 공개 API(sortPivotRows/collapsePivotRows/transposePivotConfig·POSITIONAL_FUNCTIONS) 점검.","publish":"실제 publish=사용자(travia71 토큰). [[npm-publish-topgrid]]."},
+    "next_batch_checklist": {
+      "scope": "MOD-28~32 (차기 로드맵/갭분석) — prepared_batch(MOD-18~27) 발행 후 또는 함께. advisor 가 3모듈 누적 캡처 권고.",
+      "modules": "MOD-28 a11y · MOD-29 i18n+테마 · MOD-30 필터링(floating/faceted/multi) · MOD-31 pivot 상호작용 · MOD-32 sheet 심화",
+      "version_bumps_due": {
+        "grid-core": "minor (MOD-28 a11y + MOD-29 i18n/테마 + MOD-30 G-1 floating/G-2 faceted)",
+        "grid-features": "minor (MOD-30 G-1 floating TextFloatingFilter/NumberFloatingFilter)",
+        "grid-pro-pivot": "minor (MOD-31 sort/collapse/transpose)",
+        "grid-pro-sheet": "minor (MOD-32 비교/IF·text/math·undo/redo)",
+        "note": "수동 0.x bump(changeset version 금지). from→to 는 발행 시 현 버전 확인."
+      },
+      "new_package": {
+        "grid-pro-filter": "신규 0.1.0 (MOD-30 G-3 multi, Pro). ★facade(@topgrid/grid) 등록 필요."
+      },
+      "ci_gate": "★grid-pro-pivot·grid-pro-sheet(·filter) test 가 node --experimental-strip-types/esbuild → CI Node ≥22.6 필수. grid-pro-sheet=esbuild devDep 추가.",
+      "facade": "@topgrid/grid 에 grid-pro-filter export + 신규 공개 API(sortPivotRows/collapsePivotRows/transposePivotConfig·POSITIONAL_FUNCTIONS) 점검.",
+      "publish": "실제 publish=사용자(travia71 토큰). [[npm-publish-topgrid]]."
+    },
     "policy": "batch — 단일 패키지 반복 발행 회피. **수동 0.x bump 전략**(changeset version 안 씀 → peerDep escalation footgun 회피, 메모리 [[changeset-peerdep-major-escalation]]). 몇 모듈 누적 후 1회 coordinated 발행.",
     "prepared_batch": {
       "date": "2026-06 (마지막 릴리스 229d79d 이후)",
       "status": "버전 bump+전체 빌드 완료, pack-verify 통과(workspace:*→구체버전, escalation 없음). **실제 pnpm publish = 사용자(travia71 토큰) 실행 대기**.",
-      "minor_feature": { "grid-core": "0.2.0→0.3.0 (컬럼가상화+SSRM host touch)", "grid-export": "0.3.0→0.4.0 (MOD-25)", "grid-features": "0.5.0→0.6.0 (MOD-24)", "grid-pro-chart": "0.1.0→0.2.0 (MOD-19)", "grid-pro-edit-plus": "0.1.0→0.2.0 (MOD-23)", "grid-pro-panel": "0.1.0→0.2.0 (MOD-21)", "grid-pro-pivot": "0.1.0→0.2.0 (MOD-18)", "grid-sizing": "0.1.0→0.2.0 (MOD-20)" },
-      "new_first_publish": { "grid-pro-serverside": "0.1.0 (MOD-22 SSRM)", "grid-pro-sheet": "0.1.0 (MOD-26 sheet PoC)" },
-      "patch_peerdep_republish": { "grid-pro-master": "0.3.0→0.3.1", "grid-pro-tracking": "0.2.0→0.2.1", "grid-renderers": "0.2.0→0.2.1", "reason": "grid-core peerDep workspace:* → grid-core@0.3.0 일관성. grid-pro-merging은 grid-core 의존 없어 제외(메모리 stale)." },
+      "minor_feature": {
+        "grid-core": "0.2.0→0.3.0 (컬럼가상화+SSRM host touch)",
+        "grid-export": "0.3.0→0.4.0 (MOD-25)",
+        "grid-features": "0.5.0→0.6.0 (MOD-24)",
+        "grid-pro-chart": "0.1.0→0.2.0 (MOD-19)",
+        "grid-pro-edit-plus": "0.1.0→0.2.0 (MOD-23)",
+        "grid-pro-panel": "0.1.0→0.2.0 (MOD-21)",
+        "grid-pro-pivot": "0.1.0→0.2.0 (MOD-18)",
+        "grid-sizing": "0.1.0→0.2.0 (MOD-20)"
+      },
+      "new_first_publish": {
+        "grid-pro-serverside": "0.1.0 (MOD-22 SSRM)",
+        "grid-pro-sheet": "0.1.0 (MOD-26 sheet PoC)"
+      },
+      "patch_peerdep_republish": {
+        "grid-pro-master": "0.3.0→0.3.1",
+        "grid-pro-tracking": "0.2.0→0.2.1",
+        "grid-renderers": "0.2.0→0.2.1",
+        "reason": "grid-core peerDep workspace:* → grid-core@0.3.0 일관성. grid-pro-merging은 grid-core 의존 없어 제외(메모리 stale)."
+      },
       "facade": "@topgrid/grid 0.3.0→0.4.0. **사용자 결정=추가**: 신규 7개(sizing/pivot/chart/panel/edit-plus/serverside/sheet) facade 에 `export *` 추가(13→20 패키지). export 충돌 0(tsc+tsup 빌드 통과, 런타임 import 해결 확인: useServerSideData/useSheet/SheetGrid/PivotGrid/createSheet/useUndoRedo/createBlockCache). package.json deps 7개 추가. additive=minor(0.4.0) 유지.",
       "publish_cmd": "pnpm --filter \"@topgrid/*\" publish --access public --no-git-checks (travia71 Granular Token Bypass-2FA ON 필수, .npmrc 인증)"
     },
