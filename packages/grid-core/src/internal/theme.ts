@@ -28,11 +28,36 @@
 export interface GridTheme {
   /** Header (thead / group-header) background. Default `#f9fafb` (gray-50). */
   headerBg: string;
+  /** Header label text. Default `#6b7280` (gray-500). */
+  headerText: string;
+  /** Body background. Default `#ffffff` (white). */
+  bodyBg: string;
+  /** Body cell text. Default `#374151` (gray-700). */
+  cellText: string;
+  /** Container border. Default `#e5e7eb` (gray-200). */
+  border: string;
 }
 
 /** Theme key → CSS custom property name. Single source for both `themeToVars` and the `var()` reads. */
 const VAR_OF: Record<keyof GridTheme, string> = {
   headerBg: '--topgrid-header-bg',
+  headerText: '--topgrid-header-text',
+  bodyBg: '--topgrid-body-bg',
+  cellText: '--topgrid-cell-text',
+  border: '--topgrid-border',
+};
+
+/**
+ * Dark preset — spread into the `theme` prop (`theme={darkTheme}` or `{ ...darkTheme, headerBg }`).
+ * Covers only the static surfaces; selection/focus/hover stay at their (blue) defaults, which read
+ * acceptably on dark. Row dividers (`divide-gray-100`) are not themed (Tailwind divide utility).
+ */
+export const darkTheme: GridTheme = {
+  headerBg: '#1f2937', // gray-800
+  headerText: '#d1d5db', // gray-300
+  bodyBg: '#111827', // gray-900
+  cellText: '#e5e7eb', // gray-200
+  border: '#374151', // gray-700
 };
 
 /**

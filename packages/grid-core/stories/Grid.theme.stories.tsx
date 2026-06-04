@@ -5,7 +5,7 @@
 // C-3 예외: mock 데이터는 Storybook stories 에서만 허용.
 import type { Meta, StoryObj } from '@storybook/react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Grid } from '@topgrid/grid-core';
+import { Grid, darkTheme } from '@topgrid/grid-core';
 
 interface Row {
   name: string;
@@ -37,4 +37,10 @@ export const Default: Story = {
 export const HeaderBgOverride: Story = {
   name: 'headerBg override (distinctive)',
   args: { columns, data, theme: { headerBg: 'rgb(255, 0, 0)' } },
+};
+
+// Dark preset → all 5 static surfaces (headerBg/headerText/bodyBg/cellText/border) flip to dark.
+export const Dark: Story = {
+  name: '다크 프리셋',
+  args: { columns, data, theme: darkTheme },
 };

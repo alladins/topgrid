@@ -247,7 +247,9 @@ function GridInner<TData>(
     ? 'min-w-full text-sm border-separate border-spacing-0'
     : 'min-w-full divide-y divide-gray-200 text-sm';
   // border-separate 환경에서는 divide-y 가 동작하지 않음 → tbody/td 에 명시적 border 적용.
-  const tbodyClassName = usePinning ? 'bg-white' : 'bg-white divide-y divide-gray-100';
+  // MOD-GRID-29 G-2: body bg → var (color inline, divider class stays). Fallback = white.
+  const tbodyClassName = usePinning ? '' : 'divide-y divide-gray-100';
+  const bodyBgStyle: CSSProperties = { backgroundColor: 'var(--topgrid-body-bg, #ffffff)' };
   const rowBorderClassName = usePinning ? 'border-b border-gray-100' : '';
 
   // G-004 D5/D7: virtualization 활성 여부 + outer wrapper height/style 분기.
@@ -262,15 +264,17 @@ function GridInner<TData>(
       : 0;
   // D7: virtualization 활성 시 scroll container 높이 = props.virtualScrollHeight ?? 400.
   // (인라인 style 동적 값 — C-5 허용. 비활성 시 빈 객체.)
+  // MOD-GRID-29 G-2: container border → var (color inline, `border` width class stays).
   const containerStyle: CSSProperties = isVirtual
     ? {
         height: props.virtualScrollHeight ?? DEFAULT_VIRTUAL_SCROLL_HEIGHT,
         overflow: 'auto',
+        borderColor: 'var(--topgrid-border, #e5e7eb)',
       }
-    : {};
+    : { borderColor: 'var(--topgrid-border, #e5e7eb)' };
   const containerClassName = isVirtual
-    ? 'rounded-lg border border-gray-200'
-    : 'overflow-x-auto rounded-lg border border-gray-200';
+    ? 'rounded-lg border'
+    : 'overflow-x-auto rounded-lg border';
   const leafColCount = table.getAllLeafColumns().length;
 
   // MOD-GRID-24 G-2 (thead-collision fix): sticky thead 높이를 측정해 상단 floating 행의
@@ -436,12 +440,14 @@ function GridInner<TData>(
         : { style: {}, className: '' };
       const cellStyle: CSSProperties = { ...pinnedCell.style };
       if (applyCellWidth) cellStyle.width = cellSize;
+      // MOD-GRID-29 G-2: cell text → var (color inline, fallback gray-700).
+      cellStyle.color = 'var(--topgrid-cell-text, #374151)';
       // MOD-GRID-28 G-2: active 셀(키보드 nav 대상) = 시각 링. floating 행(withHandlers=false)은 비대상.
       const isActiveCell = opts.withHandlers && cellDomId(cell.id) === activeCellId;
       const activeClass = isActiveCell ? 'outline outline-2 outline-blue-500 -outline-offset-2' : '';
       const className = opts.withCellClassName
-        ? `px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className} ${activeClass} ${props.cellClassName?.(cell) ?? ''}`
-        : `px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className}`;
+        ? `px-4 py-3 whitespace-nowrap ${pinnedCell.className} ${activeClass} ${props.cellClassName?.(cell) ?? ''}`
+        : `px-4 py-3 whitespace-nowrap ${pinnedCell.className}`;
       return (
         <td
           key={cell.id}
@@ -510,8 +516,8 @@ function GridInner<TData>(
         key={row.id}
         role="row"
         data-floating={position}
-        className={`bg-gray-50 font-medium ${rowBorderClassName}`}
-        style={stickyStyle}
+        className={`font-medium ${rowBorderClassName}`}
+        style={{ ...stickyStyle, backgroundColor: 'var(--topgrid-header-bg, #f9fafb)' }}
       >
         {renderWindowedCells(row, columnWindow, {
           withHandlers: false,
@@ -542,6 +548,8 @@ function GridInner<TData>(
     // exactOptionalPropertyTypes — width 만 조건부로 추가.
     const combinedStyle: CSSProperties = { ...pinned.style };
     if (applyWidth) combinedStyle.width = size;
+    // MOD-GRID-29 G-2: header label text → var (color inline, fallback gray-500).
+    combinedStyle.color = 'var(--topgrid-header-text, #6b7280)';
     // G-001 (MOD-GRID-07): 컬럼 드래그 재정렬 props (AC-001~AC-004).
     // isPinned: column.getIsPinned() !== false → draggable=false + drop 무시 (AC-004).
     const isPinned = header.column.getIsPinned() !== false;
@@ -574,7 +582,7 @@ function GridInner<TData>(
         key={header.id}
         {...columnHeaderAttrs(ariaColIndexOf(header.column.id), canSort, sorted)}
         colSpan={header.colSpan}
-        className={`relative px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap select-none ${
+        className={`relative px-4 py-3 text-left text-xs font-medium uppercase tracking-wider whitespace-nowrap select-none ${
           canSort ? 'cursor-pointer hover:bg-gray-100' : ''
         } ${pinned.className}`}
         style={combinedStyle}
@@ -698,7 +706,7 @@ function GridInner<TData>(
               </tr>
             ))}
           </thead>
-          <tbody className={tbodyClassName}>
+          <tbody className={tbodyClassName} style={bodyBgStyle}>
             {props.loading === true ? (
               /* G-003 D5: loading=true 시 tbody 영역만 SkeletonRows 치환 (thead 보존).
                  D8: count default = props.loadingRowCount ?? pagination.pageSize ?? 5. */
