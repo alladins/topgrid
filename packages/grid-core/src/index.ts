@@ -11,6 +11,8 @@ export type { GridLocale, GridIcons } from './internal/i18n';
 // MOD-GRID-29 G-2 theming — themeToVars(theme) → inline --topgrid-* vars on the grid root.
 export { themeToVars, darkTheme } from './internal/theme';
 export type { GridTheme } from './internal/theme';
+// MOD-GRID-33 G-3 row reorder — pure array move; consumer applies it in onRowReorder.
+export { moveRow } from './internal/moveRow';
 export { useGridState } from './useGridState'; // ★ MOD-GRID-02 G-001
 export { useUrlSync } from './useUrlSync'; // ★ MOD-GRID-02 G-005
 export { useStoragePersist } from './useStoragePersist'; // ★ MOD-GRID-02 G-006

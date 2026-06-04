@@ -19,6 +19,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type DragEvent as ReactDragEvent,
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
   type ReactElement,
@@ -417,6 +418,12 @@ function GridInner<TData>(
     outlineOffset: '-2px',
   };
   const [announcement, setAnnouncement] = useState('');
+  // MOD-GRID-33 G-3: row reorder 드래그 state. 정렬/필터 활성 시 비활성(표시순≠data순=재배열 모호,
+  // advisor vN) + 비-가상화 전용(가상화 합성=vN). ★onRowReorder 는 **data 인덱스(row.index)**를 넘긴다 —
+  // rowPos(현재 페이지 슬라이스 인덱스)를 넘기면 페이지네이션 시 잘못된 행이 재배열된다(advisor). dropRowPos
+  // 는 시각 인디케이터(현재 페이지 내 위치)용.
+  const [dragDataIndex, setDragDataIndex] = useState<number | null>(null);
+  const [dropRowPos, setDropRowPos] = useState<number | null>(null);
   const sortAnnouncedOnce = useRef(false);
   const selectAnnouncedOnce = useRef(false);
   useEffect(() => {
@@ -730,6 +737,45 @@ function GridInner<TData>(
   const leafHeaderGroup = table.getHeaderGroups()[headerGroupCount - 1];
   const leafHeaders = leafHeaderGroup ? leafHeaderGroup.headers : [];
 
+  // MOD-GRID-33 G-3: row reorder 활성 조건 — opt-in prop + 정렬/필터 비활성(표시순=data순 보장) + 비-가상화.
+  const rowReorderActive =
+    props.enableRowReorder === true &&
+    !isVirtual &&
+    table.getState().sorting.length === 0 &&
+    table.getState().columnFilters.length === 0;
+  // 데이터 행에 부여할 HTML5 drag props(rowReorderActive 시만). rowPos=시각 위치, dataIndex=row.index(data).
+  // drop → onRowReorder(dragDataIndex, dataIndex) — **data 인덱스**로 콜백(페이지네이션 안전).
+  const rowDragProps = (rowPos: number, dataIndex: number): Record<string, unknown> =>
+    rowReorderActive
+      ? {
+          draggable: true,
+          onDragStart: () => setDragDataIndex(dataIndex),
+          onDragOver: (e: ReactDragEvent<HTMLTableRowElement>) => {
+            e.preventDefault();
+            setDropRowPos(rowPos);
+          },
+          onDrop: (e: ReactDragEvent<HTMLTableRowElement>) => {
+            e.preventDefault();
+            if (dragDataIndex !== null && dragDataIndex !== dataIndex) {
+              props.onRowReorder?.(dragDataIndex, dataIndex);
+            }
+            setDragDataIndex(null);
+            setDropRowPos(null);
+          },
+          onDragEnd: () => {
+            setDragDataIndex(null);
+            setDropRowPos(null);
+          },
+        }
+      : {};
+  // drop 인디케이터(상단 파란 선, layout shift 없는 inset box-shadow). 끌고 있는 행 자신엔 미표시.
+  // ※ from<to(아래 드래그) 시 결과는 대상 행 *뒤*에 안착하나 인디케이터는 상단선(=대상 앞) — 시각/결과
+  //   엣지 불일치(다수 그리드와 동형, 알려진 UX nuance). 방향별 엣지 계산은 후속.
+  const rowDropStyle = (rowPos: number, dataIndex: number): CSSProperties =>
+    rowReorderActive && dropRowPos === rowPos && dragDataIndex !== null && dragDataIndex !== dataIndex
+      ? { boxShadow: 'inset 0 2px 0 0 #2563eb' }
+      : {};
+
   return (
     <div
       className={`flex flex-col ${props.className ?? ''}`}
@@ -877,8 +923,9 @@ function GridInner<TData>(
                     key={row.id}
                     {...dataRowAttrs(dataRowAriaIndex(headerRowCount, rowPos), ariaSelectable, row.getIsSelected())}
                     data-index={row.index}
-                    {...(row.getIsSelected() ? { style: selectionOutlineStyle } : {})}
-                    className={`transition-colors ${isClickable ? 'cursor-pointer' : ''} ${
+                    {...rowDragProps(rowPos, row.index)}
+                    style={{ ...(row.getIsSelected() ? selectionOutlineStyle : {}), ...rowDropStyle(rowPos, row.index) }}
+                    className={`transition-colors ${isClickable || rowReorderActive ? 'cursor-pointer' : ''} ${
                       row.getIsSelected() ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'
                     } ${rowBorderClassName} ${extraRowClass}`}
                     onClick={(event) => props.onRowClick?.(row.original, event)}

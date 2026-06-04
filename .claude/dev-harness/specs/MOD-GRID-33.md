@@ -60,3 +60,31 @@ rgba(255,255,255,0.6), **pointer-events:all 하부 차단**=watermark 의 pointe
   (skeleton 과의 유일 차이, "오버레이 보임"만으론 vacuous)+오버레이 덮음+aria-busy=true+pointer-events≠none ②역방향:
   평범 `loading`=여전히 skeleton(데이터 치환·오버레이 0·aria-busy null)=additive 무회귀. 회귀 47/47. typecheck 0.
 - **i18n 후속**: 오버레이 텍스트 '로딩 중…' 하드코딩(GridLocale loadingText 키 추가는 후속).
+
+## G-3 결과 (완료 — 2026-06-05) → MOD-33 = {G-1,G-2,G-3} 완주, §3 이관
+**구현**: 순수 `moveRow(rows, from, to)`(splice 제거→삽입, 아래/위 인덱스 보정 자연 처리·no-op·경계=원본 복사·불변)
+=node spine. grid-core `enableRowReorder?`+`onRowReorder?(from,to)` props: 비-virtual data 행 draggable(HTML5)+drop
+인디케이터(inset box-shadow 상단선, layout shift 0). **정렬/필터 활성 시 자동 비활성**(표시순≠data순=모호)·**비-가상화
+전용**. reuse-gate: useColumnDrag(grid-core 내부, column-order 결합)=신규 thin row 아날로그(LESS-005). moveRow index export.
+- **검증**: node **10/10**(moveRow.test.ts: 아래/위 이동·인접·no-op·경계·불변·first→last). chromium **1/1**
+  (grid-row-reorder.spec.ts): ★드래그(row0→row2)→**표시순 재배열**(moveRow 적용, "드롭 발생"이 아닌 실제 재배열)+복귀.
+  HTML5 native DnD는 playwright mouse-drag 미발생→핸들러가 dataTransfer 아닌 React state 키잉이라 dispatchEvent 로 구동.
+  회귀 48/48. typecheck 0.
+- **★vN 명시(advisor)**: (a)가상화 합성(windowed 행 드래그=floating-filter 함정의 row 판)·(b)정렬/필터 활성 reorder
+  (=비활성 결정, AG 동형).
+
+## 모듈 완주 요약
+3-Goal 잡 UX: G-1 status-bar 카운트(발산 단언) · G-2 loading 오버레이(data-in-DOM+aria-busy+pointer-events) · G-3 row
+drag(moveRow 순수+draggable UI). **★advisor: vacuity 함정 반대 방향**(표현형 UI→"보임"식 vacuous 위험)→골마다 행동/발산
+단언. G-1/G-2=browser-only 정직(순수 로직 0)·G-3=moveRow 순수 spine. node 10+chromium 4. vN: 가상화/정렬-활성 reorder·
+context menu submenu·side bar·row pin UI·column menu·cell tooltip.
+
+### G-3 advisor 후속(커밋 fold)
+- **★#1 pagination 버그 시정(blocking)**: onRowReorder 가 `rowPos`(현재 **페이지** 슬라이스 인덱스)를 넘겨 페이지네이션
+  시 2페이지 행 드래그→**잘못된 행 재배열**(silent). data-index 발산 함정(MOD-31 sort-index spine 동형). → `row.index`
+  (페이지 무관 data 인덱스, 이미 data-index attr 로 있던 것)를 넘김(dropRowPos 는 시각 인디케이터용 유지). 판별 테스트:
+  4행 pageSize 2, page 2 에서 재배열→page 1 불변+page 2 swap(autoResetPageIndex 로 view 는 page 1 복귀). chromium 2/2.
+- **#2(기록) 인디케이터 엣지**: 상단선(=대상 앞)이나 from<to(아래 드래그) 결과는 대상 *뒤* 안착 — 시각/결과 엣지 불일치
+  (다수 그리드와 동형, 알려진 nuance). 방향별 엣지 계산=후속.
+- **#3(기록) 스타일 경로 불일치**: 비-virtual 행은 항상 style={{}}(미선택 시 빈 객체)·virtual 행은 조건부 spread.
+  기능 동일(48/48), 후속 정렬.

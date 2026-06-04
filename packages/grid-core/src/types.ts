@@ -654,6 +654,15 @@ export interface GridProps<TData> {
    */
   loadingOverlay?: boolean;
 
+  /**
+   * 행 드래그 재정렬 활성 (MOD-GRID-33 G-3, default `false`). 데이터 행을 draggable 로 만들어 드롭 시
+   * `onRowReorder(from, to)` 호출(소비자가 `moveRow(data, from, to)` 로 자기 data 적용). **정렬/필터 활성
+   * 시 자동 비활성**(표시순≠data순이라 재배열 모호) + **비-가상화 전용**(가상화 합성 = vN). HTML5 drag.
+   */
+  enableRowReorder?: boolean;
+  /** 행 재정렬 드롭 콜백(MOD-GRID-33 G-3) — 표시 인덱스 `from`→`to`. 소비자가 `moveRow` 로 data 적용. */
+  onRowReorder?: (from: number, to: number) => void;
+
   // ─── G-003 신규: 빈 상태 slot (D6/D7) ───
   /**
    * 빈 결과 상태 ReactNode slot.

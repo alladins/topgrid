@@ -873,14 +873,14 @@
     "MOD-GRID-33": {
       "package": "grid-pro-panel(G-1)·grid-core(G-2)·G-3 미정",
       "tier": "Pro(G-1)+MIT(G-2)",
-      "weight": "Full(3-Goal) — G-1 done, G-2/G-3 pending",
+      "weight": "Full(3-Goal: status-bar 카운트 + loading 오버레이 + row drag)",
       "priority": "차기로드맵 6순위(Misc UX, 마지막)",
-      "phase": "in-progress (G-1·G-2 done → G-3 다음)",
+      "phase": "done (3-Goal 완주 → §3)",
       "spec": "specs/MOD-GRID-33.md",
       "goals": {
         "G-1": "done",
         "G-2": "done",
-        "G-3": "pending(row drag)"
+        "G-3": "done"
       },
       "version_note": "버전 미범프(릴리스 시 batch).",
       "design": "advisor: ★vacuity 함정 반대 방향 — 표현형 UI 라 순수 로직 적음→\"보임\"식 vacuous→골마다 행동/발산 단언. G-1 browser-only 정직(순수 로직 0). G-2 additive+aria-busy+pointer-events. G-3 moveRow 순수 spine+가상화/정렬-활성=vN.",
@@ -893,7 +893,20 @@
         "surface": "grid-core loadingOverlay? additive: 컨테이너 inline relative + </table> 뒤 오버레이(absolute inset-0·rgba 0.6·pointer-events:all 차단·z-20) + table aria-busy=true. 기존 loading(skeleton) 독립",
         "verified_browser": "chromium 2/2(grid-loading-overlay.spec): ①★오버레이=기존 data 행 DOM 잔존(skeleton 과 유일 차이)+덮음+aria-busy+pointer-events≠none ②역방향 평범 loading=skeleton(additive 무회귀). 회귀 47/47. typecheck 0.",
         "advisor_closed": "vacuity 회피: \"오버레이 보임\"=vacuous→data-in-DOM(skeleton 과 차이)+aria-busy(SR)+pointer-events 차단(watermark 반대) 단언. browser-only 정직(순수 로직 0)."
-      }
+      },
+      "done_gate": {
+        "lesson": "LESS-006 변형: ★vacuity 함정 반대 방향(표현형 UI→\"보임\" vacuous)→골마다 행동/발산 단언. G-1 세 카운트 발산·G-2 data-in-DOM(skeleton 과 차이)+aria-busy+pointer-events·G-3 실제 재배열. G-1/G-2 browser-only 정직(순수 0), G-3 moveRow 순수 spine.",
+        "matrix_row": true,
+        "index_updated": true
+      },
+      "g3": {
+        "surface": "순수 moveRow(rows,from,to)(splice·인덱스 보정·불변)=node spine. grid-core enableRowReorder?+onRowReorder?: 비-virtual 행 draggable(HTML5)+drop 인디케이터(inset box-shadow). 정렬/필터 활성 시 비활성·비-가상화 전용. useColumnDrag 아날로그 신규(LESS-005). moveRow export",
+        "verified_node": "moveRow 10/10(아래/위·인접·no-op·경계·불변·first→last)",
+        "verified_browser": "chromium 2/2(grid-row-reorder): ★드래그→표시순 재배열 + ★pagination(row.index data 인덱스 — rowPos 넘기면 2페이지 재배열 시 잘못된 행, advisor fix: page 2 재배열→page 1 불변+page 2 swap). dispatchEvent. 회귀 49/49. typecheck 0.",
+        "vN": "advisor: 가상화 합성·정렬/필터 활성 reorder(=비활성)",
+        "advisor_closed": "★#1 pagination 버그: onRowReorder 가 rowPos(페이지 슬라이스) 넘김→2페이지 잘못된 행 재배열(silent, data-index 발산 함정). row.index(페이지 무관) 넘김으로 시정+판별 테스트. #2 인디케이터 엣지·#3 style 경로 불일치=기록."
+      },
+      "module_summary": "3-Goal 잡 UX. ★advisor vacuity 반대 방향→행동/발산 단언. G-1/G-2 browser-only 정직(순수 0)·G-3 moveRow 순수. node 10+chromium 4. vN: 가상화/정렬 reorder·context submenu·side bar·row pin·column menu·tooltip."
     }
   },
   "release_queue": {
