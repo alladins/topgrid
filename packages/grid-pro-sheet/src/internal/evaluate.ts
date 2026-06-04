@@ -32,6 +32,41 @@ function toNumber(v: CellValue): number | CellError {
   return cellError('#ERROR!');
 }
 
+/** MOD-GRID-32 G-1: 조건/논리에서 진리값 판정. boolean→자신, number→0 아님, 그 외(문자열)→#ERROR!. */
+function toBool(v: CellValue): boolean | CellError {
+  if (typeof v === 'boolean') return v;
+  if (typeof v === 'number') return v !== 0;
+  return cellError('#ERROR!');
+}
+
+/** MOD-GRID-32 G-1: 동등 비교 — 강제 변환 없이 같은 타입 + 같은 값일 때만 true(number 4 ≠ string "4"). */
+function valuesEqual(l: CellValue, r: CellValue): boolean {
+  return typeof l === typeof r && l === r;
+}
+
+/**
+ * MOD-GRID-32 G-1: type-aware 비교(→boolean). 기존 binary 의 toNumber 산술 경로와 **분리** — 비교를 거기
+ * 끼우면 `"a"="a"` 가 toNumber("a")=#ERROR! 로 깨진다. 동등(`=`/`<>`)=타입+값. 순서(`<` 등)=둘 다 문자열이면
+ * lexical, 아니면 수치 강제(bool→1/0, 비수치 문자열→#ERROR!).
+ */
+function compareValues(
+  l: CellValue,
+  r: CellValue,
+  op: '<' | '>' | '=' | '<=' | '>=' | '<>',
+): CellValue {
+  if (op === '=') return valuesEqual(l, r);
+  if (op === '<>') return !valuesEqual(l, r);
+  if (typeof l === 'string' && typeof r === 'string') {
+    const c = l < r ? -1 : l > r ? 1 : 0;
+    return op === '<' ? c < 0 : op === '>' ? c > 0 : op === '<=' ? c <= 0 : c >= 0;
+  }
+  const ln = toNumber(l);
+  if (isCellError(ln)) return ln;
+  const rn = toNumber(r);
+  if (isCellError(rn)) return rn;
+  return op === '<' ? ln < rn : op === '>' ? ln > rn : op === '<=' ? ln <= rn : ln >= rn;
+}
+
 /** Evaluate one argument to a value list (a range expands; a scalar is a singleton). */
 function evalArgValues(ast: Ast, getCell: CellGetter): CellValue[] {
   if (ast.kind === 'range') return expandRange(ast.from, ast.to).map(getCell);
@@ -62,6 +97,11 @@ export function evaluate(ast: Ast, getCell: CellGetter): CellValue {
       if (isCellError(l)) return l;
       const r = evaluate(ast.right, getCell);
       if (isCellError(r)) return r;
+      // MOD-GRID-32 G-1: 비교연산자는 toNumber 산술 경로 우회(type-aware, →boolean).
+      switch (ast.op) {
+        case '<': case '>': case '=': case '<=': case '>=': case '<>':
+          return compareValues(l, r, ast.op);
+      }
       const ln = toNumber(l);
       if (isCellError(ln)) return ln;
       const rn = toNumber(r);
@@ -75,6 +115,16 @@ export function evaluate(ast: Ast, getCell: CellGetter): CellValue {
     }
     // eslint-disable-next-line no-fallthrough
     case 'call': {
+      // MOD-GRID-32 G-1: IF 만 lazy — cond 평가 후 취한 분기 1개만 평가(미취 분기의 에러 미전파).
+      // parse/extractRefs 는 평범한 call 로 둬 세 분기 ref 가 모두 정적 추적된다(recalc 정확).
+      if (ast.name === 'IF') {
+        const cond = evaluate(ast.args[0]!, getCell);
+        if (isCellError(cond)) return cond;
+        const b = toBool(cond);
+        if (isCellError(b)) return b;
+        if (b) return evaluate(ast.args[1]!, getCell);
+        return ast.args[2] !== undefined ? evaluate(ast.args[2], getCell) : false;
+      }
       const fn = FUNCTIONS[ast.name];
       if (!fn) return cellError('#ERROR!');
       const values = ast.args.flatMap((a) => evalArgValues(a, getCell));

@@ -15,6 +15,7 @@ type Tok =
   | { t: 'name'; v: string }
   | { t: 'ref'; v: string }
   | { t: 'op'; v: '+' | '-' | '*' | '/' }
+  | { t: 'cmp'; v: '<' | '>' | '=' | '<=' | '>=' | '<>' } // MOD-GRID-32 G-1
   | { t: 'lparen' }
   | { t: 'rparen' }
   | { t: 'comma' }
@@ -60,6 +61,12 @@ function tokenize(src: string): Tok[] {
       continue;
     }
     if (c === '+' || c === '-' || c === '*' || c === '/') { toks.push({ t: 'op', v: c }); i++; continue; }
+    // MOD-GRID-32 G-1: 비교연산자(2자 <= >= <> 우선, 그 외 1자 < > =).
+    if (c === '<' || c === '>' || c === '=') {
+      const two = c + (src[i + 1] ?? '');
+      if (two === '<=' || two === '>=' || two === '<>') { toks.push({ t: 'cmp', v: two }); i += 2; continue; }
+      toks.push({ t: 'cmp', v: c as '<' | '>' | '=' }); i++; continue;
+    }
     if (c === '(') { toks.push({ t: 'lparen' }); i++; continue; }
     if (c === ')') { toks.push({ t: 'rparen' }); i++; continue; }
     if (c === ',') { toks.push({ t: 'comma' }); i++; continue; }
@@ -80,7 +87,20 @@ export function parseFormula(src: string): Ast {
     return tk;
   };
 
-  const parseExpr = (): Ast => parseAddSub();
+  const parseExpr = (): Ast => parseCompare();
+
+  // MOD-GRID-32 G-1: 비교 = 최저 precedence(산술 아래). `=1+1=2` → (1+1)=2.
+  function parseCompare(): Ast {
+    let left = parseAddSub();
+    let tk = peek();
+    while (tk && tk.t === 'cmp') {
+      next();
+      const right = parseAddSub();
+      left = { kind: 'binary', op: tk.v, left, right };
+      tk = peek();
+    }
+    return left;
+  }
 
   function parseAddSub(): Ast {
     let left = parseMulDiv();

@@ -50,4 +50,36 @@ export const FUNCTIONS: Readonly<Record<string, (values: CellValue[]) => CellVal
     if (isCellError(n)) return n;
     return n.length;
   },
+  // MOD-GRID-32 G-1: 논리 함수(IF 는 lazy 라 evaluate 에서 별도 처리; AND/OR/NOT 은 eager). 에러 전파.
+  AND: (values) => {
+    if (values.length === 0) return cellError('#ERROR!');
+    for (const v of values) {
+      const b = toBoolFn(v);
+      if (isCellError(b)) return b;
+      if (!b) return false;
+    }
+    return true;
+  },
+  OR: (values) => {
+    if (values.length === 0) return cellError('#ERROR!');
+    for (const v of values) {
+      const b = toBoolFn(v);
+      if (isCellError(b)) return b;
+      if (b) return true;
+    }
+    return false;
+  },
+  NOT: (values) => {
+    if (values.length !== 1) return cellError('#ERROR!');
+    const b = toBoolFn(values[0]!);
+    return isCellError(b) ? b : !b;
+  },
 };
+
+/** 진리값 판정(논리 함수용). 에러 전파; boolean→자신; number→0 아님; 그 외(문자열)→#ERROR!. */
+function toBoolFn(v: CellValue): boolean | CellError {
+  if (isCellError(v)) return v;
+  if (typeof v === 'boolean') return v;
+  if (typeof v === 'number') return v !== 0;
+  return cellError('#ERROR!');
+}

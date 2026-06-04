@@ -37,7 +37,14 @@ export type Ast =
   | { kind: 'ref'; ref: string } // e.g. "A1"
   | { kind: 'range'; from: string; to: string } // e.g. A1:B3
   | { kind: 'unary'; op: '-'; operand: Ast }
-  | { kind: 'binary'; op: '+' | '-' | '*' | '/'; left: Ast; right: Ast }
+  // MOD-GRID-32 G-1: 비교연산자는 별도 노드 kind 가 아니라 binary op 확장 — extractRefs 의 정적 walk 가
+  // 새 kind 를 모르면 의존 ref 누락→recalc 깨짐. binary 면 left/right 이미 walk 하므로 extractRefs 수정 0.
+  | {
+      kind: 'binary';
+      op: '+' | '-' | '*' | '/' | '<' | '>' | '=' | '<=' | '>=' | '<>';
+      left: Ast;
+      right: Ast;
+    }
   | { kind: 'call'; name: string; args: Ast[] };
 
 /** Resolves an A1 cell reference to its current value (PAT-005 host-capability injection). */
