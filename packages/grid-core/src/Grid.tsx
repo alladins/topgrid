@@ -58,6 +58,10 @@ import {
   buildAriaColIndex,
 } from './internal/ariaAttrs';
 import { nextCell, isNavKey, type CellPos } from './internal/cellNavigation';
+import {
+  announceSortMessage,
+  announceSelectionMessage,
+} from './internal/liveAnnounce';
 import { getPinnedCellStyle } from './internal/computePinnedOffset';
 import { EmptyState } from './internal/EmptyState';
 import { ResizeHandle } from './internal/ResizeHandle';
@@ -381,6 +385,29 @@ function GridInner<TData>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeCell]);
 
+  // MOD-GRID-28 G-3: 스크린리더 live 알림. live 리전은 **항상 present + 빈 채로** mount(조건부 렌더
+  // 금지)하고 텍스트만 갱신해야 SR 이 알린다. 리전은 <table role=grid> **밖**(outer wrapper)에 둔다
+  // (grid 자식이면 aria-required-children 위반). 초기 렌더는 skip(마운트 시 알림 방지). **셀 이동은
+  // 알리지 않는다**(aria-activedescendant 가 이미 SR 발화 — 이중발화 회피). 정렬/선택만 알린다.
+  const [announcement, setAnnouncement] = useState('');
+  const sortAnnouncedOnce = useRef(false);
+  const selectAnnouncedOnce = useRef(false);
+  useEffect(() => {
+    if (!sortAnnouncedOnce.current) { sortAnnouncedOnce.current = true; return; }
+    setAnnouncement(
+      announceSortMessage(sorting, (id) => {
+        const h = table.getColumn(id)?.columnDef.header;
+        return typeof h === 'string' ? h : id;
+      }),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sorting]);
+  useEffect(() => {
+    if (!selectAnnouncedOnce.current) { selectAnnouncedOnce.current = true; return; }
+    setAnnouncement(announceSelectionMessage(Object.keys(rowSelection).length));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rowSelection]);
+
   // 한 행의 `<td>` 목록을 컬럼 윈도우 순서로 렌더(per-row Map 으로 O(n) 조회 — n² 회피).
   // pad spacer 는 윈도우 px>0 일 때만(full window 에선 0 → 미방출 = byte-identical).
   // opts: 본문 행 = handlers+cellClassName / floating 행 = 둘 다 없음(기존 마크업 보존).
@@ -618,6 +645,10 @@ function GridInner<TData>(
 
   return (
     <div className={`flex flex-col ${props.className ?? ''}`}>
+      {/* MOD-GRID-28 G-3: SR live 리전 — 항상 present+빈 채로 mount, <table role=grid> 밖. 텍스트만 갱신. */}
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {announcement}
+      </div>
       {props.columnPersistence !== undefined && (
         <div className="flex justify-end mb-1">
           <ColumnVisibilityMenu table={table} />
@@ -638,7 +669,7 @@ function GridInner<TData>(
           tabIndex={0}
           onKeyDown={handleGridKeyDown}
           {...(activeCellId ? { 'aria-activedescendant': activeCellId } : {})}
-          className={tableClassName}
+          className={`${tableClassName} focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 focus-visible:outline-offset-[-2px]`}
           {...(columnVirtEnabled
             ? { style: { tableLayout: 'fixed' as const, width: totalColumnWidth } }
             : {})}

@@ -167,3 +167,38 @@ test('G-2: Space/Enter on a header toggles sort (aria-sort updates)', async ({ p
   await header.press('Enter');
   expect(await header.getAttribute('aria-sort'), 'Enter again → descending').toBe('descending');
 });
+
+// MOD-GRID-28 G-3 — SR live region. axe can't verify an announcement was SPOKEN; this verifies the
+// region is present-at-mount + empty, and its TEXT updates on sort/selection. The non-vacuous gate
+// is the inverse: cell navigation must NOT update it (aria-activedescendant already speaks moves —
+// a live announcement there would double-speak).
+test('G-3: live region present+empty at mount; updates on sort/selection; NOT on nav', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME('grid-core-grid-a11y--plain'));
+  const root = page.locator('#storybook-root');
+  await root.locator('table').first().waitFor({ state: 'visible' });
+
+  const region = root.locator('[role="status"][aria-live="polite"]');
+  await expect(region, 'live region present at mount').toHaveCount(1);
+  expect(((await region.textContent()) ?? '').trim(), 'empty at mount (not conditionally rendered)').toBe('');
+
+  // sort → region text updates.
+  const header = root.locator('th[aria-sort]').first();
+  await header.focus();
+  await header.press('Enter');
+  await expect(region, 'sort updates the live region').toContainText('정렬');
+
+  // selection → region text updates.
+  await root.locator('tbody input[type="checkbox"]').first().check();
+  await expect(region, 'selection updates the live region').toContainText('선택');
+
+  // ★ navigation must NOT change the region (no double-speak with aria-activedescendant).
+  const textBeforeNav = await region.textContent();
+  const table = root.locator('table[role="grid"]');
+  await table.focus();
+  await table.press('ArrowDown');
+  await table.press('ArrowRight');
+  await page.waitForTimeout(150);
+  expect(await region.textContent(), 'nav does NOT touch the live region (activedescendant handles SR)').toBe(textBeforeNav);
+});

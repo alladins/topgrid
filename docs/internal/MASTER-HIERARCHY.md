@@ -610,6 +610,21 @@
 
 ---
 
+### `mod-grid-28` — 접근성 (base `<Grid>` WAI-ARIA, **MIT**, grid-core) ✅ 채움 — 차기 로드맵(COMMERCIAL-GAP) 1순위
+
+소스: `packages/grid-core/src/{internal/ariaAttrs.ts, internal/cellNavigation.ts, internal/liveAnnounce.ts, Grid.tsx, internal/EmptyState.tsx}` + `stories/Grid.a11y.stories.tsx` + `tests/visual/grid-a11y.spec.ts`(axe-core), spec `.claude/dev-harness/specs/MOD-GRID-28.md`. dev-harness 11번째. AG Grid/Wijmo 의 default ARIA grid 대응. 갭분석 1순위(접근성=최대 갭, table-stakes).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| ARIA grid 의미론(G-1) | `internal/ariaAttrs.ts`(순수) + Grid.tsx `<table role=grid aria-rowcount/colcount>`·tr `role=row aria-rowindex`·th `role=columnheader aria-colindex aria-sort`·td `role=gridcell aria-colindex`·tr `aria-selected` | **종결형**(순수 attr) + 연결형 | ★불변식1=role-completeness(role=grid→row/cell role+positional 전부=같은 Goal). ★불변식2(척추)=가상화 하 **절대** aria-rowindex/colindex(DOM 위치 아님) | default-on(비파괴 attr 추가). 그룹헤더=aria-colindex 생략(0⟺비-leaf). node 23/23 + **axe-core 5/5**(virtual/그룹/plain/empty + 척추 non-vacuous) | 채움 |
+| 키보드 nav(G-2) | `internal/cellNavigation.ts`(순수 `nextCell`) + Grid.tsx `<table tabIndex=0 aria-activedescendant onKeyDown>`·td id·active 링·scroll-into-view·헤더 Space/Enter 정렬 | **종결형**(순수) + 트리거 | **aria-activedescendant**(roving tabindex 아님 — 가상화 시 active 셀 unmount→focus body 붕괴; AG 동일). reuse-gate: range nav(Pro) 재사용 불가→MIT 신규([[LESS-005]]) | 화살표/Home/End/Ctrl-edge/PageUp·Down/Tab wrap/Enter + Space/Enter 헤더정렬. node 28/28 + **chromium 2/2**(★out-of-window nav: active 셀 윈도 밖→scroll-into-view 후 mount·focus=grid 유지·non-vacuous) | 채움 |
+| SR live 알림(G-3) | `internal/liveAnnounce.ts`(순수) + Grid.tsx outer `<div role=status aria-live=polite sr-only>` + sorting/selection effect(skip-first) | **종결형**(메시지) + 트리거 | live 리전=mount 시 present+빈 채(텍스트만 갱신)·`<table role=grid>` 밖(grid 자식이면 aria-required-children 위반). **nav 알림 안 함**(activedescendant 이중발화 회피) | 정렬/선택 알림(한국어 하드코딩=i18n MOD-29). node 8/8 + **chromium 1/1**(present+empty·정렬/선택 갱신·**★nav 시 불변**) | 채움 |
+| focus-visible / HC | Grid.tsx table `focus-visible:outline` 링 | 종결형 | 키보드 포커스 링(마우스 클릭 미표시). HC=outline 은 forced-colors 존중 | **HC 갭**: 선택 행 `bg-blue-50` 은 forced-colors 평탄화→HC 시각 구분 불가(aria-selected 로 SR 커버, 시각만)=**MOD-29 테마 의존**. focus-visible=additive | 부분(HC=MOD-29) |
+
+> dev-harness 수확: **reuse** = PAT-001 + axe-core(devDep 게이트). **신규 = [[LESS-006]] ×3 또**(매 Goal advisor 가 wired-but-unverified 검출→폐쇄: G-1 그룹헤더 aria-colindex=0 무효(default-on이라 전 그룹소비자 영향)·G-2 out-of-window nav(visible 윈도 내만 통과=무의미)·G-3 nav 이중발화). **MIT**(신규 패키지 0·외부 런타임 dep 0, axe=devDep). 두 불변식(role-completeness·절대 인덱스)이 MOD-27 핀/가상화 척추를 focus·ARIA 층으로 연장. v1 한계: 페이지네이션 aria-rowindex=페이지 상대(AG viewport 동형)·aria-colspan·HC 선택표시=vN/MOD-29. 회귀 0(전 visual 10/10).
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
