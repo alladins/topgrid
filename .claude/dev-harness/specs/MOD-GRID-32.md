@@ -73,3 +73,13 @@ functions.ts AND/OR/NOT(eager, 에러전파).
 - **#3 의미 한계(기록)**: (a) **type-strict 동등** — 빈 셀 `=A1=0`→FALSE(미설정=''·string '' ≠ number 0; Excel 은 빈=0).
   (b) **논리함수 비-bool 거부** — AND/OR 가 range 의 빈/텍스트 셀 만나면 #ERROR!(toBoolFn 문자열 에러; Excel 은 비논리 무시).
   둘 다 문서화된 선택(틀림 아님).
+
+## G-2 결과 (완료 — 2026-06-05)
+**구현**: functions.ts `POSITIONAL_FUNCTIONS`(per-arg 스칼라) — text: LEN/LEFT/RIGHT/MID/UPPER/LOWER/TRIM/CONCATENATE
+(number→string 강제), math: ABS/INT/ROUND/MOD/POWER. evaluate 'call' 분기: 가변/집계(SUM·AND)=flat-values·**위치
+함수=`ast.args.map(evaluate)` per-arg**(경계 보존). ★advisor #2 폐쇄: range 인자는 `evaluate(range)=#ERROR!` 로 전파 →
+flat 전개의 조용한 오독(ROUND(A1:A3,2)→digits 오독) 방지. POSITIONAL_FUNCTIONS index export.
+- **검증**: node **49/49**(G-1 28 + G-2 21: text 10·math 8 + **★range-arg ROUND(A1:A3,2)→#ERROR!** + scalar 정상 + ref
+  recalc). chromium **4/4**(sheet-grid: G-1·G-2 + MOD-26 2 보존). G-2: UPPER/LEN/CONCATENATE/ROUND/MOD 표시·편집 재계산·
+  ★range-arg→#ERROR! 시각. 회귀 43/43. typecheck 0.
+- **MOD-26 보존**: 기존 5함수(SUM 등)=flat-values 경로 불변. **vN**: VLOOKUP(range+lookup)·date·financial(엔진 shape 없음).

@@ -83,3 +83,75 @@ function toBoolFn(v: CellValue): boolean | CellError {
   if (typeof v === 'number') return v !== 0;
   return cellError('#ERROR!');
 }
+
+// ─── MOD-GRID-32 G-2: text + math 함수 ───────────────────────────────────────
+// ★ positional 함수는 evaluate 가 **per-arg 스칼라**(ast.args.map(evaluate))로 호출한다(flat-values 아님).
+// range 인자는 evaluate(range)=#ERROR! 로 들어와 에러 전파 — flat 전개의 조용한 오독(ROUND(A1:A3,2)→digits 오독) 방지.
+
+/** 문자열 강제(에러 전파; number/boolean→문자열화; Excel 표시 규약). */
+function toStr(v: CellValue): string | CellError {
+  if (isCellError(v)) return v;
+  if (typeof v === 'string') return v;
+  if (typeof v === 'number') return String(v);
+  return v ? 'TRUE' : 'FALSE';
+}
+/** 수치 강제(에러 전파; bool→1/0; 빈 문자열→0; 비수치 문자열→#ERROR!). evaluate.ts toNumber 와 동형. */
+function toNum(v: CellValue): number | CellError {
+  if (isCellError(v)) return v;
+  if (typeof v === 'number') return v;
+  if (typeof v === 'boolean') return v ? 1 : 0;
+  if (v.trim() === '') return 0;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : cellError('#ERROR!');
+}
+
+/** 고정/위치 인자 함수(per-arg 스칼라). text=number→string 강제 지원(LEN(123)=3). */
+export const POSITIONAL_FUNCTIONS: Readonly<Record<string, (args: CellValue[]) => CellValue>> = {
+  LEN: (a) => { const s = toStr(a[0] ?? ''); return isCellError(s) ? s : s.length; },
+  UPPER: (a) => { const s = toStr(a[0] ?? ''); return isCellError(s) ? s : s.toUpperCase(); },
+  LOWER: (a) => { const s = toStr(a[0] ?? ''); return isCellError(s) ? s : s.toLowerCase(); },
+  TRIM: (a) => { const s = toStr(a[0] ?? ''); return isCellError(s) ? s : s.trim(); },
+  LEFT: (a) => {
+    const s = toStr(a[0] ?? ''); if (isCellError(s)) return s;
+    const n = a[1] === undefined ? 1 : toNum(a[1]); if (isCellError(n)) return n;
+    return s.slice(0, Math.max(0, Math.trunc(n)));
+  },
+  RIGHT: (a) => {
+    const s = toStr(a[0] ?? ''); if (isCellError(s)) return s;
+    const n = a[1] === undefined ? 1 : toNum(a[1]); if (isCellError(n)) return n;
+    const k = Math.max(0, Math.trunc(n));
+    return k === 0 ? '' : s.slice(-k);
+  },
+  MID: (a) => {
+    const s = toStr(a[0] ?? ''); if (isCellError(s)) return s;
+    const start = toNum(a[1] ?? cellError('#ERROR!')); if (isCellError(start)) return start;
+    const len = toNum(a[2] ?? cellError('#ERROR!')); if (isCellError(len)) return len;
+    const from = Math.max(0, Math.trunc(start) - 1); // Excel MID is 1-based
+    return s.slice(from, from + Math.max(0, Math.trunc(len)));
+  },
+  CONCATENATE: (a) => {
+    let out = '';
+    for (const v of a) { const s = toStr(v); if (isCellError(s)) return s; out += s; }
+    return out;
+  },
+  ABS: (a) => { const n = toNum(a[0] ?? cellError('#ERROR!')); return isCellError(n) ? n : Math.abs(n); },
+  INT: (a) => { const n = toNum(a[0] ?? cellError('#ERROR!')); return isCellError(n) ? n : Math.floor(n); },
+  ROUND: (a) => {
+    const n = toNum(a[0] ?? cellError('#ERROR!')); if (isCellError(n)) return n;
+    const d = a[1] === undefined ? 0 : toNum(a[1]); if (isCellError(d)) return d;
+    const f = 10 ** Math.trunc(d);
+    return Math.round(n * f) / f;
+  },
+  MOD: (a) => {
+    const n = toNum(a[0] ?? cellError('#ERROR!')); if (isCellError(n)) return n;
+    const d = toNum(a[1] ?? cellError('#ERROR!')); if (isCellError(d)) return d;
+    if (d === 0) return cellError('#DIV/0!');
+    return ((n % d) + d) % d; // Excel MOD: result takes the sign of the divisor
+  },
+  POWER: (a) => {
+    const b = toNum(a[0] ?? cellError('#ERROR!')); if (isCellError(b)) return b;
+    const e = toNum(a[1] ?? cellError('#ERROR!')); if (isCellError(e)) return e;
+    const r = b ** e;
+    return Number.isFinite(r) ? r : cellError('#ERROR!');
+  },
+};

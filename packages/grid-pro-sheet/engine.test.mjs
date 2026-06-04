@@ -80,6 +80,47 @@ ok('NOT =NOT(1>2) → true', evalF('=NOT(1>2)') === true);
   ok('★ IF recalc on A1 3→7 → 10 (dep tracked despite lazy)', s.getValue('B1') === 10);
 }
 
+// ── G-2: text functions (per-arg, number→string coercion) ──
+ok('LEN("hello") → 5', evalF('=LEN("hello")') === 5);
+ok('LEN(123) → 3 (number→string)', evalF('=LEN(123)') === 3);
+ok('UPPER("ab") → AB', evalF('=UPPER("ab")') === 'AB');
+ok('LOWER("AB") → ab', evalF('=LOWER("AB")') === 'ab');
+ok('TRIM("  x  ") → x', evalF('=TRIM("  x  ")') === 'x');
+ok('LEFT("hello",2) → he', evalF('=LEFT("hello",2)') === 'he');
+ok('RIGHT("hello",2) → lo', evalF('=RIGHT("hello",2)') === 'lo');
+ok('MID("hello",2,3) → ell', evalF('=MID("hello",2,3)') === 'ell');
+ok('CONCATENATE("a","b","c") → abc', evalF('=CONCATENATE("a","b","c")') === 'abc');
+ok('CONCATENATE with number → a1', evalF('=CONCATENATE("a",1)') === 'a1');
+
+// ── G-2: math functions ──
+ok('ABS(-5) → 5', evalF('=ABS(-5)') === 5);
+ok('INT(3.7) → 3', evalF('=INT(3.7)') === 3);
+ok('ROUND(3.14159,2) → 3.14', evalF('=ROUND(3.14159,2)') === 3.14);
+ok('ROUND(2.5,0) → 3', evalF('=ROUND(2.5,0)') === 3);
+ok('MOD(7,3) → 1', evalF('=MOD(7,3)') === 1);
+ok('MOD(-1,3) → 2 (sign of divisor)', evalF('=MOD(-1,3)') === 2);
+ok('MOD(5,0) → #DIV/0!', isCellError(evalF('=MOD(5,0)')) && evalF('=MOD(5,0)').error === '#DIV/0!');
+ok('POWER(2,10) → 1024', evalF('=POWER(2,10)') === 1024);
+
+// ── ★ G-2 spine (advisor #2): positional fn with a RANGE arg → #ERROR! (not silent mis-read) ──
+{
+  const s = createSheet();
+  s.setCell('A1', '1'); s.setCell('A2', '2'); s.setCell('A3', '3');
+  s.setCell('B1', '=ROUND(A1:A3,2)');
+  ok('★ ROUND(range,2): range arg → #ERROR! (per-arg boundary, no flatten mis-read)',
+    isCellError(s.getValue('B1')) && s.getValue('B1').error === '#ERROR!');
+  // scalar arg still works.
+  s.setCell('B2', '=ROUND(A2,0)');
+  ok('ROUND scalar arg works → 2', s.getValue('B2') === 2);
+}
+// text fn recalc through refs.
+{
+  const s = createSheet();
+  s.setCell('A1', 'world'); // a bare literal string cell.
+  s.setCell('B1', '=CONCATENATE("hello ",A1)');
+  ok('CONCATENATE ref → "hello world"', s.getValue('B1') === 'hello world');
+}
+
 rmSync(out, { force: true });
 console.log(`sheet engine: ${pass} passed, ${fail} failed`);
 if (fail) throw new Error(`${fail} failed`);

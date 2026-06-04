@@ -81,6 +81,39 @@ test('MOD-32 G-1: comparison + IF + logical fns in the grid, recalc through IF',
   await expect(cell('E1'), 'IF lazy: 1/0 untaken → safe (not #DIV/0!)').toHaveText('safe');
 });
 
+test('MOD-32 G-2: text + math functions in the grid (recalc + range-arg guard)', async ({
+  page,
+}) => {
+  await page.goto(FRAME(ID));
+  const root = page.locator('#storybook-root');
+  await root.locator('table').first().waitFor({ state: 'visible' });
+  const cell = (ref: string) => root.locator(`td[data-cell="${ref}"]`);
+
+  await typeCell(page, root, 'A1', 'hello');
+  await typeCell(page, root, 'B1', '=UPPER(A1)');
+  await expect(cell('B1'), 'UPPER(hello) → HELLO').toHaveText('HELLO');
+  await typeCell(page, root, 'B2', '=LEN(A1)');
+  await expect(cell('B2'), 'LEN(hello) → 5').toHaveText('5');
+  await typeCell(page, root, 'C1', '=CONCATENATE(A1," world")');
+  await expect(cell('C1'), 'CONCATENATE → hello world').toHaveText('hello world');
+
+  await typeCell(page, root, 'D1', '=ROUND(3.14159,2)');
+  await expect(cell('D1'), 'ROUND → 3.14').toHaveText('3.14');
+  await typeCell(page, root, 'D2', '=MOD(7,3)');
+  await expect(cell('D2'), 'MOD(7,3) → 1').toHaveText('1');
+
+  // edit A1 → text functions recompute.
+  await typeCell(page, root, 'A1', 'hi');
+  await expect(cell('B1'), 'UPPER recomputes → HI').toHaveText('HI');
+  await expect(cell('B2'), 'LEN recomputes → 2').toHaveText('2');
+
+  // ★ range arg into a positional fn surfaces an error, not a silent mis-read.
+  await typeCell(page, root, 'A2', '1');
+  await typeCell(page, root, 'A3', '2');
+  await typeCell(page, root, 'E1', '=ROUND(A1:A3,2)');
+  await expect(cell('E1'), 'ROUND(range,…) → #ERROR! (per-arg boundary)').toHaveText('#ERROR!');
+});
+
 test('grid-pro-range reuse: selection + clipboard copy = VALUE (not formula)', async ({
   page,
   context,

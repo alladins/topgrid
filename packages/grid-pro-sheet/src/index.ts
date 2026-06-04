@@ -23,7 +23,7 @@ export {
   coerceLiteral,
   formatValue,
 } from './internal/evaluate.js';
-export { FUNCTIONS } from './internal/functions.js';
+export { FUNCTIONS, POSITIONAL_FUNCTIONS } from './internal/functions.js';
 export { parseA1, toA1, expandRange } from './internal/cellAddress.js';
 
 // G-2 dependency-graph recalc engine (React-free, node-verified).

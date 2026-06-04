@@ -18,7 +18,7 @@ import {
 } from '../types.js';
 import { expandRange } from './cellAddress.js';
 import { parseFormula } from './parser.js';
-import { FUNCTIONS } from './functions.js';
+import { FUNCTIONS, POSITIONAL_FUNCTIONS } from './functions.js';
 
 /** Coerce a value to a number for arithmetic; non-numeric text → `#ERROR!`. */
 function toNumber(v: CellValue): number | CellError {
@@ -125,10 +125,20 @@ export function evaluate(ast: Ast, getCell: CellGetter): CellValue {
         if (b) return evaluate(ast.args[1]!, getCell);
         return ast.args[2] !== undefined ? evaluate(ast.args[2], getCell) : false;
       }
+      // 가변/집계 함수(SUM·AND 등) = flat-values(range 전개).
       const fn = FUNCTIONS[ast.name];
-      if (!fn) return cellError('#ERROR!');
-      const values = ast.args.flatMap((a) => evalArgValues(a, getCell));
-      return fn(values);
+      if (fn) {
+        const values = ast.args.flatMap((a) => evalArgValues(a, getCell));
+        return fn(values);
+      }
+      // MOD-GRID-32 G-2: 위치 함수(LEFT·ROUND 등) = **per-arg 스칼라**(경계 보존). range 인자는
+      // evaluate(range)=#ERROR! 로 전파(flat 전개의 조용한 오독 방지).
+      const pf = POSITIONAL_FUNCTIONS[ast.name];
+      if (pf) {
+        const args = ast.args.map((a) => evaluate(a, getCell));
+        return pf(args);
+      }
+      return cellError('#ERROR!');
     }
   }
 }
