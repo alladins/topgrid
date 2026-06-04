@@ -247,9 +247,14 @@ function GridInner<TData>(
     ? 'min-w-full text-sm border-separate border-spacing-0'
     : 'min-w-full divide-y divide-gray-200 text-sm';
   // border-separate 환경에서는 divide-y 가 동작하지 않음 → tbody/td 에 명시적 border 적용.
-  // MOD-GRID-29 G-2: body bg → var (color inline, divider class stays). Fallback = white.
+  // MOD-GRID-29 G-2: body bg + cell text → var on tbody (divider class stays). cellText is set here
+  // as INHERITED color (weakest cascade) — NOT inline per-td — so a consumer cellClassName text
+  // color (MOD-24 conditional formatting) still wins. Fallbacks = white / gray-700.
   const tbodyClassName = usePinning ? '' : 'divide-y divide-gray-100';
-  const bodyBgStyle: CSSProperties = { backgroundColor: 'var(--topgrid-body-bg, #ffffff)' };
+  const bodyBgStyle: CSSProperties = {
+    backgroundColor: 'var(--topgrid-body-bg, #ffffff)',
+    color: 'var(--topgrid-cell-text, #374151)',
+  };
   const rowBorderClassName = usePinning ? 'border-b border-gray-100' : '';
 
   // G-004 D5/D7: virtualization 활성 여부 + outer wrapper height/style 분기.
@@ -397,6 +402,16 @@ function GridInner<TData>(
   // chrome surfaces read them via var(--topgrid-x, <default hex>). No theme → {} → default-on.
   // React CSSProperties doesn't type custom (`--*`) keys → cast at the application site.
   const themeVars = themeToVars(props.theme);
+  // MOD-GRID-29 G-2: HC-safe selection (closes the MOD-28 HC gap). `bg-blue-50` flattens under
+  // forced-colors → a sighted high-contrast user loses the selected-row cue (aria-selected covers
+  // only the SR path). An inline OUTLINE survives: the UA remaps outline-color to a system color in
+  // forced-colors (unlike background), and outline doesn't shift layout. Inline because Tailwind
+  // outline-* classes are inert in the Tailwind-less storybook (P27-1). The bg-blue-50 fill stays as
+  // the normal-mode (Tailwind consumer) enhancement; the outline is the universal indicator.
+  const selectionOutlineStyle: CSSProperties = {
+    outline: '2px solid #2563eb',
+    outlineOffset: '-2px',
+  };
   const [announcement, setAnnouncement] = useState('');
   const sortAnnouncedOnce = useRef(false);
   const selectAnnouncedOnce = useRef(false);
@@ -440,8 +455,6 @@ function GridInner<TData>(
         : { style: {}, className: '' };
       const cellStyle: CSSProperties = { ...pinnedCell.style };
       if (applyCellWidth) cellStyle.width = cellSize;
-      // MOD-GRID-29 G-2: cell text → var (color inline, fallback gray-700).
-      cellStyle.color = 'var(--topgrid-cell-text, #374151)';
       // MOD-GRID-28 G-2: active 셀(키보드 nav 대상) = 시각 링. floating 행(withHandlers=false)은 비대상.
       const isActiveCell = opts.withHandlers && cellDomId(cell.id) === activeCellId;
       const activeClass = isActiveCell ? 'outline outline-2 outline-blue-500 -outline-offset-2' : '';
@@ -548,8 +561,6 @@ function GridInner<TData>(
     // exactOptionalPropertyTypes — width 만 조건부로 추가.
     const combinedStyle: CSSProperties = { ...pinned.style };
     if (applyWidth) combinedStyle.width = size;
-    // MOD-GRID-29 G-2: header label text → var (color inline, fallback gray-500).
-    combinedStyle.color = 'var(--topgrid-header-text, #6b7280)';
     // G-001 (MOD-GRID-07): 컬럼 드래그 재정렬 props (AC-001~AC-004).
     // isPinned: column.getIsPinned() !== false → draggable=false + drop 무시 (AC-004).
     const isPinned = header.column.getIsPinned() !== false;
@@ -695,7 +706,10 @@ function GridInner<TData>(
           <thead
             ref={theadRef}
             className="sticky top-0 z-10"
-            style={{ backgroundColor: 'var(--topgrid-header-bg, #f9fafb)' }}
+            style={{
+              backgroundColor: 'var(--topgrid-header-bg, #f9fafb)',
+              color: 'var(--topgrid-header-text, #6b7280)',
+            }}
           >
             {table.getHeaderGroups().map((headerGroup, hgIndex) => (
               <tr key={headerGroup.id} {...headerRowAttrs(hgIndex + 1)}>
@@ -747,6 +761,7 @@ function GridInner<TData>(
                       {...dataRowAttrs(dataRowAriaIndex(headerRowCount, virtualRow.index), ariaSelectable, row.getIsSelected())}
                       data-index={virtualRow.index}
                       ref={virtualizer!.measureElement}
+                      {...(row.getIsSelected() ? { style: selectionOutlineStyle } : {})}
                       className={`transition-colors ${isClickable ? 'cursor-pointer' : ''} ${
                         row.getIsSelected()
                           ? 'bg-blue-50 hover:bg-blue-100'
@@ -782,6 +797,7 @@ function GridInner<TData>(
                     key={row.id}
                     {...dataRowAttrs(dataRowAriaIndex(headerRowCount, rowPos), ariaSelectable, row.getIsSelected())}
                     data-index={row.index}
+                    {...(row.getIsSelected() ? { style: selectionOutlineStyle } : {})}
                     className={`transition-colors ${isClickable ? 'cursor-pointer' : ''} ${
                       row.getIsSelected() ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'
                     } ${rowBorderClassName} ${extraRowClass}`}

@@ -54,3 +54,35 @@ sortMessage·selectionMessage)·`GridIcons` + `resolveLocale/resolveIcons`(merge
 - **known-broken infra(MOD-29 무관)**: `tests/visual/storybook.spec.ts`(per-story `toMatchSnapshot`)는 playwright 1.60
   에서 `TypeError: file.slice is not a function`(API drift) + baseline 0 커밋 → 전수 fail. 내 변경과 무관(미변경
   Watermark/MapCell 동일 fail). MOD-29 범위서 **수리 안 함**(scope creep). targeted spec 가 실제 게이트.
+
+## G-2 결과 (완료 — 2026-06-04) → MOD-29 = {G-1,G-2} 완주, §3 이관
+**구현**(advisor 3-commit 스테이징): 순수 `internal/theme.ts` — `themeToVars(theme)`→override 키만 inline
+`--topgrid-*` 객체, root 에 적용, 각 surface 가 `var(--topgrid-x, <기본 hex>)` 로 읽음(미설정=root var-free=기본색
+fallback=default-on). `theme?` prop + `GridTheme`(5 정적키: headerBg·headerText·bodyBg·cellText·border) + `darkTheme` 프리셋.
+- **Commit A**(f7f0ccf) spike: header bg 1 surface 만 변환(메커니즘 증명, GridTheme=headerBg 1키). computed-style 2단언
+  (default rgb(249,250,251) 무회귀 + distinctive override rgb(255,0,0) var 흐름).
+- **Commit B**(2e72678) bulk: 5 정적 surface 변환 + `darkTheme`. **markup 변경(class→inline var)→byte-identical 아님**
+  → 불변식=**visual**(computed-style 동일). default 5-surface 무회귀 + override + dark flip = chromium 3, 회귀 24/24.
+- **Commit C**(this) HC-safe 선택: 선택행 inline `outline`(Tailwind outline-* 도 storybook 서 inert→inline). 선택행
+  outline 있음/비선택 없음 = **normal + forced-colors:active(emulateMedia) 양쪽** 단언. tr outline 신뢰성(advisor 우려)=
+  실증으로 렌더 확인. chromium 4(테마3+HC1), 회귀 25/25.
+- **★advisor 핵심 통찰(구조)**: **vars ⊥ HC** — forced-colors 는 값이 literal 이든 var 이든 background/color/border 강제
+  override → **테마는 HC 무익**. HC-safe 선택은 별도 *구조적* 메커니즘(outline; forced-colors 가 outline-color 만 시스템색
+  remap=구조 유지, bg 처럼 평탄화 안 됨). 테마 green→"HC 닫힘" 가장 금지. → **MOD-28 HC 갭(선택 시각 forced-colors 소실)
+  = outline 으로 해소**.
+- **검증분리 준수**: themeToVars=순수 맵(node 로 "themeable" 주장 금지=spec 명시) → 전 주장 browser computed-style.
+- **한계(명시)**: selection bg(:hover)·focus outline(:focus-visible)=pseudo-state 라 inline 불가 → 기본 blue 유지(다크서도
+  가독, HC 는 outline 이 커버). row divider(Tailwind divide util)·pagination/empty chrome=미테마(full 다크 충실도 한계).
+  selection 색 themeable=후속(shipped CSS 필요).
+
+### G-2 close-out advisor 캐치 (Commit C 에 반영)
+- **★cross-feature 회귀 시정(blocking)**: bulk(Commit B)서 cellText/headerText 를 **per-td/th inline** color 로
+  넣었는데 inline 이 class 를 이김 → 소비자 `cellClassName`(MOD-24 조건부 서식 `text-red-600` 등) 색이 **조용히
+  gray 로 덮임**. 게이트가 plain 셀만 써서 못 봄(LESS-006 cross-feature 판). **red-green 실증**: cellClassName→실 CSS
+  클래스(`.tg-red`, storybook 이 직접 `<style>` 제공 — Tailwind class 는 inert) 쓰는 셀 색 단언 테스트가 fix 전 FAIL
+  (gray), fix 후 PASS(red). **fix=색을 tbody/thead 의 inherited color 로 이동**(상속색=cascade 최약 → 셀 자체 class 가
+  이김; 미지정 셀은 테마/다크색 상속). chromium 5(테마4+cross-feature guard1), 회귀 26/26.
+- **finding(MOD-28, 미수리=scope)**: active-cell 링(`Grid.tsx` `activeClass='outline outline-2 outline-blue-500…'`)은
+  Tailwind class → Tailwind-less storybook·비-Tailwind 소비자서 inert(시각 링 안 보임). MOD-28 browser 테스트는
+  aria-activedescendant/focus 유지만 검증·**시각 링 미검증**→unverified ship(방금 선택 outline 고친 것과 동일 inert-class
+  failure mode). MOD-28 후속에서 inline 화 필요(MOD-29 범위 밖). §5.2 후보.

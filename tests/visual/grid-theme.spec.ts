@@ -49,6 +49,50 @@ test('headerBg override: var flows root→thead and paints the distinctive color
   expect(await styleOf(page, 'thead', 'backgroundColor')).toBe('rgb(255, 0, 0)');
 });
 
+// HC-safe selection: bg-blue-50 flattens under forced-colors (the MOD-28 HC gap). The selected row
+// must carry a STRUCTURAL cue (outline) that survives — non-vacuous = the cue is present AND a
+// non-selected row lacks it, asserted under BOTH normal and forced-colors:active.
+test('HC-safe selection: selected row has an outline that survives forced-colors', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME('grid-core-grid-theme--selection-hc'));
+  const root = page.locator('#storybook-root');
+  await root.locator('tbody tr').first().waitFor({ state: 'visible' });
+
+  // select the first data row via its checkbox.
+  const firstRow = root.locator('tbody tr').first();
+  await firstRow.locator('input[type="checkbox"]').check();
+
+  const outlineStyleOf = (loc: typeof firstRow) =>
+    loc.evaluate((el) => getComputedStyle(el).outlineStyle);
+
+  // normal mode: selected row outlined, a non-selected row is not.
+  expect(await outlineStyleOf(firstRow), 'selected row outlined').toBe('solid');
+  expect(await outlineStyleOf(root.locator('tbody tr').nth(1)), 'unselected row not outlined').toBe('none');
+
+  // forced-colors:active — bg would flatten here; the outline must persist (the HC claim).
+  await page.emulateMedia({ forcedColors: 'active' });
+  expect(await outlineStyleOf(firstRow), 'outline survives forced-colors').toBe('solid');
+  expect(await outlineStyleOf(root.locator('tbody tr').nth(1)), 'unselected stays un-outlined in HC').toBe('none');
+  await page.emulateMedia({ forcedColors: 'none' });
+});
+
+// cross-feature guard: a consumer cellClassName color must beat the theme cellText. If cellText is
+// applied inline per-td it WINS over the class (inline > class) and silently grays out MOD-24
+// conditional formatting — so the theme color must be inherited (from tbody), not inline on the td.
+test('cellClassName color wins over theme cellText (conditional formatting not broken)', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME('grid-core-grid-theme--cell-color-override'));
+  const root = page.locator('#storybook-root');
+  await root.locator('tbody tr').first().waitFor({ state: 'visible' });
+  // a score cell carries class .tg-red (rgb(255,0,0)); it must paint red, not gray-700.
+  const scoreCell = root.locator('tbody td.tg-red').first();
+  expect(await scoreCell.evaluate((el) => getComputedStyle(el).color)).toBe('rgb(255, 0, 0)');
+  // a non-score cell still inherits the theme default.
+  expect(await root.locator('tbody td').first().evaluate((el) => getComputedStyle(el).color)).toBe('rgb(55, 65, 81)');
+});
+
 // dark preset → the same surfaces flip to the dark values (multi-surface var flow).
 test('dark preset: all 5 surfaces flip to darkTheme values', async ({
   page,

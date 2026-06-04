@@ -44,3 +44,30 @@ export const Dark: Story = {
   name: '다크 프리셋',
   args: { columns, data, theme: darkTheme },
 };
+
+// HC-safe selection: rowSelection enabled → selecting a row adds an inline outline that survives
+// forced-colors (the test selects a row, then asserts the outline under normal + forced-colors).
+export const SelectionHC: Story = {
+  name: 'HC-safe 선택 (outline)',
+  args: { columns, data, rowSelection: 'multi' },
+};
+
+// Cross-feature guard: a consumer cellClassName color (MOD-24 conditional formatting) must WIN over
+// the theme cellText. The theme color must be inherited (weakest cascade), not inline on the td
+// (inline would beat the class and silently gray out conditional formatting). The ".tg-red" rule is
+// shipped by the story itself because Tailwind classes are inert in the Tailwind-less storybook.
+export const CellColorOverride: Story = {
+  name: 'cellClassName 색 > 테마 cellText',
+  render: (args) => (
+    <>
+      <style>{`.tg-red { color: rgb(255, 0, 0); }`}</style>
+      <Grid
+        {...args}
+        cellClassName={(cell: { column: { id: string } }) =>
+          cell.column.id === 'score' ? 'tg-red' : ''
+        }
+      />
+    </>
+  ),
+  args: { columns, data },
+};
