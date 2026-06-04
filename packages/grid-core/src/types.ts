@@ -24,6 +24,7 @@ import type {
 } from '@tanstack/react-table';
 import type { PaginationMode } from './pagination/types';
 import type { GridLocale, GridIcons } from './internal/i18n';
+import type { GridTheme } from './internal/theme';
 import type {
   ScrollToOptions as VirtualScrollToOptions,
   Virtualizer,
@@ -694,6 +695,13 @@ export interface GridProps<TData> {
   localeText?: Partial<GridLocale>;
   /** 정렬 표시 아이콘 glyph override(부분). 미지정은 기본(`▲▼⇅`)으로 fallback. */
   icons?: Partial<GridIcons>;
+  /**
+   * grid chrome 색 테마(부분 override, MOD-GRID-29 G-2). 제공한 색만 root 에 inline `--topgrid-*` var
+   * 로 적용되고 각 surface 가 `var(--topgrid-x, <기본 hex>)` 로 읽는다. 미지정 키는 기본색 fallback.
+   * 다크 등 프리셋은 `import { darkTheme }` 후 spread. ⚠ CSS var 는 forced-colors(고대비)서 무력
+   * (HC-safe 선택 표시는 별도 메커니즘).
+   */
+  theme?: Partial<GridTheme>;
 
   // ─── 트리 ───
   /** TanStack `getSubRows` — `enableExpanding=true` 시 사용. */

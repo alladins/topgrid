@@ -59,6 +59,7 @@ import {
 } from './internal/ariaAttrs';
 import { nextCell, isNavKey, type CellPos } from './internal/cellNavigation';
 import { resolveLocale, resolveIcons } from './internal/i18n';
+import { themeToVars } from './internal/theme';
 import { getPinnedCellStyle } from './internal/computePinnedOffset';
 import { EmptyState } from './internal/EmptyState';
 import { ResizeHandle } from './internal/ResizeHandle';
@@ -388,6 +389,10 @@ function GridInner<TData>(
   // MOD-GRID-29 G-1: i18n — chrome 문자열/아이콘은 기본(한국어) 위 부분 override. 미지정 키는 fallback.
   const locale = resolveLocale(props.localeText);
   const gridIcons = resolveIcons(props.icons);
+  // MOD-GRID-29 G-2: theme — overridden colors become inline --topgrid-* vars on the grid root;
+  // chrome surfaces read them via var(--topgrid-x, <default hex>). No theme → {} → default-on.
+  // React CSSProperties doesn't type custom (`--*`) keys → cast at the application site.
+  const themeVars = themeToVars(props.theme);
   const [announcement, setAnnouncement] = useState('');
   const sortAnnouncedOnce = useRef(false);
   const selectAnnouncedOnce = useRef(false);
@@ -643,7 +648,10 @@ function GridInner<TData>(
   };
 
   return (
-    <div className={`flex flex-col ${props.className ?? ''}`}>
+    <div
+      className={`flex flex-col ${props.className ?? ''}`}
+      style={themeVars as CSSProperties}
+    >
       {/* MOD-GRID-28 G-3: SR live 리전 — 항상 present+빈 채로 mount, <table role=grid> 밖. 텍스트만 갱신. */}
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {announcement}
@@ -673,7 +681,14 @@ function GridInner<TData>(
             ? { style: { tableLayout: 'fixed' as const, width: totalColumnWidth } }
             : {})}
         >
-          <thead ref={theadRef} className="bg-gray-50 sticky top-0 z-10">
+          {/* MOD-GRID-29 G-2 spike: header bg → var(--topgrid-header-bg, #f9fafb). Color moves to
+              inline style (storybook is Tailwind-less → arbitrary class inert); positioning stays
+              class-based. Fallback hex = the gray-50 it replaced → default-on byte-identical. */}
+          <thead
+            ref={theadRef}
+            className="sticky top-0 z-10"
+            style={{ backgroundColor: 'var(--topgrid-header-bg, #f9fafb)' }}
+          >
             {table.getHeaderGroups().map((headerGroup, hgIndex) => (
               <tr key={headerGroup.id} {...headerRowAttrs(hgIndex + 1)}>
                 {/* MOD-GRID-27 G-2: flat 헤더 윈도잉(ON) vs 전 헤더 렌더(OFF=byte-identical). */}
