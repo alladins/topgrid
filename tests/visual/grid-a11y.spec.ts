@@ -117,3 +117,53 @@ test('empty grid still satisfies the grid contract (axe-clean)', async ({ page }
   await root.locator('table').first().waitFor({ state: 'visible' });
   expect(await axeGridViolations(page), 'empty grid axe-clean (role=row/gridcell on empty-state)').toEqual([]);
 });
+
+// MOD-GRID-28 G-2 — keyboard nav via aria-activedescendant. The non-vacuous gate is the OUT-OF-WINDOW
+// case: a test that only navigates within the visible window passes for roving-tabindex too and
+// proves nothing about the virtualization-safety that motivated the activedescendant choice.
+test('G-2: keyboard nav (aria-activedescendant) survives virtualization (out-of-window)', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME(ID)); // row+col virtualized story (100 rows)
+  const root = page.locator('#storybook-root');
+  const table = root.locator('table[role="grid"]').first();
+  await table.waitFor({ state: 'visible' });
+  await table.focus();
+
+  await table.press('ArrowDown');
+  let ad = await table.getAttribute('aria-activedescendant');
+  expect(ad, 'aria-activedescendant set after ArrowDown').toBeTruthy();
+  await expect(root.locator(`[id="${ad}"]`), 'activedescendant references a real cell').toHaveCount(1);
+
+  // ★ jump far down so the active cell scrolls OUT of the initial window.
+  for (let i = 0; i < 6; i++) await table.press('PageDown');
+  await page.waitForTimeout(250);
+  ad = await table.getAttribute('aria-activedescendant');
+  expect(ad, 'activedescendant after far nav').toBeTruthy();
+  // the active cell must be mounted (scrolled into view) — not a dangling id.
+  await expect(root.locator(`[id="${ad}"]`), 'active cell mounted after windowed nav').toHaveCount(1);
+  // focus must stay on role=grid, NOT collapse to <body> (the whole point of activedescendant).
+  const focusRole = await page.evaluate(() => document.activeElement?.getAttribute('role'));
+  expect(focusRole, 'focus stays on role=grid after out-of-window nav (not body)').toBe('grid');
+  // nav still advances (ArrowUp — we're near the bottom after the PageDowns, so Up always moves).
+  const before = ad;
+  await table.press('ArrowUp');
+  expect(await table.getAttribute('aria-activedescendant'), 'activedescendant advances').not.toBe(before);
+
+  const r = await new AxeBuilder({ page }).include('#storybook-root')
+    .withRules(['aria-valid-attr-value', 'aria-valid-attr', 'aria-roles']).analyze();
+  expect(r.violations, 'activedescendant axe-valid').toEqual([]);
+});
+
+test('G-2: Space/Enter on a header toggles sort (aria-sort updates)', async ({ page }: { page: Page }) => {
+  await page.goto(FRAME('grid-core-grid-a11y--plain'));
+  const root = page.locator('#storybook-root');
+  await root.locator('table').first().waitFor({ state: 'visible' });
+  const header = root.locator('th[aria-sort]').first(); // first SORTABLE header ('이름')
+  expect(await header.getAttribute('aria-sort'), 'initially unsorted').toBe('none');
+  await header.focus();
+  await header.press('Enter');
+  expect(await header.getAttribute('aria-sort'), 'Enter → ascending').toBe('ascending');
+  await header.press('Enter');
+  expect(await header.getAttribute('aria-sort'), 'Enter again → descending').toBe('descending');
+});

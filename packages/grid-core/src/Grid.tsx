@@ -15,6 +15,7 @@
 import {
   forwardRef,
   useEffect,
+  useId,
   useRef,
   useState,
   type CSSProperties,
@@ -56,6 +57,7 @@ import {
   visualColumnOrder,
   buildAriaColIndex,
 } from './internal/ariaAttrs';
+import { nextCell, isNavKey, type CellPos } from './internal/cellNavigation';
 import { getPinnedCellStyle } from './internal/computePinnedOffset';
 import { EmptyState } from './internal/EmptyState';
 import { ResizeHandle } from './internal/ResizeHandle';
@@ -334,9 +336,50 @@ function GridInner<TData>(
   const headerRowCount = table.getHeaderGroups().length;
   const dataRowCount = table.getRowModel().rows.length;
   const ariaSelectable = selectionMode !== 'none';
-  const ariaColIndexOf = buildAriaColIndex(
-    visualColumnOrder(pinnedLeftIds, centerColumns.map((c) => c.id), pinnedRightIds),
+  const visualOrder = visualColumnOrder(
+    pinnedLeftIds,
+    centerColumns.map((c) => c.id),
+    pinnedRightIds,
   );
+  const ariaColIndexOf = buildAriaColIndex(visualOrder);
+
+  // MOD-GRID-28 G-2: 키보드 네비게이션 — aria-activedescendant 모델(roving tabindex 아님). 가상화 시
+  // active 셀이 스크롤로 unmount 돼도 focus 는 안정 컨테이너(table tabIndex=0)에 유지된다(focus→body
+  // 붕괴 회피). active 셀은 **절대 좌표**(row/col)로 주소화 → windowing 생존. id = TanStack cell.id.
+  const gridId = useId();
+  const [activeCell, setActiveCell] = useState<CellPos | null>(null);
+  // active 셀 DOM id = `${gridId}-${cell.id}` (TanStack cell.id=rowId_colId; gridId 접두로 다중 그리드
+  // 충돌 회피). 좌표→id 는 행모델·visualOrder 조회로 산출(absRowIndex 스레딩 불필요).
+  const cellDomId = (cellId: string): string => `${gridId}-${cellId}`;
+  const activeCellId =
+    activeCell !== null
+      ? cellDomId(
+          `${table.getRowModel().rows[activeCell.row]?.id ?? ''}_${visualOrder[activeCell.col] ?? ''}`,
+        )
+      : undefined;
+  const handleGridKeyDown = (e: ReactKeyboardEvent<HTMLTableElement>): void => {
+    if (!isNavKey(e.key)) return;
+    const cur = activeCell ?? { row: 0, col: 0 };
+    const next = nextCell(
+      cur,
+      e.key,
+      { ctrl: e.ctrlKey || e.metaKey, shift: e.shiftKey },
+      { rowCount: dataRowCount, colCount: visualOrder.length, pageSize: Math.max(1, virtualItems.length || 10) },
+    );
+    if (next) {
+      e.preventDefault();
+      setActiveCell(next);
+    }
+  };
+  // active 셀이 가상 윈도 밖이면 scroll-into-view → 그 다음 cell 이 mount 되며 activedescendant 가 유효.
+  useEffect(() => {
+    if (activeCell === null) return;
+    if (virtualizer !== null) virtualizer.scrollToIndex(activeCell.row, { align: 'auto' });
+    if (typeof document !== 'undefined' && activeCellId) {
+      document.getElementById(activeCellId)?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCell]);
 
   // 한 행의 `<td>` 목록을 컬럼 윈도우 순서로 렌더(per-row Map 으로 O(n) 조회 — n² 회피).
   // pad spacer 는 윈도우 px>0 일 때만(full window 에선 0 → 미방출 = byte-identical).
@@ -362,12 +405,16 @@ function GridInner<TData>(
         : { style: {}, className: '' };
       const cellStyle: CSSProperties = { ...pinnedCell.style };
       if (applyCellWidth) cellStyle.width = cellSize;
+      // MOD-GRID-28 G-2: active 셀(키보드 nav 대상) = 시각 링. floating 행(withHandlers=false)은 비대상.
+      const isActiveCell = opts.withHandlers && cellDomId(cell.id) === activeCellId;
+      const activeClass = isActiveCell ? 'outline outline-2 outline-blue-500 -outline-offset-2' : '';
       const className = opts.withCellClassName
-        ? `px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className} ${props.cellClassName?.(cell) ?? ''}`
+        ? `px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className} ${activeClass} ${props.cellClassName?.(cell) ?? ''}`
         : `px-4 py-3 whitespace-nowrap text-gray-700 ${pinnedCell.className}`;
       return (
         <td
           key={cell.id}
+          {...(opts.withHandlers ? { id: cellDomId(cell.id) } : {})}
           {...gridCellAttrs(ariaColIndexOf(cell.column.id))}
           className={className}
           style={cellStyle}
@@ -508,7 +555,15 @@ function GridInner<TData>(
         onDrop={(e) => dragProps.onDrop(e.nativeEvent)}
         onDragEnd={(e) => dragProps.onDragEnd(e.nativeEvent)}
         tabIndex={0}
-        onKeyDown={(e) => keyDownHandler(e.nativeEvent)}
+        onKeyDown={(e) => {
+          // MOD-GRID-28 G-2: Space/Enter 로 정렬 토글(기존엔 마우스 클릭만). 그 외는 컬럼드래그 핸들러.
+          if ((e.key === ' ' || e.key === 'Enter') && canSort) {
+            e.preventDefault();
+            header.column.toggleSorting(undefined, isMulti && e.shiftKey);
+            return;
+          }
+          keyDownHandler(e.nativeEvent);
+        }}
         aria-roledescription={props.enableColumnReorder === true ? 'draggable column' : undefined}
       >
         {/* G-001 (MOD-GRID-07): drop 위치 시각 인디케이터 (AC-003, C-5 Tailwind). */}
@@ -580,6 +635,9 @@ function GridInner<TData>(
             소비자는 컨테이너 overflow 직접 지정 필요.) C-29 conditional spread. */}
         <table
           {...gridContainerAttrs(headerRowCount, dataRowCount, leafColumnIds.length, selectionMode === 'multi')}
+          tabIndex={0}
+          onKeyDown={handleGridKeyDown}
+          {...(activeCellId ? { 'aria-activedescendant': activeCellId } : {})}
           className={tableClassName}
           {...(columnVirtEnabled
             ? { style: { tableLayout: 'fixed' as const, width: totalColumnWidth } }
