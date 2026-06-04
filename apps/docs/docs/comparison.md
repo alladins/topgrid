@@ -73,10 +73,13 @@ sidebar_position: 3
 
 상용 그리드(무료 포함)가 갖춘 것 중 **아직 없는** 대표 항목이다.
 
-**접근성 (가장 큰 갭 — 무료 그리드도 기본 제공)**
-- ARIA grid/row/cell 역할(`role=grid/gridcell/columnheader`), 위치 속성(`aria-rowindex/colindex`),
-  `aria-sort`, Home/End/PageUp/PageDown 내비, roving tabindex 포커스 관리, 스크린리더 live 알림,
-  고대비(forced-colors).
+**접근성 — ✅ 대부분 구현됨 (2026-06, MOD-28)**
+- ARIA grid 의미론(`role=grid/row/gridcell/columnheader`, `aria-rowindex/colindex/rowcount/colcount`,
+  `aria-sort`, `aria-selected`) — **default-on**, 가상화 하에서도 절대 인덱스 보고. axe-core 검증.
+- 키보드 내비(화살표/Home/End/Ctrl+Home·End/PageUp·Down/Tab/Enter) — **aria-activedescendant**
+  모델이라 가상화로 셀이 unmount 돼도 포커스 유지. Space/Enter 헤더 정렬.
+- 스크린리더 live 알림(정렬/선택 변경).
+- **남은 것**: 고대비(forced-colors) 선택-행 표시는 테마 모듈(아래) 의존. UI 텍스트 현지화(localeText)도 i18n 모듈.
 
 **테마 · 국제화**
 - 사전 빌드 테마(quartz/alpine 류), CSS 변수 테마 시스템, 다크 모드, **RTL**, UI 텍스트 현지화(localeText),
