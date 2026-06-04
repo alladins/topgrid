@@ -1,8 +1,10 @@
 // MOD-GRID-31 G-1: pivot 결과 정렬 — chromium gate. ★2-row-dimension config 필수: subtotal 은 행차원
 // ≥2 에서만 존재하고, "정렬 후 subtotal 이 자기 그룹에 앵커"가 핵심 주장(단일 행차원=vacuous).
 // C-3 예외: mock 데이터는 Storybook/test 에서만 허용.
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { PivotGrid } from '@topgrid/grid-pro-pivot';
+import type { PivotConfig } from '@topgrid/grid-pro-pivot';
 import { setLicenseState } from '@topgrid/grid-license';
 
 interface SalesRow {
@@ -69,6 +71,39 @@ export const SortCollapse: StoryObj = {
       enableCollapse
     />
   ),
+};
+
+// G-3: runtime config controls (transpose + pivotMode toggle). ★ transpose re-runs computePivot →
+// __id reassigned → collapse/sort state must reset (else stale ids hide the wrong group).
+// onConfigChange 페이로드를 DOM 에 노출(export 검증) — notify-only 콜백이 전치된 config 로 실제 발화하는지.
+function ConfigControlsDemo(): JSX.Element {
+  const [notifiedRows, setNotifiedRows] = useState<string>('none');
+  return (
+    <>
+      <div data-testid="cfg-notify">{notifiedRows}</div>
+      <PivotGrid<SalesRow>
+        data={data}
+        config={{ rows: ['region', 'city'], columns: [], values: [{ field: 'sales', aggregationFn: 'sum' }] }}
+        enableSort
+        enableCollapse
+        enableConfigControls
+        onConfigChange={(c: PivotConfig) => setNotifiedRows(JSON.stringify(c.rows))}
+        passthroughColumns={[
+          { accessorKey: 'region', header: 'region' },
+          { accessorKey: 'city', header: 'city' },
+          { accessorKey: 'sales', header: 'sales' },
+        ]}
+      />
+    </>
+  );
+}
+
+export const ConfigControls: StoryObj = {
+  name: 'runtime config (전치 + 토글)',
+  beforeEach: () => {
+    setLicenseState(validLicense);
+  },
+  render: () => <ConfigControlsDemo />,
 };
 
 // nested-column path: column dim → value headers built via mapColumnNode recursion (the path the

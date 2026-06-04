@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/sortPivotRows.test.ts && node --experimental-strip-types src/collapsePivotRows.test.ts"
+    "test": "node --experimental-strip-types src/sortPivotRows.test.ts && node --experimental-strip-types src/collapsePivotRows.test.ts && node --experimental-strip-types src/transposePivotConfig.test.ts"
   },
   "dependencies": {
     "@topgrid/grid-license": "workspace:*",

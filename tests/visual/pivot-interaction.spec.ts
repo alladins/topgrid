@@ -87,6 +87,55 @@ test('collapse hides a group\'s data, subtotal survives; composes with sort', as
   expect(restored[1].text).toContain('NY');
 });
 
+test('runtime config: transpose swaps axes AND ★resets collapse (no stale group hiding)', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME('grid-pro-pivot-interaction--config-controls'));
+  const root = page.locator('#storybook-root');
+  await root.locator('tbody tr').first().waitFor({ state: 'visible' });
+
+  // baseline: rows:['region','city'] → 6 rows (2 East data, East sub, LA, West sub, grandTotal).
+  expect((await rowSummary(page)).length).toBe(6);
+
+  // collapse East → 4 rows.
+  await root.locator('td button[aria-label="East Total 토글"]').first().click();
+  expect((await rowSummary(page)).length).toBe(4);
+
+  // transpose → rows:[] columns:['region','city'] → a single grandTotal row (structure changed).
+  await root.locator('button[aria-label="행/열 전치"]').click();
+  expect((await rowSummary(page)).length).toBe(1);
+  // onConfigChange fired with the transposed config (rows now empty) — verifies the exported callback.
+  await expect(root.locator('[data-testid="cfg-notify"]')).toHaveText('[]');
+
+  // ★ transpose back → rows:['region','city'] again. computePivot re-runs with the SAME deterministic
+  // __ids, so if collapse had NOT been reset the stale East id would re-collapse → 4 rows. It is reset
+  // → full 6 rows (East data visible). This is the composition trap (stale id hides wrong group).
+  await root.locator('button[aria-label="행/열 전치"]').click();
+  expect((await rowSummary(page)).length).toBe(6);
+  expect((await rowSummary(page)).some((r) => r.text.includes('NY'))).toBe(true);
+});
+
+test('runtime config: pivotMode toggle switches between pivot and passthrough', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME('grid-pro-pivot-interaction--config-controls'));
+  const root = page.locator('#storybook-root');
+  await root.locator('tbody tr').first().waitFor({ state: 'visible' });
+
+  // pivot mode → has a grandTotal synthetic row.
+  expect((await rowSummary(page)).some((r) => r.kind === 'grandTotal')).toBe(true);
+
+  // toggle off → passthrough (raw 6 source rows, no synthetic grandTotal).
+  await root.locator('button[aria-label="pivot 모드 토글"]').click();
+  const off = await rowSummary(page);
+  expect(off.some((r) => r.kind === 'grandTotal')).toBe(false);
+  expect(off.length).toBe(6); // 6 raw source rows
+
+  // toggle back → pivot again.
+  await root.locator('button[aria-label="pivot 모드 토글"]').click();
+  expect((await rowSummary(page)).some((r) => r.kind === 'grandTotal')).toBe(true);
+});
+
 test('nested-column value header sort: mapColumnNode path reorders within group, anchors subtotal', async ({
   page,
 }: { page: Page }) => {

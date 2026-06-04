@@ -88,3 +88,31 @@ group-header 없음)→토글이 자기 위 후손을 숨김(AG 상하반전=문
 - **G-3 forward(advisor)**: collapsedIds/sort 는 `__id`/leafKey 키 → G-3 transpose/config 변경 시 computePivot 재실행으로
   __id 재배정·leafKey 변경 → **config 변경 시 collapse(+sort) state 리셋** 필수 + chromium "collapse 상태→transpose→깨끗이
   초기화" 단언(합성 함정의 G-3 판).
+
+## G-3 결과 (완료 — 2026-06-05) → MOD-31 = {G-1,G-2,G-3} 완주, §3 이관
+**구현**: 순수 `transposePivotConfig(config)` — rows↔columns swap(values 보존, involution). PivotGrid:
+`enableConfigControls?` opt-in 툴바([⇄ 전치], [pivot ON/OFF 토글]) + `onConfigChange?` 콜백. controls 활성 시
+config/pivotMode 를 **내부 state 소유**(props=초기값, MOD-18 controlled 와 배타적=동기화 footgun 회피). computePivot
+재사용(변환 엔진 신규 0).
+- **★config 변경 시 sort+collapse 리셋(advisor forward 닫음)**: transpose=computePivot 재실행→`__id` 재배정·`leafKey`
+  변경→stale id 가 엉뚱한 그룹 숨김. `applyConfig` 가 setSort(null)+setCollapsedIds(new Set()) 후 onConfigChange.
+  (pivotMode 토글은 config 불변=같은 __id→미리셋, state 보존.)
+- **검증**: node transpose 5/5(swap·involution·values 보존·원본 불변). chromium 2(`pivot-interaction.spec.ts`):
+  ①★transpose 리셋(collapse East→4행→전치→1행(rows:[])→전치복귀→**6행**=리셋 증명. 미리셋이면 stale East id 재collapse=4행)
+  ②pivotMode 토글(pivot grandTotal↔passthrough raw 6행). 회귀 41/41. typecheck 0.
+- **MOD-18 보존**: enableConfigControls off→props.config/pivotMode 직접 사용(controlled 불변).
+
+## 모듈 완주 요약
+3-Goal: G-1 값 정렬(그룹 내+subtotal 앵커) · G-2 expand/collapse(후손 숨김+collapse(sort) 체인) · G-3 런타임 config
+(transpose+토글+config 변경 시 state 리셋). 전부 `model.rows`/config 순수 변환 + PivotGrid 배선, **computePivot/grid-core
+무수정**(MOD-18 26 검증 보존). node spine 35(11+19+5) + chromium 5. LESS-006: 매 골 2-행차원 fixture(앵커링 non-vacuous)
++ advisor 후속(G-1 nested-column·G-2 3-dim 중첩·G-3 transpose 리셋)으로 wired-but-unverified/합성 함정 폐쇄. deferral:
+계층 정렬(그룹 자체)·pivot panel drag-drop·column collapse=vN.
+
+### G-3 advisor 후속(커밋 fold)
+- **onConfigChange export 검증**: 콜백이 export·문서화됐으나 미발화 검증(wired-but-unverified export 형태). →
+  ConfigControlsDemo story 가 onConfigChange 페이로드를 `[data-testid="cfg-notify"]` 에 노출, chromium 이 전치 후
+  notify='[]'(전치된 rows) 단언. notify-only(내부 동작 무의존)라 lower stakes 였으나 패턴대로 폐쇄.
+- **릴리스 체크리스트(advisor forward, 본 턴 밖)**: grid-pro-pivot·grid-pro-filter 의 `test` script 가
+  `node --experimental-strip-types` → CI Node **22.6+/23** 필요(아니면 `pnpm -r test` 실패). + facade(@topgrid/grid)에
+  grid-pro-filter 등록 + batch 버전 bump.

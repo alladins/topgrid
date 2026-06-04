@@ -652,7 +652,7 @@
 
 ---
 
-### `mod-grid-31` — pivot 상호작용 (sort / expand-collapse / runtime config, **Pro**, grid-pro-pivot) 🔶 진행 중 — G-1 채움, G-2/G-3 대기
+### `mod-grid-31` — pivot 상호작용 (sort / expand-collapse / runtime config, **Pro**, grid-pro-pivot) ✅ 채움 — {G-1,G-2,G-3} 완주
 
 소스: `packages/grid-pro-pivot/src/{sortPivotRows.ts, buildPivotColumns.tsx, PivotGrid.tsx, index.ts}` + `stories/PivotInteraction.stories.tsx` + `tests/visual/pivot-interaction.spec.ts` + node `src/sortPivotRows.test.ts`, spec `.claude/dev-harness/specs/MOD-GRID-31.md`. dev-harness 14번째. 갭분석 Pivoting(미구현 10=최대 갭). MOD-18 정적 pivot 위에 런타임 상호작용 3축. computePivot/grid-core 무수정.
 
@@ -660,9 +660,9 @@
 |------|----------|------|----------|------|------|
 | 값 정렬(G-1) | `sortPivotRows(model,leafKey,dir)`(순수) + `buildPivotColumns(model,sortOpts?)` + PivotGrid `enableSort?` | **종결형**(순수)+트리거 | ★세그먼트(data run, subtotal/grandTotal 종료) 내 정렬·합성행 앵커·null 하단. grid-core enableSort 미사용(평탄 전체 정렬=subtotal 섞임). MOD-18 보존(sortOpts/enableSort 기본 off) | 클릭 cycle asc→desc→해제. node spine **11/11**(2-행차원 fixture, kind 시퀀스 불변=앵커) + chromium **1/1**(asc Boston<NY·subtotal/grandTotal 앵커·desc 반전). 회귀 37/37 | 채움 |
 | expand/collapse(G-2) | `collapsePivotRows(rows,collapsedIds)`(순수, 후손 backward 스캔) + buildPivotColumns subtotal 셀 chevron 토글 | 종결형+트리거 | 후손 data 숨김·subtotal 대표 잔존·grandTotal 불변. 모델 subtotal=그룹 하단→토글 상하반전(문서화). computePivot 미수정. ★`displayRows=collapse(sort(rows))` 체인 | node spine **11/11**(체인 포함) + chromium(토글→숨김/복원 + **★sort+collapse 동시**: 재확장 시 정렬 유지). MOD-18 보존(미지정=plain). 회귀 39/39 | 채움 |
-| 런타임 config(G-3) | controlled config+onConfigChange + `transposePivotConfig`(rows↔columns swap) + pivotMode 토글 | 종결형+트리거 | computePivot 재실행(엔진 신규 0). grid-core controlled state 패턴 mirror | 대기 |
+| 런타임 config(G-3) | `transposePivotConfig`(순수 swap) + PivotGrid `enableConfigControls?` 툴바([⇄전치][토글])+`onConfigChange?` | 종결형+트리거 | computePivot 재실행(엔진 신규 0). controls 활성 시 config/pivotMode 내부 소유(MOD-18 controlled 배타). ★config 변경→sort/collapse 리셋(stale __id 방지) | node 5/5 + chromium 2(★transpose 리셋: collapse→전치→복귀=6행 리셋 증명·pivotMode 토글). MOD-18 보존. 회귀 41/41 | 채움 |
 
-> dev-harness 수확: **reuse** = MOD-18 computePivot/PivotModel/buildPivotColumns/Watermark 게이트(무수정). **신규 패턴**: 상호작용=`model.rows` flat 배열 순수 변환 → PivotGrid 가 변환행을 `<Grid data>` 전달(grid-core 미접촉=MOD-30 floating 과 다른 깔끔 seam). **★vacuity(advisor)**: subtotal 은 행차원 ≥2 에만 존재→모든 fixture/story **2-행차원**(앵커링 증명, 단일차원=이 모듈의 "list 비어있지 않음"). **scope 고정(advisor)**: G-1 정렬=within-group leaf 만(그룹 자체 계층 정렬=vN)·G-2 collapse 어포던스=subtotal 토글(상단 헤더 방출=computePivot 수정=MOD-18 위험, 회피). **computePivot emit 미수정**=MOD-18 보존 경계.
+> dev-harness 수확: **reuse** = MOD-18 computePivot/PivotModel/buildPivotColumns/Watermark 게이트(무수정). **신규 패턴**: 상호작용=`model.rows`/config flat 순수 변환(sortPivotRows·collapsePivotRows·transposePivotConfig) → PivotGrid 가 변환행을 `<Grid data>` 전달(grid-core 미접촉=MOD-30 floating 과 다른 깔끔 seam). **★vacuity(advisor)**: subtotal 은 행차원 ≥2 에만 존재→모든 fixture/story **2-행차원**(앵커링 증명, 단일차원=이 모듈의 "list 비어있지 않음"). **scope 고정(advisor)**: G-1 정렬=within-group leaf 만(그룹 자체 계층 정렬=vN)·G-2 collapse 어포던스=subtotal 토글(상단 헤더 방출=computePivot 수정 회피). **★합성 함정 ×2(advisor forward)**: G-2 collapse(sort(rows)) 체인 동시 단언·G-3 config 변경 시 stale __id/leafKey 리셋(transpose→collapse 깨끗 초기화). **advisor 후속 폐쇄**: G-1 nested-column 헤더 경로·G-2 3-dim 중첩 분기(부모가 중간 subtotal 숨김). node spine 35(11+19+5)+chromium 5. **computePivot emit 미수정**=MOD-18 26 검증 보존 경계.
 
 ---
 

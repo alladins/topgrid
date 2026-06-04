@@ -18,6 +18,8 @@ export { sortPivotRows } from './sortPivotRows.js';
 export type { PivotSortDirection, PivotSortState } from './sortPivotRows.js';
 // MOD-GRID-31 G-2: 행 그룹 expand/collapse(후손 data 숨김, subtotal 대표 잔존) 순수 변환.
 export { collapsePivotRows } from './collapsePivotRows.js';
+// MOD-GRID-31 G-3: pivot 축 전치(rows↔columns swap) 순수 변환.
+export { transposePivotConfig } from './transposePivotConfig.js';
 export {
   applyReducer,
   isBuiltInAggregationKey,

@@ -20,6 +20,7 @@ import { computePivot } from './computePivot';
 import { buildPivotColumns } from './buildPivotColumns';
 import { sortPivotRows, type PivotSortState } from './sortPivotRows';
 import { collapsePivotRows } from './collapsePivotRows';
+import { transposePivotConfig } from './transposePivotConfig';
 import type { PivotConfig, PivotRow } from './types';
 
 /**
@@ -55,6 +56,14 @@ export interface PivotGridProps<TData extends Record<string, unknown>> {
    * (collapse(sort(rows))). 미지정=MOD-18 동작(정적 subtotal 라벨).
    */
   enableCollapse?: boolean;
+  /**
+   * 런타임 config 컨트롤 활성 (MOD-GRID-31 G-3, default `false`). `true` 시 상단 툴바([⇄ 전치],
+   * [pivot 토글])가 렌더되고 PivotGrid 가 config/pivotMode 를 **내부 state 로 소유**(props.config·pivotMode 는
+   * 초기값). 미지정 시 props.config 를 직접 사용(MOD-18 controlled 동작 불변). config 소비자 제어와 배타적.
+   */
+  enableConfigControls?: boolean;
+  /** config 변경(전치 등) 시 호출 — 소비자 영속/동기화용 (MOD-GRID-31 G-3). */
+  onConfigChange?: (config: PivotConfig) => void;
   /** Outer wrapper className. */
   className?: string;
 }
@@ -89,6 +98,8 @@ export function PivotGrid<TData extends Record<string, unknown>>({
   enableVirtualization,
   enableSort,
   enableCollapse,
+  enableConfigControls,
+  onConfigChange,
   className,
 }: PivotGridProps<TData>): JSX.Element {
   const lic = useLicenseStatus();
@@ -112,10 +123,29 @@ export function PivotGrid<TData extends Record<string, unknown>>({
       return next;
     });
 
+  // MOD-GRID-31 G-3: 런타임 config 컨트롤. controls 활성 시 PivotGrid 가 config/pivotMode 를 내부 소유
+  // (props 는 초기값). 미활성 시 props 직접 사용(MOD-18 controlled 불변, 두 모드 배타적=동기화 footgun 회피).
+  const controls = enableConfigControls === true;
+  const [effConfig, setEffConfig] = useState<PivotConfig>(config);
+  const [effPivotMode, setEffPivotMode] = useState<boolean>(pivotMode);
+  const activeConfig = controls ? effConfig : config;
+  const activePivotMode = controls ? effPivotMode : pivotMode;
+
+  // ★ config 변경 → computePivot 재실행 → __id 재배정·leafKey 변경 → sort/collapse state 반드시 리셋
+  // (아니면 stale id 가 엉뚱한 그룹을 숨김 — advisor). pivotMode 토글은 config 불변(같은 __id)이라 미리셋.
+  const applyConfig = (next: PivotConfig): void => {
+    setEffConfig(next);
+    setSort(null);
+    setCollapsedIds(new Set());
+    onConfigChange?.(next);
+  };
+  const onTranspose = (): void => applyConfig(transposePivotConfig(effConfig));
+  const onTogglePivotMode = (): void => setEffPivotMode((p) => !p);
+
   // G-1/G-4: headless pivot model (memoised). Skipped entirely when pivotMode=false.
   const model = useMemo(
-    () => (pivotMode ? computePivot(data, config) : null),
-    [pivotMode, data, config],
+    () => (activePivotMode ? computePivot(data, activeConfig) : null),
+    [activePivotMode, data, activeConfig],
   );
 
   const pivotColumns = useMemo(
@@ -142,10 +172,34 @@ export function PivotGrid<TData extends Record<string, unknown>>({
 
   const rootClassName = ['relative', className ?? ''].filter(Boolean).join(' ');
 
+  // MOD-GRID-31 G-3: 런타임 config 툴바(controls 활성 시). pivot/passthrough 양쪽에 렌더(off 상태서 재토글).
+  const configToolbar = controls ? (
+    <div style={{ display: 'flex', gap: '6px', marginBottom: '6px' }}>
+      <button
+        type="button"
+        aria-label="행/열 전치"
+        onClick={onTranspose}
+        style={{ cursor: 'pointer', padding: '2px 8px', fontSize: '12px', border: '1px solid #d1d5db', borderRadius: '4px', background: '#fff' }}
+      >
+        ⇄ 전치
+      </button>
+      <button
+        type="button"
+        aria-label="pivot 모드 토글"
+        aria-pressed={activePivotMode}
+        onClick={onTogglePivotMode}
+        style={{ cursor: 'pointer', padding: '2px 8px', fontSize: '12px', border: '1px solid #d1d5db', borderRadius: '4px', background: '#fff' }}
+      >
+        pivot {activePivotMode ? 'ON' : 'OFF'}
+      </button>
+    </div>
+  ) : null;
+
   // G-5: pivotMode=false → normal grid passthrough (NO pivot transform).
-  if (!pivotMode) {
+  if (!activePivotMode) {
     return (
       <div className={rootClassName}>
+        {configToolbar}
         <Grid<TData>
           data={data}
           columns={passthroughColumns ?? []}
@@ -161,6 +215,7 @@ export function PivotGrid<TData extends Record<string, unknown>>({
 
   return (
     <div className={rootClassName}>
+      {configToolbar}
       <Grid<PivotRow>
         data={displayRows}
         columns={pivotColumns}
