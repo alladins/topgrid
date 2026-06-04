@@ -65,3 +65,26 @@ asc→desc→해제) + `sortPivotRows` 적용 → `<Grid data={displayRows}>`. g
   nested 값 헤더("Q1 정렬") 클릭→그룹 내 정렬(Boston Q1=30 < NY Q1=100)+subtotal 앵커 단언. chromium 2/2.
 - **G-2 forward(advisor)**: sort/collapse 둘 다 model.rows 변환 → displayRows 에서 **체인**(collapse(sort(rows)),
   순서 무관) + chromium 이 **정렬+collapse 동시** 단언 필수(고립 통과·합성 깨짐 함정 회피).
+
+## G-2 결과 (완료 — 2026-06-05)
+**구현**: 순수 `collapsePivotRows(rows, collapsedIds)` — subtotal(`__id` ∈ collapsedIds)의 후손 행 제거(임의 중첩:
+바로 앞 연속 행 중 depth > subtotal depth 인 것, 첫 depth ≤ d 에서 정지=이전 그룹 경계). subtotal 자신은 그룹
+대표로 잔존, grandTotal 불변. 어포την스: `buildPivotColumns(model, sort?, collapse?)` 의 subtotal 행-dim 셀을 클릭
+chevron(▶/▼) 버튼으로 — collapse 미지정 시 plain text(MOD-18 불변). 모델이 subtotal 을 그룹 **하단**에 방출(상단
+group-header 없음)→토글이 자기 위 후손을 숨김(AG 상하반전=문서화 한계). computePivot 미수정.
+- **★합성(advisor forward)**: PivotGrid `displayRows = collapse(sort(rows))` 체인(둘 다 순수, collapse 는 id 필터라
+  순서 무관). `enableCollapse?` opt-in(기본 off). collapsedIds state 토글.
+- **검증**: node spine **11/11**(`src/collapsePivotRows.test.ts`, 2-행차원: collapse→후손 숨김·subtotal 대표 잔존·
+  grandTotal 불변·재확장 복원·**★collapse(sort) 체인=정렬 후에도 같은 그룹 숨김**). chromium(`pivot-interaction.spec.ts`
+  collapse 테스트): East 토글→data 2행 숨김·subtotal 잔존·재확장 복원 + **★합성**(sort asc→collapse East→재확장 시
+  East data 가 **여전히 정렬됨**(Boston<NY)=collapse(sort) 동시 활성 증명). 회귀 39/39. typecheck 0.
+- **MOD-18 보존**: collapse 미지정→subtotal 라벨 plain·enableCollapse off→정적.
+
+### G-2 advisor 후속(커밋 fold)
+- **3-행차원 중첩 검증**: 2-dim fixture 는 subtotal depth 0 한 종류라 backward-scan 핵심 분기 미실행(부모 collapse 가
+  중간 자식 subtotal 숨김·자식 collapse 가 형제 보존). → 3-dim(region×city×product) node fixture 추가: ①depth-0 부모
+  collapse→East 후손+중간 subtotal(sNY/sBos) 전부 숨김, 가시=sEast,West,grandTotal ②depth-1 자식 collapse→NY data 만
+  숨고 형제 Boston(data+subtotal) 잔존. collapse spine 11→**19**. "by construction"→"observed".
+- **G-3 forward(advisor)**: collapsedIds/sort 는 `__id`/leafKey 키 → G-3 transpose/config 변경 시 computePivot 재실행으로
+  __id 재배정·leafKey 변경 → **config 변경 시 collapse(+sort) state 리셋** 필수 + chromium "collapse 상태→transpose→깨끗이
+  초기화" 단언(합성 함정의 G-3 판).

@@ -19,6 +19,7 @@ import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 import { computePivot } from './computePivot';
 import { buildPivotColumns } from './buildPivotColumns';
 import { sortPivotRows, type PivotSortState } from './sortPivotRows';
+import { collapsePivotRows } from './collapsePivotRows';
 import type { PivotConfig, PivotRow } from './types';
 
 /**
@@ -48,6 +49,12 @@ export interface PivotGridProps<TData extends Record<string, unknown>> {
    * 정렬(subtotal/grandTotal 앵커, grid-core enableSort 아님). 미지정=MOD-18 동작(정적 헤더).
    */
   enableSort?: boolean;
+  /**
+   * 행 그룹 expand/collapse 활성 (MOD-GRID-31 G-2, default `false`). `true` 시 subtotal 행 라벨이
+   * 클릭(chevron ▶/▼)→그룹 하위 data 행 숨김/복원(subtotal 은 대표로 잔존). 정렬과 합성된다
+   * (collapse(sort(rows))). 미지정=MOD-18 동작(정적 subtotal 라벨).
+   */
+  enableCollapse?: boolean;
   /** Outer wrapper className. */
   className?: string;
 }
@@ -81,6 +88,7 @@ export function PivotGrid<TData extends Record<string, unknown>>({
   passthroughColumns,
   enableVirtualization,
   enableSort,
+  enableCollapse,
   className,
 }: PivotGridProps<TData>): JSX.Element {
   const lic = useLicenseStatus();
@@ -94,6 +102,16 @@ export function PivotGrid<TData extends Record<string, unknown>>({
       return null; // desc → 해제
     });
 
+  // MOD-GRID-31 G-2: collapse 된 subtotal __id 집합. 토글 = 추가/제거.
+  const [collapsedIds, setCollapsedIds] = useState<ReadonlySet<string>>(new Set());
+  const onToggleCollapse = (id: string): void =>
+    setCollapsedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
   // G-1/G-4: headless pivot model (memoised). Skipped entirely when pivotMode=false.
   const model = useMemo(
     () => (pivotMode ? computePivot(data, config) : null),
@@ -103,17 +121,24 @@ export function PivotGrid<TData extends Record<string, unknown>>({
   const pivotColumns = useMemo(
     () =>
       model
-        ? buildPivotColumns(model, enableSort === true ? { active: sort, onSort } : undefined)
+        ? buildPivotColumns(
+            model,
+            enableSort === true ? { active: sort, onSort } : undefined,
+            enableCollapse === true ? { collapsedIds, onToggle: onToggleCollapse } : undefined,
+          )
         : [],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [model, enableSort, sort],
+    [model, enableSort, sort, enableCollapse, collapsedIds],
   );
 
-  // MOD-GRID-31 G-1: 정렬 활성+활성 정렬 시 그룹 내 재정렬(subtotal/grandTotal 앵커). 아니면 원본.
-  const displayRows = useMemo(
-    () => (model && enableSort === true && sort ? sortPivotRows(model, sort.leafKey, sort.dir) : model?.rows ?? []),
-    [model, enableSort, sort],
-  );
+  // MOD-GRID-31 G-1+G-2: 정렬(그룹 내 재정렬, subtotal 앵커) → collapse(후손 숨김) 합성. 둘 다 순수
+  // 변환이고 collapse 는 id 필터라 순서 무관(생존 행 상대순서 불변). enableX 미지정 시 해당 단계 skip.
+  const displayRows = useMemo(() => {
+    if (!model) return [];
+    const sorted =
+      enableSort === true && sort ? sortPivotRows(model, sort.leafKey, sort.dir) : model.rows;
+    return enableCollapse === true ? collapsePivotRows(sorted, collapsedIds) : sorted;
+  }, [model, enableSort, sort, enableCollapse, collapsedIds]);
 
   const rootClassName = ['relative', className ?? ''].filter(Boolean).join(' ');
 

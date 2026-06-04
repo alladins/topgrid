@@ -54,6 +54,39 @@ test('value header sort: data reorders within group; subtotal/grandTotal stay an
   expect(desc[1].text).toContain('Boston');
 });
 
+test('collapse hides a group\'s data, subtotal survives; composes with sort', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME('grid-pro-pivot-interaction--sort-collapse'));
+  const root = page.locator('#storybook-root');
+  await root.locator('tbody tr').first().waitFor({ state: 'visible' });
+
+  // baseline: 6 rows (2 East data, East subtotal, 1 West data, West subtotal, grandTotal).
+  expect((await rowSummary(page)).map((r) => r.kind).join(',')).toBe('data,data,subtotal,data,subtotal,grandTotal');
+
+  // collapse East (click its subtotal toggle) → its 2 data rows hidden, subtotal survives.
+  await root.locator('th button[aria-label="East Total 토글"], td button[aria-label="East Total 토글"]').first().click();
+  let after = await rowSummary(page);
+  expect(after.map((r) => r.kind).join(',')).toBe('subtotal,data,subtotal,grandTotal');
+  expect(after.some((r) => r.text.includes('NY') || r.text.includes('Boston'))).toBe(false);
+  expect(after[0].text).toContain('East'); // East subtotal still present as representative
+
+  // re-expand → restored.
+  await root.locator('td button[aria-label="East Total 토글"], th button[aria-label="East Total 토글"]').first().click();
+  expect((await rowSummary(page)).map((r) => r.kind).join(',')).toBe('data,data,subtotal,data,subtotal,grandTotal');
+
+  // ★ composition: sort asc (East: Boston 90 < NY 300), THEN collapse East, THEN re-expand → the
+  // restored East data is STILL sorted (Boston before NY) — proves collapse(sort(rows)) chain.
+  await root.locator('th button[aria-label="sales 정렬"]').click(); // asc
+  expect((await rowSummary(page))[0].text).toContain('Boston');
+  await root.locator('td button[aria-label="East Total 토글"], th button[aria-label="East Total 토글"]').first().click(); // collapse
+  expect((await rowSummary(page)).some((r) => r.text.includes('Boston'))).toBe(false);
+  await root.locator('td button[aria-label="East Total 토글"], th button[aria-label="East Total 토글"]').first().click(); // expand
+  const restored = await rowSummary(page);
+  expect(restored[0].text).toContain('Boston'); // sort survived the collapse/expand cycle
+  expect(restored[1].text).toContain('NY');
+});
+
 test('nested-column value header sort: mapColumnNode path reorders within group, anchors subtotal', async ({
   page,
 }: { page: Page }) => {

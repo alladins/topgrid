@@ -35,6 +35,15 @@ export interface PivotSortOpts {
   onSort: (leafKey: string) => void;
 }
 
+/**
+ * 행 그룹 collapse 어포던스 옵션(MOD-GRID-31 G-2). 지정 시 subtotal 행 라벨이 클릭→토글 + chevron(▶/▼).
+ * 미지정 시 subtotal 라벨은 기존 plain text(MOD-18 동작 불변).
+ */
+export interface PivotCollapseOpts {
+  collapsedIds: ReadonlySet<string>;
+  onToggle: (subtotalId: string) => void;
+}
+
 /** Render a numeric cell value; `null` → an em-dash placeholder. */
 function formatCellValue(value: unknown): string {
   if (value === null || value === undefined) return '—';
@@ -42,6 +51,26 @@ function formatCellValue(value: unknown): string {
     return Number.isInteger(value) ? String(value) : value.toFixed(2);
   }
   return String(value);
+}
+
+/** Clickable subtotal label with a collapse chevron (MOD-GRID-31 G-2). Inline style — Tailwind inert. */
+function CollapsibleSubtotalLabel(
+  label: string,
+  subtotalId: string,
+  collapse: PivotCollapseOpts,
+): JSX.Element {
+  const collapsed = collapse.collapsedIds.has(subtotalId);
+  return (
+    <button
+      type="button"
+      aria-label={`${label} 토글`}
+      aria-expanded={!collapsed}
+      onClick={() => collapse.onToggle(subtotalId)}
+      style={{ cursor: 'pointer', background: 'none', border: 'none', font: 'inherit', color: 'inherit', padding: 0 }}
+    >
+      {collapsed ? '▶' : '▼'} {label}
+    </button>
+  );
 }
 
 /** Label shown in the first row-dimension column for synthetic rows. */
@@ -143,6 +172,7 @@ function mapColumnNode(
 export function buildPivotColumns(
   model: PivotModel,
   sort?: PivotSortOpts,
+  collapse?: PivotCollapseOpts,
 ): ColumnDef<PivotRow>[] {
   const { config, columnTree } = model;
   const rowFields = config.rows;
@@ -165,7 +195,10 @@ export function buildPivotColumns(
         }
         if (row.__kind === 'subtotal') {
           // Subtotal belongs to row.__depth; label sits in that depth's column.
-          return depth === row.__depth ? rowKindLabel(row, firstRowField) : '';
+          if (depth !== row.__depth) return '';
+          const label = rowKindLabel(row, firstRowField);
+          // MOD-GRID-31 G-2: collapse 활성 시 라벨을 토글(chevron) 버튼으로. 미지정 시 plain(MOD-18).
+          return collapse ? CollapsibleSubtotalLabel(label, row.__id, collapse) : label;
         }
         // Data row: show the dimension value at this depth.
         return formatCellValue(ctx.getValue());

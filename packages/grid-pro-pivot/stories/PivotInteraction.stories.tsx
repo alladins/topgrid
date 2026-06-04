@@ -53,6 +53,24 @@ export const Sort: StoryObj = {
   ),
 };
 
+// G-2 + composition: collapse (subtotal toggle) AND sort, both active, so the chromium test can
+// assert collapse(sort(rows)) — that collapse hides a group's data while sort still applies to the
+// survivors (re-expand shows them still sorted).
+export const SortCollapse: StoryObj = {
+  name: 'collapse + sort 합성',
+  beforeEach: () => {
+    setLicenseState(validLicense);
+  },
+  render: () => (
+    <PivotGrid<SalesRow>
+      data={data}
+      config={{ rows: ['region', 'city'], columns: [], values: [{ field: 'sales', aggregationFn: 'sum' }] }}
+      enableSort
+      enableCollapse
+    />
+  ),
+};
+
 // nested-column path: column dim → value headers built via mapColumnNode recursion (the path the
 // no-column story never exercises). Sorting the Q1 nested header sorts within-group by the Q1 cell.
 export const SortNestedColumns: StoryObj = {
