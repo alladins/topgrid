@@ -709,6 +709,20 @@
 
 ---
 
+### `mod-grid-35` — Selection UX (행클릭 선택 → shift 범위 → indeterminate select-all, **MIT**, grid-core) ✅ 채움 — {G-1,G-2,G-3} 완주
+
+소스: `packages/grid-core/src/internal/rowClickSelection.ts`(순수) + `Grid.tsx`(handleRowClick) + `CheckboxColumn.tsx`(G-3) + stories(`Grid.row-click-select`·`Grid.select-all-indeterminate`) + specs(`grid-row-click-select`·`grid-select-all-indeterminate`). **잔여 Community table-stakes 트랙 첫 모듈**(advisor: 응집·저blast·명료게이트). ★**검증-우선 규칙**(사용자 "하나하나 체크"): 재감사가 보수적이라 stale-❌ 다수—구현 전 grep 스윕으로 실재 확인. 이 트랙서 aria-sort·Home/End/PageUp/PageDown·ARIA roles 가 이미 구현(stale-❌→✅/🟡 보정).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 행클릭 선택 plain+ctrl(G-1) | `enableRowClickSelection?` + 순수 `computeRowClickSelection(current,clickedId,ctrl,mode)` | 종결형+트리거 | ★기존 TanStack RowSelectionState 구동(체크박스 선택·상태바와 **단일 소스**, 병렬 store 금지). 기존 onRowClick **독립 공존** | node 7(plain 교체·ctrl 토글 유지/해제·single 1·불변) + chromium 2(★plain 교체·ctrl 추가/토글오프·onRowClick 4회 공존) | 채움 |
+| shift 범위(G-2) | 코어 확장 shift+anchorId+orderedIds → anchor..clicked 연속 | 종결형 | anchor ref(G-1 set) 소비. ★anchor 보존(재확장). shift 텍스트선택 removeAllRanges | node 7→11(범위 하향/상향·anchor 보존·no-anchor fallback) + chromium 1(★범위 0..2→재확장 0..1) | 채움 |
+| indeterminate select-all(G-3) | `CheckboxColumn` 헤더 `indeterminate`(DOM prop ref)+`aria-checked='mixed'` | 연결형 | 기존 select-all 강화(병렬 금지). getIsSome/getIsAllPageRowsSelected | browser-only 정직(순수 0). chromium 1(★부분→indeterminate=checked/unchecked와 구별·전체→checked·mixed) | 채움 |
+
+> dev-harness 수확: **검증-우선이 트랙 규칙**(advisor) — 재감사 ❌ 를 믿지 말고 매 클러스터 구현 전 grep 으로 stale-❌ 확인(이번에 aria-sort·키보드 nav 4키 이미 구현 발견→보정, rowheader 미방출=🟡 vN). 표현형 비중 큰 모듈→순수코어=선택수학(node 11)·indeterminate=browser-only 정직(node 안 지어냄). ★단일 소스 불변식(RowSelectionState 하나—체크박스·행클릭·상태바·indeterminate 모두 구동)·기존 onRowClick 공존. **getRowId=cell-flash/transaction 클러스터 keystone**(차기). vN-within-Community(명시, silent 미포함): drag-between-grids·row animation·async transaction batching·auto-virtualization-threshold·debounced-scroll·auto-page-size·custom-page formatter·post-sort callback(정직 table-stakes ~18≠31).
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의

@@ -949,6 +949,38 @@
       "charts_closed": "7개: ✅4(내장엔진·축/툴팁·스파크 마커·툴바/타입스위처·피벗차트[진짜 seriesFromPivot]) + 🟡1(범위선택: transform shipped, 라이브배선 vN) + vN2(패널/dock·크로스필터).",
       "license_gate": "RangeChart useLicenseStatus()+Watermark required(PAT-003). ChartCard 상속. RangeChartPanel 기존. chromium 무라이선스=워터마크·유효=없음.",
       "regression": "전체 visual 61/61. node 19(chartScale12+seriesFromMatrix/Pivot7). typecheck 0."
+    },
+    "MOD-GRID-35": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(3-Goal: 행클릭 선택 + shift 범위 + indeterminate select-all)",
+      "priority": "잔여 Community table-stakes 트랙 1순위(Selection UX, advisor: 응집·저blast·명료게이트)",
+      "phase": "done (3-Goal 완주 → §3)",
+      "spec": "인라인 진행(advisor 모듈 결정)",
+      "verify_first_rule": "★사용자 '하나하나 체크' = 검증-우선. 재감사 ❌ 보수적이라 stale-❌ 다수. grep 스윕으로 구현 전 실재 확인. 이번 발견: aria-sort(ariaAttrs L94)·Home/End/PageUp/PageDown(cellNavigation, PageDown grid-a11y 게이트)·ARIA roles 이미 구현 → 보정(2✅+1🟡). rowheader 미방출=🟡 vN.",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "version_note": "버전 미범프(릴리스 시 batch). grid-core 0.4→차기.",
+      "design": "advisor 첫 모듈=Selection UX. ★단일 소스 불변식: 기존 TanStack RowSelectionState 하나를 체크박스·행클릭·상태바·indeterminate 모두 구동(병렬 store 금지). 기존 onRowClick 독립 공존.",
+      "g1": {
+        "surface": "enableRowClickSelection? + 순수 computeRowClickSelection(current,clickedId,ctrl,mode)→{selection,anchorId}. Grid handleRowClick: single/multi 일 때만 선택+onRowClick 동시. 체크박스 셀 stopPropagation.",
+        "verified_node": "7/7(★plain 교체[나머지 해제]·ctrl 토글 유지·ctrl 재클릭 해제·single 항상 1·anchor=clicked·불변)",
+        "verified_browser": "chromium 2/2(★plain 교체·ctrl 추가·ctrl 토글오프·single 1행·onRowClick 4회 공존)"
+      },
+      "g2": {
+        "surface": "코어 shift+anchorId+orderedIds → anchor..clicked 연속 범위(replace). anchor 보존. Grid: shift/anchorId(ref)/orderedIds(getRowModel order) 전달 + removeAllRanges(텍스트선택 제거). 기존 필드 optional=G-1 호환.",
+        "verified_node": "7→11(★범위 하향·상향·anchor 보존[재확장]·no-anchor→plain fallback)",
+        "verified_browser": "chromium 1(★plain anchor→shift 0..2→shift 재확장 0..1 row2 drop)"
+      },
+      "g3": {
+        "surface": "CheckboxColumn 헤더 indeterminate=getIsSomePageRowsSelected()(DOM 프로퍼티 ref)+aria-checked='mixed'. 기존 select-all 강화(병렬 금지).",
+        "verified_browser": "browser-only 정직(순수 0). chromium 1(★부분→indeterminate=true+aria-checked=mixed=checked/unchecked와 구별·전체→checked·헤더 토글→none)"
+      },
+      "module_summary": "Selection UX 3-Goal. ★검증-우선 트랙 규칙(stale-❌ grep 확인). 단일 소스 RowSelectionState 불변식·기존 onRowClick 공존. node 11+chromium 4. 표현형 비중→indeterminate browser-only 정직. 회귀 65/65.",
+      "keystone_note": "getRowId=cell-flash/transaction 클러스터 keystone(차기). vN-within-Community(silent 미포함 명시): drag-between-grids·row animation·async transaction batching·auto-virt-threshold·debounced-scroll·auto-page-size·custom-page formatter·post-sort callback. 정직 table-stakes ~18≠31."
     }
   },
   "release_queue": {
