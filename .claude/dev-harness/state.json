@@ -1012,6 +1012,36 @@
       },
       "module_summary": "Data identity & cell feedback 3-Goal. ★keystone 순서(getRowId 먼저→flash 정체성 diff). computeChangedCells=진짜 순수 spine(node 7), getRowId/tooltip passthrough browser-only 정직. node 7+chromium 4. 회귀 69/69. reuse: 기존 selection·cell 렌더 확장(store 0).",
       "vN_note": "applyTransaction(증분)·async batching=Community-tier지만 table-stakes 초과(getRowId 토대지만 트랜잭션 API 별도 무게)=vN."
+    },
+    "MOD-GRID-37": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(3-Goal: locale 정렬 + 방향-독립 null 배치 + alwaysMultiSort/sortDescFirst)",
+      "priority": "Community 트랙 3번째(Sorting options, advisor: 저blast, sorting 격리)",
+      "phase": "done (3-Goal 완주 → §3)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "version_note": "grid-core 0.4→차기 batch.",
+      "design": "advisor: thin-passthrough 골은 node 지어내지 않고 browser-only 정직, 실 로직 골만 node spine. G-2 fork=blankToUndefined 헬퍼 ship(doc-only 🟡 거부).",
+      "g1": {
+        "surface": "localeSortingFn/makeLocaleSortingFn(locale)/compareLocale(localeCompare numeric+variant). columnDef.sortingFn 으로 사용.",
+        "verified_node": "8/8(★locale 순서가 코드포인트와 DIFFER: é는 e·f 사이[locale] vs z 뒤[code-point]·numeric a2<a10·한글 자모순·antisymmetric)",
+        "verified_browser": "chromium 1(정렬 후 e,é,f,z=locale, code-point이면 e,f,z,é)"
+      },
+      "g2": {
+        "surface": "순수 isBlank(null/undefined/''/공백→true, 0/false→false)+blankToUndefined(accessor). 컬럼 accessorFn=blankToUndefined + sortUndefined:'last'.",
+        "fork": "★advisor fork: sortUndefined 는 ===undefined 만(L57)·방향-독립(L60-61)이나 null 미처리. sortingFn 으론 desc flip 때문에 방향-독립 불가 → blank→undefined 정규화가 유일 레버. option(b) ship(doc-only 🟡 거부).",
+        "verified_node": "11/11(★0→0·false→false 통과=falsy 버그 차단·null/''/공백→undefined)",
+        "verified_browser": "chromium 1(★null 행이 desc·asc 양방향 모두 하단 고정=방향-독립, non-null만 뒤집힘). 숫자 컬럼 desc-first 확인."
+      },
+      "g3": {
+        "surface": "alwaysMultiSort?→isMultiSortEvent:()=>true(shift 없이 다중 정렬 누적)·sortDescFirst? passthrough. buildTableOptions.",
+        "verified_browser": "browser-only 정직(passthrough, node 미조작). chromium 1(★shift 없이 순차 클릭→둘 다 aria-sort 활성=누적, 교체-onclick divergence)"
+      },
+      "module_summary": "Sorting options 3-Goal. ★passthrough≠가짜 ✅(G-2 fork서 헬퍼 ship). thin-passthrough(G-3) browser-only 정직, 실 로직(G-1 localeCompare·G-2 blank)만 node spine. node 19+chromium 3. 회귀 72/72."
     }
   },
   "release_queue": {

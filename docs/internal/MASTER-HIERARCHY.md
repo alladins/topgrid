@@ -737,6 +737,20 @@
 
 ---
 
+### `mod-grid-37` — Sorting options (locale 정렬 → null 배치 → alwaysMultiSort, **MIT**, grid-core) ✅ 채움 — {G-1,G-2,G-3} 완주
+
+소스: `packages/grid-core/src/internal/localeSort.ts`·`sortNulls.ts`(순수) + `buildTableOptions.ts`(G-3 passthrough) + stories(3) + specs(3). Community 트랙 3번째(advisor 선정: 저blast, sorting 격리). ★advisor: thin-passthrough 골은 node 지어내지 말고 browser-only 정직, 실 로직 골만 node spine.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| locale/collation 정렬(G-1) | `localeSortingFn`/`makeLocaleSortingFn(locale)`/`compareLocale` (columnDef.sortingFn) | 종결형 | TanStack 기본 text=코드포인트(é→z 뒤). localeCompare numeric+variant | node 8(★locale 순서가 코드포인트와 DIFFER: é는 e·f 사이 vs z 뒤·numeric a2<a10·한글 자모순) + chromium 1(정렬 후 e,é,f,z) | 채움 |
+| 방향-독립 null 배치(G-2) | `blankToUndefined(accessor)`+`isBlank` + 컬럼 `sortUndefined:'first'\|'last'` | 종결형+passthrough | ★sortUndefined 는 `===undefined` 만(L57)·방향-독립이나 null 미처리. blank→undefined 정규화로 활용(sortingFn 으론 desc flip 때문에 불가) | node 11(★0/false 통과=falsy 버그 차단) + chromium 1(★null 행 desc·asc **양방향 하단 고정**, non-null만 뒤집힘) | 채움 |
+| alwaysMultiSort/sortDescFirst(G-3) | `alwaysMultiSort?`→`isMultiSortEvent:()=>true`·`sortDescFirst?` (TanStack passthrough) | passthrough | buildTableOptions options | browser-only 정직(passthrough, node 미조작). chromium 1(★shift 없이 순차 클릭→둘 다 aria-sort 활성=누적, 교체-onclick divergence) | 채움 |
+
+> dev-harness 수확: **passthrough≠가짜 ✅**(advisor) — G-2 의 fork(sortUndefined 가 null 미처리, sortingFn 으론 방향-독립 불가)서 doc-only(🟡) 대신 `blankToUndefined` 헬퍼 ship 으로 진짜 ✅. **thin-passthrough 골(G-3)은 node 지어내지 않음**(browser-only 정직), 실 로직 골(G-1 localeCompare·G-2 blank 검출)만 node spine — getRowId/indeterminate 와 동일 정직 규칙. 비공허: G-1=locale≠코드포인트·G-2=null 방향-독립(asc/desc 양쪽 하단)·G-3=누적 vs 교체. 숫자 컬럼 desc-first(TanStack 기본) 검증서 확인. node 19+chromium 3. vN: post-sort callback·suppress-multi-sort 외 thin knobs.
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
