@@ -694,7 +694,7 @@
 
 ---
 
-### `mod-grid-34` — 내장 차트 엔진 (cartesian line/bar → 축/범례/툴팁/area → 툴바/범위선택/피벗차트, **Pro**, grid-pro-chart) 🔄 진행 — {G-1,G-2} 완주, {G-3} 예정
+### `mod-grid-34` — 내장 차트 엔진 (cartesian line/bar → 축/범례/툴팁/area → 툴바/범위선택/피벗차트, **Pro**, grid-pro-chart) ✅ 채움 — {G-1,G-2,G-3} 완주
 
 소스: `packages/grid-pro-chart/src/internal/chartScale.ts`(순수 코어) + `RangeChart.tsx`(렌더) + `stories/RangeChart.stories.tsx` + `tests/visual/range-chart.spec.ts`. **사용자 헤드라인 결손**(상용 대비 "차트가 하나도 안 보임"). 재감사 결과 Enterprise 통합-차트 클러스터 7개가 단일 최대 갭. **사용자 CRITICAL 결정 = 순수 SVG만**(차트 라이브러리 dep 0 불변식 유지, C-001/AP-001). 그동안 차트 스토리 0개 = "안 보임" 근본 원인.
 
@@ -703,9 +703,9 @@
 | cartesian 차트 코어(G-1) | 순수 `computeChartGeometry(series,{w,h,margin})`→{plot,yScale,yTicks,xBand,series points}; `linearScale`/`niceTicks`/`bandScale` | 종결형 | 기존 SparklineCell inline scaleY/xAt 를 **테스트가능 순수 코어로 승격**(LESS-006: scale=node, paint=chromium) | node **11/11**(★max→top px·min→bottom px·N점→N좌표·tick 라운드/도메인 커버·NaN→gap no-shift·≥0 데이터 0 baseline·float drift 없음) | 채움 |
 | RangeChart 렌더(G-1) | grid-pro-chart `RangeChart{series,type:'line'\|'bar',width?,height?,categories?,ariaLabel?}` 순수 SVG | 종결형 | 코어 소비. 차트 라이브러리 import 0(자작 polyline/rect/축 그리드+tick text). 멀티시리즈 side-by-side+0 baseline | chromium **4/4**(★값 큰 막대 실제 더 높음=scale 배선 비공허·라운드 tick 라벨·polyline 정점=데이터수·멀티시리즈 8막대 2그룹) | 채움 |
 | 축/범례/툴팁 + area(G-2) | RangeChart `showLegend?`/`showTooltip?`/type:'area'; SparklineCell `showMinMax?` | 종결형+트리거 | 코어 재사용(좌표 그대로). 툴팁=in-SVG `<g>`(HTML 오버레이 X, 순수 SVG 유지, x 우측 클램프). 범례↔시리즈 색=단일 `colorOf`(desync 차단) | chromium **4/4**(★툴팁 95막대→95·30막대→30=두 hover 두 값[index/첫점 고정 함정 차단]·범례 스와치색=막대색·area polygon fill·sparkline 마커=실제 극점 x54/132[끝점 아님]). node 11→**12**(mixed-sign baseline, 음수 막대 wired-but-unverified close-out) | 채움 |
-| 툴바/타입스위처·범위선택→차트·피벗 차트(G-3) | (예정) 차트 타입 토글 툴바·셀범위 선택→차트·PivotGrid 결과 차트 | 예정 | 패널/dock·크로스필터=vN(advisor) | — | 예정 |
+| 툴바/타입스위처·범위선택→차트·피벗 차트(G-3) | 순수 `seriesFromMatrix({categories,columns,matrix,orientation})`→{categories,series}; `ChartCard{initialType?,types?,title?}` 타입 토글 툴바 | 종결형+트리거 | seriesFromMatrix=범위선택·피벗 **공유 bridge**(grid/pivot import 0, 결합 회피). ChartCard=RangeChart 래퍼(useState type) | node **5/5**(★orientation 실제 transpose: columns→3시리즈·rows→2시리즈, 이름+값+x축 전부 뒤집힘). chromium **3/3**(★툴바 bar→line→area 실제 전환[polyline/polygon 등장·rect 사라짐·aria-pressed]·피벗 2시리즈 6막대·범위 2시리즈 6막대) | 채움 |
 
-> dev-harness 수확(G-1): **차트는 browser-only 아님**(advisor) — 진짜 순수 코어=data→좌표 scale(value→x/y, 축 tick, 도메인/레인지). node 가능 spine="max→top px, min→bottom px"이지 "svg 렌더됨" 아님. **스코프 락**: G-1=cartesian 1계열(line+bar 공유 scale/축), pie/scatter=다른 기하=별도 골/vN. reuse: SparklineCell 의 inline scaleY→순수 chartScale 로 승격(중복 제거 경로). **사용자 dep-0 결정 = 순수 SVG**(recharts/visx 미채택). 차트 7개 중 1개(내장 엔진) 닫힘 → G-2/G-3 에서 나머지.
+> dev-harness 수확: **차트는 browser-only 아님**(advisor) — 진짜 순수 코어=data→좌표 scale(value→x/y, 축 tick, 도메인/레인지). node 가능 spine="max→top px, min→bottom px"이지 "svg 렌더됨" 아님. **스코프 락**: G-1=cartesian 1계열(line+bar 공유 scale/축), pie/scatter=다른 기하=별도 골/vN. reuse: SparklineCell 의 inline scaleY→순수 chartScale 로 승격(중복 제거 경로). **사용자 dep-0 결정(AskUserQuestion) = 순수 SVG**(recharts/visx/hybrid 미채택). G-2 툴팁=in-SVG `<g>`(HTML 오버레이 회피)·범례↔시리즈 단일 colorOf·음수 막대 mixed-sign close-out(LESS-006). G-3 seriesFromMatrix=범위선택·피벗 **공유 순수 bridge**(orientation transpose node-증명). **차트 클러스터 7개 중 5개 닫힘**(내장 엔진·축/툴팁·스파크 마커·툴바/타입스위처·범위선택→차트·피벗차트), **패널/dock·크로스필터=vN**(각 골보다 무거움, silent 미포함 명시). node 17+chromium 11.
 
 ---
 
