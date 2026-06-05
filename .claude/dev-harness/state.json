@@ -981,6 +981,37 @@
       },
       "module_summary": "Selection UX 3-Goal. ★검증-우선 트랙 규칙(stale-❌ grep 확인). 단일 소스 RowSelectionState 불변식·기존 onRowClick 공존. node 11+chromium 4. 표현형 비중→indeterminate browser-only 정직. 회귀 65/65.",
       "keystone_note": "getRowId=cell-flash/transaction 클러스터 keystone(차기). vN-within-Community(silent 미포함 명시): drag-between-grids·row animation·async transaction batching·auto-virt-threshold·debounced-scroll·auto-page-size·custom-page formatter·post-sort callback. 정직 table-stakes ~18≠31."
+    },
+    "MOD-GRID-36": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(3-Goal: getRowId 안정 식별 + cell 변경 flash + cell 툴팁)",
+      "priority": "Community 트랙 2번째(Data identity & cell feedback)",
+      "phase": "done (3-Goal 완주 → §3)",
+      "spec": "인라인(advisor: getRowId=keystone)",
+      "verify_first": "getRowId(0건)·cell-flash(0건)·cell-tooltip(셀 title 없음, RangeChart만) 모두 실재 미구현 확인 후 구현.",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "version_note": "grid-core 0.4→차기 batch.",
+      "design": "advisor: getRowId=keystone(cell-flash/transaction 이 행 식별 필요→먼저). computeChangedCells=진짜 순수 spine, getRowId/tooltip=passthrough browser-only 정직.",
+      "g1": {
+        "surface": "getRowId?(row,index)→string → buildTableOptions options.getRowId. RowSelectionState·expanded 행-키 상태가 인덱스 대신 id(reconciliation).",
+        "verified_browser": "chromium 1(★B 선택→맨앞 Z 추가→B[now idx2] 선택 유지[정체성 추종]·Z/A 비선택·정확히 1행=인덱스-키 버그 검출). passthrough browser-only 정직."
+      },
+      "g2": {
+        "surface": "순수 computeChangedCells({prev,next,getRowId,columns})→변경 셀 키[](rowId·colId). enableCellChangeFlash? + Grid data effect→~0.9s 인라인 amber bg+data-flash. getRowId 없으면 인덱스 fallback.",
+        "verified_node": "7/7(★edit 정확 셀·★reorder 무[정체성]·reorder 내 edit 추적·새행 제외·다중·Object.is NaN→NaN 무시)",
+        "verified_browser": "chromium 2(★edit B 가격→그 셀만 flash[25]·★reorder→flash 0개=인덱스-키면 전체 점등될 버그 차단)"
+      },
+      "g3": {
+        "surface": "getCellTooltip?(cell,row)→string|undefined|null → 본문 td title(undefined/'' 미부여). AG tooltipValueGetter 패턴.",
+        "verified_browser": "chromium 1(★title=셀 값 반영[상세:사과/바나나 행별 상이]·undefined 컬럼=title 없음). 네이티브 title browser-only."
+      },
+      "module_summary": "Data identity & cell feedback 3-Goal. ★keystone 순서(getRowId 먼저→flash 정체성 diff). computeChangedCells=진짜 순수 spine(node 7), getRowId/tooltip passthrough browser-only 정직. node 7+chromium 4. 회귀 69/69. reuse: 기존 selection·cell 렌더 확장(store 0).",
+      "vN_note": "applyTransaction(증분)·async batching=Community-tier지만 table-stakes 초과(getRowId 토대지만 트랜잭션 API 별도 무게)=vN."
     }
   },
   "release_queue": {

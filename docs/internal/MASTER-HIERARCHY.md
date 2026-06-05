@@ -723,6 +723,20 @@
 
 ---
 
+### `mod-grid-36` — Data identity & cell feedback (getRowId → cell flash → cell tooltip, **MIT**, grid-core) ✅ 채움 — {G-1,G-2,G-3} 완주
+
+소스: `packages/grid-core/src/internal/computeChangedCells.ts`(순수) + `buildTableOptions.ts`(getRowId 배선) + `Grid.tsx`(flash effect·tooltip) + `types.ts` + stories(`Grid.row-identity`·`Grid.cell-flash`·`Grid.cell-tooltip`) + specs(3). Community 트랙 2번째. ★advisor: **getRowId=keystone**(cell-flash/transaction 이 행 식별 필요 → 먼저). 검증-우선 스윕: getRowId·cell-flash·cell-tooltip 모두 실재 미구현 확인 후 구현.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| getRowId 안정 행 식별(G-1) | `getRowId?(row,index)→string` → buildTableOptions `options.getRowId` | 연결형 | RowSelectionState·expanded 등 행-키 상태가 인덱스 대신 id. TanStack passthrough | browser-only 정직(passthrough, indeterminate 동형). chromium 1(★B 선택→맨앞 Z 추가→B 선택 유지[정체성]·Z/A 비선택·정확히 1행=인덱스-키 버그 검출) | 채움 |
+| cell 변경 flash(G-2) | 순수 `computeChangedCells({prev,next,getRowId,columns})`→변경 셀 키[]. `enableCellChangeFlash?` | 종결형+트리거 | ★getRowId(G-1) 위에서 **정체성 diff**(재정렬=변경0). data effect→~0.9s 인라인 amber bg+data-flash | node 7(★edit 정확 셀·reorder 무·reorder 내 edit 추적·새행 제외·Object.is NaN) + chromium 2(★edit→그 셀만[25]·reorder→flash 0=정체성 입증) | 채움 |
+| cell 툴팁(G-3) | `getCellTooltip?(cell,row)→string\|undefined` → 본문 `<td title>` | 연결형 | AG tooltipValueGetter 패턴. undefined/'' → 미부여 | browser-only(네이티브 title). chromium 1(★title=셀 값 반영[상세:사과/바나나 상이]·undefined 컬럼=title 없음) | 채움 |
+
+> dev-harness 수확: **keystone 순서 준수**(advisor) — getRowId(G-1)=정체성 토대 먼저, cell-flash(G-2)가 그 위에서 **정체성 diff**(인덱스-키면 재정렬마다 전체 점등=버그). computeChangedCells=이 클러스터의 진짜 순수 spine(node 7), getRowId/tooltip=passthrough browser-only 정직(node 안 지어냄). 검증-우선 트랙 규칙 지속(3개 모두 실재 미구현 확인 후). reuse: 기존 selection·cell 렌더 경로 확장(신규 store 0). **vN 유지**: applyTransaction(증분 갱신)·async batching=Community-tier지만 table-stakes 초과(getRowId 가 토대지만 트랜잭션 API 는 별도 무게). node 7+chromium 4.
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
