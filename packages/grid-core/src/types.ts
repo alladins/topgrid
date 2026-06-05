@@ -451,6 +451,15 @@ export interface GridProps<TData> {
   onRowClick?: (row: TData, event: MouseEvent<HTMLTableRowElement>) => void;
 
   /**
+   * 행 본문 클릭으로 선택 (MOD-GRID-35 G-1). `rowSelection` 이 `'single'`/`'multi'` 일 때만 동작.
+   *
+   * - plain 클릭 → 그 행만 선택(나머지 해제). ctrl/cmd+클릭 → 토글(다중 누적). (shift 범위 = G-2)
+   * - 기존 `onRowClick` 콜백과 **독립 공존** — 선택을 하면서 `onRowClick` 도 그대로 호출.
+   * - 체크박스 셀(`__select__`) 클릭은 `stopPropagation` 으로 이 경로를 안 탐(기존 동작 보존).
+   */
+  enableRowClickSelection?: boolean;
+
+  /**
    * 행 더블 클릭 핸들러 — `onRowClick` 와 동일한 시그니처 정책 (G-003 D3).
    *
    * @param row - `row.original` (TData).

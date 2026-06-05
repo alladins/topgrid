@@ -59,6 +59,7 @@ import {
   buildAriaColIndex,
 } from './internal/ariaAttrs';
 import { nextCell, isNavKey, type CellPos } from './internal/cellNavigation';
+import { computeRowClickSelection } from './internal/rowClickSelection';
 import { resolveLocale, resolveIcons } from './internal/i18n';
 import { themeToVars } from './internal/theme';
 import { getPinnedCellStyle } from './internal/computePinnedOffset';
@@ -237,7 +238,27 @@ function GridInner<TData>(
     props.enablePagination === true ||
     props.pagination?.mode === 'client' ||
     props.pagination?.mode === 'server';
-  const isClickable = Boolean(props.onRowClick || props.onRowDoubleClick);
+  const rowClickSelects = props.enableRowClickSelection === true && selectionMode !== 'none';
+  const isClickable = Boolean(props.onRowClick || props.onRowDoubleClick || rowClickSelects);
+
+  // MOD-GRID-35 G-1: row-click selection. Drives the existing RowSelectionState (one source with
+  // the checkbox selection + status bar), gated behind `enableRowClickSelection`, and fires the
+  // consumer's `onRowClick` independently. The anchor (last plain/ctrl click) is consumed by
+  // shift-range in G-2. Checkbox-cell clicks stopPropagation, so they never reach here.
+  const selectionAnchorRef = useRef<string | null>(null);
+  const handleRowClick = (row: Row<TData>, event: ReactMouseEvent<HTMLTableRowElement>): void => {
+    if (rowClickSelects) {
+      const { selection, anchorId } = computeRowClickSelection({
+        current: table.getState().rowSelection,
+        clickedId: row.id,
+        ctrl: event.ctrlKey || event.metaKey,
+        mode: selectionMode === 'single' ? 'single' : 'multi',
+      });
+      table.setRowSelection(selection);
+      selectionAnchorRef.current = anchorId;
+    }
+    props.onRowClick?.(row.original, event);
+  };
 
   // G-002: sticky pinning + resize 활성 여부 + table className 분기 (D2/D10).
   const usePinning = props.enableColumnPinning === true;
@@ -893,7 +914,7 @@ function GridInner<TData>(
                           ? 'bg-blue-50 hover:bg-blue-100'
                           : 'hover:bg-gray-50'
                       } ${rowBorderClassName} ${extraRowClass}`}
-                      onClick={(event) => props.onRowClick?.(row.original, event)}
+                      onClick={(event) => handleRowClick(row, event)}
                       onDoubleClick={(event) =>
                         props.onRowDoubleClick?.(row.original, event)
                       }
@@ -928,7 +949,7 @@ function GridInner<TData>(
                     className={`transition-colors ${isClickable || rowReorderActive ? 'cursor-pointer' : ''} ${
                       row.getIsSelected() ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'
                     } ${rowBorderClassName} ${extraRowClass}`}
-                    onClick={(event) => props.onRowClick?.(row.original, event)}
+                    onClick={(event) => handleRowClick(row, event)}
                     onDoubleClick={(event) => props.onRowDoubleClick?.(row.original, event)}
                   >
                     {renderWindowedCells(row, columnWindow, {
