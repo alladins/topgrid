@@ -341,6 +341,14 @@ export interface GridProps<TData> {
    */
   getRowId?: (row: TData, index: number) => string;
 
+  /**
+   * 셀 값 변경 시 잠깐 강조(change-flash) (MOD-GRID-36 G-2). `data` 가 바뀌면 **값이 실제로
+   * 변한 셀**(행 정체성으로 diff — 재정렬은 미강조)에 ~0.9s 배경 하이라이트.
+   *
+   * 안정적 강조를 위해 `getRowId` 를 함께 지정 권장(미지정 시 인덱스 기준 diff → 재정렬도 강조됨).
+   */
+  enableCellChangeFlash?: boolean;
+
   // ─── enable* 토글 ───
   /** 정렬 활성 (default `false`) — `getSortedRowModel` wiring. */
   enableSort?: boolean;

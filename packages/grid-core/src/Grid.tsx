@@ -60,6 +60,7 @@ import {
 } from './internal/ariaAttrs';
 import { nextCell, isNavKey, type CellPos } from './internal/cellNavigation';
 import { computeRowClickSelection } from './internal/rowClickSelection';
+import { computeChangedCells, cellKey } from './internal/computeChangedCells';
 import { resolveLocale, resolveIcons } from './internal/i18n';
 import { themeToVars } from './internal/theme';
 import { getPinnedCellStyle } from './internal/computePinnedOffset';
@@ -265,6 +266,28 @@ function GridInner<TData>(
     }
     props.onRowClick?.(row.original, event);
   };
+
+  // MOD-GRID-36 G-2: cell change-flash. On a data change, the cells whose VALUE changed (diffed by
+  // row identity — getRowId G-1 — so a reorder flashes nothing) get a brief highlight. Tailwind is
+  // inert in the headless storybook (P27-1), so the flash is an inline backgroundColor, testable.
+  const [flashingCells, setFlashingCells] = useState<Set<string>>(() => new Set<string>());
+  const prevDataRef = useRef<TData[] | null>(null);
+  useEffect(() => {
+    const prev = prevDataRef.current;
+    prevDataRef.current = props.data;
+    if (props.enableCellChangeFlash !== true || prev === null) return;
+    const cols = table
+      .getAllLeafColumns()
+      .filter((c) => typeof c.accessorFn === 'function')
+      .map((c) => ({ id: c.id, get: (row: TData) => c.accessorFn!(row, 0) }));
+    const getRowIdFn = props.getRowId ?? ((_row: TData, i: number) => String(i));
+    const changed = computeChangedCells({ prev, next: props.data, getRowId: getRowIdFn, columns: cols });
+    if (changed.length === 0) return;
+    setFlashingCells(new Set(changed));
+    const timer = setTimeout(() => setFlashingCells(new Set<string>()), 900);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.data]);
 
   // G-002: sticky pinning + resize 활성 여부 + table className 분기 (D2/D10).
   const usePinning = props.enableColumnPinning === true;
@@ -493,6 +516,14 @@ function GridInner<TData>(
         : { style: {}, className: '' };
       const cellStyle: CSSProperties = { ...pinnedCell.style };
       if (applyCellWidth) cellStyle.width = cellSize;
+      // MOD-GRID-36 G-2: change-flash — only body cells (withHandlers), only when this cell's value
+      // just changed. Inline bg (P27-1: Tailwind inert in storybook) + data-flash for the gate.
+      const isFlashing =
+        opts.withHandlers && flashingCells.has(cellKey(row.id, cell.column.id));
+      if (isFlashing) {
+        cellStyle.backgroundColor = '#fde68a'; // amber-200
+        cellStyle.transition = 'background-color 0.9s ease-out';
+      }
       // MOD-GRID-28 G-2: active 셀(키보드 nav 대상) = 시각 링. floating 행(withHandlers=false)은 비대상.
       const isActiveCell = opts.withHandlers && cellDomId(cell.id) === activeCellId;
       const activeClass = isActiveCell ? 'outline outline-2 outline-blue-500 -outline-offset-2' : '';
@@ -503,6 +534,7 @@ function GridInner<TData>(
         <td
           key={cell.id}
           {...(opts.withHandlers ? { id: cellDomId(cell.id) } : {})}
+          {...(isFlashing ? { 'data-flash': '' } : {})}
           {...gridCellAttrs(ariaColIndexOf(cell.column.id))}
           className={className}
           style={cellStyle}
