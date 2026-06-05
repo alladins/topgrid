@@ -40,6 +40,31 @@ test('plain replaces, ctrl toggles (multi), and onRowClick still fires', async (
   await expect(count).toHaveText('clicks: 4');
 });
 
+test('shift+click selects the contiguous range from the anchor (re-extendable)', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME('grid-core-grid-row-click-select--multi'));
+  const root = page.locator('#storybook-root');
+  await root.locator('table').first().waitFor({ state: 'visible' });
+  const rows = root.locator('tbody tr[role="row"]');
+
+  // plain click row 0 → sets the anchor, selects only row 0.
+  await rows.nth(0).click();
+  await expect(rows.nth(0)).toHaveAttribute('aria-selected', 'true');
+
+  // shift+click row 2 → contiguous range 0..2 (all three selected).
+  await rows.nth(2).click({ modifiers: ['Shift'] });
+  await expect(rows.nth(0)).toHaveAttribute('aria-selected', 'true');
+  await expect(rows.nth(1)).toHaveAttribute('aria-selected', 'true');
+  await expect(rows.nth(2)).toHaveAttribute('aria-selected', 'true');
+
+  // ★ shift+click row 1 re-extends from the SAME anchor (row 0) → 0..1; row 2 drops.
+  await rows.nth(1).click({ modifiers: ['Shift'] });
+  await expect(rows.nth(0)).toHaveAttribute('aria-selected', 'true');
+  await expect(rows.nth(1)).toHaveAttribute('aria-selected', 'true');
+  await expect(rows.nth(2)).toHaveAttribute('aria-selected', 'false');
+});
+
 test('single mode never keeps more than one selected row', async ({ page }: { page: Page }) => {
   await page.goto(FRAME('grid-core-grid-row-click-select--single'));
   const root = page.locator('#storybook-root');

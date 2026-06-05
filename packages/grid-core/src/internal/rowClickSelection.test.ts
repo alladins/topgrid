@@ -68,6 +68,74 @@ ok(
   ),
 );
 
+// ── G-2: shift-range ─────────────────────────────────────────────────────────
+const order = ['A', 'B', 'C', 'D', 'E'];
+
+// shift+click E with anchor B → contiguous B..E selected (range, replacing).
+ok(
+  'shift selects the contiguous range from anchor to clicked',
+  eq(
+    computeRowClickSelection({
+      current: { B: true },
+      clickedId: 'E',
+      ctrl: false,
+      shift: true,
+      mode: 'multi',
+      anchorId: 'B',
+      orderedIds: order,
+    }).selection,
+    { B: true, C: true, D: true, E: true },
+  ),
+);
+
+// shift works UPWARD too (clicked above anchor) — range A..C with anchor C.
+ok(
+  'shift range works upward (clicked before anchor)',
+  eq(
+    computeRowClickSelection({
+      current: {},
+      clickedId: 'A',
+      ctrl: false,
+      shift: true,
+      mode: 'multi',
+      anchorId: 'C',
+      orderedIds: order,
+    }).selection,
+    { A: true, B: true, C: true },
+  ),
+);
+
+// shift PRESERVES the anchor so a second shift-click re-extends from the SAME anchor (not the last click).
+ok(
+  'shift preserves the anchor (re-extendable range)',
+  computeRowClickSelection({
+    current: { B: true },
+    clickedId: 'E',
+    ctrl: false,
+    shift: true,
+    mode: 'multi',
+    anchorId: 'B',
+    orderedIds: order,
+  }).anchorId === 'B',
+);
+
+// shift with no anchor → falls back to plain (just the clicked row).
+ok(
+  'shift without anchor falls back to plain select',
+  eq(
+    computeRowClickSelection({
+      current: { A: true },
+      clickedId: 'C',
+      ctrl: false,
+      shift: true,
+      mode: 'multi',
+      anchorId: null,
+      orderedIds: order,
+    }).selection,
+    { C: true },
+  ),
+);
+
 // anchor is always the clicked row (consumed by shift-range in G-2).
 ok(
   'anchor = clicked row',

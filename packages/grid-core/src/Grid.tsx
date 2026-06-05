@@ -252,10 +252,16 @@ function GridInner<TData>(
         current: table.getState().rowSelection,
         clickedId: row.id,
         ctrl: event.ctrlKey || event.metaKey,
+        shift: event.shiftKey,
+        anchorId: selectionAnchorRef.current,
+        orderedIds: table.getRowModel().rows.map((r) => r.id),
         mode: selectionMode === 'single' ? 'single' : 'multi',
       });
       table.setRowSelection(selection);
       selectionAnchorRef.current = anchorId;
+      // shift+click paints a browser text selection across the rows — clear it so only the rows
+      // (not their text) appear selected.
+      if (event.shiftKey) window.getSelection()?.removeAllRanges();
     }
     props.onRowClick?.(row.original, event);
   };
