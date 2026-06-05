@@ -89,6 +89,8 @@ export { ColumnVisibilityMenu } from './column/ColumnVisibilityMenu';
 export type { ColumnVisibilityMenuProps } from './column/ColumnVisibilityMenu';
 // MOD-GRID-38: per-header column menu (sort/pin/hide actions).
 export { ColumnMenu, type ColumnMenuProps } from './column/ColumnMenu';
+// MOD-GRID-39: per-row pin control (pin to top/bottom, unpin).
+export { RowPinButton, type RowPinButtonProps } from './RowPinButton';
 export type { ColumnPersistenceOptions, PersistTarget } from './types';
 
 // ADR-009 (옵션 A): grid-features → grid-core/internal 이동 후 public 승격.

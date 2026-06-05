@@ -222,6 +222,12 @@ export function buildTableOptions<TData>(
     options.getRowId = props.getRowId;
   }
 
+  // MOD-GRID-39 G-1: 행 고정(사용자가 데이터 행을 상/하단 고정). 비-가상화 전용(가상화+핀=vN).
+  if (props.enableRowPinning === true) {
+    options.enableRowPinning = true;
+    options.keepPinnedRows = true; // 필터/페이지 밖이어도 고정 행 유지(AG 기본 동작).
+  }
+
   // MOD-GRID-37 G-3: 정렬 동작 knobs (TanStack passthrough).
   // alwaysMultiSort → 평범 클릭도 다중 정렬 누적(shift 키 불요). sortDescFirst → 첫 클릭 내림차순.
   if (props.alwaysMultiSort === true) {

@@ -240,6 +240,7 @@ function GridInner<TData>(
     props.pagination?.mode === 'client' ||
     props.pagination?.mode === 'server';
   const rowClickSelects = props.enableRowClickSelection === true && selectionMode !== 'none';
+  const rowPinningEnabled = props.enableRowPinning === true;
   const isClickable = Boolean(props.onRowClick || props.onRowDoubleClick || rowClickSelects);
 
   // MOD-GRID-35 G-1: row-click selection. Drives the existing RowSelectionState (one source with
@@ -591,6 +592,44 @@ function GridInner<TData>(
   );
   // 본문 행과 동일한 셀 마크업으로 floating 행 1개를 렌더(sticky 고정).
   // position: sticky 의 스크롤 고정 시각거동은 chromium 검증됨(MOD-24 G-2 / tests/visual).
+  // MOD-GRID-39 G-1: a full data row (handlers/selection/drag). Extracted so pinned rows render with
+  // identical markup to center rows. `sticky` makes it a pinned (top/bottom) row; without it the
+  // output is byte-identical to the prior inline center-row markup.
+  const renderDataRow = (row: Row<TData>, rowPos: number, sticky?: 'top' | 'bottom'): ReactElement => {
+    const extraRowClass = props.rowClassName?.(row) ?? '';
+    const stickyStyle: CSSProperties = sticky
+      ? {
+          position: 'sticky',
+          ...(sticky === 'top' ? { top: theadHeight } : { bottom: 0 }),
+          zIndex: 10,
+          backgroundColor: 'var(--topgrid-body-bg, #ffffff)',
+        }
+      : {};
+    return (
+      <tr
+        key={row.id}
+        {...dataRowAttrs(dataRowAriaIndex(headerRowCount, rowPos), ariaSelectable, row.getIsSelected())}
+        data-index={row.index}
+        {...(sticky ? { 'data-pinned-row': sticky } : rowDragProps(rowPos, row.index))}
+        style={{
+          ...(row.getIsSelected() ? selectionOutlineStyle : {}),
+          ...(sticky ? {} : rowDropStyle(rowPos, row.index)),
+          ...stickyStyle,
+        }}
+        className={`transition-colors ${isClickable || rowReorderActive ? 'cursor-pointer' : ''} ${
+          row.getIsSelected() ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'
+        } ${rowBorderClassName} ${extraRowClass}`}
+        onClick={(event) => handleRowClick(row, event)}
+        onDoubleClick={(event) => props.onRowDoubleClick?.(row.original, event)}
+      >
+        {renderWindowedCells(row, columnWindow, {
+          withHandlers: true,
+          withCellClassName: true,
+        })}
+      </tr>
+    );
+  };
+
   const renderFloatingRow = (row: Row<TData>, position: 'top' | 'bottom') => {
     const stickyStyle: CSSProperties =
       position === 'top'
@@ -977,29 +1016,15 @@ function GridInner<TData>(
             ) : (
               <>
                 {floatingTopRows.map((r) => renderFloatingRow(r, 'top'))}
-                {table.getRowModel().rows.map((row, rowPos) => {
-                // G-006 D2: rowClassName callback.
-                const extraRowClass = props.rowClassName?.(row) ?? '';
-                return (
-                  <tr
-                    key={row.id}
-                    {...dataRowAttrs(dataRowAriaIndex(headerRowCount, rowPos), ariaSelectable, row.getIsSelected())}
-                    data-index={row.index}
-                    {...rowDragProps(rowPos, row.index)}
-                    style={{ ...(row.getIsSelected() ? selectionOutlineStyle : {}), ...rowDropStyle(rowPos, row.index) }}
-                    className={`transition-colors ${isClickable || rowReorderActive ? 'cursor-pointer' : ''} ${
-                      row.getIsSelected() ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'
-                    } ${rowBorderClassName} ${extraRowClass}`}
-                    onClick={(event) => handleRowClick(row, event)}
-                    onDoubleClick={(event) => props.onRowDoubleClick?.(row.original, event)}
-                  >
-                    {renderWindowedCells(row, columnWindow, {
-                      withHandlers: true,
-                      withCellClassName: true,
-                    })}
-                  </tr>
-                );
-              })}
+                {rowPinningEnabled ? (
+                  <>
+                    {table.getTopRows().map((row, i) => renderDataRow(row, i, 'top'))}
+                    {table.getCenterRows().map((row, i) => renderDataRow(row, i))}
+                    {table.getBottomRows().map((row, i) => renderDataRow(row, i, 'bottom'))}
+                  </>
+                ) : (
+                  table.getRowModel().rows.map((row, rowPos) => renderDataRow(row, rowPos))
+                )}
                 {floatingBottomRows.map((r) => renderFloatingRow(r, 'bottom'))}
               </>
             )}

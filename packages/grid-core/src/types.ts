@@ -349,6 +349,13 @@ export interface GridProps<TData> {
   alwaysMultiSort?: boolean;
 
   /**
+   * 행 고정 (MOD-GRID-39). 사용자가 데이터 행을 상/하단에 고정(`row.pin('top'|'bottom')`).
+   * 고정 행은 sticky 로 스크롤 중 고정되고 center 행에서 제외된다. **비-가상화 전용**(가상화+핀=vN).
+   * UI 컨트롤은 `RowPinButton` 컴포넌트(G-2)를 셀에 배치.
+   */
+  enableRowPinning?: boolean;
+
+  /**
    * 정렬 첫 클릭 방향을 내림차순으로 (MOD-GRID-37 G-3). (TanStack `sortDescFirst` passthrough —
    * 미지정 시 타입별 기본: 숫자=desc-first, 문자=asc-first.)
    */
