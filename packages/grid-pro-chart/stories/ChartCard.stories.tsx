@@ -1,0 +1,66 @@
+// MOD-GRID-34 G-3: type-switcher toolbar + range-selection/pivot charting via seriesFromMatrix.
+// ★non-vacuous: clicking a toolbar button genuinely changes the chart SHAPE (data-chart-type), and
+// the matrix bridge produces the right SERIES COUNT from a selected range / pivot result. C-3 mock.
+import type { Meta, StoryObj } from '@storybook/react';
+import { setLicenseState } from '@topgrid/grid-license';
+import { ChartCard, RangeChart, seriesFromMatrix } from '@topgrid/grid-pro-chart';
+
+setLicenseState({ status: { valid: true }, rawKey: 'storybook', setAt: 0 });
+
+const meta: Meta = { title: 'grid-pro-chart/ChartCard' };
+export default meta;
+
+// ── Toolbar / type switcher ──────────────────────────────────────────────────
+export const TypeSwitcher: StoryObj = {
+  name: '툴바 타입 스위처 (막대/선/영역)',
+  render: () => (
+    <ChartCard
+      title="월별 매출"
+      initialType="bar"
+      series={[{ name: 'revenue', values: [30, 80, 45, 95, 60], color: '#2563eb' }]}
+      categories={['1월', '2월', '3월', '4월', '5월']}
+      ariaLabel="타입 전환 차트"
+    />
+  ),
+};
+
+// ── Chart from a selected cell range ─────────────────────────────────────────
+// A 3-region × 2-quarter range selected in a grid → one series per quarter (orientation 'columns').
+const rangeMatrix = {
+  categories: ['서울', '부산', '대구'], // selected rows
+  columns: ['Q1', 'Q2'], // selected columns
+  matrix: [
+    [120, 150],
+    [90, 110],
+    [70, 95],
+  ],
+};
+export const FromCellRange: StoryObj = {
+  name: '셀 범위 선택 → 차트',
+  render: () => {
+    const { categories, series } = seriesFromMatrix({ ...rangeMatrix, orientation: 'columns' });
+    return (
+      <ChartCard title="선택 범위" initialType="bar" series={series} categories={categories} width={420} />
+    );
+  },
+};
+
+// ── Chart from a pivot result ────────────────────────────────────────────────
+// Pivot-shaped aggregate (region × product, summed) → chart. Mock pivot output (C-3); the bridge is
+// the same seriesFromMatrix. Live PivotModel extraction is a thin caller step.
+const pivot = {
+  categories: ['East', 'West', 'North'], // pivot row dimension
+  columns: ['Widget', 'Gadget'], // pivot column dimension
+  matrix: [
+    [340, 210],
+    [180, 260],
+    [120, 90],
+  ],
+};
+export const FromPivotResult: StoryObj = {
+  name: '피벗 결과 → 차트',
+  render: () => {
+    const { categories, series } = seriesFromMatrix({ ...pivot, orientation: 'columns' });
+    return <RangeChart type="bar" series={series} categories={categories} width={440} ariaLabel="피벗 차트" />;
+  },
+};
