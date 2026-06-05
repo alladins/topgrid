@@ -60,3 +60,21 @@ test('G-2: "왼쪽 고정" moves the column into the pinned-left region (front)'
   await expect(headers.nth(0)).toContainText('이름');
   await expect(headers.nth(1)).toContainText('점수');
 });
+
+test('G-3: "숨기기" actually removes the column from the grid', async ({ page }: { page: Page }) => {
+  await page.goto(FRAME('grid-core-grid-column-menu--default'));
+  const root = page.locator('#storybook-root');
+  await root.locator('table').first().waitFor({ state: 'visible' });
+  const headers = root.locator('thead th');
+
+  // both columns present.
+  await expect(headers).toHaveCount(2);
+
+  // 점수 menu → "숨기기" → 점수 column is removed (header + its cells gone).
+  await root.locator('[data-column-menu="score"] summary').click();
+  await root.locator('[data-column-menu="score"] [data-menu-action="hide"]').click();
+  await expect(headers, '★점수 column removed').toHaveCount(1);
+  await expect(headers.nth(0)).toContainText('이름');
+  // body rows now render a single cell each (the 점수 column's cells are gone).
+  await expect(root.locator('tbody tr').first().locator('td')).toHaveCount(1);
+});

@@ -61,6 +61,8 @@ export function ColumnMenu<TData>({ column, label = '⋮' }: ColumnMenuProps<TDa
     { key: 'pin-left', label: '왼쪽 고정', run: () => column.pin('left'), show: canPin && pinned !== 'left' },
     { key: 'pin-right', label: '오른쪽 고정', run: () => column.pin('right'), show: canPin && pinned !== 'right' },
     { key: 'pin-clear', label: '고정 해제', run: () => column.pin(false), show: canPin && pinned !== false },
+    // MOD-GRID-38 G-3: hide — remove the column from the grid (unhide via ColumnVisibilityMenu).
+    { key: 'hide', label: '숨기기', run: () => column.toggleVisibility(false), show: column.getCanHide() },
   ];
   const visible = items.filter((i) => i.show);
   if (visible.length === 0) return null;
