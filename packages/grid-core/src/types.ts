@@ -332,6 +332,15 @@ export interface GridProps<TData> {
   /** 컬럼 정의 (TanStack `ColumnDef`). */
   columns: ColumnDef<TData, unknown>[];
 
+  /**
+   * 안정적 행 식별자 (MOD-GRID-36 G-1). 미지정 시 행 키 = 배열 인덱스.
+   *
+   * 제공하면 `rowSelection`·`expanded` 등 모든 행-키 상태가 **인덱스가 아닌 이 id** 로 매겨져,
+   * 데이터 재정렬/교체를 가로질러 **동일 논리 행을 추적**(선택이 위치가 아닌 정체성을 따라감).
+   * cell 변경 flash(G-2) 가 "같은 행"을 식별하는 토대.
+   */
+  getRowId?: (row: TData, index: number) => string;
+
   // ─── enable* 토글 ───
   /** 정렬 활성 (default `false`) — `getSortedRowModel` wiring. */
   enableSort?: boolean;

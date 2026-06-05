@@ -216,6 +216,12 @@ export function buildTableOptions<TData>(
     debugTable: props.debug === true,
   };
 
+  // MOD-GRID-36 G-1: 안정적 행 식별 — getRowId 제공 시 인덱스 대신 콜백 id 사용. RowSelectionState·
+  // expanded 등 모든 행-키 상태가 데이터 재정렬/교체를 가로질러 동일 행을 추적(reconciliation).
+  if (props.getRowId) {
+    options.getRowId = props.getRowId;
+  }
+
   // MOD-GRID-22: manual 시 클라이언트 정렬/필터 row-model 미장착(서버가 이미 적용).
   if (props.enableSort === true && props.manualSorting !== true) {
     options.getSortedRowModel = getSortedRowModel();
