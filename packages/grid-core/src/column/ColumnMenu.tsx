@@ -46,6 +46,8 @@ export function ColumnMenu<TData>({ column, label = '⋮' }: ColumnMenuProps<TDa
   };
 
   const canSort = column.getCanSort();
+  const canPin = column.getCanPin();
+  const pinned = column.getIsPinned();
   const items: MenuItem[] = [
     { key: 'sort-asc', label: '오름차순 정렬', run: () => column.toggleSorting(false), show: canSort },
     { key: 'sort-desc', label: '내림차순 정렬', run: () => column.toggleSorting(true), show: canSort },
@@ -55,6 +57,10 @@ export function ColumnMenu<TData>({ column, label = '⋮' }: ColumnMenuProps<TDa
       run: () => column.clearSorting(),
       show: canSort && column.getIsSorted() !== false,
     },
+    // MOD-GRID-38 G-2: pin actions — move the column into the pinned-left/right region.
+    { key: 'pin-left', label: '왼쪽 고정', run: () => column.pin('left'), show: canPin && pinned !== 'left' },
+    { key: 'pin-right', label: '오른쪽 고정', run: () => column.pin('right'), show: canPin && pinned !== 'right' },
+    { key: 'pin-clear', label: '고정 해제', run: () => column.pin(false), show: canPin && pinned !== false },
   ];
   const visible = items.filter((i) => i.show);
   if (visible.length === 0) return null;

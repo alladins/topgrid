@@ -24,7 +24,15 @@ const columns: ColumnDef<Row>[] = [
     ),
     size: 220,
   },
-  { accessorKey: 'score', header: '점수', size: 120 },
+  {
+    accessorKey: 'score',
+    header: ({ column }) => (
+      <span style={{ display: 'inline-flex', gap: 4, alignItems: 'center' }}>
+        점수 <ColumnMenu column={column} />
+      </span>
+    ),
+    size: 140,
+  },
 ];
 
 const meta: Meta = { title: 'grid-core/Grid (Column Menu)' };
