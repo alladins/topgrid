@@ -907,6 +907,30 @@
         "advisor_closed": "★#1 pagination 버그: onRowReorder 가 rowPos(페이지 슬라이스) 넘김→2페이지 잘못된 행 재배열(silent, data-index 발산 함정). row.index(페이지 무관) 넘김으로 시정+판별 테스트. #2 인디케이터 엣지·#3 style 경로 불일치=기록."
       },
       "module_summary": "3-Goal 잡 UX. ★advisor vacuity 반대 방향→행동/발산 단언. G-1/G-2 browser-only 정직(순수 0)·G-3 moveRow 순수. node 10+chromium 4. vN: 가상화/정렬 reorder·context submenu·side bar·row pin·column menu·tooltip."
+    },
+    "MOD-GRID-34": {
+      "package": "grid-pro-chart (G-1)",
+      "tier": "Pro",
+      "weight": "Full(3-Goal: cartesian line/bar 코어+렌더 → 축/범례/툴팁+area → 툴바/타입스위처+범위선택+피벗차트)",
+      "priority": "★사용자 헤드라인 — 통합 차트 클러스터(Enterprise 7개, 단일 최대 갭)",
+      "phase": "in_progress (G-1 done; G-2,G-3 예정)",
+      "spec": "재감사 델타 + advisor 시퀀스(specs 미작성, 인라인 진행)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "pending",
+        "G-3": "pending"
+      },
+      "version_note": "버전 미범프(릴리스 시 batch). grid-pro-chart 0.2.0→차기.",
+      "critical_decision": "★사용자 결정(AskUserQuestion) = 순수 SVG만 — 차트 라이브러리 dep 0 불변식 유지(C-001/AP-001). recharts/visx/hybrid 미채택.",
+      "design": "advisor: 차트는 browser-only 아님 — 진짜 순수 코어=data→좌표 scale(value→x/y,축 tick,도메인). LESS-006 split: scale=node, paint=chromium. 스코프 락 G-1=cartesian 1계열(line+bar 공유 scale/축), pie/scatter=별도 골/vN.",
+      "g1": {
+        "surface": "순수 internal/chartScale.ts: computeChartGeometry(series,{w,h,margin})→{plot,yScale,yTicks,xBand,series points}; linearScale/niceTicks/bandScale. 렌더 RangeChart{series,type:line|bar,width?,height?,categories?,ariaLabel?} 순수 SVG(자작 polyline/rect/축 그리드+tick text, 차트 lib 0).",
+        "verified_node": "11/11: ★max→top px·min→bottom px(축 비반전)·N점→N좌표·x 단조증가·tick 라운드/도메인 커버·float drift 없음(0.2 정확)·NaN→gap no-shift(인덱스 보존)·≥0 데이터 0 baseline·flat 도메인 mid.",
+        "verified_browser": "chromium 4/4(range-chart.spec): ★값 큰 막대 실제 더 높음(95>30·80>45·단조=scale 배선 비공허, 'svg 렌더됨' 아님)·라운드 tick 라벨(0,100,정수)·line polyline 정점=5=데이터수+x 단조·멀티시리즈 8막대 2그룹. license valid(watermark 없음).",
+        "visibility": "★차트 스토리 0개였음=\"안 보임\" 근본 원인 → RangeChart.stories(Bar/Line/MultiSeries) 신설.",
+        "reuse": "SparklineCell inline scaleY/xAt → 테스트가능 순수 chartScale 로 승격(중복 제거 경로, LESS-005/006)."
+      },
+      "module_summary": "★사용자 헤드라인=차트. G-1 내장 cartesian 엔진(순수 SVG, dep-0 사용자 결정). 순수 코어 node 11+렌더 chromium 4. 차트 스토리 신설(가시화). G-2=축/범례/툴팁+area+sparkline 마커, G-3=툴바/타입스위처+범위선택+피벗차트."
     }
   },
   "release_queue": {
