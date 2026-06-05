@@ -31,15 +31,27 @@ export function createCheckboxColumn<TData>(
     id: '__select__',
     header:
       mode === 'multi'
-        ? ({ table }: { table: Table<TData> }) => (
-            <input
-              type="checkbox"
-              checked={table.getIsAllPageRowsSelected()}
-              onChange={table.getToggleAllPageRowsSelectedHandler()}
-              className="w-4 h-4 cursor-pointer"
-              aria-label="select all rows"
-            />
-          )
+        ? ({ table }: { table: Table<TData> }) => {
+            // MOD-GRID-35 G-3: indeterminate (partial) select-all state. `indeterminate` is a DOM
+            // property (not a React attribute) → set via ref. It is a THIRD visual state, distinct
+            // from checked (all) and unchecked (none): some-but-not-all → mixed. aria-checked
+            // mirrors it ('mixed') so screen readers announce the partial state.
+            const all = table.getIsAllPageRowsSelected();
+            const some = table.getIsSomePageRowsSelected();
+            return (
+              <input
+                type="checkbox"
+                checked={all}
+                ref={(el) => {
+                  if (el) el.indeterminate = some;
+                }}
+                aria-checked={some ? 'mixed' : all ? 'true' : 'false'}
+                onChange={table.getToggleAllPageRowsSelectedHandler()}
+                className="w-4 h-4 cursor-pointer"
+                aria-label="select all rows"
+              />
+            );
+          }
         : () => null,
     cell: ({ row }: { row: Row<TData> }) => (
       <input
