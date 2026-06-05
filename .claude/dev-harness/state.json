@@ -913,11 +913,11 @@
       "tier": "Pro",
       "weight": "Full(3-Goal: cartesian line/bar 코어+렌더 → 축/범례/툴팁+area → 툴바/타입스위처+범위선택+피벗차트)",
       "priority": "★사용자 헤드라인 — 통합 차트 클러스터(Enterprise 7개, 단일 최대 갭)",
-      "phase": "in_progress (G-1 done; G-2,G-3 예정)",
+      "phase": "in_progress (G-1,G-2 done; G-3 예정)",
       "spec": "재감사 델타 + advisor 시퀀스(specs 미작성, 인라인 진행)",
       "goals": {
         "G-1": "done",
-        "G-2": "pending",
+        "G-2": "done",
         "G-3": "pending"
       },
       "version_note": "버전 미범프(릴리스 시 batch). grid-pro-chart 0.2.0→차기.",
@@ -930,7 +930,14 @@
         "visibility": "★차트 스토리 0개였음=\"안 보임\" 근본 원인 → RangeChart.stories(Bar/Line/MultiSeries) 신설.",
         "reuse": "SparklineCell inline scaleY/xAt → 테스트가능 순수 chartScale 로 승격(중복 제거 경로, LESS-005/006)."
       },
-      "module_summary": "★사용자 헤드라인=차트. G-1 내장 cartesian 엔진(순수 SVG, dep-0 사용자 결정). 순수 코어 node 11+렌더 chromium 4. 차트 스토리 신설(가시화). G-2=축/범례/툴팁+area+sparkline 마커, G-3=툴바/타입스위처+범위선택+피벗차트."
+      "module_summary": "★사용자 헤드라인=차트. G-1 내장 cartesian 엔진(순수 SVG, dep-0 사용자 결정). 순수 코어 node 11+렌더 chromium 4. 차트 스토리 신설(가시화). G-2=축/범례/툴팁+area+sparkline 마커, G-3=툴바/타입스위처+범위선택+피벗차트.",
+      "g2": {
+        "surface": "RangeChart showLegend?(기본 true)/showTooltip?(기본 true)/type:'area'. SparklineCell showMinMax?. 툴팁=in-SVG <g>(HTML 오버레이 회피, x 우측 클램프), 범례 단일 colorOf(시리즈와 결합).",
+        "verified_node": "11→12: mixed-sign baseline 단언(음수→below·양수→above yScale(0)) — 음수 막대 경로 wired-but-unverified LESS-006 close-out.",
+        "verified_browser": "chromium 4/4(range-chart-g2): ★툴팁 95막대 hover→95·30막대 hover→30(두 hover 두 값=index/첫점 고정 함정 차단)·범례 스와치 fill=막대 fill(desync 차단, A≠B)·area polygon[data-area] fill+polyline·sparkline 마커 cx=54/132(실제 극점 idx2/idx5, 끝점 2/158 아님)+max가 위(cy 작음).",
+        "advisor_closed": "툴팁 in-SVG <g>(래퍼 리팩터 회피)·범례↔시리즈 단일 colorOf·area baseline 닫힘·마커=실제 극점(끝점 아님). 음수 막대 mixed-sign 테스트 추가.",
+        "typecheck": "tsconfig allowImportingTsExtensions + 로컬 assert(node:assert 제거, @types/node 불필요)."
+      }
     }
   },
   "release_queue": {
