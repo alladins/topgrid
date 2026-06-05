@@ -141,3 +141,23 @@ weight-class: **Full**=4페이즈 전부+rubric+ADR / **Lite**=간이 spec·rubr
 - 샘플 3개(가장 강한 층). 비-exhaustive. verify 비균일(storybook.spec known-broken·MOD-28 inert-ring).
 → **결론**: 샘플 순수 코어는 목표 로직에 충실(갭 0). 그러나 spec-first 프로세스가 가장 값졌을 곳 = **wiring/browser 층**이며,
   이 층의 독립 검증(시정 D: storybook+playwright 실집행 + spec-first 재작성)이 진짜 잔여 작업이다.
+
+### 7.5 시정 (D) 실집행 결과 (2026-06-06)
+> 사용자 지시로 browser/wiring verify 를 **실제로** 돌렸다. advisor 게이트: 이는 **"주장이 real·green 임을 확인"**
+> (anti-fabrication + anti-bitrot)이지 **"browser 층 독립 검증"이 아니다**(스펙은 여전히 저자 작성 = 자기확인 속성 유지).
+- **빌드 검증 겸 발견**: `pnpm -r build`(병렬)가 **비결정적 실패** — `grid-pro-edit-plus` DTS 가 grid-core(자신의 **peerDep**,
+  devDeps 부재)를 grid-core clean/rebuild 중 해소 시도 → TS7016. pnpm topo-order 가 peerDep 을 빌드 순서에 안 넣음.
+  **workaround=`--workspace-concurrency=1`(직렬, 통과, 21 dist 산출)**. 정식 fix=edit-plus devDeps 추가(REMAINING-WORK P3).
+  → release_queue "전 패키지 build OK" 는 **직렬/warm-dist 한정 참**. 발행 자체엔 영향 적음(per-package).
+- **storybook 빌드**: 성공(291 엔트리). 정적 서버(localhost:6006)에서 playwright 실행.
+- **★functional chromium 스위트 = 78/78 PASS**(18s): range-chart·serverside(ssrm/tree)·pivot-interaction·grid-a11y(axe)·
+  sheet-grid·grid-theme·multi-filter·status-bar·column-menu·row-pinning 등 MOD-28~39 전 행동 게이트. → **state.json "chromium
+  N/N" 주장 = real·green 확정**(날조·bitrot 아님).
+- **MOD-38/39 비-vacuity 확인**(advisor down-payment, §7 방법): 스펙이 "hide→th 2→1·pin→컬럼 맨앞 이동·center=정확히 2"
+  등 **실 DOM 효과**를 단언("메뉴 열림"식 vacuous 아님). 순수코어 0 모듈의 최저 독립성 점검 통과.
+- **인프라 시정**(broken→fixed): ① `storybook.spec.ts` = playwright 1.60 `toMatchSnapshot`→`toHaveScreenshot` 마이그레이션
+  + `process.cwd()`→`__dirname` 경로(CWD=apps/docs 깨짐) + loadStoryIds non-throwing + **skip-with-reason**(baseline 은 OS/폰트별
+  =CI `--update-snapshots` 로 생성·커밋 전까지 정직 skip, 동작 검증은 functional 스펙 담당). ② `apps/docs/playwright.config.ts`
+  신설(`@playwright/test`·root testDir 동시 해소) → `pnpm -F docs visual:test` = **78 pass / 291 skip / 0 fail** 정상 작동.
+- **미충족(정직)**: 스크린샷 회귀 자체는 여전히 미가동(baseline 0, CI 작업=REMAINING-WORK). "독립 검증"(요구→재작성)도 wiring 층
+  미완(D 의 2번째 bullet). 즉 (D)는 **"주장 green 확인 + 인프라 복구"까지** 달성, "독립 검증"은 잔여.
