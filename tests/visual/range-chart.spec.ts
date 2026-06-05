@@ -58,6 +58,21 @@ test('line variant draws a polyline with one vertex per datum', async ({ page }:
   for (let i = 1; i < xs.length; i++) expect(xs[i]).toBeGreaterThan(xs[i - 1]);
 });
 
+test('Pro license gate: unlicensed chart is watermarked, licensed is not (PAT-003)', async ({
+  page,
+}: { page: Page }) => {
+  // unlicensed → watermark composited over the chart.
+  await page.goto(FRAME('grid-pro-chart-rangechart--unlicensed'));
+  const root = page.locator('#storybook-root');
+  await root.locator('svg[data-chart-type]').waitFor({ state: 'visible' });
+  await expect(root.getByText('Unlicensed @topgrid/grid')).toBeVisible();
+
+  // valid license (the Bar story) → NO watermark (a paying consumer sees a clean chart).
+  await page.goto(FRAME('grid-pro-chart-rangechart--bar'));
+  await root.locator('svg[data-chart-type]').waitFor({ state: 'visible' });
+  await expect(root.getByText('Unlicensed @topgrid/grid')).toHaveCount(0);
+});
+
 test('multi-series bar groups two series side by side per category', async ({
   page,
 }: { page: Page }) => {

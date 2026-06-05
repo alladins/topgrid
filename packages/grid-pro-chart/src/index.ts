@@ -35,6 +35,8 @@ export {
 export { ChartCard, type ChartCardProps } from './ChartCard.js';
 export {
   seriesFromMatrix,
+  seriesFromPivot,
   type MatrixInput,
   type MatrixChartData,
+  type PivotLike,
 } from './internal/seriesFromMatrix.js';

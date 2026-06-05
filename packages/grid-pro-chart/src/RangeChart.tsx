@@ -1,4 +1,5 @@
 import { useState, type JSX } from 'react';
+import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 import { computeChartGeometry, type ChartSeries } from './internal/chartScale.js';
 
 /** Cartesian chart type. line/bar/area all share the same scale + axis machinery (MOD-GRID-34). */
@@ -63,6 +64,7 @@ export function RangeChart({
   className,
 }: RangeChartProps): JSX.Element {
   const [hover, setHover] = useState<HoverState | null>(null);
+  const lic = useLicenseStatus();
 
   const legendH = showLegend && series.length > 0 ? 18 : 0;
   const geo = computeChartGeometry(series, { width, height, margin: { top: 8 + legendH } });
@@ -74,6 +76,7 @@ export function RangeChart({
   const onLeave = () => setHover(null);
 
   return (
+    <span style={{ position: 'relative', display: 'inline-block' }}>
     <svg
       width={width}
       height={height}
@@ -197,5 +200,7 @@ export function RangeChart({
         );
       })()}
     </svg>
+      {lic.watermarkRequired && <Watermark required />}
+    </span>
   );
 }

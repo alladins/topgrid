@@ -67,3 +67,69 @@ export function seriesFromMatrix(input: MatrixInput): MatrixChartData {
   }
   return { categories: categories.slice(), series };
 }
+
+/** Composite-key separator used by the pivot model (`<colComboLeafKey>__<valueIndex>`). */
+const PIVOT_VALUE_SEP = '__';
+
+/**
+ * Minimal structural shape of a pivot result needed to chart it — declared locally so grid-pro-chart
+ * stays DECOUPLED from grid-pro-pivot (no package dependency / no cycle). Any object matching this
+ * shape (e.g. a real `PivotModel`) can be charted.
+ */
+export interface PivotLike {
+  config: { rows: string[]; columns: string[]; values: unknown[] };
+  columnLeafKeys: string[];
+  columnTree?: Array<{ key: string; value: string; children?: unknown[] }>;
+  rows: Array<{ __kind: string; [key: string]: number | string | null }>;
+}
+
+/** Walk the column tree's LEAVES → { leafKey: friendly column value } for nicer series names. */
+function leafLabels(tree?: PivotLike['columnTree']): Record<string, string> {
+  const out: Record<string, string> = {};
+  const visit = (nodes?: Array<{ key: string; value: string; children?: unknown[] }>) => {
+    for (const n of nodes ?? []) {
+      if (n.children && n.children.length) visit(n.children as typeof nodes);
+      else out[n.key] = n.value;
+    }
+  };
+  visit(tree);
+  return out;
+}
+
+/**
+ * Reduce a pivot result into chart series (MOD-GRID-34 G-3) — pure, node-testable.
+ *
+ * ★ This is the REAL pivot→chart adapter (not a hand-fed matrix): it keeps only `__kind==='data'`
+ * rows (dropping subtotal/grandTotal), labels each by its row-dimension values, and reads each leaf
+ * column's value cell `<leafKey>__<valueIndex>` into the matrix — then defers to
+ * {@link seriesFromMatrix}. One measure at a time (`valueIndex`, default 0); multi-measure charting
+ * is a caller choice (call once per index).
+ */
+export function seriesFromPivot(
+  model: PivotLike,
+  opts: { valueIndex?: number; colors?: string[] } = {},
+): MatrixChartData {
+  const valueIndex = opts.valueIndex ?? 0;
+  const dataRows = model.rows.filter((r) => r.__kind === 'data');
+  const categories = dataRows.map((r) =>
+    model.config.rows
+      .map((f) => (r[f] == null ? '' : String(r[f])))
+      .filter(Boolean)
+      .join(' / '),
+  );
+  const labels = leafLabels(model.columnTree);
+  const columns = model.columnLeafKeys.map((k) => labels[k] ?? k);
+  const matrix = dataRows.map((r) =>
+    model.columnLeafKeys.map((k) => {
+      const v = r[`${k}${PIVOT_VALUE_SEP}${valueIndex}`];
+      return typeof v === 'number' ? v : NaN;
+    }),
+  );
+  return seriesFromMatrix({
+    categories,
+    columns,
+    matrix,
+    orientation: 'columns',
+    ...(opts.colors ? { colors: opts.colors } : {}),
+  });
+}

@@ -31,6 +31,14 @@ export const Area: Story = {
   args: { series: revenue, type: 'area', categories: months, ariaLabel: '월별 매출 영역' },
 };
 
+export const Unlicensed: Story = {
+  // PAT-003: without a valid Pro license the chart is watermarked (matches RangeChartPanel/MultiFilter).
+  beforeEach: () => {
+    setLicenseState({ status: { valid: false, reason: 'invalid' }, rawKey: '', setAt: 0 });
+  },
+  args: { series: revenue, type: 'bar', categories: months, ariaLabel: '무라이선스 차트' },
+};
+
 export const MultiSeries: Story = {
   args: {
     type: 'bar',

@@ -15,7 +15,7 @@ const assert = {
       throw new Error(`deepEqual failed: ${JSON.stringify(a)} vs ${JSON.stringify(b)} ${m ?? ''}`);
   },
 };
-import { seriesFromMatrix } from './seriesFromMatrix.ts';
+import { seriesFromMatrix, seriesFromPivot, type PivotLike } from './seriesFromMatrix.ts';
 
 let n = 0;
 const test = (name: string, fn: () => void) => {
@@ -73,6 +73,42 @@ test('default orientation is columns', () => {
   const out = seriesFromMatrix({ categories, columns, matrix });
   assert.equal(out.series.length, 3);
   assert.deepEqual(out.series[0].values, [10, 40]);
+});
+
+// ── seriesFromPivot (real pivot rows → series; the honest pivot-chart adapter) ─
+// region × product pivot, value=sum. Mirrors computePivot emit: data rows + subtotal + grandTotal,
+// cells keyed `<leafKey>__<valueIndex>`. ★ subtotal/grandTotal MUST be dropped (charting them would
+// double-count and add bogus categories) — the whole reason this isn't a hand-fed matrix.
+const pivotModel: PivotLike = {
+  config: { rows: ['region'], columns: ['product'], values: [{}] },
+  columnLeafKeys: ['pA', 'pB'],
+  columnTree: [
+    { key: 'pA', value: 'A' },
+    { key: 'pB', value: 'B' },
+  ],
+  rows: [
+    { __kind: 'data', region: 'East', pA__0: 30, pB__0: 10 },
+    { __kind: 'data', region: 'West', pA__0: 5, pB__0: 25 },
+    { __kind: 'subtotal', region: 'East', pA__0: 999, pB__0: 999 }, // must NOT chart
+    { __kind: 'grandTotal', pA__0: 35, pB__0: 35 }, // must NOT chart
+  ],
+};
+
+test('seriesFromPivot drops subtotal/grandTotal and charts only data rows', () => {
+  const out = seriesFromPivot(pivotModel);
+  // 2 data rows → 2 categories (the 999 subtotal + grandTotal are excluded).
+  assert.deepEqual(out.categories, ['East', 'West']);
+  assert.equal(out.series.length, 2, 'one series per leaf column');
+});
+
+test('seriesFromPivot uses friendly column-tree labels and the right value cells', () => {
+  const out = seriesFromPivot(pivotModel);
+  assert.deepEqual(out.series.map((s) => s.name), ['A', 'B'], 'friendly labels from columnTree');
+  // series A = column pA down the data rows = [East 30, West 5]; series B = [10, 25].
+  assert.deepEqual(out.series[0].values, [30, 5]);
+  assert.deepEqual(out.series[1].values, [10, 25]);
+  // the bogus 999 subtotal never leaks into any series value.
+  assert.ok(!out.series.some((s) => s.values.includes(999)), 'subtotal value excluded');
 });
 
 console.log(`\n${n} seriesFromMatrix assertions passed.`);

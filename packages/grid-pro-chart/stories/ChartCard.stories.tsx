@@ -3,7 +3,13 @@
 // the matrix bridge produces the right SERIES COUNT from a selected range / pivot result. C-3 mock.
 import type { Meta, StoryObj } from '@storybook/react';
 import { setLicenseState } from '@topgrid/grid-license';
-import { ChartCard, RangeChart, seriesFromMatrix } from '@topgrid/grid-pro-chart';
+import {
+  ChartCard,
+  RangeChart,
+  seriesFromMatrix,
+  seriesFromPivot,
+  type PivotLike,
+} from '@topgrid/grid-pro-chart';
 
 setLicenseState({ status: { valid: true }, rawKey: 'storybook', setAt: 0 });
 
@@ -46,21 +52,28 @@ export const FromCellRange: StoryObj = {
 };
 
 // ── Chart from a pivot result ────────────────────────────────────────────────
-// Pivot-shaped aggregate (region × product, summed) → chart. Mock pivot output (C-3); the bridge is
-// the same seriesFromMatrix. Live PivotModel extraction is a thin caller step.
-const pivot = {
-  categories: ['East', 'West', 'North'], // pivot row dimension
-  columns: ['Widget', 'Gadget'], // pivot column dimension
-  matrix: [
-    [340, 210],
-    [180, 260],
-    [120, 90],
+// A real PivotModel-shaped result (region × product, summed) reduced by seriesFromPivot — it drops
+// the subtotal/grandTotal rows and reads the `<leafKey>__<valueIndex>` value cells, exactly like a
+// live PivotModel. (C-3: the fixture is mock data, but the SHAPE + the adapter are real.)
+const pivotModel: PivotLike = {
+  config: { rows: ['region'], columns: ['product'], values: [{}] },
+  columnLeafKeys: ['Widget', 'Gadget'],
+  columnTree: [
+    { key: 'Widget', value: 'Widget' },
+    { key: 'Gadget', value: 'Gadget' },
+  ],
+  rows: [
+    { __kind: 'data', region: 'East', Widget__0: 340, Gadget__0: 210 },
+    { __kind: 'data', region: 'West', Widget__0: 180, Gadget__0: 260 },
+    { __kind: 'data', region: 'North', Widget__0: 120, Gadget__0: 90 },
+    { __kind: 'subtotal', region: 'East', Widget__0: 999, Gadget__0: 999 },
+    { __kind: 'grandTotal', Widget__0: 640, Gadget__0: 560 },
   ],
 };
 export const FromPivotResult: StoryObj = {
   name: '피벗 결과 → 차트',
   render: () => {
-    const { categories, series } = seriesFromMatrix({ ...pivot, orientation: 'columns' });
+    const { categories, series } = seriesFromPivot(pivotModel);
     return <RangeChart type="bar" series={series} categories={categories} width={440} ariaLabel="피벗 차트" />;
   },
 };
