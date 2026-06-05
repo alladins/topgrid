@@ -751,6 +751,22 @@
 
 ---
 
+### `mod-grid-38` — Column menu (헤더 드롭다운: 정렬 → pin → hide, **MIT**, grid-core) ✅ 채움 — {G-1,G-2,G-3} 완주
+
+소스: `packages/grid-core/src/column/ColumnMenu.tsx` + stories(`Grid.column-menu`) + specs(`grid-column-menu`). Community 트랙 4번째(advisor 지정, **vacuity-prone**). ★advisor 행동 게이트 규칙: "정렬 실제 수행·pin 실제 이동·hide 실제 제거", **"메뉴 열림" 금지**. 헤더 상호작용 제약(col-virt·ARIA·floating filter·기존 multi-sort 클릭 핸들러) 때문에 독립 모듈 — 소비자가 header 에 배치(MultiFilter 패턴, 헤더 파이프라인 미접촉).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 정렬 액션(G-1) | `ColumnMenu{column}` native `<details>` + 오름/내림/해제 → column.toggleSorting/clearSorting | 연결형 | ★메뉴가 `<th>` 안에 있어 th sort 핸들러와 충돌 → **모든 상호작용 stopPropagation**. Radix 없음(C-22), 인라인 스타일(P27-1) | browser-only(액션=column API). chromium 1(★메뉴 열기는 정렬 안 함[stopPropagation]·"오름차순"→실제 행 재정렬 A,B,C·"내림차순"→C,B,A) | 채움 |
+| pin 액션(G-2) | column.pin('left'\|'right'\|false), getCanPin/getIsPinned 조건부 | 연결형 | 핀 컬럼 DOM 순서 `[pinnedLeft,center,pinnedRight]` → 왼쪽 고정=맨 앞 이동 | chromium 1(★"왼쪽 고정"→점수가 첫 컬럼으로 **실제 이동**·"고정 해제"→center 복원) | 채움 |
+| hide 액션(G-3) | column.toggleVisibility(false), getCanHide 조건 | 연결형 | 언하이드=ColumnVisibilityMenu(별도) | chromium 1(★"숨기기"→점수 컬럼 **실제 제거**: thead th 2→1·행 td 2→1) | 채움 |
+
+> dev-harness 수확: **행동 게이트로 vacuity 회피**(advisor) — column menu 는 "메뉴 보임"식 vacuous 위험 최대 → 골마다 **실제 DOM 효과** 단언(정렬=행 재정렬·pin=컬럼 맨앞 이동·hide=컬럼 제거), "메뉴 열림" 절대 금지. ★핵심 버그: 메뉴가 `<th>` 안에 있어 클릭이 th sort 핸들러로 버블 → 모든 상호작용 stopPropagation(G-1서 "열기는 정렬 안 함" 단언으로 검증). native `<details>/<summary>`(Radix 없음, peerDep 0)·인라인 스타일(Tailwind inert storybook). 메뉴별 selector 컬럼-scope(data-column-menu=id). filter 액션=floating/multi filter 별도(메뉴 범위 밖). chromium 3. reuse: 기존 column API(toggle/pin/visibility) 합성, 헤더 파이프라인 미접촉.
+
+---
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의

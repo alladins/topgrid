@@ -1042,6 +1042,34 @@
         "verified_browser": "browser-only 정직(passthrough, node 미조작). chromium 1(★shift 없이 순차 클릭→둘 다 aria-sort 활성=누적, 교체-onclick divergence)"
       },
       "module_summary": "Sorting options 3-Goal. ★passthrough≠가짜 ✅(G-2 fork서 헬퍼 ship). thin-passthrough(G-3) browser-only 정직, 실 로직(G-1 localeCompare·G-2 blank)만 node spine. node 19+chromium 3. 회귀 72/72."
+    },
+    "MOD-GRID-38": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(3-Goal: ColumnMenu 정렬 + pin + hide 액션)",
+      "priority": "Community 트랙 4번째(Column menu, advisor 지정·vacuity-prone)",
+      "phase": "done (3-Goal 완주 → §3)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "version_note": "grid-core 0.4→차기 batch.",
+      "design": "advisor: vacuity-prone → 행동 게이트('메뉴 열림' 금지, 실제 DOM 효과). 헤더 상호작용 제약 때문에 독립 모듈, 소비자가 header 배치(헤더 파이프라인 미접촉). native details(Radix 없음 C-22), 인라인 스타일(P27-1).",
+      "g1": {
+        "surface": "ColumnMenu{column} native <details>/<summary> + 정렬(오름/내림/해제)→column.toggleSorting/clearSorting. ★모든 상호작용 stopPropagation(th sort 핸들러 충돌 방지).",
+        "verified_browser": "chromium 1(★메뉴 열기는 정렬 안 함[stopPropagation 검증]·'오름차순'→실제 행 재정렬 A,B,C+aria-sort·'내림차순'→C,B,A)"
+      },
+      "g2": {
+        "surface": "pin 아이템 column.pin('left'|'right'|false), getCanPin/getIsPinned 조건. 핀 DOM 순서 [pinnedLeft,center,pinnedRight].",
+        "verified_browser": "chromium 1(★'왼쪽 고정'→점수가 첫 컬럼으로 실제 이동·'고정 해제'→center 복원)"
+      },
+      "g3": {
+        "surface": "hide 아이템 column.toggleVisibility(false), getCanHide 조건.",
+        "verified_browser": "chromium 1(★'숨기기'→점수 컬럼 실제 제거: thead th 2→1·행 td 2→1)"
+      },
+      "module_summary": "Column menu 3-Goal. ★전부 행동 게이트(정렬 재정렬·pin 맨앞 이동·hide 제거, '메뉴 열림' 금지). 핵심 버그=메뉴가 th 안→stopPropagation. native details, peerDep 0. chromium 3. filter=별도. 회귀 75/75.",
+      "vN_note": "메뉴 내 filter 액션=floating/multi filter 별도 컴포넌트(메뉴 범위 밖)."
     }
   },
   "release_queue": {
