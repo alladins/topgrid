@@ -4,7 +4,19 @@
 //   - N data points → N coordinates, evenly spaced, in plot bounds          [off-by-one / drift]
 //   - niceTicks are ROUND, ascending, span the domain                        [ugly/!covering axis]
 //   - non-finite values leave a GAP, never shift later points left           [silent index shift]
-import assert from 'node:assert/strict';
+// Local assert (no node:assert import → no @types/node needed for typecheck; matches pivot tests).
+const assert = {
+  ok(cond: unknown, msg?: string): void {
+    if (!cond) throw new Error(`assert.ok failed: ${msg ?? ''}`);
+  },
+  equal(a: unknown, b: unknown, msg?: string): void {
+    if (a !== b) throw new Error(`assert.equal failed: ${String(a)} !== ${String(b)} ${msg ?? ''}`);
+  },
+  deepEqual(a: unknown, b: unknown, msg?: string): void {
+    if (JSON.stringify(a) !== JSON.stringify(b))
+      throw new Error(`assert.deepEqual failed: ${JSON.stringify(a)} !== ${JSON.stringify(b)} ${msg ?? ''}`);
+  },
+};
 import {
   linearScale,
   niceTicks,
@@ -104,6 +116,18 @@ test('non-finite value leaves a gap — later points keep their slot (no left-sh
 test('all-positive data includes 0 baseline so bars read from zero', () => {
   // domain min should be clamped to 0 (yTicks start at 0) for ≥0 data.
   assert.equal(GEO.yTicks[0], 0);
+});
+
+test('mixed-sign data straddles a 0 baseline (negatives below, positives above)', () => {
+  // ★ LESS-006 close-out: the bar code hangs bars from yScale(0); prove the geometry actually
+  // puts 0 between the values so a negative bar can render BELOW the baseline.
+  const geo = computeChartGeometry([{ name: 's', values: [-30, 50] }], { width: 200, height: 120 });
+  assert.ok(geo.yTicks.includes(0), 'domain spans 0');
+  const y0 = geo.yScale(0);
+  const yNeg = geo.series[0].points.find((p) => p.value === -30)!.y;
+  const yPos = geo.series[0].points.find((p) => p.value === 50)!.y;
+  assert.ok(yNeg > y0, 'negative value sits below baseline (larger y)');
+  assert.ok(yPos < y0, 'positive value sits above baseline (smaller y)');
 });
 
 console.log(`\n${n} chartScale assertions passed.`);

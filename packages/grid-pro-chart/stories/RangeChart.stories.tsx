@@ -27,6 +27,10 @@ export const Line: Story = {
   args: { series: revenue, type: 'line', categories: months, ariaLabel: '월별 매출 추이' },
 };
 
+export const Area: Story = {
+  args: { series: revenue, type: 'area', categories: months, ariaLabel: '월별 매출 영역' },
+};
+
 export const MultiSeries: Story = {
   args: {
     type: 'bar',

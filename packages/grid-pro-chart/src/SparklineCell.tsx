@@ -29,6 +29,8 @@ export interface SparklineCellProps {
   width?: number;
   /** SVG height in px. Default `20`. */
   height?: number;
+  /** Mark the min and max points with dots (line/area only). Default `false`. */
+  showMinMax?: boolean;
   /** Additional className appended to the root `<svg>`. */
   className?: string;
 }
@@ -66,6 +68,7 @@ export function SparklineCell({
   color = 'currentColor',
   width = 80,
   height = 20,
+  showMinMax = false,
   className,
 }: SparklineCellProps): JSX.Element {
   const data = finiteValues(values);
@@ -148,6 +151,23 @@ export function SparklineCell({
     .map((v, i) => `${xAt(i, data.length, width, pad)},${scaleY(v, min, max, height, pad)}`)
     .join(' ');
 
+  // min/max markers sit at the ACTUAL extreme points (first occurrence), not the endpoints —
+  // a sparkline whose data starts low must NOT mark index 0 as the min (advisor: marker ≠ endpoint).
+  const maxIdx = data.indexOf(max);
+  const minIdx = data.indexOf(min);
+  const marker = (idx: number, fill: string, key: string) => (
+    <circle
+      key={key}
+      data-marker={key}
+      cx={xAt(idx, data.length, width, pad)}
+      cy={scaleY(data[idx], min, max, height, pad)}
+      r={1.6}
+      fill={fill}
+    />
+  );
+  const minMaxMarkers =
+    showMinMax && min !== max ? [marker(maxIdx, '#16a34a', 'max'), marker(minIdx, '#dc2626', 'min')] : null;
+
   if (type === 'area') {
     const x0 = xAt(0, data.length, width, pad);
     const xN = xAt(data.length - 1, data.length, width, pad);
@@ -157,6 +177,7 @@ export function SparklineCell({
       <svg {...svgProps}>
         <polygon points={areaPoints} fill={color} opacity={0.25} />
         <polyline points={points} fill="none" stroke={color} strokeWidth={1} />
+        {minMaxMarkers}
       </svg>
     );
   }
@@ -165,6 +186,7 @@ export function SparklineCell({
   return (
     <svg {...svgProps}>
       <polyline points={points} fill="none" stroke={color} strokeWidth={1} />
+      {minMaxMarkers}
     </svg>
   );
 }
