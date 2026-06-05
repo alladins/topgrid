@@ -342,6 +342,19 @@ export interface GridProps<TData> {
   getRowId?: (row: TData, index: number) => string;
 
   /**
+   * 평범 클릭으로도 다중 정렬 누적 (MOD-GRID-37 G-3). `enableMultiSort` 와 함께 사용.
+   * 기본은 Shift+클릭이 다중 정렬 키지만, `true` 면 **Shift 없이** 컬럼을 순차 클릭해 누적.
+   * (TanStack `isMultiSortEvent: () => true` passthrough.)
+   */
+  alwaysMultiSort?: boolean;
+
+  /**
+   * 정렬 첫 클릭 방향을 내림차순으로 (MOD-GRID-37 G-3). (TanStack `sortDescFirst` passthrough —
+   * 미지정 시 타입별 기본: 숫자=desc-first, 문자=asc-first.)
+   */
+  sortDescFirst?: boolean;
+
+  /**
    * 셀 값 변경 시 잠깐 강조(change-flash) (MOD-GRID-36 G-2). `data` 가 바뀌면 **값이 실제로
    * 변한 셀**(행 정체성으로 diff — 재정렬은 미강조)에 ~0.9s 배경 하이라이트.
    *

@@ -222,6 +222,15 @@ export function buildTableOptions<TData>(
     options.getRowId = props.getRowId;
   }
 
+  // MOD-GRID-37 G-3: 정렬 동작 knobs (TanStack passthrough).
+  // alwaysMultiSort → 평범 클릭도 다중 정렬 누적(shift 키 불요). sortDescFirst → 첫 클릭 내림차순.
+  if (props.alwaysMultiSort === true) {
+    options.isMultiSortEvent = () => true;
+  }
+  if (props.sortDescFirst !== undefined) {
+    options.sortDescFirst = props.sortDescFirst;
+  }
+
   // MOD-GRID-22: manual 시 클라이언트 정렬/필터 row-model 미장착(서버가 이미 적용).
   if (props.enableSort === true && props.manualSorting !== true) {
     options.getSortedRowModel = getSortedRowModel();
