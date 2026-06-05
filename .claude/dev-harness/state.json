@@ -940,24 +940,28 @@
       },
       "g3": {
         "surface": "순수 internal/seriesFromMatrix({categories,columns,matrix,orientation:'columns'|'rows',colors?})→{categories,series} — 범위선택·피벗 공유 bridge(grid/pivot import 0). ChartCard{initialType?,types?,title?,...RangeChart} 타입 토글 툴바(useState, 인라인 스타일, aria-pressed).",
-        "verified_node": "seriesFromMatrix 5/5: ★orientation 실제 transpose(columns→열당 시리즈 3개·rows→행당 시리즈 2개, 이름+값+x축 전부 뒤집힘=잘못된 축 차트 함정 차단)+colors index 매핑+default columns.",
+        "verified_node": "seriesFromMatrix 5 + seriesFromPivot 2 = 7/7(★orientation transpose·피벗 subtotal 999 미누출·friendly 라벨).",
         "verified_browser": "chromium 3/3(chart-card): ★툴바 bar→line→area 실제 전환(data-chart-type+polyline/polygon[data-area] 등장·rect[data-value] 사라짐·aria-pressed 토글)·피벗 결과 2시리즈 6막대·범위선택 2시리즈 6막대. 전체 visual 회귀 60/60.",
         "scope_lock": "advisor: 패널/dock·크로스필터=vN(각 골보다 무거움). silent 미포함 금지 명시. 라이브 셀선택 이벤트 배선=thin consumer.",
-        "advisor_closed": "G-3=툴바+범위선택+피벗차트. seriesFromMatrix 공유 bridge(결합 회피). 패널/크로스필터 vN 명시(silent truncation 금지)."
+        "advisor_closed": "G-3=툴바+범위선택+피벗차트. seriesFromMatrix 공유 bridge(결합 회피). 패널/크로스필터 vN 명시(silent truncation 금지).",
+        "honesty_fixes": "advisor 재감사 정직성: ①seriesFromPivot(진짜 PivotModel data행→matrix, subtotal/grandTotal 드롭, node 7/7)로 피벗차트 진짜 ✅ ②범위선택 ✅→🟡(transform만, 라이브 grid-pro-range 셀선택 배선=vN) ③RangeChart Watermark(useLicenseStatus, 무라이선스 무료노출 차단, chromium PAT-003) ④facade export * 확인."
       },
-      "charts_closed": "7개 중 5: 내장엔진·축/툴팁·스파크 마커·툴바/타입스위처·범위선택→차트·피벗차트. vN 2: 패널/dock·크로스필터."
+      "charts_closed": "7개: ✅4(내장엔진·축/툴팁·스파크 마커·툴바/타입스위처·피벗차트[진짜 seriesFromPivot]) + 🟡1(범위선택: transform shipped, 라이브배선 vN) + vN2(패널/dock·크로스필터).",
+      "license_gate": "RangeChart useLicenseStatus()+Watermark required(PAT-003). ChartCard 상속. RangeChartPanel 기존. chromium 무라이선스=워터마크·유효=없음.",
+      "regression": "전체 visual 61/61. node 19(chartScale12+seriesFromMatrix/Pivot7). typecheck 0."
     }
   },
   "release_queue": {
     "next_batch_checklist": {
       "scope": "MOD-28~32 (차기 로드맵/갭분석) — prepared_batch(MOD-18~27) 발행 후 또는 함께. advisor 가 3모듈 누적 캡처 권고.",
-      "modules": "MOD-28 a11y · MOD-29 i18n+테마 · MOD-30 필터링(floating/faceted/multi) · MOD-31 pivot 상호작용 · MOD-32 sheet 심화",
+      "modules": "MOD-28 a11y · MOD-29 i18n+테마 · MOD-30 필터링(floating/faceted/multi) · MOD-31 pivot 상호작용 · MOD-32 sheet 심화 · MOD-33 잡UX · MOD-34 차트 엔진",
       "version_bumps_due": {
         "grid-core": "minor (MOD-28 a11y + MOD-29 i18n/테마 + MOD-30 G-1 floating/G-2 faceted)",
         "grid-features": "minor (MOD-30 G-1 floating TextFloatingFilter/NumberFloatingFilter)",
         "grid-pro-pivot": "minor (MOD-31 sort/collapse/transpose)",
         "grid-pro-sheet": "minor (MOD-32 비교/IF·text/math·undo/redo)",
-        "note": "수동 0.x bump(changeset version 금지). from→to 는 발행 시 현 버전 확인."
+        "note": "수동 0.x bump(changeset version 금지). from→to 는 발행 시 현 버전 확인.",
+        "grid-pro-chart": "minor 0.2.0→0.3.0 (MOD-34 RangeChart 엔진+ChartCard+seriesFromMatrix/Pivot, Pro 워터마크). 수동 0.x."
       },
       "new_package": {
         "grid-pro-filter": "신규 0.1.0 (MOD-30 G-3 multi, Pro). ★facade(@topgrid/grid) 등록 필요."
