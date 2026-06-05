@@ -400,7 +400,7 @@
 
 | 기능 | AG Grid | Wijmo | topgrid | 근거 / 비고 |
 |---|---|---|---|---|
-| Integrated range charts (built-in chart rendering engine) | Enterprise | ○ | ❌ 미구현 | Verified: grid-pro-chart/src imports no chart library (C-001/AP-001 in index.ts); RangeChartPanel only renders a consumer-injected renderChart callback, no built-in engine. |
+| Integrated range charts (built-in chart rendering engine) | Enterprise | ○ | ✅ 구현(MOD-34 G-1 RangeChart 순수SVG) | Verified: grid-pro-chart/src imports no chart library (C-001/AP-001 in index.ts); RangeChartPanel only renders a consumer-injected renderChart callback, no built-in engine. |
 | Chart from cell-range selection (select cells then chart them) | Enterprise | — | ❌ 미구현 | Verified: grep of grid-pro-range/src for chart/sparkline returns 0; RangeChartPanel takes series as a prop with no automatic range-to-series capture. |
 | Sparkline cell - line | Enterprise | ○ | ✅ 구현 | `@topgrid/grid-pro-chart SparklineCell type='line' (SparklineCell.tsx:164-169)` — Pure SVG polyline through points; zero-dependency, confirmed in source. |
 | Sparkline cell - bar/column | Enterprise | ○ | ✅ 구현 | `@topgrid/grid-pro-chart SparklineCell type='bar' (SparklineCell.tsx:130-144)` — One scaled <rect> column per value; SparklineType union (line 10) has no separate 'column' but bar covers it. |
@@ -584,7 +584,7 @@
 | Auto-aggregation of pinned/floating rows (grid computes the totals) | Pinned/floating & full-width rows | Enterprise | ❌ 미구현 | Floating rows are purely consumer-supplied data; no built-in sum/avg. Aggregation lives in grid-pro-agg group rows, not wired to floating rows. |
 | Sticky group rows / sticky row groups (group header sticks while its children scroll) | Pinned/floating & full-width rows | Enterprise | ❌ 미구현 | VERIFIED missing: GroupRow.tsx has colSpan but grep for sticky/position on group rows = 0. AG Grid groupRowsSticky / suppressGroupRowsSticky is enterprise. topgrid group rows scroll normally. |
 | Excel cell styles (font/fill/border) | Export, clipboard & print | Enterprise | ❌ 미구현 | Deliberately omitted — community xlsx@0.18.5 strips .s on write (round-trip verified), documented as a limitation. |
-| Integrated range charts (built-in chart rendering engine) | Integrated charts & sparklines | Enterprise | ❌ 미구현 | Verified: grid-pro-chart/src imports no chart library (C-001/AP-001 in index.ts); RangeChartPanel only renders a consumer-injected renderChart callback, no built-in engine. |
+| Integrated range charts (built-in chart rendering engine) | Integrated charts & sparklines | Enterprise | ✅ 구현(MOD-34 G-1 RangeChart 순수SVG) | Verified: grid-pro-chart/src imports no chart library (C-001/AP-001 in index.ts); RangeChartPanel only renders a consumer-injected renderChart callback, no built-in engine. |
 | Chart from cell-range selection (select cells then chart them) | Integrated charts & sparklines | Enterprise | ❌ 미구현 | Verified: grep of grid-pro-range/src for chart/sparkline returns 0; RangeChartPanel takes series as a prop with no automatic range-to-series capture. |
 | Sparkline markers / min-max / tooltips / axes | Integrated charts & sparklines | Enterprise | ❌ 미구현 | Verified: SparklineCellProps (lines 21-34) exposes no marker, min/max highlight, tooltip, or axis options; bare SVG shape only. |
 | Chart toolbar / interactive chart-type switcher | Integrated charts & sparklines | Enterprise | ❌ 미구현 | Verified: grep for toolbar/chartType/legend/axis in grid-pro-chart returns 0; no UI to change chart type at runtime. |

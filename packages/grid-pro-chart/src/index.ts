@@ -3,8 +3,10 @@
 // MOD-GRID-19 / G-2: RangeChartPanel (injectable renderChart adapter).
 // MOD-GRID-19 / G-3: Pro license gate.
 //
-// C-001 / AP-001: this package imports NO chart library. Sparklines are pure
-// SVG; range charts are rendered by a consumer-injected `renderChart` callback.
+// MOD-GRID-34 / G-1: RangeChart (built-in cartesian engine, zero-dep pure SVG).
+//
+// C-001 / AP-001: this package imports NO chart library. Sparklines AND the built-in RangeChart are
+// pure SVG; richer charts can still be injected via RangeChartPanel's `renderChart` callback.
 import { checkLicense } from '@topgrid/grid-license';
 
 // PAT-003 — module-load license gate (side effect; same as grid-pro-tracking).
@@ -16,3 +18,15 @@ export {
   type RangeChartPanelProps,
   type RangeSeries,
 } from './RangeChartPanel.js';
+
+// MOD-GRID-34 G-1: built-in cartesian chart engine (zero-dep pure SVG — still no chart library).
+export { RangeChart, type RangeChartProps, type RangeChartType } from './RangeChart.js';
+export {
+  computeChartGeometry,
+  linearScale,
+  niceTicks,
+  bandScale,
+  type ChartSeries,
+  type ChartGeometry,
+  type ChartPoint,
+} from './internal/chartScale.js';
