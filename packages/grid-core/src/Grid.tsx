@@ -524,6 +524,8 @@ function GridInner<TData>(
         cellStyle.backgroundColor = '#fde68a'; // amber-200
         cellStyle.transition = 'background-color 0.9s ease-out';
       }
+      // MOD-GRID-36 G-3: cell tooltip — native `title` from the consumer callback (body cells only).
+      const tooltip = opts.withHandlers ? props.getCellTooltip?.(cell, row.original) : undefined;
       // MOD-GRID-28 G-2: active 셀(키보드 nav 대상) = 시각 링. floating 행(withHandlers=false)은 비대상.
       const isActiveCell = opts.withHandlers && cellDomId(cell.id) === activeCellId;
       const activeClass = isActiveCell ? 'outline outline-2 outline-blue-500 -outline-offset-2' : '';
@@ -535,6 +537,7 @@ function GridInner<TData>(
           key={cell.id}
           {...(opts.withHandlers ? { id: cellDomId(cell.id) } : {})}
           {...(isFlashing ? { 'data-flash': '' } : {})}
+          {...(tooltip != null && tooltip !== '' ? { title: tooltip } : {})}
           {...gridCellAttrs(ariaColIndexOf(cell.column.id))}
           className={className}
           style={cellStyle}

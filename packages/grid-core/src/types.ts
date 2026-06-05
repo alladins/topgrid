@@ -506,6 +506,14 @@ export interface GridProps<TData> {
     event: MouseEvent<HTMLTableCellElement>,
   ) => void;
 
+  /**
+   * 셀 툴팁 (MOD-GRID-36 G-3). 셀마다 호출해 반환 문자열을 `<td title>` 로 부여(네이티브 hover
+   * 툴팁) — 잘린 내용 표시·부가 설명 등. `undefined`/`null`/`''` 반환 시 해당 셀 title 미부여.
+   *
+   * @example getCellTooltip={(cell) => String(cell.getValue())}  // 잘린 셀 전체값 툴팁
+   */
+  getCellTooltip?: (cell: Cell<TData, unknown>, row: TData) => string | undefined | null;
+
   // ─── G-007 (MOD-GRID-01): 셀 키보드 이벤트 (D1) ───
   /**
    * 셀 키보드 이벤트 핸들러 — `<td onKeyDown>` 으로 wire (G-007 D1).
