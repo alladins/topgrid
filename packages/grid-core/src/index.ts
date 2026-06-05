@@ -13,6 +13,8 @@ export { themeToVars, darkTheme } from './internal/theme';
 export type { GridTheme } from './internal/theme';
 // MOD-GRID-33 G-3 row reorder — pure array move; consumer applies it in onRowReorder.
 export { moveRow } from './internal/moveRow';
+// MOD-GRID-37 G-1: locale/collation-aware sortingFn (é between e and f; 한글 자모 순).
+export { compareLocale, makeLocaleSortingFn, localeSortingFn } from './internal/localeSort';
 export { useGridState } from './useGridState'; // ★ MOD-GRID-02 G-001
 export { useUrlSync } from './useUrlSync'; // ★ MOD-GRID-02 G-005
 export { useStoragePersist } from './useStoragePersist'; // ★ MOD-GRID-02 G-006
