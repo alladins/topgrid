@@ -1070,6 +1070,34 @@
       },
       "module_summary": "Column menu 3-Goal. ★전부 행동 게이트(정렬 재정렬·pin 맨앞 이동·hide 제거, '메뉴 열림' 금지). 핵심 버그=메뉴가 th 안→stopPropagation. native details, peerDep 0. chromium 3. filter=별도. 회귀 75/75.",
       "vN_note": "메뉴 내 filter 액션=floating/multi filter 별도 컴포넌트(메뉴 범위 밖)."
+    },
+    "MOD-GRID-39": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(3-Goal: enableRowPinning + RowPinButton + 3분할)",
+      "priority": "Community 트랙 5번째(Row pinning UX)",
+      "phase": "done (3-Goal 완주 → §3)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "version_note": "grid-core 0.4→차기 batch.",
+      "scope": "★비-가상화 전용(가상화+핀=vN). 최고위험 파일(Grid.tsx 본문 렌더) → renderDataRow 추출로 핀 OFF byte-identical 보장(회귀 75/75 무변 확인 후 진행).",
+      "g1": {
+        "surface": "enableRowPinning?→TanStack rowPinning+keepPinnedRows. renderDataRow 추출(핀 행=center 행 동일 마크업, sticky). 핀 ON=getTopRows(sticky)+getCenterRows+getBottomRows(sticky).",
+        "verified_browser": "chromium 1(★top 고정→sticky pinned-row=첫행·center 제외)"
+      },
+      "g2": {
+        "surface": "RowPinButton{row} 상/하단/해제→row.pin. ★stopPropagation(행클릭 선택 충돌 방지). 인라인 스타일.",
+        "verified_browser": "chromium 1(★bottom→마지막행+pinned-bottom·unpin→center 복귀)"
+      },
+      "g3": {
+        "surface": "3분할 getTopRows/getCenterRows/getBottomRows. center=전체−(top∪bottom).",
+        "verified_browser": "chromium 1(★가 top+라 bottom 동시→center=나,다 정확히 2[두 핀행 제외·중복 없음])"
+      },
+      "module_summary": "Row pinning 3-Goal. ★renderDataRow 추출로 최고위험 파일 안전 변경(핀 OFF byte-identical). 비-가상화 전용. 전부 행동 게이트. RowPinButton stopPropagation. chromium 3. 회귀 78/78.",
+      "vN_note": "가상화+핀=vN(가상화 윈도에 핀 행 제외 복잡). keepPinnedRows=passthrough."
     }
   },
   "release_queue": {

@@ -765,6 +765,22 @@
 
 ---
 
+### `mod-grid-39` — Row pinning (사용자 행 고정: top/bottom sticky 3분할, **MIT**, grid-core) ✅ 채움 — {G-1,G-2,G-3} 완주
+
+소스: `packages/grid-core/src/Grid.tsx`(renderDataRow 추출 + 핀 렌더) + `RowPinButton.tsx` + `buildTableOptions.ts` + stories(`Grid.row-pinning`) + specs. Community 트랙 5번째. ★**비-가상화 전용**(가상화+핀=vN, 기존 연기 일관). 최고위험 파일(Grid.tsx 본문 렌더) 변경 → renderDataRow 추출로 핀 OFF byte-identical 보장(회귀 75/75 무변 확인 후 진행).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| enableRowPinning + sticky 렌더(G-1) | `enableRowPinning?`→TanStack rowPinning+keepPinnedRows. renderDataRow(sticky) | 종결형+트리거 | ★renderDataRow 추출=핀 행과 center 행 동일 마크업(handlers/selection/drag). 핀 OFF byte-identical | chromium 1(★top 고정→sticky pinned-row=첫행·center 제외) | 채움 |
+| RowPinButton 컨트롤(G-2) | `RowPinButton{row}` 상/하단/해제 → row.pin('top'\|'bottom'\|false) | 연결형 | ★stopPropagation(행클릭 선택 충돌 방지). 인라인 스타일(P27-1) | chromium 1(★bottom→마지막행+pinned-bottom·unpin→center 복귀) | 채움 |
+| 3분할 동시 핀(G-3) | getTopRows/getCenterRows/getBottomRows 렌더 | 종결형 | center=전체−(top∪bottom) | chromium 1(★가 top+라 bottom 동시→center=나,다 정확히 2[두 핀행 제외·중복 없음]) | 채움 |
+
+> dev-harness 수확: **최고위험 파일 안전 변경 패턴** — Grid.tsx 본문 렌더(가상화+plain+floating+col-window 다중 경로)에 핀 추가 시 **인라인 마크업을 renderDataRow 로 추출**(핀 행 재사용+OFF byte-identical), 전체 회귀로 무회귀 확인 **후** 핀 스토리 추가. ★비-가상화 전용 스코프(가상화+핀=vN, MOD-27/33 가상화-엣지 연기 일관). 전부 행동 게이트(top→sticky 첫행·bottom→마지막·unpin→center·동시 3분할 center 정확). RowPinButton stopPropagation(행클릭 선택과 충돌). keepPinnedRows=passthrough 기본(필터-생존, sortDescFirst 류 passthrough). chromium 3. reuse: 기존 selection/drag/cell 렌더 경로(renderDataRow 단일화).
+
+---
+
+---
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
