@@ -914,7 +914,7 @@
       "weight": "Full(3-Goal: cartesian line/bar 코어+렌더 → 축/범례/툴팁+area → 툴바/타입스위처+범위선택+피벗차트)",
       "priority": "★사용자 헤드라인 — 통합 차트 클러스터(Enterprise 7개, 단일 최대 갭)",
       "phase": "done (3-Goal 완주 → §3)",
-      "spec": "재감사 델타 + advisor 시퀀스(specs 미작성, 인라인 진행)",
+      "spec": "specs/MOD-GRID-34.md (구현 후 소급 백필 2026-06-06; 원래=인라인 진행, specs 미작성 — WORKFLOW-INTEGRITY-AUDIT)",
       "goals": {
         "G-1": "done",
         "G-2": "done",
@@ -956,7 +956,7 @@
       "weight": "Full(3-Goal: 행클릭 선택 + shift 범위 + indeterminate select-all)",
       "priority": "잔여 Community table-stakes 트랙 1순위(Selection UX, advisor: 응집·저blast·명료게이트)",
       "phase": "done (3-Goal 완주 → §3)",
-      "spec": "인라인 진행(advisor 모듈 결정)",
+      "spec": "specs/MOD-GRID-35.md (구현 후 소급 백필 2026-06-06; 원래=인라인 진행 — WORKFLOW-INTEGRITY-AUDIT)",
       "verify_first_rule": "★사용자 '하나하나 체크' = 검증-우선. 재감사 ❌ 보수적이라 stale-❌ 다수. grep 스윕으로 구현 전 실재 확인. 이번 발견: aria-sort(ariaAttrs L94)·Home/End/PageUp/PageDown(cellNavigation, PageDown grid-a11y 게이트)·ARIA roles 이미 구현 → 보정(2✅+1🟡). rowheader 미방출=🟡 vN.",
       "goals": {
         "G-1": "done",
@@ -988,7 +988,7 @@
       "weight": "Full(3-Goal: getRowId 안정 식별 + cell 변경 flash + cell 툴팁)",
       "priority": "Community 트랙 2번째(Data identity & cell feedback)",
       "phase": "done (3-Goal 완주 → §3)",
-      "spec": "인라인(advisor: getRowId=keystone)",
+      "spec": "specs/MOD-GRID-36.md (구현 후 소급 백필 2026-06-06; 원래=인라인 — WORKFLOW-INTEGRITY-AUDIT)",
       "verify_first": "getRowId(0건)·cell-flash(0건)·cell-tooltip(셀 title 없음, RangeChart만) 모두 실재 미구현 확인 후 구현.",
       "goals": {
         "G-1": "done",
@@ -1019,6 +1019,7 @@
       "weight": "Full(3-Goal: locale 정렬 + 방향-독립 null 배치 + alwaysMultiSort/sortDescFirst)",
       "priority": "Community 트랙 3번째(Sorting options, advisor: 저blast, sorting 격리)",
       "phase": "done (3-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-37.md (구현 후 소급 백필 2026-06-06; 원래=인라인, specs 미작성 — WORKFLOW-INTEGRITY-AUDIT)",
       "goals": {
         "G-1": "done",
         "G-2": "done",
@@ -1049,6 +1050,7 @@
       "weight": "Full(3-Goal: ColumnMenu 정렬 + pin + hide 액션)",
       "priority": "Community 트랙 4번째(Column menu, advisor 지정·vacuity-prone)",
       "phase": "done (3-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-38.md (구현 후 소급 백필 2026-06-06; 원래=인라인, specs 미작성 — WORKFLOW-INTEGRITY-AUDIT)",
       "goals": {
         "G-1": "done",
         "G-2": "done",
@@ -1077,6 +1079,7 @@
       "weight": "Full(3-Goal: enableRowPinning + RowPinButton + 3분할)",
       "priority": "Community 트랙 5번째(Row pinning UX)",
       "phase": "done (3-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-39.md (구현 후 소급 백필 2026-06-06; 원래=인라인, specs 미작성 — WORKFLOW-INTEGRITY-AUDIT)",
       "goals": {
         "G-1": "done",
         "G-2": "done",
