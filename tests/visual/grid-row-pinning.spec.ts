@@ -45,3 +45,29 @@ test('G-2: pin to bottom, then unpin returns the row to the center', async ({
   await rowByName(page, '가').locator('[data-pin-action="unpin"]').click();
   await expect(root.locator('tbody tr[data-pinned-row]'), '가 unpinned').toHaveCount(0);
 });
+
+test('G-3: top + bottom pins coexist; center excludes both (three-way partition)', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME('grid-core-grid-row-pinning--default'));
+  const root = page.locator('#storybook-root');
+  await root.locator('table').first().waitFor({ state: 'visible' });
+  const rows = root.locator('tbody tr');
+
+  // pin 가 → top, 라 → bottom simultaneously.
+  await rowByName(page, '가').locator('[data-pin-action="top"]').click();
+  await rowByName(page, '라').locator('[data-pin-action="bottom"]').click();
+
+  // order: 가(top), 나, 다, 라(bottom).
+  await expect(rows.nth(0)).toHaveAttribute('data-pinned-row', 'top');
+  await expect(rows.nth(0)).toContainText('가');
+  await expect(rows.last()).toHaveAttribute('data-pinned-row', 'bottom');
+  await expect(rows.last()).toContainText('라');
+
+  // ★ center (un-pinned) rows are exactly 나, 다 — both pinned rows are excluded from the center,
+  // not duplicated. (one top + one bottom pinned = 2 pinned, 2 center, 4 total.)
+  const center = root.locator('tbody tr:not([data-pinned-row])');
+  await expect(center).toHaveCount(2);
+  await expect(center.nth(0)).toContainText('나');
+  await expect(center.nth(1)).toContainText('다');
+});
