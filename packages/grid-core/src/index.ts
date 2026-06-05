@@ -15,6 +15,8 @@ export type { GridTheme } from './internal/theme';
 export { moveRow } from './internal/moveRow';
 // MOD-GRID-37 G-1: locale/collation-aware sortingFn (é between e and f; 한글 자모 순).
 export { compareLocale, makeLocaleSortingFn, localeSortingFn } from './internal/localeSort';
+// MOD-GRID-37 G-2: blank→undefined accessor for direction-independent null placement (+ sortUndefined).
+export { isBlank, blankToUndefined } from './internal/sortNulls';
 export { useGridState } from './useGridState'; // ★ MOD-GRID-02 G-001
 export { useUrlSync } from './useUrlSync'; // ★ MOD-GRID-02 G-005
 export { useStoragePersist } from './useStoragePersist'; // ★ MOD-GRID-02 G-006
