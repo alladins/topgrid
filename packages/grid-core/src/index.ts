@@ -87,6 +87,8 @@ export { useColumnPersistence } from './column/useColumnPersistence';
 export { ColumnVisibilityMenu } from './column/ColumnVisibilityMenu';
 /** @deprecated No production users. Removed in next major together with `ColumnVisibilityMenu`. (ADR-013) */
 export type { ColumnVisibilityMenuProps } from './column/ColumnVisibilityMenu';
+// MOD-GRID-38: per-header column menu (sort/pin/hide actions).
+export { ColumnMenu, type ColumnMenuProps } from './column/ColumnMenu';
 export type { ColumnPersistenceOptions, PersistTarget } from './types';
 
 // ADR-009 (옵션 A): grid-features → grid-core/internal 이동 후 public 승격.

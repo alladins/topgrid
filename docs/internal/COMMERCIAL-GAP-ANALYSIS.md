@@ -100,7 +100,7 @@
 | Column hide / show (visibility) | Community | FlexGrid | ✅ 구현 | `grid-core: columnVisibility state + column/ColumnVisibilityMenu.tsx; grid-pro-panel ToolPanel` — Visibility state controlled; ColumnVisibilityMenu component deprecated but present (ADR-013). |
 | Column state persistence (order+visibility+size) | Enterprise | ○ | ✅ 구현 | `grid-core: useColumnPersistence ({v,data} envelope = {visibility,order} in localStorage), useStoragePersist/useUrlSync + serializeState` — useColumnPersistence persists visibility+order only; full grid state (incl sizing) via useStoragePersist/useUrlSync hooks. |
 | Column move API (imperative) | Community | FlexGrid | 🟡 부분 | `grid-core: useColumnDrag calls table.setColumnOrder; useGridState exposes setColumnOrder setter` — Reorder via TanStack setColumnOrder; no dedicated moveColumn(index) imperative helper. |
-| Column menu (header dropdown: sort/filter/pin actions) | Community | FlexGrid | ❌ 미구현 | No header column-menu component (grep for ColumnMenu/HeaderMenu empty); only ColumnVisibilityMenu and right-click ContextMenuGrid (Pro) exist. |
+| Column menu (header dropdown: sort/filter/pin actions) | Community | FlexGrid | 🟡 부분(MOD-38 G-1: ColumnMenu 정렬 액션 done; pin=G-2·hide=G-3) | No header column-menu component (grep for ColumnMenu/HeaderMenu empty); only ColumnVisibilityMenu and right-click ContextMenuGrid (Pro) exist. |
 | Column spanning (body cell colSpan) | Community | FlexGrid | ❌ 미구현 | Grid.tsx colSpan is header-group / empty-state / padding-tr only; cell merging is rowSpan (grid-pro-merging), no body colSpan. |
 | Min/max column width constraints | Community | FlexGrid | 🟡 부분 | `grid-sizing starWidth.ts StarColumnInput.min (clamp); TanStack minSize/maxSize on ColumnDef` — Only min is enforced in star distribution (no max in starWidth); maxSize relies on TanStack ColumnDef defaults, no topgrid-specific enforcement layer. |
 
@@ -516,7 +516,7 @@
 
 | 기능 | 카테고리 | AG Grid | topgrid | 비고 |
 |---|---|---|---|---|
-| Column menu (header dropdown: sort/filter/pin actions) | Column features | Community | ❌ 미구현 | No header column-menu component (grep for ColumnMenu/HeaderMenu empty); only ColumnVisibilityMenu and right-click ContextMenuGrid (Pro) exist. |
+| Column menu (header dropdown: sort/filter/pin actions) | Column features | Community | 🟡 부분(MOD-38 G-1: ColumnMenu 정렬 액션 done; pin=G-2·hide=G-3) | No header column-menu component (grep for ColumnMenu/HeaderMenu empty); only ColumnVisibilityMenu and right-click ContextMenuGrid (Pro) exist. |
 | Column spanning (body cell colSpan) | Column features | Community | ❌ 미구현 | Grid.tsx colSpan is header-group / empty-state / padding-tr only; cell merging is rowSpan (grid-pro-merging), no body colSpan. |
 | Accented / locale-aware (collation) sort | Sorting | Community | ✅ 구현(MOD-37 G-1: localeSortingFn, localeCompare numeric collation) | VERIFIED MISSING. No topgrid locale/collation sort code. TanStack's built-in alphanumeric/text fns are basic and not locale-collation aware. AG Grid: accentedSort:true. |
 | Null/blank value placement control (sortNullsFirst / sortUndefined) | Sorting | Community | ✅ 구현(MOD-37 G-2: sortUndefined passthrough + blankToUndefined 헬퍼, 방향-독립) | VERIFIED MISSING. No surface to control where null/undefined values sort. AG Grid colDef.sortingOrder + nullComparator; TanStack sortUndefined exists but not exposed by topgrid. |
