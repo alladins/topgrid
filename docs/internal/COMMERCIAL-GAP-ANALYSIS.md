@@ -17,7 +17,7 @@
 > ✅ **재집계 완료 (2026-06-06)**: "검증 재집계" 열은 카테고리 상세표 행(=ground truth, MOD-34~39 닫힘·roving 🟡 반영)에서
 > **프로그래매틱 재계산**했고 **19/19 카테고리 reconcile**(파싱 카운트 == 선언 기능 수)+**합 330** 검산을 통과했다(손-추정 아님).
 > 「재감사(MOD-33)」 열은 MOD-28~33 시점 스냅샷으로 이력 보존. 행별 상태는 카테고리 상세표·MASTER §3 이 SSoT.
-> **잔여**: §44 「잔여 ❌ 우선순위(dedup)」의 tier 분해(Community/Enterprise) prose 는 옛 68 기준 — ❌=47 로 superseded(후속 tier 재분해).
+> 「잔여 ❌ 우선순위」 tier 분해도 ❌47 기준으로 재산정 완료(Community 15 + Enterprise 27 + 기타 5, reconcile).
 
 ### 재감사 델타 — MOD-28~33 닫힌 갭 (커밋 근거)
 
@@ -46,13 +46,24 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32 부분(IF/비교/AND/OR/NOT+text/math; VLOOKUP/날짜/재무 미정) | node |
 
-### 잔여 ❌ 우선순위(dedup 68, tier별)
+### 잔여 ❌ 우선순위 (2026-06-06 검증, tier별 = ❌47)
 
-- **Community 31 (table-stakes — 우선)**: 컬럼 메뉴 드롭다운, 행클릭 선택(ctrl/shift), 셀 툴팁, 셀 변경 하이라이트(flash), getRowId 행 식별, applyTransaction(증분 갱신), Home/End/PageUp/PageDown 내비, roving tabindex, aria-sort, RTL, 셀 서식(통화/날짜/조건부) 등.
-- **Enterprise 32 (deep — 다수 vN 보류)**: **통합 차트 클러스터 7개**(내장 차트 엔진·셀범위→차트·스파크라인 마커/축/툴팁·차트 타입 스위처·차트 패널·크로스필터·피벗 차트), advanced filter 쿼리빌더, 사이드바/툴패널, viewport row model, tree-data getDataPath, 그룹 선택 등.
-- **기타 5**: 시트 상대/절대참조($A$1), 명명 범위, 멀티시트(Sheet2!A1), go-to-page 입력.
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 15 + Enterprise 27 + 기타 5 = **47**, reconcile 통과).
+> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌47 기준으로 정정.
 
-> ★ 사용자 헤드라인 = **차트**. Enterprise 클러스터의 차트 7개가 단일 최대 결손이며 다음 모듈(MOD-34)의 대상.
+- **Community 15 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
+  editing·RTL ② vN 연기 9=post-sort callback·applyTransaction(증분)·async transaction batching·auto-page-size·custom page
+  formatter·debounced scroll·row animation·auto-virtualization-threshold·drag-between-grids ③ 시트 스코프 2=cell/number formatting
+  (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
+  MOD-35~39 로 닫힘=이 목록서 제외.)
+- **Enterprise 27 (deep — 다수 vN 보류)**: advanced filter 쿼리빌더 · grand-total footer · group-header inline agg · sticky group
+  headers · **pivot 5**(panel/server-side/result-filter/collapsible cols/total customization) · select-all-pages · group selection ·
+  viewport row model · tree getDataPath/auto group col · master-detail+virtualization · auto-agg floating rows · Excel cell styles ·
+  **차트 클러스터 잔여 2**(panel/dock·cross-filter) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
+  panel drag · .xlsx sheet import.
+- **기타 5**: $A$1 절대참조 · 상대참조 on copy/fill · 명명 범위 · 멀티시트(Sheet2!A1) · go-to-page 입력.
+
+> ★ 차트(Enterprise 클러스터 7)는 **MOD-34 로 5/7 닫힘**(내장 엔진·축/툴팁·스파크마커·툴바·피벗차트), 잔여 2(panel·cross-filter)=vN.
 
 ## 요약 (Executive Summary)
 
@@ -60,7 +71,7 @@
 
 **강한 영역**(구현 비율 상위): Export, clipboard & print(13/15) · Cell rendering & styling(13/18) · Sorting(12/18) · Editing(12/18) · Selection(11/17).
 
-**주요 갭 영역**(미구현 다수): Pivoting(미구현 10) · State, theming & i18n(미구현 9) · Spreadsheet (Wijmo FlexSheet focus)(미구현 9) · Accessibility & keyboard(미구현 8) · Misc UX (status bar, panels, context menu, overlays, row drag)(미구현 7) · Integrated charts & sparklines(미구현 6).
+**주요 갭 영역**(미구현 다수, 2026-06-06 검증 ❌ 기준): Spreadsheet (Wijmo FlexSheet focus)(❌7) · Pivoting(❌5) · Misc UX(❌5) · Row models / data·Master-Detail·State theming·Virtualization·Pagination(각 ❌3). (이전 최초감사 기준 Pivoting 10·A11y 8 등은 MOD-28~39 로 닫힘.)
 
 > 표시 규약: ✅=코드 근거로 확인된 구현 · 🟡=부분(headless passthrough만/일부 한계/소비자 배선 필요) · ❌=미구현 · ➖=headless 그리드에 비해당. 상태는 **adversarial 검증**(근거 코드 재확인, over-claim 차단)을 거쳤다.
 
@@ -523,6 +534,10 @@
 ## 우선순위 갭 (미구현 + 부분)
 
 미구현 89 + 부분 60 = 149건. AG Grid 티어·상태 기준 정렬.
+
+> ⚠ **이 표는 최초감사(pre-MOD-28~39) master list** — 행별 상태가 그 시점 기준이라 MOD-28~39 닫힘이 반영 안 됨(stale).
+> **현재 검증 집계는 상단 「종합」·「카테고리별 요약」·「잔여 ❌ 우선순위(❌47)」 참조**(ground truth=카테고리 상세표). 본 master
+> list 의 행별 재-flip 은 저우선 housekeeping(REMAINING-WORK).
 
 | 기능 | 카테고리 | AG Grid | topgrid | 비고 |
 |---|---|---|---|---|

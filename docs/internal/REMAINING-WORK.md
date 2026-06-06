@@ -54,7 +54,9 @@
   무변경(devDep). **미발행**(다음 release 에 포함). 커밋=remediation 브랜치.
 - [x] ✅ **COMMERCIAL-GAP 헤드라인 카운트 재집계 완료(2026-06-06)**: 프로그래매틱 재계산 — **19/19 카테고리 reconcile**(파싱
   카운트==선언 기능 수)+**합 330** 검산 통과. 종합표(검증 열 추가)·카테고리 요약표 동기화 = **✅218/🟡62/❌47/➖3**(MOD-39 기준,
-  이전 재감사 199/60/68). 손-추정 0. **잔여**: §44 dedup tier-분해(Community/Enterprise) prose 가 옛 68 기준 → ❌=47 로 tier 재분해(후속).
+  이전 재감사 199/60/68). 손-추정 0.
+- [x] ✅ **dedup tier-prose 재분해 완료(2026-06-06)**: 카테고리 상세표 AG Grid 컬럼 프로그래매틱 tally → **Community 15 +
+  Enterprise 27 + 기타 5 = ❌47**(reconcile). 「잔여 ❌ 우선순위」 prose 정정(닫힌 기능 제외) + executive 갭영역·master-list 노트 동기화.
 - [ ] **MOD-18~21 state.json `spec` 필드 채움**: cosmetic(파일 존재, 필드만 공백) — 의도적 skip(저가치).
 - [ ] **§5.2 minor 정정 권장 항목**: 주석/README/JSDoc stale(G1·G2·G-readme14·P25-1 등) — 동작 영향 0 cosmetic. **문서 백로그로
   유지**(advisor: busywork sink, 별도 작업화 금지).
