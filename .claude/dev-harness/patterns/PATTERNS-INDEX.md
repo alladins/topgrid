@@ -13,4 +13,6 @@
 
 | PAT-006 | `declarative-rules-to-existing-contract-compiler` | 신기능을 **새 메커니즘이 아니라** "선언적 룰 배열 → host 의 *기존* 계약(콜백/validator) 으로 컴파일하는 순수 helper" 로 짓는다. host 가 이미 그 계약을 wiring 하므로 커밋차단·스타일적용 등 *메커니즘은 재사용*되고 신규 표면은 thin·pure·node-verifiable. 룰 형태: `{ predicate, output, ...meta }[]` → `(hostArg) => 기존계약반환`. **N=2 = `buildRowClassName`/`buildCellClassName`(MOD-24 G-1 → grid-core `Row/CellClassNameCallback`) + `buildValidator`(MOD-23 G-1 → grid-pro-tracking `Validator`)·`buildValidationCellClass`(→ grid-core `CellClassNameCallback`)** | MOD-GRID-24 G-1, MOD-GRID-23 G-1. 관련 [[LESS-003]](인벤토리가 '기존 계약' 을 드러냄) |
 
-(seed: MASTER §2 택소노미 7형 + §4 wiring + 2026-06 학습; PAT-005 = MOD-19/20 N=2 승격; PAT-006 = MOD-24/23 G-1 N=2 승격)
+| PAT-007 | `stable-reader-key-fold-new-dimension` | 순수 리더(evaluate/extractRefs 류)가 보는 **키/입력 표현을 불변**으로 두고, 새 차원·속성은 **키에 폴딩**(조회 신원을 바꾸면, 예 시트→qualified key)하거나 **키 밖 optional 메타**(조회와 무관하면, 예 절대성 플래그)로 뺀다 → keyed 그래프 알고리즘(순환/topo/recalc) 재증명 0·byte-identical. 기본/레거시 차원은 무접두(특성회귀 가드). 폴딩 전 표현(serialize/translate)은 별도 처리. **N=2 = sheet→qualified key(MOD-41 `qualifyAst`/`keyOf`) + 절대성→키 밖 플래그(MOD-40 ref 노드)** | MOD-GRID-41 G-1, MOD-GRID-40. 관련 [[LESS-008]] |
+
+(seed: MASTER §2 택소노미 7형 + §4 wiring + 2026-06 학습; PAT-005 = MOD-19/20 N=2 승격; PAT-006 = MOD-24/23 G-1 N=2 승격; PAT-007 = MOD-41/40 N=2 승격)

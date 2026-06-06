@@ -69,7 +69,11 @@ function compareValues(
 
 /** Evaluate one argument to a value list (a range expands; a scalar is a singleton). */
 function evalArgValues(ast: Ast, getCell: CellGetter): CellValue[] {
-  if (ast.kind === 'range') return expandRange(ast.from, ast.to).map(getCell);
+  // MOD-GRID-41: qualify 가 단 keyPrefix('' | 'Sheet2!')로 확장 셀을 시트 키화. 기본='' → byte-identical.
+  if (ast.kind === 'range') {
+    const prefix = ast.keyPrefix ?? '';
+    return expandRange(ast.from, ast.to).map((c) => getCell(prefix + c));
+  }
   return [evaluate(ast, getCell)];
 }
 
@@ -88,6 +92,8 @@ export function evaluate(ast: Ast, getCell: CellGetter): CellValue {
       return cellError('#ERROR!'); // a range has no scalar value
     case 'err':
       return cellError(ast.code); // MOD-GRID-40 G-2: error-literal (e.g. #REF! from a translate)
+    case 'name':
+      return cellError('#NAME?'); // MOD-GRID-41: un-inlined name = unresolved (qualify normally inlines the target)
     case 'unary': {
       const v = evaluate(ast.operand, getCell);
       if (isCellError(v)) return v;
@@ -153,9 +159,11 @@ export function extractRefs(ast: Ast): string[] {
       case 'ref':
         refs.add(a.ref);
         break;
-      case 'range':
-        for (const r of expandRange(a.from, a.to)) refs.add(r);
+      case 'range': {
+        const prefix = a.keyPrefix ?? ''; // MOD-GRID-41: cross-sheet 키 접두
+        for (const r of expandRange(a.from, a.to)) refs.add(prefix + r);
         break;
+      }
       case 'unary':
         walk(a.operand);
         break;
@@ -185,11 +193,64 @@ export function coerceLiteral(raw: string): CellValue {
   return raw;
 }
 
-/** Compile a cell's raw input: a `=`-prefixed formula (parsed + refs), else a literal. */
-export function compileCell(raw: string): CompiledCell {
+// ─── MOD-GRID-41: multi-sheet qualification + named-range resolution ───
+
+/** Workbook default sheet — its cells are keyed WITHOUT a prefix (so single-sheet keys stay bare). */
+export const DEFAULT_SHEET = 'Sheet1';
+
+/** Context for compiling a formula: the sheet it lives on + the workbook name table. */
+export interface CompileContext {
+  homeSheet?: string; // sheet of the cell holding this formula (bare refs qualify to it)
+  defaultSheet?: string; // workbook default (unprefixed keys)
+  nameTable?: Map<string, string>; // name → target ('A1' | 'A1:B2' | 'Sheet2!A1')
+}
+
+/** Storage key for a cell: bare on the default sheet, `Sheet!A1` otherwise. */
+export function keyOf(sheet: string | undefined, a1: string, defaultSheet: string): string {
+  return sheet && sheet !== defaultSheet ? `${sheet}!${a1}` : a1;
+}
+
+/**
+ * Fold sheet qualifiers into `ref` keys and inline named ranges to their targets, so the resulting
+ * AST carries fully-qualified keys and `evaluate`/`extractRefs` stay key-based (byte-identical for
+ * single-sheet). Unresolved names → `#NAME?` (eval-time). Names are inlined here, so a later
+ * `defineName` requires recompiling dependent cells (createSheet does this).
+ */
+export function qualifyAst(ast: Ast, ctx: CompileContext): Ast {
+  const defaultSheet = ctx.defaultSheet ?? DEFAULT_SHEET;
+  const homeSheet = ctx.homeSheet ?? defaultSheet;
+  const q = (a: Ast): Ast => {
+    switch (a.kind) {
+      case 'num': case 'str': case 'bool': case 'err':
+        return a;
+      case 'ref':
+        return { kind: 'ref', ref: keyOf(a.sheet ?? homeSheet, a.ref, defaultSheet) };
+      case 'range': {
+        const sheet = a.sheet ?? homeSheet;
+        return { kind: 'range', from: a.from, to: a.to, keyPrefix: sheet !== defaultSheet ? `${sheet}!` : '' };
+      }
+      case 'name': {
+        const target = ctx.nameTable?.get(a.name);
+        if (target === undefined) return { kind: 'err', code: '#NAME?' };
+        let targetAst: Ast;
+        try { targetAst = parseFormula(target); } catch { return { kind: 'err', code: '#NAME?' }; }
+        if (targetAst.kind === 'name') return { kind: 'err', code: '#NAME?' }; // 명명→명명 체인 비허용(PoC, no-loop)
+        // 명명 타깃의 bare ref 는 글로벌(기본 시트) 기준. 타깃이 Sheet2! 명시면 그대로 보존.
+        return qualifyAst(targetAst, { defaultSheet, homeSheet: defaultSheet, ...(ctx.nameTable && { nameTable: ctx.nameTable }) });
+      }
+      case 'unary': return { kind: 'unary', op: '-', operand: q(a.operand) };
+      case 'binary': return { kind: 'binary', op: a.op, left: q(a.left), right: q(a.right) };
+      case 'call': return { kind: 'call', name: a.name, args: a.args.map(q) };
+    }
+  };
+  return q(ast);
+}
+
+/** Compile a cell's raw input: a `=`-prefixed formula (parsed + qualified + refs), else a literal. */
+export function compileCell(raw: string, ctx: CompileContext = {}): CompiledCell {
   if (raw.startsWith('=')) {
     try {
-      const ast = parseFormula(raw.slice(1));
+      const ast = qualifyAst(parseFormula(raw.slice(1)), ctx);
       return { kind: 'formula', ast, refs: extractRefs(ast) };
     } catch {
       return { kind: 'literal', value: cellError('#ERROR!') };
@@ -236,9 +297,10 @@ export function serializeAst(ast: Ast): string {
     case 'num': return String(ast.value);
     case 'str': return `"${ast.value}"`;
     case 'bool': return ast.value ? 'TRUE' : 'FALSE';
-    case 'ref': return refText(ast.ref, ast.colAbs, ast.rowAbs);
+    case 'ref': return `${ast.sheet ? `${ast.sheet}!` : ''}${refText(ast.ref, ast.colAbs, ast.rowAbs)}`;
     case 'range':
-      return `${refText(ast.from, ast.fromColAbs, ast.fromRowAbs)}:${refText(ast.to, ast.toColAbs, ast.toRowAbs)}`;
+      return `${ast.sheet ? `${ast.sheet}!` : ''}${refText(ast.from, ast.fromColAbs, ast.fromRowAbs)}:${refText(ast.to, ast.toColAbs, ast.toRowAbs)}`;
+    case 'name': return ast.name; // MOD-GRID-41
     case 'err': return ast.code;
     case 'unary': {
       const o = serializeAst(ast.operand);
@@ -277,13 +339,19 @@ function shiftAddr(
 /** Recursively shift every relative ref/range in an AST; out-of-bounds → `#REF!` error leaf. */
 function shiftAst(ast: Ast, dCol: number, dRow: number): Ast {
   switch (ast.kind) {
-    case 'num': case 'str': case 'bool': case 'err':
-      return ast;
+    case 'num': case 'str': case 'bool': case 'err': case 'name':
+      return ast; // MOD-GRID-41: name 노드는 fill 시 이동 안 함(명명은 위치 불변)
     case 'ref': {
       const moved = shiftAddr(ast.ref, ast.colAbs, ast.rowAbs, dCol, dRow);
       return moved === null
         ? { kind: 'err', code: '#REF!' }
-        : { kind: 'ref', ref: moved, colAbs: ast.colAbs ?? false, rowAbs: ast.rowAbs ?? false };
+        : {
+            kind: 'ref',
+            ref: moved,
+            colAbs: ast.colAbs ?? false,
+            rowAbs: ast.rowAbs ?? false,
+            ...(ast.sheet !== undefined && { sheet: ast.sheet }), // MOD-GRID-41: 시트 접두 보존
+          };
     }
     case 'range': {
       const from = shiftAddr(ast.from, ast.fromColAbs, ast.fromRowAbs, dCol, dRow);
@@ -298,6 +366,7 @@ function shiftAst(ast: Ast, dCol: number, dRow: number): Ast {
             fromRowAbs: ast.fromRowAbs ?? false,
             toColAbs: ast.toColAbs ?? false,
             toRowAbs: ast.toRowAbs ?? false,
+            ...(ast.sheet !== undefined && { sheet: ast.sheet }),
           };
     }
     case 'unary':

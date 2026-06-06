@@ -17,7 +17,12 @@
   evaluate/extractRefs 무수정) + `translateFormula` copy/fill 조정(G-2, precedence-aware serializer, #REF! 라운드트립).
   **node 87/0**(characterization 66 보존 + 21)·typecheck 0·build green. spec rubric 77/80. §3 `mod-grid-40` 이관.
   신규 [[LESS-007]]. **COMMERCIAL-GAP: ❌47→45·✅218→219·🟡62→63**(reconcile 19/19·합 330). closure: `$A$1`=✅·copy/fill=🟡(UI=MOD-49).
-- [ ] **다음 = MOD-41**(멀티시트 Sheet2!A1 + 명명 범위, grid-pro-sheet vN). → 기타3 중 2 닫힘 예정.
+- [x] ✅ **MOD-41 — 멀티시트 + 명명 범위**(grid-pro-sheet, 2-Goal, 2026-06-07): 멀티시트 `Sheet2!A1`(G-1, **qualified-keys-single-
+  graph** — 시트=키 네임스페이스, 교차시트 의존 단일그래프 무료) + 명명 범위 `defineName`(G-2, compile inline + 재정의 recompile-all).
+  **node 108/0**(MOD-40 round 87 보존 + 21)·typecheck 0·build green. spec rubric 77/80. §3 `mod-grid-41` 이관. ★첫 cross-module 회귀
+  (MOD-40 translate=sheet/name 노드). 신규 [[LESS-008]]+[[PAT-007]](N=2 with MOD-40). **COMMERCIAL-GAP: ❌45→43·✅219→220·🟡63→64**
+  (reconcile 19/19·합 330·Spreadsheet 14/6/3). closure: 명명=✅·멀티시트=🟡(탭 UI=MOD-49). 기타 3→1(go-to-page 만).
+- [ ] **다음 = MOD-42**(스프레드시트 함수 라이브러리 VLOOKUP/date/financial, grid-pro-sheet vN). → Spreadsheet 함수 갭(🟡→) 심화.
 - [ ] **미발행 누적**: MOD-40~ 의 grid-pro-sheet 변경은 dist 빌드만, **npm 미발행**(발행=사용자 결정, batch).
 - [ ] **미push 누적**: 로컬 main 커밋(MOD-40 포함) origin 미반영(push=사용자 결정).
 

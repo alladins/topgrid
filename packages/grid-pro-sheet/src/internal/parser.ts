@@ -13,8 +13,8 @@ type Tok =
   | { t: 'num'; v: number }
   | { t: 'str'; v: string }
   | { t: 'name'; v: string }
-  // MOD-GRID-40 G-1: ref 토큰은 정규화 주소 v + 절대/혼합 플래그를 동반.
-  | { t: 'ref'; v: string; colAbs: boolean; rowAbs: boolean }
+  // MOD-GRID-40 G-1: ref 토큰은 정규화 주소 v + 절대/혼합 플래그를 동반. MOD-GRID-41: optional sheet 한정자.
+  | { t: 'ref'; v: string; colAbs: boolean; rowAbs: boolean; sheet?: string }
   | { t: 'err'; v: ErrorCode } // MOD-GRID-40 G-2: #REF! 등 error-literal
   | { t: 'op'; v: '+' | '-' | '*' | '/' }
   | { t: 'cmp'; v: '<' | '>' | '=' | '<=' | '>=' | '<>' } // MOD-GRID-32 G-1
@@ -50,16 +50,17 @@ function tokenize(src: string): Tok[] {
       i = j + 1;
       continue;
     }
-    // MOD-GRID-40 G-1: ref(절대/혼합 `$` 허용) 또는 name. ref = `$?LETTERS$?DIGITS`(후행 숫자 필수);
-    // 숫자 없이 letters 만이면 name(SUM/TRUE). 함수명은 숫자로 안 끝남(현 함수셋) → 충돌 없음.
+    // MOD-GRID-40/41 G-1: ref(`$` 절대/혼합 + optional `Sheet!` 한정자) 또는 name. ref = `(Sheet!)?$?LETTERS$?DIGITS`
+    // (후행 숫자 필수); 숫자 없이 letters 만이면 name(SUM/TRUE/명명범위). 함수명은 숫자로 안 끝남(현 함수셋) → 충돌 없음.
     if (c === '$' || isAlpha(c)) {
-      const m = /^(\$?)([A-Za-z]+)(\$?)([0-9]+)/.exec(src.slice(i));
+      const m = /^(?:([A-Za-z][A-Za-z0-9]*)!)?(\$?)([A-Za-z]+)(\$?)([0-9]+)/.exec(src.slice(i));
       if (m) {
         toks.push({
           t: 'ref',
-          v: (m[2]! + m[4]!).toUpperCase(), // 정규화(`$` 제거)
-          colAbs: m[1] === '$',
-          rowAbs: m[3] === '$',
+          v: (m[3]! + m[5]!).toUpperCase(), // 정규화(`$`·sheet 제거)
+          colAbs: m[2] === '$',
+          rowAbs: m[4] === '$',
+          ...(m[1] !== undefined && { sheet: m[1] }), // 시트명 대소문자 보존(정확 매칭)
         });
         i += m[0]!.length;
         continue;
@@ -181,7 +182,8 @@ export function parseFormula(src: string): Ast {
         if (next().t !== 'rparen') throw new Error('expected )');
         return { kind: 'call', name: tk.v, args };
       }
-      throw new Error(`unexpected name: ${tk.v}`);
+      // MOD-GRID-41: bare NAME(¬`(`, ¬TRUE/FALSE) = 명명 범위 참조 → qualify 패스가 nameTable 로 resolve.
+      return { kind: 'name', name: tk.v };
     }
     if (tk.t === 'ref') {
       if (peek()?.t === 'colon') {
@@ -189,6 +191,7 @@ export function parseFormula(src: string): Ast {
         const to = next();
         if (to.t !== 'ref') throw new Error('expected cell ref after :');
         // MOD-GRID-40 G-1: range 는 endpoint 별 절대/혼합 플래그를 따로 보존(translate 4-플래그 bookkeeping).
+        // MOD-GRID-41: 시트 한정자는 range 전체(시작 endpoint)에서 취함(`Sheet2!A1:B2`). 끝 endpoint 시트는 무시(PoC).
         return {
           kind: 'range',
           from: tk.v,
@@ -197,9 +200,10 @@ export function parseFormula(src: string): Ast {
           fromRowAbs: tk.rowAbs,
           toColAbs: to.colAbs,
           toRowAbs: to.rowAbs,
+          ...(tk.sheet !== undefined && { sheet: tk.sheet }),
         };
       }
-      return { kind: 'ref', ref: tk.v, colAbs: tk.colAbs, rowAbs: tk.rowAbs };
+      return { kind: 'ref', ref: tk.v, colAbs: tk.colAbs, rowAbs: tk.rowAbs, ...(tk.sheet !== undefined && { sheet: tk.sheet }) };
     }
     if (tk.t === 'err') return { kind: 'err', code: tk.v }; // MOD-GRID-40 G-2
     throw new Error('unexpected token');

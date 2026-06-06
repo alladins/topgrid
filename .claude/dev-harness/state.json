@@ -4,12 +4,12 @@
   "matrix": "docs/internal/MASTER-HIERARCHY.md",
   "seeded_from": "2026-06 gap audit (MASTER §5.2, 15 gaps)",
   "counters": {
-    "PAT": 6,
+    "PAT": 7,
     "AP": 4,
     "C": 3,
     "POL": 1,
     "ADR": 2,
-    "LESS": 7
+    "LESS": 8
   },
   "modules": {
     "MOD-GRID-18": {
@@ -1132,6 +1132,38 @@
       "module_summary": "vN 첫 모듈. $=eval-cosmetic 통찰(정규화 주소 유지→3리더 무수정)·precedence-aware serializer(LESS-007). node 87/0. closure 정직(✅+🟡).",
       "version_note": "grid-pro-sheet 0.x→차기 batch(미발행).",
       "vN_note": "fill-handle UI=MOD-49·멀티시트=MOD-41·셀서식=vN."
+    },
+    "MOD-GRID-41": {
+      "package": "grid-pro-sheet (Pro)",
+      "tier": "Pro",
+      "weight": "Full(2-Goal: 멀티시트 Sheet2!A1 + 명명 범위 defineName)",
+      "priority": "vN-2(COMMERCIAL-GAP 기타)",
+      "phase": "done (2-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-41.md (rubric 77/80 영속화)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "순수 엔진(node ceiling). 탭 전환 UI=MOD-49. 따옴표 시트명·명명체인·디지트명=vN.",
+      "g1": {
+        "surface": "parser sheet 접두 정규식·ref/range sheet. sheetEngine toKey/homeOf·public→키·getByKey. evaluate keyOf/qualifyAst·range keyPrefix.",
+        "verified_node": "★bare ref→자기시트 qualify·★교차시트 recalc(단일그래프 증명)·교차시트 #CYCLE!·explicit Sheet1!=bare·교차시트 range."
+      },
+      "g2": {
+        "surface": "sheetEngine defineName(name,target) + evaluate qualifyAst name 인라인(미정의→#NAME?·명명→명명 비허용). 재정의=recompile-all.",
+        "verified_node": "명명 셀/범위 값+recalc·★재정의 dependents 재계산·★미정의→#NAME?+정의시 resolve·교차시트 명명. + MOD-40 translate×(sheet 접두 보존·name 무이동)."
+      },
+      "done_gate": {
+        "lesson": "LESS-008 + PAT-007 승격(N=2 with MOD-40)",
+        "matrix_row": "§3 mod-grid-41 채움 + §6.1/§6.2 구현됨",
+        "index_updated": "LESSONS-INDEX LESS-008·PATTERNS-INDEX PAT-007·COMMERCIAL-GAP ❌45→43·✅+1·🟡+1 reconcile 19/19 합 330(Spreadsheet 14/6/3)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★명명 범위=✅(API 사용, A1 ref 동격) / 멀티시트(Sheet2!A1)=🟡(교차시트 ref ✅ 완결·탭 UI 부재=MOD-49, copy/fill 동형 — 행 분할 count-gaming 금지, advisor)",
+      "module_summary": "qualified-keys-single-graph(시트=키 네임스페이스→교차시트 의존 단일그래프 무료, MOD-40 동형). 명명=compile inline+recompile-all. ★첫 cross-module 회귀(MOD-40 translate). node 108/0(87 보존). PAT-007/LESS-008.",
+      "verification_note": "순수 엔진=node ceiling. 특성회귀 87 보존(기본시트 키 bare 유지=자동-qualify 누출 가드).",
+      "version_note": "grid-pro-sheet 0.x→차기 batch(미발행).",
+      "vN_note": "탭 UI=MOD-49·따옴표 시트명·명명체인·디지트명·명명 스칼라(#ERROR! 경계)."
     }
   },
   "release_queue": {

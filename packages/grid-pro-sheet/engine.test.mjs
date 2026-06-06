@@ -211,6 +211,101 @@ ok('unparseable =A1++ returned verbatim', translateFormula('=A1++', 1, 1) === '=
 ok('precedence: =(A1+B1)*2 keeps parens', translateFormula('=(A1+B1)*2', 0, 0) === '=(A1+B1)*2');
 ok('precedence: =A1-(B1-C1) keeps right parens', translateFormula('=A1-(B1-C1)', 0, 0) === '=A1-(B1-C1)');
 
+// ── MOD-GRID-41 G-1: multi-sheet (Sheet2!A1), single qualified-key graph ──
+// AC①: a bare ref in a non-default-sheet formula qualifies to its OWN sheet, not the default.
+{
+  const s = createSheet();
+  s.setCell('Sheet2!A1', '5');
+  s.setCell('Sheet2!B1', '=A1*2'); // bare A1 here → Sheet2!A1
+  ok('★ bare ref qualifies to own sheet: Sheet2!B1 → 10', s.getValue('Sheet2!B1') === 10);
+  s.setCell('A1', '100'); // Sheet1!A1 (different cell)
+  ok('Sheet2!B1 unaffected by Sheet1!A1 → still 10', s.getValue('Sheet2!B1') === 10);
+}
+// AC②: ★ cross-sheet recalc — the non-vacuous proof of the single-graph claim.
+{
+  const s = createSheet();
+  s.setCell('A1', '7');
+  s.setCell('Sheet2!C1', '=Sheet1!A1+1');
+  ok('cross-sheet ref baseline: Sheet2!C1 → 8', s.getValue('Sheet2!C1') === 8);
+  s.setCell('A1', '70');
+  ok('★ cross-sheet recalc: edit Sheet1!A1 → Sheet2!C1 → 71', s.getValue('Sheet2!C1') === 71);
+}
+// AC③: cross-sheet cycle → both #CYCLE! (falls out of the single graph for free).
+{
+  const s = createSheet();
+  s.setCell('Sheet1!A1', '=Sheet2!A1');
+  s.setCell('Sheet2!A1', '=Sheet1!A1');
+  ok('cross-sheet cycle → Sheet1!A1 #CYCLE!', isCellError(s.getValue('A1')) && s.getValue('A1').error === '#CYCLE!');
+  ok('cross-sheet cycle → Sheet2!A1 #CYCLE!', isCellError(s.getValue('Sheet2!A1')) && s.getValue('Sheet2!A1').error === '#CYCLE!');
+}
+// explicit Sheet1! = default = bare key (consistency, no double-storage).
+{
+  const s = createSheet();
+  s.setCell('A1', '9');
+  ok('explicit Sheet1!A1 reads bare A1 → 9', s.getValue('Sheet1!A1') === 9);
+}
+// cross-sheet RANGE (keyPrefix path).
+{
+  const s = createSheet();
+  s.setCell('Sheet2!A1', '1'); s.setCell('Sheet2!A2', '2'); s.setCell('Sheet2!A3', '3');
+  s.setCell('B1', '=SUM(Sheet2!A1:A3)');
+  ok('cross-sheet range: SUM(Sheet2!A1:A3) → 6', s.getValue('B1') === 6);
+  s.setCell('Sheet2!A2', '20');
+  ok('cross-sheet range recalc → 24', s.getValue('B1') === 24);
+}
+
+// ── MOD-GRID-41 G-2: named ranges ──
+// AC④: define → use → recalc on target change → ★ redefine recomputes dependents.
+{
+  const s = createSheet();
+  s.setCell('A1', '10'); s.setCell('B1', '5');
+  s.defineName('TaxRate', 'A1');
+  s.setCell('C1', '=TaxRate*B1');
+  ok('named cell: TaxRate(A1=10)*B1(5) → 50', s.getValue('C1') === 50);
+  s.setCell('A1', '20');
+  ok('named cell recalc on target change → 100', s.getValue('C1') === 100);
+  s.setCell('A2', '3');
+  s.defineName('TaxRate', 'A2'); // redefine
+  ok('★ redefine name recomputes dependents: TaxRate→A2(3)*B1(5) → 15', s.getValue('C1') === 15);
+}
+// named RANGE in a function + recalc.
+{
+  const s = createSheet();
+  s.setCell('A1', '1'); s.setCell('A2', '2'); s.setCell('A3', '3');
+  s.defineName('Data', 'A1:A3');
+  s.setCell('B1', '=SUM(Data)');
+  ok('named range: SUM(Data=A1:A3) → 6', s.getValue('B1') === 6);
+  s.setCell('A2', '20');
+  ok('named range recalc → 24', s.getValue('B1') === 24);
+}
+// AC⑤: undefined name → #NAME?, and defining it later resolves (recompile-all).
+{
+  const s = createSheet();
+  s.setCell('A1', '=Nope+1');
+  ok('undefined name → #NAME?', isCellError(s.getValue('A1')) && s.getValue('A1').error === '#NAME?');
+  s.setCell('B1', '5');
+  s.defineName('Nope', 'B1');
+  ok('★ defining the name resolves the #NAME? cell → 6', s.getValue('A1') === 6);
+}
+// named ref to another sheet.
+{
+  const s = createSheet();
+  s.setCell('Sheet2!A1', '42');
+  s.defineName('Answer', 'Sheet2!A1');
+  s.setCell('B1', '=Answer');
+  ok('named ref to other sheet: Answer→Sheet2!A1 → 42', s.getValue('B1') === 42);
+}
+
+// ── MOD-GRID-41 × MOD-40: translate handles sheet-qualified + name nodes ──
+ok('translate cross-sheet row: =Sheet2!A1 by (0,1) → =Sheet2!A2 (qualifier kept)',
+  translateFormula('=Sheet2!A1', 0, 1) === '=Sheet2!A2');
+ok('translate cross-sheet col: =Sheet2!A1 by (1,0) → =Sheet2!B1', translateFormula('=Sheet2!A1', 1, 0) === '=Sheet2!B1');
+ok('translate cross-sheet range: =SUM(Sheet2!A1:A2) by (1,0) → =SUM(Sheet2!B1:B2)',
+  translateFormula('=SUM(Sheet2!A1:A2)', 1, 0) === '=SUM(Sheet2!B1:B2)');
+// names are tokenized upper-case (shared with fn-name tokenizing / nameTable keys), so fill normalizes case.
+ok('★ translate name node fixed, ref moves: =TaxRate*A1 by (1,1) → =TAXRATE*B2',
+  translateFormula('=TaxRate*A1', 1, 1) === '=TAXRATE*B2');
+
 rmSync(out, { force: true });
 console.log(`sheet engine: ${pass} passed, ${fail} failed`);
 if (fail) throw new Error(`${fail} failed`);

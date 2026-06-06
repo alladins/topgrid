@@ -14,7 +14,7 @@
  */
 
 import { cellError, isCellError, type CellValue, type CompiledCell } from '../types.js';
-import { compileCell, evaluate, formatValue } from './evaluate.js';
+import { compileCell, evaluate, formatValue, keyOf, DEFAULT_SHEET } from './evaluate.js';
 
 /** A recomputed cell (in recompute order). */
 export interface SheetChange {
@@ -39,6 +39,8 @@ export interface Sheet {
   canUndo(): boolean;
   /** 재적용 가능 여부. */
   canRedo(): boolean;
+  /** MOD-GRID-41: 명명 범위 정의/재정의(target='A1' | 'A1:B2' | 'Sheet2!A1'). 전 수식 셀 recompile-all. */
+  defineName(name: string, target: string): void;
 }
 
 export function createSheet(onChange?: (changes: SheetChange[]) => void): Sheet {
@@ -48,7 +50,20 @@ export function createSheet(onChange?: (changes: SheetChange[]) => void): Sheet 
   const deps = new Map<string, Set<string>>(); // ref → cells it depends on
   const dependents = new Map<string, Set<string>>(); // ref → cells depending on it
 
-  const getValue = (ref: string): CellValue => values.get(ref) ?? '';
+  // MOD-GRID-41: 명명 테이블 + 키 헬퍼. 저장 키 = 기본시트 bare 'A1' · 비-기본 'Sheet2!A1'(단일 그래프).
+  const nameTable = new Map<string, string>();
+  /** public ref('A1' | 'Sheet2!A1' | 'Sheet1!A1') → 저장 키(기본시트는 bare). */
+  const toKey = (publicRef: string): string => {
+    const i = publicRef.indexOf('!');
+    return i < 0 ? publicRef : keyOf(publicRef.slice(0, i), publicRef.slice(i + 1), DEFAULT_SHEET);
+  };
+  /** 저장 키 → 그 셀의 home 시트(bare 키 = 기본시트). */
+  const homeOf = (key: string): string => {
+    const i = key.indexOf('!');
+    return i < 0 ? DEFAULT_SHEET : key.slice(0, i);
+  };
+  /** ★evaluate 에 주입되는 key-기반 조회(컴파일 ast 의 ref 는 qualified 키). */
+  const getByKey = (key: string): CellValue => values.get(key) ?? '';
 
   const setForwardDeps = (ref: string, refs: string[]): void => {
     // remove old reverse links
@@ -111,7 +126,7 @@ export function createSheet(onChange?: (changes: SheetChange[]) => void): Sheet 
         next = cellError('#CYCLE!');
       } else {
         const c = compiled.get(ref);
-        next = !c || c.kind === 'literal' ? c?.value ?? '' : evaluate(c.ast, getValue);
+        next = !c || c.kind === 'literal' ? c?.value ?? '' : evaluate(c.ast, getByKey);
       }
       values.set(ref, next);
       if (!sameValue(prev, next)) changes.push({ ref, value: next });
@@ -119,10 +134,11 @@ export function createSheet(onChange?: (changes: SheetChange[]) => void): Sheet 
     return changes;
   };
 
-  // 셀 raw 적용 + 증분 재계산(history 기록 없음 — setCell/undo/redo 가 공유).
+  // 셀 raw 적용 + 증분 재계산(history 기록 없음 — setCell/undo/redo 가 공유). ref = 저장 키.
+  // MOD-GRID-41: home 시트(키에서 도출)·nameTable 을 compile ctx 로 전달 → bare ref qualify·명명 inline.
   const applyCell = (ref: string, input: string): void => {
     raw.set(ref, input);
-    const c = compileCell(input);
+    const c = compileCell(input, { homeSheet: homeOf(ref), defaultSheet: DEFAULT_SHEET, nameTable });
     compiled.set(ref, c);
     setForwardDeps(ref, c.kind === 'formula' ? c.refs : []);
     const changes = recompute(downstream(ref));
@@ -136,13 +152,26 @@ export function createSheet(onChange?: (changes: SheetChange[]) => void): Sheet 
   let cursor = 0;
 
   return {
-    setCell(ref, input) {
-      const prev = raw.get(ref) ?? '';
+    setCell(publicRef, input) {
+      const key = toKey(publicRef); // MOD-GRID-41: public ref → 저장 키
+      const prev = raw.get(key) ?? '';
       if (prev === input) return; // no-op 은 history 에 안 남김
-      applyCell(ref, input);
+      applyCell(key, input);
       history.length = cursor; // redo future 잘라냄(새 분기)
-      history.push({ ref, prev, next: input });
+      history.push({ ref: key, prev, next: input });
       cursor++;
+    },
+    defineName(name, target) {
+      // MOD-GRID-41: 명명 inline 이라 재정의 시 stale AST → 전 수식 셀 recompile-all 후 전체 재계산.
+      nameTable.set(name.toUpperCase(), target);
+      for (const [key, input] of raw) {
+        if (!input.startsWith('=')) continue;
+        const c = compileCell(input, { homeSheet: homeOf(key), defaultSheet: DEFAULT_SHEET, nameTable });
+        compiled.set(key, c);
+        setForwardDeps(key, c.kind === 'formula' ? c.refs : []);
+      }
+      const changes = recompute(new Set(raw.keys()));
+      if (onChange && changes.length > 0) onChange(changes);
     },
     undo() {
       if (cursor === 0) return false;
@@ -160,9 +189,10 @@ export function createSheet(onChange?: (changes: SheetChange[]) => void): Sheet 
     },
     canUndo: () => cursor > 0,
     canRedo: () => cursor < history.length,
-    getValue,
-    getRaw: (ref) => raw.get(ref) ?? '',
-    getDisplay: (ref) => formatValue(getValue(ref)),
+    // MOD-GRID-41: public 접근자는 ref(bare | Sheet2!A1) → 저장 키 변환.
+    getValue: (ref) => getByKey(toKey(ref)),
+    getRaw: (ref) => raw.get(toKey(ref)) ?? '',
+    getDisplay: (ref) => formatValue(getByKey(toKey(ref))),
   };
 }
 
