@@ -1195,6 +1195,37 @@
       "module_summary": "VLOOKUP=세 번째 함수 디스패치 형(range-aware evaluate 특수, deps 무료). 날짜 serial(라운드트립 spine)+재무(rate=0 특수). advisor landmine 전수 테스트. MOD-32 재사용. node 128/0(108 보존). 0 ❌ flip(🟡 심화).",
       "version_note": "grid-pro-sheet 0.x→차기 batch(미발행).",
       "vN_note": "TODAY/NOW(PAT-005)·HLOOKUP/INDEX/MATCH·시간 함수·1900 leap 미모방(serial divergence 문서화)."
+    },
+    "MOD-GRID-43": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(2-Goal: applyTransaction + async batching)",
+      "priority": "vN-4(Community 9 빠른승부 첫 분할 = node-pure 자립 쌍)",
+      "phase": "done (2-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-43.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "순수 helper(controlled-data→소비자 적용, Grid.tsx 수술 0). node ceiling. 신규 파일 transaction.ts.",
+      "g1": {
+        "surface": "applyRowTransaction(data,txn,getRowId) 순수 — remove→update→add, immutable, 미존재 id 무시.",
+        "verified_node": "add/remove/update/복합/★immutability/미존재 id. 16/0."
+      },
+      "g2": {
+        "surface": "createTransactionBatcher({getData,setData,getRowId,schedule}) — enqueue 누적+schedule(flush) 1회, 순차 적용 setData 1회. PAT-005 scheduler 주입.",
+        "verified_node": "★다중 enqueue→flush 1회(batched)·순차·재배치·빈큐 no-op."
+      },
+      "done_gate": {
+        "lesson": "신규 lesson/pattern 없음(controlled-data→순수 helper=LESS-005/moveRow 적용·scheduler=PAT-005)",
+        "matrix_row": "§3 mod-grid-43 채움 + §6.1/§6.2 구현됨",
+        "index_updated": "COMMERCIAL-GAP Row models/data 2 ❌→✅ reconcile 19/19(222/64/41·14/3/1·Community 15→13)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★applyTransaction=✅·async batching=✅(둘 다 순수·node 실증). Community 9 첫 분할(advisor spec-gate).",
+      "module_summary": "controlled-data→순수 helper(Grid 무수정, moveRow 동형)+scheduler 주입(PAT-005) async 결정적 검증. node 16/0(전 스위트 63). 분할 잔여 7=후속.",
+      "version_note": "grid-core 0.4→차기 batch(미발행).",
+      "split_remainder": "postSortRows·scroll-debounce(Grid/sort 수술)·auto-page-size·row-animation·drag-between-grids(browser)·virtualizationThreshold·pageNumberFormat(component) = Community 9 중 7, 후속 모듈."
     }
   },
   "release_queue": {

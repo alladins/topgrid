@@ -26,8 +26,17 @@
   형, exact+approx default-approx, #N/A, colIndex #REF! 양방향) + 날짜 DATE/YEAR/MONTH/DAY(serial)·재무 PMT/FV/PV(G-2, rate=0 특수).
   **node 128/0**(108 보존 + 20)·typecheck 0·build green. §3 `mod-grid-42` 이관. MOD-41 명명범위·MOD-40 translate 무료 회귀.
   **★0 ❌ flip**(단일 🟡 「광범위 함수」 행 심화 — ~25 vs 400+ 유지, advisor 확정). reconcile **불변 ❌43/✅220/🟡64**. 신규 lesson 없음.
-- [ ] **다음 = MOD-43**(Community 빠른 승부 9건: applyTransaction·post-sort callback·auto-page-size·debounced scroll·row animation 등).
-  ★시트 트랙(40~42) 종료 → grid-core/features 트랙 전환. node+chromium 혼합(첫 브라우저 vN 모듈).
+- [x] ✅ **MOD-43 — 증분 행 트랜잭션**(grid-core MIT, 2-Goal, 2026-06-07): `applyRowTransaction`(G-1, 순수 delta remove→update→add) +
+  `createTransactionBatcher`(G-2, scheduler 주입 PAT-005, 다중 enqueue→flush 1회). **node 16/0**(전 스위트 63)·typecheck 0·build green.
+  ★controlled-data→순수 helper(Grid.tsx 수술 0, moveRow 동형). §3 `mod-grid-43` 이관. **Community 9 첫 분할**(advisor spec-gate).
+  **COMMERCIAL-GAP: ❌43→41·✅220→222·🟡64**(Row models/data 2 ❌→✅, reconcile 14/3/1·Community tier 15→13). 신규 lesson 없음.
+- [ ] **MOD-43 분할 잔여 7**(Community 빠른승부): postSortRows·scroll-debounce(node, Grid/sort 수술) · auto-page-size·row-animation·
+  drag-between-grids(**browser module**=첫 chromium vN) · virtualizationThreshold·pageNumberFormat(component 수술). → 후속 모듈로 진행.
+- [ ] **다음 = MOD-44**(Pivot vN 5: total customization·result filter·collapsible cols(engine/node)→pivot panel·server-side pivot(browser)).
+  - **reuse-gate survey 완료**(Explore, 2026-06-07 — verify-first 규칙 적용):
+    - **verify-first(부분 존재, 의미/스코프 확인 필요)**: ① post-sort callback = `onSortingChange`(types.ts:830) 존재하나 *state-only*(AG `postSortRows` 행배열 후처리 아님) ② custom page formatter = `totalCountFormat`(GridPagination.tsx:58) + `localeText.totalCount`(i18n.ts:24) 이미 노출 → 스코프 겹침 확인 ③ debounced-scroll = `useDebouncedCallback` 존재 + `virtualizerOptions.onChange` passthrough(types.ts:929) → 소비자 wrap 가능, "기본 auto-debounce" 면 부재.
+    - **genuine 부재(신규)**: ④ applyTransaction(개별 onAdd/Delete/UpdateRow 만, 배치-patch API 없음 — GridHandle 신규 메서드) ⑤ async tx batching(macro 배치 큐 없음) ⑥ auto-page-size(뷰포트 측정 필요=browser) ⑦ row animation(rowClassName 만, lifecycle hook 없음=browser) ⑧ auto-virtualization-threshold(enableVirtualization opt-in, 의도적 미적용 types.ts:901 — `virtualizationThreshold?` 신규) ⑨ drag-between-grids(within-grid moveRow/enableRowReorder 만, cross-grid 컨텍스트 부재=browser).
+    - **분해 권고**: 순수-로직(node) ④tx 수학·⑤배치큐·⑧threshold 체크 = node spine 우선. browser ⑥⑦⑨ = chromium 행동 게이트(non-vacuous). ①②③ = spec 단계서 verify-first grep 후 scope 확정(이미 충족이면 닫기, advisor). 9건 단일 모듈은 클 수 있음 → spec-gate advisor 가 분할/스코프 결정.
 - [ ] **미발행 누적**: MOD-40~ 의 grid-pro-sheet 변경은 dist 빌드만, **npm 미발행**(발행=사용자 결정, batch).
 - [ ] **미push 누적**: 로컬 main 커밋(MOD-40 포함) origin 미반영(push=사용자 결정).
 

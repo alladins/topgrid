@@ -31,7 +31,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/internal/moveRow.test.ts && node --experimental-strip-types src/internal/rowClickSelection.test.ts && node --experimental-strip-types src/internal/computeChangedCells.test.ts && node --experimental-strip-types src/internal/localeSort.test.ts && node --experimental-strip-types src/internal/sortNulls.test.ts"
+    "test": "node --experimental-strip-types src/internal/moveRow.test.ts && node --experimental-strip-types src/internal/rowClickSelection.test.ts && node --experimental-strip-types src/internal/computeChangedCells.test.ts && node --experimental-strip-types src/internal/localeSort.test.ts && node --experimental-strip-types src/internal/sortNulls.test.ts && node --experimental-strip-types src/internal/transaction.test.ts"
   },
   "devDependencies": {
     "@topgrid/grid-renderers": "workspace:*"

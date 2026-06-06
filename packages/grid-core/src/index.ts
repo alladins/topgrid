@@ -13,6 +13,15 @@ export { themeToVars, darkTheme } from './internal/theme';
 export type { GridTheme } from './internal/theme';
 // MOD-GRID-33 G-3 row reorder — pure array move; consumer applies it in onRowReorder.
 export { moveRow } from './internal/moveRow';
+// MOD-GRID-43: 증분 행 트랜잭션(순수 helper, controlled-data — 소비자가 자기 state 에 적용).
+export { applyRowTransaction, createTransactionBatcher } from './internal/transaction';
+export type {
+  RowId,
+  GetRowId,
+  RowTransaction,
+  TransactionBatcher,
+  TransactionBatcherDeps,
+} from './internal/transaction';
 // MOD-GRID-37 G-1: locale/collation-aware sortingFn (é between e and f; 한글 자모 순).
 export { compareLocale, makeLocaleSortingFn, localeSortingFn } from './internal/localeSort';
 // MOD-GRID-37 G-2: blank→undefined accessor for direction-independent null placement (+ sortUndefined).

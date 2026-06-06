@@ -6,11 +6,11 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-41, 2026-06-06)** |
+| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-43, 2026-06-07)** |
 |---|---|---|---|
-| ✅ 구현(full) | 178 (54%) | 199 (60%) | **220 (67%)** |
+| ✅ 구현(full) | 178 (54%) | 199 (60%) | **222 (67%)** |
 | 🟡 부분(partial) | 60 (18%) | 60 (18%) | **64 (19%)** |
-| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **43 (13%)** |
+| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **41 (12%)** |
 | ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) |
 | **합계** | **330** | **330** | **330** |
 
@@ -22,6 +22,8 @@
 > ship + node 87/0, UI fill-handle 제스처는 MOD-49) → **❌45 / ✅219 / 🟡63**(합 330 불변, 기타 5→3).
 > ★ **MOD-41 델타(2026-06-07, vN-2)**: `명명 범위` ❌→✅(`defineName`+resolution, node 108/0) · `멀티시트(Sheet2!A1)` ❌→🟡
 > (교차시트 ref=✅ 완결이나 탭 UI 부재=번들 partial, copy/fill 동형, 탭 UI=MOD-49) → **❌43 / ✅220 / 🟡64**(합 330 불변, 기타 3→1).
+> ★ **MOD-43 델타(2026-06-07, vN-4)**: Community 9 중 첫 분할 = `applyTransaction` ❌→✅ · `async transaction batching` ❌→✅
+> (순수 helper + scheduler 주입 배치, node 16/0; Row models/data 카테고리) → **❌41 / ✅222 / 🟡64**(합 330 불변, Community 15→13).
 
 ### 재감사 델타 — MOD-28~33 닫힌 갭 (커밋 근거)
 
@@ -50,14 +52,14 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌43, MOD-41 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌41, MOD-43 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 15 + Enterprise 27 + 기타 1 = **43**, reconcile 통과; MOD-40/41 으로 기타 5→1).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 27 + 기타 1 = **41**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌43(MOD-41 반영) 기준으로 정정.
 
-- **Community 15 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
-  editing·RTL ② vN 연기 9=post-sort callback·applyTransaction(증분)·async transaction batching·auto-page-size·custom page
-  formatter·debounced scroll·row animation·auto-virtualization-threshold·drag-between-grids ③ 시트 스코프 2=cell/number formatting
+- **Community 13 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
+  editing·RTL ② vN 연기 7=post-sort callback·auto-page-size·custom page formatter·debounced scroll·row animation·auto-
+  virtualization-threshold·drag-between-grids (★MOD-43: applyTransaction·async transaction batching ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
 - **Enterprise 27 (deep — 다수 vN 보류)**: advanced filter 쿼리빌더 · grand-total footer · group-header inline agg · sticky group
@@ -76,7 +78,7 @@
 
 **강한 영역**(구현 비율 상위): Export, clipboard & print(13/15) · Cell rendering & styling(13/18) · Sorting(12/18) · Editing(12/18) · Selection(11/17).
 
-**주요 갭 영역**(미구현 다수, 2026-06-07 검증 ❌ 기준): Spreadsheet (Wijmo FlexSheet focus)(❌3, MOD-40/41 −4) · Pivoting(❌5) · Misc UX(❌5) · Row models / data·Master-Detail·State theming·Virtualization·Pagination(각 ❌3). (이전 최초감사 기준 Pivoting 10·A11y 8 등은 MOD-28~39 로 닫힘.)
+**주요 갭 영역**(미구현 다수, 2026-06-07 검증 ❌ 기준): Spreadsheet (Wijmo FlexSheet focus)(❌3, MOD-40/41 −4) · Pivoting(❌5) · Misc UX(❌5) · Master-Detail·State theming·Virtualization·Pagination(각 ❌3) · Row models / data(❌1, MOD-43 −2). (이전 최초감사 기준 Pivoting 10·A11y 8 등은 MOD-28~39 로 닫힘.)
 
 > 표시 규약: ✅=코드 근거로 확인된 구현 · 🟡=부분(headless passthrough만/일부 한계/소비자 배선 필요) · ❌=미구현 · ➖=headless 그리드에 비해당. 상태는 **adversarial 검증**(근거 코드 재확인, over-claim 차단)을 거쳤다.
 
@@ -96,7 +98,7 @@
 | Selection | 17 | 13 | 2 | 2 |
 | Editing | 18 | 12 | 4 | 2 |
 | Cell rendering & styling | 18 | 15 | 3 | 0 |
-| Row models / data | 18 | 12 | 3 | 3 |
+| Row models / data | 18 | 14 | 3 | 1 |
 | Pagination | 17 | 9 | 5 | 3 |
 | Virtualization & performance | 20 | 12 | 4 | 3 |
 | Master/Detail & Tree Data | 16 | 8 | 5 | 3 |
@@ -107,7 +109,7 @@
 | State, theming & i18n | 17 | 10 | 4 | 3 |
 | Spreadsheet (Wijmo FlexSheet focus) | 23 | 14 | 6 | 3 |
 | Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 5 | 4 | 5 |
-| **합계** | **330** | **220** | **64** | **43** |
+| **합계** | **330** | **222** | **64** | **41** |
 
 ## 카테고리별 상세
 
@@ -305,8 +307,8 @@
 | Server-side sort/filter delegation (manual sorting/filtering to server) | Enterprise | — | ✅ 구현 | `grid-core manualSorting/manualFiltering props skip getSortedRowModel/getFilteredRowModel (buildTableOptions.ts L218-223; flags set L212-213); serverside serverSideController toSortModel/toFilterModel build SortModelItem[]/FilterModel passed into getRows request (L52-60, L91)` — Verified in source. Wijmo does server sort/filter via ODataCollectionView (a separate add-on), not core FlexGrid. |
 | Cache block size / max blocks / cache eviction (LRU, maxBlocksInCache) | Enterprise | — | 🟡 부분 | `grid-pro-serverside blockSize is configurable (UseServerSideDataOptions.blockSize, createBlockCache validates positive integer L18-21); BUT no eviction — useServerSideData.ts docstring L17 + L44 'no LRU eviction'; materialize allocates a totalCount-length placeholder array (blockCache.ts L131-147)` — Block size yes; AG's maxBlocksInCache / cacheBlockSize purging and bounded memory are explicitly absent (v1 limitation, stated in docstrings). For very large datasets memory is unbounded. Verified. |
 | Viewport row model (server pushes exact visible viewport, real-time) | Enterprise | — | ❌ 미구현 | AG's Viewport Row Model (enterprise) for streaming/real-time servers. No equivalent in any @topgrid package; verified MASTER-HIERARCHY §22 mod-grid-22 lists only SSRM block lazy load / infinite scroll / server sort-filter / lazy group, no viewport model. |
-| Transaction updates — applyTransaction (add/update/remove without full re-render) | Community | — | ❌ 미구현 | `none — grep across packages for applyTransaction/TransactionResult/asyncTransaction returned zero matches (no row-model transaction API)` — Verified absent. grid-pro-tracking add/update/deleteRow is change-tracking over controlled data, not a row-model transaction. grid-core mutation callbacks (onAddRow/onUpdateRow/onDeleteRow) delegate to parent setState — full data replacement, not a delta transaction. |
-| Async transaction batching (applyTransactionAsync, batched flush) | Community | — | ❌ 미구현 | `none — grep for asyncTransaction returned zero matches` — Verified absent. No batched async transaction queue anywhere in packages. |
+| Transaction updates — applyTransaction (add/update/remove without full re-render) | Community | — | ✅ 구현(MOD-43 G-1) | `grid-core internal/transaction.ts applyRowTransaction(data, {add,update,remove}, getRowId) — pure delta apply (remove→update→add, immutable), exported` — 순수 helper(controlled-data 정책 → 소비자가 자기 state 에 적용, moveRow 동형). node 16/0. delta 트랜잭션 = onAddRow full-replace 와 별개. |
+| Async transaction batching (applyTransactionAsync, batched flush) | Community | — | ✅ 구현(MOD-43 G-2) | `grid-core internal/transaction.ts createTransactionBatcher({getData,setData,getRowId,schedule}) — enqueue 누적 + single schedule(flush), 다중 txn 순차 적용 후 setData 1회` — scheduler 주입(PAT-005, prod=queueMicrotask·node=결정적). node ★다중 enqueue→flush 1회 검증. |
 | Immutable data / row identity (getRowId) for efficient reconciliation | Community | — | ✅ 구현(MOD-36 G-1: getRowId→안정 행 식별, 선택이 재정렬 가로질러 정체성 추종) | `none — grep for getRowId returned zero matches in packages; grid-core Grid.tsx useReactTable (L133) supplies no getRowId, and body rows render key={row.id} (L411/L611/L646) which without getRowId defaults to row INDEX, not a stable data id` — Verified: no getRowId in any package. grid-pro-tracking has its own rowKey (PK extractor) for change tracking, but that does NOT feed TanStack getRowId / React keys. AG's immutable-data + getRowId stable reconciliation is not exposed. Real gap for controlled-data update performance. |
 | Controlled / immutable data input (parent owns data, setState to update) | — | — | ✅ 구현 | `grid-core <Grid data> required & controlled; mutation callbacks onAddRow/onDeleteRow/onUpdateRow/onStartEditing delegate to parent with dev-warn + no-op if absent (useGridImperativeHandle.ts L85-105, L150-158); grid-pro-tracking useChangeTracking optimistic rollback (file verified present)` — Verified. Idiomatic React controlled-data model (TanStack philosophy). AG owns data internally instead; this is topgrid's design choice rather than an AG parity feature, hence agGridTier=none. |
 | Async cell value data source (foreign-key / code→label async lookup with cache) | Enterprise | — | 🟡 부분 | `grid-pro-datamap createAsyncDataMap.ts (loader + 4-state machine + staleTime cache + invalidate) + internal/asyncCache.ts buildAsyncCache (get(staleTime)/set/invalidate, single '__default__' slot)` — Verified. Not a row model but in-scope async data. AG's async cell value getter / SSRM async children loosely comparable. topgrid covers async code↔label mapping only, per-cell, not arbitrary async cell values. Single-slot cache (one loader per instance). |
@@ -542,7 +544,7 @@
 
 > ✅ **행별 status 동기화 검증(2026-06-06)**: 본 표 149행의 topgrid marker 를 카테고리 상세표(ground truth)와 프로그래매틱
 > 대조 → **149/149 일치, 불일치 0**(모듈 작업 중 함께 flip 유지돼 이미 current). 즉 멤버십은 최초감사 149건이나 **각 행 status 는
-> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 220/64/43」(MOD-41 반영)·「카테고리별 요약」 참조.
+> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 222/64/41」(MOD-43 반영)·「카테고리별 요약」 참조.
 
 | 기능 | 카테고리 | AG Grid | topgrid | 비고 |
 |---|---|---|---|---|
@@ -559,8 +561,8 @@
 | Full-row editing | Editing | Community | ❌ 미구현 | Editing is per-cell only; no row-level edit/commit mode found. |
 | Cell tooltips | Cell rendering & styling | Community | ✅ 구현(MOD-36 G-3: getCellTooltip→네이티브 td title) | Verified absent: no tooltip/title API in any grid-renderers cell; no passthrough-equivalent feature. |
 | Cell flashing / change highlight | Cell rendering & styling | Community | ✅ 구현(MOD-36 G-2: enableCellChangeFlash, 정체성 diff→값 변경 셀만 강조) | Verified: grid-pro-tracking tracks changes as data (buildChangeSet) but emits no flash/highlight class. |
-| Transaction updates — applyTransaction (add/update/remove without full re-render) | Row models / data | Community | ❌ 미구현 | Verified absent. grid-pro-tracking add/update/deleteRow is change-tracking over controlled data, not a row-model transaction. grid-core mutation callbacks (onAddRow/onUpdateRow/onDeleteRow) delegate to parent setState — full data replacement, not a delta transaction. |
-| Async transaction batching (applyTransactionAsync, batched flush) | Row models / data | Community | ❌ 미구현 | Verified absent. No batched async transaction queue anywhere in packages. |
+| Transaction updates — applyTransaction (add/update/remove without full re-render) | Row models / data | Community | ✅ 구현(MOD-43 G-1) | `grid-core transaction.ts applyRowTransaction` — 순수 delta(remove→update→add, immutable), controlled-data 소비자 적용(moveRow 동형). node 16/0. |
+| Async transaction batching (applyTransactionAsync, batched flush) | Row models / data | Community | ✅ 구현(MOD-43 G-2) | `grid-core transaction.ts createTransactionBatcher` — enqueue 누적 + scheduler 주입(PAT-005) flush 1회. node 검증. |
 | Immutable data / row identity (getRowId) for efficient reconciliation | Row models / data | Community | ✅ 구현(MOD-36 G-1: getRowId→안정 행 식별, 선택이 재정렬 가로질러 정체성 추종) | Verified: no getRowId in any package. grid-pro-tracking has its own rowKey (PK extractor) for change tracking, but that does NOT feed TanStack getRowId / React keys. AG's immutable-data + getRowId stable reconciliation is not exposed. Real gap for controlled-data update performance. |
 | Auto page size (fit rows to viewport height) | Pagination | Community | ❌ 미구현 | Verified absent. AG Grid paginationAutoPageSize (community) sizes page to grid height. Not implemented in topgrid. |
 | Pagination text localization / custom labels | Pagination | Community | ✅ 구현(MOD-29 G-1) | Verified absent: no localeText/labels prop. AG Grid localeText keys; Wijmo Globalize/culture. topgrid strings not configurable. |
