@@ -44,7 +44,13 @@
   floating=🟡(렌더/auto=browser). **COMMERCIAL-GAP: ❌39→37·✅223·🟡65→67**(Row grouping 19|11|6|2·Pinned/floating 15|11|3|1·Enterprise 25→23). 신규 lesson 없음.
 - [ ] **MOD-45 분할 잔여**(enterprise grouping): grand-total footer 렌더(AggregationGrid pinned)·auto-agg floating wiring·group-header
   inline agg·sticky group headers/rows·row-group/pivot state-save. → **browser 클러스터**(state-save=grid-core useGridState 결합 회피).
-- [ ] **다음 = MOD-46**(Advanced filter 쿼리빌더, Pro, UI-heavy). ★browser-heavy — node-pure 추출 가능부(쿼리 모델/평가)부터 분할 검토.
+- [x] ✅ **MOD-46 — 고급 필터 식 모델+평가기**(grid-pro-filter Pro, 1-Goal, 2026-06-07): `AdvancedFilterExpr`(중첩 group{and/or}|
+  condition{field,type,operator,value}) + `evaluateAdvancedFilter`(재귀, type-explicit cross-column) + `matchCondition`(순수 연산자) +
+  `makeAdvancedFilterFn`. **node 25/0**(suite 38)·typecheck 0·build green. §3 `mod-grid-46` 이관. ★condition type 명시(cross-column 정확성)·
+  blank inert(OR 붕괴 차단)·unknown op→false. closure: advanced filter=🟡(쿼리빌더 UI=browser). **COMMERCIAL-GAP: ❌37→36·✅223·🟡67→68**
+  (Filtering 12/1/0·Enterprise 23→22). 신규 lesson 없음. ★select-all-pages/group-selection ❌ 행 존재 확인(Enterprise 분모 정확).
+- [ ] **MOD-46 분할 잔여**: 쿼리빌더 UI(조건 추가/삭제/중첩 그룹·드롭다운·식↔UI 동기화) → browser 클러스터.
+- [ ] **다음 = MOD-47**(Chart 잔여 2: panel/dock·cross-filter). grid-pro-chart. browser-heavy → node-pure 추출부(cross-filter 모델 등) 분할 검토.
   - **reuse-gate survey 완료**(Explore, 2026-06-07 — verify-first 규칙 적용):
     - **verify-first(부분 존재, 의미/스코프 확인 필요)**: ① post-sort callback = `onSortingChange`(types.ts:830) 존재하나 *state-only*(AG `postSortRows` 행배열 후처리 아님) ② custom page formatter = `totalCountFormat`(GridPagination.tsx:58) + `localeText.totalCount`(i18n.ts:24) 이미 노출 → 스코프 겹침 확인 ③ debounced-scroll = `useDebouncedCallback` 존재 + `virtualizerOptions.onChange` passthrough(types.ts:929) → 소비자 wrap 가능, "기본 auto-debounce" 면 부재.
     - **genuine 부재(신규)**: ④ applyTransaction(개별 onAdd/Delete/UpdateRow 만, 배치-patch API 없음 — GridHandle 신규 메서드) ⑤ async tx batching(macro 배치 큐 없음) ⑥ auto-page-size(뷰포트 측정 필요=browser) ⑦ row animation(rowClassName 만, lifecycle hook 없음=browser) ⑧ auto-virtualization-threshold(enableVirtualization opt-in, 의도적 미적용 types.ts:901 — `virtualizationThreshold?` 신규) ⑨ drag-between-grids(within-grid moveRow/enableRowReorder 만, cross-grid 컨텍스트 부재=browser).

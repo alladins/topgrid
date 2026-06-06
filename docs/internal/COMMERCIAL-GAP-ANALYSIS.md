@@ -6,11 +6,11 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-45, 2026-06-07)** |
+| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-46, 2026-06-07)** |
 |---|---|---|---|
 | ✅ 구현(full) | 178 (54%) | 199 (60%) | **223 (68%)** |
-| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **67 (20%)** |
-| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **37 (11%)** |
+| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **68 (21%)** |
+| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **36 (11%)** |
 | ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) |
 | **합계** | **330** | **330** | **330** |
 
@@ -26,6 +26,8 @@
 > (순수 helper + scheduler 주입 배치, node 16/0; Row models/data 카테고리) → **❌41 / ✅222 / 🟡64**(합 330 불변, Community 15→13).
 > ★ **MOD-44 델타(2026-06-07, vN-5)**: pivot 5 중 node-pure 2 = `total customization` ❌→✅(`customizePivotTotals` suppress/position) ·
 > `filter on pivot result` ❌→🟡(`filterPivotRows` 프리미티브 ship+node, column-filter UI 후속) → **❌39 / ✅223 / 🟡65**(Pivoting 18/2/3, Enterprise 27→25).
+> ★ **MOD-46 델타(2026-06-07, vN-7)**: `advanced filter (cross-column expression/query builder UI)` ❌→🟡 — 식 모델+재귀 평가기+순수
+> 연산자 매처(type-explicit cross-column, node 25/0) ship, **쿼리빌더 UI=browser** → **❌36 / ✅223 / 🟡68**(Filtering 12/1/0, Enterprise 23→22).
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -56,9 +58,9 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌37, MOD-45 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌36, MOD-46 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 23 + 기타 1 = **37**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44/45 Enterprise 27→23).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 22 + 기타 1 = **36**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44/45/46 Enterprise 27→22).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌43(MOD-41 반영) 기준으로 정정.
 
 - **Community 13 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
@@ -66,7 +68,7 @@
   virtualization-threshold·drag-between-grids (★MOD-43: applyTransaction·async transaction batching ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 23 (deep — 다수 vN 보류)**: advanced filter 쿼리빌더 · group-header inline agg · sticky group
+- **Enterprise 22 (deep — 다수 vN 보류)**: group-header inline agg · sticky group
   headers · **pivot 3**(panel/server-side/collapsible cols; ★MOD-44: total customization ❌→✅·result filter ❌→🟡) · select-all-pages · group selection ·
   viewport row model · tree getDataPath/auto group col · master-detail+virtualization · auto-agg floating rows · Excel cell styles ·
   **차트 클러스터 잔여 2**(panel/dock·cross-filter) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
@@ -96,7 +98,7 @@
 |---|---|---|---|---|
 | Column features | 14 | 8 | 5 | 1 |
 | Sorting | 18 | 15 | 2 | 1 |
-| Filtering | 13 | 12 | 0 | 1 |
+| Filtering | 13 | 12 | 1 | 0 |
 | Row grouping & aggregation | 19 | 11 | 6 | 2 |
 | Pivoting | 23 | 18 | 2 | 3 |
 | Selection | 17 | 13 | 2 | 2 |
@@ -113,7 +115,7 @@
 | State, theming & i18n | 17 | 10 | 4 | 3 |
 | Spreadsheet (Wijmo FlexSheet focus) | 23 | 14 | 6 | 3 |
 | Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 5 | 4 | 5 |
-| **합계** | **330** | **223** | **67** | **37** |
+| **합계** | **330** | **223** | **68** | **36** |
 
 ## 카테고리별 상세
 
@@ -170,7 +172,7 @@
 | Multi filter (multiple conditions per column with AND/OR, e.g. text + set combined) | Enterprise | — | ✅ 구현(MOD-30 G-3(grid-pro-filter)) | Verified absent. Each topgrid column has a single FilterFn with an internal operator switch (filterFns.ts); operator-switch handlers clear prior state rather than stacking. No compound AND/OR condition builder or stacking of two filter types on one column. AG agMultiColumnFilter is Enterprise. |
 | Floating filters (inline filter input row beneath header) | Community | — | ✅ 구현(MOD-30 G-1) | Verified absent. topgrid exposes only popover-triggered filters (FilterPopover); no FloatingFilter component in grid-features. 'floating' in repo refers to floating SUMMARY rows (MOD-24), not AG's floating filter row. |
 | Quick filter / global search (search across all columns) | Community | — | ✅ 구현 | `grid-features GlobalSearchInput (filter-ui/GlobalSearchInput.tsx) -> table.setGlobalFilter, 300ms debounce (debounceMs prop), trim->undefined (autoRemove). Runs on grid-core globalFilter baseline. Consumer wires globalFilter state + onGlobalFilterChange.` — AG quickFilter is community. Wijmo FlexGrid has no built-in global quick filter (uses FlexGridFilter per-column). Verified. |
-| Advanced filter (cross-column expression/query builder UI) | Enterprise | — | ❌ 미구현 | Verified absent. No expression builder or cross-column boolean query UI in grid-features. AG Advanced Filter is Enterprise. |
+| Advanced filter (cross-column expression/query builder UI) | Enterprise | — | 🟡 부분(MOD-46) | `grid-pro-filter advancedFilter.ts — AdvancedFilterExpr(중첩 group{and/or} | condition{field,type,operator,value}) + evaluateAdvancedFilter(재귀, type-explicit cross-column) + matchCondition(순수 연산자) + makeAdvancedFilterFn` — cross-column 식 **모델+평가기+매처** ship + node 25/0(★type 발산·blank inert·unknown op→false). **쿼리빌더 UI 부재**(gap 이 "query builder UI" 명명) → 🟡(UI=browser). |
 | Custom filter functions / custom filter components | Community | ○ | ✅ 구현 | `grid-features filterFns.ts exports FilterFn<unknown> contract with .autoRemove (textFilterFn/numberFilterFn/dateRangeFilterFn/selectFilterFn); consumer registers via columnDef.filterFn (TanStack standard). Filter UI is plain React components composing FilterPopover/FilterIndicator -> column.setFilterValue. grid-features/src/index.ts exports all filterFns + components.` — Headless model: any custom filterFn + custom header component is supported by construction. AG custom filters community; Wijmo supports custom IColumnFilter. Verified. |
 | Server-side / manual filtering (datasource applies filter) | Enterprise | — | ✅ 구현 | `grid-pro-serverside useServerSideData (useServerSideData.ts): gridProps.manualFiltering=true, onColumnFiltersChange -> controller.setColumnFilters (serverSideController.ts L114); FilterModel (types.ts L21,39, Record<string,unknown>) passed in GetRowsRequest to ServerSideDatasource.getRows; setColumnFilters bumps epoch (invalidate) so stale responses are discarded by acceptBlock (blockCache.ts L82). Also in useServerSideTree.` — AG server-side filtering is Enterprise (SSRM). topgrid filterModel is opaque Record<string,unknown> interpreted by consumer's server (toFilterModel maps ColumnFiltersState by id). Verified. |
 | Filter state (read/save/restore active column filters) | Community | ○ | ✅ 구현 | `grid-core useGridState manages TanStack ColumnFiltersState (useGridState.ts L157-164,356,364; default []); serialized via serializeState.ts (case 'columnFilters' L27) and persisted via useUrlSync (keys include 'columnFilters', test L89-97) and useStoragePersist (PERSISTABLE_KEYS includes 'columnFilters' L24). resetSection('columnFilters') supported (types.ts L1081).` — AG filter model get/setFilterModel is community. topgrid persists columnFilters as part of generic grid state to URL/localStorage; no filter-specific dedicated API, uses raw TanStack ColumnFiltersState shape. Verified. |
@@ -548,7 +550,7 @@
 
 > ✅ **행별 status 동기화 검증(2026-06-06)**: 본 표 149행의 topgrid marker 를 카테고리 상세표(ground truth)와 프로그래매틱
 > 대조 → **149/149 일치, 불일치 0**(모듈 작업 중 함께 flip 유지돼 이미 current). 즉 멤버십은 최초감사 149건이나 **각 행 status 는
-> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 223/67/37」(MOD-45 반영)·「카테고리별 요약」 참조.
+> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 223/68/36」(MOD-46 반영)·「카테고리별 요약」 참조.
 
 | 기능 | 카테고리 | AG Grid | topgrid | 비고 |
 |---|---|---|---|---|
@@ -597,7 +599,7 @@
 | Row drag-and-drop (reorder within grid) | Misc UX (status bar, panels, context menu, overlays, row drag) | Community | ✅ 구현(MOD-33 G-3) | Verified absent: only column-drag and group-panel drag exist; no row reorder via draggable rows. |
 | Drag between grids | Misc UX (status bar, panels, context menu, overlays, row drag) | Community | ❌ 미구현 | Verified absent: no cross-grid drag/drop transfer; no dataTransfer wiring for rows. |
 | Multi filter (multiple conditions per column with AND/OR, e.g. text + set combined) | Filtering | Enterprise | ✅ 구현(MOD-30 G-3(grid-pro-filter)) | Verified absent. Each topgrid column has a single FilterFn with an internal operator switch (filterFns.ts); operator-switch handlers clear prior state rather than stacking. No compound AND/OR condition builder or stacking of two filter types on one column. AG agMultiColumnFilter is Enterprise. |
-| Advanced filter (cross-column expression/query builder UI) | Filtering | Enterprise | ❌ 미구현 | Verified absent. No expression builder or cross-column boolean query UI in grid-features. AG Advanced Filter is Enterprise. |
+| Advanced filter (cross-column expression/query builder UI) | Filtering | Enterprise | 🟡 부분(MOD-46) | `grid-pro-filter advancedFilter.ts` cross-column 식 모델+재귀 평가기+순수 매처(type-explicit) ship + node 25/0. 쿼리빌더 UI 부재 → 🟡(UI=browser). |
 | Grand total / overall footer row (whole-grid aggregate) | Row grouping & aggregation | Enterprise | 🟡 부분(MOD-45) | `grid-pro-agg computeAggregateRow` 전역 집계 compute 프리미티브 ship + node(avg-of-avgs 안전). 렌더된 footer 행 부재 → 🟡(렌더=browser). |
 | Aggregated values displayed inline on the group header row (incl. when collapsed) | Row grouping & aggregation | Enterprise | ❌ 미구현 | VERIFIED: group header shows group key + child count only, never aggregate totals; collapsed group shows no totals. AG Grid / Wijmo render aggregate values inline on the (collapsed) group row. Distinct from per-group footer. renderGroupRow override could add them but no built-in support. |
 | Sticky / pinned group headers while scrolling | Row grouping & aggregation | Enterprise | ❌ 미구현 | VERIFIED: virtualization drops off-screen group headers (no sticky). AG Grid Enterprise groupRowsSticky (suppressGroupRowsSticky). Wijmo n/a. |

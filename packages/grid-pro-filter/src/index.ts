@@ -15,3 +15,16 @@ export { makeMultiFilterFn } from './makeMultiFilterFn.js';
 export type { MultiFilterValue } from './makeMultiFilterFn.js';
 export { multiTextFilterFn, multiNumberFilterFn } from './multiFilterFns.js';
 export { MultiFilter } from './MultiFilter.js';
+// MOD-GRID-46: cross-column advanced filter 식 모델 + 순수 평가기(쿼리빌더 UI=browser/후속).
+export {
+  evaluateAdvancedFilter,
+  makeAdvancedFilterFn,
+  matchCondition,
+} from './advancedFilter.js';
+export type {
+  AdvancedFilterExpr,
+  FilterGroup,
+  FilterCondition,
+  FilterOperator,
+  FilterValueType,
+} from './advancedFilter.js';

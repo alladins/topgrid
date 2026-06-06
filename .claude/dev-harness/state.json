@@ -1283,6 +1283,32 @@
       "module_summary": "Enterprise grouping=렌더-정의 클러스터→추출 node-pure substance=공유 집계 프리미티브 1. avg-of-avgs 안전(source 직접, hard 단언). 로컬 number[] 리듀서(ADR-001). node 15/0(첫 grid-pro-agg node 테스트). 신규 lesson 없음.",
       "version_note": "grid-pro-agg 0.x→차기 batch(미발행).",
       "split_remainder": "grand-total footer 렌더(AggregationGrid pinned)·auto-agg floating wiring·group-header inline agg·sticky group headers/rows·row-group/pivot state-save = browser/후속."
+    },
+    "MOD-GRID-46": {
+      "package": "grid-pro-filter (Pro)",
+      "tier": "Pro",
+      "weight": "Full(1-Goal: advanced filter 식 모델+평가기)",
+      "priority": "vN-7(Filtering ❌ 1, advanced filter node-pure 추출)",
+      "phase": "done (1-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-46.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "순수 식 모델+재귀 평가기+연산자 매처(cross-column). 쿼리빌더 UI=browser/후속.",
+      "g1": {
+        "surface": "AdvancedFilterExpr 모델 + evaluateAdvancedFilter(재귀) + matchCondition(순수 연산자, type-explicit) + makeAdvancedFilterFn.",
+        "verified_node": "★type 발산(number gt vs lexical)·중첩 AND/OR·★blank inert(OR 붕괴 차단)·빈 group→true·unknown op→false. 25/0(suite 38)."
+      },
+      "done_gate": {
+        "lesson": "신규 lesson 없음(type-명시·blank-inert·MOD-30 의미 미러)",
+        "matrix_row": "§3 mod-grid-46 채움 + §6.1/§6.2 구현됨",
+        "index_updated": "COMMERCIAL-GAP advanced filter ❌→🟡 reconcile 19/19(223/68/36·Filtering 12/1/0·Enterprise 23→22)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★advanced filter=🟡(식 엔진 ship·gap 이 query builder UI 명명→UI browser). advisor.",
+      "module_summary": "cross-column 중첩 식 모델+평가기+순수 매처. type 명시(cross-column 정확성)·MOD-30 의미 미러(import 금지)·blank inert·unknown op→false. node 25/0. 신규 lesson 없음.",
+      "version_note": "grid-pro-filter 0.x→차기 batch(미발행).",
+      "split_remainder": "쿼리빌더 UI(조건 추가/삭제/중첩 그룹·드롭다운·식↔UI 동기화) = browser/후속."
     }
   },
   "release_queue": {
