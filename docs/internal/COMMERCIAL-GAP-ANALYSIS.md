@@ -70,11 +70,11 @@
   virtualization-threshold·drag-between-grids (★MOD-43: applyTransaction·async transaction batching ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 22 (deep — 다수 vN 보류)**: group-header inline agg · sticky group
+- **Enterprise 21 (deep — 다수 vN 보류)**: group-header inline agg · sticky group
   headers · **pivot 3**(panel/server-side/collapsible cols; ★MOD-44: total customization ❌→✅·result filter ❌→🟡) · select-all-pages · group selection ·
-  viewport row model · tree getDataPath/auto group col · master-detail+virtualization · auto-agg floating rows · Excel cell styles ·
-  **차트 클러스터 잔여 2**(panel/dock·cross-filter) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
-  panel drag · .xlsx sheet import.
+  viewport row model · tree getDataPath/auto group col · master-detail+virtualization · Excel cell styles ·
+  **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
+  panel drag · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
 - **기타 1**: go-to-page 입력(=MOD-49). (★ MOD-40: `$A$1`=✅·`copy/fill`=🟡. ★ MOD-41: `명명 범위`=✅ 닫힘 · `멀티시트(Sheet2!A1)`=🟡
   교차시트 ref ✅+탭 UI 부재=MOD-49.)
 
