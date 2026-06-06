@@ -7,19 +7,24 @@
  * (the caller — {@link compileCell} — turns a parse error into an `#ERROR!` literal).
  */
 
-import type { Ast } from '../types.js';
+import type { Ast, ErrorCode } from '../types.js';
 
 type Tok =
   | { t: 'num'; v: number }
   | { t: 'str'; v: string }
   | { t: 'name'; v: string }
-  | { t: 'ref'; v: string }
+  // MOD-GRID-40 G-1: ref 토큰은 정규화 주소 v + 절대/혼합 플래그를 동반.
+  | { t: 'ref'; v: string; colAbs: boolean; rowAbs: boolean }
+  | { t: 'err'; v: ErrorCode } // MOD-GRID-40 G-2: #REF! 등 error-literal
   | { t: 'op'; v: '+' | '-' | '*' | '/' }
   | { t: 'cmp'; v: '<' | '>' | '=' | '<=' | '>=' | '<>' } // MOD-GRID-32 G-1
   | { t: 'lparen' }
   | { t: 'rparen' }
   | { t: 'comma' }
   | { t: 'colon' };
+
+// MOD-GRID-40 G-2: 알려진 에러 코드(translate 가 방출하는 #REF! 포함). 라운드트립 시 파서가 인식해야 함.
+const ERROR_CODES: readonly string[] = ['#DIV/0!', '#CYCLE!', '#REF!', '#ERROR!'];
 
 function tokenize(src: string): Tok[] {
   const toks: Tok[] = [];
@@ -45,19 +50,38 @@ function tokenize(src: string): Tok[] {
       i = j + 1;
       continue;
     }
-    if (isAlpha(c)) {
-      let j = i;
-      while (j < src.length && isAlpha(src[j]!)) j++;
-      const letters = src.slice(i, j);
-      let k = j;
-      while (k < src.length && isDigit(src[k]!)) k++;
-      if (k > j) {
-        toks.push({ t: 'ref', v: src.slice(i, k).toUpperCase() }); // A1
-        i = k;
-      } else {
-        toks.push({ t: 'name', v: letters.toUpperCase() }); // SUM / TRUE
-        i = j;
+    // MOD-GRID-40 G-1: ref(절대/혼합 `$` 허용) 또는 name. ref = `$?LETTERS$?DIGITS`(후행 숫자 필수);
+    // 숫자 없이 letters 만이면 name(SUM/TRUE). 함수명은 숫자로 안 끝남(현 함수셋) → 충돌 없음.
+    if (c === '$' || isAlpha(c)) {
+      const m = /^(\$?)([A-Za-z]+)(\$?)([0-9]+)/.exec(src.slice(i));
+      if (m) {
+        toks.push({
+          t: 'ref',
+          v: (m[2]! + m[4]!).toUpperCase(), // 정규화(`$` 제거)
+          colAbs: m[1] === '$',
+          rowAbs: m[3] === '$',
+        });
+        i += m[0]!.length;
+        continue;
       }
+      if (isAlpha(c)) {
+        let j = i;
+        while (j < src.length && isAlpha(src[j]!)) j++;
+        toks.push({ t: 'name', v: src.slice(i, j).toUpperCase() }); // SUM / TRUE
+        i = j;
+        continue;
+      }
+      throw new Error(`unexpected char: ${c}`); // 외톨이 `$`
+    }
+    // MOD-GRID-40 G-2: error-literal `#…!`(translate 라운드트립). 알려진 코드만 허용.
+    if (c === '#') {
+      let j = i + 1;
+      while (j < src.length && src[j] !== '!') j++;
+      if (src[j] !== '!') throw new Error('unterminated error literal');
+      const code = src.slice(i, j + 1);
+      if (!ERROR_CODES.includes(code)) throw new Error(`unknown error literal: ${code}`);
+      toks.push({ t: 'err', v: code as ErrorCode });
+      i = j + 1;
       continue;
     }
     if (c === '+' || c === '-' || c === '*' || c === '/') { toks.push({ t: 'op', v: c }); i++; continue; }
@@ -164,10 +188,20 @@ export function parseFormula(src: string): Ast {
         next(); // :
         const to = next();
         if (to.t !== 'ref') throw new Error('expected cell ref after :');
-        return { kind: 'range', from: tk.v, to: to.v };
+        // MOD-GRID-40 G-1: range 는 endpoint 별 절대/혼합 플래그를 따로 보존(translate 4-플래그 bookkeeping).
+        return {
+          kind: 'range',
+          from: tk.v,
+          to: to.v,
+          fromColAbs: tk.colAbs,
+          fromRowAbs: tk.rowAbs,
+          toColAbs: to.colAbs,
+          toRowAbs: to.rowAbs,
+        };
       }
-      return { kind: 'ref', ref: tk.v };
+      return { kind: 'ref', ref: tk.v, colAbs: tk.colAbs, rowAbs: tk.rowAbs };
     }
+    if (tk.t === 'err') return { kind: 'err', code: tk.v }; // MOD-GRID-40 G-2
     throw new Error('unexpected token');
   }
 

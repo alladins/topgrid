@@ -16,7 +16,7 @@ import {
   type CellGetter,
   type CompiledCell,
 } from '../types.js';
-import { expandRange } from './cellAddress.js';
+import { colToLetters, expandRange, parseA1, toA1 } from './cellAddress.js';
 import { parseFormula } from './parser.js';
 import { FUNCTIONS, POSITIONAL_FUNCTIONS } from './functions.js';
 
@@ -86,6 +86,8 @@ export function evaluate(ast: Ast, getCell: CellGetter): CellValue {
       return getCell(ast.ref);
     case 'range':
       return cellError('#ERROR!'); // a range has no scalar value
+    case 'err':
+      return cellError(ast.code); // MOD-GRID-40 G-2: error-literal (e.g. #REF! from a translate)
     case 'unary': {
       const v = evaluate(ast.operand, getCell);
       if (isCellError(v)) return v;
@@ -202,4 +204,124 @@ export function formatValue(v: CellValue): string {
   if (typeof v === 'boolean') return v ? 'TRUE' : 'FALSE';
   if (typeof v === 'number') return String(v);
   return v;
+}
+
+// ─── MOD-GRID-40 G-2: formula serialization + copy/fill translation ───
+
+/** Operator precedence (low→high) for parenthesis-minimal serialization. Primary leaves = 5. */
+function prec(ast: Ast): number {
+  if (ast.kind === 'binary') {
+    switch (ast.op) {
+      case '<': case '>': case '=': case '<=': case '>=': case '<>': return 1;
+      case '+': case '-': return 2;
+      case '*': case '/': return 3;
+    }
+  }
+  return ast.kind === 'unary' ? 4 : 5;
+}
+
+/** Render a normalized address + abs flags → A1 text (`$A$1` / `$A1` / `A$1` / `A1`). */
+function refText(ref: string, colAbs?: boolean, rowAbs?: boolean): string {
+  const { col, row } = parseA1(ref);
+  return `${colAbs ? '$' : ''}${colToLetters(col)}${rowAbs ? '$' : ''}${row + 1}`;
+}
+
+/**
+ * Serialize an {@link Ast} back to formula text (no leading `=`). Parenthesizes only where
+ * precedence/associativity require, so `serialize(parse(x))` round-trips to an equivalent formula.
+ * Strings re-quote (the tokenizer has no escapes, so any string it produced round-trips verbatim).
+ */
+export function serializeAst(ast: Ast): string {
+  switch (ast.kind) {
+    case 'num': return String(ast.value);
+    case 'str': return `"${ast.value}"`;
+    case 'bool': return ast.value ? 'TRUE' : 'FALSE';
+    case 'ref': return refText(ast.ref, ast.colAbs, ast.rowAbs);
+    case 'range':
+      return `${refText(ast.from, ast.fromColAbs, ast.fromRowAbs)}:${refText(ast.to, ast.toColAbs, ast.toRowAbs)}`;
+    case 'err': return ast.code;
+    case 'unary': {
+      const o = serializeAst(ast.operand);
+      return `-${prec(ast.operand) < 4 ? `(${o})` : o}`;
+    }
+    case 'binary': {
+      const p = prec(ast);
+      const ls = serializeAst(ast.left);
+      const rs = serializeAst(ast.right);
+      const lWrap = prec(ast.left) < p;
+      // right operand: wrap if lower precedence, or equal-precedence under a non-commutative op
+      // (`a-(b-c)` ≠ `a-b-c`, `a/(b/c)` ≠ `a/b/c`).
+      const rWrap = prec(ast.right) < p || (prec(ast.right) === p && (ast.op === '-' || ast.op === '/'));
+      return `${lWrap ? `(${ls})` : ls}${ast.op}${rWrap ? `(${rs})` : rs}`;
+    }
+    case 'call':
+      return `${ast.name}(${ast.args.map(serializeAst).join(',')})`;
+  }
+}
+
+/** Shift a normalized address by (dCol,dRow) honoring abs axes; `null` if it goes out of bounds. */
+function shiftAddr(
+  addr: string,
+  colAbs: boolean | undefined,
+  rowAbs: boolean | undefined,
+  dCol: number,
+  dRow: number,
+): string | null {
+  const { col, row } = parseA1(addr);
+  const nc = colAbs ? col : col + dCol;
+  const nr = rowAbs ? row : row + dRow;
+  if (nc < 0 || nr < 0) return null;
+  return toA1(nc, nr);
+}
+
+/** Recursively shift every relative ref/range in an AST; out-of-bounds → `#REF!` error leaf. */
+function shiftAst(ast: Ast, dCol: number, dRow: number): Ast {
+  switch (ast.kind) {
+    case 'num': case 'str': case 'bool': case 'err':
+      return ast;
+    case 'ref': {
+      const moved = shiftAddr(ast.ref, ast.colAbs, ast.rowAbs, dCol, dRow);
+      return moved === null
+        ? { kind: 'err', code: '#REF!' }
+        : { kind: 'ref', ref: moved, colAbs: ast.colAbs ?? false, rowAbs: ast.rowAbs ?? false };
+    }
+    case 'range': {
+      const from = shiftAddr(ast.from, ast.fromColAbs, ast.fromRowAbs, dCol, dRow);
+      const to = shiftAddr(ast.to, ast.toColAbs, ast.toRowAbs, dCol, dRow);
+      return from === null || to === null
+        ? { kind: 'err', code: '#REF!' }
+        : {
+            kind: 'range',
+            from,
+            to,
+            fromColAbs: ast.fromColAbs ?? false,
+            fromRowAbs: ast.fromRowAbs ?? false,
+            toColAbs: ast.toColAbs ?? false,
+            toRowAbs: ast.toRowAbs ?? false,
+          };
+    }
+    case 'unary':
+      return { kind: 'unary', op: '-', operand: shiftAst(ast.operand, dCol, dRow) };
+    case 'binary':
+      return { kind: 'binary', op: ast.op, left: shiftAst(ast.left, dCol, dRow), right: shiftAst(ast.right, dCol, dRow) };
+    case 'call':
+      return { kind: 'call', name: ast.name, args: ast.args.map((a) => shiftAst(a, dCol, dRow)) };
+  }
+}
+
+/**
+ * MOD-GRID-40 G-2: translate a formula for a copy/fill by (dCol,dRow) cells. Relative refs shift,
+ * absolute (`$`) axes stay fixed; a ref shifted out of bounds becomes `#REF!`. Non-formula cells
+ * (no leading `=`) and unparseable formulas are returned verbatim (mirrors {@link compileCell}'s
+ * catch — downstream compile turns a bad formula into `#ERROR!`).
+ */
+export function translateFormula(raw: string, dCol: number, dRow: number): string {
+  if (!raw.startsWith('=')) return raw;
+  let ast: Ast;
+  try {
+    ast = parseFormula(raw.slice(1));
+  } catch {
+    return raw;
+  }
+  return `=${serializeAst(shiftAst(ast, dCol, dRow))}`;
 }

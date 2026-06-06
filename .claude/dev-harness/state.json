@@ -9,7 +9,7 @@
     "C": 3,
     "POL": 1,
     "ADR": 2,
-    "LESS": 6
+    "LESS": 7
   },
   "modules": {
     "MOD-GRID-18": {
@@ -1101,6 +1101,37 @@
       },
       "module_summary": "Row pinning 3-Goal. ★renderDataRow 추출로 최고위험 파일 안전 변경(핀 OFF byte-identical). 비-가상화 전용. 전부 행동 게이트. RowPinButton stopPropagation. chromium 3. 회귀 78/78.",
       "vN_note": "가상화+핀=vN(가상화 윈도에 핀 행 제외 복잡). keepPinnedRows=passthrough."
+    },
+    "MOD-GRID-40": {
+      "package": "grid-pro-sheet (Pro)",
+      "tier": "Pro",
+      "weight": "Full(2-Goal: $A$1 절대/혼합 참조 + translateFormula copy/fill 조정)",
+      "priority": "vN 첫 모듈(COMMERCIAL-GAP 기타5 중 2건)",
+      "phase": "done (2-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-40.md (정식 spec — 진입 게이트 B 충족; rubric 77/80 영속화=게이트 C)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "순수 엔진(node 검증 ceiling, 브라우저 행동 0). SheetGrid fill-handle UI 제스처=MOD-49. 멀티시트=MOD-41. 셀서식=vN.",
+      "g1": {
+        "surface": "parser tokenizer $?LETTERS$?DIGITS→ref/range colAbs/rowAbs(range=4플래그). types.ts ref/range optional 플래그 + err leaf. ★$=eval-cosmetic→ref 정규화 주소 유지→evaluate/extractRefs/sheetEngine 수정 0.",
+        "verified_node": "$A$1/$A1/A$1 플래그(serialize 라운드트립) + ★$A$1≡A1 평가+의존추적(createSheet recalc)"
+      },
+      "g2": {
+        "surface": "evaluate.ts translateFormula(raw,dCol,dRow) + serializeAst(precedence-aware) + shiftAst. cellAddress colToLetters 추출. evaluate case err. out-of-bounds→#REF! 라운드트립·unparseable→raw catch.",
+        "verified_node": "engine.test.mjs 87/0(MOD-26/32 characterization 66 보존 + MOD-40 21): 상대 shift·절대 고정·★혼합-range 4플래그·#REF! 라운드트립·precedence 보존·identity. typecheck 0·tsup build green."
+      },
+      "done_gate": {
+        "lesson": "LESS-007 (precedence-aware serialization)",
+        "matrix_row": "§3 mod-grid-40 채움 + §6.1/§6.2 구현됨(→§3)",
+        "index_updated": "LESSONS-INDEX LESS-007; COMMERCIAL-GAP ❌47→45·✅+1·🟡+1 reconcile 19/19 합 330"
+      },
+      "rubric_specify": "77/80 (게이트 통과; spec 에 8항목 점수 영속화)",
+      "closure": "★$A$1 절대참조=✅ / 상대참조 on copy/fill=🟡(엔진 프리미티브+node only, UI 제스처 MOD-49 가 ✅ 승격) — over-claim 차단(advisor)",
+      "module_summary": "vN 첫 모듈. $=eval-cosmetic 통찰(정규화 주소 유지→3리더 무수정)·precedence-aware serializer(LESS-007). node 87/0. closure 정직(✅+🟡).",
+      "version_note": "grid-pro-sheet 0.x→차기 batch(미발행).",
+      "vN_note": "fill-handle UI=MOD-49·멀티시트=MOD-41·셀서식=vN."
     }
   },
   "release_queue": {

@@ -6,6 +6,23 @@
 
 ---
 
+## ★ vN 진행 (2026-06-06~ 착수) — ❌47 닫기 자율 라운드 (resumable ledger)
+
+> 사용자 지시: MOD-40 부터 ❌47 을 모듈로 쭉 닫는다. 크리티컬(제품 결정·발행/push 등 outward) 외 비-크리티컬은
+> advisor 판단 위임. 진입 게이트(B: spec+§6 등재 / C: rubric 점수) 준수. 각 모듈 commit-per-module(durable·resumable).
+> **계획 순서**(advisor 승인, node-검증 우선 front-load): 40→41→42(sheet)→43(community)→44(pivot)→45(enterprise)
+> →46(filter)→47(chart)→48(tree/MD)→49(UX/import) → **50+ 제품결정 4종=사용자 STOP-and-ask**.
+
+- [x] ✅ **MOD-40 — 스프레드시트 참조 모델**(grid-pro-sheet, 2-Goal, 2026-06-06): $A$1 절대/혼합 참조(G-1, `$`=eval-cosmetic→
+  evaluate/extractRefs 무수정) + `translateFormula` copy/fill 조정(G-2, precedence-aware serializer, #REF! 라운드트립).
+  **node 87/0**(characterization 66 보존 + 21)·typecheck 0·build green. spec rubric 77/80. §3 `mod-grid-40` 이관.
+  신규 [[LESS-007]]. **COMMERCIAL-GAP: ❌47→45·✅218→219·🟡62→63**(reconcile 19/19·합 330). closure: `$A$1`=✅·copy/fill=🟡(UI=MOD-49).
+- [ ] **다음 = MOD-41**(멀티시트 Sheet2!A1 + 명명 범위, grid-pro-sheet vN). → 기타3 중 2 닫힘 예정.
+- [ ] **미발행 누적**: MOD-40~ 의 grid-pro-sheet 변경은 dist 빌드만, **npm 미발행**(발행=사용자 결정, batch).
+- [ ] **미push 누적**: 로컬 main 커밋(MOD-40 포함) origin 미반영(push=사용자 결정).
+
+---
+
 ## P0 — 발행 (✅ **완료 2026-06-06**)
 
 - [x] ✅ **prepared batch 발행 완료**: 15패키지 npmjs publish 성공(grid-core@0.4.0·grid@0.5.0 facade·features@0.7.0·

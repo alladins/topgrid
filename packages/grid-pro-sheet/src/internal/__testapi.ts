@@ -2,5 +2,12 @@
 // tsup builds from index.ts only, so this helper is not shipped.
 export { createSheet } from './sheetEngine.js';
 export { parseFormula } from './parser.js';
-export { evaluate, compileCell, extractRefs, formatValue } from './evaluate.js';
+export {
+  evaluate,
+  compileCell,
+  extractRefs,
+  formatValue,
+  translateFormula, // MOD-GRID-40 G-2
+  serializeAst, // MOD-GRID-40 G-2
+} from './evaluate.js';
 export { isCellError } from '../types.js';

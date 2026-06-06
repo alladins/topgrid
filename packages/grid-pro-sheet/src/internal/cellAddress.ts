@@ -12,8 +12,8 @@ export function parseA1(ref: string): { col: number; row: number } {
   return { col: col - 1, row: Number(m[2]) - 1 };
 }
 
-/** Format `{ col, row }` (0-based) → `"A1"`. */
-export function toA1(col: number, row: number): string {
+/** Format a 0-based column index → its letters (`0`→`"A"`, `26`→`"AA"`). MOD-GRID-40: shared by toA1 + serializer. */
+export function colToLetters(col: number): string {
   let letters = '';
   let c = col + 1;
   while (c > 0) {
@@ -21,7 +21,12 @@ export function toA1(col: number, row: number): string {
     letters = String.fromCharCode(65 + rem) + letters;
     c = Math.floor((c - 1) / 26);
   }
-  return `${letters}${row + 1}`;
+  return letters;
+}
+
+/** Format `{ col, row }` (0-based) → `"A1"`. */
+export function toA1(col: number, row: number): string {
+  return `${colToLetters(col)}${row + 1}`;
 }
 
 /** Expand `A1:B2` (inclusive, order-normalized) → cell refs `[A1, A2, B1, B2]` (column-major). */

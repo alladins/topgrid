@@ -34,8 +34,22 @@ export type Ast =
   | { kind: 'num'; value: number }
   | { kind: 'str'; value: string }
   | { kind: 'bool'; value: boolean }
-  | { kind: 'ref'; ref: string } // e.g. "A1"
-  | { kind: 'range'; from: string; to: string } // e.g. A1:B3
+  // MOD-GRID-40 G-1: ref/range 노드는 **정규화 주소**(`ref`/`from`/`to`, `$` 제거·대문자)를 유지해
+  // evaluate/extractRefs 가 byte-identical(=`$`는 eval-cosmetic, `$A$1`≡`A1`). 절대/혼합 플래그는 **optional**
+  // 이며 copy/fill 의 `translateFormula` 만 소비(상대=델타 이동·절대=고정). 기존 무플래그 노드 = 전부 상대(하위호환).
+  | { kind: 'ref'; ref: string; colAbs?: boolean; rowAbs?: boolean } // e.g. "A1", "$A$1"
+  | {
+      kind: 'range';
+      from: string;
+      to: string;
+      fromColAbs?: boolean;
+      fromRowAbs?: boolean;
+      toColAbs?: boolean;
+      toRowAbs?: boolean;
+    } // e.g. A1:B3, $A1:B$3
+  // MOD-GRID-40 G-2: error-literal leaf — translate 가 out-of-bounds 상대이동을 `#REF!` 로 텍스트화하고 그 출력이
+  // 다시 파서를 통과해야 하므로(라운드트립) 문법 차원의 표현 필요. ref 없는 leaf → extractRefs 가 무시(안전).
+  | { kind: 'err'; code: ErrorCode }
   | { kind: 'unary'; op: '-'; operand: Ast }
   // MOD-GRID-32 G-1: 비교연산자는 별도 노드 kind 가 아니라 binary op 확장 — extractRefs 의 정적 walk 가
   // 새 kind 를 모르면 의존 ref 누락→recalc 깨짐. binary 면 left/right 이미 walk 하므로 extractRefs 수정 0.

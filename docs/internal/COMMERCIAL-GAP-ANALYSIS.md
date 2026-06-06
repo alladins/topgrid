@@ -6,18 +6,20 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-39, 2026-06-06)** |
+| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-40, 2026-06-06)** |
 |---|---|---|---|
-| ✅ 구현(full) | 178 (54%) | 199 (60%) | **218 (66%)** |
-| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **62 (19%)** |
-| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **47 (14%)** |
+| ✅ 구현(full) | 178 (54%) | 199 (60%) | **219 (66%)** |
+| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **63 (19%)** |
+| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **45 (14%)** |
 | ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) |
 | **합계** | **330** | **330** | **330** |
 
 > ✅ **재집계 완료 (2026-06-06)**: "검증 재집계" 열은 카테고리 상세표 행(=ground truth, MOD-34~39 닫힘·roving 🟡 반영)에서
 > **프로그래매틱 재계산**했고 **19/19 카테고리 reconcile**(파싱 카운트 == 선언 기능 수)+**합 330** 검산을 통과했다(손-추정 아님).
 > 「재감사(MOD-33)」 열은 MOD-28~33 시점 스냅샷으로 이력 보존. 행별 상태는 카테고리 상세표·MASTER §3 이 SSoT.
-> 「잔여 ❌ 우선순위」 tier 분해도 ❌47 기준으로 재산정 완료(Community 15 + Enterprise 27 + 기타 5, reconcile).
+> 「잔여 ❌ 우선순위」 tier 분해는 MOD-39 기준 ❌47(Community 15 + Enterprise 27 + 기타 5)로 재산정됐고, **MOD-40 반영분은 다음 줄**.
+> ★ **MOD-40 델타(2026-06-06, vN-1)**: `$A$1 절대참조` ❌→✅ · `상대참조 on copy/fill` ❌→🟡(엔진 프리미티브 `translateFormula`
+> ship + node 87/0, UI fill-handle 제스처는 MOD-49) → **❌45 / ✅219 / 🟡63**(합 330 불변, 기타 5→3).
 
 ### 재감사 델타 — MOD-28~33 닫힌 갭 (커밋 근거)
 
@@ -46,10 +48,10 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32 부분(IF/비교/AND/OR/NOT+text/math; VLOOKUP/날짜/재무 미정) | node |
 
-### 잔여 ❌ 우선순위 (2026-06-06 검증, tier별 = ❌47)
+### 잔여 ❌ 우선순위 (2026-06-06 검증, tier별 = ❌45, MOD-40 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 15 + Enterprise 27 + 기타 5 = **47**, reconcile 통과).
-> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌47 기준으로 정정.
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 15 + Enterprise 27 + 기타 3 = **45**, reconcile 통과; MOD-40 으로 기타 5→3).
+> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌45(MOD-40 반영) 기준으로 정정.
 
 - **Community 15 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
   editing·RTL ② vN 연기 9=post-sort callback·applyTransaction(증분)·async transaction batching·auto-page-size·custom page
@@ -61,7 +63,8 @@
   viewport row model · tree getDataPath/auto group col · master-detail+virtualization · auto-agg floating rows · Excel cell styles ·
   **차트 클러스터 잔여 2**(panel/dock·cross-filter) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
   panel drag · .xlsx sheet import.
-- **기타 5**: $A$1 절대참조 · 상대참조 on copy/fill · 명명 범위 · 멀티시트(Sheet2!A1) · go-to-page 입력.
+- **기타 3**: 명명 범위 · 멀티시트(Sheet2!A1) · go-to-page 입력. (★ MOD-40: `$A$1 절대참조`=✅ 닫힘 · `상대참조 on copy/fill`=🟡
+  엔진 프리미티브 `translateFormula` ship+node, UI 제스처 MOD-49. 명명 범위·멀티시트=MOD-41, go-to-page=MOD-49.)
 
 > ★ 차트(Enterprise 클러스터 7)는 **MOD-34 로 5/7 닫힘**(내장 엔진·축/툴팁·스파크마커·툴바·피벗차트), 잔여 2(panel·cross-filter)=vN.
 
@@ -71,7 +74,7 @@
 
 **강한 영역**(구현 비율 상위): Export, clipboard & print(13/15) · Cell rendering & styling(13/18) · Sorting(12/18) · Editing(12/18) · Selection(11/17).
 
-**주요 갭 영역**(미구현 다수, 2026-06-06 검증 ❌ 기준): Spreadsheet (Wijmo FlexSheet focus)(❌7) · Pivoting(❌5) · Misc UX(❌5) · Row models / data·Master-Detail·State theming·Virtualization·Pagination(각 ❌3). (이전 최초감사 기준 Pivoting 10·A11y 8 등은 MOD-28~39 로 닫힘.)
+**주요 갭 영역**(미구현 다수, 2026-06-06 검증 ❌ 기준): Spreadsheet (Wijmo FlexSheet focus)(❌5, MOD-40 −2) · Pivoting(❌5) · Misc UX(❌5) · Row models / data·Master-Detail·State theming·Virtualization·Pagination(각 ❌3). (이전 최초감사 기준 Pivoting 10·A11y 8 등은 MOD-28~39 로 닫힘.)
 
 > 표시 규약: ✅=코드 근거로 확인된 구현 · 🟡=부분(headless passthrough만/일부 한계/소비자 배선 필요) · ❌=미구현 · ➖=headless 그리드에 비해당. 상태는 **adversarial 검증**(근거 코드 재확인, over-claim 차단)을 거쳤다.
 
@@ -100,9 +103,9 @@
 | Integrated charts & sparklines | 17 | 10 | 3 | 2 |
 | Accessibility & keyboard | 18 | 13 | 5 | 0 |
 | State, theming & i18n | 17 | 10 | 4 | 3 |
-| Spreadsheet (Wijmo FlexSheet focus) | 23 | 12 | 4 | 7 |
+| Spreadsheet (Wijmo FlexSheet focus) | 23 | 13 | 5 | 5 |
 | Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 5 | 4 | 5 |
-| **합계** | **330** | **218** | **62** | **47** |
+| **합계** | **330** | **219** | **63** | **45** |
 
 ## 카테고리별 상세
 
@@ -488,7 +491,7 @@
 
 | 기능 | AG Grid | Wijmo | topgrid | 근거 / 비고 |
 |---|---|---|---|---|
-| A1-notation cell references (e.g. =A1, B2) | — | FlexSheet | ✅ 구현 | `grid-pro-sheet internal/cellAddress.ts parseA1 (regex /^([A-Z]+)([0-9]+)$/) + toA1; parser.ts tokenize emits {t:'ref'} (line 54); evaluate.ts case 'ref' resolves via injected CellGetter (line 51)` — Verified. AG Grid is a data grid with no spreadsheet A1 model. topgrid supports A1 refs fully. Absolute-only (parseA1 regex has no $; tokenizer has no $ branch). |
+| A1-notation cell references (e.g. =A1, B2) | — | FlexSheet | ✅ 구현 | `grid-pro-sheet internal/cellAddress.ts parseA1 (regex /^([A-Z]+)([0-9]+)$/) + toA1; parser.ts tokenize emits {t:'ref'} (line 54); evaluate.ts case 'ref' resolves via injected CellGetter (line 51)` — Verified. AG Grid is a data grid with no spreadsheet A1 model. topgrid supports A1 refs fully. **MOD-40: `$` 절대/혼합 구문 추가**(tokenizer `$?LETTERS$?DIGITS` → colAbs/rowAbs 플래그; `$`=eval-cosmetic). |
 | Formula entry with leading '=' and parsing (tokenizer + recursive-descent) | — | FlexSheet | ✅ 구현 | `grid-pro-sheet internal/parser.ts parseFormula = tokenize + parseAddSub/MulDiv/Unary/Primary (lines 72-157); evaluate.ts compileCell detects raw.startsWith('=') (line 128), parse error → #ERROR! literal` — Verified. AG Grid has no formula engine. FlexSheet has full Excel formula parser; topgrid has a working recursive-descent parser over the documented grammar. |
 | Arithmetic operators (+ - * / and unary minus) with precedence | — | FlexSheet | ✅ 구현 | `grid-pro-sheet parser.ts precedence addSub(line 85)>mulDiv(97)>unary(109)>primary(118); evaluate.ts case 'binary' (+ - * /) and case 'unary' (negation) lines 54-75` — Verified. topgrid implements 4 ops + unary negation + parentheses. No ^, %, &, or comparison operators (tokenizer only accepts + - * / as ops, line 62). |
 | Built-in aggregate functions (SUM/AVERAGE/MIN/MAX/COUNT) | — | FlexSheet | 🟡 부분 | `grid-pro-sheet internal/functions.ts FUNCTIONS = {SUM, AVERAGE, MIN, MAX, COUNT} only (lines 26-53)` — Verified: exactly 5 functions, error-aware, non-numeric args ignored (Excel range behavior). FlexSheet ships 200+ Excel functions (IF, VLOOKUP, CONCATENATE, date/text/financial). topgrid partial = small fixed set. |
@@ -502,8 +505,8 @@
 | Inline cell editing (double-click / Enter / Escape) | Community | FlexSheet | ✅ 구현 | `grid-pro-sheet SheetGrid.tsx startEdit on onDoubleClick (line 102); input onKeyDown Enter=commit / Escape=cancel (112-115); onBlur=commit (line 111)` — Verified. Native HTML input (not grid-pro-edit's useKeyboardEdit — reuse-gate found it unsuitable, per MASTER-HIERARCHY mod-grid-26 G-3). AG Grid community has full cell editing; FlexSheet Excel-like editing. |
 | Cell range selection (mouse drag highlight) | Enterprise | FlexSheet | ✅ 구현 | `grid-pro-sheet SheetGrid.tsx imports @topgrid/grid-pro-range useCellRange + isInRange (line 15); onMouseDown/onMouseEnter on cells (100-101), onMouseUp on container (76); selected cells highlighted via isInRange (95,103)` — Verified. Reuses grid-pro-range (useCellRange + isInRange both exported from that package). AG Grid range selection is Enterprise. |
 | Clipboard copy/paste (Ctrl+C / Ctrl+V) | Enterprise | FlexSheet | 🟡 부분 | `grid-pro-sheet SheetGrid.tsx uses @topgrid/grid-pro-range useClipboard (lines 59-68); getCellValue=(r,c)=>getDisplay(refOf) (copy = displayed value, line 64); onPaste writes String(value) via setCell (66-67)` — Verified partial. Copy emits the displayed VALUE (getDisplay), not the formula text; paste writes raw text through setCell (so pasted '=A1' re-parses as a formula, but the copy source never produced formula text). FlexSheet copies formulas with relative-ref adjustment. AG Grid clipboard is Enterprise. |
-| Relative reference adjustment on copy/fill (e.g. copying =A1 down becomes =A2) | — | FlexSheet | ❌ 미구현 | `none — SheetGrid.tsx header docstring: 'absolute refs, value-copy (no relative-ref adjustment)' (line 11); MASTER-HIERARCHY mod-grid-26 lists '상대참조 조정' under OUT(vN)` — Verified. Explicitly out of PoC scope. Copy emits values (getDisplay), no formula-rewriting on copy/fill. |
-| Absolute reference syntax ($A$1) | — | FlexSheet | ❌ 미구현 | `none — cellAddress.ts parseA1 regex /^([A-Z]+)([0-9]+)$/ has no $ (line 8); parser.ts tokenizer has no '$' branch → throws 'unexpected char' (line 67)` — Verified. No $ in the grammar. Refs are absolute by behavior but there is no relative/absolute distinction to express. |
+| Relative reference adjustment on copy/fill (e.g. copying =A1 down becomes =A2) | — | FlexSheet | 🟡 부분(MOD-40 G-2) | `grid-pro-sheet evaluate.ts translateFormula(raw,dCol,dRow) + serializeAst + shiftAst — relative refs shift, absolute axes fixed, out-of-bounds → #REF! error-leaf (round-trips through parser); node 87/0` — 엔진 프리미티브 ship + node 검증. **SheetGrid fill-handle UI 제스처(드래그-채우기)는 소비자 배선 미완 → MOD-49 예정** = headless-API-only 이므로 🟡(✅ 아님). |
+| Absolute reference syntax ($A$1) | — | FlexSheet | ✅ 구현(MOD-40 G-1) | `grid-pro-sheet parser.ts tokenizer `$?LETTERS$?DIGITS` → ref/range 노드 colAbs/rowAbs 플래그; `$`=eval-cosmetic(정규화 주소 유지 → evaluate/extractRefs byte-identical), 플래그는 translateFormula 만 소비` — Verified. `$A$1`/`$A1`/`A$1`/`A1` 파싱·평가·의존추적 동일(node 87/0). 상대/절대 축 구분이 copy/fill 조정의 토대. |
 | Named ranges / named cells (define a name for a cell or range) | — | FlexSheet | ❌ 미구현 | `none — no name table in any grid-pro-sheet file; parser.ts parsePrimary throws 'unexpected name' for a bare NAME not followed by '(' (line 140)` — Verified. FlexSheet supports defined names. topgrid has no named-range concept; a bare identifier is only valid as TRUE/FALSE or a function call. |
 | Multiple sheets / tabs with cross-sheet references (Sheet2!A1) | — | FlexSheet | ❌ 미구현 | `none — createSheet holds a single flat ref→value Map (sheetEngine.ts), no sheet id; tokenizer has no '!' branch (throws 'unexpected char'); MASTER-HIERARCHY mod-grid-26 lists '멀티탭' under OUT(vN)` — Verified. Single sheet only. Multi-tab explicitly deferred to vN. FlexSheet has full multi-sheet workbook + tab UI. |
 | Cell / number formatting (currency, date, decimals, conditional format) | Community | FlexSheet | ❌ 미구현 | `none — formatValue (evaluate.ts:140-145) only stringifies number/bool/error; no format model; SheetGrid.tsx uses one fixed cellStyle (line 27); MASTER-HIERARCHY mod-grid-26 lists '서식' under OUT(vN)` — Verified. No per-cell number/date/currency formats, no conditional formatting. AG Grid community has cellRenderers/valueFormatters (not spreadsheet formats); FlexSheet has Excel-style cell formatting. |
@@ -537,7 +540,7 @@
 
 > ✅ **행별 status 동기화 검증(2026-06-06)**: 본 표 149행의 topgrid marker 를 카테고리 상세표(ground truth)와 프로그래매틱
 > 대조 → **149/149 일치, 불일치 0**(모듈 작업 중 함께 flip 유지돼 이미 current). 즉 멤버십은 최초감사 149건이나 **각 행 status 는
-> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 218/62/47」·「카테고리별 요약」 참조.
+> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 219/63/45」(MOD-40 반영)·「카테고리별 요약」 참조.
 
 | 기능 | 카테고리 | AG Grid | topgrid | 비고 |
 |---|---|---|---|---|
@@ -626,8 +629,8 @@
 | Tool panel reorder via drag | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ❌ 미구현 | Verified absent: ToolPanel reorder is up/down buttons only; no drag-to-reorder in the panel. |
 | Jump-to-page input (go-to page N) | Pagination | — | ❌ 미구현 | Verified absent. Not a standard AG Grid panel feature (none); Wijmo pager can include a page input. topgrid has no jump-to-page input UI. |
 | Broad Excel function library (logical/text/lookup/date/financial: IF, VLOOKUP, CONCAT, etc.) | Spreadsheet (Wijmo FlexSheet focus) | — | 🟡 부분(MOD-32 부분: IF/비교/AND/OR/NOT+text/math(VLOOKUP/날짜/재무 미정)) | Verified. No logical, text, lookup, date, or financial functions in topgrid; any unknown function name yields #ERROR!. |
-| Relative reference adjustment on copy/fill (e.g. copying =A1 down becomes =A2) | Spreadsheet (Wijmo FlexSheet focus) | — | ❌ 미구현 | Verified. Explicitly out of PoC scope. Copy emits values (getDisplay), no formula-rewriting on copy/fill. |
-| Absolute reference syntax ($A$1) | Spreadsheet (Wijmo FlexSheet focus) | — | ❌ 미구현 | Verified. No $ in the grammar. Refs are absolute by behavior but there is no relative/absolute distinction to express. |
+| Relative reference adjustment on copy/fill (e.g. copying =A1 down becomes =A2) | Spreadsheet (Wijmo FlexSheet focus) | — | 🟡 부분(MOD-40 G-2) | translateFormula 엔진 프리미티브(상대 shift·절대 고정·out-of-bounds #REF! 라운드트립, node 87/0) ship. SheetGrid fill-handle UI 제스처=소비자 배선 미완(MOD-49) → headless-API-only=🟡. |
+| Absolute reference syntax ($A$1) | Spreadsheet (Wijmo FlexSheet focus) | — | ✅ 구현(MOD-40 G-1) | `$A$1`/`$A1`/`A$1` 파싱·평가·의존추적 동일($=eval-cosmetic, 플래그=translate 소비). node 87/0. |
 | Named ranges / named cells (define a name for a cell or range) | Spreadsheet (Wijmo FlexSheet focus) | — | ❌ 미구현 | Verified. FlexSheet supports defined names. topgrid has no named-range concept; a bare identifier is only valid as TRUE/FALSE or a function call. |
 | Multiple sheets / tabs with cross-sheet references (Sheet2!A1) | Spreadsheet (Wijmo FlexSheet focus) | — | ❌ 미구현 | Verified. Single sheet only. Multi-tab explicitly deferred to vN. FlexSheet has full multi-sheet workbook + tab UI. |
 | Auto-size column to content | Column features | Community | 🟡 부분 | Headless width-map helper (host-capability injection); consumer must feed result into columnSizing, no built-in header double-click. |
@@ -689,5 +692,5 @@
 | Keyboard page navigation (Alt+Arrow) | Pagination | — | 🟡 부분 | Verified partial: works only when rendering GridPagination directly. Documented limitation in MASTER-HIERARCHY.md mod-grid-03 L178-179 (note: that doc cites the spread at L487-493, but the actual current location is Grid.tsx L670-676). AG Grid has no dedicated Alt+Arrow page nav (none). |
 | PDF export | Export, clipboard & print | — | 🟡 부분 | Works with orientation/title/multi-row head; Korean font (loadKoreanFont) is an explicit no-op stub that warns and falls back to Helvetica. |
 | Built-in aggregate functions (SUM/AVERAGE/MIN/MAX/COUNT) | Spreadsheet (Wijmo FlexSheet focus) | — | 🟡 부분 | Verified: exactly 5 functions, error-aware, non-numeric args ignored (Excel range behavior). FlexSheet ships 200+ Excel functions (IF, VLOOKUP, CONCATENATE, date/text/financial). topgrid partial = small fixed set. |
-| Error values and error propagation (#DIV/0!, #ERROR!, #REF!, #CYCLE!) | Spreadsheet (Wijmo FlexSheet focus) | — | 🟡 부분 | Verified partial. #REF! is in the type union but no code path emits it (grep of cellError('#REF!') = 0 hits; no deleted-ref invalidation). Excel/FlexSheet error set is larger (#NAME?, #VALUE!, #N/A, #NUM!, #NULL!). |
+| Error values and error propagation (#DIV/0!, #ERROR!, #REF!, #CYCLE!) | Spreadsheet (Wijmo FlexSheet focus) | — | 🟡 부분 | Verified partial. #DIV/0!/#CYCLE!/#ERROR! emitted by the engine; **MOD-40: #REF! now emitted by out-of-bounds copy/fill translate** (cellError('#REF!') via the err leaf). Still 🟡 — Excel/FlexSheet error set is larger (#NAME?, #VALUE!, #N/A, #NUM!, #NULL!) and #REF! has no deleted-ref-invalidation path yet. |
 

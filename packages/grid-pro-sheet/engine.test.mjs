@@ -12,7 +12,8 @@ await build({
   entryPoints: ['src/internal/__testapi.ts'],
   bundle: true, format: 'esm', platform: 'node', outfile: out, logLevel: 'error',
 });
-const { createSheet, parseFormula, evaluate, isCellError } = await import(pathToFileURL(out).href);
+const { createSheet, parseFormula, evaluate, isCellError, translateFormula, serializeAst } =
+  await import(pathToFileURL(out).href);
 
 let pass = 0, fail = 0;
 const ok = (n, c) => { if (c) pass++; else { fail++; console.log('  ❌', n); } };
@@ -166,6 +167,49 @@ ok('POWER(2,10) → 1024', evalF('=POWER(2,10)') === 1024);
   ok('no-op setCell: single undo clears A1', s.undo() === true && s.getValue('A1') === '');
   ok('no second undo (no-op left no entry)', s.canUndo() === false);
 }
+
+// ── MOD-GRID-40 G-1: absolute / mixed references ($A$1 / $A1 / A$1) ──
+// AC①: abs flags survive parse — asserted via serialize round-trip (no AST-shape peek, all behavioral).
+ok('parse $A$1 → serialize $A$1', serializeAst(parseFormula('$A$1')) === '$A$1');
+ok('parse $A1 → serialize $A1 (col abs)', serializeAst(parseFormula('$A1')) === '$A1');
+ok('parse A$1 → serialize A$1 (row abs)', serializeAst(parseFormula('A$1')) === 'A$1');
+ok('parse A1 → serialize A1 (relative)', serializeAst(parseFormula('A1')) === 'A1');
+ok('lowercase $a$1 normalizes → $A$1', serializeAst(parseFormula('$a$1')) === '$A$1');
+// AC②: ★ $A$1 evaluates identically to A1 AND tracks the same dependency (the $ is eval-cosmetic).
+{
+  const s = createSheet();
+  s.setCell('A1', '10');
+  s.setCell('B1', '=$A$1+1');
+  ok('★ $A$1 evaluates like A1 → 11', s.getValue('B1') === 11);
+  s.setCell('A1', '20');
+  ok('★ $A$1 tracks dep (A1 10→20) → B1 recalcs 21', s.getValue('B1') === 21);
+}
+
+// ── MOD-GRID-40 G-2: translateFormula (copy/fill relative shift, absolute fixed) ──
+// A1+(1col,2row)=B3 ; B1+(1col,2row)=C3 (B is col-1, +1col → col-2 = C).
+ok('relative: =A1+B1 by (1,2) → =B3+C3', translateFormula('=A1+B1', 1, 2) === '=B3+C3');
+ok('absolute fixed: =$A$1+B1 by (1,0) → =$A$1+C1', translateFormula('=$A$1+B1', 1, 0) === '=$A$1+C1');
+ok('mixed col-abs: =$A1 by (1,1) → =$A2', translateFormula('=$A1', 1, 1) === '=$A2');
+ok('mixed row-abs: =A$1 by (1,1) → =B$1', translateFormula('=A$1', 1, 1) === '=B$1');
+// AC⑤: out-of-bounds → #REF!, and it ROUND-TRIPS through the parser.
+ok('out-of-bounds: =A1 by (-1,0) → =#REF!', translateFormula('=A1', -1, 0) === '=#REF!');
+{
+  const s = createSheet();
+  s.setCell('Z1', translateFormula('=A1', -1, 0)); // '=#REF!'
+  ok('★ #REF! round-trips through parser → value #REF!',
+    isCellError(s.getValue('Z1')) && s.getValue('Z1').error === '#REF!');
+}
+ok('partial out-of-bounds: =A1+B1 by (-1,0) → =#REF!+A1', translateFormula('=A1+B1', -1, 0) === '=#REF!+A1');
+// AC⑥: range shift + ★ mixed-absolute range (4-flag per-endpoint bookkeeping = the real break point).
+ok('range: =SUM(A1:A2) by (1,0) → =SUM(B1:B2)', translateFormula('=SUM(A1:A2)', 1, 0) === '=SUM(B1:B2)');
+ok('★ mixed range: =SUM($A1:B$2) by (1,1) → =SUM($A2:C$2)',
+  translateFormula('=SUM($A1:B$2)', 1, 1) === '=SUM($A2:C$2)');
+// identity / literal / unparseable / precedence preservation.
+ok('identity (0,0) preserves =A1+B1*2', translateFormula('=A1+B1*2', 0, 0) === '=A1+B1*2');
+ok('literal cell (no =) unchanged', translateFormula('42', 1, 1) === '42');
+ok('unparseable =A1++ returned verbatim', translateFormula('=A1++', 1, 1) === '=A1++');
+ok('precedence: =(A1+B1)*2 keeps parens', translateFormula('=(A1+B1)*2', 0, 0) === '=(A1+B1)*2');
+ok('precedence: =A1-(B1-C1) keeps right parens', translateFormula('=A1-(B1-C1)', 0, 0) === '=A1-(B1-C1)');
 
 rmSync(out, { force: true });
 console.log(`sheet engine: ${pass} passed, ${fail} failed`);

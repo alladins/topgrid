@@ -22,6 +22,9 @@ export {
   compileCell,
   coerceLiteral,
   formatValue,
+  // MOD-GRID-40 G-2: copy/fill 상대참조 조정 프리미티브 + AST→수식텍스트 serializer.
+  translateFormula,
+  serializeAst,
 } from './internal/evaluate.js';
 export { FUNCTIONS, POSITIONAL_FUNCTIONS } from './internal/functions.js';
 export { parseA1, toA1, expandRange } from './internal/cellAddress.js';
