@@ -6,11 +6,11 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-44, 2026-06-07)** |
+| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-45, 2026-06-07)** |
 |---|---|---|---|
 | ✅ 구현(full) | 178 (54%) | 199 (60%) | **223 (68%)** |
-| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **65 (20%)** |
-| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **39 (12%)** |
+| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **67 (20%)** |
+| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **37 (11%)** |
 | ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) |
 | **합계** | **330** | **330** | **330** |
 
@@ -26,6 +26,8 @@
 > (순수 helper + scheduler 주입 배치, node 16/0; Row models/data 카테고리) → **❌41 / ✅222 / 🟡64**(합 330 불변, Community 15→13).
 > ★ **MOD-44 델타(2026-06-07, vN-5)**: pivot 5 중 node-pure 2 = `total customization` ❌→✅(`customizePivotTotals` suppress/position) ·
 > `filter on pivot result` ❌→🟡(`filterPivotRows` 프리미티브 ship+node, column-filter UI 후속) → **❌39 / ✅223 / 🟡65**(Pivoting 18/2/3, Enterprise 27→25).
+> ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
+> `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
 ### 재감사 델타 — MOD-28~33 닫힌 갭 (커밋 근거)
 
@@ -54,9 +56,9 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌39, MOD-44 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌37, MOD-45 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 25 + 기타 1 = **39**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44 Enterprise 27→25).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 23 + 기타 1 = **37**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44/45 Enterprise 27→23).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌43(MOD-41 반영) 기준으로 정정.
 
 - **Community 13 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
@@ -64,7 +66,7 @@
   virtualization-threshold·drag-between-grids (★MOD-43: applyTransaction·async transaction batching ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 25 (deep — 다수 vN 보류)**: advanced filter 쿼리빌더 · grand-total footer · group-header inline agg · sticky group
+- **Enterprise 23 (deep — 다수 vN 보류)**: advanced filter 쿼리빌더 · group-header inline agg · sticky group
   headers · **pivot 3**(panel/server-side/collapsible cols; ★MOD-44: total customization ❌→✅·result filter ❌→🟡) · select-all-pages · group selection ·
   viewport row model · tree getDataPath/auto group col · master-detail+virtualization · auto-agg floating rows · Excel cell styles ·
   **차트 클러스터 잔여 2**(panel/dock·cross-filter) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
@@ -95,7 +97,7 @@
 | Column features | 14 | 8 | 5 | 1 |
 | Sorting | 18 | 15 | 2 | 1 |
 | Filtering | 13 | 12 | 0 | 1 |
-| Row grouping & aggregation | 19 | 11 | 5 | 3 |
+| Row grouping & aggregation | 19 | 11 | 6 | 2 |
 | Pivoting | 23 | 18 | 2 | 3 |
 | Selection | 17 | 13 | 2 | 2 |
 | Editing | 18 | 12 | 4 | 2 |
@@ -104,14 +106,14 @@
 | Pagination | 17 | 9 | 5 | 3 |
 | Virtualization & performance | 20 | 12 | 4 | 3 |
 | Master/Detail & Tree Data | 16 | 8 | 5 | 3 |
-| Pinned/floating & full-width rows | 15 | 11 | 2 | 2 |
+| Pinned/floating & full-width rows | 15 | 11 | 3 | 1 |
 | Export, clipboard & print | 15 | 13 | 1 | 1 |
 | Integrated charts & sparklines | 17 | 10 | 3 | 2 |
 | Accessibility & keyboard | 18 | 13 | 5 | 0 |
 | State, theming & i18n | 17 | 10 | 4 | 3 |
 | Spreadsheet (Wijmo FlexSheet focus) | 23 | 14 | 6 | 3 |
 | Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 5 | 4 | 5 |
-| **합계** | **330** | **223** | **65** | **39** |
+| **합계** | **330** | **223** | **67** | **37** |
 
 ## 카테고리별 상세
 
@@ -185,7 +187,7 @@
 | Custom aggregation functions | Enterprise | FlexGrid | ✅ 구현 | `grid-pro-agg registerAggregationFn(name, fn) / getAggregationFn(name); module-level Map registry (aggregationFns.ts L27,L61-87); AggregationGrid resolvedColumns 3-branch resolution: registry hit > built-in key > console.error+'count' fallback (L218-238). VERIFIED` — VERIFIED: TanStack AggregationFn signature ((columnId, leafRows, childRows)=>unknown). Registry overrides built-ins (register 'sum' = intentional override). Re-register = overwrite+console.warn, no delete API. AG Grid Enterprise custom aggFunc; Wijmo custom getAggregate. |
 | Extended aggregation funcs (first, last, range, std, var) | Enterprise | FlexGrid | 🟡 부분 | `grid-pro-agg: BUILT_IN_AGGREGATION_KEYS verified = ['sum','avg','min','max','count'] only (aggregationFns.ts L37-38); first/last/range/std/var NOT present. Achievable only via registerAggregationFn custom registry. VERIFIED` — VERIFIED absent as built-ins. Wijmo Aggregate enum ships First/Last/Range/Std/StdPop/Var/VarPop natively; AG Grid has first/last. topgrid: no built-ins for these; user must hand-write each via registerAggregationFn (no library helpers provided) -> partial. |
 | Per-group footer / subtotal rows | Enterprise | FlexGrid | ✅ 구현 | `grid-pro-agg AggregationGrid showFooter (default true); FooterRow.tsx renders cell.getIsAggregated() ? (aggregatedCell ?? cell) : null; buildInterleavedRows inserts footer descriptor at each group end (deepest first, isGroupEnd = nextDepth<row.depth \|\| last). VERIFIED L94-122, FooterRow L41-46` — VERIFIED: synthetic footer interleaved per group via manual RowDescriptor build (TanStack does not emit footers). Caveat: footer only rendered for EXPANDED groups (collapsed groups emit no footer) and groups with subRows.length>0 (EC-002). AG Grid Enterprise groupIncludeFooter; Wijmo showGroups subtotal rows. |
-| Grand total / overall footer row (whole-grid aggregate) | Enterprise | FlexGrid | ❌ 미구현 | `none — buildInterleavedRows only emits footers tied to group closure (isGroupEnd); grep for grand/grandTotal/pinnedBottom/totalFooter/overall in grid-pro-agg/src = 0 hits. No grand-total descriptor, no pinned bottom total row in AggregationGrid. VERIFIED ABSENT` — VERIFIED missing in grid-pro-agg. (Note: a grand-total/subtotal capability exists in the SEPARATE grid-pro-pivot module via computePivot GRAND_TOTAL_COLUMN_KEY, and grid-core floatingBottomRows provides non-aggregating pinned rows — but neither is a whole-grid aggregate footer in the grouping/agg grid.) AG Grid Enterprise groupIncludeTotalFooter; Wijmo CollectionView grandTotal. |
+| Grand total / overall footer row (whole-grid aggregate) | Enterprise | FlexGrid | 🟡 부분(MOD-45) | `grid-pro-agg computeAggregateRow(data, spec) — 전역 집계값 한 행 계산(source 직접=avg-of-avgs 안전, 로컬 number[] 리듀서 ADR-001)` — whole-grid 집계 **compute 프리미티브** ship + node 15/0(★avg-of-avgs 회피 단언). **렌더된 footer 행 부재**(AggregationGrid pinned footer 미배선) → 🟡(렌더=browser 클러스터). |
 | Aggregated values displayed inline on the group header row (incl. when collapsed) | Enterprise | FlexGrid | ❌ 미구현 | `grid-pro-agg internal/GroupRow.tsx renders only ▼/▶ toggle + String(row.groupingValue ?? '') + (row.subRows.length); no aggregate values. Aggregates live only in FooterRow which is gated to expanded groups. VERIFIED GroupRow.tsx L48-54` — VERIFIED: group header shows group key + child count only, never aggregate totals; collapsed group shows no totals. AG Grid / Wijmo render aggregate values inline on the (collapsed) group row. Distinct from per-group footer. renderGroupRow override could add them but no built-in support. |
 | Group expand / collapse toggle (per group) | Enterprise | FlexGrid | ✅ 구현 | `grid-pro-agg GroupRow row.getToggleExpandedHandler() on <td onClick> (GroupRow.tsx L46); getIsExpanded() -> ▼/▶ (L49); getExpandedRowModel enabled via enableAggregation; expanded prop + onExpandedChange wiring. VERIFIED` — VERIFIED: standard TanStack expand. AG Grid group expand/collapse; Wijmo CollectionViewGroup isCollapsed. |
 | Default expanded state / expand-to-depth-N convenience | Enterprise | FlexGrid | 🟡 부분 | `grid-pro-agg expanded?: ExpandedState \| false (false normalized to {} in AggregationGrid.tsx L178); pass true=all, {}=none, or explicit Record<string,boolean>. grep for defaultExpand/expandToDepth/groupDefaultExpand/isGroupOpen = 0 hits. VERIFIED` — VERIFIED: topgrid supports all/none/explicit map but NO depth-level shortcut and NO per-group predicate callback. AG Grid groupDefaultExpanded (depth N) + isGroupOpenByDefault callback; Wijmo similar. -> partial. |
@@ -392,7 +394,7 @@
 |---|---|---|---|---|
 | Pinned top rows (floating top) — static summary/total rows above body | Community | FlexGrid | ✅ 구현 | `grid-core floatingTopRows prop + internal/buildFloatingRows.ts (createRow) + Grid.tsx renderFloatingRow (position:sticky; top:theadHeight; z-11)` — VERIFIED: buildFloatingRows.ts createRow → real Row<TData>; Grid.tsx L404-422 renderFloatingRow uses {position:'sticky', top: theadHeight, zIndex: 11}. Consumer-supplied extra rows, AG pinnedTopRowData-equivalent. Rendered through columnDef.cell renderers. chromium-verified (tests/visual/floating-thead.spec.ts asserts row top >= thead bottom). |
 | Pinned bottom rows (floating bottom) — static summary/total rows below body | Community | FlexGrid | ✅ 구현 | `grid-core floatingBottomRows prop + buildFloatingRows(table,data,'bottom') + Grid.tsx renderFloatingRow (position:sticky; bottom:0; z-11)` — VERIFIED: Grid.tsx L397-401 floatingBottomRows = buildFloatingRows(...,'bottom'); L408 sticky bottom:0 zIndex:11. Same contract as floatingTopRows. AG pinnedBottomRowData-equivalent. |
-| Auto-aggregation of pinned/floating rows (grid computes the totals) | Enterprise | FlexGrid | ❌ 미구현 | `none — buildFloatingRows.ts comment '집계 계산 안 함: 소비자가 total 객체를 제공'` — Floating rows are purely consumer-supplied data; no built-in sum/avg. Aggregation lives in grid-pro-agg group rows, not wired to floating rows. |
+| Auto-aggregation of pinned/floating rows (grid computes the totals) | Enterprise | FlexGrid | 🟡 부분(MOD-45) | `grid-pro-agg computeAggregateRow` — 자동집계 **compute 프리미티브** ship + node(소비자가 floatingBottomRows 로 전달). **grid 자동 계산+floating 배선 부재**("auto"=핵심) → 🟡(auto-wiring=browser). |
 | Floating rows persist/visible regardless of body data (e.g. show totals on empty grid) | Community | FlexGrid | 🟡 부분 | `grid-core types.ts L589 '데이터 0건 시 미표시' + Grid.tsx L575-592 render branches: loading→SkeletonRows, rows.length===0→EmptyState (neither renders floating rows); floating rows only in the populated branch` — VERIFIED partial: Grid.tsx renders floatingTopRows/floatingBottomRows ONLY in the non-empty, non-loading body branch (L597-663). When data is empty (EmptyState) or loading (SkeletonRows) the floating rows are not rendered. They DO persist across scroll/sort/filter-to-nonzero. Missing piece: AG Grid keeps pinned rows independent of body data (visible on empty grid); topgrid intentionally hides them when data is empty/loading. |
 | Interactive user-driven row pinning (user pins an existing data row to top/bottom) | Community | — | ✅ 구현(MOD-39: enableRowPinning + RowPinButton, 상/하단 sticky 3분할) | `grid-pro-master RowPinningOptions (pinTop/pinBottom string[]) is TYPES-ONLY; getTopRows/getBottomRows/enableRowPinning grep=0 in packages/ (only appears in .claude/dev-harness/state.json)` — VERIFIED missing: grid-pro-master/src/types.ts L218-233 RowPinningOptions is a pure type surface (D20/AC-006: 'UI 미구현'). MASTER-HIERARCHY.md L405 + L637 confirm '타입 전용 ... 실제 고정 UI 구현은 별도 범위(D20/AC-006, 미구현) → 모듈 경계'. No getTopRows/getBottomRows/enableRowPinning runtime wiring anywhere in packages/. TanStack row pinning row model not enabled. |
 | Full-width master-detail rows (expanded detail panel spanning all columns) | Enterprise | — | ✅ 구현 | `grid-pro-master DetailRow.tsx (<tr><td colSpan={colSpan}>{renderDetailRow(row)}) + MasterDetailGrid.tsx renderDetailRow prop + buildExpandColumn/ExpandToggleCell expand toggle + getExpandedRowModel` — VERIFIED full: DetailRow.tsx renders <tr><td colSpan>{renderDetailRow(row)}; MasterDetailGrid.tsx L158-163 emits DetailRow when row.getIsExpanded(); L210-224 prepends expand toggle column and wires onExpandedChange/getExpandedRowModel. Controlled (expandedRowKeys/onExpandChange L182-203) and uncontrolled (useState) state + expandAll/collapseAll imperative handle. Pro/EULA tier. AG full-width detail rows are enterprise. |
@@ -546,7 +548,7 @@
 
 > ✅ **행별 status 동기화 검증(2026-06-06)**: 본 표 149행의 topgrid marker 를 카테고리 상세표(ground truth)와 프로그래매틱
 > 대조 → **149/149 일치, 불일치 0**(모듈 작업 중 함께 flip 유지돼 이미 current). 즉 멤버십은 최초감사 149건이나 **각 행 status 는
-> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 223/65/39」(MOD-44 반영)·「카테고리별 요약」 참조.
+> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 223/67/37」(MOD-45 반영)·「카테고리별 요약」 참조.
 
 | 기능 | 카테고리 | AG Grid | topgrid | 비고 |
 |---|---|---|---|---|
@@ -596,7 +598,7 @@
 | Drag between grids | Misc UX (status bar, panels, context menu, overlays, row drag) | Community | ❌ 미구현 | Verified absent: no cross-grid drag/drop transfer; no dataTransfer wiring for rows. |
 | Multi filter (multiple conditions per column with AND/OR, e.g. text + set combined) | Filtering | Enterprise | ✅ 구현(MOD-30 G-3(grid-pro-filter)) | Verified absent. Each topgrid column has a single FilterFn with an internal operator switch (filterFns.ts); operator-switch handlers clear prior state rather than stacking. No compound AND/OR condition builder or stacking of two filter types on one column. AG agMultiColumnFilter is Enterprise. |
 | Advanced filter (cross-column expression/query builder UI) | Filtering | Enterprise | ❌ 미구현 | Verified absent. No expression builder or cross-column boolean query UI in grid-features. AG Advanced Filter is Enterprise. |
-| Grand total / overall footer row (whole-grid aggregate) | Row grouping & aggregation | Enterprise | ❌ 미구현 | VERIFIED missing in grid-pro-agg. (Note: a grand-total/subtotal capability exists in the SEPARATE grid-pro-pivot module via computePivot GRAND_TOTAL_COLUMN_KEY, and grid-core floatingBottomRows provides non-aggregating pinned rows — but neither is a whole-grid aggregate footer in the grouping/agg grid.) AG Grid Enterprise groupIncludeTotalFooter; Wijmo CollectionView grandTotal. |
+| Grand total / overall footer row (whole-grid aggregate) | Row grouping & aggregation | Enterprise | 🟡 부분(MOD-45) | `grid-pro-agg computeAggregateRow` 전역 집계 compute 프리미티브 ship + node(avg-of-avgs 안전). 렌더된 footer 행 부재 → 🟡(렌더=browser). |
 | Aggregated values displayed inline on the group header row (incl. when collapsed) | Row grouping & aggregation | Enterprise | ❌ 미구현 | VERIFIED: group header shows group key + child count only, never aggregate totals; collapsed group shows no totals. AG Grid / Wijmo render aggregate values inline on the (collapsed) group row. Distinct from per-group footer. renderGroupRow override could add them but no built-in support. |
 | Sticky / pinned group headers while scrolling | Row grouping & aggregation | Enterprise | ❌ 미구현 | VERIFIED: virtualization drops off-screen group headers (no sticky). AG Grid Enterprise groupRowsSticky (suppressGroupRowsSticky). Wijmo n/a. |
 | Pivot panel / drag-and-drop pivot column tool panel UI | Pivoting | Enterprise | ❌ 미구현 | VERIFIED MISSING: grep of grid-pro-pivot/src for Panel/drag/dnd = no matches. No PivotPanel/toolPanel/drag-drop component. AG Grid has the Columns tool panel pivot drop zones; Wijmo has PivotPanel. topgrid pivot config is code-declarative only. |
@@ -615,7 +617,7 @@
 | Tree data via flat path (getDataPath) | Master/Detail & Tree Data | Enterprise | ❌ 미구현 | Verified absent: grep for getDataPath/dataPath across packages returned no matches; only TanStack parent-pointer getSubRows is supported. |
 | Auto group column | Master/Detail & Tree Data | Enterprise | ❌ 미구현 | Verified absent: grep for autoGroupColumn/groupingColumnDef returned no matches; __expand__ toggle col + 16px indent is not an auto group column. |
 | Master-detail + virtualization | Master/Detail & Tree Data | Enterprise | ❌ 미구현 | Verified: MasterDetailGrid.tsx scrollTo is a no-op stub and renders a plain non-virtualized <table>; large detail/tree datasets unsupported in the master-detail component. |
-| Auto-aggregation of pinned/floating rows (grid computes the totals) | Pinned/floating & full-width rows | Enterprise | ❌ 미구현 | Floating rows are purely consumer-supplied data; no built-in sum/avg. Aggregation lives in grid-pro-agg group rows, not wired to floating rows. |
+| Auto-aggregation of pinned/floating rows (grid computes the totals) | Pinned/floating & full-width rows | Enterprise | 🟡 부분(MOD-45) | `grid-pro-agg computeAggregateRow` 자동집계 compute 프리미티브 ship + node(소비자가 floatingBottomRows 전달). grid auto-wiring 부재 → 🟡(browser). |
 | Sticky group rows / sticky row groups (group header sticks while its children scroll) | Pinned/floating & full-width rows | Enterprise | ❌ 미구현 | VERIFIED missing: GroupRow.tsx has colSpan but grep for sticky/position on group rows = 0. AG Grid groupRowsSticky / suppressGroupRowsSticky is enterprise. topgrid group rows scroll normally. |
 | Excel cell styles (font/fill/border) | Export, clipboard & print | Enterprise | ❌ 미구현 | Deliberately omitted — community xlsx@0.18.5 strips .s on write (round-trip verified), documented as a limitation. |
 | Integrated range charts (built-in chart rendering engine) | Integrated charts & sparklines | Enterprise | ✅ 구현(MOD-34 G-1 RangeChart 순수SVG) | Verified: grid-pro-chart/src imports no chart library (C-001/AP-001 in index.ts); RangeChartPanel only renders a consumer-injected renderChart callback, no built-in engine. |

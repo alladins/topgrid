@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "echo TODO"
+    "test": "node --experimental-strip-types src/computeAggregateRow.test.ts"
   },
   "dependencies": {
     "@topgrid/grid-license": "workspace:*"

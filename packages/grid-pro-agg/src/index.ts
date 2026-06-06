@@ -17,6 +17,9 @@ export { AggregationGrid } from './AggregationGrid';
 export { GroupPanel } from './GroupPanel';
 export { resolveAggregationFn, registerAggregationFn, getAggregationFn, BUILT_IN_AGGREGATION_KEYS } from './aggregationFns';
 export type { TanStackAggKey } from './aggregationFns';
+// MOD-GRID-45: 전역 집계 행 계산(grand-total footer / auto-agg floating 공유, source 직접=avg-of-avgs 안전).
+export { computeAggregateRow } from './computeAggregateRow';
+export type { AggregateSpec } from './computeAggregateRow';
 export type {
   AggregationFnKey,
   AggregationColumnMeta,

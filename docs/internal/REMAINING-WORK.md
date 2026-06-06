@@ -38,7 +38,13 @@
   **COMMERCIAL-GAP: ❌41→39·✅222→223·🟡64→65**(Pivoting 18/2/3, Enterprise 27→25). 신규 lesson 없음.
 - [ ] **MOD-44 분할 잔여 3**(pivot): collapsible column groups(computePivot 컬럼-그룹 집계+buildPivotColumns+chromium=3-part) · pivot
   panel(DnD) · server-side pivot(grid-pro-serverside wiring) + column grand-total 토글(buildPivotColumns). → **browser 클러스터**로 진행.
-- [ ] **다음 = MOD-45**(Enterprise grouping cluster: grand-total footer·group-header inline agg·sticky group headers·select-all-pages·group selection 등).
+- [x] ✅ **MOD-45 — 전역 집계 행**(grid-pro-agg Pro, 1-Goal, 2026-06-07): `computeAggregateRow(data,spec)`(G-1, source 직접 집계,
+  avg-of-avgs 안전, 로컬 number[] 리듀서 ADR-001). **node 15/0**(첫 grid-pro-agg node 테스트, ★avg-of-avgs 회피 hard 단언)·typecheck 0·build green.
+  §3 `mod-grid-45` 이관. Enterprise grouping=렌더-정의 클러스터→node-pure substance 1 추출(advisor). closure: grand-total footer=🟡·auto-agg
+  floating=🟡(렌더/auto=browser). **COMMERCIAL-GAP: ❌39→37·✅223·🟡65→67**(Row grouping 19|11|6|2·Pinned/floating 15|11|3|1·Enterprise 25→23). 신규 lesson 없음.
+- [ ] **MOD-45 분할 잔여**(enterprise grouping): grand-total footer 렌더(AggregationGrid pinned)·auto-agg floating wiring·group-header
+  inline agg·sticky group headers/rows·row-group/pivot state-save. → **browser 클러스터**(state-save=grid-core useGridState 결합 회피).
+- [ ] **다음 = MOD-46**(Advanced filter 쿼리빌더, Pro, UI-heavy). ★browser-heavy — node-pure 추출 가능부(쿼리 모델/평가)부터 분할 검토.
   - **reuse-gate survey 완료**(Explore, 2026-06-07 — verify-first 규칙 적용):
     - **verify-first(부분 존재, 의미/스코프 확인 필요)**: ① post-sort callback = `onSortingChange`(types.ts:830) 존재하나 *state-only*(AG `postSortRows` 행배열 후처리 아님) ② custom page formatter = `totalCountFormat`(GridPagination.tsx:58) + `localeText.totalCount`(i18n.ts:24) 이미 노출 → 스코프 겹침 확인 ③ debounced-scroll = `useDebouncedCallback` 존재 + `virtualizerOptions.onChange` passthrough(types.ts:929) → 소비자 wrap 가능, "기본 auto-debounce" 면 부재.
     - **genuine 부재(신규)**: ④ applyTransaction(개별 onAdd/Delete/UpdateRow 만, 배치-patch API 없음 — GridHandle 신규 메서드) ⑤ async tx batching(macro 배치 큐 없음) ⑥ auto-page-size(뷰포트 측정 필요=browser) ⑦ row animation(rowClassName 만, lifecycle hook 없음=browser) ⑧ auto-virtualization-threshold(enableVirtualization opt-in, 의도적 미적용 types.ts:901 — `virtualizationThreshold?` 신규) ⑨ drag-between-grids(within-grid moveRow/enableRowReorder 만, cross-grid 컨텍스트 부재=browser).
