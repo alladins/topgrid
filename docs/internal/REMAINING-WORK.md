@@ -30,9 +30,11 @@
   인프라 시정: `storybook.spec.ts`(toHaveScreenshot 마이그레이션+CWD 경로+non-throwing+skip-with-reason) + `apps/docs/
   playwright.config.ts` 신설 → `visual:test` 정상(78 pass/291 skip). 상세=WORKFLOW-INTEGRITY-AUDIT §7.5.
   - [ ] **잔여**: 스크린샷 회귀 baseline 생성·커밋(CI `--update-snapshots`, OS/폰트별 — dev 머신서 생성 금지).
-- [ ] **독립 검증 확장 (잔여 — (D)의 핵심 미완)**: 요구사항-도출 adversarial 검증을 3개 샘플(MOD-34/36/37 순수코어, 25/25)
-  에서 **나머지 모듈 + wiring 층**으로 확대. 특히 차트 실렌더(RangeChart)·flash effect 배선·column menu/row pin 상호작용.
-  (78/78 functional green 은 "주장 real" 확인이지 "요구 대비 독립 검증"이 아님 — 후자가 진짜 잔여.)
+- [x] ✅ **독립 검증 확장 (2026-06-06, 순수 코어 5종 clean)**: §7.2 의 3종(MOD-34/36/37 25/25)에 **sheet 엔진(MOD-26/32
+  25/25)·computePivot(MOD-18 13/13, ★AVG avg-of-avgs 함정 회피)** 추가 — 전부 요구사항-도출, **갭 0**. 감사자 self-correction ×2
+  (NUL 교훈). 상세=WORKFLOW-INTEGRITY-AUDIT §7.6.
+  - [ ] **의도적 미수행(잔여 명시)**: wiring/browser 층 독립 검증 = 새 browser 테스트 = 기존 78/78 스펙의 재구현(중복)이라 가치
+    없음(advisor). 그 층은 author-written 78/78(MOD-38/39 비-vacuity 확인)로 커버. **closing=스위트 재작성, not worth it.**
 
 ## P2 — 프로세스 게이트 복원 (재발 방지) — **문서-only, machinery 미구축**(advisor 판단)
 

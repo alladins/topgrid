@@ -160,4 +160,18 @@ weight-class: **Full**=4페이즈 전부+rubric+ADR / **Lite**=간이 spec·rubr
   =CI `--update-snapshots` 로 생성·커밋 전까지 정직 skip, 동작 검증은 functional 스펙 담당). ② `apps/docs/playwright.config.ts`
   신설(`@playwright/test`·root testDir 동시 해소) → `pnpm -F docs visual:test` = **78 pass / 291 skip / 0 fail** 정상 작동.
 - **미충족(정직)**: 스크린샷 회귀 자체는 여전히 미가동(baseline 0, CI 작업=REMAINING-WORK). "독립 검증"(요구→재작성)도 wiring 층
-  미완(D 의 2번째 bullet). 즉 (D)는 **"주장 green 확인 + 인프라 복구"까지** 달성, "독립 검증"은 잔여.
+  미완(D 의 2번째 bullet). 즉 (D)는 **"주장 green 확인 + 인프라 복구"까지** 달성, "독립 검증"은 §7.6 으로 일부 확장.
+
+### 7.6 독립 검증 확장 — 순수 코어 5종 (2026-06-06)
+> §7.2 의 3종(MOD-34/36/37)에 더해 advisor 지정 2종(가장 복잡·객관적 정답)을 요구사항-도출 adversarial 로 추가 검증. 구현 역산 아님.
+- **sheet 엔진(MOD-26/32 `evaluate`)** = **25/25 통과**(esbuild 격리 번들, parseFormula+evaluate 직접 경로): 연산자 우선순위/결합
+  (좌결합·unary>mul·비교 최저 precedence `1+1=2`)·div0 + **에러전파**(arithmetic·SUM·IF)·**IF lazy**(미취 분기 미평가·취한분기/cond
+  에러전파)·type-aware 비교(`1≠"1"`·lexical)·빈셀→0·range-스칼라 #ERROR!. **갭 0**.
+- **`computePivot`(MOD-18)** = **13/13 통과**(dist=shipped import, 2-행차원 fixture): SUM/COUNT/MIN/MAX subtotal·grandTotal +
+  **★AVG subtotal = 전체 그룹 행 평균(116.67)** — **avg-of-avgs(100) 함정 회피** 확인. **갭 0**.
+- **★감사자 자기교정 ×2(NUL 교훈 지속)**: sheet 테스트가 처음 7건 "에러 미전파"로 **오판**(`got=undefined`) → 원인=CellError shape
+  가 `{error}` 인데 테스트가 `.code` 를 읽음(+getValue 가 에러를 undefined 로 반환하는 별도 경로). `.error` 로 수정→25/25. **읽기로 의심된
+  것을 실행/소스로 확인하기 전엔 갭으로 적지 않는다**(§7.3 와 동일 governing).
+- **종합**: 순수 코어 **5종 독립 검증 전부 clean**(chart·identity·sorting·sheet·pivot). 우려한 "구현≠목표 로직"이 강한 층에서 미발생.
+- **잔여(정직, 의도적 미수행)**: wiring/browser 층(차트 실렌더·flash 배선·MOD-38/39)의 독립 검증 = 새 browser 테스트 작성=기존 78/78
+  스펙의 **재구현(중복)**일 뿐 → 가치 없음(advisor). 그 층은 author-written 78/78(MOD-38/39 비-vacuity 확인)로 커버. **여기서 종료.**
