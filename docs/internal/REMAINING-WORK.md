@@ -10,8 +10,10 @@
 
 - [x] ✅ **prepared batch 발행 완료**: 15패키지 npmjs publish 성공(grid-core@0.4.0·grid@0.5.0 facade·features@0.7.0·
   chart/sheet/pivot/panel/edit-plus/serverside/filter 등). P1-D verify(78/78 chromium) 통과 후 발행.
-- [ ] **시정 브랜치 main 병합**: `remediation/workflow-integrity-2026-06-06`(발행은 브랜치 무관 성공했으나 커밋이 main
-  미반영). `git checkout main && git merge remediation/workflow-integrity-2026-06-06`. 문서/테스트만.
+- [x] ✅ **시정 브랜치 main 병합 완료(2026-06-06)**: fast-forward `036d7bb..c644e47`(20파일). main 에 감사·specs·§6·검증·빌드fix 반영.
+- [ ] ⚠ **origin/main push**: 병합 후 `git status` = "**ahead of origin/main by 85 commits**". 이번 작업 포함 **로컬 main 85커밋이
+  원격 미반영**(GitHub `alladins/topgrid` [[docs-site-hosting]] 와 별개 코드 원격). `git push origin main` 여부=사용자 결정
+  (백업·협업·CI 트리거 영향). 발행된 npm 패키지와는 무관(이미 publish 됨).
 - [ ] **발행 전 점검 — TOMIS provenance scrub 확인**([[topgrid-tomis-provenance-leak]]): 발행물·소스에 TOMIS 내부 경로
   노출 여부. *최근 감사: 전 패키지 dist 금지어(TOMIS/@tomis)=0·@topgrid 단방향 clean*(§5.3) → **확인만**, blocker 가능성 낮음.
 - [ ] ⚠ **빌드-health(2026-06-06 P1-D 중 발견)**: `pnpm -r build`(기본 병렬)가 **비결정적 실패** — `grid-pro-edit-plus`
