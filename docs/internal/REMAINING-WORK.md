@@ -56,6 +56,9 @@
   이전 재감사 199/60/68). 손-추정 0.
 - [x] ✅ **dedup tier-prose 재분해 완료(2026-06-06)**: 카테고리 상세표 AG Grid 컬럼 프로그래매틱 tally → **Community 15 +
   Enterprise 27 + 기타 5 = ❌47**(reconcile). 「잔여 ❌ 우선순위」 prose 정정(닫힌 기능 제외) + executive 갭영역·master-list 노트 동기화.
+- [x] ✅ **master-list(149행) 행별 status 재flip 검증(2026-06-06)**: topgrid marker 를 카테고리 상세표와 프로그래매틱 대조
+  → **149/149 일치, flip 대상 0**(모듈 작업 중 이미 동기화됨). 앞선 "행별 stale" 노트가 오판이었음(검증 전 추정) → 정정. 멤버십만
+  최초감사 149건, status 는 최신.
 - [ ] **MOD-18~21 state.json `spec` 필드 채움**: cosmetic(파일 존재, 필드만 공백) — 의도적 skip(저가치).
 - [ ] **§5.2 minor 정정 — 보류(2026-06-06 재확인)**: 동작 영향 0 cosmetic. ★**감사의 line-ref 자체가 stale**(예 G1 "6 cell
   adapters" 주석 = grep 0=이미 해소/문구상이; registerRenderer 호출 8→**11**=감사 후 렌더러 추가). 정확히 쫓으려면 **항목별 재감사**
