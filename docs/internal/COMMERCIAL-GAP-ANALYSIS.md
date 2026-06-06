@@ -6,18 +6,18 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사(2026-06) | 재감사 후 |
-|---|---|---|
-| ✅ 구현(full) | 178 (54%) | **199 (60%)** |
-| 🟡 부분(partial) | 60 (18%) | 60 (18%) |
-| ❌ 미구현(missing) | 89 (27%) | **68 (21%)** |
-| ➖ N/A | 3 (1%) | 3 (1%) |
-| **합계** | **330** | **330** |
+| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-39, 2026-06-06)** |
+|---|---|---|---|
+| ✅ 구현(full) | 178 (54%) | 199 (60%) | **218 (66%)** |
+| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **62 (19%)** |
+| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **47 (14%)** |
+| ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) |
+| **합계** | **330** | **330** | **330** |
 
-> ⚠ **as-of 마커 (2026-06-06)**: 위 "재감사 후" 집계는 **MOD-28~33 까지만** 반영한다. 이후 닫힘(MOD-34 차트·35 selection·
-> 36 identity·37 sorting·38 column-menu·39 row-pinning)과 roving 🟡 flip 은 **이 합계에 아직 재집계되지 않았다**(즉 실제
-> 미구현은 68 보다 적다). 정확한 행별 상태는 본 문서 카테고리 표·MASTER §3 이 **ground truth**이며, 330-기능 합계의 정식
-> 재집계는 프로그래매틱 재계산 후 갱신할 후속 작업(REMAINING-WORK P3). 손-추정으로 숫자를 바꾸지 않는다(공개 `comparison.md` 피드).
+> ✅ **재집계 완료 (2026-06-06)**: "검증 재집계" 열은 카테고리 상세표 행(=ground truth, MOD-34~39 닫힘·roving 🟡 반영)에서
+> **프로그래매틱 재계산**했고 **19/19 카테고리 reconcile**(파싱 카운트 == 선언 기능 수)+**합 330** 검산을 통과했다(손-추정 아님).
+> 「재감사(MOD-33)」 열은 MOD-28~33 시점 스냅샷으로 이력 보존. 행별 상태는 카테고리 상세표·MASTER §3 이 SSoT.
+> **잔여**: §44 「잔여 ❌ 우선순위(dedup)」의 tier 분해(Community/Enterprise) prose 는 옛 68 기준 — ❌=47 로 superseded(후속 tier 재분해).
 
 ### 재감사 델타 — MOD-28~33 닫힌 갭 (커밋 근거)
 
@@ -66,27 +66,32 @@
 
 ### 카테고리별 요약
 
+> **2026-06-06 검증 재집계**(MOD-39 까지): 아래 ✅/🟡/❌ 는 카테고리 상세표 행(=ground truth, MOD-34~39 ✅·roving 🟡 반영)
+> 에서 **프로그래매틱 재계산 + 카테고리별 reconcile**(파싱 카운트 == 선언 기능 수, 19/19 통과, 합=330)했다. 손-추정 아님.
+> (참고 최초감사 baseline 178/60/89 는 위 「종합」표 참조.)
+
 | 카테고리 | 기능 | ✅ | 🟡 | ❌ |
 |---|---|---|---|---|
-| Column features | 14 | 7 | 5 | 2 |
-| Sorting | 18 | 12 | 2 | 4 |
-| Filtering | 13 | 8 | 2 | 3 |
+| Column features | 14 | 8 | 5 | 1 |
+| Sorting | 18 | 15 | 2 | 1 |
+| Filtering | 13 | 12 | 0 | 1 |
 | Row grouping & aggregation | 19 | 11 | 5 | 3 |
-| Pivoting | 23 | 11 | 2 | 10 |
-| Selection | 17 | 11 | 2 | 4 |
+| Pivoting | 23 | 17 | 1 | 5 |
+| Selection | 17 | 13 | 2 | 2 |
 | Editing | 18 | 12 | 4 | 2 |
-| Cell rendering & styling | 18 | 13 | 3 | 2 |
-| Row models / data | 18 | 11 | 3 | 4 |
-| Pagination | 17 | 8 | 5 | 4 |
-| Virtualization & performance | 20 | 11 | 4 | 4 |
+| Cell rendering & styling | 18 | 15 | 3 | 0 |
+| Row models / data | 18 | 12 | 3 | 3 |
+| Pagination | 17 | 9 | 5 | 3 |
+| Virtualization & performance | 20 | 12 | 4 | 3 |
 | Master/Detail & Tree Data | 16 | 8 | 5 | 3 |
-| Pinned/floating & full-width rows | 15 | 9 | 2 | 4 |
+| Pinned/floating & full-width rows | 15 | 11 | 2 | 2 |
 | Export, clipboard & print | 15 | 13 | 1 | 1 |
-| Integrated charts & sparklines | 17 | 7 | 2 | 6 |
-| Accessibility & keyboard | 18 | 6 | 4 | 8 |
-| State, theming & i18n | 17 | 7 | 1 | 9 |
-| Spreadsheet (Wijmo FlexSheet focus) | 23 | 11 | 3 | 9 |
-| Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 2 | 5 | 7 |
+| Integrated charts & sparklines | 17 | 10 | 3 | 2 |
+| Accessibility & keyboard | 18 | 13 | 5 | 0 |
+| State, theming & i18n | 17 | 10 | 4 | 3 |
+| Spreadsheet (Wijmo FlexSheet focus) | 23 | 12 | 4 | 7 |
+| Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 5 | 4 | 5 |
+| **합계** | **330** | **218** | **62** | **47** |
 
 ## 카테고리별 상세
 

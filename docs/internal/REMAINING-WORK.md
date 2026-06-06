@@ -50,8 +50,9 @@
   renderers·sizing)의 `devDependencies` 에 누락 @topgrid peer(`grid-core`/`grid-pro-tracking`/`grid-pro-range`) `workspace:*`
   추가 → pnpm topo-order 가 빌드 순서 보장. **병렬 `pnpm -r build` ×2 결정적 green 확인**(이전 비결정 실패 해소). 발행물 동작
   무변경(devDep). **미발행**(다음 release 에 포함). 커밋=remediation 브랜치.
-- [~] **COMMERCIAL-GAP 헤드라인 카운트**: ⚠ public `comparison.md` 피드 → **손-추정 금지**. **as-of 마커 추가 완료**(MOD-34~39+
-  roving 미재집계 명시, §3=ground truth). **정식 재집계=프로그래매틱**(330 행 재계산+검산) 후속.
+- [x] ✅ **COMMERCIAL-GAP 헤드라인 카운트 재집계 완료(2026-06-06)**: 프로그래매틱 재계산 — **19/19 카테고리 reconcile**(파싱
+  카운트==선언 기능 수)+**합 330** 검산 통과. 종합표(검증 열 추가)·카테고리 요약표 동기화 = **✅218/🟡62/❌47/➖3**(MOD-39 기준,
+  이전 재감사 199/60/68). 손-추정 0. **잔여**: §44 dedup tier-분해(Community/Enterprise) prose 가 옛 68 기준 → ❌=47 로 tier 재분해(후속).
 - [ ] **MOD-18~21 state.json `spec` 필드 채움**: cosmetic(파일 존재, 필드만 공백) — 의도적 skip(저가치).
 - [ ] **§5.2 minor 정정 권장 항목**: 주석/README/JSDoc stale(G1·G2·G-readme14·P25-1 등) — 동작 영향 0 cosmetic. **문서 백로그로
   유지**(advisor: busywork sink, 별도 작업화 금지).
