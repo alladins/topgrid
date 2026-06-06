@@ -1226,6 +1226,37 @@
       "module_summary": "controlled-data→순수 helper(Grid 무수정, moveRow 동형)+scheduler 주입(PAT-005) async 결정적 검증. node 16/0(전 스위트 63). 분할 잔여 7=후속.",
       "version_note": "grid-core 0.4→차기 batch(미발행).",
       "split_remainder": "postSortRows·scroll-debounce(Grid/sort 수술)·auto-page-size·row-animation·drag-between-grids(browser)·virtualizationThreshold·pageNumberFormat(component) = Community 9 중 7, 후속 모듈."
+    },
+    "MOD-GRID-44": {
+      "package": "grid-pro-pivot (Pro)",
+      "tier": "Pro",
+      "weight": "Full(2-Goal: customizePivotTotals + filterPivotRows)",
+      "priority": "vN-5(Pivoting 5 중 node-pure 2 분할)",
+      "phase": "done (2-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-44.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "순수 model.rows 변환(MOD-31 동형, computePivot/grid-core 무수정). node ceiling. 신규 파일 2.",
+      "g1": {
+        "surface": "customizePivotTotals(rows,{subtotals?,grandTotal?,grandTotalPosition?}) — row-total suppress/position.",
+        "verified_node": "suppress subtotals/grandTotal·position top·combined·echo·immutability. 8/0."
+      },
+      "g2": {
+        "surface": "filterPivotRows(rows,predicate) — data 행만, subtotal/grandTotal=true-group 유지(totals-over-all).",
+        "verified_node": "★subtotal 값 불변(자식 필터돼도, avg-of-avgs 회피)·합성행 보존·all-false. 7/0."
+      },
+      "done_gate": {
+        "lesson": "신규 lesson 없음(MOD-31 패턴 적용·avg-of-avgs 기존 규율)",
+        "matrix_row": "§3 mod-grid-44 채움 + §6.1/§6.2 구현됨",
+        "index_updated": "COMMERCIAL-GAP Pivoting ❌5→3(total cust ✅·result filter 🟡) reconcile 19/19(223/65/39·Pivoting 18/2/3·Enterprise 27→25)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★total customization=✅(순수 config)·result filter=🟡(프리미티브 ship·column-filter UI 부재=browser). advisor.",
+      "module_summary": "pivot 5 중 node-pure 2(MOD-31 동형 순수 변환). result filter subtotal coherence=(a) totals-over-all+문서화(avg-of-avgs 회피). total cust=row-total 만(column 토글 후속). node 15(suite 50). 분할 잔여 3=collapsible cols/pivot panel/server-side(browser).",
+      "version_note": "grid-pro-pivot 0.3→차기 batch(미발행).",
+      "split_remainder": "collapsible column groups(computePivot 컬럼집계+render+chromium)·pivot panel(DnD)·server-side pivot(grid-pro-serverside)·column grand-total 토글(buildPivotColumns) = browser/후속."
     }
   },
   "release_queue": {

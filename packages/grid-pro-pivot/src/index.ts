@@ -20,6 +20,11 @@ export type { PivotSortDirection, PivotSortState } from './sortPivotRows.js';
 export { collapsePivotRows } from './collapsePivotRows.js';
 // MOD-GRID-31 G-3: pivot 축 전치(rows↔columns swap) 순수 변환.
 export { transposePivotConfig } from './transposePivotConfig.js';
+// MOD-GRID-44 G-1: total customization(suppress subtotals/grandTotal·position) 순수 변환.
+export { customizePivotTotals } from './customizePivotTotals.js';
+export type { PivotTotalsOpts } from './customizePivotTotals.js';
+// MOD-GRID-44 G-2: pivot 결과 필터(data 행만, subtotal/grandTotal=true-group 유지) 순수 변환.
+export { filterPivotRows } from './filterPivotRows.js';
 export {
   applyReducer,
   isBuiltInAggregationKey,

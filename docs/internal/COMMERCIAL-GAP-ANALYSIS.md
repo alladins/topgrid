@@ -6,11 +6,11 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-43, 2026-06-07)** |
+| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-44, 2026-06-07)** |
 |---|---|---|---|
-| ✅ 구현(full) | 178 (54%) | 199 (60%) | **222 (67%)** |
-| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **64 (19%)** |
-| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **41 (12%)** |
+| ✅ 구현(full) | 178 (54%) | 199 (60%) | **223 (68%)** |
+| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **65 (20%)** |
+| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **39 (12%)** |
 | ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) |
 | **합계** | **330** | **330** | **330** |
 
@@ -24,6 +24,8 @@
 > (교차시트 ref=✅ 완결이나 탭 UI 부재=번들 partial, copy/fill 동형, 탭 UI=MOD-49) → **❌43 / ✅220 / 🟡64**(합 330 불변, 기타 3→1).
 > ★ **MOD-43 델타(2026-06-07, vN-4)**: Community 9 중 첫 분할 = `applyTransaction` ❌→✅ · `async transaction batching` ❌→✅
 > (순수 helper + scheduler 주입 배치, node 16/0; Row models/data 카테고리) → **❌41 / ✅222 / 🟡64**(합 330 불변, Community 15→13).
+> ★ **MOD-44 델타(2026-06-07, vN-5)**: pivot 5 중 node-pure 2 = `total customization` ❌→✅(`customizePivotTotals` suppress/position) ·
+> `filter on pivot result` ❌→🟡(`filterPivotRows` 프리미티브 ship+node, column-filter UI 후속) → **❌39 / ✅223 / 🟡65**(Pivoting 18/2/3, Enterprise 27→25).
 
 ### 재감사 델타 — MOD-28~33 닫힌 갭 (커밋 근거)
 
@@ -52,9 +54,9 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌41, MOD-43 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌39, MOD-44 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 27 + 기타 1 = **41**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 25 + 기타 1 = **39**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44 Enterprise 27→25).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌43(MOD-41 반영) 기준으로 정정.
 
 - **Community 13 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
@@ -62,8 +64,8 @@
   virtualization-threshold·drag-between-grids (★MOD-43: applyTransaction·async transaction batching ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 27 (deep — 다수 vN 보류)**: advanced filter 쿼리빌더 · grand-total footer · group-header inline agg · sticky group
-  headers · **pivot 5**(panel/server-side/result-filter/collapsible cols/total customization) · select-all-pages · group selection ·
+- **Enterprise 25 (deep — 다수 vN 보류)**: advanced filter 쿼리빌더 · grand-total footer · group-header inline agg · sticky group
+  headers · **pivot 3**(panel/server-side/collapsible cols; ★MOD-44: total customization ❌→✅·result filter ❌→🟡) · select-all-pages · group selection ·
   viewport row model · tree getDataPath/auto group col · master-detail+virtualization · auto-agg floating rows · Excel cell styles ·
   **차트 클러스터 잔여 2**(panel/dock·cross-filter) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
   panel drag · .xlsx sheet import.
@@ -78,7 +80,7 @@
 
 **강한 영역**(구현 비율 상위): Export, clipboard & print(13/15) · Cell rendering & styling(13/18) · Sorting(12/18) · Editing(12/18) · Selection(11/17).
 
-**주요 갭 영역**(미구현 다수, 2026-06-07 검증 ❌ 기준): Spreadsheet (Wijmo FlexSheet focus)(❌3, MOD-40/41 −4) · Pivoting(❌5) · Misc UX(❌5) · Master-Detail·State theming·Virtualization·Pagination(각 ❌3) · Row models / data(❌1, MOD-43 −2). (이전 최초감사 기준 Pivoting 10·A11y 8 등은 MOD-28~39 로 닫힘.)
+**주요 갭 영역**(미구현 다수, 2026-06-07 검증 ❌ 기준): Spreadsheet (Wijmo FlexSheet focus)(❌3, MOD-40/41 −4) · Pivoting(❌3, MOD-44 −2) · Misc UX(❌5) · Master-Detail·State theming·Virtualization·Pagination(각 ❌3) · Row models / data(❌1, MOD-43 −2). (이전 최초감사 기준 Pivoting 10·A11y 8 등은 MOD-28~39 로 닫힘.)
 
 > 표시 규약: ✅=코드 근거로 확인된 구현 · 🟡=부분(headless passthrough만/일부 한계/소비자 배선 필요) · ❌=미구현 · ➖=headless 그리드에 비해당. 상태는 **adversarial 검증**(근거 코드 재확인, over-claim 차단)을 거쳤다.
 
@@ -94,7 +96,7 @@
 | Sorting | 18 | 15 | 2 | 1 |
 | Filtering | 13 | 12 | 0 | 1 |
 | Row grouping & aggregation | 19 | 11 | 5 | 3 |
-| Pivoting | 23 | 17 | 1 | 5 |
+| Pivoting | 23 | 18 | 2 | 3 |
 | Selection | 17 | 13 | 2 | 2 |
 | Editing | 18 | 12 | 4 | 2 |
 | Cell rendering & styling | 18 | 15 | 3 | 0 |
@@ -109,7 +111,7 @@
 | State, theming & i18n | 17 | 10 | 4 | 3 |
 | Spreadsheet (Wijmo FlexSheet focus) | 23 | 14 | 6 | 3 |
 | Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 5 | 4 | 5 |
-| **합계** | **330** | **222** | **64** | **41** |
+| **합계** | **330** | **223** | **65** | **39** |
 
 ## 카테고리별 상세
 
@@ -218,9 +220,9 @@
 | Expandable / collapsible pivot row groups (drill expand-collapse) | Enterprise | ○ | ✅ 구현(MOD-31 G-2) | VERIFIED MISSING: grep for expand/collapse/enableExpanding = no matches. Pivot output is a flat PivotRow[] (data + subtotal + grandTotal, types.ts 86-95) with no expand/collapse state. PivotGrid does not pass enableExpanding to <Grid> (PivotGrid.tsx 113-118); subtotals are always shown inline, not collapsible. |
 | Collapsible / expandable pivot column groups | Enterprise | — | ❌ 미구현 | VERIFIED MISSING: nested column groups built by mapColumnNode are static; no collapse-to-total interaction on column headers (grep collapse/expand = no matches). |
 | Sort on pivot result (sort by aggregated value column) | Enterprise | ○ | ✅ 구현(MOD-31 G-1) | VERIFIED MISSING: PivotGrid.tsx renders <Grid> (lines 113-118) passing only data/columns/rowClassName/enableVirtualization — no enableSort; grep enableSort = no matches. Value columns use accessorFn (buildPivotColumns.tsx 60) but no sorting is wired, and subtotal/grandTotal synthetic rows would break naive sorting. No pivot-aware sort. |
-| Filter on pivot result / pivot-result column filtering | Enterprise | ○ | ❌ 미구현 | VERIFIED MISSING: PivotGrid.tsx <Grid> render (113-118) has no enableFilter and no filter UI; grep enableFilter = no matches. Source filtering must be done by the consumer before passing data. |
+| Filter on pivot result / pivot-result column filtering | Enterprise | ○ | 🟡 부분(MOD-44 G-2) | `grid-pro-pivot filterPivotRows(rows, predicate) — 순수 결과 필터(data 행만, subtotal/grandTotal=true-group 유지=totals-over-all)` — 결과-필터 프리미티브 ship + node 검증. **AG 의 pivot-result column-filter UI 부재**(소비자가 predicate 적용) → 번들 partial=🟡. filter UI=browser 클러스터. |
 | Server-side / lazy pivoting (pivot over server-grouped data) | Enterprise | — | ❌ 미구현 | VERIFIED MISSING: computePivot (computePivot.ts 187-275) is fully client-side over the in-memory data array; no server-side pivot result mode. AG Grid SSRM supports pivoting; topgrid has no equivalent. |
-| Total aggregation customization (suppress/position totals) | Enterprise | ○ | ❌ 미구현 | VERIFIED MISSING: grand totals and subtotals are always emitted in fixed order/position (computePivot.ts emit + final push 248-267); no option to suppress totals, choose position (top/bottom), or disable the column grand total. PivotGridProps exposes no such options. AG Grid has pivotRowTotals / suppressExpandablePivotGroups etc. |
+| Total aggregation customization (suppress/position totals) | Enterprise | ○ | ✅ 구현(MOD-44 G-1) | `grid-pro-pivot customizePivotTotals(rows, {subtotals?, grandTotal?, grandTotalPosition?}) — 순수 row-total 변환: subtotal/grandTotal 행 억제 + grandTotal top/bottom 위치` — suppress/position totals node-verified. 순수 config 동작(UI 미명시, named-ranges 동격). ★column grand-total(`GRAND_TOTAL_COLUMN_KEY` 컬럼) 토글 = buildPivotColumns 후속(rows 변환 밖). |
 | Pivot result charting (pivot chart / integrated chart) | Enterprise | ○ | ✅ 구현(MOD-34 G-3 seriesFromPivot 순수 어댑터: 실제 PivotModel data행→matrix(subtotal/grandTotal 드롭), node 7/7) | VERIFIED MISSING: grid-pro-pivot imports no chart library (index.ts line 5 'imports NO virtualization or chart library', C-001) and has no pivot-chart bridge. grid-pro-chart exists separately but is not wired to the pivot model. No topgrid analog to AG Grid integrated pivot charts / Wijmo OLAP charts. |
 | Multiple aggregation of same field / value placement layout | Enterprise | ○ | 🟡 부분 | `grid-pro-pivot types.ts values: PivotValueDef[] (same field repeatable with different aggregationFn/label)` — VERIFIED: values is PivotValueDef[] (types.ts 51) with nothing preventing the same field appearing twice with different reducers/labels, so multiple aggregations of one field are representable, and label disambiguates leaf columns (buildPivotColumns.tsx 90). But there is no 'values as columns vs rows' layout control or value-column placement configuration like AG Grid's pivot value placement — values always render as leaf columns under each column combo. |
 | Empty / null cell handling in pivot | Enterprise | ○ | ✅ 구현 | `grid-pro-pivot reducers.ts null on empty set + buildPivotColumns.tsx formatCellValue em-dash for null` — VERIFIED: sparse combos with no data yield null cells (reducers return null on empty finite set, reducers.ts 41/46/52/57/62) rendered as em-dash (formatCellValue '—', buildPivotColumns.tsx 30); non-finite values filtered (finite()). Safe, never throws. |
@@ -544,7 +546,7 @@
 
 > ✅ **행별 status 동기화 검증(2026-06-06)**: 본 표 149행의 topgrid marker 를 카테고리 상세표(ground truth)와 프로그래매틱
 > 대조 → **149/149 일치, 불일치 0**(모듈 작업 중 함께 flip 유지돼 이미 current). 즉 멤버십은 최초감사 149건이나 **각 행 status 는
-> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 222/64/41」(MOD-43 반영)·「카테고리별 요약」 참조.
+> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 223/65/39」(MOD-44 반영)·「카테고리별 요약」 참조.
 
 | 기능 | 카테고리 | AG Grid | topgrid | 비고 |
 |---|---|---|---|---|
@@ -603,9 +605,9 @@
 | Expandable / collapsible pivot row groups (drill expand-collapse) | Pivoting | Enterprise | ✅ 구현(MOD-31 G-2) | VERIFIED MISSING: grep for expand/collapse/enableExpanding = no matches. Pivot output is a flat PivotRow[] (data + subtotal + grandTotal, types.ts 86-95) with no expand/collapse state. PivotGrid does not pass enableExpanding to <Grid> (PivotGrid.tsx 113-118); subtotals are always shown inline, not collapsible. |
 | Collapsible / expandable pivot column groups | Pivoting | Enterprise | ❌ 미구현 | VERIFIED MISSING: nested column groups built by mapColumnNode are static; no collapse-to-total interaction on column headers (grep collapse/expand = no matches). |
 | Sort on pivot result (sort by aggregated value column) | Pivoting | Enterprise | ✅ 구현(MOD-31 G-1) | VERIFIED MISSING: PivotGrid.tsx renders <Grid> (lines 113-118) passing only data/columns/rowClassName/enableVirtualization — no enableSort; grep enableSort = no matches. Value columns use accessorFn (buildPivotColumns.tsx 60) but no sorting is wired, and subtotal/grandTotal synthetic rows would break naive sorting. No pivot-aware sort. |
-| Filter on pivot result / pivot-result column filtering | Pivoting | Enterprise | ❌ 미구현 | VERIFIED MISSING: PivotGrid.tsx <Grid> render (113-118) has no enableFilter and no filter UI; grep enableFilter = no matches. Source filtering must be done by the consumer before passing data. |
+| Filter on pivot result / pivot-result column filtering | Pivoting | Enterprise | 🟡 부분(MOD-44 G-2) | `grid-pro-pivot filterPivotRows` 순수 결과 필터(data 행만, subtotal=true-group 유지). AG column-filter UI 부재=🟡(filter UI=browser). |
 | Server-side / lazy pivoting (pivot over server-grouped data) | Pivoting | Enterprise | ❌ 미구현 | VERIFIED MISSING: computePivot (computePivot.ts 187-275) is fully client-side over the in-memory data array; no server-side pivot result mode. AG Grid SSRM supports pivoting; topgrid has no equivalent. |
-| Total aggregation customization (suppress/position totals) | Pivoting | Enterprise | ❌ 미구현 | VERIFIED MISSING: grand totals and subtotals are always emitted in fixed order/position (computePivot.ts emit + final push 248-267); no option to suppress totals, choose position (top/bottom), or disable the column grand total. PivotGridProps exposes no such options. AG Grid has pivotRowTotals / suppressExpandablePivotGroups etc. |
+| Total aggregation customization (suppress/position totals) | Pivoting | Enterprise | ✅ 구현(MOD-44 G-1) | `grid-pro-pivot customizePivotTotals` 순수 row-total 변환(subtotal/grandTotal 억제 + grandTotal top/bottom). node 검증. column grand-total 토글=buildPivotColumns 후속. |
 | Pivot result charting (pivot chart / integrated chart) | Pivoting | Enterprise | ✅ 구현(MOD-34 G-3 seriesFromPivot 순수 어댑터: 실제 PivotModel data행→matrix(subtotal/grandTotal 드롭), node 7/7) | VERIFIED MISSING: grid-pro-pivot imports no chart library (index.ts line 5 'imports NO virtualization or chart library', C-001) and has no pivot-chart bridge. grid-pro-chart exists separately but is not wired to the pivot model. No topgrid analog to AG Grid integrated pivot charts / Wijmo OLAP charts. |
 | Select-all across ALL pages (action, not just current page) | Selection | Enterprise | ❌ 미구현 | VERIFIED missing. topgrid header select-all toggles only the current page's rows. No 'select all N rows across pages' control. AG offers select-all-filtered semantics; Wijmo ListBox select-all spans all rows. |
 | Group / hierarchy selection (group selects children, leaf rolls up to group) | Selection | Enterprise | ❌ 미구현 | VERIFIED missing. AG groupSelectsChildren / groupSelectsFiltered is ENTERPRISE (rides on row grouping). Wijmo group/tree selection via collectionView. topgrid has tree/expanding (getSubRows, buildTableOptions L248-250) but no group-level selection cascade. |
