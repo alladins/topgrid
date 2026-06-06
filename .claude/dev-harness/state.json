@@ -1309,6 +1309,32 @@
       "module_summary": "cross-column 중첩 식 모델+평가기+순수 매처. type 명시(cross-column 정확성)·MOD-30 의미 미러(import 금지)·blank inert·unknown op→false. node 25/0. 신규 lesson 없음.",
       "version_note": "grid-pro-filter 0.x→차기 batch(미발행).",
       "split_remainder": "쿼리빌더 UI(조건 추가/삭제/중첩 그룹·드롭다운·식↔UI 동기화) = browser/후속."
+    },
+    "MOD-GRID-47": {
+      "package": "grid-pro-filter (Pro)",
+      "tier": "Pro",
+      "weight": "Full(1-Goal: cross-filter 매핑 selectionsToFilter)",
+      "priority": "vN-8(Integrated charts ❌ 2 중 cross-filter node-pure 1)",
+      "phase": "done (1-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-47.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "순수 선택→필터 매핑(MOD-46 식 재사용, grid-pro-filter). 차트 클릭 wiring=browser. chart panel=❌ 유지(순수 UI).",
+      "g1": {
+        "surface": "selectionsToFilter(selections)→AdvancedFilterExpr (FilterSelection{field,type,value}). 같은필드 OR·다른필드 AND·빈→무제약.",
+        "verified_node": "단일·★same-field OR·★cross-field AND·★typed numeric·combined·빈→all-pass. 15/0(suite 53)."
+      },
+      "done_gate": {
+        "lesson": "신규 lesson 없음(MOD-46 재사용·type-메타·OR/AND 결합 정의)",
+        "matrix_row": "§3 mod-grid-47 채움 + §6.1/§6.2 구현됨",
+        "index_updated": "COMMERCIAL-GAP cross-filter ❌→🟡(1행만, chart panel ❌ 유지) reconcile 19/19(223/69/35·Integrated charts 10/4/1·Enterprise 22→21)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★cross-filter=🟡(모델 ship·클릭 wiring browser)·chart panel/composition=❌ 유지(순수 UI, 2번째 flip 금지). advisor.",
+      "module_summary": "차트 선택→필터 매핑(MOD-46 식 composes). multi-select=같은필드 OR·다른필드 AND(매핑 정의)·type=컬럼메타·dep 방향=grid-pro-filter. node 15/0. 신규 lesson 없음.",
+      "version_note": "grid-pro-filter 0.x→차기 batch(미발행).",
+      "split_remainder": "차트 클릭→grid setFilter wiring + linked highlight · chart panel/composition(dock·settings, 순수 UI) = browser/후속."
     }
   },
   "release_queue": {

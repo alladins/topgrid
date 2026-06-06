@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/makeMultiFilterFn.test.ts && node --experimental-strip-types src/advancedFilter.test.ts",
+    "test": "node --experimental-strip-types src/makeMultiFilterFn.test.ts && node --experimental-strip-types src/advancedFilter.test.ts && node --experimental-strip-types src/crossFilter.test.ts",
     "size": "size-limit"
   },
   "dependencies": {

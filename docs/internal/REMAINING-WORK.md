@@ -50,7 +50,12 @@
   blank inert(OR 붕괴 차단)·unknown op→false. closure: advanced filter=🟡(쿼리빌더 UI=browser). **COMMERCIAL-GAP: ❌37→36·✅223·🟡67→68**
   (Filtering 12/1/0·Enterprise 23→22). 신규 lesson 없음. ★select-all-pages/group-selection ❌ 행 존재 확인(Enterprise 분모 정확).
 - [ ] **MOD-46 분할 잔여**: 쿼리빌더 UI(조건 추가/삭제/중첩 그룹·드롭다운·식↔UI 동기화) → browser 클러스터.
-- [ ] **다음 = MOD-47**(Chart 잔여 2: panel/dock·cross-filter). grid-pro-chart. browser-heavy → node-pure 추출부(cross-filter 모델 등) 분할 검토.
+- [x] ✅ **MOD-47 — 차트 cross-filter 매핑**(grid-pro-filter Pro, 1-Goal, 2026-06-07): `selectionsToFilter(selections)→AdvancedFilterExpr`
+  (선택→필터, 같은필드 OR·다른필드 AND, type=컬럼메타, MOD-46 식 재사용). **node 15/0**(suite 53)·typecheck 0·build green. §3 `mod-grid-47` 이관.
+  ★dep 방향=helper in grid-pro-filter(차트 결합 회피). closure: cross-filter=🟡(클릭 wiring=browser)·**chart panel/composition=❌ 유지**(순수 UI,
+  1행만 flip). **COMMERCIAL-GAP: ❌36→35·✅223·🟡68→69**(Integrated charts 10/4/1·Enterprise 22→21). 신규 lesson 없음.
+- [ ] **MOD-47 분할 잔여**: 차트 클릭→grid setFilter wiring + linked highlight · chart panel/composition(dock·settings) → browser 클러스터.
+- [ ] **다음 = MOD-48**(Tree/master-detail/viewport row model). grid-core/grid-pro-serverside. browser-heavy → node-pure 추출부 분할 검토.
   - **reuse-gate survey 완료**(Explore, 2026-06-07 — verify-first 규칙 적용):
     - **verify-first(부분 존재, 의미/스코프 확인 필요)**: ① post-sort callback = `onSortingChange`(types.ts:830) 존재하나 *state-only*(AG `postSortRows` 행배열 후처리 아님) ② custom page formatter = `totalCountFormat`(GridPagination.tsx:58) + `localeText.totalCount`(i18n.ts:24) 이미 노출 → 스코프 겹침 확인 ③ debounced-scroll = `useDebouncedCallback` 존재 + `virtualizerOptions.onChange` passthrough(types.ts:929) → 소비자 wrap 가능, "기본 auto-debounce" 면 부재.
     - **genuine 부재(신규)**: ④ applyTransaction(개별 onAdd/Delete/UpdateRow 만, 배치-patch API 없음 — GridHandle 신규 메서드) ⑤ async tx batching(macro 배치 큐 없음) ⑥ auto-page-size(뷰포트 측정 필요=browser) ⑦ row animation(rowClassName 만, lifecycle hook 없음=browser) ⑧ auto-virtualization-threshold(enableVirtualization opt-in, 의도적 미적용 types.ts:901 — `virtualizationThreshold?` 신규) ⑨ drag-between-grids(within-grid moveRow/enableRowReorder 만, cross-grid 컨텍스트 부재=browser).

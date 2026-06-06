@@ -6,11 +6,11 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-46, 2026-06-07)** |
+| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-47, 2026-06-07)** |
 |---|---|---|---|
 | ✅ 구현(full) | 178 (54%) | 199 (60%) | **223 (68%)** |
-| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **68 (21%)** |
-| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **36 (11%)** |
+| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **69 (21%)** |
+| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **35 (11%)** |
 | ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) |
 | **합계** | **330** | **330** | **330** |
 
@@ -28,6 +28,8 @@
 > `filter on pivot result` ❌→🟡(`filterPivotRows` 프리미티브 ship+node, column-filter UI 후속) → **❌39 / ✅223 / 🟡65**(Pivoting 18/2/3, Enterprise 27→25).
 > ★ **MOD-46 델타(2026-06-07, vN-7)**: `advanced filter (cross-column expression/query builder UI)` ❌→🟡 — 식 모델+재귀 평가기+순수
 > 연산자 매처(type-explicit cross-column, node 25/0) ship, **쿼리빌더 UI=browser** → **❌36 / ✅223 / 🟡68**(Filtering 12/1/0, Enterprise 23→22).
+> ★ **MOD-47 델타(2026-06-07, vN-8)**: chart 잔여 2 중 cross-filter = `selectionsToFilter`(선택→AdvancedFilterExpr, 같은필드 OR·다른필드
+> AND, MOD-46 재사용) ❌→🟡(클릭→setFilter wiring=browser). **chart panel/composition 은 순수 UI=❌ 유지**(1행만 flip) → **❌35 / ✅223 / 🟡69**(Integrated charts 10/4/1, Enterprise 22→21).
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -58,9 +60,9 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌36, MOD-46 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌35, MOD-47 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 22 + 기타 1 = **36**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44/45/46 Enterprise 27→22).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 21 + 기타 1 = **35**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~47 Enterprise 27→21).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌43(MOD-41 반영) 기준으로 정정.
 
 - **Community 13 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
@@ -110,12 +112,12 @@
 | Master/Detail & Tree Data | 16 | 8 | 5 | 3 |
 | Pinned/floating & full-width rows | 15 | 11 | 3 | 1 |
 | Export, clipboard & print | 15 | 13 | 1 | 1 |
-| Integrated charts & sparklines | 17 | 10 | 3 | 2 |
+| Integrated charts & sparklines | 17 | 10 | 4 | 1 |
 | Accessibility & keyboard | 18 | 13 | 5 | 0 |
 | State, theming & i18n | 17 | 10 | 4 | 3 |
 | Spreadsheet (Wijmo FlexSheet focus) | 23 | 14 | 6 | 3 |
 | Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 5 | 4 | 5 |
-| **합계** | **330** | **223** | **68** | **36** |
+| **합계** | **330** | **223** | **69** | **35** |
 
 ## 카테고리별 상세
 
@@ -449,7 +451,7 @@
 | Chart types: column/pie/scatter/bubble/histogram etc. | Enterprise | ○ | ➖ N/A | Chart type is entirely the consumer's renderChart concern; topgrid ships no chart type catalog. |
 | Chart panel/composition (dock, range adjust handles, settings panel) | Enterprise | — | ❌ 미구현 | Verified: RangeChartPanel is a single inline div with relative root for watermark; no docking, range editing, or settings panel in source. |
 | Export/image of integrated chart | Enterprise | ○ | ➖ N/A | No built-in chart means no chart download/getChartImageDataURL; would be the injected library's job. |
-| Cross-filtering charts (chart filters grid / linked selection) | Enterprise | — | ❌ 미구현 | Verified: no chart-grid linkage exists; panel is one-way display of injected series. |
+| Cross-filtering charts (chart filters grid / linked selection) | Enterprise | — | 🟡 부분(MOD-47) | `grid-pro-filter selectionsToFilter(selections) → AdvancedFilterExpr — 선택→필터 매핑(같은필드 OR·다른필드 AND, type=컬럼메타)` — 선택→필터 **모델** ship + node 15/0(MOD-46 식 재사용·★cross-field AND/same-field OR·typed). **차트 클릭→grid setFilter wiring + linked highlight 부재** → 🟡(wiring=browser). |
 | Pro license gate on chart panel (watermark when unlicensed) | — | — | ✅ 구현 | `@topgrid/grid-pro-chart RangeChartPanel useLicenseStatus + <Watermark required/> (RangeChartPanel.tsx:52,68); index checkLicense() (index.ts:11)` — Module-load license check; unlicensed panel composites a watermark overlay when lic.watermarkRequired; confirmed in source and grid-license. |
 
 ### Accessibility & keyboard
@@ -550,7 +552,7 @@
 
 > ✅ **행별 status 동기화 검증(2026-06-06)**: 본 표 149행의 topgrid marker 를 카테고리 상세표(ground truth)와 프로그래매틱
 > 대조 → **149/149 일치, 불일치 0**(모듈 작업 중 함께 flip 유지돼 이미 current). 즉 멤버십은 최초감사 149건이나 **각 행 status 는
-> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 223/68/36」(MOD-46 반영)·「카테고리별 요약」 참조.
+> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 223/69/35」(MOD-47 반영)·「카테고리별 요약」 참조.
 
 | 기능 | 카테고리 | AG Grid | topgrid | 비고 |
 |---|---|---|---|---|
@@ -627,7 +629,7 @@
 | Sparkline markers / min-max / tooltips / axes | Integrated charts & sparklines | Enterprise | ✅ 구현(MOD-34 G-2: 축/툴팁 RangeChart + min-max 마커 Sparkline) | Verified: SparklineCellProps (lines 21-34) exposes no marker, min/max highlight, tooltip, or axis options; bare SVG shape only. |
 | Chart toolbar / interactive chart-type switcher | Integrated charts & sparklines | Enterprise | ✅ 구현(MOD-34 G-3 ChartCard) | Verified: grep for toolbar/chartType/legend/axis in grid-pro-chart returns 0; no UI to change chart type at runtime. |
 | Chart panel/composition (dock, range adjust handles, settings panel) | Integrated charts & sparklines | Enterprise | ❌ 미구현 | Verified: RangeChartPanel is a single inline div with relative root for watermark; no docking, range editing, or settings panel in source. |
-| Cross-filtering charts (chart filters grid / linked selection) | Integrated charts & sparklines | Enterprise | ❌ 미구현 | Verified: no chart-grid linkage exists; panel is one-way display of injected series. |
+| Cross-filtering charts (chart filters grid / linked selection) | Integrated charts & sparklines | Enterprise | 🟡 부분(MOD-47) | `grid-pro-filter selectionsToFilter` 선택→필터 매핑(같은필드 OR·다른필드 AND, type=컬럼메타, MOD-46 식 재사용) ship + node. 차트 클릭→setFilter wiring 부재 → 🟡(browser). |
 | Row-group state save/restore | State, theming & i18n | Enterprise | ❌ 미구현 | GridStateKey union (types.ts L902-910) has no grouping/expanded/pivot key. Row grouping itself is not modeled as persistable state. AG Grid row grouping is Enterprise. |
 | Pivot state save/restore | State, theming & i18n | Enterprise | ❌ 미구현 | grid-pro-pivot builds pivot columns but pivot config is not part of useGridState's 8 persisted keys; no pivot-state serialization. AG Grid pivot is Enterprise. |
 | Excel import/export of the spreadsheet (.xlsx with formulas) | Spreadsheet (Wijmo FlexSheet focus) | Enterprise | ❌ 미구현 | Verified. FlexSheet has native load/save of .xlsx preserving formulas/formats. AG Grid Excel export is Enterprise (values, not a formula sheet). grid-export cannot serialize the sheet engine. |
