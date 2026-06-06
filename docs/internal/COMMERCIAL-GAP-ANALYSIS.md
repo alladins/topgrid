@@ -6,11 +6,11 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-47, 2026-06-07)** |
+| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-48, 2026-06-07)** |
 |---|---|---|---|
 | ✅ 구현(full) | 178 (54%) | 199 (60%) | **223 (68%)** |
-| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **69 (21%)** |
-| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **35 (11%)** |
+| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **70 (21%)** |
+| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **34 (10%)** |
 | ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) |
 | **합계** | **330** | **330** | **330** |
 
@@ -30,6 +30,8 @@
 > 연산자 매처(type-explicit cross-column, node 25/0) ship, **쿼리빌더 UI=browser** → **❌36 / ✅223 / 🟡68**(Filtering 12/1/0, Enterprise 23→22).
 > ★ **MOD-47 델타(2026-06-07, vN-8)**: chart 잔여 2 중 cross-filter = `selectionsToFilter`(선택→AdvancedFilterExpr, 같은필드 OR·다른필드
 > AND, MOD-46 재사용) ❌→🟡(클릭→setFilter wiring=browser). **chart panel/composition 은 순수 UI=❌ 유지**(1행만 flip) → **❌35 / ✅223 / 🟡69**(Integrated charts 10/4/1, Enterprise 22→21).
+> ★ **MOD-48 델타(2026-06-07, vN-9)**: tree `getDataPath` ❌→🟡 — `buildTreeFromPaths`(flat path→계층, synthetic-parent dedup, node
+> 11/0) 데이터-모델 ship, **auto group column 렌더=browser**. auto-group-col·master-detail+virt·viewport ❌ 유지(4행 클러스터 1 flip) → **❌34 / ✅223 / 🟡70**(Master/Detail&Tree 8/6/2, Enterprise 21→20).
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -60,9 +62,9 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌35, MOD-47 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌34, MOD-48 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 21 + 기타 1 = **35**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~47 Enterprise 27→21).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 20 + 기타 1 = **34**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌43(MOD-41 반영) 기준으로 정정.
 
 - **Community 13 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
@@ -72,7 +74,7 @@
   MOD-35~39 로 닫힘=이 목록서 제외.)
 - **Enterprise 21 (deep — 다수 vN 보류)**: group-header inline agg · sticky group
   headers · **pivot 3**(panel/server-side/collapsible cols; ★MOD-44: total customization ❌→✅·result filter ❌→🟡) · select-all-pages · group selection ·
-  viewport row model · tree getDataPath/auto group col · master-detail+virtualization · Excel cell styles ·
+  viewport row model · auto group col(★MOD-48: tree getDataPath ❌→🟡) · master-detail+virtualization · Excel cell styles ·
   **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
   panel drag · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
 - **기타 1**: go-to-page 입력(=MOD-49). (★ MOD-40: `$A$1`=✅·`copy/fill`=🟡. ★ MOD-41: `명명 범위`=✅ 닫힘 · `멀티시트(Sheet2!A1)`=🟡
@@ -109,7 +111,7 @@
 | Row models / data | 18 | 14 | 3 | 1 |
 | Pagination | 17 | 9 | 5 | 3 |
 | Virtualization & performance | 20 | 12 | 4 | 3 |
-| Master/Detail & Tree Data | 16 | 8 | 5 | 3 |
+| Master/Detail & Tree Data | 16 | 8 | 6 | 2 |
 | Pinned/floating & full-width rows | 15 | 11 | 3 | 1 |
 | Export, clipboard & print | 15 | 13 | 1 | 1 |
 | Integrated charts & sparklines | 17 | 10 | 4 | 1 |
@@ -117,7 +119,7 @@
 | State, theming & i18n | 17 | 10 | 4 | 3 |
 | Spreadsheet (Wijmo FlexSheet focus) | 23 | 14 | 6 | 3 |
 | Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 5 | 4 | 5 |
-| **합계** | **330** | **223** | **69** | **35** |
+| **합계** | **330** | **223** | **70** | **34** |
 
 ## 카테고리별 상세
 
@@ -379,7 +381,7 @@
 | Detail row custom content (render slot) | Enterprise | FlexGrid | ✅ 구현 | `grid-pro-master RenderDetailRow = (row: Row<TData>) => ReactNode` — Verified in types.ts: detail body accepts arbitrary ReactNode; DetailRow.tsx renders renderDetailRow(row) in a single full-width <td>. |
 | Detail grids / nested sub-grids (managed) | Enterprise | FlexGrid | 🟡 부분 | `grid-pro-master renderDetailRow can return a <Grid>, but no detailGridOptions API` — Verified: only a single renderDetailRow ReactNode slot exists; no managed detail-grid lifecycle/options API in types.ts or MasterDetailGrid.tsx. |
 | Tree data via parent-child children (getSubRows) | Enterprise | FlexGrid | ✅ 구현 | `grid-core getSubRows + enableExpanding wire TanStack getExpandedRowModel (buildTableOptions.ts)` — Verified: buildTableOptions.ts L230/L248 sets getExpandedRowModel on enableExpanding and forwards getSubRows; depth indent via row.depth (ExpandToggleCell 16px). |
-| Tree data via flat path (getDataPath) | Enterprise | — | ❌ 미구현 | Verified absent: grep for getDataPath/dataPath across packages returned no matches; only TanStack parent-pointer getSubRows is supported. |
+| Tree data via flat path (getDataPath) | Enterprise | — | 🟡 부분(MOD-48) | `grid-core buildTreeFromPaths(data, getDataPath) → TreeNode[] — flat path-rows → 계층(synthetic-parent dedup·explicit-prefix data 부착·NUL-key); 소비자가 getSubRows=(n)=>n.children 로 사용` — 데이터-모델 절반 ship + node 11/0(★dedup spine). **표현 절반(auto group column=설정형 path-label group-col) 부재**(`__expand__`+indent=degenerate) → 🟡(auto-group-col render=browser, getDataPath+auto-group-col=coherent 쌍). |
 | Auto group column | Enterprise | — | ❌ 미구현 | Verified absent: grep for autoGroupColumn/groupingColumnDef returned no matches; __expand__ toggle col + 16px indent is not an auto group column. |
 | Expand/collapse imperative API (expandAll/collapseAll) | Enterprise | FlexGrid | 🟡 부분 | `grid-pro-master MasterDetailGrid GridHandle.expandAll/collapseAll via toggleAllRowsExpanded` — Verified: MasterDetailGrid.tsx implements expandAll/collapseAll; grid-core useGridImperativeHandle.ts has NO expandAll/collapseAll (only addRow/deleteRow/updateRow/scrollTo/getSelection/clearSelection/refresh/startEditing), so the grid-core tree path is initial-expand only. |
 | Controlled/uncontrolled expanded state | Enterprise | FlexGrid | ✅ 구현 | `grid-pro-master masterDetail.expandedRowKeys + onExpandChange (keysToExpandedState bridge)` — Verified: MasterDetailGrid.tsx bridges external string[] (row.id) to/from TanStack ExpandedState via keysToExpandedState/expandedStateToKeys; useEffect syncs controlled keys, else internal useState. |
@@ -552,7 +554,7 @@
 
 > ✅ **행별 status 동기화 검증(2026-06-06)**: 본 표 149행의 topgrid marker 를 카테고리 상세표(ground truth)와 프로그래매틱
 > 대조 → **149/149 일치, 불일치 0**(모듈 작업 중 함께 flip 유지돼 이미 current). 즉 멤버십은 최초감사 149건이나 **각 행 status 는
-> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 223/69/35」(MOD-47 반영)·「카테고리별 요약」 참조.
+> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 223/70/34」(MOD-48 반영)·「카테고리별 요약」 참조.
 
 | 기능 | 카테고리 | AG Grid | topgrid | 비고 |
 |---|---|---|---|---|
@@ -618,7 +620,7 @@
 | Select-all across ALL pages (action, not just current page) | Selection | Enterprise | ❌ 미구현 | VERIFIED missing. topgrid header select-all toggles only the current page's rows. No 'select all N rows across pages' control. AG offers select-all-filtered semantics; Wijmo ListBox select-all spans all rows. |
 | Group / hierarchy selection (group selects children, leaf rolls up to group) | Selection | Enterprise | ❌ 미구현 | VERIFIED missing. AG groupSelectsChildren / groupSelectsFiltered is ENTERPRISE (rides on row grouping). Wijmo group/tree selection via collectionView. topgrid has tree/expanding (getSubRows, buildTableOptions L248-250) but no group-level selection cascade. |
 | Viewport row model (server pushes exact visible viewport, real-time) | Row models / data | Enterprise | ❌ 미구현 | AG's Viewport Row Model (enterprise) for streaming/real-time servers. No equivalent in any @topgrid package; verified MASTER-HIERARCHY §22 mod-grid-22 lists only SSRM block lazy load / infinite scroll / server sort-filter / lazy group, no viewport model. |
-| Tree data via flat path (getDataPath) | Master/Detail & Tree Data | Enterprise | ❌ 미구현 | Verified absent: grep for getDataPath/dataPath across packages returned no matches; only TanStack parent-pointer getSubRows is supported. |
+| Tree data via flat path (getDataPath) | Master/Detail & Tree Data | Enterprise | 🟡 부분(MOD-48) | `grid-core buildTreeFromPaths` flat path→계층(synthetic-parent dedup, NUL-key) ship + node 11/0. 소비자가 getSubRows 로 사용. auto group column 렌더 부재 → 🟡(browser). |
 | Auto group column | Master/Detail & Tree Data | Enterprise | ❌ 미구현 | Verified absent: grep for autoGroupColumn/groupingColumnDef returned no matches; __expand__ toggle col + 16px indent is not an auto group column. |
 | Master-detail + virtualization | Master/Detail & Tree Data | Enterprise | ❌ 미구현 | Verified: MasterDetailGrid.tsx scrollTo is a no-op stub and renders a plain non-virtualized <table>; large detail/tree datasets unsupported in the master-detail component. |
 | Auto-aggregation of pinned/floating rows (grid computes the totals) | Pinned/floating & full-width rows | Enterprise | 🟡 부분(MOD-45) | `grid-pro-agg computeAggregateRow` 자동집계 compute 프리미티브 ship + node(소비자가 floatingBottomRows 전달). grid auto-wiring 부재 → 🟡(browser). |

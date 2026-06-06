@@ -1335,6 +1335,33 @@
       "module_summary": "차트 선택→필터 매핑(MOD-46 식 composes). multi-select=같은필드 OR·다른필드 AND(매핑 정의)·type=컬럼메타·dep 방향=grid-pro-filter. node 15/0. 신규 lesson 없음.",
       "version_note": "grid-pro-filter 0.x→차기 batch(미발행).",
       "split_remainder": "차트 클릭→grid setFilter wiring + linked highlight · chart panel/composition(dock·settings, 순수 UI) = browser/후속."
+    },
+    "MOD-GRID-48": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(1-Goal: buildTreeFromPaths)",
+      "priority": "vN-9(Master/Detail&Tree ❌ 4 중 node-pure 1=getDataPath)",
+      "phase": "done (1-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-48.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "순수 flat-path 트리 빌더(grid-core getSubRows 소비). auto group col 렌더=browser. viewport=node substance 0.",
+      "g1": {
+        "surface": "buildTreeFromPaths(data, getDataPath)→TreeNode[]. prefix 재귀 ensure(NUL-key dedup)·explicit row 데이터 부착·empty 스킵.",
+        "verified_node": "★synthetic-parent dedup·explicit-prefix(order 무관)·다레벨·duplicate(last)·empty 스킵·★NUL-key 충돌안전. 11/0(suite 74)."
+      },
+      "done_gate": {
+        "lesson": "신규 lesson 없음(NUL-key/dedup 기존 규율)",
+        "matrix_row": "§3 mod-grid-48 채움 + §6.1/§6.2 구현됨",
+        "index_updated": "COMMERCIAL-GAP getDataPath ❌→🟡(1행만, auto-group-col/MD-virt/viewport ❌ 유지) reconcile 19/19(223/70/34·Master/Detail&Tree 8/6/2·Enterprise 21→20)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★getDataPath=🟡(데이터-모델 ship·auto group column 렌더=browser). applyTransaction 선례 비적용(트리=계층 표시 핵심). 4행 1 flip. advisor.",
+      "module_summary": "순수 flat-path 트리 빌더(synthetic-parent dedup spine·explicit-prefix 데이터 부착·NUL-key). node 11/0. vN 마지막 node-pure 추출. 신규 lesson 없음.",
+      "version_note": "grid-core 0.4→차기 batch(미발행).",
+      "split_remainder": "auto group column(설정형 group-col 렌더)·master-detail+virtualization(virtualizer wiring)·viewport row model(서버 스트리밍) = browser/server/후속.",
+      "runway_note": "★advisor: 본 모듈 후 autonomous node-pure runway 종료. MOD-49=browser/format-lib(node 박약)·MOD-50+=사용자 제품결정."
     }
   },
   "release_queue": {

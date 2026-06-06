@@ -55,7 +55,13 @@
   ★dep 방향=helper in grid-pro-filter(차트 결합 회피). closure: cross-filter=🟡(클릭 wiring=browser)·**chart panel/composition=❌ 유지**(순수 UI,
   1행만 flip). **COMMERCIAL-GAP: ❌36→35·✅223·🟡68→69**(Integrated charts 10/4/1·Enterprise 22→21). 신규 lesson 없음.
 - [ ] **MOD-47 분할 잔여**: 차트 클릭→grid setFilter wiring + linked highlight · chart panel/composition(dock·settings) → browser 클러스터.
-- [ ] **다음 = MOD-48**(Tree/master-detail/viewport row model). grid-core/grid-pro-serverside. browser-heavy → node-pure 추출부 분할 검토.
+- [x] ✅ **MOD-48 — flat-path 트리 빌더**(grid-core MIT, 1-Goal, 2026-06-07): `buildTreeFromPaths(data, getDataPath)→TreeNode[]`(synthetic-
+  parent dedup·explicit-prefix data 부착·NUL-key, 소비자가 getSubRows 로 사용). **node 11/0**(suite 74)·typecheck 0·build green. §3 `mod-grid-48` 이관.
+  closure: getDataPath=🟡(auto group column 렌더=browser). auto-group-col·master-detail+virt·viewport ❌ 유지(4행 1 flip). **COMMERCIAL-GAP: ❌35→34·
+  ✅223·🟡69→70**(Master/Detail&Tree 8/6/2·Enterprise 21→20). 신규 lesson 없음.
+- [ ] **★vN node-pure runway 종료(advisor)**: MOD-48 이 마지막 깨끗한 node-pure 추출. **MOD-49**(go-to-page·.xlsx import·Excel cell styles)
+  =browser/format-lib(node substance 박약 — .xlsx 는 xlsx lib·Excel 서식은 렌더). **MOD-50+**=사용자 제품결정 게이트(STOP). → 남은 ❌34 의
+  대부분이 browser 클러스터(분할 잔여 누적)거나 사용자 결정. 다음 단계는 사용자 확인 필요(MOD-49 억지 node-pure 화 금지).
   - **reuse-gate survey 완료**(Explore, 2026-06-07 — verify-first 규칙 적용):
     - **verify-first(부분 존재, 의미/스코프 확인 필요)**: ① post-sort callback = `onSortingChange`(types.ts:830) 존재하나 *state-only*(AG `postSortRows` 행배열 후처리 아님) ② custom page formatter = `totalCountFormat`(GridPagination.tsx:58) + `localeText.totalCount`(i18n.ts:24) 이미 노출 → 스코프 겹침 확인 ③ debounced-scroll = `useDebouncedCallback` 존재 + `virtualizerOptions.onChange` passthrough(types.ts:929) → 소비자 wrap 가능, "기본 auto-debounce" 면 부재.
     - **genuine 부재(신규)**: ④ applyTransaction(개별 onAdd/Delete/UpdateRow 만, 배치-patch API 없음 — GridHandle 신규 메서드) ⑤ async tx batching(macro 배치 큐 없음) ⑥ auto-page-size(뷰포트 측정 필요=browser) ⑦ row animation(rowClassName 만, lifecycle hook 없음=browser) ⑧ auto-virtualization-threshold(enableVirtualization opt-in, 의도적 미적용 types.ts:901 — `virtualizationThreshold?` 신규) ⑨ drag-between-grids(within-grid moveRow/enableRowReorder 만, cross-grid 컨텍스트 부재=browser).

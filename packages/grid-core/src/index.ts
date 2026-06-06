@@ -22,6 +22,9 @@ export type {
   TransactionBatcher,
   TransactionBatcherDeps,
 } from './internal/transaction';
+// MOD-GRID-48: flat-path 트리 빌더(getDataPath 데이터-모델; 소비자가 getSubRows 로 사용).
+export { buildTreeFromPaths } from './internal/buildTreeFromPaths';
+export type { TreeNode } from './internal/buildTreeFromPaths';
 // MOD-GRID-37 G-1: locale/collation-aware sortingFn (é between e and f; 한글 자모 순).
 export { compareLocale, makeLocaleSortingFn, localeSortingFn } from './internal/localeSort';
 // MOD-GRID-37 G-2: blank→undefined accessor for direction-independent null placement (+ sortUndefined).
