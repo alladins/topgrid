@@ -41,10 +41,9 @@
 > ★ 루프가 다시 돌 때만 가치. 지금 게이트 machinery 를 짓는 것은 process theater(감사 결론: rubric 은 "정의됐으나
 > 한 번도 점수 미영속화"). 따라서 **README 한 줄 노트로 충분**, 코드/도구 미구축. 차기 모듈 시작 시 적용.
 
-- [ ] **(B) 차기 모듈 게이트**(README 노트): implement 진입 전 spec 파일 + §6 로드맵 등재 필수화. MOD-28(§6)·MOD-34(specs)
-  부터 빠졌던 앞단 복원. → 루프 재가동 시 README 게이트 한 줄로 명시(machinery 아님).
-- [ ] **(C) rubric 정량 채점**(저우선): "정의됐으나 미영속화" — 점수 게이트 추가는 ceremony. 루프 재가동 + 정량화를 원할
-  때만. 현재 불필요.
+- [x] ✅ **(B)(C) 진입 게이트 복원(2026-06-06)**: `.claude/dev-harness/README.md` 「완료 게이트」에 **진입 게이트** 추가 —
+  (B) specify 산출물(specs 파일 + §6.1 행 + §6.2 스케치) implement 전 필수·인라인 금지 / (C) Full rubric 8항목 점수 영속화.
+  machinery 아닌 README 한 줄 게이트(루프 재가동 시 적용).
 
 ## P3 — 문서 정합 정리 (저위험)
 
@@ -58,8 +57,9 @@
 - [x] ✅ **dedup tier-prose 재분해 완료(2026-06-06)**: 카테고리 상세표 AG Grid 컬럼 프로그래매틱 tally → **Community 15 +
   Enterprise 27 + 기타 5 = ❌47**(reconcile). 「잔여 ❌ 우선순위」 prose 정정(닫힌 기능 제외) + executive 갭영역·master-list 노트 동기화.
 - [ ] **MOD-18~21 state.json `spec` 필드 채움**: cosmetic(파일 존재, 필드만 공백) — 의도적 skip(저가치).
-- [ ] **§5.2 minor 정정 권장 항목**: 주석/README/JSDoc stale(G1·G2·G-readme14·P25-1 등) — 동작 영향 0 cosmetic. **문서 백로그로
-  유지**(advisor: busywork sink, 별도 작업화 금지).
+- [ ] **§5.2 minor 정정 — 보류(2026-06-06 재확인)**: 동작 영향 0 cosmetic. ★**감사의 line-ref 자체가 stale**(예 G1 "6 cell
+  adapters" 주석 = grep 0=이미 해소/문구상이; registerRenderer 호출 8→**11**=감사 후 렌더러 추가). 정확히 쫓으려면 **항목별 재감사**
+  필요 = busywork sink(advisor). **별도 cosmetic 재감사 task 로만 진행**(현 가치 near-zero). 유지.
 
 ## P4 — 기능 백로그 (vN, **연기 확정**)
 

@@ -19,6 +19,13 @@
 `state.json.<mod>.done_gate` 의 `lesson` · `matrix_row` · `index_updated` 가 **모두 truthy** 여야
 모듈 `done` + §6→§3 이관 허용. 하나라도 false → 모듈은 §6 에 `구현중`(시각적 미완료).
 
+### ★ 진입 게이트 복원 (2026-06-06, WORKFLOW-INTEGRITY-AUDIT 시정 B/C)
+MOD-28(§6 로드맵)·MOD-34(specs)부터 앞단이 인라인으로 폐기됐던 이력 → 차기 모듈은 **implement 진입 전 필수**:
+- **(B) specify 산출물**: `specs/MOD-GRID-XX.md` **파일 존재** + MASTER **§6.1 행 + §6.2 스케치 등재**. 인라인 진행 금지
+  (설계 근거가 대화에만 남으면 추적성 0). Lite 도 간이 spec 파일은 작성.
+- **(C) rubric 채점 영속화**: Full 모듈은 `rubrics/specify.md` 8항목을 **점수로 spec 또는 done_gate 에 기록**
+  (과거: 게이트 정의됐으나 어느 모듈도 점수 미영속화 = defined-but-never-evidenced). Lite=체크만.
+
 ## weight-class
 - **Lite**(MIT 편의, 예 grid-sizing): 간이 spec, rubric 점수 생략 — **단 capture·매트릭스 갱신은 유지**.
 - **Full**(Pro 복합, 예 grid-pro-pivot/sheet): 4-페이즈 전부 + rubric 점수 + ADR.
