@@ -72,7 +72,7 @@
   virtualization-threshold·drag-between-grids (★MOD-43: applyTransaction·async transaction batching ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 21 (deep — 다수 vN 보류)**: group-header inline agg · sticky group
+- **Enterprise 20 (deep — 다수 vN 보류)**: group-header inline agg · sticky group
   headers · **pivot 3**(panel/server-side/collapsible cols; ★MOD-44: total customization ❌→✅·result filter ❌→🟡) · select-all-pages · group selection ·
   viewport row model · auto group col(★MOD-48: tree getDataPath ❌→🟡) · master-detail+virtualization · Excel cell styles ·
   **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
