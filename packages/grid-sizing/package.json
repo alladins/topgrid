@@ -40,5 +40,8 @@
   "homepage": "https://github.com/alladins/topgrid#readme",
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "@topgrid/grid-core": "workspace:*"
   }
 }

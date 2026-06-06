@@ -37,6 +37,8 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
+    "@topgrid/grid-core": "workspace:*",
+    "@topgrid/grid-pro-range": "workspace:*",
     "esbuild": "^0.25.0"
   }
 }

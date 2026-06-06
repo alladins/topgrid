@@ -6,11 +6,12 @@
 
 ---
 
-## P0 — 발행 (즉시, **사용자 실행 영역**)
+## P0 — 발행 (✅ **완료 2026-06-06**)
 
-- [ ] **prepared batch 발행**: `pnpm --filter "@topgrid/*" publish --access public --no-git-checks`
-  - travia71 Granular Token + **Bypass-2FA ON** 필수([[npm-publish-topgrid]]). 코드 무변경=빌드 그대로 green.
-  - 이번 시정 브랜치 `remediation/workflow-integrity-2026-06-06` → main 병합 후 권장(문서만, 발행 자체엔 무관).
+- [x] ✅ **prepared batch 발행 완료**: 15패키지 npmjs publish 성공(grid-core@0.4.0·grid@0.5.0 facade·features@0.7.0·
+  chart/sheet/pivot/panel/edit-plus/serverside/filter 등). P1-D verify(78/78 chromium) 통과 후 발행.
+- [ ] **시정 브랜치 main 병합**: `remediation/workflow-integrity-2026-06-06`(발행은 브랜치 무관 성공했으나 커밋이 main
+  미반영). `git checkout main && git merge remediation/workflow-integrity-2026-06-06`. 문서/테스트만.
 - [ ] **발행 전 점검 — TOMIS provenance scrub 확인**([[topgrid-tomis-provenance-leak]]): 발행물·소스에 TOMIS 내부 경로
   노출 여부. *최근 감사: 전 패키지 dist 금지어(TOMIS/@tomis)=0·@topgrid 단방향 clean*(§5.3) → **확인만**, blocker 가능성 낮음.
 - [ ] ⚠ **빌드-health(2026-06-06 P1-D 중 발견)**: `pnpm -r build`(기본 병렬)가 **비결정적 실패** — `grid-pro-edit-plus`
@@ -31,22 +32,27 @@
   에서 **나머지 모듈 + wiring 층**으로 확대. 특히 차트 실렌더(RangeChart)·flash effect 배선·column menu/row pin 상호작용.
   (78/78 functional green 은 "주장 real" 확인이지 "요구 대비 독립 검증"이 아님 — 후자가 진짜 잔여.)
 
-## P2 — 프로세스 게이트 복원 (재발 방지)
+## P2 — 프로세스 게이트 복원 (재발 방지) — **문서-only, machinery 미구축**(advisor 판단)
 
-- [ ] **(B) 차기 모듈 게이트 강제**: implement 진입 전 **spec 파일 + §6 로드맵 등재 필수화**(README 루프 게이트 재적용).
-  MOD-28(§6)·MOD-34(specs)부터 빠졌던 앞단 복원.
-- [ ] **(C) rubric 정량 채점 영속화**: specify 8항목 체크리스트를 점수로 명시 기록하도록 `verify` done_gate 에 추가
-  (현재 "정의됐으나 어느 모듈도 점수 미영속화").
+> ★ 루프가 다시 돌 때만 가치. 지금 게이트 machinery 를 짓는 것은 process theater(감사 결론: rubric 은 "정의됐으나
+> 한 번도 점수 미영속화"). 따라서 **README 한 줄 노트로 충분**, 코드/도구 미구축. 차기 모듈 시작 시 적용.
+
+- [ ] **(B) 차기 모듈 게이트**(README 노트): implement 진입 전 spec 파일 + §6 로드맵 등재 필수화. MOD-28(§6)·MOD-34(specs)
+  부터 빠졌던 앞단 복원. → 루프 재가동 시 README 게이트 한 줄로 명시(machinery 아님).
+- [ ] **(C) rubric 정량 채점**(저우선): "정의됐으나 미영속화" — 점수 게이트 추가는 ceremony. 루프 재가동 + 정량화를 원할
+  때만. 현재 불필요.
 
 ## P3 — 문서 정합 정리 (저위험)
 
-- [ ] **COMMERCIAL-GAP 헤드라인 카운트 재집계**: 종합표(199/60/68)가 MOD-28~33 까지만 반영 → **MOD-34~39 닫힘 +
-  roving🟡** 미반영(stale). 카테고리 표·"Community 31"·dedup 68 도 재산정 필요.
-- [ ] **MOD-18~21 state.json `spec` 필드 채움**: spec 파일은 디스크에 존재하나 필드만 비어있음(cosmetic, 18/22 참조).
-- [ ] **§5.2 minor 정정 권장 항목**: 주석/README/JSDoc stale(G1·G2·G-readme14·P25-1 `.s` 제거 등) — 동작 영향 0, 정정만.
-- [ ] **빌드-order fix(P0 발견의 정식 시정)**: `grid-pro-edit-plus`(및 동류 peerDep-only 패키지)의 `package.json` `devDependencies`
-  에 `@topgrid/grid-core`·`@topgrid/grid-pro-tracking` `workspace:*` 추가 → pnpm `-r` topo-order 가 빌드 순서를 정확히 걸어
-  병렬 빌드도 통과. 또는 root build 스크립트를 `--workspace-concurrency=1` 로 고정.
+- [x] ✅ **빌드-order fix (2026-06-06 완료·검증)**: 6개 peerDep-only 패키지(grid-features·edit-plus·serverside·sheet·
+  renderers·sizing)의 `devDependencies` 에 누락 @topgrid peer(`grid-core`/`grid-pro-tracking`/`grid-pro-range`) `workspace:*`
+  추가 → pnpm topo-order 가 빌드 순서 보장. **병렬 `pnpm -r build` ×2 결정적 green 확인**(이전 비결정 실패 해소). 발행물 동작
+  무변경(devDep). **미발행**(다음 release 에 포함). 커밋=remediation 브랜치.
+- [~] **COMMERCIAL-GAP 헤드라인 카운트**: ⚠ public `comparison.md` 피드 → **손-추정 금지**. **as-of 마커 추가 완료**(MOD-34~39+
+  roving 미재집계 명시, §3=ground truth). **정식 재집계=프로그래매틱**(330 행 재계산+검산) 후속.
+- [ ] **MOD-18~21 state.json `spec` 필드 채움**: cosmetic(파일 존재, 필드만 공백) — 의도적 skip(저가치).
+- [ ] **§5.2 minor 정정 권장 항목**: 주석/README/JSDoc stale(G1·G2·G-readme14·P25-1 등) — 동작 영향 0 cosmetic. **문서 백로그로
+  유지**(advisor: busywork sink, 별도 작업화 금지).
 
 ## P4 — 기능 백로그 (vN, **연기 확정**)
 

@@ -259,9 +259,6 @@ importers:
       '@tanstack/react-virtual':
         specifier: ^3.0.0
         version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
-      '@topgrid/grid-core':
-        specifier: workspace:*
-        version: link:../grid-core
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -274,6 +271,10 @@ importers:
       react-dom:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.2.6(react@19.2.6)
+    devDependencies:
+      '@topgrid/grid-core':
+        specifier: workspace:*
+        version: link:../grid-core
 
   packages/grid-license:
     dependencies:
@@ -337,21 +338,22 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.0.0
         version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
-      '@topgrid/grid-core':
-        specifier: workspace:*
-        version: link:../grid-core
       '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
-      '@topgrid/grid-pro-tracking':
-        specifier: workspace:*
-        version: link:../grid-pro-tracking
       react:
         specifier: ^18.0.0 || ^19.0.0
         version: 18.3.1
       react-dom:
         specifier: ^18.0.0 || ^19.0.0
         version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@topgrid/grid-core':
+        specifier: workspace:*
+        version: link:../grid-core
+      '@topgrid/grid-pro-tracking':
+        specifier: workspace:*
+        version: link:../grid-pro-tracking
 
   packages/grid-pro-filter:
     dependencies:
@@ -503,33 +505,9 @@ importers:
       '@tanstack/react-virtual':
         specifier: ^3.0.0
         version: 3.13.24(react-dom@18.3.1)(react@18.3.1)
-      '@topgrid/grid-core':
-        specifier: workspace:*
-        version: link:../grid-core
       '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
-      react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 18.3.1(react@18.3.1)
-
-  packages/grid-pro-sheet:
-    dependencies:
-      '@tanstack/react-table':
-        specifier: ^8.0.0
-        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
-      '@topgrid/grid-core':
-        specifier: workspace:*
-        version: link:../grid-core
-      '@topgrid/grid-license':
-        specifier: workspace:*
-        version: link:../grid-license
-      '@topgrid/grid-pro-range':
-        specifier: workspace:*
-        version: link:../grid-pro-range
       react:
         specifier: ^18.0.0 || ^19.0.0
         version: 18.3.1
@@ -537,6 +515,31 @@ importers:
         specifier: ^18.0.0 || ^19.0.0
         version: 18.3.1(react@18.3.1)
     devDependencies:
+      '@topgrid/grid-core':
+        specifier: workspace:*
+        version: link:../grid-core
+
+  packages/grid-pro-sheet:
+    dependencies:
+      '@tanstack/react-table':
+        specifier: ^8.0.0
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
+      '@topgrid/grid-license':
+        specifier: workspace:*
+        version: link:../grid-license
+      react:
+        specifier: ^18.0.0 || ^19.0.0
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.0.0 || ^19.0.0
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@topgrid/grid-core':
+        specifier: workspace:*
+        version: link:../grid-core
+      '@topgrid/grid-pro-range':
+        specifier: workspace:*
+        version: link:../grid-pro-range
       esbuild:
         specifier: ^0.25.0
         version: 0.25.12
@@ -565,30 +568,32 @@ importers:
       '@tanstack/react-table':
         specifier: '>=8.0.0 <9.0.0'
         version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
-      '@topgrid/grid-core':
-        specifier: workspace:*
-        version: link:../grid-core
       react:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.2.6
       react-dom:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.2.6(react@19.2.6)
+    devDependencies:
+      '@topgrid/grid-core':
+        specifier: workspace:*
+        version: link:../grid-core
 
   packages/grid-sizing:
     dependencies:
       '@tanstack/react-table':
         specifier: '>=8.0.0 <9.0.0'
         version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
-      '@topgrid/grid-core':
-        specifier: workspace:*
-        version: link:../grid-core
       react:
         specifier: ^18.0.0 || ^19.0.0
         version: 18.3.1
       react-dom:
         specifier: ^18.0.0 || ^19.0.0
         version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@topgrid/grid-core':
+        specifier: workspace:*
+        version: link:../grid-core
 
 packages:
 
