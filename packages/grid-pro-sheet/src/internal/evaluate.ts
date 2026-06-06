@@ -133,6 +133,9 @@ export function evaluate(ast: Ast, getCell: CellGetter): CellValue {
         if (b) return evaluate(ast.args[1]!, getCell);
         return ast.args[2] !== undefined ? evaluate(ast.args[2], getCell) : false;
       }
+      // MOD-GRID-42 G-1: VLOOKUP 은 args[1] 을 **2D 테이블(range)** 로 봐야 하므로 IF 처럼 특수-케이스
+      // (variadic flat / positional 스칼라 둘 다 부적합). deps 는 generic call-walk(extractRefs)가 추적.
+      if (ast.name === 'VLOOKUP') return evalVlookup(ast.args, getCell);
       // 가변/집계 함수(SUM·AND 등) = flat-values(range 전개).
       const fn = FUNCTIONS[ast.name];
       if (fn) {
@@ -149,6 +152,56 @@ export function evaluate(ast: Ast, getCell: CellGetter): CellValue {
       return cellError('#ERROR!');
     }
   }
+}
+
+/**
+ * MOD-GRID-42 G-1: `VLOOKUP(lookup, range, colIndex, [exactMatch])`. `range` must be a range node
+ * (its cells are deps via the generic call-walk in extractRefs, so VLOOKUP recomputes on table edits).
+ * Default match = approximate (Excel parity; assumes the first column is sorted ascending). Returns
+ * `#N/A` on no match, `#REF!` if colIndex is out of the range's width, and propagates a matched
+ * cell that is itself an error.
+ */
+function evalVlookup(args: Ast[], getCell: CellGetter): CellValue {
+  const [lookupAst, rangeAst, colAst, exactAst] = args;
+  if (!lookupAst || !rangeAst || !colAst || rangeAst.kind !== 'range') return cellError('#ERROR!');
+  const lookup = evaluate(lookupAst, getCell);
+  if (isCellError(lookup)) return lookup;
+  const colVal = evaluate(colAst, getCell);
+  if (isCellError(colVal)) return colVal;
+  const col = typeof colVal === 'number' ? Math.trunc(colVal) : NaN;
+
+  const a = parseA1(rangeAst.from);
+  const b = parseA1(rangeAst.to);
+  const c0 = Math.min(a.col, b.col);
+  const c1 = Math.max(a.col, b.col);
+  const r0 = Math.min(a.row, b.row);
+  const r1 = Math.max(a.row, b.row);
+  if (!Number.isFinite(col) || col < 1 || col > c1 - c0 + 1) return cellError('#REF!'); // 양방향 경계
+  const prefix = rangeAst.keyPrefix ?? '';
+  const targetCol = c0 + col - 1;
+
+  // 4th arg: FALSE/0 → exact; TRUE/omitted → approximate(기본, Excel parity).
+  let exact = false;
+  if (exactAst) {
+    const ev = evaluate(exactAst, getCell);
+    if (isCellError(ev)) return ev;
+    exact = ev === false || ev === 0;
+  }
+
+  let matchRow = -1;
+  for (let r = r0; r <= r1; r++) {
+    const cell = getCell(prefix + toA1(c0, r));
+    if (isCellError(cell)) continue;
+    if (exact) {
+      if (valuesEqual(cell, lookup)) { matchRow = r; break; }
+    } else {
+      const cmp = compareValues(cell, lookup, '<='); // 정렬 오름차순 가정(Excel footgun = parity)
+      if (cmp === true) matchRow = r;
+      else if (cmp === false) break; // 첫 초과에서 정지
+    }
+  }
+  if (matchRow < 0) return cellError('#N/A');
+  return getCell(prefix + toA1(targetCol, matchRow)); // 매칭 셀이 에러면 그대로 전파
 }
 
 /** Cells this formula depends on (refs + expanded ranges), de-duplicated. */

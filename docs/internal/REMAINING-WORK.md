@@ -22,7 +22,12 @@
   **node 108/0**(MOD-40 round 87 보존 + 21)·typecheck 0·build green. spec rubric 77/80. §3 `mod-grid-41` 이관. ★첫 cross-module 회귀
   (MOD-40 translate=sheet/name 노드). 신규 [[LESS-008]]+[[PAT-007]](N=2 with MOD-40). **COMMERCIAL-GAP: ❌45→43·✅219→220·🟡63→64**
   (reconcile 19/19·합 330·Spreadsheet 14/6/3). closure: 명명=✅·멀티시트=🟡(탭 UI=MOD-49). 기타 3→1(go-to-page 만).
-- [ ] **다음 = MOD-42**(스프레드시트 함수 라이브러리 VLOOKUP/date/financial, grid-pro-sheet vN). → Spreadsheet 함수 갭(🟡→) 심화.
+- [x] ✅ **MOD-42 — 함수 라이브러리**(grid-pro-sheet, 2-Goal, 2026-06-07): VLOOKUP(G-1, range-aware evaluate 특수=세 번째 디스패치
+  형, exact+approx default-approx, #N/A, colIndex #REF! 양방향) + 날짜 DATE/YEAR/MONTH/DAY(serial)·재무 PMT/FV/PV(G-2, rate=0 특수).
+  **node 128/0**(108 보존 + 20)·typecheck 0·build green. §3 `mod-grid-42` 이관. MOD-41 명명범위·MOD-40 translate 무료 회귀.
+  **★0 ❌ flip**(단일 🟡 「광범위 함수」 행 심화 — ~25 vs 400+ 유지, advisor 확정). reconcile **불변 ❌43/✅220/🟡64**. 신규 lesson 없음.
+- [ ] **다음 = MOD-43**(Community 빠른 승부 9건: applyTransaction·post-sort callback·auto-page-size·debounced scroll·row animation 등).
+  ★시트 트랙(40~42) 종료 → grid-core/features 트랙 전환. node+chromium 혼합(첫 브라우저 vN 모듈).
 - [ ] **미발행 누적**: MOD-40~ 의 grid-pro-sheet 변경은 dist 빌드만, **npm 미발행**(발행=사용자 결정, batch).
 - [ ] **미push 누적**: 로컬 main 커밋(MOD-40 포함) origin 미반영(push=사용자 결정).
 

@@ -154,4 +154,57 @@ export const POSITIONAL_FUNCTIONS: Readonly<Record<string, (args: CellValue[]) =
     const r = b ** e;
     return Number.isFinite(r) ? r : cellError('#ERROR!');
   },
+
+  // ─── MOD-GRID-42 G-2: 날짜 함수 (serial 모델) ───
+  // serial = epoch(1899-12-30 UTC) 이후 일수. 1900 leap 버그는 **미모방**(Excel serial 수치와 1900-03 이전 1일 차 가능,
+  // 문서화 divergence). 검증 spine = 라운드트립(YEAR(DATE(y,m,d))===y …), Excel 수치 일치 아님.
+  DATE: (a) => {
+    const y = toNum(a[0] ?? cellError('#ERROR!')); if (isCellError(y)) return y;
+    const m = toNum(a[1] ?? cellError('#ERROR!')); if (isCellError(m)) return m;
+    const d = toNum(a[2] ?? cellError('#ERROR!')); if (isCellError(d)) return d;
+    return dateToSerial(Math.trunc(y), Math.trunc(m), Math.trunc(d)); // Date.UTC → month-overflow parity 무료
+  },
+  YEAR: (a) => dateComponent(a[0], (dt) => dt.getUTCFullYear()),
+  MONTH: (a) => dateComponent(a[0], (dt) => dt.getUTCMonth() + 1),
+  DAY: (a) => dateComponent(a[0], (dt) => dt.getUTCDate()),
+
+  // ─── MOD-GRID-42 G-2: 재무 함수 (Excel 부호규약 = 유출 음수; rate=0 특수-케이스) ───
+  PMT: (a) => financial(a, (rate, nper, pv, fv, type) =>
+    rate === 0 ? -(pv + fv) / nper
+      : (-rate * (pv * (1 + rate) ** nper + fv)) / (((1 + rate) ** nper - 1) * (1 + rate * type))),
+  FV: (a) => financial(a, (rate, nper, pmt, pv, type) =>
+    rate === 0 ? -(pv + pmt * nper)
+      : -(pv * (1 + rate) ** nper + pmt * (1 + rate * type) * ((1 + rate) ** nper - 1) / rate)),
+  PV: (a) => financial(a, (rate, nper, pmt, fv, type) =>
+    rate === 0 ? -(fv + pmt * nper)
+      : -(fv + pmt * (1 + rate * type) * ((1 + rate) ** nper - 1) / rate) / (1 + rate) ** nper),
 };
+
+// ─── MOD-GRID-42 date helpers ───
+const DATE_EPOCH_MS = Date.UTC(1899, 11, 31); // serial 0 = 1899-12-31 → DATE(1900,1,1)=1 (Excel anchor)
+const DAY_MS = 86_400_000;
+function dateToSerial(y: number, m: number, d: number): number {
+  return Math.round((Date.UTC(y, m - 1, d) - DATE_EPOCH_MS) / DAY_MS); // m is 1-based; Date.UTC handles overflow
+}
+/** Extract a component from a serial-number date arg (error-aware). */
+function dateComponent(arg: CellValue | undefined, pick: (dt: Date) => number): CellValue {
+  const n = toNum(arg ?? cellError('#ERROR!'));
+  if (isCellError(n)) return n;
+  return pick(new Date(DATE_EPOCH_MS + Math.trunc(n) * DAY_MS));
+}
+
+// ─── MOD-GRID-42 financial helper ───
+// args: (rate, nper, payment-or-pv, [pv-or-fv=0], [type=0]) — positional, error-aware.
+function financial(
+  a: CellValue[],
+  formula: (rate: number, nper: number, p3: number, p4: number, type: number) => number,
+): CellValue {
+  const rate = toNum(a[0] ?? cellError('#ERROR!')); if (isCellError(rate)) return rate;
+  const nper = toNum(a[1] ?? cellError('#ERROR!')); if (isCellError(nper)) return nper;
+  const p3 = toNum(a[2] ?? cellError('#ERROR!')); if (isCellError(p3)) return p3;
+  const p4 = a[3] === undefined ? 0 : toNum(a[3]); if (isCellError(p4)) return p4;
+  const type = a[4] === undefined ? 0 : toNum(a[4]); if (isCellError(type)) return type;
+  if (nper === 0) return cellError('#DIV/0!'); // PMT/FV/PV undefined at 0 periods
+  const r = formula(rate, nper, p3, p4, type);
+  return Number.isFinite(r) ? r : cellError('#ERROR!');
+}

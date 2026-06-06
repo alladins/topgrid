@@ -6,8 +6,11 @@
  * {@link CellValue} (never NaN/throw). Build the evaluator on this from the start.
  */
 
-/** Spreadsheet error codes (PoC set). `#NAME?` (MOD-41) = unresolved named range (eval-time only). */
-export type ErrorCode = '#DIV/0!' | '#CYCLE!' | '#REF!' | '#ERROR!' | '#NAME?';
+/**
+ * Spreadsheet error codes (PoC set). `#NAME?` (MOD-41) = unresolved named range; `#N/A` (MOD-42) =
+ * VLOOKUP no-match — both eval-time only (never serialized into formula text, so not in the tokenizer).
+ */
+export type ErrorCode = '#DIV/0!' | '#CYCLE!' | '#REF!' | '#ERROR!' | '#NAME?' | '#N/A';
 
 /** An error value — propagated through arithmetic and functions. */
 export interface CellError {

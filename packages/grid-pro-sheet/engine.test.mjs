@@ -306,6 +306,60 @@ ok('translate cross-sheet range: =SUM(Sheet2!A1:A2) by (1,0) → =SUM(Sheet2!B1:
 ok('★ translate name node fixed, ref moves: =TaxRate*A1 by (1,1) → =TAXRATE*B2',
   translateFormula('=TaxRate*A1', 1, 1) === '=TAXRATE*B2');
 
+// ── MOD-GRID-42 G-1: VLOOKUP (range-aware 2D table) ──
+{
+  const s = createSheet();
+  s.setCell('A1', '1'); s.setCell('B1', 'one');
+  s.setCell('A2', '2'); s.setCell('B2', 'two');
+  s.setCell('A3', '3'); s.setCell('B3', 'three');
+  s.setCell('D1', '=VLOOKUP(2,A1:B3,2,FALSE)');
+  ok('VLOOKUP exact: 2 → "two"', s.getValue('D1') === 'two');
+  s.setCell('D2', '=VLOOKUP(9,A1:B3,2,FALSE)');
+  ok('VLOOKUP exact no-match → #N/A', isCellError(s.getValue('D2')) && s.getValue('D2').error === '#N/A');
+  s.setCell('D3', '=VLOOKUP(2.5,A1:B3,2)'); // omitted 4th = approximate (default)
+  ok('VLOOKUP approx (default): 2.5 → "two" (largest ≤)', s.getValue('D3') === 'two');
+  s.setCell('D6', '=VLOOKUP(0,A1:B3,2)'); // below first key
+  ok('VLOOKUP approx below-first → #N/A', isCellError(s.getValue('D6')) && s.getValue('D6').error === '#N/A');
+  s.setCell('D4', '=VLOOKUP(2,A1:B3,3,FALSE)');
+  ok('VLOOKUP colIndex>width → #REF!', isCellError(s.getValue('D4')) && s.getValue('D4').error === '#REF!');
+  s.setCell('D5', '=VLOOKUP(2,A1:B3,0,FALSE)');
+  ok('VLOOKUP colIndex<1 → #REF!', isCellError(s.getValue('D5')) && s.getValue('D5').error === '#REF!');
+  s.setCell('B2', 'TWO'); // ★ edit a table cell → VLOOKUP recomputes (deps via call-walk)
+  ok('★ VLOOKUP recalc on table edit → "TWO"', s.getValue('D1') === 'TWO');
+}
+// ★ VLOOKUP with a named-range table (MOD-41 interaction: Tbl inlines to a range node post-qualify).
+{
+  const s = createSheet();
+  s.setCell('A1', '10'); s.setCell('B1', 'ten');
+  s.setCell('A2', '20'); s.setCell('B2', 'twenty');
+  s.defineName('Tbl', 'A1:B2');
+  s.setCell('D1', '=VLOOKUP(20,Tbl,2,FALSE)');
+  ok('★ VLOOKUP named-range table → "twenty"', s.getValue('D1') === 'twenty');
+}
+// ★ VLOOKUP inside translate (MOD-40/41 regression): all refs shift via generic call-walk.
+ok('★ translate VLOOKUP: =VLOOKUP(A1,B1:C5,2) by (1,0) → =VLOOKUP(B1,C1:D5,2)',
+  translateFormula('=VLOOKUP(A1,B1:C5,2)', 1, 0) === '=VLOOKUP(B1,C1:D5,2)');
+
+// ── MOD-GRID-42 G-2: date functions (serial model — round-trip spine, not Excel-number-exact) ──
+{
+  const s = createSheet();
+  s.setCell('A1', '=DATE(2024,3,15)');
+  s.setCell('B1', '=YEAR(A1)'); s.setCell('C1', '=MONTH(A1)'); s.setCell('D1', '=DAY(A1)');
+  ok('★ DATE round-trip YEAR → 2024', s.getValue('B1') === 2024);
+  ok('★ DATE round-trip MONTH → 3', s.getValue('C1') === 3);
+  ok('★ DATE round-trip DAY → 15', s.getValue('D1') === 15);
+}
+ok('DATE month-overflow: DATE(2024,13,1) → YEAR 2025', evalF('=YEAR(DATE(2024,13,1))') === 2025);
+ok('DATE(1900,1,1) serial → 1 (clean epoch, no 1900 leap bug)', evalF('=DATE(1900,1,1)') === 1);
+
+// ── MOD-GRID-42 G-2: financial (★ rate=0 special-case + standard, Excel sign convention) ──
+ok('PMT rate=0 → -(pv)/nper = -100', evalF('=PMT(0,10,1000)') === -100);
+ok('★ PMT(0.05,10,1000) ≈ -129.50', Math.abs(evalF('=PMT(0.05,10,1000)') - (-129.5045750)) < 1e-3);
+ok('FV rate=0 → 1000', evalF('=FV(0,10,-100)') === 1000);
+ok('★ FV(0.05,10,-100) ≈ 1257.79', Math.abs(evalF('=FV(0.05,10,-100)') - 1257.789254) < 1e-2);
+ok('PV rate=0 → 1000', evalF('=PV(0,10,-100)') === 1000);
+ok('★ PV(0.05,10,-100) ≈ 772.17', Math.abs(evalF('=PV(0.05,10,-100)') - 772.1734929) < 1e-2);
+
 rmSync(out, { force: true });
 console.log(`sheet engine: ${pass} passed, ${fail} failed`);
 if (fail) throw new Error(`${fail} failed`);

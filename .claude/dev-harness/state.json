@@ -1164,6 +1164,37 @@
       "verification_note": "순수 엔진=node ceiling. 특성회귀 87 보존(기본시트 키 bare 유지=자동-qualify 누출 가드).",
       "version_note": "grid-pro-sheet 0.x→차기 batch(미발행).",
       "vN_note": "탭 UI=MOD-49·따옴표 시트명·명명체인·디지트명·명명 스칼라(#ERROR! 경계)."
+    },
+    "MOD-GRID-42": {
+      "package": "grid-pro-sheet (Pro)",
+      "tier": "Pro",
+      "weight": "Full(2-Goal: VLOOKUP range-aware + 날짜/재무 함수)",
+      "priority": "vN-3(COMMERCIAL-GAP 광범위 함수 🟡 심화)",
+      "phase": "done (2-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-42.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "순수 엔진(node ceiling). 0 ❌ flip(🟡 행 심화). TODAY/NOW=vN(비결정→PAT-005). HLOOKUP/INDEX/시간=vN.",
+      "g1": {
+        "surface": "evaluate evalVlookup 특수-케이스(IF 동형, 세 번째 디스패치 형=range-aware). args[1]=range 노드 2D, MOD-32 valuesEqual/compareValues 재사용. #N/A=ErrorCode union(tokenizer 제외).",
+        "verified_node": "exact·no-match #N/A·approx(기본) 정렬 ≤·colIndex #REF! 양방향·★recalc·★명명범위 테이블(MOD-41)·★translate(MOD-40/41 회귀)."
+      },
+      "g2": {
+        "surface": "functions.ts POSITIONAL_FUNCTIONS: DATE/YEAR/MONTH/DAY(serial epoch 1899-12-31, Date.UTC overflow parity, 1900 leap 미모방) + PMT/FV/PV(financial 헬퍼, rate=0 특수, nper=0→#DIV/0!, Excel 부호).",
+        "verified_node": "★DATE 라운드트립+month-overflow·★PMT/FV/PV rate=0 특수 + 표준값(Excel ±1e-3). 128/0(108 보존)."
+      },
+      "done_gate": {
+        "lesson": "신규 lesson/pattern 없음(VLOOKUP=IF 특수-케이스 적용, rate=0=기존 edge 규율 인스턴스)",
+        "matrix_row": "§3 mod-grid-42 채움 + §6.1/§6.2 구현됨",
+        "index_updated": "COMMERCIAL-GAP 🟡 「광범위 함수」 detail 갱신(3곳)·counts 불변(❌43/✅220/🟡64=0 flip)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★0 ❌ flip(advisor 확정) — VLOOKUP/날짜/재무=단일 🟡 「광범위 함수」 행 심화, ~25 vs 400+ → 🟡 유지. manufactured ❌→✅ 금지.",
+      "module_summary": "VLOOKUP=세 번째 함수 디스패치 형(range-aware evaluate 특수, deps 무료). 날짜 serial(라운드트립 spine)+재무(rate=0 특수). advisor landmine 전수 테스트. MOD-32 재사용. node 128/0(108 보존). 0 ❌ flip(🟡 심화).",
+      "version_note": "grid-pro-sheet 0.x→차기 batch(미발행).",
+      "vN_note": "TODAY/NOW(PAT-005)·HLOOKUP/INDEX/MATCH·시간 함수·1900 leap 미모방(serial divergence 문서화)."
     }
   },
   "release_queue": {
