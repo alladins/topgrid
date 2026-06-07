@@ -965,6 +965,16 @@
 
 > dev-harness 수확: **Enterprise backlog 3번째(advisor Tier 2 verify-first)**. ★grep 으로 genuine 부재 확인(CheckboxColumn 헤더=getToggleAllPageRowsSelected=현재 페이지만, stale ❌ 아님). 증분=TanStack 전-행 selection API(getToggleAllRowsSelected) 를 옵션 분기로 노출. node 신규 0(selection=브라우저 상태, fabricate 금지=LESS-006). chromium 발산=선택 카운트(전체 12 vs page 5)+다음 페이지 pre-checked(onSelectionChange=전 페이지 선택 행 보고). opt-in byte-identical(selectAllPages=false=기존 page-scope). 기존 cell/single/indeterminate(MOD-35) 무수정. **Selection 13/2/2→14/2/1**, COMMERCIAL-GAP ❌26→25·✅231→232·🟡70(reconcile 19/19·330·0 mismatch). chromium 99/99(97+2). 신규 lesson 없음.
 
+### `mod-grid-56` — 그룹/계층 선택 (group / hierarchy selection, **Pro**, grid-pro-agg) ✅ 채움 — {G-1} 완주 (Enterprise backlog 4번째)
+
+소스: `packages/grid-pro-agg/src/AggregationGrid.tsx`(selection state + __select__ 컬럼 + onSelectionChange) + `internal/GroupRow.tsx`(그룹 tri-state 체크박스, 양 분기) + `types.ts`, story `stories/Aggregation.stories.tsx`(GroupSelection/Off), spec `.claude/dev-harness/specs/MOD-GRID-56.md`. dev-harness 39번째. **Enterprise ❌ backlog 4번째**(advisor Tier 1). 갭분석 Selection ❌ 1 닫기(Selection 0 ❌).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 그룹/계층 선택(G-1) | `enableRowSelection?`+`onSelectionChange?` | **배선형** | __select__ 컬럼(leaf checkbox) + GroupRow tri-state 그룹 체크박스(getIsAllSubRowsSelected/getIsSomeSelected/getToggleSelectedHandler). TanStack enableSubRowSelection cascade=하위 전체 토글·leaf rollup. 양 분기(colSpan/inline-agg) | chromium 2/2: ★그룹 체크박스→하위 3 leaves(checked)·leaf 1 uncheck→그룹 indeterminate(mixed)·OFF byte-identical. node 0(rollup=TanStack 브라우저) | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 4번째(advisor Tier 1)**. ★verify-first: AggregationGrid=selection 인프라 0(genuine 부재). ★rollup=TanStack `enableSubRowSelection`(default) 제공 — 그룹 토글=subtree, getIsAllSubRowsSelected/getIsSomeSelected=tri-state. 증분=selection state + __select__ 컬럼(leaf) + GroupRow 그룹 체크박스(colSpan 경로=checkbox td + label colSpan-1, inline-agg 경로=__select__ 위치). node 신규 0(selection rollup=브라우저 상태, fabricate 금지=LESS-006). chromium 발산=하위 전체 선택 카운트+leaf uncheck→그룹 mixed. opt-in byte-identical(enableRowSelection=false=checkbox 0). 기존 GroupRow colSpan/inline-agg(MOD-54)/FooterRow 무수정(체크박스 additive). **Selection 14/2/1→15/2/0(0 ❌)**, COMMERCIAL-GAP ❌25→24·✅232→233·🟡70(reconcile 19/19·330·0 mismatch). chromium 101/101(99+2). 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1331,6 +1341,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-56 grid-pro-agg 그룹/계층 선택 (Enterprise backlog 4, Pro)** — ✅ **구현됨 → §3 `mod-grid-56` 참조** (dev-harness 39번째). spec=`specs/MOD-GRID-56.md`
+- Goal: group/hierarchy selection — AG groupSelectsChildren 대응. TanStack enableSubRowSelection cascade.
+- In: `enableRowSelection?`+`onSelectionChange?` + __select__ 컬럼(leaf) + GroupRow tri-state 그룹 체크박스(양 분기). 기존 GroupRow/FooterRow 무수정.
+- Out: single 모드·헤더 전체선택·선택 영속. AC: 그룹→하위 전체·leaf→그룹 indeterminate·OFF byte-identical(chromium). node 0(rollup=TanStack). tier Pro.
 
 **MOD-GRID-55 grid-core 전 페이지 전체선택 (Enterprise backlog 3, MIT)** — ✅ **구현됨 → §3 `mod-grid-55` 참조** (dev-harness 38번째). spec=`specs/MOD-GRID-55.md`
 - Goal: select-all across all pages — AG select-all-across-pages 대응. verify-first(genuine 부재 확인).

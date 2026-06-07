@@ -1579,6 +1579,33 @@
       "closure": "★Select-all across all pages=✅(헤더 전 페이지 선택). ★verify-first(advisor Tier 2): grep 으로 genuine 부재 확인(기존 getToggleAllPageRowsSelected=현재 페이지만). TanStack 전-행 API 옵션 분기. ★chromium 발산=onSelectionChange 카운트(12 vs 5)+다음 페이지 pre-checked. node 0(selection=브라우저). opt-in byte-identical. advisor.",
       "module_summary": "Enterprise backlog 3번째(advisor Tier 2 verify-first). selectAllPages 옵션→multi 헤더 전-행 toggle. node 0(selection=브라우저)·chromium 발산(카운트 12 vs 5). 기존 page-scope 무수정(99/99). 신규 lesson 없음.",
       "version_note": "grid-core 0.4.0→차기 batch minor (selectAllPages 옵션 추가, 미발행)."
+    },
+    "MOD-GRID-56": {
+      "package": "grid-pro-agg (Pro)",
+      "tier": "Pro",
+      "weight": "Full(1-Goal: 그룹/계층 선택)",
+      "priority": "Enterprise ❌ backlog 4번째(advisor Tier 1)",
+      "phase": "done (1-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-56.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "group/hierarchy selection — enableRowSelection? → __select__ 컬럼(leaf) + GroupRow tri-state 그룹 체크박스(TanStack enableSubRowSelection cascade). 기존 GroupRow/FooterRow 무수정.",
+      "g1": {
+        "surface": "enableRowSelection?+onSelectionChange? + rowSelection state + table enableRowSelection/onRowSelectionChange + __select__ 컬럼(leaf checkbox) + GroupRow tri-state 그룹 체크박스(getIsAllSubRowsSelected/getIsSomeSelected/getToggleSelectedHandler, 양 분기).",
+        "verified_chromium": "2/2(agg-group-selection.spec.ts): 그룹 체크박스→하위 3 leaves(count 3, checked)·leaf uncheck→그룹 indeterminate(mixed, count 2)·OFF byte-identical.",
+        "verified_node": "신규 0(rollup=TanStack enableSubRowSelection 브라우저 상태, fabricate 금지)."
+      },
+      "verification": "typecheck 0·build green·chromium 2/2 + 전체 회귀 101/101(99+2; grid-pagination-complete·grid-row-click-select=pre-existing 타이밍 flake, 재실행 green=무관). 기존 GroupRow/FooterRow 무수정.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-006; TanStack rollup 재사용·verify-first 부재 확인=문서)",
+        "matrix_row": "§3 mod-grid-56 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Group selection ❌→✅(Selection 14/2/1→15/2/0) reconcile 19/19(233/70/24·330·0 mismatch·Enterprise 17→16·Selection 0 ❌)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★Group/hierarchy selection=✅(그룹 토글=subtree·leaf rollup=tri-state). ★rollup=TanStack enableSubRowSelection(default) 재사용, 증분=AggregationGrid selection 인프라(기존 0)+GroupRow 그룹 체크박스(양 분기). node 0(브라우저). opt-in byte-identical. ★pre-existing 타이밍 flake 누적 관찰(grid-pagination/row-click/a11y, 재실행 green). advisor.",
+      "module_summary": "Enterprise backlog 4번째(advisor Tier 1). TanStack enableSubRowSelection rollup + AggregationGrid selection 인프라 + GroupRow tri-state 체크박스. node 0(브라우저)·chromium 발산. 기존 GroupRow/FooterRow 무수정(101/101). 신규 lesson 없음.",
+      "version_note": "grid-pro-agg 0.3.0→차기 batch minor (enableRowSelection 추가, 미발행)."
     }
   },
   "release_queue": {

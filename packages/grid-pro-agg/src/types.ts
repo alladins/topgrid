@@ -78,6 +78,13 @@ export interface GroupRowProps<TData extends object> {
   aggSpec?: AggregateSpec;
   /** MOD-GRID-54: visible leaf columns (id + data field) for per-column inline aggregate rendering. */
   leafColumns?: ReadonlyArray<{ id: string; field: string }>;
+  /**
+   * MOD-GRID-56: render a group selection checkbox (checked = all sub-rows selected, indeterminate =
+   * some selected; toggling selects/deselects the whole subtree via TanStack enableSubRowSelection).
+   * In the colSpan path it prepends a checkbox cell; in the inline-aggregate path it fills the
+   * `__select__` column position.
+   */
+  showSelect?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -156,6 +163,16 @@ export interface AggregationGridProps<TData extends object> {
    * @default false
    */
   showGroupAggregates?: boolean;
+
+  /**
+   * MOD-GRID-56: enable group/hierarchy row selection — a leading checkbox column. Group rows show
+   * a tri-state checkbox (toggling selects the whole subtree via TanStack `enableSubRowSelection`;
+   * indeterminate when some-but-not-all children are selected). @default false (byte-identical off).
+   */
+  enableRowSelection?: boolean;
+
+  /** MOD-GRID-56: callback with the selected leaf rows' originals when selection changes. */
+  onSelectionChange?: (rows: TData[]) => void;
 
   /** Additional Tailwind className for group header rows. */
   groupRowClassName?: string;

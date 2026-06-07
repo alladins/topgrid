@@ -69,6 +69,11 @@
 > grid-core `GridRowSelectionOptions.selectAllPages?`(default false) → createCheckboxColumn multi 헤더가 `getToggleAllRowsSelectedHandler`(전 페이지) 사용 →
 > **❌25 / ✅232 / 🟡70**(Selection 카테고리 13/2/2 → **14/2/1**, 합 330 불변, reconcile 19/19). chromium 2/2(★pagination 12행/5쪽: selectAllPages 헤더→카운트=12+다음 페이지 pre-checked·
 > default page-scope→카운트=5·OFF byte-identical) + 회귀 99/99. node 신규 0(TanStack selection=브라우저 상태, 정직). ★verify-first(genuine 부재 확인: 기존 getToggleAllPageRowsSelected=page-only).
+> ★ **MOD-56 델타(2026-06-07, Enterprise backlog 4번째 — advisor Tier 1)**: `Group / hierarchy selection` ❌→✅ —
+> grid-pro-agg AggregationGrid `enableRowSelection?` → 선행 `__select__` 컬럼(leaf) + GroupRow tri-state 그룹 체크박스(getIsAllSubRowsSelected/getIsSomeSelected/getToggleSelectedHandler,
+> TanStack enableSubRowSelection cascade) → **❌24 / ✅233 / 🟡70**(Selection 카테고리 14/2/1 → **15/2/0**=0 ❌, 합 330 불변, reconcile 19/19).
+> chromium 2/2(★그룹 체크박스→하위 3 leaves 선택(checked)·leaf 1 uncheck→그룹 indeterminate(mixed)·OFF byte-identical) + 회귀 101/101. node 0(rollup=TanStack 브라우저 상태, 정직).
+> ★Selection 0 ❌. AggregationGrid selection 인프라 신규(기존 0).
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -99,9 +104,9 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌25, MOD-55 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌24, MOD-56 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 17 + 기타 0 = **25**, reconcile 통과; ★MOD-55 Select-all-pages ❌→✅(Enterprise 18→17, Selection 2→1); MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 16 + 기타 0 = **24**, reconcile 통과; ★MOD-56 Group selection ❌→✅(Enterprise 17→16, Selection 0 ❌); ★MOD-55 Select-all-pages ❌→✅(Enterprise 18→17, Selection 2→1); MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌26(MOD-54 반영) 기준으로 정정.
 
 - **Community 8 (table-stakes)**: ① 자율 빌드 아님(제품 결정 → **advisor 위임**, 2026-06-07)=RTL(**의도적 연기**: invasive·한국우선 저가치)
@@ -110,8 +115,8 @@
   ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 17 (deep — 다수 vN 보류)**: sticky group
-  headers · **pivot 2**(panel/server-side; ★MOD-44·53·54 닫힘) · group selection · (★MOD-55: select-all-pages ❌→✅ 닫힘) ·
+- **Enterprise 16 (deep — 다수 vN 보류)**: sticky group
+  headers · **pivot 2**(panel/server-side; ★MOD-44·53·54 닫힘) · (★MOD-55 select-all-pages·★MOD-56 group selection ❌→✅ 닫힘) ·
   viewport row model · auto group col(★MOD-48: tree getDataPath ❌→🟡) · master-detail+virtualization · Excel cell styles ·
   **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
   panel drag · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
@@ -143,7 +148,7 @@
 | Filtering | 13 | 12 | 1 | 0 |
 | Row grouping & aggregation | 19 | 12 | 6 | 1 |
 | Pivoting | 23 | 19 | 2 | 2 |
-| Selection | 17 | 14 | 2 | 1 |
+| Selection | 17 | 15 | 2 | 0 |
 | Editing | 18 | 14 | 4 | 0 |
 | Cell rendering & styling | 18 | 15 | 3 | 0 |
 | Row models / data | 18 | 14 | 3 | 1 |
@@ -292,7 +297,7 @@
 | Range paste from clipboard (TSV -> cell updates) | Enterprise | FlexGrid | ✅ 구현 | `grid-pro-range useClipboard.ts pasteFromClipboard (L76-150): parseTsv -> CellUpdate[] via activeCell offset (L124-139), onPaste delegation (L143-145), boundary clamp+truncated flag (L126-133); PasteResult type; tsvUtils.parseTsv RFC 4180 unquote (L53-116)` — VERIFIED full. AG paste = ENTERPRISE clipboard. Wijmo autoClipboard paste native. topgrid headless: emits CellUpdate[] to onPaste (consumer applies). CAVEAT: parseTsv does not handle newlines inside quoted cells (splits lines on \n before quote parsing). |
 | Copy selected rows to clipboard (row scope, with optional headers) | Enterprise | FlexGrid | ✅ 구현 | `grid-export copyToClipboard.ts scope:'selected' -> getRowsByScope -> table.getSelectedRowModel().rows (getRowsByScope.ts L15-17); TSV join; includeHeader toggle default true (L46, L80)` — VERIFIED full. Row-scoped clipboard copy of selected rows (distinct from cell-range copy). AG clipboard = enterprise; Wijmo native. includeHeader default true. NOTE (verified): this path is NOT RFC 4180 — escapeTsvValue replaces tab/CR/LF with SPACE (copyToClipboard.ts L13-15), unlike grid-pro-range's quote-wrapping. Original evidence correctly did not claim RFC 4180 here. |
 | Clear selection / deselect-all (imperative) | Community | FlexGrid | ✅ 구현 | `grid-core useGridImperativeHandle.ts: clearSelection -> table.setRowSelection({}) (L144), getSelection -> table.getSelectedRowModel().rows.map(r=>r.original) (L143), refresh -> table.resetRowSelection() (L147); useGridState.ts clearSelectionKey useEffect auto-reset (L255-266)` — VERIFIED full. AG api.deselectAll() (community). topgrid exposes clearSelection/getSelection/refresh via ref (useGridImperativeHandle) + clearSelectionKey trigger to auto-clear on new search (useGridState L257-266, skips mount). |
-| Group / hierarchy selection (group selects children, leaf rolls up to group) | Enterprise | FlexGrid | ❌ 미구현 | `none — grep enableSubRowSelection\|groupSelects across packages/ => 0 matches (verified); buildTableOptions.ts sets only enableRowSelection/enableMultiRowSelection (L203-204)` — VERIFIED missing. AG groupSelectsChildren / groupSelectsFiltered is ENTERPRISE (rides on row grouping). Wijmo group/tree selection via collectionView. topgrid has tree/expanding (getSubRows, buildTableOptions L248-250) but no group-level selection cascade. |
+| Group / hierarchy selection (group selects children, leaf rolls up to group) | Enterprise | FlexGrid | ✅ 구현(MOD-56 G-1) | `grid-pro-agg AggregationGrid enableRowSelection? → leading __select__ column (leaf checkbox) + GroupRow tri-state group checkbox (getIsAllSubRowsSelected/getIsSomeSelected/getToggleSelectedHandler); TanStack enableSubRowSelection cascade` — chromium 2/2: ★group checkbox → all 3 subtree leaves selected (count=3, checked)·uncheck one leaf → group indeterminate (aria-checked=mixed, count=2)·OFF byte-identical. AG groupSelectsChildren 대응. |
 | Programmatic / controlled selection state (set/get selection externally) | Community | FlexGrid | ✅ 구현 | `grid-core GridRowSelectionOptions.state (RowSelectionState) + onStateChange consumed in buildTableOptions onRowSelectionChange (L136-138); onSelectionChange(rows: TData[]) (L140-146); useGridState.ts rowSelection via useControllableState controllable key (L169-177)` — VERIFIED full. Controlled/uncontrolled rowSelection with onSelectionChange callback. AG api.setNodesSelected / getSelectedRows (community). Wijmo selection property/events native. (onSelectionChange maps via props.data[Number(k)] index — consistent with index-keyed selection model noted above.) |
 
 ### Editing
@@ -656,7 +661,7 @@
 | Total aggregation customization (suppress/position totals) | Pivoting | Enterprise | ✅ 구현(MOD-44 G-1) | `grid-pro-pivot customizePivotTotals` 순수 row-total 변환(subtotal/grandTotal 억제 + grandTotal top/bottom). node 검증. column grand-total 토글=buildPivotColumns 후속. |
 | Pivot result charting (pivot chart / integrated chart) | Pivoting | Enterprise | ✅ 구현(MOD-34 G-3 seriesFromPivot 순수 어댑터: 실제 PivotModel data행→matrix(subtotal/grandTotal 드롭), node 7/7) | VERIFIED MISSING: grid-pro-pivot imports no chart library (index.ts line 5 'imports NO virtualization or chart library', C-001) and has no pivot-chart bridge. grid-pro-chart exists separately but is not wired to the pivot model. No topgrid analog to AG Grid integrated pivot charts / Wijmo OLAP charts. |
 | Select-all across ALL pages (action, not just current page) | Selection | Enterprise | ✅ 구현(MOD-55) | grid-core selectAllPages? 옵션 → multi 헤더가 getToggleAllRowsSelectedHandler(전 페이지). chromium 2/2(카운트=전체 12 vs page-scope 5·다음 페이지 pre-checked·OFF byte-identical). AG 대응. |
-| Group / hierarchy selection (group selects children, leaf rolls up to group) | Selection | Enterprise | ❌ 미구현 | VERIFIED missing. AG groupSelectsChildren / groupSelectsFiltered is ENTERPRISE (rides on row grouping). Wijmo group/tree selection via collectionView. topgrid has tree/expanding (getSubRows, buildTableOptions L248-250) but no group-level selection cascade. |
+| Group / hierarchy selection (group selects children, leaf rolls up to group) | Selection | Enterprise | ✅ 구현(MOD-56) | grid-pro-agg enableRowSelection? → __select__ 컬럼 + GroupRow tri-state 그룹 체크박스(TanStack enableSubRowSelection cascade). chromium 2/2(그룹→하위 3 leaves·leaf uncheck→indeterminate·OFF byte-identical). AG groupSelectsChildren 대응. |
 | Viewport row model (server pushes exact visible viewport, real-time) | Row models / data | Enterprise | ❌ 미구현 | AG's Viewport Row Model (enterprise) for streaming/real-time servers. No equivalent in any @topgrid package; verified MASTER-HIERARCHY §22 mod-grid-22 lists only SSRM block lazy load / infinite scroll / server sort-filter / lazy group, no viewport model. |
 | Tree data via flat path (getDataPath) | Master/Detail & Tree Data | Enterprise | 🟡 부분(MOD-48) | `grid-core buildTreeFromPaths` flat path→계층(synthetic-parent dedup, NUL-key) ship + node 11/0. 소비자가 getSubRows 로 사용. auto group column 렌더 부재 → 🟡(browser). |
 | Auto group column | Master/Detail & Tree Data | Enterprise | ❌ 미구현 | Verified absent: grep for autoGroupColumn/groupingColumnDef returned no matches; __expand__ toggle col + 16px indent is not an auto group column. |

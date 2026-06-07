@@ -173,6 +173,67 @@ export const GroupHeaderAggregatesOff: StoryObj<typeof AggregationGrid<ScoreRow>
   },
 };
 
+// ─── MOD-GRID-56: group / hierarchy selection ───────────────────────────────
+// Group checkbox selects the whole subtree (TanStack enableSubRowSelection); leaf selection rolls
+// up to the group (checked when all, indeterminate when some). 영업팀=3 leaves, 개발팀=2 leaves.
+interface SelRow {
+  dept: string;
+  name: string;
+}
+const selData: SelRow[] = [
+  { dept: '영업팀', name: 'Alice' },
+  { dept: '영업팀', name: 'Bob' },
+  { dept: '영업팀', name: 'Carol' },
+  { dept: '개발팀', name: 'Dan' },
+  { dept: '개발팀', name: 'Eve' },
+];
+const selColumns: AggregationColumnDef<SelRow>[] = [
+  { accessorKey: 'dept', header: '부서' },
+  { accessorKey: 'name', header: '이름' },
+];
+
+function GroupSelectionDemo() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <div data-testid="sel-count">{count}</div>
+      <AggregationGrid<SelRow>
+        data={selData}
+        columns={selColumns}
+        enableAggregation
+        grouping={['dept']}
+        enableRowSelection
+        onSelectionChange={(r) => setCount(r.length)}
+        showFooter={false}
+        expanded
+      />
+    </div>
+  );
+}
+
+export const GroupSelection: StoryObj<typeof GroupSelectionDemo> = {
+  name: '그룹/계층 선택',
+  beforeEach: () => {
+    setLicenseState(validLicense);
+  },
+  render: () => <GroupSelectionDemo />,
+};
+
+export const GroupSelectionOff: StoryObj<typeof AggregationGrid<SelRow>> = {
+  name: '그룹 선택 OFF (byte-identical)',
+  beforeEach: () => {
+    setLicenseState(validLicense);
+  },
+  args: {
+    data: selData,
+    columns: selColumns,
+    enableAggregation: true,
+    grouping: ['dept'],
+    showFooter: false,
+    expanded: true,
+  },
+};
+
 // ─── GroupPanel ─────────────────────────────────────────────────────────
 // GroupPanel requires TanStack Column instances — wrapper component for Storybook
 function GroupPanelDemo() {

@@ -33,6 +33,7 @@ import {
   type Row,
   type Cell,
   type SortingState,
+  type RowSelectionState,
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
@@ -153,6 +154,8 @@ export function AggregationGrid<TData extends object>({
   // G-002 new props
   showFooter = true,
   showGroupAggregates = false,
+  enableRowSelection = false,
+  onSelectionChange,
   groupRowClassName,
   footerRowClassName,
   renderGroupRow,
@@ -209,6 +212,10 @@ export function AggregationGrid<TData extends object>({
   // Scroll container ref for virtualization (always created — Hook order guarantee)
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // MOD-GRID-56: group/hierarchy selection state. TanStack enableSubRowSelection (default) makes a
+  // group row's toggle select the whole subtree; leaf selection rolls up to group checked/indeterminate.
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
   // Map AggregationColumnDef → ColumnDef, resolving meta.aggregationFn keys.
   // G-003: 3-branch registry lookup (spec Section 11.2 After).
   const resolvedColumns = useMemo(
@@ -240,15 +247,42 @@ export function AggregationGrid<TData extends object>({
     [columns],
   );
 
+  // MOD-GRID-56: prepend a leading `__select__` checkbox column when selection is enabled.
+  // Group rows render their checkbox via GroupRow (showSelect); this cell renderer handles LEAF rows.
+  const columnsWithSelect = useMemo(() => {
+    if (!enableRowSelection) return resolvedColumns;
+    const selectCol: AggregationColumnDef<TData> = {
+      id: '__select__',
+      header: () => null,
+      cell: ({ row }: { row: Row<TData> }) =>
+        row.getIsGrouped() ? null : (
+          <input
+            type="checkbox"
+            checked={row.getIsSelected()}
+            onChange={row.getToggleSelectedHandler()}
+            onClick={(e) => e.stopPropagation()}
+            className="w-4 h-4 cursor-pointer"
+            aria-label="select row"
+          />
+        ),
+      size: 40,
+      enableSorting: false,
+    };
+    return [selectCol, ...resolvedColumns];
+  }, [enableRowSelection, resolvedColumns]);
+
   const table = useReactTable<TData>({
     data,
-    columns: resolvedColumns,
+    columns: columnsWithSelect,
+    enableRowSelection,
     state: {
       grouping: groupingState,
       expanded: expandedState,
+      ...(enableRowSelection ? { rowSelection } : {}),
       // G-004: only include sorting in state when enableGroupSort is active (C-29)
       ...(enableGroupSort ? { sorting: sortingState } : {}),
     },
+    ...(enableRowSelection ? { onRowSelectionChange: setRowSelection } : {}),
     // G-004: route groupingChange through handleGroupingChange (EC-005 uncontrolled support)
     onGroupingChange: (updater) => {
       const next = typeof updater === 'function' ? updater(groupingState) : updater;
@@ -277,6 +311,17 @@ export function AggregationGrid<TData extends object>({
 
   const allRows = table.getRowModel().rows;
   const columnCount = table.getAllColumns().length;
+
+  // MOD-GRID-56: report selected LEAF originals when selection changes (group keys excluded).
+  useEffect(() => {
+    if (!enableRowSelection || onSelectionChange === undefined) return;
+    const selected = table
+      .getSelectedRowModel()
+      .flatRows.filter((r) => !r.getIsGrouped())
+      .map((r) => r.original);
+    onSelectionChange(selected);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rowSelection, enableRowSelection]);
 
   // MOD-GRID-54: derive the column→aggregationFn spec (built-in keys only — computeAggregateRow's
   // contract) and the visible leaf columns (id + data field) for inline group-header aggregates.
@@ -347,6 +392,7 @@ export function AggregationGrid<TData extends object>({
           {...(groupAggSpec !== undefined && groupAggLeafColumns !== undefined
             ? { aggSpec: groupAggSpec, leafColumns: groupAggLeafColumns }
             : {})}
+          {...(enableRowSelection ? { showSelect: true } : {})}
         />
       );
     }

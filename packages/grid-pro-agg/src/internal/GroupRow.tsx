@@ -32,11 +32,32 @@ export function GroupRow<TData extends object>({
   renderGroupRow,
   aggSpec,
   leafColumns,
+  showSelect,
 }: GroupRowProps<TData>) {
   // Custom renderer path
   if (renderGroupRow) {
     return <>{renderGroupRow(row)}</>;
   }
+
+  // MOD-GRID-56: tri-state group selection checkbox. checked = all sub-rows selected; indeterminate
+  // = some-but-not-all (TanStack getIsSomeSelected); toggling selects/deselects the subtree.
+  const groupCheckbox = showSelect ? (
+    <input
+      type="checkbox"
+      checked={row.getIsAllSubRowsSelected()}
+      ref={(el) => {
+        if (el) el.indeterminate = !row.getIsAllSubRowsSelected() && row.getIsSomeSelected();
+      }}
+      aria-checked={
+        row.getIsAllSubRowsSelected() ? 'true' : row.getIsSomeSelected() ? 'mixed' : 'false'
+      }
+      onChange={row.getToggleSelectedHandler()}
+      onClick={(e) => e.stopPropagation()}
+      className="w-4 h-4 cursor-pointer"
+      aria-label="select group"
+      data-group-select=""
+    />
+  ) : null;
 
   // Tailwind dynamic class: pl-{depth * indentUnit}
   // Note: Tailwind requires complete class strings — computed safely via style fallback
@@ -70,6 +91,13 @@ export function GroupRow<TData extends object>({
     return (
       <tr className={trClass}>
         {leafColumns.map((col) => {
+          if (col.id === '__select__') {
+            return (
+              <td key={col.id} className="py-2 px-3">
+                {groupCheckbox}
+              </td>
+            );
+          }
           if (col.id === row.groupingColumnId) {
             return (
               <td
@@ -101,8 +129,11 @@ export function GroupRow<TData extends object>({
 
   return (
     <tr className={trClass}>
+      {groupCheckbox !== null && (
+        <td className="py-2 px-3">{groupCheckbox}</td>
+      )}
       <td
-        colSpan={columnCount}
+        colSpan={groupCheckbox !== null ? Math.max(1, columnCount - 1) : columnCount}
         className="py-2 pr-3"
         style={{ paddingLeft: `${paddingLeft}px` }}
         onClick={row.getToggleExpandedHandler()}
