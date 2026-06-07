@@ -12,6 +12,9 @@ checkLicense();
 export { usePivot } from './usePivot.js';
 export { computePivot, GRAND_TOTAL_COLUMN_KEY } from './computePivot.js';
 export { PivotGrid, type PivotGridProps } from './PivotGrid.js';
+// MOD-GRID-64 G-2: 피벗 도구 패널 DnD(Available/Rows/Columns/Values 존) + 순수 movePivotField.
+export { PivotPanel, type PivotPanelProps } from './PivotPanel.js';
+export { movePivotField, type PivotZone } from './movePivotField.js';
 export {
   buildPivotColumns,
   type PivotSortOpts,

@@ -9,7 +9,7 @@
     "C": 3,
     "POL": 1,
     "ADR": 2,
-    "LESS": 8
+    "LESS": 9
   },
   "modules": {
     "MOD-GRID-18": {
@@ -1772,6 +1772,37 @@
       "closure": "★Cell styling=🟡 부분(fonts/fill/borders/alignment 전달, 순수 map+SheetGrid 배선). ★🟡(✅ 아님) 정직: 번들 갭 'fonts/fill/borders/alignment, merged cells' 중 styling 4종만, merged cells(시트 셀 병합)=vN(별개; 그리드 병합=grid-pro-merging) → over-claim 회피. MOD-62 자매. 엔진 무수정. advisor Tier 4.",
       "module_summary": "Enterprise backlog 10번째(advisor Tier 4 sheet, 🟡). 순수 sheetStyleToCss(node 10/0)+SheetGrid cellStyles prop. merged cells=vN로 🟡(정직). 엔진 무수정(108/108). 신규 lesson 없음.",
       "version_note": "grid-pro-sheet 0.2.0→차기 batch minor (sheetStyleToCss+cellStyles prop, 미발행)."
+    },
+    "MOD-GRID-64": {
+      "package": "grid-pro-pivot (Pro 스코프)",
+      "tier": "Pro",
+      "weight": "Full(G-1 순수 movePivotField + G-2 PivotPanel DnD 배선)",
+      "priority": "Enterprise ❌ backlog 11번째(advisor, DnD 클러스터 1번째)",
+      "phase": "done (G-1/G-2 완주 → §3, ✅)",
+      "spec": "specs/MOD-GRID-64.md (rubric 76/80)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "drag-and-drop pivot column tool panel UI — 순수 movePivotField(rows/columns/values/available 이동) + PivotPanel 4 존 HTML5 DnD. PivotGrid/config 계약 무수정 add-on.",
+      "g1": {
+        "surface": "movePivotField(config,field,zone:PivotZone)→PivotConfig. 모든 존서 제거 후 대상 존 끝 추가(available=제거만). values 재진입 시 기존 def 보존, 신규={field,aggregationFn:'sum'}.",
+        "verified_node": "13/0(movePivotField.test.ts): available→rows·rows→columns·→values(sum 기본)·→available·values 재드롭 def 보존·round-trip via 타존=sum 리셋(정직 한계)·unknown field·원본 불변·same-zone reorder-to-end."
+      },
+      "g2": {
+        "surface": "PivotPanel({fields,config,onConfigChange,className?}) — Available/Rows/Columns/Values 4 존. chip=draggable(ref-keyed dragField + dataTransfer Safari 폴백), 존=drop→movePivotField→onConfigChange.",
+        "verified_chromium": "1/1(pivot-panel-dnd.spec.ts) ★end-to-end: 스토리서 PivotPanel↔PivotGrid 공유 useState→`region` 드래그→Rows→PivotGrid 재-피벗(East/West 행 등장, 드래그 전 부재)+chip Available→Rows 이동. = 패널이 피벗을 *구성*함(chip 이동만 아님)."
+      },
+      "verification": "node 13/0·typecheck 0·build green·chromium 1/1 + full-suite 109/109 green(무-flake). 기존 PivotGrid/computePivot/config 계약 무수정.",
+      "done_gate": {
+        "lesson": "신규 lesson 후보: ref-keyed DnD 핸들러는 e.dataTransfer 직접 접근 금지(synthetic dispatchEvent=null throw) → ref 우선·dataTransfer try-guard 폴백(MOD-33 패턴 정련).",
+        "matrix_row": "§3 mod-grid-64 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Pivot panel ❌→✅(Pivoting 19/2/2→20/2/1) reconcile 19/19(240/71/16·330·0 mismatch·Enterprise 11→10)"
+      },
+      "rubric_specify": "76/80",
+      "closure": "★Pivot panel(DnD tool panel UI)=✅: 순수 movePivotField(node 13/0)+PivotPanel 4 존 DnD, end-to-end(그리드 재-피벗) 입증. Out 명시: multi-aggregation(동일 field values 2회)·agg-fn picker UI·존 내 재정렬=vN(silent gap 금지). DnD 클러스터 1번째. ref-keyed DnD(dispatchEvent 신뢰, MOD-33 패턴).",
+      "module_summary": "Enterprise backlog 11번째(DnD 클러스터 1, advisor). 순수 movePivotField(node 13/0)+PivotPanel(4 존 HTML5 DnD). ★발산=그리드 재-피벗(chip 이동 아님, advisor). Out 3종 명시. 109/109 green. lesson: ref-keyed DnD 핸들러 dataTransfer 가드.",
+      "version_note": "grid-pro-pivot 차기 batch minor (PivotPanel+movePivotField export, 미발행)."
     }
   },
   "release_queue": {

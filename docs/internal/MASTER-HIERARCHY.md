@@ -1040,6 +1040,19 @@
 
 ---
 
+### `mod-grid-64` — 피벗 도구 패널 DnD (drag-and-drop pivot column tool panel UI, grid-pro-pivot) ✅ — {G-1, G-2} 완주 (Enterprise backlog 11번째 — DnD 클러스터 1번째)
+
+소스: `packages/grid-pro-pivot/src/{movePivotField.ts, movePivotField.test.ts}`(node) + `PivotPanel.tsx` + `index.ts` export, story `stories/PivotPanel.stories.tsx`(PivotPanel↔PivotGrid 공유 state), test `tests/visual/pivot-panel-dnd.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-64.md`. dev-harness 46번째. **Enterprise ❌ backlog 11번째**(advisor, DnD 클러스터 시작). 갭분석 Pivoting ❌ 1 → ✅.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 순수 movePivotField(G-1) | `movePivotField(config,field,zone)→PivotConfig` (zone∈rows/columns/values/available) | **종결형**(순수 map) | 모든 존서 제거 후 대상 존 끝 추가. values 재진입 시 def 보존(round-trip via 타존=sum 리셋, 정직 한계) | node **13/0**: available→rows·rows→columns·→values(sum)·→available·values 재드롭 def 보존·round-trip 리셋·unknown·불변·same-zone reorder | 채움 |
+| PivotPanel 배선(G-2) | `PivotPanel({fields,config,onConfigChange})` 4 존 HTML5 DnD | **배선형** | chip=draggable(ref-keyed, dataTransfer Safari 폴백), 존=drop→movePivotField. PivotGrid 무수정 add-on | chromium 1/1 ★end-to-end: 공유 state→`region` 드래그→Rows→PivotGrid **재-피벗**(East/West 행 등장), chip Available→Rows 이동 | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 11번째 = DnD 클러스터 1번째(advisor)**. ★검증 패턴=MOD-33 row-reorder 의 **ref-keyed DnD**(핸들러가 `e.dataTransfer` 미접근, ref 우선+dataTransfer 가드 폴백) → playwright `dispatchEvent('dragstart'/'dragover'/'drop')` 신뢰 구동(유일 입증 형태). ★발산 = "chip 이동"이 아닌 **그리드 재-피벗**(advisor: 패널이 피벗을 *구성*함을 입증). **Out 명시(silent gap 금지)**: multi-aggregation(동일 field values 2회)·agg-fn picker UI·존 내 재정렬=vN. **Pivoting 19/2/2→20/2/1**(❌→✅), COMMERCIAL-GAP ❌17→16·✅239→240·🟡71(reconcile 19/19·330·0 mismatch). full-suite 109/109 green. 신규 lesson: **ref-keyed DnD 핸들러는 `e.dataTransfer` 직접 접근 금지**(synthetic dispatchEvent=null throw) — ref 우선·dataTransfer try-guard 폴백(LESS 후보).
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
@@ -1404,6 +1417,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-64 grid-pro-pivot 피벗 도구 패널 DnD (Enterprise backlog 11 — DnD 클러스터 1, Pro)** — ✅ **구현됨 → §3 `mod-grid-64` 참조** (dev-harness 46번째). spec=`specs/MOD-GRID-64.md`
+- Goal: drag-and-drop pivot column tool panel UI — AG Columns tool panel·Wijmo PivotPanel 대응. 순수 movePivotField + PivotPanel 4 존 DnD.
+- In: 순수 `movePivotField(config,field,zone)`(node 13/0) + `PivotPanel({fields,config,onConfigChange})` + index export. 스토리=PivotPanel↔PivotGrid 공유 state. PivotGrid 무수정.
+- Out: multi-aggregation(동일 field values 2회)·agg-fn picker UI·존 내 재정렬=vN. AC: movePivotField 매핑(node)·★드래그→PivotGrid 재-피벗(East/West 등장, chromium end-to-end). tier Pro. ★ref-keyed DnD(dispatchEvent 신뢰).
 
 **MOD-GRID-63 grid-pro-sheet 시트 셀 스타일 (Enterprise backlog 10, Community 스코프)** — 🟡 **부분 → §3 `mod-grid-63` 참조** (dev-harness 45번째). spec=`specs/MOD-GRID-63.md`
 - Goal: cell styling(fonts/fill/borders/alignment) — Wijmo per-cell font/fill/border 대응. 순수 styleToCss + SheetGrid cellStyles prop.
