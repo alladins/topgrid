@@ -1,4 +1,4 @@
-import type { JSX } from 'react';
+import { useRef, type JSX } from 'react';
 import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 
 /**
@@ -35,6 +35,13 @@ export interface ToolPanelProps {
    * the requested move direction. The consumer reorders its `columnOrder`.
    */
   onReorder?: (id: string, direction: 'up' | 'down') => void;
+  /**
+   * Optional. When provided, rows become drag-to-reorder: dropping `sourceId`
+   * onto `targetId` fires this (insert-before semantics — pair with grid-core
+   * `reorderColumnOrder`). The panel holds NO drag state of its own; the consumer
+   * feeds the reordered `columns` back. Coexists with the `onReorder` buttons.
+   */
+  onColumnDrop?: (sourceId: string, targetId: string) => void;
   /** Additional className appended to the root container. */
   className?: string;
 }
@@ -54,9 +61,13 @@ export function ToolPanel({
   columns,
   onVisibilityChange,
   onReorder,
+  onColumnDrop,
   className,
 }: ToolPanelProps): JSX.Element {
   const lic = useLicenseStatus();
+  // Ref-keyed drag source (LESS-009): primary truth so synthetic dispatchEvent drives it;
+  // dataTransfer is a guarded Safari fallback only. The panel stores NO order state.
+  const dragSourceId = useRef<string | null>(null);
   const rootComposed = [
     'relative flex flex-col gap-1 p-2 border border-gray-200 rounded-md bg-white text-sm',
     className ?? '',
@@ -67,7 +78,40 @@ export function ToolPanel({
   return (
     <div className={rootComposed}>
       {columns.map((col, index) => (
-        <div key={col.id} className="flex items-center gap-2">
+        <div
+          key={col.id}
+          data-colrow={col.id}
+          draggable={onColumnDrop !== undefined}
+          onDragStart={
+            onColumnDrop &&
+            ((e) => {
+              dragSourceId.current = col.id;
+              try {
+                e.dataTransfer?.setData('columnId', col.id);
+                if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+              } catch {
+                /* synthetic event has no dataTransfer — the ref carries the source */
+              }
+            })
+          }
+          onDragOver={onColumnDrop && ((e) => e.preventDefault())}
+          onDrop={
+            onColumnDrop &&
+            ((e) => {
+              e.preventDefault();
+              let sourceId = dragSourceId.current;
+              try {
+                const dt = e.dataTransfer?.getData('columnId');
+                if (dt) sourceId = dt;
+              } catch {
+                /* rely on the ref */
+              }
+              dragSourceId.current = null;
+              if (sourceId && sourceId !== col.id) onColumnDrop(sourceId, col.id);
+            })
+          }
+          className={`flex items-center gap-2${onColumnDrop !== undefined ? ' cursor-grab' : ''}`}
+        >
           <label className="flex items-center gap-2 flex-1 cursor-pointer">
             <input
               type="checkbox"

@@ -121,6 +121,8 @@ export type { ColumnPersistenceOptions, PersistTarget } from './types';
 // ADR-009 (옵션 A): grid-features → grid-core/internal 이동 후 public 승격.
 // grid-features 는 1 minor cycle 동안 deprecation alias 유지.
 export { useColumnDrag } from './internal/column-drag/useColumnDrag';
+// MOD-GRID-65 G-1: 컬럼 순서 reorder(insert-before) 순수 — useColumnDrag + tool-panel drag 공유.
+export { reorderColumnOrder } from './internal/column-drag/reorderColumnOrder';
 export { DropIndicator } from './internal/column-drag/DropIndicator';
 export { useColumnOrderPersist } from './internal/column-drag/useColumnOrderPersist';
 export type {

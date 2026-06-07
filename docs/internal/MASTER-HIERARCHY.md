@@ -1053,6 +1053,19 @@
 
 ---
 
+### `mod-grid-65` — 도구 패널 드래그 재정렬 (tool panel reorder via drag, grid-pro-panel + grid-core) ✅ — {G-1, G-2} 완주 (Enterprise backlog 12번째 — DnD 클러스터 2번째)
+
+소스: grid-core `src/internal/column-drag/{reorderColumnOrder.ts, reorderColumnOrder.test.ts}`(node) + `useColumnDrag.ts`(onDrop 리팩터=helper 호출) + `index.ts` export + story `stories/Grid.column-reorder.stories.tsx`(헤더-drag 가드) ; grid-pro-panel `src/ToolPanel.tsx`(onColumnDrop DnD) + `package.json`(grid-core devDep) + story `stories/Panels.stories.tsx`(ToolPanelDragStory). test `tests/visual/{grid-column-reorder, tool-panel-drag}.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-65.md`. dev-harness 47번째. **Enterprise ❌ backlog 12번째**(advisor, DnD 클러스터 2). 갭분석 Misc UX ❌ 1(Tool panel reorder via drag) → ✅.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 순수 reorderColumnOrder(G-1) | `reorderColumnOrder(baseOrder,sourceId,targetId)→string[]` (insert-before, no-op=same ref) | **종결형**(순수 map) | useColumnDrag.onDrop inline math 추출=공유(byte-identical), header-drag↔tool-panel-drag 단일 의미론 | node **10/0**: insert-before 5종·no-op(source=target/target 부재) same ref·불변·2-col | 채움 |
+| ToolPanel DnD 배선(G-2) | ToolPanel `onColumnDrop?(sourceId,targetId)` 행 draggable | **배선형** | ★stateless(내부 order state 0, ref-keyed LESS-009). 소비자가 reorderColumnOrder 적용→columns 피드백. up/down 버튼 공존 | chromium 2/2: ★tool-panel(stateless=소비자 재렌더로만 행 재정렬)·헤더-drag 가드(useColumnDrag 리팩터 byte-identity) | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 12번째 = DnD 클러스터 2번째(advisor)**. ★advisor 재조정(증거가 가정 번복): grid Grid columnOrder=uncontrolled(controlled prop 없음)·GridHandle setColumnOrder 없음 → grid-header 배선=core surgery=금지(post-sort defer 류). 갭=Misc UX **ToolPanel-scoped**(grid-header 아님). ★비공허 판별=**ToolPanel stateless 유지**(drag emit only)→패널 행 재정렬 assert가 비공허(소비자 prop 피드백 없이는 재정렬 불가, MOD-64 trap 회피). ★useColumnDrag 가 **이미 LESS-009 준수**(ref-first)=dispatchEvent 테스트 가능→리팩터 안전+헤더-drag chromium 신규로 사전-부재 커버리지 폐쇄(리팩터 byte-identity 가드). **Out 명시**: pinned-column drop(ToolPanelColumn isPinned 없음)=vN · up/down(delta)·drag(insert-before) 공존. **Misc UX 7/4/3→8/4/2**(❌→✅), COMMERCIAL-GAP ❌16→15·✅240→241·🟡71(reconcile 19/19·330·0 mismatch, Enterprise 10→9). full-suite 111/111 green. 신규 lesson 없음(LESS-009 N=3 재적용 — DnD 클러스터 표준 확립).
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
@@ -1417,6 +1430,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-65 grid-pro-panel+grid-core 도구 패널 드래그 재정렬 (Enterprise backlog 12 — DnD 클러스터 2, Pro)** — ✅ **구현됨 → §3 `mod-grid-65` 참조** (dev-harness 47번째). spec=`specs/MOD-GRID-65.md`
+- Goal: tool panel reorder via drag(Misc UX) — AG columns tool panel drag 대응. 순수 reorderColumnOrder(grid-core 추출=공유) + ToolPanel onColumnDrop DnD.
+- In: grid-core 순수 `reorderColumnOrder(insert-before, node 10/0)`+export+useColumnDrag 리팩터(byte-identical)+헤더-drag 가드 story/test. grid-pro-panel ToolPanel `onColumnDrop`(stateless, ref-keyed)+grid-core devDep+story.
+- Out: pinned-column drop(ToolPanelColumn isPinned 없음)=vN · up/down 버튼(delta)·drag(insert-before) 공존. AC: reorderColumnOrder 매핑(node)·★stateless 패널 행 재정렬(소비자 재렌더)+헤더-drag(chromium). tier Pro. ★advisor: grid-header 배선=core surgery 금지(uncontrolled columnOrder), ToolPanel-scoped 비공허.
 
 **MOD-GRID-64 grid-pro-pivot 피벗 도구 패널 DnD (Enterprise backlog 11 — DnD 클러스터 1, Pro)** — ✅ **구현됨 → §3 `mod-grid-64` 참조** (dev-harness 46번째). spec=`specs/MOD-GRID-64.md`
 - Goal: drag-and-drop pivot column tool panel UI — AG Columns tool panel·Wijmo PivotPanel 대응. 순수 movePivotField + PivotPanel 4 존 DnD.

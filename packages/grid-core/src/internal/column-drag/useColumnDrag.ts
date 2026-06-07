@@ -20,6 +20,7 @@
 import { useCallback, useRef, useState } from 'react';
 import type { UseColumnDragProps, UseColumnDragReturn, DragThProps } from './types';
 import { useColumnOrderPersist } from './useColumnOrderPersist';
+import { reorderColumnOrder } from './reorderColumnOrder';
 
 /**
  * HTML5 Drag and Drop API 기반 컬럼 재정렬 hook.
@@ -159,14 +160,13 @@ export function useColumnDrag<TData>(
           const allColumns = table.getAllLeafColumns().map((c) => c.id);
           const baseOrder: string[] = currentOrder.length > 0 ? currentOrder : allColumns;
 
-          // source 컬럼을 baseOrder 에서 제거 후 target 위치에 삽입.
-          const newOrder = baseOrder.filter((id) => id !== sourceId);
-          const targetIndex = newOrder.indexOf(columnId);
-          if (targetIndex === -1) {
+          // MOD-65 G-1: source→target 삽입(insert-before) = 공유 순수 reorderColumnOrder.
+          // target 부재 시 same ref 반환 → no-op(기존 targetIndex===-1 early-return 과 byte-identical).
+          const newOrder = reorderColumnOrder(baseOrder, sourceId, columnId);
+          if (newOrder === baseOrder) {
             setDragOverId(null);
             return;
           }
-          newOrder.splice(targetIndex, 0, sourceId);
 
           table.setColumnOrder(newOrder);
 

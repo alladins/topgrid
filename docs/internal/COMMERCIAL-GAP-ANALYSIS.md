@@ -102,6 +102,10 @@
 > grid-pro-pivot 순수 `movePivotField(config,field,zone)→PivotConfig`(rows/columns/values/available 이동, values def 보존, **node 13/0**) + `PivotPanel({fields,config,onConfigChange})`(4 존 HTML5 DnD, ref-keyed) →
 > **❌17→16 / ✅239→240 / 🟡71**(Pivoting 카테고리 19/2/2 → **20/2/1**, 합 330 불변, reconcile 19/19). chromium 1/1(★end-to-end: PivotPanel↔PivotGrid 공유 state, `region` 드래그→Rows→그리드 **재-피벗**(East/West 행 등장)=패널이 피벗을 구성함, "chip 이동"만 아님)
 > + full-suite 109/109 green. **Out 명시(silent gap 금지)**: multi-aggregation(동일 field values 2회)=vN · agg-fn picker UI=vN · 존 내 재정렬=vN. 기존 PivotGrid/config 계약 무수정.
+> ★ **MOD-65 델타(2026-06-08, Enterprise backlog 12번째 — DnD 클러스터 2번째, advisor)**: `Tool panel reorder via drag`(Misc UX) ❌→✅ —
+> grid-core 순수 `reorderColumnOrder(baseOrder,sourceId,targetId)`(insert-before, useColumnDrag.onDrop inline math 추출=공유, byte-identical, **node 10/0**) + grid-pro-panel ToolPanel 행 draggable + `onColumnDrop`(★stateless=내부 order state 0, ref-keyed LESS-009) →
+> **❌16→15 / ✅240→241 / 🟡71**(Misc UX 카테고리 7/4/3 → **8/4/2**, 합 330 불변, reconcile 19/19). chromium 2/2(★ToolPanel stateless=소비자 재렌더로만 행 재정렬 가능=비공허 advisor; +헤더-drag 가드 신규=useColumnDrag 리팩터 byte-identity 커버)
+> + full-suite 111/111 green. **Out 명시**: pinned-column drop(ToolPanelColumn isPinned 없음)=vN · up/down 버튼(delta)과 drag(insert-before) 공존. ★header-drag/tool-panel-drag 단일 order math 수렴. 신규 lesson 없음(LESS-009 N=3 재적용).
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -132,9 +136,9 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-08 검증, tier별 = ❌16, MOD-64 반영)
+### 잔여 ❌ 우선순위 (2026-06-08 검증, tier별 = ❌15, MOD-65 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 6 + Enterprise 10 + 기타 0 = **16**, reconcile 통과; ★MOD-64 Pivot panel(DnD tool panel) ❌→✅(Enterprise 11→10, Pivoting 2→1); ★MOD-63 Cell styling ❌→🟡(Community 7→6, Spreadsheet ❌2→1·🟡6→7, merged cells=vN); ★MOD-62 Cell/number formatting ❌→✅(Community 8→7, Spreadsheet 3→2); ★MOD-60 Row-group/Pivot state save ❌→✅ 2건(Enterprise 13→11, State theming 3→1); ★MOD-59 Filters tool panel ❌→✅(Enterprise 14→13, Misc UX 4→3); ★MOD-58 Side bar ❌→✅(Enterprise 15→14, Misc UX 5→4); ★MOD-57 Auto group column ❌→✅(Enterprise 16→15, Master/Detail&Tree 2→1); ★MOD-56 Group selection ❌→✅(Enterprise 17→16, Selection 0 ❌); ★MOD-55 Select-all-pages ❌→✅(Enterprise 18→17, Selection 2→1); MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 6 + Enterprise 9 + 기타 0 = **15**, reconcile 통과; ★MOD-65 Tool panel reorder via drag ❌→✅(Enterprise 10→9, Misc UX 3→2); ★MOD-64 Pivot panel(DnD tool panel) ❌→✅(Enterprise 11→10, Pivoting 2→1); ★MOD-63 Cell styling ❌→🟡(Community 7→6, Spreadsheet ❌2→1·🟡6→7, merged cells=vN); ★MOD-62 Cell/number formatting ❌→✅(Community 8→7, Spreadsheet 3→2); ★MOD-60 Row-group/Pivot state save ❌→✅ 2건(Enterprise 13→11, State theming 3→1); ★MOD-59 Filters tool panel ❌→✅(Enterprise 14→13, Misc UX 4→3); ★MOD-58 Side bar ❌→✅(Enterprise 15→14, Misc UX 5→4); ★MOD-57 Auto group column ❌→✅(Enterprise 16→15, Master/Detail&Tree 2→1); ★MOD-56 Group selection ❌→✅(Enterprise 17→16, Selection 0 ❌); ★MOD-55 Select-all-pages ❌→✅(Enterprise 18→17, Selection 2→1); MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌26(MOD-54 반영) 기준으로 정정.
 
 - **Community 6 (table-stakes)**: ① 자율 빌드 아님(제품 결정 → **advisor 위임**, 2026-06-07)=RTL(**의도적 연기**: invasive·한국우선 저가치)
@@ -142,11 +146,11 @@
   callback(⛔ hot-path)·debounced scroll·row animation·auto-virtualization-threshold·drag-between-grids (★MOD-43: applyTransaction·async batching ❌→✅;
   ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘). (★MOD-62 cell/number formatting ❌→✅·★MOD-63 cell styling ❌→🟡[fonts/fill/borders/align;
   merged cells=vN] 닫힘 → 시트 스코프 ❌ 0.) (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning 등은 MOD-35~39 로 닫힘=제외.)
-- **Enterprise 10 (deep — 다수 vN 보류)**: sticky group
+- **Enterprise 9 (deep — 다수 vN 보류)**: sticky group
   headers/rows · **pivot 1**(server-side; ★MOD-44·53·54·**64**(panel DnD ❌→✅) 닫힘) · (★MOD-55~60 select-all-pages·group selection·auto group column·side bar·filters tool panel·row-group/pivot state save ❌→✅ 닫힘) ·
   viewport row model · auto group col(★MOD-48: tree getDataPath ❌→🟡) · master-detail+virtualization · Excel cell styles ·
-  **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · context submenu(⛔ harness-blocked) · tool
-  panel drag · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
+  **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · context submenu(⛔ harness-blocked) · (★MOD-65 tool
+  panel drag ❌→✅ 닫힘) · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
 - **기타 0**: (★MOD-49: go-to-page 입력 ❌→✅ 닫힘.) (★ MOD-40: `$A$1`=✅·`copy/fill`=🟡. ★ MOD-41: `명명 범위`=✅ 닫힘 ·
   `멀티시트(Sheet2!A1)`=🟡 교차시트 ref ✅+탭 UI 부재=MOD-49 계열 후속 탭 UI.)
 
@@ -616,7 +620,7 @@
 | Row drag-and-drop (reorder within grid) | Community | FlexGrid | ✅ 구현(MOD-33 G-3) | `none (grid-core drag = column-drag only: useColumnDrag.ts setData('columnId'); no row draggable/onRowDrag)` — Verified absent: only column-drag and group-panel drag exist; no row reorder via draggable rows. |
 | Drag between grids | Community | — | ❌ 미구현 | `none (no cross-grid dataTransfer wiring for rows found)` — Verified absent: no cross-grid drag/drop transfer; no dataTransfer wiring for rows. |
 | Row pinning (pin rows top/bottom) | Enterprise | FlexGrid | 🟡 부분 | `@topgrid/grid-pro-master types.ts RowPinningOptions (pinTop/pinBottom: string[], types-only D20/AC-006)` — Verified: pinTop/pinBottom types defined but UI implementation explicitly deferred (no runtime), confirmed by MASTER-HIERARCHY L407. |
-| Tool panel reorder via drag | Enterprise | — | ❌ 미구현 | `none (ToolPanel.tsx onReorder fires from up/down buttons only; no draggable/onDrop in panel)` — Verified absent: ToolPanel reorder is up/down buttons only; no drag-to-reorder in the panel. |
+| Tool panel reorder via drag | Enterprise | — | ✅ 구현(MOD-65) | grid-pro-panel `ToolPanel` 행 draggable + `onColumnDrop(sourceId,targetId)`(stateless, ref-keyed) + 순수 `reorderColumnOrder`(grid-core, insert-before, useColumnDrag 와 공유; node 10/0). chromium 1/1(드래그→stateless 패널이 소비자 재렌더로 행 재정렬). Out: pinned-column drop(ToolPanelColumn isPinned 없음)·up/down 버튼(delta)과 공존. |
 
 ## 우선순위 갭 (미구현 + 부분)
 
@@ -710,7 +714,7 @@
 | Side bar (unified tool-panel container/accordion) | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ✅ 구현(MOD-58) | grid-pro-panel SideBar 아코디언(소비자 패널 주입, 배타 펼침, callback-only). chromium 1/1(초기 1 패널·배타 전환·재클릭 접기·aria). AG sideBar 대응. |
 | Filters tool panel | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ✅ 구현(MOD-59) | grid-pro-panel FiltersToolPanel(통합 컬럼 필터 surface, 활성 카운트, callback-only, SideBar host). chromium 1/1(입력→반영+카운트·다중·clear-all). AG filters tool panel 대응. |
 | Context menu submenus / icons / built-in items (copy/export) | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ❌ 미구현 | Verified absent: ContextMenuItem is flat label+shortcut+onClick; no nested menus, icons, or default actions. |
-| Tool panel reorder via drag | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ❌ 미구현 | Verified absent: ToolPanel reorder is up/down buttons only; no drag-to-reorder in the panel. |
+| Tool panel reorder via drag | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ✅ 구현(MOD-65) | grid-pro-panel `ToolPanel` 행 draggable + `onColumnDrop(sourceId,targetId)`(stateless, ref-keyed) + 순수 `reorderColumnOrder`(grid-core, insert-before, useColumnDrag 와 공유; node 10/0). chromium 1/1(드래그→stateless 패널이 소비자 재렌더로 행 재정렬). Out: pinned-column drop·up/down 버튼과 공존. |
 | Jump-to-page input (go-to page N) | Pagination | — | ✅ 구현(MOD-49 G-2) | GoToPageInput (numeric+Enter) + pure clampGoToPage; GridPaginationOptions.enableGoToPage → setPageIndex. node 11/0 + chromium (먼 페이지 점프). Wijmo pager 입력 대응. |
 | Broad Excel function library (logical/text/lookup/date/financial: IF, VLOOKUP, CONCAT, etc.) | Spreadsheet (Wijmo FlexSheet focus) | — | 🟡 부분(MOD-32/42) | logical/text/math(MOD-32) + VLOOKUP(range-aware)/DATE·YEAR·MONTH·DAY(serial)/PMT·FV·PV(MOD-42, node 128/0). ★여전히 🟡 — ~25 vs 400+(TODAY/NOW/HLOOKUP/INDEX·시간=vN). |
 | Relative reference adjustment on copy/fill (e.g. copying =A1 down becomes =A2) | Spreadsheet (Wijmo FlexSheet focus) | — | 🟡 부분(MOD-40 G-2) | translateFormula 엔진 프리미티브(상대 shift·절대 고정·out-of-bounds #REF! 라운드트립, node 87/0) ship. SheetGrid fill-handle UI 제스처=소비자 배선 미완(MOD-49) → headless-API-only=🟡. |

@@ -8,6 +8,7 @@ import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { StatusBar, ToolPanel, RowGroupPanel, SideBar, FiltersToolPanel } from '@topgrid/grid-pro-panel';
 import { setLicenseState } from '@topgrid/grid-license';
+import { reorderColumnOrder } from '@topgrid/grid-core';
 
 const meta: Meta = { title: 'grid-pro-panel/Panels' };
 export default meta;
@@ -107,6 +108,30 @@ export const ToolPanelStory: StoryObj = {
       onReorder={(id, dir) => console.log('reorder', id, dir)}
     />
   ),
+};
+
+// MOD-GRID-65: ToolPanel drag-to-reorder. ★non-vacuous (advisor): ToolPanel is STATELESS — it renders
+// `columns` from props and emits onColumnDrop; it physically cannot reorder its own rows without the
+// consumer feeding back new props. So asserting the rendered row order changes proves the full chain:
+// drag fired → onColumnDrop(source,target) → reorderColumnOrder (insert-before, shared with header drag)
+// → consumer setState → panel re-renders the new order.
+function ToolPanelDragDemo(): JSX.Element {
+  const [order, setOrder] = useState<string[]>(['region', 'sales', 'units']);
+  const labels: Record<string, string> = { region: 'Region', sales: 'Sales', units: 'Units' };
+  return (
+    <ToolPanel
+      columns={order.map((id) => ({ id, label: labels[id]!, visible: true }))}
+      onVisibilityChange={(id, v) => console.log('visibility', id, v)}
+      onColumnDrop={(sourceId, targetId) =>
+        setOrder((o) => reorderColumnOrder(o, sourceId, targetId))
+      }
+    />
+  );
+}
+
+export const ToolPanelDragStory: StoryObj = {
+  name: 'ToolPanel 드래그 재정렬 (insert-before)',
+  render: () => <ToolPanelDragDemo />,
 };
 
 export const RowGroupPanelStory: StoryObj = {
