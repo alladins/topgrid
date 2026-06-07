@@ -33,14 +33,24 @@ function CustomEditorDemo() {
         onCancel={() => setEditing(false)}
         renderEditor={(ctx) => (
           // Plain, unstyled input — NO built-in border-blue-400 class, and the story wires
-          // NONE of focus/Enter/Esc/blur. Everything but onChange/focusRef comes from the slot.
-          <input
-            data-testid="custom-editor"
-            style={{ width: '100%', padding: 4, border: '1px dashed #888' }}
-            value={ctx.value}
-            onChange={(e) => ctx.onChange(e.target.value)}
-            ref={ctx.focusRef}
-          />
+          // NONE of focus/Enter/Esc/blur. onChange/focusRef come from the slot; the explicit
+          // Save/Cancel buttons drive ctx.commit()/ctx.cancel() — the primary path for editors
+          // (date-picker/dropdown) that don't commit on Enter. Both ctx members verified.
+          <span style={{ display: 'inline-flex', gap: 4, alignItems: 'center' }}>
+            <input
+              data-testid="custom-editor"
+              style={{ width: 120, padding: 4, border: '1px dashed #888' }}
+              value={ctx.value}
+              onChange={(e) => ctx.onChange(e.target.value)}
+              ref={ctx.focusRef}
+            />
+            <button type="button" data-testid="slot-save" onClick={() => ctx.commit()}>
+              저장
+            </button>
+            <button type="button" data-testid="slot-cancel" onClick={() => ctx.cancel()}>
+              취소
+            </button>
+          </span>
         )}
       />
     </div>

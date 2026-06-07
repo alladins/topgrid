@@ -11,7 +11,7 @@
 > **현 상태**: vN node-pure 9(MOD-40~48) + Track 1 MOD-49 + **Track 2 제품결정 1·2번째 MOD-50·MOD-51 완료(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
 > COMMERCIAL-GAP **❌47→29**(✅228/🟡70/❌29; **Editing 0 ❌**). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
 > **★Track 2 착수(사용자 advisor 위임)**: 제품 결정 4종 STOP-and-ask → advisor 판단 위임(설계·우선순위), 끝까지 진행. publish/push 만 사용자 게이트 유지.
-> **MOD-49**(Track1-1): pagination 3 ❌→✅. **MOD-50**(Track2-1): full-row editing ❌→✅. **MOD-51**(Track2-2): custom cell editor slot ❌→✅(EditableCell renderEditor, chromium 회귀 **87/87**).
+> **MOD-49**(Track1-1): pagination 3 ❌→✅. **MOD-50**(Track2-1): full-row editing ❌→✅. **MOD-51**(Track2-2): custom cell editor slot ❌→✅(EditableCell renderEditor, chromium 회귀 **89/89**).
 > **advisor 제품결정 순서**: full-row editing✅ → custom cell editor slot✅ → column spanning(bound-or-defer=다음) → **RTL=의도적 연기**(invasive·한국우선 저가치).
 
 ### ▶ 새 세션 즉시 시작 (2026-06-07 갱신)
@@ -58,7 +58,7 @@
 - **Full-row editing** → ✅ **완료(MOD-50)**. useFullRowEdit + applyRowDraft, chromium 회귀 84/84.
 - **Custom cell editor slot** → ✅ **완료(MOD-51)**. EditableCell `renderEditor?(ctx:{value,onChange,commit,cancel,focusRef})` render-prop
   lifecycle slot(registry 아님). 비공허=lifecycle 위임(진입 autofocus·Enter→commit·Esc→cancel, raw cell 무료 미제공; ★keydown 버블링=원천).
-  chromium 3/3(story 배선 0)+회귀 87/87. node 신규 0(정직). value=string(임의 value-type=vN). Editing 0 ❌ 도달.
+  chromium 5/5(story 배선 0; +ctx.commit/cancel 명시 호출=ctx 5 멤버 전부 verified)+회귀 89/89. node 신규 0(정직). value=string(임의 value-type=vN). Editing 0 ❌ 도달.
 - **Column spanning(body colSpan)** → 🔜 **bound-or-defer(MOD-52=다음)**. full-width 스팬 이미 4경로. arbitrary body colSpan=col-virt/핀/ARIA 얽힘.
   advisor: **bounded 버전(비-virt·비-pinned·문서화 한계)이 비공허 단언 있으면 build, "전부 지원"만 정직 스코프면 defer**. → bounded build 후보.
 - **RTL 레이아웃** → ⛔ **의도적 연기(advisor 결정, silent gap 아님)**. invasive(`computePinnedOffset` 등 전 LTR 전제), 한국시장 우선순위 낮음

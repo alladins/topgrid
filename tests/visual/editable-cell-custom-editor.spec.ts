@@ -67,3 +67,36 @@ test('G-1: Esc cancels via the slot — value reverts, nothing committed', async
   await expect(cell(page)).toHaveText('initial');
   await expect(customEditor(page)).toHaveCount(0);
 });
+
+// ctx.commit / ctx.cancel are the explicit-call path — the primary one for editors that don't
+// commit on Enter (date-picker / dropdown with OK/Cancel buttons). Verify both ctx members
+// directly, not via keydown, so the full CustomEditorContext surface is chromium-verified.
+test('G-1: ctx.commit() (Save button) commits the draft', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME(ID));
+  await cell(page).waitFor({ state: 'visible' });
+
+  await page.getByText('initial').click();
+  await customEditor(page).fill('via-commit');
+  await page.getByTestId('slot-save').click();
+
+  // ★ ctx.commit() applied the draft and closed the editor.
+  await expect(cell(page)).toHaveText('via-commit');
+  await expect(customEditor(page)).toHaveCount(0);
+});
+
+test('G-1: ctx.cancel() (Cancel button) discards the draft', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME(ID));
+  await cell(page).waitFor({ state: 'visible' });
+
+  await page.getByText('initial').click();
+  await customEditor(page).fill('via-cancel');
+  await page.getByTestId('slot-cancel').click();
+
+  // ★ ctx.cancel() reverted — nothing committed.
+  await expect(cell(page)).toHaveText('initial');
+  await expect(customEditor(page)).toHaveCount(0);
+});
