@@ -8,9 +8,9 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
 
-> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53~57 done(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
-> COMMERCIAL-GAP **❌47→23**(✅234/🟡70/❌23; **Column features·Editing·Selection 0 ❌·Pivoting 19/2/2·Row grouping 12/6/1·Master/Detail&Tree 9/6/1**). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
-> ★suite flake 누적: full-suite 부하서 타이밍 flake가 최대 7개까지 분산(재실행 green=무관). 후속 harden 후보(grid-a11y·pagination·row-click·loading·i18n·column-menu·floating-filter=expect.poll/대기 보강).
+> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53~58 done(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
+> COMMERCIAL-GAP **❌47→22**(✅235/🟡70/❌22; **Column features·Editing·Selection 0 ❌**). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> ★suite flake(부하 타이밍, 무관 기능 전반): **MOD-58 동반 `apps/docs/playwright.config.ts` retries:2 추가로 안정화**(full-suite green; clean 1회 통과·flake 만 재시도). 근본 timing harden(expect.poll)은 후속 선택.
 > **★settled defer 6(⛔)**: RTL·viewport row model·debounced-scroll·row-animation·auto-virt-threshold·**post-sort callback**(advisor 사전 조건=sort 경로 수술 필요 시 defer; Grid 이 table.getRowModel().rows 를 다중 렌더 사이트서 직접 읽어 정렬-후 재정렬 후킹=hot-path 수술+pagination/virt 피드 얽힘 → defer). (invasive/node-substance-0/vacuity-trap/design-reversal/hot-path-surgery).
 > **★작동 방식(사용자 advisor 위임)**: 설계·우선순위 advisor 판단 위임, 끝까지 진행. publish/push 만 사용자 게이트 유지.
 > **MOD-49** pagination✅ · **MOD-50** full-row editing✅ · **MOD-51** custom cell editor slot✅ · **MOD-52** column spanning✅ · **MOD-53** collapsible pivot column groups✅(grid-pro-pivot, chromium 회귀 **94/94**).

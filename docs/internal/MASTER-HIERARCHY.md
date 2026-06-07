@@ -985,6 +985,16 @@
 
 > dev-harness 수확: **Enterprise backlog 5번째(advisor Tier 2 verify-first)**. ★grep: grid-core auto group column 0(expand state 존재하나 indent/toggle 렌더는 소비자 cell 몫=genuine 부재). 증분=단일 컬럼 팩토리(createCheckboxColumn 패턴 재사용; row.depth/getCanExpand/toggleExpanded=TanStack). node 신규 0(렌더=브라우저, fabricate 금지=LESS-006). chromium 발산=collapsed→expand 자식 출현+depth 들여쓰기 발산+leaf 토글 없음. 소비자 opt-in(컬럼 prepend), 기존 Grid expand 무수정. **MOD-48 getDataPath 데이터모델의 렌더 절반**(getDataPath 🟡 유지=소비자 getSubRows 배선; line 250/723 "auto group col w/ chevron"=grid-pro-agg GroupRow 별개 🟡 유지). **Master/Detail & Tree 8/6/2→9/6/1**, COMMERCIAL-GAP ❌24→23·✅233→234·🟡70(reconcile 19/19·330·0 mismatch). chromium 102/102(101+1). 신규 lesson 없음.
 
+### `mod-grid-58` — 사이드바 (side bar — unified tool-panel container/accordion, **Pro**, grid-pro-panel) ✅ 채움 — {G-1} 완주 (Enterprise backlog 6번째)
+
+소스: `packages/grid-pro-panel/src/SideBar.tsx` + `index.ts` export, story `stories/Panels.stories.tsx`(SideBarStory), spec `.claude/dev-harness/specs/MOD-GRID-58.md`. dev-harness 41번째. **Enterprise ❌ backlog 6번째**(advisor Tier 3). 갭분석 Misc UX ❌ 1 닫기.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| SideBar 아코디언(G-1) | `SideBar({panels:{id,title,content}[], defaultOpenId?, className?})` | **배선형** | 배타 펼침(헤더 클릭 토글). content=소비자 주입(ToolPanel/필터 등)=callback-only(ToolPanel 철학). useLicenseStatus/Watermark(PAT-003) | chromium 1/1: ★초기 1 패널 content 만 DOM·헤더 클릭→배타 전환(이전 content 제거)·재클릭 접기·aria-expanded. node 0(UI=브라우저) | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 6번째(advisor Tier 3)**. ★verify-first: grid-pro-panel=ToolPanel/StatusBar/RowGroupPanel(개별), 통합 컨테이너 0(genuine 부재). 증분=아코디언 SideBar(상태 미보유, content 소비자 주입=ToolPanel callback-only 철학). node 신규 0(아코디언 UI=브라우저, fabricate 금지=LESS-006). chromium 발산=배타 펼침(한 패널 content 만 DOM, 전환 시 이전 제거). 기존 ToolPanel/StatusBar/RowGroupPanel 무수정. **Misc UX 5/4/5→6/4/4**, COMMERCIAL-GAP ❌23→22·✅234→235·🟡70(reconcile 19/19·330·0 mismatch). chromium 1/1 + full-suite 103/103 green(★playwright retries:2 추가=suite 100+ 부하 타이밍 flake 흡수; 96 passed+7 flaky+0 failed; 타겟 24/24 green 으로 코드 무관 확인 후 도입). 신규 lesson 없음. (★post-sort callback=⛔ defer 동반, settled defer 6.)
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1351,6 +1361,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-58 grid-pro-panel 사이드바 (Enterprise backlog 6, Pro)** — ✅ **구현됨 → §3 `mod-grid-58` 참조** (dev-harness 41번째). spec=`specs/MOD-GRID-58.md`
+- Goal: side bar (unified tool-panel container/accordion) — AG sideBar 대응. callback-only(ToolPanel 철학).
+- In: `SideBar({panels,defaultOpenId,className})` 아코디언(소비자 패널 주입, 배타 펼침) + index export. 기존 패널 무수정.
+- Out: 다중 동시 펼침·탭 변형·패널 리사이즈. AC: 초기 1 패널·배타 전환·재클릭 접기·aria(chromium). node 0. tier Pro.
 
 **MOD-GRID-57 grid-core 자동 그룹 컬럼 (Enterprise backlog 5, MIT)** — ✅ **구현됨 → §3 `mod-grid-57` 참조** (dev-harness 40번째). spec=`specs/MOD-GRID-57.md`
 - Goal: auto group column — AG autoGroupColumnDef 대응. createAutoGroupColumn 팩토리(indent+toggle+value).

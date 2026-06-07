@@ -18,3 +18,5 @@ export { StatusBar, type StatusBarItem, type StatusBarProps } from './StatusBar.
 export { statusBarCounts, type StatusBarCountLabels } from './statusBarCounts.js';
 export { ToolPanel, type ToolPanelColumn, type ToolPanelProps } from './ToolPanel.js';
 export { RowGroupPanel, type RowGroupPanelProps } from './RowGroupPanel.js';
+// MOD-GRID-58: SideBar — unified tool-panel container (accordion).
+export { SideBar, type SideBarPanelDef, type SideBarProps } from './SideBar.js';

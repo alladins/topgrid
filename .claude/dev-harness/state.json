@@ -1633,6 +1633,33 @@
       "closure": "★Auto group column=✅(단일 컬럼 indent+toggle+value 팩토리). ★MOD-48 getDataPath 렌더 절반(getDataPath 🟡 유지=소비자 getSubRows; line 250/723 grid-pro-agg GroupRow 별개 🟡 유지). node 0(렌더=브라우저). createCheckboxColumn 팩토리 패턴+TanStack expand API. ★pre-existing flake full-suite 부하서 7 분산(재실행 green). advisor Tier 2 verify-first.",
       "module_summary": "Enterprise backlog 5번째(advisor Tier 2 verify-first). createAutoGroupColumn 팩토리. node 0(브라우저)·chromium 발산(collapsed→expand+indent). 기존 Grid expand 무수정(102/102). 신규 lesson 없음.",
       "version_note": "grid-core 0.4.0→차기 batch minor (createAutoGroupColumn 추가, 미발행)."
+    },
+    "MOD-GRID-58": {
+      "package": "grid-pro-panel (Pro)",
+      "tier": "Pro",
+      "weight": "Full(1-Goal: SideBar 아코디언)",
+      "priority": "Enterprise ❌ backlog 6번째(advisor Tier 3)",
+      "phase": "done (1-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-58.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "side bar — SideBar 아코디언 컨테이너(소비자 패널 주입, 배타 펼침, callback-only=ToolPanel 철학). 기존 패널 무수정.",
+      "g1": {
+        "surface": "SideBar({panels:{id,title,content}[], defaultOpenId?, className?}) 아코디언(배타 펼침, content 소비자 주입, useLicenseStatus/Watermark). index export.",
+        "verified_chromium": "1/1(panel-sidebar.spec.ts): 초기 1 패널 content 만 DOM·헤더 클릭→배타 전환(이전 제거)·재클릭 접기·aria-expanded.",
+        "verified_node": "신규 0(아코디언 UI=브라우저, fabricate 금지=LESS-006)."
+      },
+      "verification": "typecheck 0·build green·chromium 1/1(panel-sidebar.spec.ts) + full-suite 103/103 green(playwright retries:2 추가: 96 passed+7 flaky[부하 타이밍, retry 흡수]+0 failed). ★suite 100+ 부하 flake(19→10, 무관 기능 전반·격리 통과 모듈 포함=환경적)→타겟 재실행 24/24 green 확인 후 retries 로 안정화(코드 무관).",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-006; ToolPanel callback-only 철학 재사용=문서)",
+        "matrix_row": "§3 mod-grid-58 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Side bar ❌→✅(Misc UX 5/4/5→6/4/4) reconcile 19/19(235/70/22·330·0 mismatch·Enterprise 15→14)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★Side bar=✅(통합 도구패널 아코디언, 배타 펼침, callback-only). node 0(브라우저). ToolPanel 철학 재사용. 동반 ⛔=post-sort callback defer(hot-path 수술, settled defer 6). ★검증 인프라 부채 해소(MOD-58 동반): suite 100+ 부하 타이밍 flake→타겟 24/24 green 확인 후 playwright retries:2 추가로 full-suite green 안정화(advisor 사전 경고). advisor Tier 3.",
+      "module_summary": "Enterprise backlog 6번째(advisor Tier 3). SideBar 아코디언(ToolPanel callback-only 철학). node 0(브라우저)·chromium 발산(배타 펼침). 기존 패널 무수정(103/103). 신규 lesson 없음.",
+      "version_note": "grid-pro-panel 0.3.0→차기 batch minor (SideBar 추가, 미발행)."
     }
   },
   "release_queue": {

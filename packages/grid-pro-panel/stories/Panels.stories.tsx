@@ -5,10 +5,45 @@
 //
 // mock data: Storybook stories 허용 범위 (other packages' stories follow this).
 import type { Meta, StoryObj } from '@storybook/react';
-import { StatusBar, ToolPanel, RowGroupPanel } from '@topgrid/grid-pro-panel';
+import { StatusBar, ToolPanel, RowGroupPanel, SideBar } from '@topgrid/grid-pro-panel';
+import { setLicenseState } from '@topgrid/grid-license';
 
 const meta: Meta = { title: 'grid-pro-panel/Panels' };
 export default meta;
+
+// MOD-GRID-58: SideBar accordion — two panels (Columns ToolPanel + a simple Filters list); one open
+// at a time. ★non-vacuous: only the open panel's content is in the DOM; clicking another header
+// swaps which content renders (accordion-exclusive).
+export const SideBarStory: StoryObj = {
+  name: 'SideBar (도구 패널 아코디언)',
+  beforeEach: () => {
+    setLicenseState({ status: { valid: true as const }, rawKey: 'test', setAt: 0 });
+  },
+  render: () => (
+    <SideBar
+      panels={[
+        {
+          id: 'columns',
+          title: 'Columns',
+          content: (
+            <ToolPanel
+              columns={[
+                { id: 'region', label: 'Region', visible: true },
+                { id: 'sales', label: 'Sales', visible: true },
+              ]}
+              onVisibilityChange={() => undefined}
+            />
+          ),
+        },
+        {
+          id: 'filters',
+          title: 'Filters',
+          content: <div data-testid="filters-body">No active filters</div>,
+        },
+      ]}
+    />
+  ),
+};
 
 export const StatusBarStory: StoryObj = {
   name: 'StatusBar 선택/집계 요약',
