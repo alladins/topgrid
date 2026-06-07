@@ -46,6 +46,13 @@
 > 13/4/1 → **14/4/0**=0 ❌, 합 330 불변, reconcile 19/19). chromium 5/5(★view→클릭 진입 autofocus·Enter-commit·Esc-cancel, 모두 story 배선 0;
 > +ctx.commit/cancel 명시 호출 경로 2=CustomEditorContext 5 멤버 전부 verified, AP-004 선제) + 회귀 89/89. node 신규 0(lifecycle=브라우저, LESS-006
 > 정직, fabricate 금지). value=string(onCommit 계약 유지, 임의 value-type=vN). ★제품결정 4종 중 2 build(나머지: column spanning=bound-or-defer=다음, RTL=의도적 연기).
+> ★ **MOD-52 델타(2026-06-07, Track 2 제품결정 3번째 — 사용자 advisor 위임, bound-or-defer→build)**: `Column spanning (body cell colSpan)` ❌→✅ —
+> 순수 `computeColSpans`(clamp+skip-of-skip, node 26/0) + grid-pro-merging `MergingGrid` `enableColSpan`+`meta.colSpan(params)=>number`(AG-faithful
+> callback, value-based mergeRows 와 별개) 양 렌더 분기(non-virt + row-virt) 배선 → **❌28 / ✅229 / 🟡70**(Column features 카테고리 8/5/1 →
+> **9/5/0**=0 ❌, 합 330 불변, reconcile 19/19). chromium 3/3(★피복 셀 DOM 부재·colSpan 속성=N·right-edge 정렬·row-virt coherence·OFF byte-identical)
+> + 회귀 92/92. ★advisor 결정: **grid-pro-merging 배치**(rowSpan 수평 쌍둥이, grid-core hot-path 수술 회피·ARIA 얽힘 소멸=plain table native colSpan)·
+> ★colSpan=within-row → rowSpan L-01 orphan **구조적으로 없음**(rowSpan 보다 완전)→✅ 정직(consistency, streak 아님). 정직 경계: grid-core 메인 `<Grid>`(col-virt/pinned) 미배선.
+> ★제품결정 4종 중 3 build(나머지: RTL=의도적 연기). **Column features 0 ❌·Editing 0 ❌**.
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -76,13 +83,13 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌29, MOD-51 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌28, MOD-52 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 9 + Enterprise 20 + 기타 0 = **29**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌)).
-> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌29(MOD-51 반영) 기준으로 정정.
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 20 + 기타 0 = **28**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌)).
+> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌28(MOD-52 반영) 기준으로 정정.
 
-- **Community 9 (table-stakes)**: ① 자율 빌드 아님(제품 결정 → **advisor 위임**, 2026-06-07)=Column spanning(body colSpan, bound-or-defer=다음)·
-  RTL(**의도적 연기**: invasive·한국우선 저가치) (★MOD-50: Full-row editing ❌→✅·★MOD-51: Custom cell editor slot ❌→✅ 닫힘) ② vN 연기 5=post-sort
+- **Community 8 (table-stakes)**: ① 자율 빌드 아님(제품 결정 → **advisor 위임**, 2026-06-07)=RTL(**의도적 연기**: invasive·한국우선 저가치)
+  (★MOD-50: Full-row editing ❌→✅·★MOD-51: Custom cell editor slot ❌→✅·★MOD-52: Column spanning ❌→✅ 닫힘 — 제품결정 4종 중 3 build, RTL 만 잔여) ② vN 연기 5=post-sort
   callback·debounced scroll·row animation·auto-virtualization-threshold·drag-between-grids (★MOD-43: applyTransaction·async batching ❌→✅;
   ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
@@ -115,7 +122,7 @@
 
 | 카테고리 | 기능 | ✅ | 🟡 | ❌ |
 |---|---|---|---|---|
-| Column features | 14 | 8 | 5 | 1 |
+| Column features | 14 | 9 | 5 | 0 |
 | Sorting | 18 | 15 | 2 | 1 |
 | Filtering | 13 | 12 | 1 | 0 |
 | Row grouping & aggregation | 19 | 11 | 6 | 2 |
@@ -154,7 +161,7 @@
 | Column state persistence (order+visibility+size) | Enterprise | ○ | ✅ 구현 | `grid-core: useColumnPersistence ({v,data} envelope = {visibility,order} in localStorage), useStoragePersist/useUrlSync + serializeState` — useColumnPersistence persists visibility+order only; full grid state (incl sizing) via useStoragePersist/useUrlSync hooks. |
 | Column move API (imperative) | Community | FlexGrid | 🟡 부분 | `grid-core: useColumnDrag calls table.setColumnOrder; useGridState exposes setColumnOrder setter` — Reorder via TanStack setColumnOrder; no dedicated moveColumn(index) imperative helper. |
 | Column menu (header dropdown: sort/filter/pin actions) | Community | FlexGrid | ✅ 구현(MOD-38: ColumnMenu 정렬+pin+hide 액션, 행동 게이트) | No header column-menu component (grep for ColumnMenu/HeaderMenu empty); only ColumnVisibilityMenu and right-click ContextMenuGrid (Pro) exist. |
-| Column spanning (body cell colSpan) | Community | FlexGrid | ❌ 미구현 | Grid.tsx colSpan is header-group / empty-state / padding-tr only; cell merging is rowSpan (grid-pro-merging), no body colSpan. |
+| Column spanning (body cell colSpan) | Community | FlexGrid | ✅ 구현(MOD-52, grid-pro-merging Pro) | `grid-pro-merging: pure computeColSpans (clamp + skip-of-skip, node 26/0) + MergingGrid enableColSpan + meta.colSpan:(params)=>number (AG-faithful per-cell callback, separate from value-based mergeRows); both render paths (non-virt + row-virt)` — chromium 3/3: ★covered cells absent from DOM·colSpan attr=N·right-edge alignment·row-virt coherence (within-row → no rowSpan L-01 orphan, *more* complete than rowSpan). native colSpan (plain table, no aria-colspan). AG `colSpan:(params)=>number` 대응. **정직 경계**: grid-core 메인 `<Grid>`(column-virtualized/pinned)에는 미배선(rowSpan 과 동일 상황). |
 | Min/max column width constraints | Community | FlexGrid | 🟡 부분 | `grid-sizing starWidth.ts StarColumnInput.min (clamp); TanStack minSize/maxSize on ColumnDef` — Only min is enforced in star distribution (no max in starWidth); maxSize relies on TanStack ColumnDef defaults, no topgrid-specific enforcement layer. |
 
 ### Sorting
@@ -574,7 +581,7 @@
 | 기능 | 카테고리 | AG Grid | topgrid | 비고 |
 |---|---|---|---|---|
 | Column menu (header dropdown: sort/filter/pin actions) | Column features | Community | ✅ 구현(MOD-38: ColumnMenu 정렬+pin+hide 액션, 행동 게이트) | No header column-menu component (grep for ColumnMenu/HeaderMenu empty); only ColumnVisibilityMenu and right-click ContextMenuGrid (Pro) exist. |
-| Column spanning (body cell colSpan) | Column features | Community | ❌ 미구현 | Grid.tsx colSpan is header-group / empty-state / padding-tr only; cell merging is rowSpan (grid-pro-merging), no body colSpan. |
+| Column spanning (body cell colSpan) | Column features | Community | ✅ 구현(MOD-52, grid-pro-merging Pro) | pure computeColSpans(clamp+skip-of-skip, node 26/0) + MergingGrid enableColSpan + meta.colSpan(params)=>number(AG-faithful callback). chromium 3/3(covered 부재·colSpan 속성=N·right-edge 정렬·row-virt coherence). within-row=rowSpan L-01 orphan 없음. native colSpan(plain table). 정직 경계: grid-core 메인 `<Grid>`(col-virt/pinned) 미배선. AG colSpan 대응. |
 | Accented / locale-aware (collation) sort | Sorting | Community | ✅ 구현(MOD-37 G-1: localeSortingFn, localeCompare numeric collation) | VERIFIED MISSING. No topgrid locale/collation sort code. TanStack's built-in alphanumeric/text fns are basic and not locale-collation aware. AG Grid: accentedSort:true. |
 | Null/blank value placement control (sortNullsFirst / sortUndefined) | Sorting | Community | ✅ 구현(MOD-37 G-2: sortUndefined passthrough + blankToUndefined 헬퍼, 방향-독립) | VERIFIED MISSING. No surface to control where null/undefined values sort. AG Grid colDef.sortingOrder + nullComparator; TanStack sortUndefined exists but not exposed by topgrid. |
 | Post-sort callback (reorder/pin rows after sort applied) | Sorting | Community | ❌ 미구현 | VERIFIED MISSING. AG Grid gridOptions.postSortRows lets you mutate row order after sort. No topgrid equivalent. |

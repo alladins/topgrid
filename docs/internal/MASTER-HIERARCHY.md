@@ -923,6 +923,17 @@
 
 > dev-harness 수확: **Track 2 제품결정 2번째**. ★설계(advisor): 소비자는 이미 raw `cell` 로 임의 editor 를 그릴 수 있음(broad capability 존재) → 비공허 증분은 "임의 컴포넌트 렌더"가 아니라 **편집 lifecycle 위임**(진입 autofocus·Enter→commit·Esc→cancel = raw cell 무료 미제공). **render-prop slot(registry 아님)** — per-column·lifecycle-bound, AG string-config 직렬화 needs 없음, registerRenderer 선례 비적용. ★비공허성 메커니즘=**keydown 버블링**: 소비자 editor 의 keydown 이 슬롯 wrapper `<div onKeyDown>` 로 버블 → EditableCell 가 Enter/Esc/Tab 처리(소비자가 onKeyDown 받으면 주장 붕괴=그래서 ctx 에 onKeyDown 미노출). ★검증 엄격(advisor, "input 나타남"=vacuous 금지): view 모드 시작→클릭 진입(isEditing=true 시작 금지)·커스텀 editor 구조적 구분(data-testid+built-in class 부재)·`toBeFocused`(bare input self-focus 안 함=focusRef 증명)·Enter는 포커스 상태에서(blur 아님). **비공허 기준 사전 확정**: focus+Enter+Esc 셋 다 story 배선 0 으로 성립→✅(소비자가 핵심 lifecycle 여전히 배선이면 🟡, retrofit 금지). **node-pure spine 없음=정직**(MOD-49 G-1·MOD-35 G-3 동형, LESS-006, fabricate 금지). value=string(onCommit 계약 유지, 임의 value-type=vN; gap line 276 "consumer-supplied editor component" 정확 닫음, 임의 타입 parity 주장 아님). OFF byte-identical(기존 11 static story 회귀=if(isEditing) 최상단 분기 추가, 기존 editType 경로 무수정). ★ctx.commit/cancel 명시 호출 경로도 검증(저장/취소 버튼+chromium 2)=CustomEditorContext 5 멤버 전부 verified(AP-004 선제, MOD-50 validateRow 교훈). **Editing 13/4/1→14/4/0(0 ❌)**, COMMERCIAL-GAP ❌30→29·✅227→228·🟡70(reconcile 19/19·330·0 mismatch). chromium 89/89(84+5). 신규 lesson 없음.
 
+### `mod-grid-52` — 본문 셀 컬럼 스팬 (column spanning / body cell colSpan, **Pro**, grid-pro-merging) ✅ 채움 — {G-1,G-2} 완주 (Track 2 제품결정 3번째)
+
+소스: `packages/grid-pro-merging/src/{computeColSpans.ts, computeColSpans.test.ts}`(node) + `types.ts`(ColSpanFn/ColSpanMap/meta.colSpan/enableColSpan) + `MergingGrid.tsx`(양 렌더 분기 배선) + `index.ts` export, story `stories/MergingGrid.colspan.stories.tsx`(실제 render), spec `.claude/dev-harness/specs/MOD-GRID-52.md`. dev-harness 35번째. **Track 2 제품결정 3번째**(advisor 순서 full-row✅→custom editor✅→**column spanning**→RTL). 갭분석 Column features ❌ 1 닫기(Column features 0 ❌ 도달).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 순수 colSpan 스파인(G-1) | `computeColSpans(rows, columns:{id,colSpan?}[])→ColSpanMap`(>1=시작·0=skip·1/미존재=일반) | **종결형**(순수) | computeMergeSpans(rowSpan)의 **수평 쌍둥이**. 행마다 좌→우, clamp[1,남은컬럼]·skip-of-skip(피복 컬럼 colSpan 무시) | node 26/0: 기본·시작+피복·clamp·skip-of-skip·다중 스팬·invalid(0/음/NaN/Inf→1)·floor·빈 rows | 채움 |
+| MergingGrid colSpan 배선(G-2) | `enableColSpan?`(opt-in) + `meta.colSpan?:(params:{row,rowIndex})=>number`(AG-faithful callback) | **배선형** | 양 렌더 분기(non-virt + row-virt)에 colSpanMap lookup: 0→null(피복 셀 제거)·>1→`<td colSpan={n}>`. **native colSpan**(plain table→aria-colspan 불필요). mergeRows 와 독립(미조합) | chromium 3/3: ★피복 셀 DOM 부재·colSpan 속성=N·right-edge 정렬·row-virt coherence(within-row=L-01 orphan 없음)·OFF byte-identical | 채움 |
+
+> dev-harness 수확: **Track 2 제품결정 3번째**(bound-or-defer triage → build). ★**reuse-gate(MergingGrid.tsx)가 배치 결정**: column spanning = rowSpan(grid-pro-merging)의 **수평 쌍둥이** — MergingGrid 가 자체 `<table>` 렌더 소유(grid-core 위임 아님)·셀-skip 머신리(span0→null)·role=grid/aria-colindex 없음(plain table)·col-virt/pinning 자체 없음. → **grid-pro-merging 배치**(advisor): ① grid-core hot-path(renderWindowedCells, MOD-27/LESS-006) 수술 회피 ② 머신리 재사용 ③ **ARIA 얽힘 소멸**(native colSpan=plain table 시맨틱, aria-colspan 금지) ④ 머징 한 패키지 제품 일관성. tier Pro(rowSpan 일관; 갭 "Community"=AG tiering). **★callback form**(`colSpan(params)=>number`, AG-faithful — value-based mergeRows 와 다른 기능, advisor 명시). ★**✅ 정직성(consistency, streak 아님)**: colSpan=**within-row** → row-virt 는 행 단위 추가/제거이므로 렌더된 행의 colSpan 셀 항상 coherent = **rowSpan 의 L-01 orphan 이 colSpan 엔 구조적으로 없음**(rowSpan 보다 완전). rowSpan 이 이 방식으로 출하(present 취급)되고 colSpan 은 caveat 마저 없음 → ✅ 가 정직(덜 완전한 rowSpan 을 present 로 두며 colSpan 을 🟡 로 두면 doc 신뢰도 하락). **정직 경계 명시**(over-claim 방지): grid-core 메인 `<Grid>`(column-virtualized/pinned)에는 미배선(rowSpan 과 동일 상황). 검증=node 순수 spine(clamp+skip-of-skip)+chromium 발산(LESS-006, "td 보임" 금지·width=합 단언 금지=table-layout:auto flake→right-edge 정렬). OFF byte-identical(enableColSpan=false). **Column features 1 ❌→✅**(8/5/1→9/5/0), COMMERCIAL-GAP ❌29→28·✅228→229·🟡70(reconcile 19/19·330·0 mismatch). chromium 92/92(89+3). 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1289,6 +1300,12 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-52 grid-pro-merging 본문 셀 컬럼 스팬 (Track2-3, Pro)** — ✅ **구현됨 → §3 `mod-grid-52` 참조** (dev-harness 35번째). spec=`specs/MOD-GRID-52.md`
+- Goal: column spanning (body cell colSpan) — AG `colSpan:(params)=>number`(Community)·Wijmo allowMerging 대응. bound-or-defer triage → **build**(grid-pro-merging Pro).
+- In: 순수 `computeColSpans`(clamp+skip-of-skip, node 26/0) + `ColSpanFn`/`ColSpanMap` 타입 + `enableColSpan?` prop + `meta.colSpan?`(callback) + MergingGrid 양 분기(non-virt + row-virt) 배선 + 실제-render 스토리. mergeRows 경로 무수정.
+- Out: row+col 동일 셀 조합(복잡=vN) · grid-core 메인 `<Grid>`(col-virt/pinned) 배선(다른 렌더경로=vN, 정직 경계) · header colSpan(이미 multi-row header) · RTL.
+- AC: G-1 clamp/skip-of-skip/invalid(node) · G-2 피복 셀 DOM 부재·colSpan 속성=N·right-edge 정렬·row-virt coherence·OFF byte-identical(chromium 발산). ★설계(advisor): grid-pro-merging 배치(rowSpan 수평 쌍둥이, hot-path 수술 회피·ARIA 얽힘 소멸=native colSpan)·callback form(≠value-based mergeRows)·✅ 정직(within-row=L-01 orphan 없음, rowSpan 보다 완전). tier Pro.
 
 **MOD-GRID-51 grid-renderers 커스텀 셀 에디터 슬롯 (Track2-2, MIT)** — ✅ **구현됨 → §3 `mod-grid-51` 참조** (dev-harness 34번째). spec=`specs/MOD-GRID-51.md`
 - Goal: custom cell editor slot — EditableCell `renderEditor?(ctx)` render-prop lifecycle slot. AG `cellEditor`(Community)·Wijmo `CellTemplate` 대응. 비공허=lifecycle 위임(autofocus·Enter-commit·Esc-cancel, raw cell 무료 미제공).

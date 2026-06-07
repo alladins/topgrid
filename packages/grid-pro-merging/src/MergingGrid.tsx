@@ -12,7 +12,8 @@ import type { JSX } from 'react';
 import { useMemo, useRef } from 'react';
 
 import { computeMergeSpans } from './computeMergeSpans';
-import type { MergeRowsConfig, MergingGridProps } from './types';
+import { computeColSpans } from './computeColSpans';
+import type { ColSpanFn, MergeRowsConfig, MergingGridProps } from './types';
 
 /**
  * 셀 병합(rowSpan) 기능을 제공하는 Pro 그리드 컴포넌트.
@@ -46,6 +47,7 @@ export function MergingGrid<TData extends object>(
     data,
     columns,
     enableMerging = false,
+    enableColSpan = false,
     className,
     enableVirtualization = false,
     estimatedRowHeight = 40,
@@ -93,6 +95,32 @@ export function MergingGrid<TData extends object>(
     );
   }, [rows, mergeColumns, enableMerging]);
 
+  // MOD-GRID-52: colSpan 대상 컬럼 추출 (enableColSpan=true 시에만). 순서 = columns 배열 순서
+  // = getVisibleCells 순서 (MergingGrid 는 컬럼 재정렬/핀 없음). 전 컬럼 포함(스팬 skip 전파 위해).
+  const colSpanColumns = useMemo(() => {
+    if (!enableColSpan) return [];
+    return columns.map((col) => {
+      const id =
+        col.id ??
+        (col as ColumnDef<TData> & { accessorKey?: string }).accessorKey ??
+        '';
+      const fn = col.meta?.colSpan as ColSpanFn<TData> | undefined;
+      // exactOptionalPropertyTypes: colSpan 키는 정의된 경우에만 포함.
+      return fn ? { id, colSpan: fn } : { id };
+    });
+  }, [columns, enableColSpan]);
+
+  // rows 참조 변경(sort/filter) 또는 colSpanColumns 변경 시 재계산.
+  const colSpanMap = useMemo(() => {
+    if (!enableColSpan || colSpanColumns.length === 0) {
+      return new Map<string, number>();
+    }
+    return computeColSpans(
+      rows.map((r) => r.original),
+      colSpanColumns
+    );
+  }, [rows, colSpanColumns, enableColSpan]);
+
   // 가상화 인스턴스 (훅 순서 보장 — enableVirtualization=false 시 count=0으로 항상 호출, W-1)
   const virtualizer = useVirtualizer({
     count: enableVirtualization ? rows.length : 0,
@@ -134,8 +162,17 @@ export function MergingGrid<TData extends object>(
                   // 병합 시작 셀: span > 1, 일반 셀: span === 1 또는 undefined(병합 없음)
                   const rowSpan =
                     enableMerging && span !== undefined && span > 1 ? span : 1;
+                  // MOD-GRID-52: 가로 병합. 피복 셀(cspan===0)→null, 시작 셀(>1)→colSpan 속성.
+                  const cspan = colSpanMap.get(key);
+                  if (enableColSpan && cspan === 0) return null;
+                  const colSpan =
+                    enableColSpan && cspan !== undefined && cspan > 1 ? cspan : 1;
                   return (
-                    <td key={cell.id} rowSpan={rowSpan}>
+                    <td
+                      key={cell.id}
+                      rowSpan={rowSpan}
+                      {...(colSpan > 1 ? { colSpan } : {})}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   );
@@ -204,8 +241,18 @@ export function MergingGrid<TData extends object>(
 
                   const rowSpan =
                     enableMerging && span !== undefined && span > 1 ? span : 1;
+                  // MOD-GRID-52: 가로 병합. colSpan 은 within-row 라 L-01 orphan 문제가 없음
+                  // (가상화는 행 단위 추가/제거 → 렌더된 행의 피복 셀은 항상 같은 윈도에 존재).
+                  const cspan = colSpanMap.get(key);
+                  if (enableColSpan && cspan === 0) return null;
+                  const colSpan =
+                    enableColSpan && cspan !== undefined && cspan > 1 ? cspan : 1;
                   return (
-                    <td key={cell.id} rowSpan={rowSpan}>
+                    <td
+                      key={cell.id}
+                      rowSpan={rowSpan}
+                      {...(colSpan > 1 ? { colSpan } : {})}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
                   );

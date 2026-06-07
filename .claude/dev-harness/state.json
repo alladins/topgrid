@@ -1461,6 +1461,38 @@
       "module_summary": "Track 2 제품결정 2번째(advisor 위임). EditableCell 기존 draft/handleKey/autofocus lifecycle 을 renderEditor 슬롯에 재배선(신규 lifecycle 무발명). chromium 발산(autofocus·Enter-commit·Esc-cancel, story 배선 0)=비공허. 기존 editType 경로 무수정(회귀 89/89). 신규 lesson 없음.",
       "version_note": "grid-renderers 0.2.1→차기 batch minor (renderEditor prop 추가, 미발행).",
       "product_decision_note": "제품결정 4종(advisor 위임): full-row editing=✅(MOD-50) / custom cell editor slot=✅(MOD-51) / column spanning=bound-or-defer(다음 MOD-52?) / RTL=의도적 연기(invasive·한국우선 저가치)."
+    },
+    "MOD-GRID-52": {
+      "package": "grid-pro-merging (Pro)",
+      "tier": "Pro",
+      "weight": "Full(2-Goal: computeColSpans / MergingGrid colSpan 배선)",
+      "priority": "Track2-3 제품결정(사용자 advisor 위임; bound-or-defer triage→build)",
+      "phase": "done (2-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-52.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "column spanning (body cell colSpan) — AG colSpan:(params)=>number callback. grid-pro-merging(rowSpan 수평 쌍둥이), non-virt + row-virt 양 경로. mergeRows 무수정.",
+      "g1": {
+        "surface": "순수 computeColSpans(rows,columns:{id,colSpan?}[])→ColSpanMap(>1=시작·0=skip·1/미존재=일반). clamp[1,남은컬럼]·skip-of-skip·invalid<1/비유한→1·floor.",
+        "verified_node": "26/0: 기본·시작+피복·clamp·skip-of-skip·다중 스팬·invalid(0/음/NaN/Inf)·floor·빈 rows."
+      },
+      "g2": {
+        "surface": "enableColSpan? opt-in + meta.colSpan?:(params:{row,rowIndex})=>number(AG-faithful callback). MergingGrid 양 분기(non-virt+row-virt) colSpanMap lookup: 0→null·>1→<td colSpan>. native colSpan(plain table=aria-colspan 없음). mergeRows 미조합.",
+        "verified_chromium": "3/3: 피복 셀 DOM 부재(5컬럼 span3→3 td)·colSpan 속성=N·right-edge 정렬(width=합 회피)·row-virt coherence(row40 스크롤-인 무손상)·OFF byte-identical."
+      },
+      "verification": "node computeColSpans 26/0·typecheck 0(exactOptional 조건부 키)·build green·chromium 3/3(merging-colspan.spec.ts) + 전체 회귀 92/92(89+3, 기존 mergeRows/렌더 무수정).",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-003 reuse-gate·LESS-006; MergingGrid 배치 결정·within-row=orphan 없음=advisor 통찰=문서)",
+        "matrix_row": "§3 mod-grid-52 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Column spanning ❌→✅(Column features 8/5/1→9/5/0=0 ❌) reconcile 19/19(229/70/28·330·0 mismatch·Community 9→8)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★Column spanning=✅(grid-pro-merging Pro, callback form colSpan, non-virt+row-virt). ★reuse-gate(MergingGrid.tsx)=배치 결정(rowSpan 수평 쌍둥이, grid-core hot-path 수술 회피·ARIA 얽힘 소멸=plain table native colSpan·머징 한 패키지). ★callback form(≠value-based mergeRows, advisor 명시). ★✅ 정직성(consistency 아닌 streak): colSpan=within-row→rowSpan L-01 orphan 구조적 없음(rowSpan 보다 완전). 정직 경계: grid-core 메인 <Grid>(col-virt/pinned) 미배선. ★검증 설계(advisor): width=합 단언 금지(table-layout:auto flake)→right-edge 정렬·row-virt 스크롤 coherence. advisor.",
+      "module_summary": "Track 2 제품결정 3번째(bound-or-defer→build). 순수 computeColSpans(clamp+skip-of-skip) node 26/0 + MergingGrid 양 분기 배선 chromium 발산. rowSpan 수평 쌍둥이=머신리 재사용·grid-core 무수정. within-row=L-01 orphan 없음. 회귀 92/92. 신규 lesson 없음.",
+      "version_note": "grid-pro-merging 0.3.0→차기 batch minor (computeColSpans/enableColSpan 추가, 미발행).",
+      "product_decision_note": "제품결정 4종(advisor 위임): full-row editing=✅(MOD-50) / custom cell editor slot=✅(MOD-51) / column spanning=✅(MOD-52) / RTL=의도적 연기(invasive·한국우선 저가치). 4종 중 3 build, RTL 만 잔여."
     }
   },
   "release_queue": {

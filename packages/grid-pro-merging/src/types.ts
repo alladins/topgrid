@@ -18,8 +18,24 @@ export type MergeRowsConfig<TData> =
   | ((prev: TData, curr: TData) => boolean);
 
 /**
- * mergeRows를 지원하는 확장 컬럼 정의.
- * TanStack ColumnDef meta 필드를 통해 mergeRows 설정을 추가한다.
+ * 본문 셀 가로 병합(colSpan) 콜백 (MOD-GRID-52).
+ *
+ * AG Grid `colSpan:(params)=>number` 대응 — 이 셀이 가로로 차지할 컬럼 수를 반환한다.
+ * `1`(기본) = 스팬 없음, `n>1` = 자신 포함 n개 컬럼을 가로 병합(우측 n-1개 셀은 자동 skip).
+ * mergeRows(값 비교 기반 rowSpan)와 달리 **per-cell 콜백 형식**이다.
+ *
+ * @example
+ * // 첫 행의 이 컬럼 셀만 3컬럼 스팬
+ * { meta: { colSpan: ({ rowIndex }) => (rowIndex === 0 ? 3 : 1) } }
+ */
+export type ColSpanFn<TData> = (params: {
+  row: TData;
+  rowIndex: number;
+}) => number;
+
+/**
+ * mergeRows / colSpan 을 지원하는 확장 컬럼 정의.
+ * TanStack ColumnDef meta 필드를 통해 병합 설정을 추가한다.
  *
  * @typeParam TData - 행 데이터 타입
  *
@@ -36,6 +52,8 @@ export type MergeRowsConfig<TData> =
 export type MergingColumnDef<TData> = ColumnDef<TData> & {
   meta?: {
     mergeRows?: MergeRowsConfig<TData>;
+    /** MOD-GRID-52: 본문 셀 가로 병합(colSpan) 콜백. */
+    colSpan?: ColSpanFn<TData>;
     [key: string]: unknown;
   };
 };
@@ -49,6 +67,16 @@ export type MergingColumnDef<TData> = ColumnDef<TData> & {
  * - 값 === 0: 병합으로 인해 skip되어야 하는 셀 (null 반환)
  */
 export type MergeSpanMap = Map<string, number>;
+
+/**
+ * computeColSpans 결과 Map (MOD-GRID-52).
+ *
+ * 키 형식: `${rowIdx}_${colId}`
+ * - 값 > 1: 해당 셀이 가로로 값 개수만큼의 컬럼을 병합하는 시작 셀 (`colSpan` 속성)
+ * - 값 === 0: 좌측 스팬에 피복되어 skip 되어야 하는 셀 (null 반환)
+ * - 값 === 1 또는 미존재: 병합 없는 일반 셀
+ */
+export type ColSpanMap = Map<string, number>;
 
 /**
  * MergingGrid 컴포넌트 Props.
@@ -66,6 +94,13 @@ export interface MergingGridProps<TData> {
    * `true`이면 `meta.mergeRows`가 설정된 컬럼에서 rowSpan 자동 계산.
    */
   enableMerging?: boolean;
+  /**
+   * 본문 셀 가로 병합(colSpan) 활성화 (MOD-GRID-52).
+   * `false`(기본값)이면 colSpan 비활성 — colSpan 속성/피복 셀 0 (byte-identical).
+   * `true`이면 `meta.colSpan` 콜백이 설정된 컬럼에서 가로 병합 자동 계산.
+   * mergeRows(rowSpan)와 독립 — 동일 셀에 둘 다 적용하는 조합은 범위 밖(vN).
+   */
+  enableColSpan?: boolean;
   /** table 엘리먼트에 적용할 CSS className */
   className?: string;
   /**

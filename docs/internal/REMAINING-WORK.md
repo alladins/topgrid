@@ -8,21 +8,23 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
 
-> **현 상태**: vN node-pure 9(MOD-40~48) + Track 1 MOD-49 + **Track 2 제품결정 1·2번째 MOD-50·MOD-51 완료(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
-> COMMERCIAL-GAP **❌47→29**(✅228/🟡70/❌29; **Editing 0 ❌**). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **현 상태**: vN node-pure 9(MOD-40~48) + Track 1 MOD-49 + **Track 2 제품결정 4종 전부 resolve(2026-06-07): MOD-50·MOD-51·MOD-52 build + RTL 연기**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
+> COMMERCIAL-GAP **❌47→28**(✅229/🟡70/❌28; **Column features·Editing 0 ❌**). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
 > **★Track 2 착수(사용자 advisor 위임)**: 제품 결정 4종 STOP-and-ask → advisor 판단 위임(설계·우선순위), 끝까지 진행. publish/push 만 사용자 게이트 유지.
-> **MOD-49**(Track1-1): pagination 3 ❌→✅. **MOD-50**(Track2-1): full-row editing ❌→✅. **MOD-51**(Track2-2): custom cell editor slot ❌→✅(EditableCell renderEditor, chromium 회귀 **89/89**).
-> **advisor 제품결정 순서**: full-row editing✅ → custom cell editor slot✅ → column spanning(bound-or-defer=다음) → **RTL=의도적 연기**(invasive·한국우선 저가치).
+> **MOD-49**(Track1-1): pagination 3 ❌→✅. **MOD-50**(Track2-1): full-row editing ❌→✅. **MOD-51**(Track2-2): custom cell editor slot ❌→✅. **MOD-52**(Track2-3): column spanning ❌→✅(grid-pro-merging colSpan, chromium 회귀 **92/92**).
+> **advisor 제품결정 순서**: full-row editing✅ → custom cell editor slot✅ → column spanning✅ → **RTL=의도적 연기**(invasive·한국우선 저가치). → **4종 중 3 build, RTL 만 잔여**.
 
 ### ▶ 새 세션 즉시 시작 (2026-06-07 갱신)
 
-> **다음 액션 = MOD-52 column spanning(bound-or-defer)**(Track 2, advisor triage). 그 다음 RTL=의도적 연기(❌ 유지) → Enterprise ❌20 backlog
-> (advisor triage). **작동 방식**(사용자 지시): 설계·우선순위 **advisor 위임**, commit-per-module, 끝까지 진행. **publish(npm)·origin push 만 사용자 게이트.**
-> 먼저 읽을 것: 본 HANDOFF + 메모리 `dev-harness-loop-progress`(재개 지점) + `state.json`(MOD-49/50/51 + split_remainder) + COMMERCIAL-GAP(갭 현황 ❌29).
+> **다음 액션 = Enterprise ❌20 backlog(advisor triage)** 또는 RTL 재고. 제품결정 4종 종결(MOD-50~52 build·RTL 연기). 후보(browser 클러스터):
+> pivot panel/server-side·collapsible cols(grid-pro-pivot) · grand-total footer 렌더/auto-agg floating(grid-pro-agg) · advanced filter 쿼리빌더 UI(grid-pro-filter) ·
+> auto group column·master-detail+virtualization(tree) · viewport row model · sticky group headers · context submenu · sidebar/tool panel · .xlsx import.
+> **작동 방식**(사용자 지시): 설계·우선순위 **advisor 위임**, commit-per-module, 끝까지 진행. **publish(npm)·origin push 만 사용자 게이트.**
+> 먼저 읽을 것: 본 HANDOFF + 메모리 `dev-harness-loop-progress`(재개 지점) + `state.json`(MOD-49~52 + split_remainder) + COMMERCIAL-GAP(갭 현황 ❌28).
 
-> **MOD-52 설계(advisor triage)**: arbitrary body colSpan = col-virtualization/pinned/ARIA 얽힘. full-width 스팬은 이미 4경로 존재.
-> **bounded 버전(비-virt·비-pinned·문서화 한계)이 비공허 단언 있으면 build, "전부 지원"만 정직 스코프면 defer**. → bounded build 후보. spec-gate advisor 확정.
-> **★MOD-51 done 교훈**(다음 모듈에 적용): 비공허성 = lifecycle/행동 위임이 소비자 배선 0 으로 성립함(ctx 에 onKeyDown 노출 시 주장 붕괴). 비공허 기준 **결과 보기 전 확정**(retrofit ❌→✅ 금지). node-pure 없으면 fabricate 금지(LESS-006).
+> **★MOD-52 done 교훈**(다음 모듈에 적용): **reuse-gate 파일(렌더 컴포넌트)이 배치·tier·✅/🟡 를 결정** — 추상 triage 전에 그 파일을 읽어라(MergingGrid.tsx 가 grid-pro-merging
+> 배치+native colSpan=ARIA 얽힘 소멸을 결정). ✅/🟡 는 streak 아닌 **유사 기능과의 consistency**로 판단(rowSpan present↔colSpan ✅). **정직 경계 명시**(grid-core 메인 `<Grid>` 미배선)=over-claim 방지.
+> **★MOD-51 교훈**: 비공허성=lifecycle/행동 위임이 소비자 배선 0 으로 성립(ctx onKeyDown 노출 시 붕괴). 비공허 기준 **결과 보기 전 확정**(retrofit 금지). node-pure 없으면 fabricate 금지(LESS-006).
 
 > **★chromium 하네스 재가동(매 세션 선행, ss-srv.mjs=gitignore 미커밋)**:
 > 1. `node -v`(≥22.6) · chromium 설치 확인. 2. `apps/docs/ss-srv.mjs` 복원: `git show 6d8355d^:apps/docs/ss-srv.mjs` 내용을 Write.
@@ -59,15 +61,17 @@
 - **Custom cell editor slot** → ✅ **완료(MOD-51)**. EditableCell `renderEditor?(ctx:{value,onChange,commit,cancel,focusRef})` render-prop
   lifecycle slot(registry 아님). 비공허=lifecycle 위임(진입 autofocus·Enter→commit·Esc→cancel, raw cell 무료 미제공; ★keydown 버블링=원천).
   chromium 5/5(story 배선 0; +ctx.commit/cancel 명시 호출=ctx 5 멤버 전부 verified)+회귀 89/89. node 신규 0(정직). value=string(임의 value-type=vN). Editing 0 ❌ 도달.
-- **Column spanning(body colSpan)** → 🔜 **bound-or-defer(MOD-52=다음)**. full-width 스팬 이미 4경로. arbitrary body colSpan=col-virt/핀/ARIA 얽힘.
-  advisor: **bounded 버전(비-virt·비-pinned·문서화 한계)이 비공허 단언 있으면 build, "전부 지원"만 정직 스코프면 defer**. → bounded build 후보.
+- **Column spanning(body colSpan)** → ✅ **완료(MOD-52, grid-pro-merging Pro)**. 순수 `computeColSpans`(clamp+skip-of-skip, node 26/0) + MergingGrid
+  `enableColSpan`+`meta.colSpan(params)=>number`(AG-faithful callback, value-based mergeRows 와 별개) 양 분기 배선. chromium 3/3(피복 셀 DOM 부재·colSpan
+  속성=N·right-edge 정렬·row-virt coherence·OFF byte-identical)+회귀 92/92. ★advisor: grid-pro-merging 배치(rowSpan 수평 쌍둥이=reuse-gate 결정·native colSpan=ARIA
+  얽힘 소멸·grid-core hot-path 수술 회피). ★✅ 정직(within-row→rowSpan L-01 orphan 없음, rowSpan 보다 완전). 정직 경계=grid-core 메인 `<Grid>`(col-virt/pinned) 미배선.
 - **RTL 레이아웃** → ⛔ **의도적 연기(advisor 결정, silent gap 아님)**. invasive(`computePinnedOffset` 등 전 LTR 전제), 한국시장 우선순위 낮음
-  → 자율 build = 큰 invasive 변경 대비 거의 0 가치. **결정으로 기록**(❌ 유지, 차기 우선순위 재평가 시 재고).
+  → 자율 build = 큰 invasive 변경 대비 거의 0 가치. **결정으로 기록**(❌ 유지, 차기 우선순위 재평가 시 재고). **제품결정 4종 중 유일 잔여**.
 
-### 빠른 시작 예시 (현 상태 = MOD-51 까지 완료)
-> 기본(이어서): "계속" / "MOD-52 부터" → 하네스 재가동(위 6단계) → MOD-52 column spanning bound-or-defer spec-gate(advisor) → build/defer.
-> 트랙 1 전환: "browser 클러스터 — pivot panel 부터" → 동일 하네스 + grid-pro-pivot split_remainder.
-> 결정만: "column spanning 어떻게 할지" / "RTL 다시 볼지" → advisor triage 재확인.
+### 빠른 시작 예시 (현 상태 = MOD-52 까지 완료, 제품결정 4종 종결)
+> 기본(이어서): "계속" / "다음" → 하네스 재가동(위 6단계) → Enterprise ❌20 backlog 다음 모듈 spec-gate(advisor) → build.
+> 트랙 1/Enterprise 전환: "browser 클러스터 — pivot panel 부터" → 동일 하네스 + grid-pro-pivot split_remainder.
+> 결정만: "RTL 다시 볼지" → advisor triage 재확인(현재 의도적 연기).
 
 ---
 
