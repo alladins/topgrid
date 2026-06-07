@@ -20,3 +20,9 @@ export { ToolPanel, type ToolPanelColumn, type ToolPanelProps } from './ToolPane
 export { RowGroupPanel, type RowGroupPanelProps } from './RowGroupPanel.js';
 // MOD-GRID-58: SideBar — unified tool-panel container (accordion).
 export { SideBar, type SideBarPanelDef, type SideBarProps } from './SideBar.js';
+// MOD-GRID-59: FiltersToolPanel — unified column-filter editing surface.
+export {
+  FiltersToolPanel,
+  type FiltersToolPanelColumn,
+  type FiltersToolPanelProps,
+} from './FiltersToolPanel.js';

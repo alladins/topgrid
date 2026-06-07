@@ -82,6 +82,10 @@
 > grid-pro-panel `SideBar({panels,defaultOpenId})` 아코디언 컨테이너(소비자 패널 주입, 배타 펼침, callback-only=ToolPanel 철학) →
 > **❌22 / ✅235 / 🟡70**(Misc UX 카테고리 5/4/5 → **6/4/4**, 합 330 불변, reconcile 19/19). chromium 1/1(★초기 1 패널 content 만 DOM·헤더 클릭→배타 전환(이전 content 제거)·재클릭 접기·aria-expanded)
 > + full-suite 103/103 green(★playwright retries:2 추가=suite 100+ 부하 타이밍 flake 흡수; 타겟 24/24 green 으로 코드 무관 확인 후 도입). node 0(아코디언 UI=브라우저, 정직). ★post-sort callback=⛔ defer(hot-path 수술, settled defer 6).
+> ★ **MOD-59 델타(2026-06-07, Enterprise backlog 7번째 — advisor Tier 3)**: `Filters tool panel` ❌→✅ —
+> grid-pro-panel `FiltersToolPanel({columns,onFilterChange,onClearAll?})` 통합 컬럼 필터 surface(활성 카운트 집계, callback-only=ToolPanel 철학, SideBar host) →
+> **❌21 / ✅236 / 🟡70**(Misc UX 카테고리 6/4/4 → **7/4/3**, 합 330 불변, reconcile 19/19). chromium 1/1(★컬럼 입력→값 반영+활성 표시+카운트·다중 컬럼 동시·clear-all 리셋·SideBar 합성)
+> + full-suite 104/104 green(retries). node 0(패널 UI=브라우저, 정직).
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -112,9 +116,9 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌22, MOD-58 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌21, MOD-59 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 14 + 기타 0 = **22**, reconcile 통과; ★MOD-58 Side bar ❌→✅(Enterprise 15→14, Misc UX 5→4); ★MOD-57 Auto group column ❌→✅(Enterprise 16→15, Master/Detail&Tree 2→1); ★MOD-56 Group selection ❌→✅(Enterprise 17→16, Selection 0 ❌); ★MOD-55 Select-all-pages ❌→✅(Enterprise 18→17, Selection 2→1); MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 13 + 기타 0 = **21**, reconcile 통과; ★MOD-59 Filters tool panel ❌→✅(Enterprise 14→13, Misc UX 4→3); ★MOD-58 Side bar ❌→✅(Enterprise 15→14, Misc UX 5→4); ★MOD-57 Auto group column ❌→✅(Enterprise 16→15, Master/Detail&Tree 2→1); ★MOD-56 Group selection ❌→✅(Enterprise 17→16, Selection 0 ❌); ★MOD-55 Select-all-pages ❌→✅(Enterprise 18→17, Selection 2→1); MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌26(MOD-54 반영) 기준으로 정정.
 
 - **Community 8 (table-stakes)**: ① 자율 빌드 아님(제품 결정 → **advisor 위임**, 2026-06-07)=RTL(**의도적 연기**: invasive·한국우선 저가치)
@@ -123,8 +127,8 @@
   ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 14 (deep — 다수 vN 보류)**: sticky group
-  headers · **pivot 2**(panel/server-side; ★MOD-44·53·54 닫힘) · (★MOD-55·56·57·58 select-all-pages·group selection·auto group column·side bar ❌→✅ 닫힘) ·
+- **Enterprise 13 (deep — 다수 vN 보류)**: sticky group
+  headers · **pivot 2**(panel/server-side; ★MOD-44·53·54 닫힘) · (★MOD-55~59 select-all-pages·group selection·auto group column·side bar·filters tool panel ❌→✅ 닫힘) ·
   viewport row model · auto group col(★MOD-48: tree getDataPath ❌→🟡) · master-detail+virtualization · Excel cell styles ·
   **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
   panel drag · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
@@ -169,7 +173,7 @@
 | Accessibility & keyboard | 18 | 13 | 5 | 0 |
 | State, theming & i18n | 17 | 10 | 4 | 3 |
 | Spreadsheet (Wijmo FlexSheet focus) | 23 | 14 | 6 | 3 |
-| Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 6 | 4 | 4 |
+| Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 7 | 4 | 3 |
 | **합계** | **330** | **227** | **70** | **30** |
 
 ## 카테고리별 상세
@@ -588,7 +592,7 @@
 | Status bar built-in components (agg/selected/total/filtered count) | Enterprise | — | ✅ 구현(MOD-33 G-1) | `none (grep for SelectedRowCount/TotalRowCount/FilteredRowCount = 0 matches)` — Verified absent: no agAggregation/SelectedRowCount-equivalent built-ins; caller computes values. |
 | Side bar (unified tool-panel container/accordion) | Enterprise | — | ✅ 구현(MOD-58 G-1) | `grid-pro-panel SideBar({panels:{id,title,content}[], defaultOpenId}) — accordion shell hosting consumer-injected panels (ToolPanel/filters/etc.); one open at a time, callback-only (no grid state)` — chromium 1/1: ★초기 1 패널 content 만 DOM·다른 헤더 클릭→배타 전환(이전 content 제거)·열린 헤더 재클릭→접기·aria-expanded. AG sideBar 대응. |
 | Column tool panel (visibility + order) | Enterprise | — | 🟡 부분 | `@topgrid/grid-pro-panel ToolPanel.tsx (onVisibilityChange checkbox + optional onReorder up/down buttons)` — Verified: checkbox visibility + up/down reorder via callbacks; no drag, pivot, or grouping controls. |
-| Filters tool panel | Enterprise | — | ❌ 미구현 | `none (grep for FiltersPanel/FiltersToolPanel = 0 matches)` — Verified absent: no aggregated filters panel surface exists in grid-pro-panel. |
+| Filters tool panel | Enterprise | — | ✅ 구현(MOD-59 G-1) | `grid-pro-panel FiltersToolPanel({columns:{id,label,value}[], onFilterChange, onClearAll?}) — 모든 컬럼 필터를 한 패널에 나열+활성 카운트 집계; callback-only(ToolPanel 철학); SideBar host` — chromium 1/1: ★컬럼 입력→값 반영+활성 표시+카운트·다중 컬럼 동시·clear-all 리셋·SideBar 합성. AG filters tool panel 대응. |
 | Row group panel (drag-to-group bar) | Enterprise | FlexGrid | ✅ 구현 | `@topgrid/grid-pro-panel RowGroupPanel.tsx re-exports grid-pro-agg GroupPanel.tsx (onDragOver/onDrop/dataTransfer 'columnId'/addToGrouping)` — Verified: HTML5-drag grouping chips delegated to agg GroupPanel (full drag/drop + chip remove); Wijmo via wijmo.grid.grouppanel. |
 | Context menu (right-click) | Enterprise | — | 🟡 부분 | `@topgrid/grid-pro-master ContextMenuGrid.tsx (contextMenuItems, onContextMenu, createPortal via ContextMenuPortal.tsx)` — Verified: declarative items with shortcuts/separators/disabled, portal-rendered with viewport clamping; no submenus/icons/built-ins. |
 | Context menu submenus / icons / built-in items (copy/export) | Enterprise | — | ❌ 미구현 | `none (ContextMenuItem in types.ts = flat label+shortcut+disabled+separator+onClick; ContextMenuPortal renders no icons/submenus)` — Verified absent: ContextMenuItem is flat label+shortcut+onClick; no nested menus, icons, or default actions. |
@@ -689,7 +693,7 @@
 | Undo / redo of cell edits | Spreadsheet (Wijmo FlexSheet focus) | Enterprise | ✅ 구현(MOD-32 G-3) | Verified. FlexSheet has undo/redo. AG Grid undo/redo (cell edits) is Enterprise. topgrid grid-pro-edit-plus has an undo/redo command stack for data grids (MASTER-HIERARCHY mod-grid-23 G-2) but it is not wired to the sheet engine. |
 | Status bar built-in components (agg/selected/total/filtered count) | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ✅ 구현(MOD-33 G-1) | Verified absent: no agAggregation/SelectedRowCount-equivalent built-ins; caller computes values. |
 | Side bar (unified tool-panel container/accordion) | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ✅ 구현(MOD-58) | grid-pro-panel SideBar 아코디언(소비자 패널 주입, 배타 펼침, callback-only). chromium 1/1(초기 1 패널·배타 전환·재클릭 접기·aria). AG sideBar 대응. |
-| Filters tool panel | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ❌ 미구현 | Verified absent: no aggregated filters panel surface exists in grid-pro-panel. |
+| Filters tool panel | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ✅ 구현(MOD-59) | grid-pro-panel FiltersToolPanel(통합 컬럼 필터 surface, 활성 카운트, callback-only, SideBar host). chromium 1/1(입력→반영+카운트·다중·clear-all). AG filters tool panel 대응. |
 | Context menu submenus / icons / built-in items (copy/export) | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ❌ 미구현 | Verified absent: ContextMenuItem is flat label+shortcut+onClick; no nested menus, icons, or default actions. |
 | Tool panel reorder via drag | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ❌ 미구현 | Verified absent: ToolPanel reorder is up/down buttons only; no drag-to-reorder in the panel. |
 | Jump-to-page input (go-to page N) | Pagination | — | ✅ 구현(MOD-49 G-2) | GoToPageInput (numeric+Enter) + pure clampGoToPage; GridPaginationOptions.enableGoToPage → setPageIndex. node 11/0 + chromium (먼 페이지 점프). Wijmo pager 입력 대응. |

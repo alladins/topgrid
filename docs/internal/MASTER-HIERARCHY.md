@@ -995,6 +995,16 @@
 
 > dev-harness 수확: **Enterprise backlog 6번째(advisor Tier 3)**. ★verify-first: grid-pro-panel=ToolPanel/StatusBar/RowGroupPanel(개별), 통합 컨테이너 0(genuine 부재). 증분=아코디언 SideBar(상태 미보유, content 소비자 주입=ToolPanel callback-only 철학). node 신규 0(아코디언 UI=브라우저, fabricate 금지=LESS-006). chromium 발산=배타 펼침(한 패널 content 만 DOM, 전환 시 이전 제거). 기존 ToolPanel/StatusBar/RowGroupPanel 무수정. **Misc UX 5/4/5→6/4/4**, COMMERCIAL-GAP ❌23→22·✅234→235·🟡70(reconcile 19/19·330·0 mismatch). chromium 1/1 + full-suite 103/103 green(★playwright retries:2 추가=suite 100+ 부하 타이밍 flake 흡수; 96 passed+7 flaky+0 failed; 타겟 24/24 green 으로 코드 무관 확인 후 도입). 신규 lesson 없음. (★post-sort callback=⛔ defer 동반, settled defer 6.)
 
+### `mod-grid-59` — 필터 도구 패널 (filters tool panel, **Pro**, grid-pro-panel) ✅ 채움 — {G-1} 완주 (Enterprise backlog 7번째)
+
+소스: `packages/grid-pro-panel/src/FiltersToolPanel.tsx` + `index.ts` export, story `stories/Panels.stories.tsx`(FiltersToolPanelStory, SideBar host), spec `.claude/dev-harness/specs/MOD-GRID-59.md`. dev-harness 42번째. **Enterprise ❌ backlog 7번째**(advisor Tier 3). 갭분석 Misc UX ❌ 1 닫기.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| FiltersToolPanel(G-1) | `FiltersToolPanel({columns:{id,label,value}[], onFilterChange, onClearAll?, emptyText?})` | **배선형** | 모든 컬럼 필터 한 패널+활성 카운트 집계. callback-only(ToolPanel 철학, grid 상태 미보유). SideBar(MOD-58) host | chromium 1/1: ★컬럼 입력→값 반영+활성 표시+카운트·다중 컬럼 동시·clear-all 리셋·SideBar 합성. node 0 | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 7번째(advisor Tier 3)**. ★verify-first: filters 패널 0(genuine 부재; ToolPanel=컬럼, MultiFilter=개별 컬럼). 증분=통합 필터 surface(ToolPanel callback-only 철학 재사용, SideBar host=MOD-58 합성). node 신규 0(패널 UI=브라우저, fabricate 금지=LESS-006). chromium 발산=입력→값 반영+활성 카운트 집계(다중 컬럼 동시)+clear-all. 기존 패널/필터 무수정. **Misc UX 6/4/4→7/4/3**, COMMERCIAL-GAP ❌22→21·✅235→236·🟡70(reconcile 19/19·330·0 mismatch). full-suite 104/104 green(retries; 96 passed+8 flaky+0 failed). 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1361,6 +1371,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-59 grid-pro-panel 필터 도구 패널 (Enterprise backlog 7, Pro)** — ✅ **구현됨 → §3 `mod-grid-59` 참조** (dev-harness 42번째). spec=`specs/MOD-GRID-59.md`
+- Goal: filters tool panel — AG filters tool panel 대응. 통합 컬럼 필터 surface. callback-only.
+- In: `FiltersToolPanel({columns,onFilterChange,onClearAll?,emptyText?})` + index export. SideBar host. 기존 패널/필터 무수정.
+- Out: 필터 타입별 위젯·쿼리빌더. AC: 입력→값 반영+활성 카운트·다중·clear-all·SideBar host(chromium). node 0. tier Pro.
 
 **MOD-GRID-58 grid-pro-panel 사이드바 (Enterprise backlog 6, Pro)** — ✅ **구현됨 → §3 `mod-grid-58` 참조** (dev-harness 41번째). spec=`specs/MOD-GRID-58.md`
 - Goal: side bar (unified tool-panel container/accordion) — AG sideBar 대응. callback-only(ToolPanel 철학).

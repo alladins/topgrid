@@ -4,12 +4,48 @@
 // under the storybook single-react (18.3.1) harness.
 //
 // mock data: Storybook stories 허용 범위 (other packages' stories follow this).
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { StatusBar, ToolPanel, RowGroupPanel, SideBar } from '@topgrid/grid-pro-panel';
+import { StatusBar, ToolPanel, RowGroupPanel, SideBar, FiltersToolPanel } from '@topgrid/grid-pro-panel';
 import { setLicenseState } from '@topgrid/grid-license';
 
 const meta: Meta = { title: 'grid-pro-panel/Panels' };
 export default meta;
+
+// MOD-GRID-59: FiltersToolPanel — unified column-filter surface, here hosted inside a SideBar
+// (MOD-58) to prove composition. ★non-vacuous: editing a column's filter updates its value + the
+// active-filter count; clear-all resets. callback-only (the wrapper owns the filter state).
+function FiltersDemo(): JSX.Element {
+  const [vals, setVals] = useState<{ region: string; sales: string }>({ region: '', sales: '' });
+  return (
+    <SideBar
+      panels={[
+        {
+          id: 'filters',
+          title: 'Filters',
+          content: (
+            <FiltersToolPanel
+              columns={[
+                { id: 'region', label: 'Region', value: vals.region },
+                { id: 'sales', label: 'Sales', value: vals.sales },
+              ]}
+              onFilterChange={(id, v) => setVals((p) => ({ ...p, [id]: v }))}
+              onClearAll={() => setVals({ region: '', sales: '' })}
+            />
+          ),
+        },
+      ]}
+    />
+  );
+}
+
+export const FiltersToolPanelStory: StoryObj = {
+  name: 'FiltersToolPanel (SideBar host)',
+  beforeEach: () => {
+    setLicenseState({ status: { valid: true as const }, rawKey: 'test', setAt: 0 });
+  },
+  render: () => <FiltersDemo />,
+};
 
 // MOD-GRID-58: SideBar accordion — two panels (Columns ToolPanel + a simple Filters list); one open
 // at a time. ★non-vacuous: only the open panel's content is in the DOM; clicking another header
