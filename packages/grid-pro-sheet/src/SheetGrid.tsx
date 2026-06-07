@@ -16,12 +16,19 @@ import { useCellRange, useClipboard, isInRange } from '@topgrid/grid-pro-range';
 import type { CellUpdate } from '@topgrid/grid-pro-range';
 import { useSheet } from './useSheet.js';
 import { toA1 } from './internal/cellAddress.js';
+import { formatSheetValue, type SheetCellFormat } from './internal/formatSheetValue.js';
 
 export interface SheetGridProps {
   /** Number of rows (default 12). */
   rows?: number;
   /** Number of columns (default 6). */
   cols?: number;
+  /**
+   * MOD-GRID-62: per-cell number format, keyed by A1 ref (e.g. `{ B2: { type: 'currency' } }`).
+   * Applied to the displayed value; unformatted cells render unchanged. Non-numeric values
+   * (errors/text) pass through.
+   */
+  formats?: Record<string, SheetCellFormat>;
 }
 
 const cellStyle: CSSProperties = {
@@ -34,7 +41,7 @@ const cellStyle: CSSProperties = {
 };
 const headerStyle: CSSProperties = { ...cellStyle, background: '#f3f4f6', textAlign: 'center', fontWeight: 600 };
 
-export function SheetGrid({ rows = 12, cols = 6 }: SheetGridProps): JSX.Element {
+export function SheetGrid({ rows = 12, cols = 6, formats }: SheetGridProps): JSX.Element {
   const { setCell, getDisplay, getRaw, undo, redo, canUndo, canRedo } = useSheet();
   const [editing, setEditing] = useState<{ row: number; col: number } | null>(null);
   const [editText, setEditText] = useState('');
@@ -137,7 +144,7 @@ export function SheetGrid({ rows = 12, cols = 6 }: SheetGridProps): JSX.Element 
                         style={{ width: 60, border: 'none', font: 'inherit', outline: '2px solid #2563eb' }}
                       />
                     ) : (
-                      <span>{getDisplay(ref)}</span>
+                      <span>{formatSheetValue(getDisplay(ref), formats?.[ref])}</span>
                     )}
                   </td>
                 );

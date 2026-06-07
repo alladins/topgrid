@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node engine.test.mjs"
+    "test": "node engine.test.mjs && node --experimental-strip-types src/internal/formatSheetValue.test.ts"
   },
   "dependencies": {
     "@topgrid/grid-license": "workspace:*"

@@ -1016,6 +1016,17 @@
 
 > dev-harness 수확: **Enterprise backlog 8번째(advisor Tier 1=node-pure anchor)**. ★advisor 사전 reconcile: useExpandedPersistence(grid-pro-master)가 per-package persist 선례=straddle 아님(독립 훅, grid-core 엔벨로프 재사용). **node-pure 엔벨로프=correctness anchor**(versioned round-trip/version mismatch/parse 실패→null, node 11/0), 훅 wiring+remount 복원=chromium(LESS-006 split). generic `useViewStatePersistence<T>`(MIT, grid-core)로 grouping(agg)·pivot config(pivot) **둘 다** 영속=2 ❌ 닫음. 소비자 opt-in(callback-only, grid 상태 미주입). remount=fresh 컴포넌트 useState 초기화가 storage 재read=복원 증명(persistence 없으면 initial 리셋=발산). ★grid-pro-agg 에 grid-core devDep 추가(스토리 import). **State theming 10/4/3→12/4/1**, COMMERCIAL-GAP ❌21→19·✅236→238·🟡70(reconcile 19/19·330·0 mismatch). full-suite 106/106 green(retries; 95+11 flaky+0 failed). 신규 lesson 없음.
 
+### `mod-grid-62` — 시트 셀 숫자 서식 (cell / number formatting, grid-pro-sheet, Community 스코프) ✅ 채움 — {G-1,G-2} 완주 (Enterprise backlog 9번째)
+
+소스: `packages/grid-pro-sheet/src/internal/{formatSheetValue.ts, formatSheetValue.test.ts}`(node) + `SheetGrid.tsx`(formats prop) + `index.ts` export, story `stories/SheetGrid.stories.tsx`(Formatted), spec `.claude/dev-harness/specs/MOD-GRID-62.md`. dev-harness 44번째. **Enterprise ❌ backlog 9번째**(advisor Tier 4 sheet, node-pure). 갭분석 Spreadsheet ❌ 1 닫기.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 순수 서식 함수(G-1) | `formatSheetValue(display, SheetCellFormat)→string` (number/currency/percent/date) | **종결형**(순수) | deterministic(Intl 미사용). 비수치/미지정→passthrough. groupThousands·serialToISO | node **14/0**: currency/percent/decimals/date·비수치·passthrough·grouping·negative | 채움 |
+| SheetGrid formats 배선(G-2) | SheetGrid `formats?:Record<ref,SheetCellFormat>` | **배선형** | 표시 시 formatSheetValue(getDisplay(ref), formats[ref]). 엔진(createSheet)·getDisplay 무수정(stored≠rendered 보존) | chromium 1/1: ★currency $1,234.00·percent 12.5%·decimals 5.00·비수치 passthrough·미지정 byte-identical | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 9번째(advisor Tier 4 sheet, node-pure)**. ★verify-first: grid-pro-sheet number/cell format 0(getDisplay 문자열 그대로). 증분=순수 deterministic 서식 함수(Intl 미사용=locale/node 무관 node 단언 안정)+SheetGrid formats prop. **엔진(createSheet) 무수정**(표시값 파싱·포맷=stored≠rendered 보존, MOD-26 원칙). node-pure correctness(node 14/0)+chromium 표시 발산(LESS-006 split). conditional format=Out(MOD-24 그리드급 존재). opt-in byte-identical(미지정 셀=passthrough). **Spreadsheet 14/6/3→15/6/2**, COMMERCIAL-GAP ❌19→18·✅238→239·🟡70(reconcile 19/19·330·0 mismatch). full-suite 107/107 green. 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1382,6 +1393,12 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-62 grid-pro-sheet 시트 셀 숫자 서식 (Enterprise backlog 9, Community 스코프)** — ✅ **구현됨 → §3 `mod-grid-62` 참조** (dev-harness 44번째). spec=`specs/MOD-GRID-62.md`
+- Goal: cell/number formatting (currency/percent/decimals/date) — Wijmo FlexSheet .format 대응. node-pure 서식 함수 + SheetGrid formats prop.
+- In: 순수 `formatSheetValue`(deterministic, node 14/0) + `SheetCellFormat` 타입 + SheetGrid `formats?` prop. 엔진/getDisplay 무수정.
+- Out: conditional format(MOD-24 그리드급)·per-cell font/fill/border(=cell styling 별도 ❌)·커스텀 format DSL. AC: 서식 4종/비수치/passthrough(node)·표시 발산/byte-identical(chromium). tier Community 스코프.
+- ★MOD-61(context submenu)=harness-blocked ⛔ defer(ContextMenuGrid storybook 렌더 실패, LESS-002; published dist 무관) — REMAINING-WORK 참조.
 
 **MOD-GRID-60 grid-core 뷰 상태 저장/복원 (Enterprise backlog 8, MIT)** — ✅ **구현됨 → §3 `mod-grid-60` 참조** (dev-harness 43번째). spec=`specs/MOD-GRID-60.md`
 - Goal: row-group state save/restore + pivot state save/restore (2 ❌) — AG 그룹/피벗 상태 영속 대응. generic 영속 훅 + 순수 versioned 엔벨로프.

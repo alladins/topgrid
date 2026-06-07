@@ -1714,6 +1714,37 @@
       "closure": "★Row-group state save + Pivot state save=✅(2건, generic useViewStatePersistence). ★node-pure anchor(advisor Tier 1): versioned 엔벨로프 correctness=node 11/0, 훅 wiring+remount 복원=chromium(LESS-006 split). ★useExpandedPersistence 선례=straddle 아님(per-package 독립 훅, grid-core 엔벨로프 재사용). generic 훅(MIT) agg/pivot 공용. grid-pro-agg grid-core devDep 추가(스토리). advisor.",
       "module_summary": "Enterprise backlog 8번째(advisor Tier 1 node-pure, 2 ❌). 순수 versioned 엔벨로프(node 11/0)+generic useViewStatePersistence 훅. node correctness+chromium remount 복원. useGridState 무수정(106/106). 신규 lesson 없음.",
       "version_note": "grid-core 0.4.0→차기 batch minor (useViewStatePersistence+엔벨로프 추가, 미발행). grid-pro-agg grid-core devDep 추가."
+    },
+    "MOD-GRID-62": {
+      "package": "grid-pro-sheet (Community 스코프)",
+      "tier": "Community-scope",
+      "weight": "Full(2-Goal: 순수 서식 함수 + SheetGrid 배선)",
+      "priority": "Enterprise ❌ backlog 9번째(advisor Tier 4 sheet, node-pure)",
+      "phase": "done (2-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-62.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "cell/number formatting — 순수 formatSheetValue(number/currency/percent/date, deterministic) + SheetGrid formats prop. 엔진(createSheet)/getDisplay 무수정.",
+      "g1": {
+        "surface": "formatSheetValue(display, SheetCellFormat)→string: number(천단위+decimals)/currency(symbol+그룹+decimals)/percent(×100)/date(serial→ISO). Intl 미사용=deterministic. 비수치/미지정→passthrough.",
+        "verified_node": "14/0(formatSheetValue.test.ts): currency/percent/decimals/date·비수치 passthrough·grouping·negative·미지정."
+      },
+      "g2": {
+        "surface": "SheetGrid formats?:Record<ref,SheetCellFormat> prop → formatSheetValue(getDisplay(ref), formats[ref]) 표시. 엔진/getDisplay 무수정.",
+        "verified_chromium": "1/1(sheet-number-format.spec.ts): currency $1,234.00·percent 12.5%·decimals 5.00·비수치 passthrough·미지정 byte-identical."
+      },
+      "verification": "node 14/0·typecheck 0·build green·chromium 1/1 + full-suite 107/107 green. 엔진/getDisplay/기존 SheetGrid 무수정.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-006 split; deterministic Intl 미사용·엔진 무수정 표시값 포맷=문서)",
+        "matrix_row": "§3 mod-grid-62 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Cell/number formatting ❌→✅(Spreadsheet 14/6/3→15/6/2) reconcile 19/19(239/70/18·330·0 mismatch·Community 8→7)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★Cell/number formatting=✅(currency/percent/decimals/date, 순수 deterministic+SheetGrid 배선). ★엔진 무수정(getDisplay 파싱·포맷=MOD-26 stored≠rendered 보존). node-pure correctness(14/0)+chromium 표시 발산. deterministic(Intl 미사용). conditional format=Out(MOD-24 그리드급). advisor Tier 4.",
+      "module_summary": "Enterprise backlog 9번째(advisor Tier 4 sheet, node-pure). 순수 formatSheetValue(node 14/0)+SheetGrid formats prop. 엔진 무수정. node correctness+chromium 표시. 신규 lesson 없음.",
+      "version_note": "grid-pro-sheet 0.2.0→차기 batch minor (formatSheetValue+formats prop, 미발행)."
     }
   },
   "release_queue": {

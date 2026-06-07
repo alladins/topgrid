@@ -38,6 +38,9 @@ export { useSheet } from './useSheet.js';
 export type { UseSheetResult } from './useSheet.js';
 export { SheetGrid } from './SheetGrid.js';
 export type { SheetGridProps } from './SheetGrid.js';
+// MOD-GRID-62: pure cell number-format + spec type (for the SheetGrid `formats` prop).
+export { formatSheetValue } from './internal/formatSheetValue.js';
+export type { SheetCellFormat } from './internal/formatSheetValue.js';
 
 // Value model + AST.
 export { cellError, isCellError } from './types.js';

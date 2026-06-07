@@ -8,8 +8,8 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
 
-> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53~60 done(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
-> COMMERCIAL-GAP **❌47→19**(✅238/🟡70/❌19; **Column features·Editing·Selection 0 ❌**). full-suite 106/106 green(playwright retries:2). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53~60·62 done(2026-06-07~08)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
+> COMMERCIAL-GAP **❌47→18**(✅239/🟡70/❌18; **Column features·Editing·Selection 0 ❌**). full-suite 107/107 green(playwright retries:2). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
 > ★suite flake(부하 타이밍, 무관 기능 전반): **MOD-58 동반 `apps/docs/playwright.config.ts` retries:2 추가로 안정화**(full-suite green; clean 1회 통과·flake 만 재시도). 근본 timing harden(expect.poll)은 후속 선택.
 > **★settled defer 6(⛔)**: RTL·viewport row model·debounced-scroll·row-animation·auto-virt-threshold·**post-sort callback**(advisor 사전 조건=sort 경로 수술 필요 시 defer; Grid 이 table.getRowModel().rows 를 다중 렌더 사이트서 직접 읽어 정렬-후 재정렬 후킹=hot-path 수술+pagination/virt 피드 얽힘 → defer). (invasive/node-substance-0/vacuity-trap/design-reversal/hot-path-surgery).
 > **★harness-blocked defer 1(⛔)**: **context menu submenus/icons/built-in items** — 코드(icon+submenu+makeCopyCellItem)는 구현·typecheck OK였으나 **ContextMenuGrid 렌더가 storybook single-react 하네스서 일관 실패**(getAllColumns/TanStack 해석, LESS-002 류; ★MOD-61 무관 확정=stash 후 기존 ContextMenuGridStory 도 동일 실패; serial 빌드로도 미해소). 비공허 chromium 게이트 불가 → **검증 불가 feature 미-ship**(되돌림), ❌ 유지. **published dist(소비자)엔 무관**(storybook 마운트 환경 한정). 후속: ContextMenuGrid 하네스 렌더 복구(react/tanstack 해석 조사) 후 재시도.

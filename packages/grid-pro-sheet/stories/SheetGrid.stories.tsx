@@ -14,3 +14,19 @@ export const Basic: Story = {
   name: '수식 셀 (A1 참조 + SUM)',
   args: { rows: 8, cols: 5 },
 };
+
+// MOD-GRID-62: per-cell number formatting. B2=currency, C2=percent(1dp), D2=number(2dp); A2=no format.
+// Type a numeric value into a formatted cell → the displayed value is formatted (stored value
+// unchanged). Non-formatted cells render raw (byte-identical).
+export const Formatted: Story = {
+  name: '셀 숫자 서식 (currency / percent / decimals)',
+  args: {
+    rows: 4,
+    cols: 4,
+    formats: {
+      B2: { type: 'currency' },
+      C2: { type: 'percent', decimals: 1 },
+      D2: { type: 'number', decimals: 2 },
+    },
+  },
+};
