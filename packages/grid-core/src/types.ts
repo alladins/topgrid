@@ -239,6 +239,13 @@ export interface GridRowSelectionOptions<TData> {
   state?: RowSelectionState;
   /** Controlled state 변경 핸들러 (controlled 모드에서 필수). */
   onStateChange?: OnChangeFn<RowSelectionState>;
+  /**
+   * MOD-GRID-55: `'multi'` 헤더 전체선택 체크박스가 **모든 페이지**의 행을 선택/해제한다
+   * (default `false` = 현재 페이지만). `true` 시 헤더 체크박스는 TanStack
+   * `getToggleAllRowsSelectedHandler`(전 페이지) + `getIsAllRowsSelected`/`getIsSomeRowsSelected`
+   * 를 사용한다. AG Grid 의 "select all across all pages" 대응.
+   */
+  selectAllPages?: boolean;
 }
 
 /**

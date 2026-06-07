@@ -955,6 +955,16 @@
 
 > dev-harness 수확: **Enterprise backlog 2번째(advisor triage Tier 1=node-correctness anchor)**. ★reuse-gate: GroupRow=단일 colSpan(카운트만), FooterRow=그룹 끝 집계(collapsed 시 숨김). 갭=헤더 행 인라인 집계+collapsed 시에도. ★**avg-of-avgs 안전**(advisor 핵심): TanStack getVisibleCells(중첩=mean-of-means 위험) 대신 **computeAggregateRow(MOD-45, source 직접, node 15/0 재사용)** 를 그룹의 실제 leaf 원본에 적용. ★**발견(런타임 함정)**: `row.getLeafRows()`=TanStack v8 에서 **중간 그룹 행 포함**+그룹 행의 `.original`=첫 자식 → 그대로 집계하면 double-weight(영업팀 32=잘못). `subRows.length===0` 필터로 실제 leaf 만 → true source(30). chromium 으로 검출(node 만으론 못 봄=LESS-006 동류). correctness anchor=computeAggregateRow node(재사용, fabricate 안 함), 인라인 렌더/collapsed 가시=chromium 발산. opt-in byte-identical(showGroupAggregates=false=기존 단일 colSpan). FooterRow·computeAggregateRow·기존 GroupRow colSpan 경로 무수정. **Row grouping 11/6/2→12/6/1**, COMMERCIAL-GAP ❌27→26·✅230→231·🟡70(reconcile 19/19·330·0 mismatch). chromium 97/97(94+3). 신규 lesson 없음.
 
+### `mod-grid-55` — 전 페이지 전체선택 (select-all across all pages, **MIT**, grid-core) ✅ 채움 — {G-1} 완주 (Enterprise backlog 3번째)
+
+소스: `packages/grid-core/src/internal/CheckboxColumn.tsx`(selectAllPages 2번째 인자) + `buildTableOptions.ts`(전달) + `types.ts`(GridRowSelectionOptions.selectAllPages), story `stories/Grid.select-all-pages.stories.tsx`, spec `.claude/dev-harness/specs/MOD-GRID-55.md`. dev-harness 38번째. **Enterprise ❌ backlog 3번째**(advisor Tier 2 verify-first). 갭분석 Selection ❌ 1 닫기.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 전 페이지 전체선택(G-1) | `GridRowSelectionOptions.selectAllPages?`(default false) | **배선형** | createCheckboxColumn(mode, selectAllPages): multi 헤더가 getToggleAllRowsSelectedHandler/getIsAllRowsSelected/getIsSomeRowsSelected(전 페이지). default=page-scope(byte-identical) | chromium 2/2: ★pagination 12행/5쪽 selectAllPages 헤더→카운트=12+다음 페이지 pre-checked·page-scope→5·OFF byte-identical. node 0(TanStack selection=브라우저) | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 3번째(advisor Tier 2 verify-first)**. ★grep 으로 genuine 부재 확인(CheckboxColumn 헤더=getToggleAllPageRowsSelected=현재 페이지만, stale ❌ 아님). 증분=TanStack 전-행 selection API(getToggleAllRowsSelected) 를 옵션 분기로 노출. node 신규 0(selection=브라우저 상태, fabricate 금지=LESS-006). chromium 발산=선택 카운트(전체 12 vs page 5)+다음 페이지 pre-checked(onSelectionChange=전 페이지 선택 행 보고). opt-in byte-identical(selectAllPages=false=기존 page-scope). 기존 cell/single/indeterminate(MOD-35) 무수정. **Selection 13/2/2→14/2/1**, COMMERCIAL-GAP ❌26→25·✅231→232·🟡70(reconcile 19/19·330·0 mismatch). chromium 99/99(97+2). 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1321,6 +1331,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-55 grid-core 전 페이지 전체선택 (Enterprise backlog 3, MIT)** — ✅ **구현됨 → §3 `mod-grid-55` 참조** (dev-harness 38번째). spec=`specs/MOD-GRID-55.md`
+- Goal: select-all across all pages — AG select-all-across-pages 대응. verify-first(genuine 부재 확인).
+- In: `GridRowSelectionOptions.selectAllPages?`(default false) + createCheckboxColumn 2번째 인자(multi 헤더 전-행 분기) + buildTableOptions 전달. 기존 page-scope 무수정.
+- Out: select-all 배너 UI·single 모드. AC: pagination selectAllPages 헤더→카운트=전체·page-scope→페이지·OFF byte-identical(chromium). node 0(selection=브라우저). tier MIT.
 
 **MOD-GRID-54 grid-pro-agg 그룹 헤더 인라인 집계 (Enterprise backlog 2, Pro)** — ✅ **구현됨 → §3 `mod-grid-54` 참조** (dev-harness 37번째). spec=`specs/MOD-GRID-54.md`
 - Goal: group-header inline aggregates (incl. when collapsed) — AG group row agg 대응. computeAggregateRow(source-safe) 재사용.

@@ -8,8 +8,8 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
 
-> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53·MOD-54 done(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
-> COMMERCIAL-GAP **❌47→26**(✅231/🟡70/❌26; **Column features·Editing 0 ❌·Pivoting 19/2/2·Row grouping 12/6/1**). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53·54·55 done(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
+> COMMERCIAL-GAP **❌47→25**(✅232/🟡70/❌25; **Column features·Editing 0 ❌·Pivoting 19/2/2·Row grouping 12/6/1·Selection 14/2/1**). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
 > **★settled defer 5(⛔)**: RTL·viewport row model·debounced-scroll·row-animation·auto-virt-threshold (advisor — invasive/node-substance-0/vacuity-trap/design-reversal).
 > **★작동 방식(사용자 advisor 위임)**: 설계·우선순위 advisor 판단 위임, 끝까지 진행. publish/push 만 사용자 게이트 유지.
 > **MOD-49** pagination✅ · **MOD-50** full-row editing✅ · **MOD-51** custom cell editor slot✅ · **MOD-52** column spanning✅ · **MOD-53** collapsible pivot column groups✅(grid-pro-pivot, chromium 회귀 **94/94**).

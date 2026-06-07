@@ -65,6 +65,10 @@
 > avg-of-avgs 안전=MOD-45 재사용 node 15/0) → **❌26 / ✅231 / 🟡70**(Row grouping 카테고리 11/6/2 → **12/6/1**, 합 330 불변, reconcile 19/19).
 > chromium 3/3(★dept avg=true source 30 NOT avg-of-team-avgs 37.5·collapsed 시에도 헤더 집계 잔존·OFF byte-identical) + 회귀 97/97. ★advisor Tier 1(node-correctness anchor=
 > computeAggregateRow 재사용). ★발견: getLeafRows()=중간 그룹 행 포함+그룹 .original=첫 자식 → 실제 leaf(subRows 0) 필터 필수(double-weight 회피). FooterRow(그룹 끝) 별개 유지.
+> ★ **MOD-55 델타(2026-06-07, Enterprise backlog 3번째 — advisor Tier 2 verify-first)**: `Select-all across ALL pages` ❌→✅ —
+> grid-core `GridRowSelectionOptions.selectAllPages?`(default false) → createCheckboxColumn multi 헤더가 `getToggleAllRowsSelectedHandler`(전 페이지) 사용 →
+> **❌25 / ✅232 / 🟡70**(Selection 카테고리 13/2/2 → **14/2/1**, 합 330 불변, reconcile 19/19). chromium 2/2(★pagination 12행/5쪽: selectAllPages 헤더→카운트=12+다음 페이지 pre-checked·
+> default page-scope→카운트=5·OFF byte-identical) + 회귀 99/99. node 신규 0(TanStack selection=브라우저 상태, 정직). ★verify-first(genuine 부재 확인: 기존 getToggleAllPageRowsSelected=page-only).
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -95,9 +99,9 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌26, MOD-54 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌25, MOD-55 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 18 + 기타 0 = **26**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 17 + 기타 0 = **25**, reconcile 통과; ★MOD-55 Select-all-pages ❌→✅(Enterprise 18→17, Selection 2→1); MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌26(MOD-54 반영) 기준으로 정정.
 
 - **Community 8 (table-stakes)**: ① 자율 빌드 아님(제품 결정 → **advisor 위임**, 2026-06-07)=RTL(**의도적 연기**: invasive·한국우선 저가치)
@@ -106,8 +110,8 @@
   ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 18 (deep — 다수 vN 보류)**: sticky group
-  headers · **pivot 2**(panel/server-side; ★MOD-44: total customization ❌→✅·result filter ❌→🟡; ★MOD-53: collapsible cols ❌→✅; ★MOD-54: group-header inline agg ❌→✅ 닫힘) · select-all-pages · group selection ·
+- **Enterprise 17 (deep — 다수 vN 보류)**: sticky group
+  headers · **pivot 2**(panel/server-side; ★MOD-44·53·54 닫힘) · group selection · (★MOD-55: select-all-pages ❌→✅ 닫힘) ·
   viewport row model · auto group col(★MOD-48: tree getDataPath ❌→🟡) · master-detail+virtualization · Excel cell styles ·
   **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
   panel drag · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
@@ -139,7 +143,7 @@
 | Filtering | 13 | 12 | 1 | 0 |
 | Row grouping & aggregation | 19 | 12 | 6 | 1 |
 | Pivoting | 23 | 19 | 2 | 2 |
-| Selection | 17 | 13 | 2 | 2 |
+| Selection | 17 | 14 | 2 | 1 |
 | Editing | 18 | 14 | 4 | 0 |
 | Cell rendering & styling | 18 | 15 | 3 | 0 |
 | Row models / data | 18 | 14 | 3 | 1 |
@@ -280,7 +284,7 @@
 | Indeterminate (partial) select-all checkbox state | Community | FlexGrid | ✅ 구현(MOD-35 G-3: indeterminate DOM prop + aria-checked=mixed) | `none — grep indeterminate\|getIsSomePageRowsSelected\|getIsSomeRowsSelected across packages/ returned 0 matches (verified)` — VERIFIED missing. AG and Wijmo render tri-state (indeterminate) header checkbox when some-but-not-all rows selected. topgrid header checkbox is binary checked/unchecked only (CheckboxColumn.tsx L37 checked= only). |
 | Row-click selection (click row to select; ctrl/shift+click multi/range) | Community | FlexGrid | ✅ 구현(MOD-35 G-1/G-2: 행클릭 plain+ctrl/cmd 토글+shift 범위) | `grid-core Grid.tsx L619 & L651 onClick={(event)=>props.onRowClick?.(row.original, event)} — passthrough callback only; no row.getToggleSelectedHandler/toggleSelected on row body click (grep toggleSelected in grid-core/src => only CheckboxColumn cell)` — VERIFIED missing. In main <Grid>, body selection is CHECKBOX-ONLY. Row body onClick fires onRowClick but does NOT toggle selection; no ctrl/shift+click multi or contiguous range. AG community + Wijmo FlexGrid both select on row click natively. |
 | Selection state persistence across pages (paginated) | Community | FlexGrid | 🟡 부분 | `grid-core useGridState.ts rowSelection: RowSelectionState (controllable); buildTableOptions.ts onRowSelectionChange maps next keys via props.data[Number(k)] (L142-144) — INDEX-keyed, NOT a stable rowId. No getRowId set anywhere in grid-core (grep getRowId => 0 matches), so TanStack defaults to row-INDEX keys.` — DOWNGRADED full->partial. Original evidence claimed 'TanStack keys selection by rowId' but no getRowId is configured — selection is keyed by row INDEX (default). For CLIENT pagination the full row model persists so index-keyed selection survives page changes (works). For SERVER pagination (manualPagination, rows replaced per page) index keys collide across pages — selection does NOT reliably persist / can mis-map to wrong rows. AG community persists via stable node ids. MISSING: stable-id row keying (getRowId) for server-mode persistence. |
-| Select-all across ALL pages (action, not just current page) | Enterprise | FlexGrid | ❌ 미구현 | `none — CheckboxColumn header uses getToggleAllPageRowsSelectedHandler (page-scoped, L38); grep getToggleAllRowsSelected\|getIsAllRowsSelected => 0 matches (verified)` — VERIFIED missing. topgrid header select-all toggles only the current page's rows. No 'select all N rows across pages' control. AG offers select-all-filtered semantics; Wijmo ListBox select-all spans all rows. |
+| Select-all across ALL pages (action, not just current page) | Enterprise | FlexGrid | ✅ 구현(MOD-55 G-1) | `grid-core GridRowSelectionOptions.selectAllPages?(default false=page-scope) → createCheckboxColumn(mode, selectAllPages): multi 헤더가 getToggleAllRowsSelectedHandler/getIsAllRowsSelected/getIsSomeRowsSelected(전 페이지) 사용` — chromium 2/2: ★pagination(12행/5쪽) selectAllPages 헤더→선택 카운트=12(전체)+다음 페이지 행 pre-checked / default page-scope→카운트=5(현재 페이지만, byte-identical). AG select-all-across-pages 대응. |
 | Cell range selection (2D drag / shift+click) | Enterprise | FlexGrid | ✅ 구현 | `grid-pro-range useCellRange.ts (handleMouseDown/Enter/Up L55-90, shift+click extend L57-62); internal/normalize.ts normalizeRange/isInRange; types CellRange/CellCoord; RangeSelectGrid.tsx component (own useReactTable L18-21)` — VERIFIED full. AG cell range selection is ENTERPRISE (cellSelection). Wijmo FlexGrid selectionMode=CellRange native. CAVEAT (verified): topgrid range lives in a SEPARATE RangeSelectGrid component with its OWN useReactTable instance (grid-pro-range RangeSelectGrid.tsx L18-21) — not composable into main <Grid> alongside row-selection wiring. |
 | Keyboard cell navigation / range extension (arrows, shift+arrow, ctrl+arrow, tab/enter) | Community | FlexGrid | ✅ 구현 | `grid-pro-range useKeyboardNav.ts: Arrow clamp (L110-113), Shift+Arrow anchor extend (L74-99), Ctrl+Arrow data-edge findDataEdge (L105-108,L150-188), Ctrl+Shift+Arrow extend-to-edge (L85-87), Tab/Shift+Tab wrap (L116-134), Enter down-row (L135-142); controlled activeCell` — VERIFIED full. AG keyboard cell nav community; ctrl+arrow-to-edge & shift+arrow range extension overlap with enterprise range selection. Wijmo FlexGrid native keyboard nav. (Lives in grid-pro-range, controlled-only hook.) |
 | Fill handle (Excel-style drag-fill / series) | Enterprise | FlexSheet | ✅ 구현 | `grid-pro-range DragFillHandle.tsx (window-level mousemove/up L160-166, getCellRect hit-test L37-63 virtualization-accurate, all 4 directions L88-112); internal/fillRange.ts fillRange + detectSeriesStep + generateFillValue (linear-series step + modulo cycle L121-134); onFillComplete/onFillTargetChange` — VERIFIED full. AG fill handle is ENTERPRISE. Wijmo fill/auto-fill is a FlexSheet feature (FlexGrid lacks fill handle). topgrid full: window-level mousemove, getCellRect hit-test (virtualization-accurate). |
@@ -651,7 +655,7 @@
 | Server-side / lazy pivoting (pivot over server-grouped data) | Pivoting | Enterprise | ❌ 미구현 | VERIFIED MISSING: computePivot (computePivot.ts 187-275) is fully client-side over the in-memory data array; no server-side pivot result mode. AG Grid SSRM supports pivoting; topgrid has no equivalent. |
 | Total aggregation customization (suppress/position totals) | Pivoting | Enterprise | ✅ 구현(MOD-44 G-1) | `grid-pro-pivot customizePivotTotals` 순수 row-total 변환(subtotal/grandTotal 억제 + grandTotal top/bottom). node 검증. column grand-total 토글=buildPivotColumns 후속. |
 | Pivot result charting (pivot chart / integrated chart) | Pivoting | Enterprise | ✅ 구현(MOD-34 G-3 seriesFromPivot 순수 어댑터: 실제 PivotModel data행→matrix(subtotal/grandTotal 드롭), node 7/7) | VERIFIED MISSING: grid-pro-pivot imports no chart library (index.ts line 5 'imports NO virtualization or chart library', C-001) and has no pivot-chart bridge. grid-pro-chart exists separately but is not wired to the pivot model. No topgrid analog to AG Grid integrated pivot charts / Wijmo OLAP charts. |
-| Select-all across ALL pages (action, not just current page) | Selection | Enterprise | ❌ 미구현 | VERIFIED missing. topgrid header select-all toggles only the current page's rows. No 'select all N rows across pages' control. AG offers select-all-filtered semantics; Wijmo ListBox select-all spans all rows. |
+| Select-all across ALL pages (action, not just current page) | Selection | Enterprise | ✅ 구현(MOD-55) | grid-core selectAllPages? 옵션 → multi 헤더가 getToggleAllRowsSelectedHandler(전 페이지). chromium 2/2(카운트=전체 12 vs page-scope 5·다음 페이지 pre-checked·OFF byte-identical). AG 대응. |
 | Group / hierarchy selection (group selects children, leaf rolls up to group) | Selection | Enterprise | ❌ 미구현 | VERIFIED missing. AG groupSelectsChildren / groupSelectsFiltered is ENTERPRISE (rides on row grouping). Wijmo group/tree selection via collectionView. topgrid has tree/expanding (getSubRows, buildTableOptions L248-250) but no group-level selection cascade. |
 | Viewport row model (server pushes exact visible viewport, real-time) | Row models / data | Enterprise | ❌ 미구현 | AG's Viewport Row Model (enterprise) for streaming/real-time servers. No equivalent in any @topgrid package; verified MASTER-HIERARCHY §22 mod-grid-22 lists only SSRM block lazy load / infinite scroll / server sort-filter / lazy group, no viewport model. |
 | Tree data via flat path (getDataPath) | Master/Detail & Tree Data | Enterprise | 🟡 부분(MOD-48) | `grid-core buildTreeFromPaths` flat path→계층(synthetic-parent dedup, NUL-key) ship + node 11/0. 소비자가 getSubRows 로 사용. auto group column 렌더 부재 → 🟡(browser). |

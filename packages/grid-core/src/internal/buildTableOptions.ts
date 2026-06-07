@@ -115,7 +115,10 @@ export function buildTableOptions<TData>(
   const effectiveColumns: ColumnDef<TData, unknown>[] =
     selectionMode === 'none'
       ? props.columns
-      : [createCheckboxColumn<TData>(selectionMode), ...props.columns];
+      : [
+          createCheckboxColumn<TData>(selectionMode, selectionOptions.selectAllPages === true),
+          ...props.columns,
+        ];
 
   // exactOptionalPropertyTypes: true — undefined 명시 할당 금지 → 조건부 객체 조립.
   const tableState: NonNullable<TableOptions<TData>['state']> = {

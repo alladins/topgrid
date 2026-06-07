@@ -26,6 +26,7 @@ type CheckboxColumnMode = 'single' | 'multi';
  */
 export function createCheckboxColumn<TData>(
   mode: CheckboxColumnMode,
+  selectAllPages = false,
 ): ColumnDef<TData, unknown> {
   return {
     id: '__select__',
@@ -36,8 +37,14 @@ export function createCheckboxColumn<TData>(
             // property (not a React attribute) → set via ref. It is a THIRD visual state, distinct
             // from checked (all) and unchecked (none): some-but-not-all → mixed. aria-checked
             // mirrors it ('mixed') so screen readers announce the partial state.
-            const all = table.getIsAllPageRowsSelected();
-            const some = table.getIsSomePageRowsSelected();
+            // MOD-GRID-55: selectAllPages → header toggles ALL rows (every page), not just the
+            // current page. Default stays page-scoped (getIsAllPageRowsSelected) = byte-identical.
+            const all = selectAllPages
+              ? table.getIsAllRowsSelected()
+              : table.getIsAllPageRowsSelected();
+            const some = selectAllPages
+              ? table.getIsSomeRowsSelected()
+              : table.getIsSomePageRowsSelected();
             return (
               <input
                 type="checkbox"
@@ -46,9 +53,13 @@ export function createCheckboxColumn<TData>(
                   if (el) el.indeterminate = some;
                 }}
                 aria-checked={some ? 'mixed' : all ? 'true' : 'false'}
-                onChange={table.getToggleAllPageRowsSelectedHandler()}
+                onChange={
+                  selectAllPages
+                    ? table.getToggleAllRowsSelectedHandler()
+                    : table.getToggleAllPageRowsSelectedHandler()
+                }
                 className="w-4 h-4 cursor-pointer"
-                aria-label="select all rows"
+                aria-label={selectAllPages ? 'select all rows across all pages' : 'select all rows'}
               />
             );
           }
