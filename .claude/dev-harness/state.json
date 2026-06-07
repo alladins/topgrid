@@ -1511,7 +1511,7 @@
         "verified_node": "15/0(computePivot.test.mjs, esbuild 번들): ★characterization-first(unmodified 9/15→additive 후 15/15, 불변=additive 증명) + collapsed 그룹 AVG=true source mean 17.5(NOT avg-of-avgs 15, 불균등 행수)·3-dim len1/len2·1-dim inert. 기존 5 spine 무영향."
       },
       "g2": {
-        "surface": "PivotColumnCollapseOpts{collapsedKeys,onToggle} + buildPivotColumns 4번째 인자 + mapColumnNode collapse(그룹 셀 ${node.key}__i 읽는 단일/값별 컬럼 + CollapsibleColumnHeader chevron) + PivotGrid enableColumnCollapse?(collapsedColKeys, transpose 리셋).",
+        "surface": "PivotColumnCollapseOpts{collapsedKeys,onToggle} + buildPivotColumns 4번째 인자 + mapColumnNode collapse(그룹 셀 ${node.key}__i 읽는 단일/값별 컬럼 + CollapsibleColumnHeader chevron) + PivotGrid enableColumnCollapse?(collapsedColKeys, transpose 리셋=wired·chromium 미검증, stale 키 의미상 매칭 안 됨=inert 저위험 AP-004).",
         "verified_chromium": "2/2(pivot-column-collapse.spec.ts): collapse→자식 quarter 컬럼 DOM 부재+2024 컬럼 17.50(source avg) 표시·sibling 2023 그룹 무변·re-expand 복원·OFF byte-identical(chevron 0)."
       },
       "verification": "node 15/0(characterization+group, esbuild)·기존 5 spine green(sort11/collapse19/transpose5/customize8/filter7)·typecheck 0·build green·chromium 2/2 + 전체 회귀 94/94(92+2). computePivot row-emit/columnTree/5 spine 무영향.",
@@ -1521,9 +1521,9 @@
         "index_updated": "COMMERCIAL-GAP Collapsible pivot column groups ❌→✅(Pivoting 18/2/3→19/2/2) reconcile 19/19(230/70/27·330·0 mismatch·Enterprise 20→19)"
       },
       "rubric_specify": "77/80",
-      "closure": "★Collapsible pivot column groups=✅(컬럼 그룹 collapse 자식 DOM 부재+그룹 source-집계값+expand). ★reuse-gate 비대칭 발견(advisor reconcile): collapsePivotRows 컬럼 쌍둥이이나 row 가 깨끗한 건 subtotal 사전방출 때문—컬럼은 그룹 셀 부재+모델 source 미보유→computePivot additive(컬럼-combo prefix 셀)=진정한 대칭(행축 subtotal↔열축 group-cell). ★MOD-18 이후 computePivot 첫 additive 터치(정직)=characterization-first 안전망(현 동작 핀→불변 증명, behavior-preserving-additive). ★avg-of-avgs 정직성 node 로 이동(correctness=node, render 발산=chromium). esbuild 번들 검증(cross-import). advisor.",
+      "closure": "★Collapsible pivot column groups=✅(컬럼 그룹 collapse 자식 DOM 부재+그룹 source-집계값+expand). ★reuse-gate 비대칭 발견(advisor reconcile): collapsePivotRows 컬럼 쌍둥이이나 row 가 깨끗한 건 subtotal 사전방출 때문—컬럼은 그룹 셀 부재+모델 source 미보유→computePivot additive(컬럼-combo prefix 셀)=진정한 대칭(행축 subtotal↔열축 group-cell). ★MOD-18 이후 computePivot 첫 additive 터치(정직)=characterization-first 안전망(현 동작 핀→불변 증명, behavior-preserving-additive). ★avg-of-avgs 정직성 node 로 이동(correctness=node, render 발산=chromium). esbuild 번들 검증(cross-import). ★transpose 리셋 정직 기록(AP-004 3번째): collapsedColKeys 리셋=wired·chromium 미검증, 단 실패 모드 benign(컬럼 키 시맨틱→stale=inert)→annotate(delivered guard 아님). advisor.",
       "module_summary": "Enterprise ❌20 backlog 1번째(제품결정 4종 종결 후). computePivot 컬럼-그룹 prefix 셀 additive(source 재집계=행축 subtotal 의 열축 대칭)+buildPivotColumns/PivotGrid collapse 배선. characterization-first(첫 computePivot 터치)+avg-of-avgs node+render chromium. 기존 row-emit/5 spine 무수정(94/94). 신규 lesson 없음.",
-      "version_note": "grid-pro-pivot 0.3.0→차기 batch minor (computePivot 그룹 셀+enableColumnCollapse 추가, 미발행). +esbuild devDep(test).",
+      "version_note": "grid-pro-pivot 0.3.0→차기 batch minor (computePivot 그룹 셀+enableColumnCollapse 추가, 미발행). +esbuild devDep(test). ★perf 인지(릴리스): computeCells 가 ≥2 차원 pivot 전부에 그룹-prefix 셀 방출(enableColumnCollapse 무관, computePivot 은 render prop 미인지), correctness 무영향·표준(AG 동형), 대형 pivot 게이트는 차후 perf 패스.",
       "backlog_note": "Enterprise ❌19 잔여(advisor triage): group-header inline agg·sticky group headers·pivot 2(panel/server-side)·select-all-pages·group selection·viewport row model·auto group col·master-detail+virt·Excel cell styles·chart panel·row-group/pivot state save·sidebar/filters panel·context submenu·tool panel drag·.xlsx import."
     }
   },

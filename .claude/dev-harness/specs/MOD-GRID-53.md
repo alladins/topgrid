@@ -73,7 +73,8 @@ computeCells 그룹 셀=**종결형**(순수 additive). buildPivotColumns/PivotG
 ## G-1·G-2 결과 (완료 — 2026-06-07) → MOD-53 = {G-1,G-2} 완주, §3 이관
 **구현**(grid-pro-pivot, computePivot row-emit/columnTree 무수정 — computeCells 컬럼 셀만 additive):
 - G-1 computeCells 컬럼-combo **prefix 버킷**(len 1..columnFields.length-1) 추가 → `cellKey(prefix,i)` = `applyReducer(aggFn, source nums)`. avg-of-avgs 안전(source 직접).
-- G-2 `PivotColumnCollapseOpts{collapsedKeys,onToggle}` + buildPivotColumns 4번째 인자 + mapColumnNode collapse(그룹 셀 읽는 단일/값별 컬럼 + CollapsibleColumnHeader chevron) + PivotGrid `enableColumnCollapse?`(collapsedColKeys state, transpose 시 리셋).
+- G-2 `PivotColumnCollapseOpts{collapsedKeys,onToggle}` + buildPivotColumns 4번째 인자 + mapColumnNode collapse(그룹 셀 읽는 단일/값별 컬럼 + CollapsibleColumnHeader chevron) + PivotGrid `enableColumnCollapse?`(collapsedColKeys state).
+  - **★transpose 리셋 = wired·chromium 미검증(AP-004 정직)**: applyConfig 가 setCollapsedColKeys(new Set()) 호출하나 별도 게이트 없음. ★단 실패 모드 benign — 컬럼 키는 **의미상**(`"2024/Q1"`)이라 stale 키는 전치 후 어떤 node 와도 매칭 안 됨=**inert**(MOD-31 순차 `__id` 의 wrong-group-collapse 와 달리 무해). 검증 안 했으므로 "delivered guard" 아닌 "wired hook(저위험 inert)" 으로 기록.
 
 **검증**: **node 15/0**(`computePivot.test.mjs`, esbuild 번들=cross-import 해소): ★characterization-first(unmodified 9/15→additive 후 15/15, characterization 불변=additive 증명) +
 collapsed 그룹 AVG=**true source mean 17.5**(NOT avg-of-child-avgs 15, 불균등 행수)·3-dim len1·len2·1-dim inert · 기존 5 spine 테스트 무영향(sort11/collapse19/transpose5/customize8/filter7) ·
@@ -89,6 +90,8 @@ typecheck 0 · build green · **chromium 2/2**(`pivot-column-collapse.spec.ts`) 
   behavior-preserving-additive: 읽지 않는 prefix 키만, columnTree/columnLeafKeys/rows 불변, 0/1 차원 inert(byte-identical), 5 기존 spine 무영향.
 - **★avg-of-avgs 정직성이 node 로 이동**(advisor): correctness-critical 단언(그룹 AVG=true source mean)을 node 가, chromium 은 render 발산만(자식 DOM 부재+그룹값). MOD-52(text 단언)보다 깨끗.
 - **esbuild 번들 검증**(MOD-32 패턴): computePivot=cross-import(reducers→@topgrid/grid-pro-agg bare)라 node strip-types 직접 불가 → esbuild devDep + `.test.mjs` 번들 import.
+- **★transpose 리셋 정직 기록(advisor AP-004, 3번째)**: collapsedColKeys transpose 리셋=wired·chromium 미검증. 실패 모드 benign(시맨틱 키 stale=inert). delivered guard 아닌 wired hook(저위험)으로 기록 — MOD-50 validateRow·MOD-51 ctx.commit/cancel 동류(단 MOD-51 은 검증으로 닫음, 본 건은 inert 라 annotate).
+- **★perf 인지(릴리스, 액션 없음)**: computeCells 가 ≥2 컬럼차원 pivot 전부에 그룹-prefix 셀을 방출(enableColumnCollapse 무관 — computePivot 은 render prop 미인지). correctness 무영향(behavior-preserving-additive), 표준(AG 도 사전계산)이나 대형 pivot 소비자용 게이트가 필요하면 차후 perf 패스에서.
 
 ## 모듈 완주 요약
 2-Goal: Enterprise ❌20 backlog 1번째(제품결정 4종 종결 후). computePivot 컬럼-그룹 prefix 셀 additive(source 재집계, 행축 subtotal 의 열축 대칭) + buildPivotColumns/PivotGrid collapse 배선.
