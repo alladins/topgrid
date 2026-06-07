@@ -913,6 +913,16 @@
 
 > dev-harness 수확: **Track 1 첫 모듈** — node-pure runway 종료 후 chromium 하네스(storybook-static :6006 + playwright, 회귀 81/81=78+3) 재가동. **advisor spec-gate 핵심**: 모듈 경계=패키지(grid-core pagination)가 아니라 **「비공허 발산 단언 작성 가능?」** 게이트. clean-divergent 3(formatter 라벨·먼-페이지 점프·뷰포트 적응)만 번들, **vacuity-trap 제외**(debounced-scroll=렌더카운터 없이 단언 불가+react-virtual rAF 위임 / row-animation=FLIP transform timing-sensitive / auto-virt-threshold=design 번복=advisor). ★**정직성**(audit 핵심): custom-formatter 행 ❌ 는 count-half(totalCountFormat 기존)에 과장됐었음 — page-number-half 신규가 행 닫음(기존 prop 위장 금지). node-spine(clampGoToPage·computeAutoPageSize)+chromium 발산(LESS-006). Grid.tsx 최소 배선=OFF 회귀 0. **Pagination 3 ❌→✅**(카테고리 9/5/3→12/5/0), COMMERCIAL-GAP ❌34→31·✅223→226·🟡70(reconcile 19/19·330). 신규 lesson 없음.
 
+### `mod-grid-51` — 커스텀 셀 에디터 슬롯 (custom cell editor slot, **MIT**, grid-renderers) ✅ 채움 — {G-1} 완주 (Track 2 제품결정 2번째)
+
+소스: `packages/grid-renderers/src/EditableCell.tsx`(renderEditor? prop + CustomEditorContext + 진입 autofocus 분기 + handleKey 위젯-wrapper) + `index.ts` export, story `__stories__/EditableCell.custom-editor.stories.tsx`(standalone stateful), spec `.claude/dev-harness/specs/MOD-GRID-51.md`. dev-harness 34번째. **Track 2 제품결정 2번째**(advisor 순서 full-row→**custom editor slot**→column spanning→RTL). 갭분석 Editing ❌ 1 닫기(Editing 0 ❌ 도달).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 커스텀 에디터 슬롯(G-1) | `EditableCell.renderEditor?(ctx:{value,onChange,commit,cancel,focusRef})→ReactNode` (render-prop lifecycle slot, registry 아님) | **배선형** | `isEditing && renderEditor` 시 built-in editType 우회 → `<div onKeyDown={handleKey}>{renderEditor(ctx)}</div>`. keydown 버블링=Enter→commit/Esc→cancel/Tab→commit(소비자 배선 0). 진입 autofocus=useEffect([isEditing])가 ctx.focusRef 요소 focus. 기존 draft/handleKey/autofocus lifecycle 재배선(신규 lifecycle 무발명) | chromium 3/3: ★view→클릭 진입→커스텀 editor autofocus(toBeFocused, built-in border-blue-400 부재)·Enter(포커스 상태)→commit·Esc→cancel — story 가 focus/Enter/Esc 무배선. node 신규 0(lifecycle=브라우저, 정직). value=string(onCommit 계약 유지) | 채움 |
+
+> dev-harness 수확: **Track 2 제품결정 2번째**. ★설계(advisor): 소비자는 이미 raw `cell` 로 임의 editor 를 그릴 수 있음(broad capability 존재) → 비공허 증분은 "임의 컴포넌트 렌더"가 아니라 **편집 lifecycle 위임**(진입 autofocus·Enter→commit·Esc→cancel = raw cell 무료 미제공). **render-prop slot(registry 아님)** — per-column·lifecycle-bound, AG string-config 직렬화 needs 없음, registerRenderer 선례 비적용. ★비공허성 메커니즘=**keydown 버블링**: 소비자 editor 의 keydown 이 슬롯 wrapper `<div onKeyDown>` 로 버블 → EditableCell 가 Enter/Esc/Tab 처리(소비자가 onKeyDown 받으면 주장 붕괴=그래서 ctx 에 onKeyDown 미노출). ★검증 엄격(advisor, "input 나타남"=vacuous 금지): view 모드 시작→클릭 진입(isEditing=true 시작 금지)·커스텀 editor 구조적 구분(data-testid+built-in class 부재)·`toBeFocused`(bare input self-focus 안 함=focusRef 증명)·Enter는 포커스 상태에서(blur 아님). **비공허 기준 사전 확정**: focus+Enter+Esc 셋 다 story 배선 0 으로 성립→✅(소비자가 핵심 lifecycle 여전히 배선이면 🟡, retrofit 금지). **node-pure spine 없음=정직**(MOD-49 G-1·MOD-35 G-3 동형, LESS-006, fabricate 금지). value=string(onCommit 계약 유지, 임의 value-type=vN; gap line 276 "consumer-supplied editor component" 정확 닫음, 임의 타입 parity 주장 아님). OFF byte-identical(기존 11 static story 회귀=if(isEditing) 최상단 분기 추가, 기존 editType 경로 무수정). **Editing 13/4/1→14/4/0(0 ❌)**, COMMERCIAL-GAP ❌30→29·✅227→228·🟡70(reconcile 19/19·330·0 mismatch). chromium 87/87(84+3). 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1279,6 +1289,12 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-51 grid-renderers 커스텀 셀 에디터 슬롯 (Track2-2, MIT)** — ✅ **구현됨 → §3 `mod-grid-51` 참조** (dev-harness 34번째). spec=`specs/MOD-GRID-51.md`
+- Goal: custom cell editor slot — EditableCell `renderEditor?(ctx)` render-prop lifecycle slot. AG `cellEditor`(Community)·Wijmo `CellTemplate` 대응. 비공허=lifecycle 위임(autofocus·Enter-commit·Esc-cancel, raw cell 무료 미제공).
+- In: `renderEditor?(ctx:{value,onChange,commit,cancel,focusRef})` prop + `CustomEditorContext` 타입(grid-renderers EditableCell) + standalone stateful story. 기존 editType 경로 무수정.
+- Out: 임의 value-type(non-string serialize)=vN · editor registry(AG cellEditorSelector string-config)=advisor 비적용(per-column render-prop 충분) · cellEditorPopup/대형 오버레이=후속.
+- AC: ★view→클릭 진입·커스텀 editor autofocus(toBeFocused, built-in border-blue-400 부재)·Enter(포커스 상태)→commit·Esc→cancel — story 배선 0(chromium 발산). node 신규 0(lifecycle=브라우저, LESS-006 정직). ★설계(advisor): keydown 버블링이 비공허성 원천(ctx onKeyDown 미노출), 비공허 기준 사전확정(✅ vs 🟡). value=string(onCommit 계약). tier MIT(기존 편집 무-게이트).
 
 **MOD-GRID-50 grid-core 행 단위 편집 (Track2-1, MIT)** — ✅ **구현됨 → §3 `mod-grid-50` 참조** (dev-harness 33번째). spec=`specs/MOD-GRID-50.md`
 - Goal: full-row editing — per-cell→행 단위 edit/commit/cancel(atomic). AG `editType:'fullRow'`(Community)·Wijmo row edit 대응.

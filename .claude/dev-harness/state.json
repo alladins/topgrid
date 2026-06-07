@@ -1433,6 +1433,34 @@
       "module_summary": "Track 2 제품결정 1번째(advisor 위임). EditableCell.isEditing 셀→행 승격+controlled-data+atomic raw-truth(draftRef). 코어 render 무수정(84/84). validateRow=미검증 hook point(정정). 신규 lesson 없음.",
       "version_note": "grid-core 0.4→차기 batch(미발행).",
       "product_decision_note": "제품결정 4종(advisor 위임): full-row editing=✅ / custom cell editor slot=MOD-51 / column spanning=bound-or-defer / RTL=의도적 연기(invasive·한국우선 저가치)."
+    },
+    "MOD-GRID-51": {
+      "package": "grid-renderers (MIT)",
+      "tier": "MIT",
+      "weight": "Full(1-Goal: renderEditor lifecycle slot)",
+      "priority": "Track2-2 제품결정(사용자 advisor 위임; 순서 full-row→custom editor slot→column spanning→RTL)",
+      "phase": "done (1-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-51.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "custom cell editor slot — EditableCell.renderEditor?(ctx) render-prop lifecycle slot(registry 아님). 진입 autofocus·Enter→commit·Esc→cancel 위임. 기존 editType 경로 무수정.",
+      "g1": {
+        "surface": "EditableCell renderEditor?(ctx:{value,onChange,commit,cancel,focusRef})→ReactNode + CustomEditorContext. isEditing&&renderEditor→<div onKeyDown={handleKey}>{renderEditor(ctx)}</div>(keydown 버블링=Enter/Esc/Tab) + autofocus useEffect(ctx.focusRef). value=string(onCommit 계약).",
+        "verified_chromium": "3/3: view→클릭 진입→커스텀 editor autofocus(toBeFocused, built-in border-blue-400 부재)·Enter(포커스 상태)→commit·Esc→cancel. story 가 focus/Enter/Esc 무배선.",
+        "verified_node": "신규 0(lifecycle=브라우저, LESS-006 정직, fabricate 금지)."
+      },
+      "verification": "typecheck 0·build green·chromium 3/3(editable-cell-custom-editor.spec.ts) + 전체 회귀 87/87(84+3, 기존 11 static story OFF byte-identical). node 신규 0.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-006 적용; keydown 버블링/비공허 기준 사전확정=advisor 설계 통찰=문서)",
+        "matrix_row": "§3 mod-grid-51 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Custom cell editor slot ❌→✅(Editing 13/4/1→14/4/0=0 ❌) reconcile 19/19(228/70/29·330·0 mismatch·Community 10→9)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★Custom cell editor slot=✅(renderEditor lifecycle slot; 소비자 editor 가 진입 autofocus·Enter-commit·Esc-cancel 를 슬롯에서 받음, raw cell 무료 미제공). ★keydown 버블링=비공허성 원천(ctx onKeyDown 미노출=노출 시 '소비자 배선'으로 주장 붕괴, advisor). ★비공허 기준 사전확정(focus+Enter+Esc 셋 다 story 배선 0→✅, retrofit 금지). ★정직 스코프=value=string(onCommit 계약, 임의 value-type=vN). ★node-pure spine 없음=정직(LESS-006, MOD-49 G-1·MOD-35 G-3 동형). advisor.",
+      "module_summary": "Track 2 제품결정 2번째(advisor 위임). EditableCell 기존 draft/handleKey/autofocus lifecycle 을 renderEditor 슬롯에 재배선(신규 lifecycle 무발명). chromium 발산(autofocus·Enter-commit·Esc-cancel, story 배선 0)=비공허. 기존 editType 경로 무수정(회귀 87/87). 신규 lesson 없음.",
+      "version_note": "grid-renderers 0.2.1→차기 batch minor (renderEditor prop 추가, 미발행).",
+      "product_decision_note": "제품결정 4종(advisor 위임): full-row editing=✅(MOD-50) / custom cell editor slot=✅(MOD-51) / column spanning=bound-or-defer(다음 MOD-52?) / RTL=의도적 연기(invasive·한국우선 저가치)."
     }
   },
   "release_queue": {

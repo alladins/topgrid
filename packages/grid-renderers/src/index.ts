@@ -29,6 +29,7 @@ export {
   EditableCell,
   type EditableCellProps,
   type EditType,
+  type CustomEditorContext,
   type CellClassNameCallback,
 } from './EditableCell.js';
 export {

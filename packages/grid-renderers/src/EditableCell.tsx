@@ -12,6 +12,7 @@ import {
   useRef,
   type JSX,
   type KeyboardEvent,
+  type ReactNode,
 } from 'react';
 
 /**
@@ -40,6 +41,38 @@ export type EditType = 'text' | 'number' | 'date' | 'select' | 'textarea';
  * @see Spec MOD-GRID-05/G-003 D3 + Section 2.2 (legacy doc reference)
  */
 export type { CellClassNameCallback } from '@topgrid/grid-core';
+
+/**
+ * Lifecycle context handed to a consumer-supplied editor via {@link EditableCellProps.renderEditor}.
+ *
+ * The slot's value proposition is the **edit lifecycle**, not the ability to render an
+ * arbitrary component (a consumer can already render anything via a raw TanStack `cell`
+ * renderer). What a raw `cell` does NOT get for free — and what this context provides —
+ * is: entry autofocus (`focusRef`), Enter→commit / Esc→cancel / Tab→commit (wired by
+ * EditableCell's keydown handler on the slot wrapper, so the consumer writes none of it),
+ * and a controlled draft (`value` / `onChange`).
+ *
+ * `value` is the draft **string** — EditableCell preserves the `onCommit(string)` contract,
+ * so the consumer serializes any richer value. (Arbitrary non-string value-type parity is vN.)
+ *
+ * @since MOD-GRID-51 (Track 2 제품결정 2번째, 2026-06-07)
+ */
+export interface CustomEditorContext {
+  /** Current draft value (string) — owned by EditableCell. */
+  value: string;
+  /** Update the draft (= internal `setDraft`). */
+  onChange: (next: string) => void;
+  /** Commit the current draft (= `onCommit(draft)`). */
+  commit: () => void;
+  /** Cancel editing (= `onCancel()`). */
+  cancel: () => void;
+  /**
+   * Callback ref — attach to the focusable editor element. EditableCell focuses it
+   * automatically when the cell enters edit mode (entry autofocus). A bare element
+   * does not self-focus, so this is the autofocus seam.
+   */
+  focusRef: (el: HTMLElement | null) => void;
+}
 
 /**
  * Props for {@link EditableCell}.
@@ -113,6 +146,23 @@ export interface EditableCellProps {
    * @since ADR-MOD-GRID-05-004 (G-005, 2026-05-18)
    */
   initialDraft?: string;
+  /**
+   * Custom editor slot (render prop). When provided **and** `isEditing` is true, the
+   * built-in `editType` editors (input/select/textarea) are bypassed and the consumer's
+   * editor is rendered inside a lifecycle wrapper instead.
+   *
+   * The wrapper supplies the edit lifecycle the consumer would otherwise have to wire by
+   * hand on a raw `cell` renderer:
+   * - **Entry autofocus** — `ctx.focusRef` is focused when the cell enters edit mode.
+   * - **Enter → commit**, **Esc → cancel**, **Tab → commit** — via the wrapper's `onKeyDown`
+   *   (keydown bubbles up from the consumer's editor; `stopPropagationOnKeyDown` is honored).
+   * - **Controlled draft** — `ctx.value` / `ctx.onChange` (string; see {@link CustomEditorContext}).
+   *
+   * `editType` is ignored while `renderEditor` is active (the consumer owns the markup).
+   *
+   * @since MOD-GRID-51 (2026-06-07)
+   */
+  renderEditor?: (ctx: CustomEditorContext) => ReactNode;
 }
 
 const INPUT_BASE_CLASS =
@@ -162,6 +212,7 @@ export function EditableCell({
   align = 'left',
   stopPropagationOnKeyDown = false,
   initialDraft,
+  renderEditor,
 }: EditableCellProps): JSX.Element {
   // ADR-MOD-GRID-05-004 (G-005): initialDraft wins on first render.
   // When the parent triggers editing via a keystroke, the typed character is
@@ -170,6 +221,8 @@ export function EditableCell({
   // are intentionally ignored (component owns its draft after mount).
   const [draft, setDraft] = useState<string>(() => initialDraft ?? String(value ?? ''));
   const inputRef = useRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null>(null);
+  // MOD-GRID-51: holds the consumer's focusable editor element (set via ctx.focusRef).
+  const customEditorRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (isEditing) {
@@ -180,7 +233,9 @@ export function EditableCell({
         setDraft(String(value ?? ''));
       }
       // Focus and move cursor to end so the user can continue typing naturally.
-      const el = inputRef.current;
+      // MOD-GRID-51: when a custom editor slot is active, focus the consumer's element
+      // (entry autofocus seam) instead of the built-in input.
+      const el = renderEditor ? customEditorRef.current : inputRef.current;
       if (el) {
         el.focus();
         // setSelectionRange is available on text/number/textarea inputs (not select).
@@ -194,7 +249,9 @@ export function EditableCell({
   }, [isEditing]);
 
   const handleKey = useCallback(
-    (e: KeyboardEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    // Widened to HTMLElement so the same handler drives the renderEditor slot wrapper
+    // (MOD-GRID-51) as well as the built-in input/select/textarea.
+    (e: KeyboardEvent<HTMLElement>) => {
       if (e.key === 'Enter' && editType !== 'textarea') {
         onCommit(draft);
       } else if (e.key === 'Escape') {
@@ -211,6 +268,28 @@ export function EditableCell({
   );
 
   if (isEditing) {
+    // MOD-GRID-51: custom editor slot. The consumer's editor renders inside a wrapper
+    // that supplies the edit lifecycle — keydown bubbles up so Enter→commit / Esc→cancel
+    // / Tab→commit work with zero wiring from the consumer; entry autofocus is driven by
+    // the useEffect above via ctx.focusRef. editType is bypassed (consumer owns markup).
+    if (renderEditor) {
+      const ctx: CustomEditorContext = {
+        value: draft,
+        onChange: setDraft,
+        commit: () => onCommit(draft),
+        cancel: onCancel,
+        focusRef: (el) => {
+          customEditorRef.current = el;
+        },
+      };
+      const composed = [alignToClass(align), cellClassName ?? ''].filter(Boolean).join(' ');
+      return (
+        <div onKeyDown={handleKey} className={composed || undefined}>
+          {renderEditor(ctx)}
+        </div>
+      );
+    }
+
     if (editType === 'select') {
       const opts = selectOptions ?? [];
       const composed = [INPUT_BASE_CLASS, alignToClass(align), cellClassName ?? '']
