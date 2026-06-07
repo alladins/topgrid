@@ -1027,6 +1027,17 @@
 
 > dev-harness 수확: **Enterprise backlog 9번째(advisor Tier 4 sheet, node-pure)**. ★verify-first: grid-pro-sheet number/cell format 0(getDisplay 문자열 그대로). 증분=순수 deterministic 서식 함수(Intl 미사용=locale/node 무관 node 단언 안정)+SheetGrid formats prop. **엔진(createSheet) 무수정**(표시값 파싱·포맷=stored≠rendered 보존, MOD-26 원칙). node-pure correctness(node 14/0)+chromium 표시 발산(LESS-006 split). conditional format=Out(MOD-24 그리드급 존재). opt-in byte-identical(미지정 셀=passthrough). **Spreadsheet 14/6/3→15/6/2**, COMMERCIAL-GAP ❌19→18·✅238→239·🟡70(reconcile 19/19·330·0 mismatch). full-suite 107/107 green. 신규 lesson 없음.
 
+### `mod-grid-63` — 시트 셀 스타일 (cell styling: fonts·fill·borders·alignment, grid-pro-sheet) 🟡 부분 — {G-1} 완주 (Enterprise backlog 10번째)
+
+소스: `packages/grid-pro-sheet/src/internal/{sheetStyleToCss.ts, sheetStyleToCss.test.ts}`(node) + `SheetGrid.tsx`(cellStyles prop) + `index.ts` export, story `stories/SheetGrid.stories.tsx`(Styled), spec `.claude/dev-harness/specs/MOD-GRID-63.md`. dev-harness 45번째. **Enterprise ❌ backlog 10번째**(advisor Tier 4 sheet). 갭분석 Spreadsheet ❌ 1 → 🟡(부분).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 순수 styleToCss(G-1) | `sheetStyleToCss(SheetCellStyle)→CSSProperties` (bold/italic/color/background/align/border) | **종결형**(순수 map) | set props 만 방출(미설정→base 노출). MOD-62 자매 | node **10/0**: bold/italic/color/bg/align/border·empty·combined·미설정 omit | 채움 |
+| SheetGrid cellStyles 배선(G-1) | SheetGrid `cellStyles?:Record<ref,SheetCellStyle>` | **배선형** | td style 병합(선택 하이라이트 우선). 엔진/고정 style 무수정 | chromium 1/1: ★A1 bold(fontWeight 700)·B1 fill(rgb)·C1 align right·미지정 base | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 10번째(advisor Tier 4 sheet)**. MOD-62(서식)의 자매=per-cell 스타일. 순수 styleToCss(map, node 10/0)+SheetGrid cellStyles prop. 엔진/getDisplay/고정 style 무수정(cellStyles 미지정=byte-identical). node-pure map+chromium 표시 발산(computed style). ★**🟡(✅ 아님)=번들 갭 "fonts/fill/borders/alignment, **merged cells**" 중 styling 4종만 전달, merged cells(시트 셀 병합)=vN**(별개; 그리드 병합=grid-pro-merging MOD-13/52) → over-claim 회피로 🟡. **Spreadsheet 15/6/2→15/7/1**(❌→🟡), COMMERCIAL-GAP ❌18→17·✅239·🟡70→71(reconcile 19/19·330·0 mismatch). full-suite 108/108 green. 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1393,6 +1404,12 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-63 grid-pro-sheet 시트 셀 스타일 (Enterprise backlog 10, Community 스코프)** — 🟡 **부분 → §3 `mod-grid-63` 참조** (dev-harness 45번째). spec=`specs/MOD-GRID-63.md`
+- Goal: cell styling(fonts/fill/borders/alignment) — Wijmo per-cell font/fill/border 대응. 순수 styleToCss + SheetGrid cellStyles prop.
+- In: 순수 `sheetStyleToCss`(node 10/0) + `SheetCellStyle` 타입 + SheetGrid `cellStyles?` prop. 엔진/고정 style 무수정.
+- Out: **merged cells(시트 셀 병합)=vN**(별개; 그리드 병합=grid-pro-merging) → 번들 갭의 4/5만 = 🟡. 스타일 편집 UI·조건부 스타일(MOD-24) Out.
+- AC: styleToCss 매핑(node)·bold/fill/align computed·미지정 byte-identical(chromium). ★🟡=merged cells 미전달(over-claim 회피). tier Community 스코프.
 
 **MOD-GRID-62 grid-pro-sheet 시트 셀 숫자 서식 (Enterprise backlog 9, Community 스코프)** — ✅ **구현됨 → §3 `mod-grid-62` 참조** (dev-harness 44번째). spec=`specs/MOD-GRID-62.md`
 - Goal: cell/number formatting (currency/percent/decimals/date) — Wijmo FlexSheet .format 대응. node-pure 서식 함수 + SheetGrid formats prop.

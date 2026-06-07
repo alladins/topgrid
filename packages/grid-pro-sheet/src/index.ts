@@ -41,6 +41,9 @@ export type { SheetGridProps } from './SheetGrid.js';
 // MOD-GRID-62: pure cell number-format + spec type (for the SheetGrid `formats` prop).
 export { formatSheetValue } from './internal/formatSheetValue.js';
 export type { SheetCellFormat } from './internal/formatSheetValue.js';
+// MOD-GRID-63: pure cell style→CSS + spec type (for the SheetGrid `cellStyles` prop).
+export { sheetStyleToCss } from './internal/sheetStyleToCss.js';
+export type { SheetCellStyle } from './internal/sheetStyleToCss.js';
 
 // Value model + AST.
 export { cellError, isCellError } from './types.js';

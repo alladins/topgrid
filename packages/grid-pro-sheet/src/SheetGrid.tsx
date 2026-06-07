@@ -17,6 +17,7 @@ import type { CellUpdate } from '@topgrid/grid-pro-range';
 import { useSheet } from './useSheet.js';
 import { toA1 } from './internal/cellAddress.js';
 import { formatSheetValue, type SheetCellFormat } from './internal/formatSheetValue.js';
+import { sheetStyleToCss, type SheetCellStyle } from './internal/sheetStyleToCss.js';
 
 export interface SheetGridProps {
   /** Number of rows (default 12). */
@@ -29,6 +30,11 @@ export interface SheetGridProps {
    * (errors/text) pass through.
    */
   formats?: Record<string, SheetCellFormat>;
+  /**
+   * MOD-GRID-63: per-cell visual style, keyed by A1 ref (e.g. `{ A1: { bold: true } }`).
+   * Merged onto the cell; the range-selection highlight still wins.
+   */
+  cellStyles?: Record<string, SheetCellStyle>;
 }
 
 const cellStyle: CSSProperties = {
@@ -41,7 +47,7 @@ const cellStyle: CSSProperties = {
 };
 const headerStyle: CSSProperties = { ...cellStyle, background: '#f3f4f6', textAlign: 'center', fontWeight: 600 };
 
-export function SheetGrid({ rows = 12, cols = 6, formats }: SheetGridProps): JSX.Element {
+export function SheetGrid({ rows = 12, cols = 6, formats, cellStyles }: SheetGridProps): JSX.Element {
   const { setCell, getDisplay, getRaw, undo, redo, canUndo, canRedo } = useSheet();
   const [editing, setEditing] = useState<{ row: number; col: number } | null>(null);
   const [editText, setEditText] = useState('');
@@ -128,7 +134,11 @@ export function SheetGrid({ rows = 12, cols = 6, formats }: SheetGridProps): JSX
                     onMouseDown={(e) => handleMouseDown(row, col, e.shiftKey)}
                     onMouseEnter={() => handleMouseEnter(row, col)}
                     onDoubleClick={() => startEdit(row, col)}
-                    style={{ ...cellStyle, background: selected ? '#dbeafe' : undefined }}
+                    style={{
+                      ...cellStyle,
+                      ...(cellStyles?.[ref] ? sheetStyleToCss(cellStyles[ref]) : {}),
+                      ...(selected ? { background: '#dbeafe' } : {}),
+                    }}
                   >
                     {isEditing ? (
                       <input

@@ -1745,6 +1745,33 @@
       "closure": "★Cell/number formatting=✅(currency/percent/decimals/date, 순수 deterministic+SheetGrid 배선). ★엔진 무수정(getDisplay 파싱·포맷=MOD-26 stored≠rendered 보존). node-pure correctness(14/0)+chromium 표시 발산. deterministic(Intl 미사용). conditional format=Out(MOD-24 그리드급). advisor Tier 4.",
       "module_summary": "Enterprise backlog 9번째(advisor Tier 4 sheet, node-pure). 순수 formatSheetValue(node 14/0)+SheetGrid formats prop. 엔진 무수정. node correctness+chromium 표시. 신규 lesson 없음.",
       "version_note": "grid-pro-sheet 0.2.0→차기 batch minor (formatSheetValue+formats prop, 미발행)."
+    },
+    "MOD-GRID-63": {
+      "package": "grid-pro-sheet (Community 스코프)",
+      "tier": "Community-scope",
+      "weight": "Full(1-Goal: 순수 styleToCss + SheetGrid 배선)",
+      "priority": "Enterprise ❌ backlog 10번째(advisor Tier 4 sheet)",
+      "phase": "done (1-Goal 완주 → §3, 🟡 부분)",
+      "spec": "specs/MOD-GRID-63.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "cell styling(fonts/fill/borders/alignment) — 순수 sheetStyleToCss + SheetGrid cellStyles prop. merged cells(시트 병합)=vN. 엔진 무수정.",
+      "g1": {
+        "surface": "sheetStyleToCss(SheetCellStyle{bold,italic,color,background,align,border})→CSSProperties(set props 만) + SheetGrid cellStyles?:Record<ref,style> prop(td 병합, 선택 우선).",
+        "verified_node": "10/0(sheetStyleToCss.test.ts): bold/italic/color/bg/align/border·empty·combined·미설정 omit.",
+        "verified_chromium": "1/1(sheet-cell-style.spec.ts): A1 bold(fontWeight 700)·B1 fill(rgb)·C1 align right·미지정 base."
+      },
+      "verification": "node 10/0·typecheck 0·build green·chromium 1/1 + full-suite 108/108 green. 엔진/getDisplay/고정 style 무수정.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-006; MOD-62 자매 패턴=문서)",
+        "matrix_row": "§3 mod-grid-63 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Cell styling ❌→🟡(Spreadsheet 15/6/2→15/7/1) reconcile 19/19(239/71/17·330·0 mismatch·Community 7→6)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★Cell styling=🟡 부분(fonts/fill/borders/alignment 전달, 순수 map+SheetGrid 배선). ★🟡(✅ 아님) 정직: 번들 갭 'fonts/fill/borders/alignment, merged cells' 중 styling 4종만, merged cells(시트 셀 병합)=vN(별개; 그리드 병합=grid-pro-merging) → over-claim 회피. MOD-62 자매. 엔진 무수정. advisor Tier 4.",
+      "module_summary": "Enterprise backlog 10번째(advisor Tier 4 sheet, 🟡). 순수 sheetStyleToCss(node 10/0)+SheetGrid cellStyles prop. merged cells=vN로 🟡(정직). 엔진 무수정(108/108). 신규 lesson 없음.",
+      "version_note": "grid-pro-sheet 0.2.0→차기 batch minor (sheetStyleToCss+cellStyles prop, 미발행)."
     }
   },
   "release_queue": {

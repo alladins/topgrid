@@ -15,6 +15,20 @@ export const Basic: Story = {
   args: { rows: 8, cols: 5 },
 };
 
+// MOD-GRID-63: per-cell styling. A1=bold, B1=fill(background), C1=align right; D1=no style.
+export const Styled: Story = {
+  name: '셀 스타일 (bold / fill / align)',
+  args: {
+    rows: 4,
+    cols: 4,
+    cellStyles: {
+      A1: { bold: true },
+      B1: { background: '#ffeeee' },
+      C1: { align: 'right' },
+    },
+  },
+};
+
 // MOD-GRID-62: per-cell number formatting. B2=currency, C2=percent(1dp), D2=number(2dp); A2=no format.
 // Type a numeric value into a formatted cell → the displayed value is formatted (stored value
 // unchanged). Non-formatted cells render raw (byte-identical).
