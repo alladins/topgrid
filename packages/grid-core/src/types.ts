@@ -300,6 +300,31 @@ export interface GridPaginationOptions {
    * @since G-003 (MOD-GRID-03)
    */
   enableKeyboardNav?: boolean;
+
+  /**
+   * 페이지 번호 버튼 라벨 포매터 (예: 천단위 구분 `n => n.toLocaleString()`).
+   * 미지정 시 raw 정수. `aria-label`(접근성)은 원본 정수를 유지한다.
+   * 전체 건수 포맷은 `localeText.totalCount`(MOD-GRID-29) 참조.
+   *
+   * @since MOD-GRID-49 (Track 1 — AG `paginationNumberFormatter` 대응)
+   */
+  pageNumberFormat?: (n: number) => import('react').ReactNode;
+
+  /**
+   * 특정 페이지로 점프하는 numeric 입력 UI 표시. 기본 `false`.
+   * 슬라이딩 버튼만으로 닿지 않는 먼 페이지로 직접 이동.
+   *
+   * @since MOD-GRID-49 (Track 1 — Wijmo pager 입력 대응)
+   */
+  enableGoToPage?: boolean;
+
+  /**
+   * 뷰포트(그리드 본문) 높이에 맞춰 pageSize 를 자동 산정. 기본 `false`.
+   * 활성 시 `pageSize`/`pageSizeOptions` 셀렉트는 무시·숨김(상충 회피).
+   *
+   * @since MOD-GRID-49 (Track 1 — AG `paginationAutoPageSize` 대응)
+   */
+  autoPageSize?: boolean;
 }
 
 /**

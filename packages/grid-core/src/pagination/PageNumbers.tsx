@@ -7,7 +7,7 @@
  * @since G-003 (MOD-GRID-03)
  */
 
-import { memo } from 'react';
+import { memo, type ReactNode } from 'react';
 
 interface PageNumbersProps {
   /** 현재 페이지 (1-based). */
@@ -16,12 +16,15 @@ interface PageNumbersProps {
   pageCount: number;
   /** 페이지 클릭 콜백 (1-based 페이지 번호 전달). */
   onPageChange: (page: number) => void;
+  /** 페이지 번호 라벨 포매터 (MOD-GRID-49). 미지정 시 raw 정수. aria-label은 원본 정수 유지. */
+  format?: (n: number) => ReactNode;
 }
 
 export const PageNumbers = memo(function PageNumbers({
   currentPage,
   pageCount,
   onPageChange,
+  format,
 }: PageNumbersProps) {
   if (pageCount <= 0) return null;
 
@@ -58,7 +61,7 @@ export const PageNumbers = memo(function PageNumbers({
               : 'px-2 py-1 rounded border border-gray-300 text-sm hover:bg-gray-100 disabled:opacity-40'
           }
         >
-          {p}
+          {format ? format(p) : p}
         </button>
       ))}
       {showRightEllipsis && (

@@ -890,6 +890,18 @@
 
 > dev-harness 수확: 시트/pivot/agg 트랜스폼 동형의 **순수 트리 빌더** — flat path-rows → 계층(소비자가 grid-core getSubRows 로 렌더). ★**synthetic-parent dedup**(spine): `['A','X']`+`['A','Y']`→하나의 'A' 부모(두 노드 아님), prefix 재귀 ensure + key map. **★explicit-row-as-prefix 양가성**(advisor): path 가 데이터 row 이면서 다른 path 의 prefix → AG 처럼 group 노드에 데이터 부착(order-무관 테스트). **NUL-key**(MOD-36 동형 충돌안전: `[AB]`≠`[A,B]`). **closure 정직(advisor)**: getDataPath=🟡(데이터-모델 절반 ship·표현 절반=auto group column 렌더 부재 → `__expand__`+indent 는 degenerate, 기능 아님 → browser). applyTransaction 선례 비적용(트리=계층 *표시* 가 핵심). **4행 클러스터 1 flip**(auto-group-col·master-detail+virt·viewport ❌ 유지; viewport=서버 스트리밍 node substance 0). node 11(suite 74). 신규 lesson 없음. **★advisor: 본 모듈 후 autonomous runway 종료** — MOD-49(go-to-page/.xlsx/Excel 서식)=browser/format-lib 박약·MOD-50+=사용자 제품결정.
 
+### `mod-grid-49` — 페이지네이션 완성도 (pageNumberFormat + go-to-page + auto-page-size, **MIT**, grid-core) ✅ 채움 — {G-1,G-2,G-3} 완주 (Track 1 browser 1번째)
+
+소스: `packages/grid-core/src/pagination/{clampGoToPage,computeAutoPageSize,GoToPageInput,useAutoPageSize}.ts(x)` + `{clampGoToPage,computeAutoPageSize}.test.ts`(node) + types/PageNumbers/GridPagination/Grid 배선, spec `.claude/dev-harness/specs/MOD-GRID-49.md`. dev-harness 32번째. **node-pure runway 종료 후 첫 browser 클러스터 모듈**(chromium 하네스 게이트). 갭분석 Pagination ❌ 3 닫기.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 페이지번호 포매터(G-1) | `GridPaginationOptions.pageNumberFormat?: (n)=>ReactNode` | **배선형** | GridPagination→PageNumbers 라벨(`format ? format(p) : p`), aria-label raw 유지. count-half(totalCountFormat, MOD-29) 무수정 | chromium: "P1" 발산 + aria raw. ★count-half 기존 충족(prior ❌ 과장)·page-half 신규가 행 ✅ | 채움 |
+| go-to-page 입력(G-2) | `enableGoToPage?`, 순수 `clampGoToPage(raw,pageCount)→idx\|null`, `GoToPageInput` | **종결형**(clamp) + 배선형 | GridPagination 좌측 렌더→table.setPageIndex. 1-based→0-based 클램프 [1,count], non-numeric/empty→null no-op | node 11/0 + chromium: page1 "0"→"7"입력→page7 "60"(먼 페이지 점프). Wijmo pager 대응 | 채움 |
+| auto-page-size(G-3) | `autoPageSize?`, 순수 `computeAutoPageSize({availableHeight,rowHeight})→n`, `useAutoPageSize`(ResizeObserver) | **종결형**(compute) + 배선형 | thead 제외 측정→table.setPageSize. ★바운드 컨테이너(outer+scroll height:100% % 체인, 소비자 wrapper=뷰포트) | node 9/0 + chromium: 280px→560px 리사이즈→행수 증가(높이→행수 발산). AG paginationAutoPageSize 대응 | 채움 |
+
+> dev-harness 수확: **Track 1 첫 모듈** — node-pure runway 종료 후 chromium 하네스(storybook-static :6006 + playwright, 회귀 81/81=78+3) 재가동. **advisor spec-gate 핵심**: 모듈 경계=패키지(grid-core pagination)가 아니라 **「비공허 발산 단언 작성 가능?」** 게이트. clean-divergent 3(formatter 라벨·먼-페이지 점프·뷰포트 적응)만 번들, **vacuity-trap 제외**(debounced-scroll=렌더카운터 없이 단언 불가+react-virtual rAF 위임 / row-animation=FLIP transform timing-sensitive / auto-virt-threshold=design 번복=advisor). ★**정직성**(audit 핵심): custom-formatter 행 ❌ 는 count-half(totalCountFormat 기존)에 과장됐었음 — page-number-half 신규가 행 닫음(기존 prop 위장 금지). node-spine(clampGoToPage·computeAutoPageSize)+chromium 발산(LESS-006). Grid.tsx 최소 배선=OFF 회귀 0. **Pagination 3 ❌→✅**(카테고리 9/5/3→12/5/0), COMMERCIAL-GAP ❌34→31·✅223→226·🟡70(reconcile 19/19·330). 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1249,6 +1261,15 @@ PoC 후 단계적 결정.
 - Out(browser/❌ 유지): auto group column(설정형 group-col 렌더) · master-detail+virtualization(virtualizer wiring) · viewport row model(서버 스트리밍=node substance 0).
 - AC: ★synthetic-parent dedup(['A','X']+['A','Y']→1부모2자식)·explicit-prefix data 부착(order 무관)·ordering·duplicate(last 승)·empty 스킵·NUL-key.
   ★설계: explicit row=group 노드 데이터 부착(AG)·NUL-key 충돌안전. closure: getDataPath=🟡(데이터모델 ship·auto-group-col render=browser, 4행 1 flip).
+
+> **★ MOD-49~ = Track 1 browser 클러스터(2026-06-07 착수)**. node-pure runway(MOD-40~48) 종료 후, 미뤄둔 UI/렌더/wiring 을
+> 패키지별로 닫는 라운드. chromium 하네스 게이트(storybook-static :6006 + playwright, 발산 단언=non-vacuous, LESS-006).
+
+**MOD-GRID-49 grid-core 페이지네이션 완성도 (Track1-1, MIT)** — ✅ **구현됨 → §3 `mod-grid-49` 참조** (dev-harness 32번째, browser 1번째). spec=`specs/MOD-GRID-49.md`
+- Goal: pagination 서브시스템 3 ❌ 닫기 — pageNumberFormat(G-1, 순수 passthrough) + go-to-page 입력(G-2, chromium) + auto-page-size(G-3, chromium). AG `paginationNumberFormatter`·Wijmo pager 입력·AG `paginationAutoPageSize` 대응.
+- In: `pageNumberFormat`(PageNumbers 라벨) · `enableGoToPage`+`GoToPageInput`+순수 `clampGoToPage` · `autoPageSize`+순수 `computeAutoPageSize`+ResizeObserver. grid-core MIT.
+- Out(후속/별도): debounced-scroll·row-animation(vacuity-trap, 발산단언 확정 후) · auto-virtualization-threshold(design 번복=advisor) · drag-between-grids · post-sort callback(Grid/sort 수술).
+- AC: G-1 formatter 라벨 발산+aria 보존(node) · G-2 clamp 6 경계(node)+먼-페이지 점프(chromium) · G-3 computeAutoPageSize floor/가드(node)+컨테이너 높이→행수 발산(chromium). OFF byte-identical(node SSR). ★설계: node-spine+chromium 발산(LESS-006), count-half(totalCountFormat) 기존 충족=정직 기록(page-half 신규가 행 닫음).
 
 ### 6.3 진행 워크플로 (spec → implement → verify) + 하네스 상태
 

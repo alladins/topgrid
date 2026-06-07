@@ -15,6 +15,7 @@
 import { useEffect, useRef } from 'react';
 import type { OnChangeFn, PaginationState, RowData, Table } from '@tanstack/react-table';
 
+import { GoToPageInput } from './GoToPageInput';
 import { PageNumbers } from './PageNumbers';
 import { PageSizeSelect } from './PageSizeSelect';
 import { TotalCount } from './TotalCount';
@@ -58,6 +59,10 @@ export interface GridPaginationProps<TData extends RowData> {
   totalCountFormat?: (total: number) => import('react').ReactNode;
   /** 네비게이션 버튼 aria-label (i18n — MOD-GRID-29). 미지정 시 한국어 기본. */
   navLabels?: { firstPage: string; prevPage: string; nextPage: string; lastPage: string };
+  /** 페이지 번호 라벨 포매터 (MOD-GRID-49). PageNumbers 로 전달. */
+  pageNumberFormat?: (n: number) => import('react').ReactNode;
+  /** 특정 페이지로 점프하는 numeric 입력 UI 표시 (MOD-GRID-49). 기본 `false`. */
+  enableGoToPage?: boolean;
 }
 
 const DEFAULT_NAV_LABELS = {
@@ -82,6 +87,8 @@ export function GridPagination<TData extends RowData>({
   rowsPerPageLabel,
   totalCountFormat,
   navLabels,
+  pageNumberFormat,
+  enableGoToPage,
 }: GridPaginationProps<TData>): JSX.Element {
   const navL = navLabels ?? DEFAULT_NAV_LABELS;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -140,6 +147,9 @@ export function GridPagination<TData extends RowData>({
             {...(totalCountFormat !== undefined ? { format: totalCountFormat } : {})}
           />
         )}
+        {enableGoToPage && (
+          <GoToPageInput pageCount={pageCountValue} onGoToPage={(idx) => table.setPageIndex(idx)} />
+        )}
       </div>
       <div className="flex items-center gap-1">
         <button
@@ -164,6 +174,7 @@ export function GridPagination<TData extends RowData>({
           currentPage={currentPage}
           pageCount={pageCountValue}
           onPageChange={(p) => table.setPageIndex(p - 1)}
+          {...(pageNumberFormat !== undefined ? { format: pageNumberFormat } : {})}
         />
         <button
           type="button"

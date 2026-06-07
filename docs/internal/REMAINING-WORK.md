@@ -8,9 +8,10 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
 
-> **현 상태**: vN 라운드 **node-pure 9모듈 완료(MOD-40~48)**, 전부 로컬 `main` 커밋(reconcile 19/19·합 330). COMMERCIAL-GAP **❌47→34**
-> (✅223/🟡70/❌34). working tree clean. **origin/main 대비 11커밋 ahead**(이번 vN 라운드, 미푸시 — push=사용자 결정). npm 미발행.
-> **node-pure 추출 runway 종료**(advisor): 남은 ❌34 = 대부분 **browser 클러스터**(아래 트랙 1) 또는 **제품 결정**(트랙 2).
+> **현 상태**: vN node-pure 9모듈(MOD-40~48) + **Track 1 browser 1번째 MOD-49 완료(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·합 330).
+> COMMERCIAL-GAP **❌47→31**(✅226/🟡70/❌31). working tree clean. origin 미푸시(push=사용자 결정). npm 미발행.
+> **★Track 1 착수**: chromium 하네스 재가동·green(78 baseline 재확인 + MOD-49 3 = **81/81**). 남은 ❌31 = browser 클러스터(트랙 1) 또는 제품 결정(트랙 2).
+> **MOD-49 완료**: grid-core pagination 3 ❌→✅(auto-page-size·go-to-page·custom page formatter). 제외=vacuity-trap(debounced-scroll·row-animation)·design 번복(auto-virt-threshold)·후속(post-sort·drag-between-grids).
 
 > **이 세션은 트랙 1·2 미착수로 마감.** 새 세션에서 아래 중 택일해 시작한다. 먼저 읽을 것:
 > `docs/internal/COMMERCIAL-GAP-ANALYSIS.md`(갭 현황) · `state.json`(모듈별 `split_remainder`) · 본 가이드 · 메모리 `dev-harness-loop-progress`.
@@ -21,8 +22,9 @@
 > **non-vacuous**(동적 행동·발산 — "보임"식 금지) + state.json/§3 에 **author-written behavioral** 명시(독립검증 오독 금지). LESS-006 준수.
 > **권장**: 패키지별로 묶어 모듈화. 각 모듈도 진입 게이트(spec+§6+rubric)·commit-per-module·reconcile 유지.
 
-- **grid-core (community 7 + tree)**: postSortRows·scroll-debounce(Grid/sort 수술) · auto-page-size · row-animation(MOD-36 diff 코어→CSS) ·
-  drag-between-grids · virtualizationThreshold · pageNumberFormat(component) · **auto group column**(설정형 group-col 렌더, getDataPath 🟡→✅).
+- **grid-core (community 7 + tree)**: ✅**MOD-49 닫힘**=auto-page-size·pageNumberFormat·go-to-page(pagination 3 ❌→✅). 잔여=postSortRows·
+  scroll-debounce(Grid/sort 수술) · row-animation(MOD-36 diff 코어→CSS) · drag-between-grids · virtualizationThreshold · **auto group column**(설정형 group-col 렌더, getDataPath 🟡→✅).
+  ★advisor: debounced-scroll·row-animation=vacuity-trap(발산 단언 확정 후)·auto-virt-threshold=design 번복(별도 advisor).
 - **grid-pro-pivot**: pivot panel(DnD) · server-side pivot(grid-pro-serverside 연동) · collapsible column groups(★computePivot 컬럼-그룹 집계
   +render+chromium — avg-of-avgs 안전 source 재집계) · column grand-total 토글(buildPivotColumns).
 - **grid-pro-agg/master**: grand-total footer 렌더(AggregationGrid pinned, computeAggregateRow 🟡→✅) · auto-agg floating wiring(🟡→✅) ·

@@ -74,6 +74,7 @@ import { useGridVirtualizer } from './internal/useGridVirtualizer';
 import { ColumnVisibilityMenu } from './column/ColumnVisibilityMenu';
 import { useColumnPersistence } from './column/useColumnPersistence';
 import { GridPagination } from './pagination/GridPagination';
+import { useAutoPageSize } from './pagination/useAutoPageSize';
 import type { GridHandle, GridProps } from './types';
 
 const DEFAULT_PAGE_SIZE = 20;
@@ -174,6 +175,15 @@ function GridInner<TData>(
     scrollContainerRef,
     props.enableVirtualization === true,
     props.virtualizerOptions,
+  );
+
+  // MOD-GRID-49 G-3: auto-page-size — 뷰포트 높이에 맞춰 pageSize 자동 산정 (autoPageSize 활성 시).
+  // rowHeight 추정 = virtualizerOptions.estimateSize (기본 36, gap L364).
+  useAutoPageSize<TData>(
+    table,
+    scrollContainerRef,
+    props.pagination?.autoPageSize === true,
+    props.virtualizerOptions?.estimateSize ?? 36,
   );
 
   // G-004 D3/D4/D9/D11/D12 + G-007 D2: useGridImperativeHandle — ref 노출 (ref null 시 React 표준 skip).
@@ -322,13 +332,22 @@ function GridInner<TData>(
   // D7: virtualization 활성 시 scroll container 높이 = props.virtualScrollHeight ?? 400.
   // (인라인 style 동적 값 — C-5 허용. 비활성 시 빈 객체.)
   // MOD-GRID-29 G-2: container border → var (color inline, `border` width class stays).
+  // MOD-GRID-49 G-3: autoPageSize 도 바운드 컨테이너 필요(높이 측정 대상). 부모 height 를 채우도록
+  // height:100% (소비자 wrapper 가 뷰포트 높이 정의 = AG autoPageSize 동형). 가상화와 배타 시나리오.
+  const autoPageSize = props.pagination?.autoPageSize === true;
   const containerStyle: CSSProperties = isVirtual
     ? {
         height: props.virtualScrollHeight ?? DEFAULT_VIRTUAL_SCROLL_HEIGHT,
         overflow: 'auto',
         borderColor: 'var(--topgrid-border, #e5e7eb)',
       }
-    : { borderColor: 'var(--topgrid-border, #e5e7eb)' };
+    : autoPageSize
+      ? {
+          height: '100%',
+          overflow: 'auto',
+          borderColor: 'var(--topgrid-border, #e5e7eb)',
+        }
+      : { borderColor: 'var(--topgrid-border, #e5e7eb)' };
   const containerClassName = isVirtual
     ? 'rounded-lg border'
     : 'overflow-x-auto rounded-lg border';
@@ -880,7 +899,9 @@ function GridInner<TData>(
   return (
     <div
       className={`flex flex-col ${props.className ?? ''}`}
-      style={themeVars as CSSProperties}
+      // MOD-GRID-49 G-3: autoPageSize 시 부모(소비자 wrapper) 높이를 채워야 scroll container 의
+      // height:100% 가 definite 로 해소됨(% 높이 체인). 그래야 가용 높이 측정이 유효.
+      style={autoPageSize ? { ...(themeVars as CSSProperties), height: '100%' } : (themeVars as CSSProperties)}
     >
       {/* MOD-GRID-28 G-3: SR live 리전 — 항상 present+빈 채로 mount, <table role=grid> 밖. 텍스트만 갱신. */}
       <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
@@ -1061,6 +1082,8 @@ function GridInner<TData>(
           rowsPerPageLabel={locale.rowsPerPage}
           navLabels={{ firstPage: locale.firstPage, prevPage: locale.prevPage, nextPage: locale.nextPage, lastPage: locale.lastPage }}
           {...(props.localeText?.totalCount !== undefined ? { totalCountFormat: props.localeText.totalCount } : {})}
+          {...(props.pagination?.pageNumberFormat !== undefined ? { pageNumberFormat: props.pagination.pageNumberFormat } : {})}
+          {...(props.pagination?.enableGoToPage !== undefined ? { enableGoToPage: props.pagination.enableGoToPage } : {})}
           {...(props.pagination?.mode !== undefined ? { mode: props.pagination.mode } : {})}
           {...(props.pagination?.totalCount !== undefined ? { totalCount: props.pagination.totalCount } : {})}
           {...(props.pagination?.pageSizeOptions !== undefined ? { pageSizeOptions: props.pagination.pageSizeOptions } : {})}

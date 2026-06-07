@@ -6,11 +6,11 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-48, 2026-06-07)** |
+| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-49, 2026-06-07)** |
 |---|---|---|---|
-| ✅ 구현(full) | 178 (54%) | 199 (60%) | **223 (68%)** |
+| ✅ 구현(full) | 178 (54%) | 199 (60%) | **226 (68%)** |
 | 🟡 부분(partial) | 60 (18%) | 60 (18%) | **70 (21%)** |
-| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **34 (10%)** |
+| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **31 (9%)** |
 | ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) |
 | **합계** | **330** | **330** | **330** |
 
@@ -32,6 +32,10 @@
 > AND, MOD-46 재사용) ❌→🟡(클릭→setFilter wiring=browser). **chart panel/composition 은 순수 UI=❌ 유지**(1행만 flip) → **❌35 / ✅223 / 🟡69**(Integrated charts 10/4/1, Enterprise 22→21).
 > ★ **MOD-48 델타(2026-06-07, vN-9)**: tree `getDataPath` ❌→🟡 — `buildTreeFromPaths`(flat path→계층, synthetic-parent dedup, node
 > 11/0) 데이터-모델 ship, **auto group column 렌더=browser**. auto-group-col·master-detail+virt·viewport ❌ 유지(4행 클러스터 1 flip) → **❌34 / ✅223 / 🟡70**(Master/Detail&Tree 8/6/2, Enterprise 21→20).
+> ★ **MOD-49 델타(2026-06-07, Track 1 browser 1번째)**: Pagination 3 ❌→✅ — `auto page size`(useAutoPageSize+pure computeAutoPageSize,
+> node 9/0+chromium) · `jump-to-page input`(GoToPageInput+pure clampGoToPage, node 11/0+chromium) · `custom page formatter`(pageNumberFormat
+> →PageNumbers, chromium; ★count-half=totalCountFormat 기존 충족, prior ❌ 과장 — page-half 신규가 행 닫음) → **❌31 / ✅226 / 🟡70**
+> (Pagination 카테고리 9/5/3 → **12/5/0**, 합 330 불변, reconcile 19/19). chromium 81/81(78 baseline+3, 회귀 0).
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -62,14 +66,14 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌34, MOD-48 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌31, MOD-49 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 13 + Enterprise 20 + 기타 1 = **34**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20).
-> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌43(MOD-41 반영) 기준으로 정정.
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 11 + Enterprise 20 + 기타 0 = **31**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, ★MOD-49 Pagination 3 ❌→✅: auto-page-size·custom formatter=Community, go-to-page=기타 → Community 13→11·기타 1→0).
+> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌31(MOD-49 반영) 기준으로 정정.
 
-- **Community 13 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
-  editing·RTL ② vN 연기 7=post-sort callback·auto-page-size·custom page formatter·debounced scroll·row animation·auto-
-  virtualization-threshold·drag-between-grids (★MOD-43: applyTransaction·async transaction batching ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
+- **Community 11 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
+  editing·RTL ② vN 연기 5=post-sort callback·debounced scroll·row animation·auto-virtualization-threshold·drag-between-grids
+  (★MOD-43: applyTransaction·async batching ❌→✅; ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
 - **Enterprise 20 (deep — 다수 vN 보류)**: group-header inline agg · sticky group
@@ -77,8 +81,8 @@
   viewport row model · auto group col(★MOD-48: tree getDataPath ❌→🟡) · master-detail+virtualization · Excel cell styles ·
   **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
   panel drag · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
-- **기타 1**: go-to-page 입력(=MOD-49). (★ MOD-40: `$A$1`=✅·`copy/fill`=🟡. ★ MOD-41: `명명 범위`=✅ 닫힘 · `멀티시트(Sheet2!A1)`=🟡
-  교차시트 ref ✅+탭 UI 부재=MOD-49.)
+- **기타 0**: (★MOD-49: go-to-page 입력 ❌→✅ 닫힘.) (★ MOD-40: `$A$1`=✅·`copy/fill`=🟡. ★ MOD-41: `명명 범위`=✅ 닫힘 ·
+  `멀티시트(Sheet2!A1)`=🟡 교차시트 ref ✅+탭 UI 부재=MOD-49 계열 후속 탭 UI.)
 
 > ★ 차트(Enterprise 클러스터 7)는 **MOD-34 로 5/7 닫힘**(내장 엔진·축/툴팁·스파크마커·툴바·피벗차트), 잔여 2(panel·cross-filter)=vN.
 
@@ -109,7 +113,7 @@
 | Editing | 18 | 12 | 4 | 2 |
 | Cell rendering & styling | 18 | 15 | 3 | 0 |
 | Row models / data | 18 | 14 | 3 | 1 |
-| Pagination | 17 | 9 | 5 | 3 |
+| Pagination | 17 | 12 | 5 | 0 |
 | Virtualization & performance | 20 | 12 | 4 | 3 |
 | Master/Detail & Tree Data | 16 | 8 | 6 | 2 |
 | Pinned/floating & full-width rows | 15 | 11 | 3 | 1 |
@@ -119,7 +123,7 @@
 | State, theming & i18n | 17 | 10 | 4 | 3 |
 | Spreadsheet (Wijmo FlexSheet focus) | 23 | 14 | 6 | 3 |
 | Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 5 | 4 | 5 |
-| **합계** | **330** | **223** | **70** | **34** |
+| **합계** | **330** | **226** | **70** | **31** |
 
 ## 카테고리별 상세
 
@@ -342,11 +346,11 @@
 | Show/hide pagination panel | Community | — | 🟡 부분 | `grid-core buildPaginationOptions.ts L60-62 mode='none'/undefined disables pagination (impliedEnablePagination:false); showTotalCount toggles count only (GridPagination.tsx L92,119). Grep for suppressPaginationPanel across packages returned no matches` — Verified: no suppressPaginationPanel-while-paginated prop. topgrid can disable pagination entirely (mode='none') or hide just the total count (showTotalCount:false), but cannot hide the panel while continuing to paginate. |
 | Controlled pagination state (pageIndex/onPaginationChange) | Community | ○ | 🟡 부분 | `onPaginationChange IS wired: buildTableOptions.ts L150-155 forwards table changes to props.pagination.onPaginationChange. useGridState.ts L180-186 useControllableState binds state.pagination (controllable). BUT GridPaginationOptions.pageIndex (grid-core/src/types.ts L258-260) is INERT in the declarative <Grid pagination={{...}}> path — grep for pagination?.pageIndex / pagination.pageIndex across grid-core/src returned NO matches; Grid.tsx local useState (L88-91) hardcodes pageIndex:0 and only reads pagination?.pageSize` — DOWNGRADED full->partial. The onPaginationChange callback is forwarded and the useGridState state.pagination path is genuinely controllable, but the declaratively-cited GridPaginationOptions.pageIndex field is never consumed (same inert class as enableKeyboardNav). Controlled initial/forced pageIndex via <Grid pagination={{pageIndex}}> does NOT take effect; controlled state only works through the separate useGridState API. |
 | Keyboard page navigation (Alt+Arrow) | — | — | 🟡 부분 | `GridPagination.tsx L54,68,74-89 enableKeyboardNav (default false) — container-ref-scoped keydown, Alt+Left=previousPage, Alt+Right=nextPage with getCan*Page guards. NOT passed through declarative <Grid pagination> path: Grid.tsx L670-676 spreads only mode/totalCount/pageSizeOptions/showTotalCount` — Verified partial: works only when rendering GridPagination directly. Documented limitation in MASTER-HIERARCHY.md mod-grid-03 L178-179 (note: that doc cites the spread at L487-493, but the actual current location is Grid.tsx L670-676). AG Grid has no dedicated Alt+Arrow page nav (none). |
-| Auto page size (fit rows to viewport height) | Community | — | ❌ 미구현 | `none — grep for autoPageSize/fillHeight/fitToHeight/fitRows/paginationAutoPageSize across packages returned no matches` — Verified absent. AG Grid paginationAutoPageSize (community) sizes page to grid height. Not implemented in topgrid. |
+| Auto page size (fit rows to viewport height) | Community | — | ✅ 구현(MOD-49 G-3) | `grid-core pagination/useAutoPageSize.ts (ResizeObserver on scroll container, header 제외) + pure computeAutoPageSize.ts (floor(availableHeight/rowHeight), min 1, 0/NaN guard); GridPaginationOptions.autoPageSize → table.setPageSize` — node 9/0 + chromium (taller viewport → more rows, divergent). 바운드 컨테이너 필요(AG `paginationAutoPageSize` 동형). |
 | Pagination text localization / custom labels | Community | ○ | ✅ 구현(MOD-29 G-1) | `none — grep for localeText/locale/labels in pagination dir returned no matches; PageSizeSelect label '페이지당 행 수:', TotalCount '전체 N건', GridPagination aria-labels '첫/이전/다음/마지막 페이지' all hardcoded Korean` — Verified absent: no localeText/labels prop. AG Grid localeText keys; Wijmo Globalize/culture. topgrid strings not configurable. |
-| Custom page number / count formatter | Community | ○ | ❌ 미구현 | `none — grep for numberFormatter/paginationNumberFormatter in pagination dir returned no matches; TotalCount.tsx and PageNumbers.tsx render numbers directly` — Verified absent: no formatter hook. AG Grid paginationNumberFormatter. Not exposed in topgrid. |
+| Custom page number / count formatter | Community | ○ | ✅ 구현(MOD-49 G-1) | `★count-half was ALREADY done (totalCountFormat, GridPagination.tsx:58 ← Grid.tsx:1063 via localeText.totalCount) — the prior ❌ OVERSTATED this. page-number-half NEW (MOD-49): GridPaginationOptions.pageNumberFormat → PageNumbers button labels` — chromium (formatted "P1" label, aria-label kept raw integer). AG Grid paginationNumberFormatter 대응(이제 양쪽 모두 노출). |
 | Pagination panel position & custom pagination component | Community | ○ | 🟡 부분 | `Grid.tsx L668-677 renders <GridPagination> at fixed bottom (no position prop); grid-core/src/index.ts L40,43,45 exports GridPagination + PageSizeSelect + TotalCount (composable standalone). PageNumbers is NOT exported (internal)` — Verified partial: no position prop in declarative <Grid>, but the three exported pager components allow building a custom pager (PageNumbers is internal-only). AG Grid: custom pagination via suppressPaginationPanel + own controls. |
-| Jump-to-page input (go-to page N) | — | ○ | ❌ 미구현 | `none — grep for jumpToPage/goToPage/page input across packages returned no matches; navigation is numbered buttons + first/last only (GridPagination.tsx). table.setPageIndex API exists but no numeric go-to input UI` — Verified absent. Not a standard AG Grid panel feature (none); Wijmo pager can include a page input. topgrid has no jump-to-page input UI. |
+| Jump-to-page input (go-to page N) | — | ○ | ✅ 구현(MOD-49 G-2) | `grid-core pagination/GoToPageInput.tsx (numeric input + Enter/버튼) + pure clampGoToPage.ts (1-based→0-based, clamp [1,pageCount], non-numeric/empty→null no-op); GridPaginationOptions.enableGoToPage → table.setPageIndex` — node 11/0 + chromium (먼 페이지 7 점프, 슬라이딩 버튼 미도달). Wijmo pager 입력 대응. |
 
 ### Virtualization & performance
 
@@ -574,9 +578,9 @@
 | Transaction updates — applyTransaction (add/update/remove without full re-render) | Row models / data | Community | ✅ 구현(MOD-43 G-1) | `grid-core transaction.ts applyRowTransaction` — 순수 delta(remove→update→add, immutable), controlled-data 소비자 적용(moveRow 동형). node 16/0. |
 | Async transaction batching (applyTransactionAsync, batched flush) | Row models / data | Community | ✅ 구현(MOD-43 G-2) | `grid-core transaction.ts createTransactionBatcher` — enqueue 누적 + scheduler 주입(PAT-005) flush 1회. node 검증. |
 | Immutable data / row identity (getRowId) for efficient reconciliation | Row models / data | Community | ✅ 구현(MOD-36 G-1: getRowId→안정 행 식별, 선택이 재정렬 가로질러 정체성 추종) | Verified: no getRowId in any package. grid-pro-tracking has its own rowKey (PK extractor) for change tracking, but that does NOT feed TanStack getRowId / React keys. AG's immutable-data + getRowId stable reconciliation is not exposed. Real gap for controlled-data update performance. |
-| Auto page size (fit rows to viewport height) | Pagination | Community | ❌ 미구현 | Verified absent. AG Grid paginationAutoPageSize (community) sizes page to grid height. Not implemented in topgrid. |
+| Auto page size (fit rows to viewport height) | Pagination | Community | ✅ 구현(MOD-49 G-3) | useAutoPageSize (ResizeObserver) + pure computeAutoPageSize; GridPaginationOptions.autoPageSize. node 9/0 + chromium (taller viewport → more rows). AG Grid paginationAutoPageSize 대응. |
 | Pagination text localization / custom labels | Pagination | Community | ✅ 구현(MOD-29 G-1) | Verified absent: no localeText/labels prop. AG Grid localeText keys; Wijmo Globalize/culture. topgrid strings not configurable. |
-| Custom page number / count formatter | Pagination | Community | ❌ 미구현 | Verified absent: no formatter hook. AG Grid paginationNumberFormatter. Not exposed in topgrid. |
+| Custom page number / count formatter | Pagination | Community | ✅ 구현(MOD-49 G-1) | ★count-half 이미 충족(totalCountFormat, prior ❌ 과장); page-number-half 신규(pageNumberFormat → PageNumbers, aria raw 유지). chromium ("P1"). AG Grid paginationNumberFormatter 대응. |
 | Debounced scroll / scroll-throttle knob | Virtualization & performance | Community | ❌ 미구현 | VERIFIED: scroll handling is delegated to TanStack react-virtual's internal scheduling; topgrid exposes no scroll-debounce/throttle option (AG Grid debounceVerticalScrollbar / suppressScrollOnNewData have no analogue). The 'debounce' in topgrid is unrelated to scrolling. |
 | Row animation (sort/filter/move/group transitions) | Virtualization & performance | Community | ❌ 미구현 | VERIFIED: AG Grid animateRows (sort/filter/group transitions) and Wijmo FlexGrid allowItemAnimation have no topgrid counterpart. Only hover color transition exists. |
 | Cell flash / change highlighting on data update | Virtualization & performance | Community | ✅ 구현(MOD-36 G-2: enableCellChangeFlash, 정체성 diff→값 변경 셀만 강조) | VERIFIED: AG Grid flashCells / getRowClass flash has no topgrid equivalent. Change tracking (grid-pro-tracking) marks dirty cells via class but is not a transient flash animation. |
@@ -641,7 +645,7 @@
 | Filters tool panel | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ❌ 미구현 | Verified absent: no aggregated filters panel surface exists in grid-pro-panel. |
 | Context menu submenus / icons / built-in items (copy/export) | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ❌ 미구현 | Verified absent: ContextMenuItem is flat label+shortcut+onClick; no nested menus, icons, or default actions. |
 | Tool panel reorder via drag | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ❌ 미구현 | Verified absent: ToolPanel reorder is up/down buttons only; no drag-to-reorder in the panel. |
-| Jump-to-page input (go-to page N) | Pagination | — | ❌ 미구현 | Verified absent. Not a standard AG Grid panel feature (none); Wijmo pager can include a page input. topgrid has no jump-to-page input UI. |
+| Jump-to-page input (go-to page N) | Pagination | — | ✅ 구현(MOD-49 G-2) | GoToPageInput (numeric+Enter) + pure clampGoToPage; GridPaginationOptions.enableGoToPage → setPageIndex. node 11/0 + chromium (먼 페이지 점프). Wijmo pager 입력 대응. |
 | Broad Excel function library (logical/text/lookup/date/financial: IF, VLOOKUP, CONCAT, etc.) | Spreadsheet (Wijmo FlexSheet focus) | — | 🟡 부분(MOD-32/42) | logical/text/math(MOD-32) + VLOOKUP(range-aware)/DATE·YEAR·MONTH·DAY(serial)/PMT·FV·PV(MOD-42, node 128/0). ★여전히 🟡 — ~25 vs 400+(TODAY/NOW/HLOOKUP/INDEX·시간=vN). |
 | Relative reference adjustment on copy/fill (e.g. copying =A1 down becomes =A2) | Spreadsheet (Wijmo FlexSheet focus) | — | 🟡 부분(MOD-40 G-2) | translateFormula 엔진 프리미티브(상대 shift·절대 고정·out-of-bounds #REF! 라운드트립, node 87/0) ship. SheetGrid fill-handle UI 제스처=소비자 배선 미완(MOD-49) → headless-API-only=🟡. |
 | Absolute reference syntax ($A$1) | Spreadsheet (Wijmo FlexSheet focus) | — | ✅ 구현(MOD-40 G-1) | `$A$1`/`$A1`/`A$1` 파싱·평가·의존추적 동일($=eval-cosmetic, 플래그=translate 소비). node 87/0. |

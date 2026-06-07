@@ -1362,6 +1362,45 @@
       "version_note": "grid-core 0.4→차기 batch(미발행).",
       "split_remainder": "auto group column(설정형 group-col 렌더)·master-detail+virtualization(virtualizer wiring)·viewport row model(서버 스트리밍) = browser/server/후속.",
       "runway_note": "★advisor: 본 모듈 후 autonomous node-pure runway 종료. MOD-49=browser/format-lib(node 박약)·MOD-50+=사용자 제품결정."
+    },
+    "MOD-GRID-49": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(3-Goal: pageNumberFormat / go-to-page / auto-page-size)",
+      "priority": "Track1-1 (browser 클러스터 1번째; Pagination ❌ 3 닫기)",
+      "phase": "done (3-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-49.md (rubric 76/80)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done",
+        "G-3": "done"
+      },
+      "scope": "grid-core pagination 서브시스템 3 ❌. clean-divergent(advisor 게이트)만 번들; vacuity-trap(debounced-scroll·row-animation·auto-virt-threshold) 제외.",
+      "g1": {
+        "surface": "GridPaginationOptions.pageNumberFormat?:(n)=>ReactNode → PageNumbers 라벨(aria raw 유지). count-half(totalCountFormat) 무수정.",
+        "verified_chromium": "\"P1\" 발산(raw \"1\" 아님)+aria-label raw 보존. ★passthrough=node 순수 0(MOD-33 정직)."
+      },
+      "g2": {
+        "surface": "enableGoToPage?, 순수 clampGoToPage(raw,pageCount)→idx|null, GoToPageInput(numeric+Enter)→table.setPageIndex.",
+        "verified_node": "clampGoToPage 11/0(1-based→0-based 클램프·non-numeric/empty→null·decimal floor).",
+        "verified_chromium": "page1 \"0\"→\"7\"입력→page7 \"60\"(먼 페이지 점프)+page7 버튼 부재."
+      },
+      "g3": {
+        "surface": "autoPageSize?, 순수 computeAutoPageSize({availableHeight,rowHeight}), useAutoPageSize(ResizeObserver, thead 제외). 바운드 컨테이너(height:100% % 체인).",
+        "verified_node": "computeAutoPageSize 9/0(floor·min1·0/NaN/Infinity 가드).",
+        "verified_chromium": "280px settled small(<15,>2)→560px 리사이즈→행수 증가(높이→행수 발산)."
+      },
+      "verification": "node clampGoToPage 11/0 + computeAutoPageSize 9/0(grid-core 전 스위트 green) · typecheck 0 · tsup build green · chromium 3/3 + 전체 회귀 81/81(78+3, Grid.tsx 수술 회귀 0).",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-006 node-spine+chromium·MOD-33 0-pure-logic 정직 적용)",
+        "matrix_row": "§3 mod-grid-49 채움 + §6.2 구현됨 마커",
+        "index_updated": "COMMERCIAL-GAP Pagination 3 ❌→✅(9/5/3→12/5/0) reconcile 19/19(226/70/31·합 330·잔여 ❌ tier Community 13→11·기타 1→0)"
+      },
+      "rubric_specify": "76/80",
+      "closure": "★auto-page-size·jump-to-page·custom-formatter=✅(Pagination). ★정직: custom-formatter 행 ❌ 는 count-half(totalCountFormat 기존)에 과장 — page-half 신규가 행 닫음(위장 금지). 제외=vacuity-trap+design 번복+후속 browser. advisor.",
+      "module_summary": "Track 1 browser 클러스터 1번째. 패키지-응집 pagination 3. 순수 spine(clamp·autosize) node + 브라우저 행동 chromium 발산. Grid.tsx 최소 배선=OFF 회귀 0(81/81). 신규 lesson 없음.",
+      "version_note": "grid-core 0.4→차기 batch(미발행).",
+      "split_remainder": "(Community 잔여) post-sort callback·debounced-scroll·row-animation·auto-virtualization-threshold·drag-between-grids = 후속 browser/vacuity-trap 발산단언 확정 후."
     }
   },
   "release_queue": {
