@@ -44,6 +44,37 @@ export interface PivotCollapseOpts {
   onToggle: (subtotalId: string) => void;
 }
 
+/**
+ * 컬럼 그룹 collapse 어포던스 옵션(MOD-GRID-53 G-2). 지정 시 컬럼-그룹 헤더가 클릭→토글 + chevron(▶/▼).
+ * collapse 된 그룹(`node.key` ∈ `collapsedKeys`)은 자식 leaf 컬럼 대신 그룹 집계 셀(`<node.key>__<i>`,
+ * computePivot 이 source 에서 사전 계산 = avg-of-avgs 안전)을 읽는 단일/값별 컬럼으로 렌더된다.
+ * 미지정 시 컬럼 그룹은 기존 plain 헤더 + 전체 자식 렌더(MOD-18 동작 불변).
+ */
+export interface PivotColumnCollapseOpts {
+  collapsedKeys: ReadonlySet<string>;
+  onToggle: (groupKey: string) => void;
+}
+
+/** Clickable column-group header with a collapse chevron (MOD-GRID-53 G-2). Inline style — Tailwind inert. */
+function CollapsibleColumnHeader(
+  label: string,
+  groupKey: string,
+  collapsed: boolean,
+  colCollapse: PivotColumnCollapseOpts,
+): JSX.Element {
+  return (
+    <button
+      type="button"
+      aria-label={`${label} 컬럼 토글`}
+      aria-expanded={!collapsed}
+      onClick={() => colCollapse.onToggle(groupKey)}
+      style={{ cursor: 'pointer', background: 'none', border: 'none', font: 'inherit', color: 'inherit', padding: 0 }}
+    >
+      {collapsed ? '▶' : '▼'} {label}
+    </button>
+  );
+}
+
 /** Render a numeric cell value; `null` → an em-dash placeholder. */
 function formatCellValue(value: unknown): string {
   if (value === null || value === undefined) return '—';
@@ -139,12 +170,38 @@ function mapColumnNode(
   node: PivotColumnNode,
   valueDefs: PivotConfig['values'],
   sort?: PivotSortOpts,
+  colCollapse?: PivotColumnCollapseOpts,
 ): ColumnDef<PivotRow> {
   if (node.children && node.children.length > 0) {
+    // MOD-GRID-53: collapsed group → render the group cell(s) (node.key) instead of descending.
+    const collapsed = colCollapse?.collapsedKeys.has(node.key) ?? false;
+    if (collapsed) {
+      const header = (): JSX.Element =>
+        CollapsibleColumnHeader(node.value, node.key, true, colCollapse!);
+      // One value column per value-def, each reading the source-aggregated group cell.
+      if (valueDefs.length === 1) {
+        return {
+          id: `grp:${node.key}`,
+          header,
+          accessorFn: (row) => row[`${node.key}__0`] ?? null,
+          cell: (ctx) => formatCellValue(ctx.getValue()),
+        };
+      }
+      return {
+        id: `grp:${node.key}`,
+        header,
+        columns: valueDefs.map((vd, i) =>
+          valueLeafColumn(node.key, i, vd.label ?? vd.field, sort),
+        ),
+      };
+    }
     return {
       id: `grp:${node.key}`,
-      header: node.value,
-      columns: node.children.map((child) => mapColumnNode(child, valueDefs, sort)),
+      // Expanded group header is itself a collapse toggle (▼) when collapse is enabled.
+      header: colCollapse
+        ? (): JSX.Element => CollapsibleColumnHeader(node.value, node.key, false, colCollapse)
+        : node.value,
+      columns: node.children.map((child) => mapColumnNode(child, valueDefs, sort, colCollapse)),
     };
   }
   // Leaf column combination: one value column per value-def.
@@ -173,6 +230,7 @@ export function buildPivotColumns(
   model: PivotModel,
   sort?: PivotSortOpts,
   collapse?: PivotCollapseOpts,
+  colCollapse?: PivotColumnCollapseOpts,
 ): ColumnDef<PivotRow>[] {
   const { config, columnTree } = model;
   const rowFields = config.rows;
@@ -209,7 +267,7 @@ export function buildPivotColumns(
   // --- Column-dimension value groups (nested headers) ---
   if (columnTree.length > 0) {
     for (const node of columnTree) {
-      out.push(mapColumnNode(node, valueDefs, sort));
+      out.push(mapColumnNode(node, valueDefs, sort, colCollapse));
     }
   } else {
     // No column dimensions → a single implicit value group under the '' combo.

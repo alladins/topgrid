@@ -9,7 +9,8 @@ import { setLicenseState } from '@topgrid/grid-license';
 
 interface SalesRow {
   region: string;
-  city: string;
+  city?: string;
+  year?: string;
   quarter?: string;
   sales: number;
 }
@@ -104,6 +105,41 @@ export const ConfigControls: StoryObj = {
     setLicenseState(validLicense);
   },
   render: () => <ConfigControlsDemo />,
+};
+
+// MOD-GRID-53 G-2: collapsible pivot COLUMN groups. ★≥2 column dims (year × quarter) so there is a
+// collapsible group; unequal child row counts (2024 Q1=1 row, Q2=3 rows) so the collapsed group AVG
+// (=17.5) ≠ avg-of-child-avgs (=15) — the number is proven in node, here we gate render divergence.
+const colCollapseData: SalesRow[] = [
+  { region: 'East', year: '2024', quarter: 'Q1', sales: 10 },
+  { region: 'East', year: '2024', quarter: 'Q2', sales: 20 },
+  { region: 'East', year: '2024', quarter: 'Q2', sales: 20 },
+  { region: 'East', year: '2024', quarter: 'Q2', sales: 20 },
+  { region: 'East', year: '2023', quarter: 'Q4', sales: 100 },
+];
+const colCollapseConfig: PivotConfig = {
+  rows: ['region'],
+  columns: ['year', 'quarter'],
+  values: [{ field: 'sales', aggregationFn: 'avg' }],
+};
+
+export const ColumnCollapse: StoryObj = {
+  name: '컬럼 그룹 collapse (자식 숨김 + 그룹 집계)',
+  beforeEach: () => {
+    setLicenseState(validLicense);
+  },
+  render: () => (
+    <PivotGrid<SalesRow> data={colCollapseData} config={colCollapseConfig} enableColumnCollapse />
+  ),
+};
+
+// OFF: enableColumnCollapse 미지정 → chevron 0, 전체 자식 leaf 렌더(byte-identical 경로).
+export const ColumnCollapseOff: StoryObj = {
+  name: '컬럼 그룹 collapse OFF (byte-identical)',
+  beforeEach: () => {
+    setLicenseState(validLicense);
+  },
+  render: () => <PivotGrid<SalesRow> data={colCollapseData} config={colCollapseConfig} />,
 };
 
 // nested-column path: column dim → value headers built via mapColumnNode recursion (the path the

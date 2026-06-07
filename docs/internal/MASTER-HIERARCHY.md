@@ -934,6 +934,17 @@
 
 > dev-harness 수확: **Track 2 제품결정 3번째**(bound-or-defer triage → build). ★**reuse-gate(MergingGrid.tsx)가 배치 결정**: column spanning = rowSpan(grid-pro-merging)의 **수평 쌍둥이** — MergingGrid 가 자체 `<table>` 렌더 소유(grid-core 위임 아님)·셀-skip 머신리(span0→null)·role=grid/aria-colindex 없음(plain table)·col-virt/pinning 자체 없음. → **grid-pro-merging 배치**(advisor): ① grid-core hot-path(renderWindowedCells, MOD-27/LESS-006) 수술 회피 ② 머신리 재사용 ③ **ARIA 얽힘 소멸**(native colSpan=plain table 시맨틱, aria-colspan 금지) ④ 머징 한 패키지 제품 일관성. tier Pro(rowSpan 일관; 갭 "Community"=AG tiering). **★callback form**(`colSpan(params)=>number`, AG-faithful — value-based mergeRows 와 다른 기능, advisor 명시). ★**✅ 정직성(consistency, streak 아님)**: colSpan=**within-row** → row-virt 는 행 단위 추가/제거이므로 렌더된 행의 colSpan 셀 항상 coherent = **rowSpan 의 L-01 orphan 이 colSpan 엔 구조적으로 없음**(rowSpan 보다 완전). rowSpan 이 이 방식으로 출하(present 취급)되고 colSpan 은 caveat 마저 없음 → ✅ 가 정직(덜 완전한 rowSpan 을 present 로 두며 colSpan 을 🟡 로 두면 doc 신뢰도 하락). **정직 경계 명시**(over-claim 방지): grid-core 메인 `<Grid>`(column-virtualized/pinned)에는 미배선(rowSpan 과 동일 상황). 검증=node 순수 spine(clamp+skip-of-skip)+chromium 발산(LESS-006, "td 보임" 금지·width=합 단언 금지=table-layout:auto flake→right-edge 정렬). OFF byte-identical(enableColSpan=false). **Column features 1 ❌→✅**(8/5/1→9/5/0), COMMERCIAL-GAP ❌29→28·✅228→229·🟡70(reconcile 19/19·330·0 mismatch). chromium 92/92(89+3). 신규 lesson 없음.
 
+### `mod-grid-53` — collapsible pivot column groups (펼침/접기 피벗 컬럼 그룹, **Pro**, grid-pro-pivot) ✅ 채움 — {G-1,G-2} 완주 (Enterprise ❌20 backlog 1번째)
+
+소스: `packages/grid-pro-pivot/src/computePivot.ts`(computeCells 컬럼-그룹 prefix 셀 additive) + `computePivot.test.mjs`(esbuild 번들, characterization+group, node 15/0) + `buildPivotColumns.tsx`(PivotColumnCollapseOpts/CollapsibleColumnHeader/mapColumnNode) + `PivotGrid.tsx`(enableColumnCollapse) + `index.ts`, story `stories/PivotInteraction.stories.tsx`(ColumnCollapse/Off), spec `.claude/dev-harness/specs/MOD-GRID-53.md`. dev-harness 36번째. **Enterprise ❌20 backlog 1번째**(제품결정 4종 종결 후, advisor triage). 갭분석 Pivoting ❌ 1 닫기.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 컬럼-그룹 집계 셀(G-1) | computeCells: 컬럼-combo **prefix**별 `cellKey(prefix,i)` = source 재집계 | **종결형**(순수 additive) | 행축 subtotal 행 ↔ 열축 group-cell(둘 다 computePivot 이 source 사전계산). leaf/grand-total/columnTree/rows 불변, 0/1 차원 inert | node **15/0**: ★characterization 불변 + collapsed 그룹 AVG=true source mean 17.5(NOT avg-of-avgs 15, 불균등 행수)·3-dim len1·len2·1-dim inert | 채움 |
+| 컬럼 그룹 collapse 렌더(G-2) | `PivotColumnCollapseOpts{collapsedKeys,onToggle}` + buildPivotColumns 4번째 인자 + PivotGrid `enableColumnCollapse?` | **배선형** | mapColumnNode: node.key ∈ collapsedKeys & children → 그룹 셀(`${node.key}__i`) 읽는 단일/값별 컬럼 + chevron 헤더. transpose 시 collapsedColKeys 리셋 | chromium 2/2: ★collapse→자식 컬럼 DOM 부재+그룹 집계값 17.50 표시·sibling 그룹 무변·OFF byte-identical | 채움 |
+
+> dev-harness 수확: **Enterprise ❌20 backlog 1번째**(제품결정 4종 종결 후 진입, advisor triage 선정). ★**reuse-gate 비대칭 발견**: collapsePivotRows(MOD-31 G-2)의 컬럼 쌍둥이지만, row collapse 가 깨끗한 것은 computePivot 이 **모든 레벨 subtotal 행을 source 집계로 사전 방출**하기 때문 — 컬럼축은 **중간 그룹 셀 부재**+모델 source 미보유 → 모델만으론 collapsed 그룹 true AVG 복원 불가. **설계(advisor 분기 reconcile)**: computePivot **additive 수정**(computeCells 가 컬럼-combo prefix별 source-집계 셀도 방출) = 진정한 대칭(행축 subtotal ↔ 열축 group-cell). 별도 source-recompute spine(emit/grouping 중복)은 기각. **★MOD-18 이후 computePivot 첫 additive 터치**(정직 기록) — 커밋 computePivot 테스트 0(MOD-18 "26"=audit 일회성) → **characterization-first**(현 leaf/subtotal/grandTotal 핀→unmodified 9/15 그린→additive 후 15/15, characterization 불변=additive 증명). behavior-preserving-additive(읽지 않는 prefix 키만, columnTree/columnLeafKeys/rows 불변, 0/1 차원 inert=byte-identical, 5 기존 spine 테스트 무영향). ★**avg-of-avgs 정직성이 node 로 이동**(advisor): correctness-critical 단언(그룹 AVG=true source mean)을 node 가, chromium 은 render 발산만(자식 DOM 부재+그룹값). 자식 컬럼 **불균등 행수**(Q1 1행·Q2 3행)로 avg-of-child-avgs(15)≠true(17.5) 정확 숫자 단언. opt-in byte-identical(enableColumnCollapse=false). vacuity 앵커=≥2 컬럼차원. **Pivoting 18/2/3→19/2/2**, COMMERCIAL-GAP ❌28→27·✅229→230·🟡70(reconcile 19/19·330·0 mismatch). chromium 94/94(92+2). 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1300,6 +1311,12 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-53 grid-pro-pivot collapsible pivot column groups (Enterprise backlog 1, Pro)** — ✅ **구현됨 → §3 `mod-grid-53` 참조** (dev-harness 36번째). spec=`specs/MOD-GRID-53.md`
+- Goal: collapsible/expandable pivot column groups — 컬럼-그룹 헤더 chevron→자식 leaf 컬럼 숨김 + 그룹 source-집계 셀 표시. AG pivot column group collapse 대응.
+- In: computePivot computeCells 컬럼-그룹 prefix 셀(additive, source 재집계) + computePivot.test.mjs(characterization+group, esbuild) + `PivotColumnCollapseOpts`/CollapsibleColumnHeader/mapColumnNode collapse + PivotGrid `enableColumnCollapse?`(collapsedColKeys, transpose 리셋) + 스토리. computePivot row-emit/columnTree 무수정.
+- Out: row+column collapse 동시(독립 state, 조합 vN) · 컬럼 chevron 키보드 nav · server-side pivot collapse(별개 ❌) · pivot panel DnD(별개 ❌).
+- AC: G-1 characterization 불변 + 그룹 셀=true source AVG(불균등 행수, 정확 숫자)·prefix len·0/1 inert(node 15/0). G-2 자식 DOM 부재·그룹 집계값·OFF byte-identical(chromium 발산). ★설계(advisor): reuse-gate 비대칭(컬럼은 그룹 셀 사전 방출 부재)→computePivot additive(MOD-18 이후 첫 터치, characterization-first); avg-of-avgs 정직성=node. tier Pro.
 
 **MOD-GRID-52 grid-pro-merging 본문 셀 컬럼 스팬 (Track2-3, Pro)** — ✅ **구현됨 → §3 `mod-grid-52` 참조** (dev-harness 35번째). spec=`specs/MOD-GRID-52.md`
 - Goal: column spanning (body cell colSpan) — AG `colSpan:(params)=>number`(Community)·Wijmo allowMerging 대응. bound-or-defer triage → **build**(grid-pro-merging Pro).

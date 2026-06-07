@@ -150,11 +150,41 @@ function computeCells(
     bucket.push(row);
   }
 
+  // MOD-GRID-53: column-GROUP cells, keyed by each proper column-combo prefix (path key).
+  // A collapsed column group (PivotColumnNode.key === a prefix) reads cellKey(prefix, i); the
+  // value MUST be the reducer over the group's SOURCE rows — not a re-aggregation of the child
+  // leaf cells — so AVG is the true source mean, never avg-of-avgs. This is the column-axis twin
+  // of the per-level subtotal ROWS (both pre-computed here from source). Additive: emitted only
+  // for prefixes of length 1..columnFields.length-1, so 0/1 column-dim pivots are unaffected.
+  const byPrefix = new Map<string, Record<string, unknown>[]>();
+  for (let len = 1; len < columnFields.length; len++) {
+    for (const row of rows) {
+      const prefix = columnFields
+        .slice(0, len)
+        .map((f) => asKey(row[f]))
+        .join('/');
+      let bucket = byPrefix.get(prefix);
+      if (bucket === undefined) {
+        bucket = [];
+        byPrefix.set(prefix, bucket);
+      }
+      bucket.push(row);
+    }
+  }
+
   values.forEach((valueDef, valueIndex) => {
-    // Per-combination value cells.
+    // Per-combination (leaf) value cells.
     for (const [comboKey, comboRows] of byCombo) {
       const nums = comboRows.map((r) => readNumber(r, valueDef.field));
       cells[cellKey(comboKey, valueIndex)] = applyReducer(
+        valueDef.aggregationFn,
+        nums,
+      );
+    }
+    // MOD-GRID-53: per-group (prefix) value cells — source re-aggregation (avg-of-avgs safe).
+    for (const [prefix, prefixRows] of byPrefix) {
+      const nums = prefixRows.map((r) => readNumber(r, valueDef.field));
+      cells[cellKey(prefix, valueIndex)] = applyReducer(
         valueDef.aggregationFn,
         nums,
       );

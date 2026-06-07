@@ -53,6 +53,13 @@
 > + 회귀 92/92. ★advisor 결정: **grid-pro-merging 배치**(rowSpan 수평 쌍둥이, grid-core hot-path 수술 회피·ARIA 얽힘 소멸=plain table native colSpan)·
 > ★colSpan=within-row → rowSpan L-01 orphan **구조적으로 없음**(rowSpan 보다 완전)→✅ 정직(consistency, streak 아님). 정직 경계: grid-core 메인 `<Grid>`(col-virt/pinned) 미배선.
 > ★제품결정 4종 중 3 build(나머지: RTL=의도적 연기). **Column features 0 ❌·Editing 0 ❌**.
+> ★ **MOD-53 델타(2026-06-07, Enterprise ❌20 backlog 1번째 — advisor triage)**: `Collapsible / expandable pivot column groups` ❌→✅ —
+> computePivot computeCells 가 **컬럼-combo prefix(그룹)별 source-집계 셀**도 방출(MOD-18 이후 첫 additive 터치, characterization-guarded, node 15/0:
+> ★collapsed 그룹 AVG = true source mean=17.5, NOT avg-of-child-avgs=15) + buildPivotColumns `PivotColumnCollapseOpts`/CollapsibleColumnHeader chevron +
+> PivotGrid `enableColumnCollapse`(collapsedColKeys, transpose 시 리셋) → **❌27 / ✅230 / 🟡70**(Pivoting 카테고리 18/2/3 → **19/2/2**, 합 330 불변,
+> reconcile 19/19). chromium 2/2(★collapse→자식 컬럼 DOM 부재+그룹 집계값 17.50·OFF byte-identical) + 회귀 94/94. ★advisor: collapsePivotRows(행) 쌍둥이지만
+> 비대칭(컬럼은 그룹 셀 사전 방출 부재)→computePivot additive(행축 subtotal ↔ 열축 group-cell, 둘 다 source 사전계산). avg-of-avgs 정직성=node 단언.
+> ★Enterprise backlog 진입(제품결정 4종 종결 후 1번째).
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -83,10 +90,10 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌28, MOD-52 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌27, MOD-53 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 20 + 기타 0 = **28**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌)).
-> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌28(MOD-52 반영) 기준으로 정정.
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 19 + 기타 0 = **27**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2)).
+> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌27(MOD-53 반영) 기준으로 정정.
 
 - **Community 8 (table-stakes)**: ① 자율 빌드 아님(제품 결정 → **advisor 위임**, 2026-06-07)=RTL(**의도적 연기**: invasive·한국우선 저가치)
   (★MOD-50: Full-row editing ❌→✅·★MOD-51: Custom cell editor slot ❌→✅·★MOD-52: Column spanning ❌→✅ 닫힘 — 제품결정 4종 중 3 build, RTL 만 잔여) ② vN 연기 5=post-sort
@@ -94,8 +101,8 @@
   ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 20 (deep — 다수 vN 보류)**: group-header inline agg · sticky group
-  headers · **pivot 3**(panel/server-side/collapsible cols; ★MOD-44: total customization ❌→✅·result filter ❌→🟡) · select-all-pages · group selection ·
+- **Enterprise 19 (deep — 다수 vN 보류)**: group-header inline agg · sticky group
+  headers · **pivot 2**(panel/server-side; ★MOD-44: total customization ❌→✅·result filter ❌→🟡; ★MOD-53: collapsible cols ❌→✅ 닫힘) · select-all-pages · group selection ·
   viewport row model · auto group col(★MOD-48: tree getDataPath ❌→🟡) · master-detail+virtualization · Excel cell styles ·
   **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
   panel drag · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
@@ -126,7 +133,7 @@
 | Sorting | 18 | 15 | 2 | 1 |
 | Filtering | 13 | 12 | 1 | 0 |
 | Row grouping & aggregation | 19 | 11 | 6 | 2 |
-| Pivoting | 23 | 18 | 2 | 3 |
+| Pivoting | 23 | 19 | 2 | 2 |
 | Selection | 17 | 13 | 2 | 2 |
 | Editing | 18 | 14 | 4 | 0 |
 | Cell rendering & styling | 18 | 15 | 3 | 0 |
@@ -248,7 +255,7 @@
 | Interactive runtime pivot configuration (add/remove/reorder dims via UI or API events) | Enterprise | ○ | ✅ 구현(MOD-31 G-3) | VERIFIED MISSING: grep for onConfigChange/setConfig = no matches; PivotGridProps (PivotGrid.tsx 28-47) exposes only data/config/pivotMode/passthroughColumns/enableVirtualization/className. PivotConfig is a static prop; consumer must re-pass a new config object to change dims. |
 | Column-to-row pivot transposition (swap axes interactively) | Enterprise | ○ | ✅ 구현(MOD-31 G-3) | VERIFIED MISSING: grep for transpose = no matches. No transpose/axis-swap control or API. Swapping rows<->columns requires the consumer to rebuild the config manually. |
 | Expandable / collapsible pivot row groups (drill expand-collapse) | Enterprise | ○ | ✅ 구현(MOD-31 G-2) | VERIFIED MISSING: grep for expand/collapse/enableExpanding = no matches. Pivot output is a flat PivotRow[] (data + subtotal + grandTotal, types.ts 86-95) with no expand/collapse state. PivotGrid does not pass enableExpanding to <Grid> (PivotGrid.tsx 113-118); subtotals are always shown inline, not collapsible. |
-| Collapsible / expandable pivot column groups | Enterprise | — | ❌ 미구현 | VERIFIED MISSING: nested column groups built by mapColumnNode are static; no collapse-to-total interaction on column headers (grep collapse/expand = no matches). |
+| Collapsible / expandable pivot column groups | Enterprise | — | ✅ 구현(MOD-53 G-1·G-2) | `grid-pro-pivot: computePivot computeCells now emits source-aggregated column-GROUP cells per column-combo prefix (cellKey(prefix,i)) — avg-of-avgs safe (node 15/0: collapsed group AVG = true source mean, NOT mean-of-child-means); buildPivotColumns PivotColumnCollapseOpts + CollapsibleColumnHeader chevron, mapColumnNode renders collapsed group as single column reading the group cell; PivotGrid enableColumnCollapse + collapsedColKeys state (reset on transpose)` — chromium 2/2: ★collapse → child quarter columns absent from DOM + 2024 column shows 17.50 (source avg); sibling group untouched; OFF byte-identical. ★MOD-18 이후 computePivot 첫 additive 터치(characterization-guarded). AG pivot column group collapse 대응. |
 | Sort on pivot result (sort by aggregated value column) | Enterprise | ○ | ✅ 구현(MOD-31 G-1) | VERIFIED MISSING: PivotGrid.tsx renders <Grid> (lines 113-118) passing only data/columns/rowClassName/enableVirtualization — no enableSort; grep enableSort = no matches. Value columns use accessorFn (buildPivotColumns.tsx 60) but no sorting is wired, and subtotal/grandTotal synthetic rows would break naive sorting. No pivot-aware sort. |
 | Filter on pivot result / pivot-result column filtering | Enterprise | ○ | 🟡 부분(MOD-44 G-2) | `grid-pro-pivot filterPivotRows(rows, predicate) — 순수 결과 필터(data 행만, subtotal/grandTotal=true-group 유지=totals-over-all)` — 결과-필터 프리미티브 ship + node 검증. **AG 의 pivot-result column-filter UI 부재**(소비자가 predicate 적용) → 번들 partial=🟡. filter UI=browser 클러스터. |
 | Server-side / lazy pivoting (pivot over server-grouped data) | Enterprise | — | ❌ 미구현 | VERIFIED MISSING: computePivot (computePivot.ts 187-275) is fully client-side over the in-memory data array; no server-side pivot result mode. AG Grid SSRM supports pivoting; topgrid has no equivalent. |
@@ -633,7 +640,7 @@
 | Interactive runtime pivot configuration (add/remove/reorder dims via UI or API events) | Pivoting | Enterprise | ✅ 구현(MOD-31 G-3) | VERIFIED MISSING: grep for onConfigChange/setConfig = no matches; PivotGridProps (PivotGrid.tsx 28-47) exposes only data/config/pivotMode/passthroughColumns/enableVirtualization/className. PivotConfig is a static prop; consumer must re-pass a new config object to change dims. |
 | Column-to-row pivot transposition (swap axes interactively) | Pivoting | Enterprise | ✅ 구현(MOD-31 G-3) | VERIFIED MISSING: grep for transpose = no matches. No transpose/axis-swap control or API. Swapping rows<->columns requires the consumer to rebuild the config manually. |
 | Expandable / collapsible pivot row groups (drill expand-collapse) | Pivoting | Enterprise | ✅ 구현(MOD-31 G-2) | VERIFIED MISSING: grep for expand/collapse/enableExpanding = no matches. Pivot output is a flat PivotRow[] (data + subtotal + grandTotal, types.ts 86-95) with no expand/collapse state. PivotGrid does not pass enableExpanding to <Grid> (PivotGrid.tsx 113-118); subtotals are always shown inline, not collapsible. |
-| Collapsible / expandable pivot column groups | Pivoting | Enterprise | ❌ 미구현 | VERIFIED MISSING: nested column groups built by mapColumnNode are static; no collapse-to-total interaction on column headers (grep collapse/expand = no matches). |
+| Collapsible / expandable pivot column groups | Pivoting | Enterprise | ✅ 구현(MOD-53) | computePivot 컬럼-그룹 prefix 셀(source 재집계, avg-of-avgs 안전, node 15/0) + buildPivotColumns PivotColumnCollapseOpts/CollapsibleColumnHeader + PivotGrid enableColumnCollapse. chromium 2/2(collapse→자식 컬럼 DOM 부재+그룹 집계값 17.50·OFF byte-identical). MOD-18 이후 computePivot 첫 additive 터치(characterization-guarded). AG 대응. |
 | Sort on pivot result (sort by aggregated value column) | Pivoting | Enterprise | ✅ 구현(MOD-31 G-1) | VERIFIED MISSING: PivotGrid.tsx renders <Grid> (lines 113-118) passing only data/columns/rowClassName/enableVirtualization — no enableSort; grep enableSort = no matches. Value columns use accessorFn (buildPivotColumns.tsx 60) but no sorting is wired, and subtotal/grandTotal synthetic rows would break naive sorting. No pivot-aware sort. |
 | Filter on pivot result / pivot-result column filtering | Pivoting | Enterprise | 🟡 부분(MOD-44 G-2) | `grid-pro-pivot filterPivotRows` 순수 결과 필터(data 행만, subtotal=true-group 유지). AG column-filter UI 부재=🟡(filter UI=browser). |
 | Server-side / lazy pivoting (pivot over server-grouped data) | Pivoting | Enterprise | ❌ 미구현 | VERIFIED MISSING: computePivot (computePivot.ts 187-275) is fully client-side over the in-memory data array; no server-side pivot result mode. AG Grid SSRM supports pivoting; topgrid has no equivalent. |

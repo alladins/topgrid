@@ -57,6 +57,12 @@ export interface PivotGridProps<TData extends Record<string, unknown>> {
    */
   enableCollapse?: boolean;
   /**
+   * 컬럼 그룹 expand/collapse 활성 (MOD-GRID-53 G-2, default `false`). `true` 시 컬럼-그룹 헤더가
+   * 클릭(chevron ▶/▼)→자식 leaf 컬럼 숨김/복원(그룹은 source-집계 셀을 읽는 단일 컬럼으로 잔존,
+   * avg-of-avgs 안전). ≥2 컬럼차원에서 의미. 미지정=MOD-18 동작(정적 그룹 헤더, 전체 자식 렌더).
+   */
+  enableColumnCollapse?: boolean;
+  /**
    * 런타임 config 컨트롤 활성 (MOD-GRID-31 G-3, default `false`). `true` 시 상단 툴바([⇄ 전치],
    * [pivot 토글])가 렌더되고 PivotGrid 가 config/pivotMode 를 **내부 state 로 소유**(props.config·pivotMode 는
    * 초기값). 미지정 시 props.config 를 직접 사용(MOD-18 controlled 동작 불변). config 소비자 제어와 배타적.
@@ -98,6 +104,7 @@ export function PivotGrid<TData extends Record<string, unknown>>({
   enableVirtualization,
   enableSort,
   enableCollapse,
+  enableColumnCollapse,
   enableConfigControls,
   onConfigChange,
   className,
@@ -123,6 +130,16 @@ export function PivotGrid<TData extends Record<string, unknown>>({
       return next;
     });
 
+  // MOD-GRID-53 G-2: collapse 된 컬럼-그룹 key 집합. 토글 = 추가/제거.
+  const [collapsedColKeys, setCollapsedColKeys] = useState<ReadonlySet<string>>(new Set());
+  const onToggleColumnCollapse = (key: string): void =>
+    setCollapsedColKeys((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+
   // MOD-GRID-31 G-3: 런타임 config 컨트롤. controls 활성 시 PivotGrid 가 config/pivotMode 를 내부 소유
   // (props 는 초기값). 미활성 시 props 직접 사용(MOD-18 controlled 불변, 두 모드 배타적=동기화 footgun 회피).
   const controls = enableConfigControls === true;
@@ -137,6 +154,7 @@ export function PivotGrid<TData extends Record<string, unknown>>({
     setEffConfig(next);
     setSort(null);
     setCollapsedIds(new Set());
+    setCollapsedColKeys(new Set()); // ★ leafKey/그룹키 재배정 → stale 컬럼 collapse 키 리셋.
     onConfigChange?.(next);
   };
   const onTranspose = (): void => applyConfig(transposePivotConfig(effConfig));
@@ -155,10 +173,13 @@ export function PivotGrid<TData extends Record<string, unknown>>({
             model,
             enableSort === true ? { active: sort, onSort } : undefined,
             enableCollapse === true ? { collapsedIds, onToggle: onToggleCollapse } : undefined,
+            enableColumnCollapse === true
+              ? { collapsedKeys: collapsedColKeys, onToggle: onToggleColumnCollapse }
+              : undefined,
           )
         : [],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [model, enableSort, sort, enableCollapse, collapsedIds],
+    [model, enableSort, sort, enableCollapse, collapsedIds, enableColumnCollapse, collapsedColKeys],
   );
 
   // MOD-GRID-31 G-1+G-2: 정렬(그룹 내 재정렬, subtotal 앵커) → collapse(후손 숨김) 합성. 둘 다 순수

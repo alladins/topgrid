@@ -1493,6 +1493,38 @@
       "module_summary": "Track 2 제품결정 3번째(bound-or-defer→build). 순수 computeColSpans(clamp+skip-of-skip) node 26/0 + MergingGrid 양 분기 배선 chromium 발산. rowSpan 수평 쌍둥이=머신리 재사용·grid-core 무수정. within-row=L-01 orphan 없음. 회귀 92/92. 신규 lesson 없음.",
       "version_note": "grid-pro-merging 0.3.0→차기 batch minor (computeColSpans/enableColSpan 추가, 미발행).",
       "product_decision_note": "제품결정 4종(advisor 위임): full-row editing=✅(MOD-50) / custom cell editor slot=✅(MOD-51) / column spanning=✅(MOD-52) / RTL=의도적 연기(invasive·한국우선 저가치). 4종 중 3 build, RTL 만 잔여."
+    },
+    "MOD-GRID-53": {
+      "package": "grid-pro-pivot (Pro)",
+      "tier": "Pro",
+      "weight": "Full(2-Goal: computePivot 컬럼-그룹 셀 / 컬럼 collapse 렌더)",
+      "priority": "Enterprise ❌20 backlog 1번째(제품결정 4종 종결 후, advisor triage 선정)",
+      "phase": "done (2-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-53.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "collapsible pivot column groups — 컬럼-그룹 헤더 chevron→자식 leaf 숨김 + 그룹 source-집계 셀. computePivot additive(컬럼-combo prefix 셀)+buildPivotColumns/PivotGrid collapse. row-emit/columnTree 무수정.",
+      "g1": {
+        "surface": "computeCells: 컬럼-combo prefix(그룹)별 cellKey(prefix,i)=applyReducer(aggFn, source nums). leaf/grand-total/columnTree/rows 불변. 0/1 차원 inert. avg-of-avgs 안전(source 직접).",
+        "verified_node": "15/0(computePivot.test.mjs, esbuild 번들): ★characterization-first(unmodified 9/15→additive 후 15/15, 불변=additive 증명) + collapsed 그룹 AVG=true source mean 17.5(NOT avg-of-avgs 15, 불균등 행수)·3-dim len1/len2·1-dim inert. 기존 5 spine 무영향."
+      },
+      "g2": {
+        "surface": "PivotColumnCollapseOpts{collapsedKeys,onToggle} + buildPivotColumns 4번째 인자 + mapColumnNode collapse(그룹 셀 ${node.key}__i 읽는 단일/값별 컬럼 + CollapsibleColumnHeader chevron) + PivotGrid enableColumnCollapse?(collapsedColKeys, transpose 리셋).",
+        "verified_chromium": "2/2(pivot-column-collapse.spec.ts): collapse→자식 quarter 컬럼 DOM 부재+2024 컬럼 17.50(source avg) 표시·sibling 2023 그룹 무변·re-expand 복원·OFF byte-identical(chevron 0)."
+      },
+      "verification": "node 15/0(characterization+group, esbuild)·기존 5 spine green(sort11/collapse19/transpose5/customize8/filter7)·typecheck 0·build green·chromium 2/2 + 전체 회귀 94/94(92+2). computePivot row-emit/columnTree/5 spine 무영향.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-003 reuse-gate·LESS-006; reuse-gate 비대칭 발견·computePivot additive 결정·characterization-first·avg-of-avgs node 이동=advisor 통찰=문서)",
+        "matrix_row": "§3 mod-grid-53 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Collapsible pivot column groups ❌→✅(Pivoting 18/2/3→19/2/2) reconcile 19/19(230/70/27·330·0 mismatch·Enterprise 20→19)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★Collapsible pivot column groups=✅(컬럼 그룹 collapse 자식 DOM 부재+그룹 source-집계값+expand). ★reuse-gate 비대칭 발견(advisor reconcile): collapsePivotRows 컬럼 쌍둥이이나 row 가 깨끗한 건 subtotal 사전방출 때문—컬럼은 그룹 셀 부재+모델 source 미보유→computePivot additive(컬럼-combo prefix 셀)=진정한 대칭(행축 subtotal↔열축 group-cell). ★MOD-18 이후 computePivot 첫 additive 터치(정직)=characterization-first 안전망(현 동작 핀→불변 증명, behavior-preserving-additive). ★avg-of-avgs 정직성 node 로 이동(correctness=node, render 발산=chromium). esbuild 번들 검증(cross-import). advisor.",
+      "module_summary": "Enterprise ❌20 backlog 1번째(제품결정 4종 종결 후). computePivot 컬럼-그룹 prefix 셀 additive(source 재집계=행축 subtotal 의 열축 대칭)+buildPivotColumns/PivotGrid collapse 배선. characterization-first(첫 computePivot 터치)+avg-of-avgs node+render chromium. 기존 row-emit/5 spine 무수정(94/94). 신규 lesson 없음.",
+      "version_note": "grid-pro-pivot 0.3.0→차기 batch minor (computePivot 그룹 셀+enableColumnCollapse 추가, 미발행). +esbuild devDep(test).",
+      "backlog_note": "Enterprise ❌19 잔여(advisor triage): group-header inline agg·sticky group headers·pivot 2(panel/server-side)·select-all-pages·group selection·viewport row model·auto group col·master-detail+virt·Excel cell styles·chart panel·row-group/pivot state save·sidebar/filters panel·context submenu·tool panel drag·.xlsx import."
     }
   },
   "release_queue": {

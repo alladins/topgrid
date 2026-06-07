@@ -24,12 +24,15 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/sortPivotRows.test.ts && node --experimental-strip-types src/collapsePivotRows.test.ts && node --experimental-strip-types src/transposePivotConfig.test.ts && node --experimental-strip-types src/customizePivotTotals.test.ts && node --experimental-strip-types src/filterPivotRows.test.ts"
+    "test": "node --experimental-strip-types src/sortPivotRows.test.ts && node --experimental-strip-types src/collapsePivotRows.test.ts && node --experimental-strip-types src/transposePivotConfig.test.ts && node --experimental-strip-types src/customizePivotTotals.test.ts && node --experimental-strip-types src/filterPivotRows.test.ts && node computePivot.test.mjs"
   },
   "dependencies": {
     "@topgrid/grid-license": "workspace:*",
     "@topgrid/grid-core": "workspace:*",
     "@topgrid/grid-pro-agg": "workspace:*"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.0.0",

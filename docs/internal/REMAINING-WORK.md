@@ -8,23 +8,24 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
 
-> **현 상태**: vN node-pure 9(MOD-40~48) + Track 1 MOD-49 + **Track 2 제품결정 4종 전부 resolve(2026-06-07): MOD-50·MOD-51·MOD-52 build + RTL 연기**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
-> COMMERCIAL-GAP **❌47→28**(✅229/🟡70/❌28; **Column features·Editing 0 ❌**). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
-> **★Track 2 착수(사용자 advisor 위임)**: 제품 결정 4종 STOP-and-ask → advisor 판단 위임(설계·우선순위), 끝까지 진행. publish/push 만 사용자 게이트 유지.
-> **MOD-49**(Track1-1): pagination 3 ❌→✅. **MOD-50**(Track2-1): full-row editing ❌→✅. **MOD-51**(Track2-2): custom cell editor slot ❌→✅. **MOD-52**(Track2-3): column spanning ❌→✅(grid-pro-merging colSpan, chromium 회귀 **92/92**).
-> **advisor 제품결정 순서**: full-row editing✅ → custom cell editor slot✅ → column spanning✅ → **RTL=의도적 연기**(invasive·한국우선 저가치). → **4종 중 3 build, RTL 만 잔여**.
+> **현 상태**: vN node-pure 9(MOD-40~48) + Track 1 MOD-49 + **Track 2 제품결정 4종 종결(MOD-50~52 build·RTL 연기)** + **Enterprise ❌20 backlog 진입: MOD-53 done(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
+> COMMERCIAL-GAP **❌47→27**(✅230/🟡70/❌27; **Column features·Editing 0 ❌·Pivoting 19/2/2**). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **★작동 방식(사용자 advisor 위임)**: 설계·우선순위 advisor 판단 위임, 끝까지 진행. publish/push 만 사용자 게이트 유지.
+> **MOD-49** pagination✅ · **MOD-50** full-row editing✅ · **MOD-51** custom cell editor slot✅ · **MOD-52** column spanning✅ · **MOD-53** collapsible pivot column groups✅(grid-pro-pivot, chromium 회귀 **94/94**).
+> **제품결정 4종**: full-row✅·custom editor✅·column spanning✅·**RTL=의도적 연기**(3 build, RTL 잔여). → Enterprise backlog 진입.
 
 ### ▶ 새 세션 즉시 시작 (2026-06-07 갱신)
 
-> **다음 액션 = Enterprise ❌20 backlog(advisor triage)** 또는 RTL 재고. 제품결정 4종 종결(MOD-50~52 build·RTL 연기). 후보(browser 클러스터):
-> pivot panel/server-side·collapsible cols(grid-pro-pivot) · grand-total footer 렌더/auto-agg floating(grid-pro-agg) · advanced filter 쿼리빌더 UI(grid-pro-filter) ·
-> auto group column·master-detail+virtualization(tree) · viewport row model · sticky group headers · context submenu · sidebar/tool panel · .xlsx import.
-> **작동 방식**(사용자 지시): 설계·우선순위 **advisor 위임**, commit-per-module, 끝까지 진행. **publish(npm)·origin push 만 사용자 게이트.**
-> 먼저 읽을 것: 본 HANDOFF + 메모리 `dev-harness-loop-progress`(재개 지점) + `state.json`(MOD-49~52 + split_remainder) + COMMERCIAL-GAP(갭 현황 ❌28).
+> **다음 액션 = Enterprise ❌19 backlog(advisor triage)**. 후보(browser/pure 혼합): group-header inline agg·sticky group headers(grid-pro-agg) · pivot 2(panel/server-side, grid-pro-pivot) ·
+> select-all-pages·group selection(grid-core) · viewport row model · auto group col·master-detail+virt(tree) · Excel cell styles(grid-export) · chart panel(grid-pro-chart) ·
+> row-group/pivot state save · sidebar/filters panel·context submenu·tool panel drag(grid-pro-panel/master) · .xlsx import.
+> **작동 방식**: 설계·우선순위 **advisor 위임**, commit-per-module, 끝까지 진행. **publish(npm)·origin push 만 사용자 게이트.**
+> 먼저 읽을 것: 본 HANDOFF + 메모리 `dev-harness-loop-progress`(재개 지점) + `state.json`(MOD-49~53 + split_remainder) + COMMERCIAL-GAP(갭 현황 ❌27).
 
-> **★MOD-52 done 교훈**(다음 모듈에 적용): **reuse-gate 파일(렌더 컴포넌트)이 배치·tier·✅/🟡 를 결정** — 추상 triage 전에 그 파일을 읽어라(MergingGrid.tsx 가 grid-pro-merging
-> 배치+native colSpan=ARIA 얽힘 소멸을 결정). ✅/🟡 는 streak 아닌 **유사 기능과의 consistency**로 판단(rowSpan present↔colSpan ✅). **정직 경계 명시**(grid-core 메인 `<Grid>` 미배선)=over-claim 방지.
-> **★MOD-51 교훈**: 비공허성=lifecycle/행동 위임이 소비자 배선 0 으로 성립(ctx onKeyDown 노출 시 붕괴). 비공허 기준 **결과 보기 전 확정**(retrofit 금지). node-pure 없으면 fabricate 금지(LESS-006).
+> **★MOD-53 done 교훈**: ★**reuse-gate 비대칭** — 표면상 쌍둥이(collapsePivotRows↔컬럼)도 reuse-gate 렌더/모델 파일을 읽으면 비대칭 드러남(row=subtotal 사전방출 때문 깨끗, 컬럼=그룹 셀 부재→
+> computePivot additive 필요). ★**correctness-critical 단언은 node 로**(avg-of-avgs=node 정확 숫자, render 발산만 chromium)=MOD-52(text 단언)보다 깨끗. ★**characterization-first**(테스트 없는 코어 첫 터치 전 현 동작 핀→additive 불변 증명). esbuild 번들=cross-import 검증.
+> **★MOD-52 교훈**: **reuse-gate 렌더 파일이 배치·tier·✅/🟡 결정**(추상 triage 전 읽기). ✅/🟡=유사 기능 consistency. 정직 경계 명시=over-claim 방지.
+> **★MOD-51 교훈**: 비공허성=행동 위임이 소비자 배선 0 으로 성립. 비공허 기준 **결과 전 확정**(retrofit 금지). node-pure 없으면 fabricate 금지(LESS-006).
 
 > **★chromium 하네스 재가동(매 세션 선행, ss-srv.mjs=gitignore 미커밋)**:
 > 1. `node -v`(≥22.6) · chromium 설치 확인. 2. `apps/docs/ss-srv.mjs` 복원: `git show 6d8355d^:apps/docs/ss-srv.mjs` 내용을 Write.
