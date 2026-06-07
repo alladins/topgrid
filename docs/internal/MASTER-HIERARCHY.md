@@ -900,6 +900,17 @@
 | go-to-page 입력(G-2) | `enableGoToPage?`, 순수 `clampGoToPage(raw,pageCount)→idx\|null`, `GoToPageInput` | **종결형**(clamp) + 배선형 | GridPagination 좌측 렌더→table.setPageIndex. 1-based→0-based 클램프 [1,count], non-numeric/empty→null no-op | node 11/0 + chromium: page1 "0"→"7"입력→page7 "60"(먼 페이지 점프). Wijmo pager 대응 | 채움 |
 | auto-page-size(G-3) | `autoPageSize?`, 순수 `computeAutoPageSize({availableHeight,rowHeight})→n`, `useAutoPageSize`(ResizeObserver) | **종결형**(compute) + 배선형 | thead 제외 측정→table.setPageSize. ★바운드 컨테이너(outer+scroll height:100% % 체인, 소비자 wrapper=뷰포트) | node 9/0 + chromium: 280px→560px 리사이즈→행수 증가(높이→행수 발산). AG paginationAutoPageSize 대응 | 채움 |
 
+### `mod-grid-50` — 행 단위 편집 (full-row editing, **MIT**, grid-core) ✅ 채움 — {G-1,G-2} 완주 (Track 2 제품결정 1번째)
+
+소스: `packages/grid-core/src/editing/{applyRowDraft.ts, useFullRowEdit.ts}` + `applyRowDraft.test.ts`(node) + index export, story `Grid.full-row-edit.stories.tsx`, spec `.claude/dev-harness/specs/MOD-GRID-50.md`. dev-harness 33번째. **Track 2 제품결정(사용자 advisor 위임) 1번째** — full-row editing(예시 지정). 갭분석 Editing ❌ 1 닫기.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 순수 머지(G-1) | `applyRowDraft(row, draft)→newRow` (shallow merge) | **종결형**(순수) | 행 커밋 단위 변환(all-or-nothing). applyRowTransaction/moveRow 동형 immutable | node 8/0: 빈 draft·단일/다중 override·immutability·타입무관 | 채움 |
+| 행 편집 훅+배선(G-2) | `useFullRowEdit({getRowId,onRowEdit,validateRow?})`→{editingRowId,isRowEditing,startRowEdit,setDraftCell,getDraftValue,commitRow,cancelRow} | **배선형** | EditableCell.isEditing 셀→행 승격(isEditing=isRowEditing). commitRow=ONE onRowEdit delta·cancelRow=discard. ★draftRef 미러(blur-동틱 stale 회피). controlled-data | chromium 3/3: ★≥2 셀 동시 에디터+타 행 view·저장→atomic 적용·취소→atomic 원복 | 채움 |
+
+> dev-harness 수확: **Track 2 제품결정 1번째**(사용자가 "STOP-and-ask"→advisor 위임 전환). ★설계(advisor): `EditableCell.isEditing="parent 소유"+controlled-data` 패턴을 **셀→행 승격** — 한 행 모든 편집셀 동시 에디터, 행 단위 atomic commit(단일 onRowEdit)/cancel(전부 폐기). 비공허성=원자성(per-cell 이면 cancel 이 둘 다 못 되돌림). **★draftRef 미러**(원자성 키): "저장" blur→onCommit→setDraftCell 동틱에 commitRow 가 stale state 대신 draftRef 읽음(createSheet raw-truth 동형). **★reuse-gate 발견**: EditableCell(uncontrolled commit-on-blur)을 full-row 에 쓰려면 **셀 컴포넌트 안정 식별자 필수**(useMemo([])+editRef) — 매 렌더 재생성 시 flexRender createElement 가 새 타입→setDraftCell 마다 remount(포커스/draft 유실); MOD-26 "useKeyboardEdit 부적합" 동류이나 안정화로 EditableCell 재사용 성립(소비자 배선 주의=문서, 코어 lesson 아님). **가드 2**(advisor): per-cell⊥full-row·validateRow 거짓→commit 차단(소비자 주입=Pro buildValidator 파생, license 경계 무위반). tier MIT(기존 편집 무-게이트). **Editing 12/4/2→13/4/1**, COMMERCIAL-GAP ❌31→30·✅226→227·🟡70(reconcile 19/19·330·0 mismatch). 코어 render 무수정(회귀 84/84). 신규 lesson 없음.
+
 > dev-harness 수확: **Track 1 첫 모듈** — node-pure runway 종료 후 chromium 하네스(storybook-static :6006 + playwright, 회귀 81/81=78+3) 재가동. **advisor spec-gate 핵심**: 모듈 경계=패키지(grid-core pagination)가 아니라 **「비공허 발산 단언 작성 가능?」** 게이트. clean-divergent 3(formatter 라벨·먼-페이지 점프·뷰포트 적응)만 번들, **vacuity-trap 제외**(debounced-scroll=렌더카운터 없이 단언 불가+react-virtual rAF 위임 / row-animation=FLIP transform timing-sensitive / auto-virt-threshold=design 번복=advisor). ★**정직성**(audit 핵심): custom-formatter 행 ❌ 는 count-half(totalCountFormat 기존)에 과장됐었음 — page-number-half 신규가 행 닫음(기존 prop 위장 금지). node-spine(clampGoToPage·computeAutoPageSize)+chromium 발산(LESS-006). Grid.tsx 최소 배선=OFF 회귀 0. **Pagination 3 ❌→✅**(카테고리 9/5/3→12/5/0), COMMERCIAL-GAP ❌34→31·✅223→226·🟡70(reconcile 19/19·330). 신규 lesson 없음.
 
 ---
@@ -1264,6 +1275,16 @@ PoC 후 단계적 결정.
 
 > **★ MOD-49~ = Track 1 browser 클러스터(2026-06-07 착수)**. node-pure runway(MOD-40~48) 종료 후, 미뤄둔 UI/렌더/wiring 을
 > 패키지별로 닫는 라운드. chromium 하네스 게이트(storybook-static :6006 + playwright, 발산 단언=non-vacuous, LESS-006).
+
+> **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
+> 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
+> custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-50 grid-core 행 단위 편집 (Track2-1, MIT)** — ✅ **구현됨 → §3 `mod-grid-50` 참조** (dev-harness 33번째). spec=`specs/MOD-GRID-50.md`
+- Goal: full-row editing — per-cell→행 단위 edit/commit/cancel(atomic). AG `editType:'fullRow'`(Community)·Wijmo row edit 대응.
+- In: 순수 `applyRowDraft(row,draft)→newRow`(shallow merge) + `useFullRowEdit({getRowId,onRowEdit,validateRow?})`(editingRowId+draft Map, commitRow=ONE delta·cancelRow=discard) + EditableCell 재사용 배선(isEditing=isRowEditing).
+- Out: per-cell 편집(유지)·undo/redo(edit-plus)·custom editor slot(MOD-51)·키보드 행 nav.
+- AC: applyRowDraft merge/immutability(node) · ★≥2 셀 동시 에디터·atomic 커밋(단일 onRowEdit)·atomic 취소(둘 다 원복)·타 행 view(chromium 발산). ★설계(advisor): EditableCell.isEditing 셀→행 승격·controlled-data·atomic raw-truth. 가드 2: per-cell⊥full-row·validateRow 거짓→commit 차단(소비자 주입=Pro dep 회피). tier MIT(기존 편집 무-게이트).
 
 **MOD-GRID-49 grid-core 페이지네이션 완성도 (Track1-1, MIT)** — ✅ **구현됨 → §3 `mod-grid-49` 참조** (dev-harness 32번째, browser 1번째). spec=`specs/MOD-GRID-49.md`
 - Goal: pagination 서브시스템 3 ❌ 닫기 — pageNumberFormat(G-1, 순수 passthrough) + go-to-page 입력(G-2, chromium) + auto-page-size(G-3, chromium). AG `paginationNumberFormatter`·Wijmo pager 입력·AG `paginationAutoPageSize` 대응.

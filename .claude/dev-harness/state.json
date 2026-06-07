@@ -1401,6 +1401,38 @@
       "module_summary": "Track 1 browser 클러스터 1번째. 패키지-응집 pagination 3. 순수 spine(clamp·autosize) node + 브라우저 행동 chromium 발산. Grid.tsx 최소 배선=OFF 회귀 0(81/81). 신규 lesson 없음.",
       "version_note": "grid-core 0.4→차기 batch(미발행).",
       "split_remainder": "(Community 잔여) post-sort callback·debounced-scroll·row-animation·auto-virtualization-threshold·drag-between-grids = 후속 browser/vacuity-trap 발산단언 확정 후."
+    },
+    "MOD-GRID-50": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(2-Goal: applyRowDraft / useFullRowEdit)",
+      "priority": "Track2-1 제품결정(사용자 advisor 위임; 예시=full-row editing)",
+      "phase": "done (2-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-50.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "full-row editing — EditableCell.isEditing 셀→행 승격, 행 단위 atomic commit/cancel. controlled-data(onRowEdit). per-cell 유지.",
+      "g1": {
+        "surface": "순수 applyRowDraft(row,draft)→{...row,...draft}",
+        "verified_node": "applyRowDraft 8/0(빈/단일/다중 override·immutability·타입무관)."
+      },
+      "g2": {
+        "surface": "useFullRowEdit({getRowId,onRowEdit,validateRow?})→{editingRowId,isRowEditing,startRowEdit,setDraftCell,getDraftValue,commitRow,cancelRow}. commitRow=ONE delta·cancelRow=discard·draftRef 미러.",
+        "verified_chromium": "3/3: ≥2 셀 동시 에디터+타 행 view·저장→atomic 적용·취소→atomic 원복(부분 커밋 0)."
+      },
+      "verification": "node applyRowDraft 8/0(전 스위트 green)·typecheck 0·build green·chromium 3/3 + 전체 회귀 84/84(코어 render 무수정).",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-005 reuse-gate·LESS-006; 안정-셀 발견=문서)",
+        "matrix_row": "§3 mod-grid-50 채움 + §6.2 구현됨",
+        "index_updated": "COMMERCIAL-GAP Full-row editing ❌→✅(Editing 12/4/2→13/4/1) reconcile 19/19(227/70/30·330·0 mismatch·Community 11→10)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★Full-row editing=✅(atomic edit/commit/cancel, node spine+chromium 발산). ★draftRef 미러=원자성 키(blur 동틱 stale 회피). ★reuse-gate 발견=EditableCell full-row 재사용은 안정 셀 식별자(useMemo+editRef) 필수(소비자 배선 문서). 가드 2(per-cell⊥full-row·validateRow). advisor.",
+      "module_summary": "Track 2 제품결정 1번째(advisor 위임). EditableCell.isEditing 셀→행 승격+controlled-data+atomic raw-truth(draftRef). 코어 render 무수정(84/84). 신규 lesson 없음.",
+      "version_note": "grid-core 0.4→차기 batch(미발행).",
+      "product_decision_note": "제품결정 4종(advisor 위임): full-row editing=✅ / custom cell editor slot=MOD-51 / column spanning=bound-or-defer / RTL=의도적 연기(invasive·한국우선 저가치)."
     }
   },
   "release_queue": {

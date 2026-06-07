@@ -25,6 +25,10 @@ export type {
 // MOD-GRID-48: flat-path 트리 빌더(getDataPath 데이터-모델; 소비자가 getSubRows 로 사용).
 export { buildTreeFromPaths } from './internal/buildTreeFromPaths';
 export type { TreeNode } from './internal/buildTreeFromPaths';
+// MOD-GRID-50: full-row editing — 순수 머지 + 행 편집 상태 훅 (AG editType:'fullRow' 대응).
+export { applyRowDraft } from './editing/applyRowDraft';
+export { useFullRowEdit } from './editing/useFullRowEdit';
+export type { UseFullRowEditOptions, FullRowEditApi } from './editing/useFullRowEdit';
 // MOD-GRID-37 G-1: locale/collation-aware sortingFn (é between e and f; 한글 자모 순).
 export { compareLocale, makeLocaleSortingFn, localeSortingFn } from './internal/localeSort';
 // MOD-GRID-37 G-2: blank→undefined accessor for direction-independent null placement (+ sortUndefined).

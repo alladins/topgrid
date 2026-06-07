@@ -6,11 +6,11 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-49, 2026-06-07)** |
+| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-50, 2026-06-07)** |
 |---|---|---|---|
-| ✅ 구현(full) | 178 (54%) | 199 (60%) | **226 (68%)** |
+| ✅ 구현(full) | 178 (54%) | 199 (60%) | **227 (69%)** |
 | 🟡 부분(partial) | 60 (18%) | 60 (18%) | **70 (21%)** |
-| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **31 (9%)** |
+| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **30 (9%)** |
 | ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) |
 | **합계** | **330** | **330** | **330** |
 
@@ -36,6 +36,10 @@
 > node 9/0+chromium) · `jump-to-page input`(GoToPageInput+pure clampGoToPage, node 11/0+chromium) · `custom page formatter`(pageNumberFormat
 > →PageNumbers, chromium; ★count-half=totalCountFormat 기존 충족, prior ❌ 과장 — page-half 신규가 행 닫음) → **❌31 / ✅226 / 🟡70**
 > (Pagination 카테고리 9/5/3 → **12/5/0**, 합 330 불변, reconcile 19/19). chromium 81/81(78 baseline+3, 회귀 0).
+> ★ **MOD-50 델타(2026-06-07, Track 2 제품결정 1번째 — 사용자 advisor 위임)**: `Full-row editing` ❌→✅ — `useFullRowEdit`(editingRowId+
+> draft Map, commitRow=ONE delta·cancelRow=discard, validateRow? 소비자 주입) + 순수 `applyRowDraft`(node 8/0) + EditableCell 승격 배선
+> → **❌30 / ✅227 / 🟡70**(Editing 카테고리 12/4/2 → **13/4/1**, 합 330 불변, reconcile 19/19). chromium 3/3(★≥2 셀 동시·atomic 커밋/취소)
+> + 회귀 84/84. ★제품결정 4종 중 1 build(나머지: custom editor slot=다음, column spanning=bound-or-defer, RTL=의도적 연기).
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -66,14 +70,15 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌31, MOD-49 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌30, MOD-50 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 11 + Enterprise 20 + 기타 0 = **31**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, ★MOD-49 Pagination 3 ❌→✅: auto-page-size·custom formatter=Community, go-to-page=기타 → Community 13→11·기타 1→0).
-> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌31(MOD-49 반영) 기준으로 정정.
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 10 + Enterprise 20 + 기타 0 = **30**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10)).
+> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌30(MOD-50 반영) 기준으로 정정.
 
-- **Community 11 (table-stakes)**: ① 자율 빌드 아님(제품 결정)=Column spanning(body colSpan)·Custom cell editor slot·Full-row
-  editing·RTL ② vN 연기 5=post-sort callback·debounced scroll·row animation·auto-virtualization-threshold·drag-between-grids
-  (★MOD-43: applyTransaction·async batching ❌→✅; ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
+- **Community 10 (table-stakes)**: ① 자율 빌드 아님(제품 결정 → **advisor 위임**, 2026-06-07)=Column spanning(body colSpan, bound-or-defer)·
+  Custom cell editor slot(=다음)·RTL(**의도적 연기**: invasive·한국우선 저가치) (★MOD-50: Full-row editing ❌→✅ 닫힘) ② vN 연기 5=post-sort
+  callback·debounced scroll·row animation·auto-virtualization-threshold·drag-between-grids (★MOD-43: applyTransaction·async batching ❌→✅;
+  ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
 - **Enterprise 20 (deep — 다수 vN 보류)**: group-header inline agg · sticky group
@@ -110,7 +115,7 @@
 | Row grouping & aggregation | 19 | 11 | 6 | 2 |
 | Pivoting | 23 | 18 | 2 | 3 |
 | Selection | 17 | 13 | 2 | 2 |
-| Editing | 18 | 12 | 4 | 2 |
+| Editing | 18 | 13 | 4 | 1 |
 | Cell rendering & styling | 18 | 15 | 3 | 0 |
 | Row models / data | 18 | 14 | 3 | 1 |
 | Pagination | 17 | 12 | 5 | 0 |
@@ -123,7 +128,7 @@
 | State, theming & i18n | 17 | 10 | 4 | 3 |
 | Spreadsheet (Wijmo FlexSheet focus) | 23 | 14 | 6 | 3 |
 | Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 5 | 4 | 5 |
-| **합계** | **330** | **226** | **70** | **31** |
+| **합계** | **330** | **227** | **70** | **30** |
 
 ## 카테고리별 상세
 
@@ -269,7 +274,7 @@
 | Text / number / date editors | Community | FlexGrid | ✅ 구현 | `grid-renderers EditableCell.tsx EditType 'text'\|'number'\|'date' → htmlType maps to <input type=text\|number\|date>; 'textarea' also supported` — Native input typed by editType; textarea variant also present. |
 | Select / dropdown editor | Community | FlexGrid | ✅ 구현 | `EditableCell editType 'select' → <select> with selectOptions; grid-pro-datamap DataMapEditor.tsx (role=combobox, filter-typing, dataMap.getValue(label)→code onCommit)` — Built-in <select> plus richer code↔label filter-typing combobox in datamap; both verified. |
 | Custom cell editor component slot | Community | FlexGrid | ❌ 미구현 | `none — grep for editorComponent/customEditor/registerEditor/cellEditor/renderEditor across packages/*/src returned no matches; EditType is a fixed union` — EditType is a fixed union; no consumer-supplied editor component registration found. |
-| Full-row editing | Community | FlexGrid | ❌ 미구현 | `none — grep for fullRow/rowEdit/editRow/full-row across packages/*/src returned no matches (only per-cell add/delete/update mutators)` — Editing is per-cell only; no row-level edit/commit mode found. |
+| Full-row editing | Community | FlexGrid | ✅ 구현(MOD-50 G-1·G-2) | `grid-core editing/useFullRowEdit.ts (editingRowId + draft Map, commitRow=ONE onRowEdit delta, cancelRow=discard, validateRow? 소비자 주입) + pure applyRowDraft.ts (shallow merge, node 8/0); EditableCell(isEditing=isRowEditing) 승격 배선` — chromium 3/3: ★진입→≥2 셀 동시 에디터·저장→둘 다 atomic 적용·취소→둘 다 원복. controlled-data(onRowEdit). AG `editType:'fullRow'` 대응. |
 | Declarative validation (commit-blocking) | — | ○ | ✅ 구현 | `grid-pro-edit-plus validation/buildValidation.ts buildValidator (rules→tracking Validator<TData>) + buildValidationCellClass (rules→grid-core CellClassNameCallback, field-scoped)` — Rule engine compiles to tracking Validator (invalid rows excluded from added/updated → commit-blocked) plus cell-class marking; verified. |
 | Undo / redo | Enterprise | ○ | 🟡 부분 | `grid-pro-edit-plus undo-redo/useUndoRedo + commandStack (push/popUndo/popRedo) + bindings makeUpdate/Add/DeleteCommand` — Generic command stack over tracking mutators; edited-existing-row delete-undo is lossy (mount-snapshot restore), documented as P23-1 in MASTER-HIERARCHY. |
 | Fill handle / drag-fill | Enterprise | FlexGrid | ✅ 구현 | `grid-pro-range DragFillHandle.tsx + internal/fillRange.ts fillRange (CellUpdate[] by direction/count) + detectSeriesStep (arithmetic step)` — Excel-style corner handle with copy/series-step fill; emits CellUpdate[] and delegates data change to caller. |
@@ -572,7 +577,7 @@
 | Indeterminate (partial) select-all checkbox state | Selection | Community | ✅ 구현(MOD-35 G-3: indeterminate DOM prop + aria-checked=mixed) | VERIFIED missing. AG and Wijmo render tri-state (indeterminate) header checkbox when some-but-not-all rows selected. topgrid header checkbox is binary checked/unchecked only (CheckboxColumn.tsx L37 checked= only). |
 | Row-click selection (click row to select; ctrl/shift+click multi/range) | Selection | Community | ✅ 구현(MOD-35 G-1/G-2: 행클릭 plain+ctrl/cmd 토글+shift 범위) | VERIFIED missing. In main <Grid>, body selection is CHECKBOX-ONLY. Row body onClick fires onRowClick but does NOT toggle selection; no ctrl/shift+click multi or contiguous range. AG community + Wijmo FlexGrid both select on row click natively. |
 | Custom cell editor component slot | Editing | Community | ❌ 미구현 | EditType is a fixed union; no consumer-supplied editor component registration found. |
-| Full-row editing | Editing | Community | ❌ 미구현 | Editing is per-cell only; no row-level edit/commit mode found. |
+| Full-row editing | Editing | Community | ✅ 구현(MOD-50) | useFullRowEdit(editingRowId+draft Map, commitRow=ONE delta, cancelRow=discard) + pure applyRowDraft(node 8/0) + EditableCell 승격. chromium 3/3(≥2 셀 동시·atomic 커밋/취소). AG editType:'fullRow' 대응. |
 | Cell tooltips | Cell rendering & styling | Community | ✅ 구현(MOD-36 G-3: getCellTooltip→네이티브 td title) | Verified absent: no tooltip/title API in any grid-renderers cell; no passthrough-equivalent feature. |
 | Cell flashing / change highlight | Cell rendering & styling | Community | ✅ 구현(MOD-36 G-2: enableCellChangeFlash, 정체성 diff→값 변경 셀만 강조) | Verified: grid-pro-tracking tracks changes as data (buildChangeSet) but emits no flash/highlight class. |
 | Transaction updates — applyTransaction (add/update/remove without full re-render) | Row models / data | Community | ✅ 구현(MOD-43 G-1) | `grid-core transaction.ts applyRowTransaction` — 순수 delta(remove→update→add, immutable), controlled-data 소비자 적용(moveRow 동형). node 16/0. |

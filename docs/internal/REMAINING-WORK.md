@@ -8,10 +8,11 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
 
-> **현 상태**: vN node-pure 9모듈(MOD-40~48) + **Track 1 browser 1번째 MOD-49 완료(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·합 330).
-> COMMERCIAL-GAP **❌47→31**(✅226/🟡70/❌31). working tree clean. origin 미푸시(push=사용자 결정). npm 미발행.
-> **★Track 1 착수**: chromium 하네스 재가동·green(78 baseline 재확인 + MOD-49 3 = **81/81**). 남은 ❌31 = browser 클러스터(트랙 1) 또는 제품 결정(트랙 2).
-> **MOD-49 완료**: grid-core pagination 3 ❌→✅(auto-page-size·go-to-page·custom page formatter). 제외=vacuity-trap(debounced-scroll·row-animation)·design 번복(auto-virt-threshold)·후속(post-sort·drag-between-grids).
+> **현 상태**: vN node-pure 9(MOD-40~48) + Track 1 MOD-49 + **Track 2 제품결정 1번째 MOD-50 완료(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
+> COMMERCIAL-GAP **❌47→30**(✅227/🟡70/❌30). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **★Track 2 착수(사용자 advisor 위임)**: 제품 결정 4종 STOP-and-ask → advisor 판단 위임(설계·우선순위), 끝까지 진행. publish/push 만 사용자 게이트 유지.
+> **MOD-49**(Track1-1): pagination 3 ❌→✅. **MOD-50**(Track2-1): full-row editing ❌→✅(useFullRowEdit, chromium 회귀 **84/84**).
+> **advisor 제품결정 순서**: full-row editing✅ → custom cell editor slot(다음) → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치).
 
 > **이 세션은 트랙 1·2 미착수로 마감.** 새 세션에서 아래 중 택일해 시작한다. 먼저 읽을 것:
 > `docs/internal/COMMERCIAL-GAP-ANALYSIS.md`(갭 현황) · `state.json`(모듈별 `split_remainder`) · 본 가이드 · 메모리 `dev-harness-loop-progress`.
