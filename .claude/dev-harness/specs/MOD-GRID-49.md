@@ -104,6 +104,9 @@ compute. 추측 0: AG `paginationNumberFormatter`(페이지번호 포맷)·`pagi
   ★정직: custom formatter 행 ❌ 는 **count-half(totalCountFormat 기존) 에 과장**됐었음 — page-number-half 신규(pageNumberFormat)가 행 전체 ✅ 로 닫음(기존 prop 으로 위장 아님).
 - COMMERCIAL-GAP: **❌34→31·✅223→226·🟡70**(Pagination 9/5/3 → **12/5/0**, reconcile 19/19·합 330; 잔여 ❌ tier Community 13→11·기타 1→0).
 - **제외(advisor)**: debounced-scroll·row-animation(vacuity-trap, 발산 단언 확정 후) · auto-virtualization-threshold(design 번복=advisor) · drag-between-grids·post-sort callback(후속 browser). 신규 lesson 없음(LESS-006·node-spine+chromium 적용).
+- **★상호작용 가드(advisor 후속)**: `autoPageSize` + `enableVirtualization` 동시 활성 금지 — 가상화 자체 행 관리(scroll-window)와 setPageSize
+  충돌. `autoPageSizeEnabled = autoPageSize===true && enableVirtualization!==true`(virt 우선, height:100% 분기도 동일 가드). MOD-27/30 의
+  feature-interaction 제약 문서화 동형(코드베이스 bar). 회귀 무영향(어떤 스토리도 양쪽 동시 설정 안 함=가드는 tested-path inert).
 
 ## 모듈 완주 요약
 3-Goal: Track 1 browser 클러스터 **1번째**. 패키지-응집(grid-core pagination 서브시스템 3 ❌). 순수 spine(clampGoToPage·computeAutoPageSize)

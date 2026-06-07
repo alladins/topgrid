@@ -179,10 +179,14 @@ function GridInner<TData>(
 
   // MOD-GRID-49 G-3: auto-page-size — 뷰포트 높이에 맞춰 pageSize 자동 산정 (autoPageSize 활성 시).
   // rowHeight 추정 = virtualizerOptions.estimateSize (기본 36, gap L364).
+  // ★상호작용 가드(advisor): 가상화와 동시 사용 금지 — 가상화는 자체 행 관리(scroll-window)를
+  //   하므로 autoPageSize 의 setPageSize 와 충돌. 가상화 활성 시 autoPageSize 무시(virt 우선).
+  const autoPageSizeEnabled =
+    props.pagination?.autoPageSize === true && props.enableVirtualization !== true;
   useAutoPageSize<TData>(
     table,
     scrollContainerRef,
-    props.pagination?.autoPageSize === true,
+    autoPageSizeEnabled,
     props.virtualizerOptions?.estimateSize ?? 36,
   );
 
@@ -333,8 +337,8 @@ function GridInner<TData>(
   // (인라인 style 동적 값 — C-5 허용. 비활성 시 빈 객체.)
   // MOD-GRID-29 G-2: container border → var (color inline, `border` width class stays).
   // MOD-GRID-49 G-3: autoPageSize 도 바운드 컨테이너 필요(높이 측정 대상). 부모 height 를 채우도록
-  // height:100% (소비자 wrapper 가 뷰포트 높이 정의 = AG autoPageSize 동형). 가상화와 배타 시나리오.
-  const autoPageSize = props.pagination?.autoPageSize === true;
+  // height:100% (소비자 wrapper 가 뷰포트 높이 정의 = AG autoPageSize 동형). 가상화와 배타(가드 적용).
+  const autoPageSize = autoPageSizeEnabled;
   const containerStyle: CSSProperties = isVirtual
     ? {
         height: props.virtualScrollHeight ?? DEFAULT_VIRTUAL_SCROLL_HEIGHT,
