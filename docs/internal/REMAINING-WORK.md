@@ -6,6 +6,45 @@
 
 ---
 
+## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
+
+> **현 상태**: vN 라운드 **node-pure 9모듈 완료(MOD-40~48)**, 전부 로컬 `main` 커밋(reconcile 19/19·합 330). COMMERCIAL-GAP **❌47→34**
+> (✅223/🟡70/❌34). working tree clean. **origin/main 대비 11커밋 ahead**(이번 vN 라운드, 미푸시 — push=사용자 결정). npm 미발행.
+> **node-pure 추출 runway 종료**(advisor): 남은 ❌34 = 대부분 **browser 클러스터**(아래 트랙 1) 또는 **제품 결정**(트랙 2).
+
+> **이 세션은 트랙 1·2 미착수로 마감.** 새 세션에서 아래 중 택일해 시작한다. 먼저 읽을 것:
+> `docs/internal/COMMERCIAL-GAP-ANALYSIS.md`(갭 현황) · `state.json`(모듈별 `split_remainder`) · 본 가이드 · 메모리 `dev-harness-loop-progress`.
+
+### 🟦 트랙 1 — browser 클러스터 (UI/렌더/wiring; 다수 🟡→✅ 승격 + ❌ 닫기)
+> **선행**: chromium/storybook 하네스 세팅. 절차 = 메모리 `dev-harness-loop-progress` 「핵심 규약」 섹션(storybook-static :6006 via ss-srv.mjs
+> 미커밋→매번 Write 재생성 + playwright `--config=playwright.config.ts` + 서버 health sleep3+curl). **★검증 무결성(audit 핵심)**: chromium 단언은
+> **non-vacuous**(동적 행동·발산 — "보임"식 금지) + state.json/§3 에 **author-written behavioral** 명시(독립검증 오독 금지). LESS-006 준수.
+> **권장**: 패키지별로 묶어 모듈화. 각 모듈도 진입 게이트(spec+§6+rubric)·commit-per-module·reconcile 유지.
+
+- **grid-core (community 7 + tree)**: postSortRows·scroll-debounce(Grid/sort 수술) · auto-page-size · row-animation(MOD-36 diff 코어→CSS) ·
+  drag-between-grids · virtualizationThreshold · pageNumberFormat(component) · **auto group column**(설정형 group-col 렌더, getDataPath 🟡→✅).
+- **grid-pro-pivot**: pivot panel(DnD) · server-side pivot(grid-pro-serverside 연동) · collapsible column groups(★computePivot 컬럼-그룹 집계
+  +render+chromium — avg-of-avgs 안전 source 재집계) · column grand-total 토글(buildPivotColumns).
+- **grid-pro-agg/master**: grand-total footer 렌더(AggregationGrid pinned, computeAggregateRow 🟡→✅) · auto-agg floating wiring(🟡→✅) ·
+  group-header inline agg · sticky group headers/rows · master-detail+virtualization(virtualizer wiring) · row-group/pivot state-save.
+- **grid-pro-filter**: advanced filter 쿼리빌더 UI(조건 추가/삭제/중첩·드롭다운·식↔UI, MOD-46 🟡→✅) · 차트 클릭→grid setFilter wiring +
+  linked highlight(MOD-47 cross-filter 🟡→✅) · chart panel/composition(dock·settings, MOD-47 ❌).
+- **MOD-49 (browser/format-lib)**: go-to-page 입력(pagination, 소형) · .xlsx sheet **import**(xlsx 라이브러리) · Excel cell styles(서식 렌더).
+- **viewport row model**(서버 스트리밍 프로토콜) = node substance 0, browser/server 트랙.
+
+### 🟨 트랙 2 — 제품 결정 4종 (사용자 설계 결정 필요 = STOP-and-ask)
+> 이전 "전부 vN" 결정. 각각 **설계 옵션·트레이드오프를 사용자와 정한 뒤** 진행(또는 연기 확정).
+- **Column spanning(body colSpan)**: 비-bounded(col-virt/핀/ARIA 얽힘). full-width 스팬은 이미 4경로 존재. → 어디까지 지원할지 결정.
+- **Custom cell editor slot**: 편집 컴포넌트 등록 API 모양 결정(예 `columnDef.editor` slot vs registry).
+- **Full-row editing**: per-cell→행 단위 edit/commit. 편집 상태 모델(누가 소유)·커밋 단위 결정.
+- **RTL 레이아웃**: invasive(핀 오프셋 LTR 전제 `computePinnedOffset` 등). 한국시장 우선순위 낮음 → 할지/연기 확정.
+
+### 빠른 시작 예시
+> 트랙 1: "browser 라운드 시작해 — pivot panel 부터" → chromium 하네스 세팅 후 spec-gate(advisor)부터.
+> 트랙 2: "제품 결정 하자 — full-row editing 부터" → 설계 옵션 제시 → 결정 → 진행.
+
+---
+
 ## ★ vN 진행 (2026-06-06~ 착수) — ❌47 닫기 자율 라운드 (resumable ledger)
 
 > 사용자 지시: MOD-40 부터 ❌47 을 모듈로 쭉 닫는다. 크리티컬(제품 결정·발행/push 등 outward) 외 비-크리티컬은
