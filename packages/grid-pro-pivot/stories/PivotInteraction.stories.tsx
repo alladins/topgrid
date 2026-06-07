@@ -6,6 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { PivotGrid } from '@topgrid/grid-pro-pivot';
 import type { PivotConfig } from '@topgrid/grid-pro-pivot';
 import { setLicenseState } from '@topgrid/grid-license';
+import { useViewStatePersistence } from '@topgrid/grid-core';
 
 interface SalesRow {
   region: string;
@@ -140,6 +141,52 @@ export const ColumnCollapseOff: StoryObj = {
     setLicenseState(validLicense);
   },
   render: () => <PivotGrid<SalesRow> data={colCollapseData} config={colCollapseConfig} />,
+};
+
+// MOD-GRID-60: pivot state save/restore (useViewStatePersistence). ★non-vacuous: transpose mutates
+// config (rows↔columns) → persisted; after a REMOUNT the transposed config is restored (without
+// persistence the remount resets to the initial rows). pivot-rows reflects the PERSISTED config.
+function PersistedPivot(): JSX.Element {
+  const [config, setConfig] = useViewStatePersistence<PivotConfig>({
+    storageKey: 'mod60-pivot-config',
+    initial: { rows: ['region'], columns: ['quarter'], values: [{ field: 'sales', aggregationFn: 'sum' }] },
+  });
+  return (
+    <div>
+      <div data-testid="pivot-rows">{config.rows.join(',')}</div>
+      <PivotGrid<SalesRow>
+        data={colDimData}
+        config={config}
+        enableConfigControls
+        onConfigChange={setConfig}
+        passthroughColumns={[
+          { accessorKey: 'region', header: 'region' },
+          { accessorKey: 'quarter', header: 'quarter' },
+          { accessorKey: 'sales', header: 'sales' },
+        ]}
+      />
+    </div>
+  );
+}
+
+function PivotConfigPersistDemo(): JSX.Element {
+  const [k, setK] = useState(0);
+  return (
+    <div>
+      <button type="button" data-testid="remount" onClick={() => setK((n) => n + 1)}>
+        remount
+      </button>
+      <PersistedPivot key={k} />
+    </div>
+  );
+}
+
+export const PivotConfigPersist: StoryObj = {
+  name: 'pivot 상태 저장/복원',
+  beforeEach: () => {
+    setLicenseState(validLicense);
+  },
+  render: () => <PivotConfigPersistDemo />,
 };
 
 // nested-column path: column dim → value headers built via mapColumnNode recursion (the path the

@@ -1687,6 +1687,33 @@
       "closure": "★Filters tool panel=✅(통합 컬럼 필터 패널, 활성 카운트, callback-only). ToolPanel 철학+SideBar host(MOD-58 합성). node 0(브라우저). advisor Tier 3.",
       "module_summary": "Enterprise backlog 7번째(advisor Tier 3). FiltersToolPanel(ToolPanel callback-only 철학, SideBar host). node 0(브라우저)·chromium 발산(입력→카운트·clear). 기존 패널 무수정(104/104). 신규 lesson 없음.",
       "version_note": "grid-pro-panel 0.3.0→차기 batch minor (SideBar+FiltersToolPanel 추가, 미발행)."
+    },
+    "MOD-GRID-60": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(1-Goal, 2 ❌: 순수 엔벨로프 + 영속 훅)",
+      "priority": "Enterprise ❌ backlog 8번째(advisor Tier 1 node-pure)",
+      "phase": "done (1-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-60.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "view-state save/restore — 순수 versioned 엔벨로프 + generic useViewStatePersistence 훅. 소비자가 grouping(agg)/pivot config(pivot) 영속. useGridState 무수정.",
+      "g1": {
+        "surface": "serializeViewState/deserializeViewState(versioned {v,p}, mismatch/parse 실패→null) + useViewStatePersistence<T>({storageKey,initial,version?,storageType?})→[value,setValue](useExpandedPersistence 선례). index export.",
+        "verified_node": "11/0(viewStateEnvelope.test.ts): round-trip grouping/pivot config·version mismatch→null·parse 실패→null·wrong shape→null·empty·version 0.",
+        "verified_chromium": "2/2(view-state-persist.spec.ts): grouping 적용→remount→복원·pivot transpose→config 영속→remount→복원(persistence 없으면 리셋)."
+      },
+      "verification": "node 11/0·typecheck 0·build green·chromium 2/2 + full-suite 106/106 green(retries; 95+11 flaky+0 failed). useGridState/8-key/useExpandedPersistence 무수정.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-006 split; useExpandedPersistence 선례=straddle 아님=문서)",
+        "matrix_row": "§3 mod-grid-60 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Row-group/Pivot state save ❌→✅ 2건(State theming 10/4/3→12/4/1) reconcile 19/19(238/70/19·330·0 mismatch·Enterprise 13→11)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★Row-group state save + Pivot state save=✅(2건, generic useViewStatePersistence). ★node-pure anchor(advisor Tier 1): versioned 엔벨로프 correctness=node 11/0, 훅 wiring+remount 복원=chromium(LESS-006 split). ★useExpandedPersistence 선례=straddle 아님(per-package 독립 훅, grid-core 엔벨로프 재사용). generic 훅(MIT) agg/pivot 공용. grid-pro-agg grid-core devDep 추가(스토리). advisor.",
+      "module_summary": "Enterprise backlog 8번째(advisor Tier 1 node-pure, 2 ❌). 순수 versioned 엔벨로프(node 11/0)+generic useViewStatePersistence 훅. node correctness+chromium remount 복원. useGridState 무수정(106/106). 신규 lesson 없음.",
+      "version_note": "grid-core 0.4.0→차기 batch minor (useViewStatePersistence+엔벨로프 추가, 미발행). grid-pro-agg grid-core devDep 추가."
     }
   },
   "release_queue": {

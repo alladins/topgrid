@@ -19,6 +19,7 @@ import {
 } from '@topgrid/grid-pro-agg';
 import type { AggregationColumnDef } from '@topgrid/grid-pro-agg';
 import { setLicenseState } from '@topgrid/grid-license';
+import { useViewStatePersistence } from '@topgrid/grid-core';
 
 // C-3 예외: mock rows — Storybook stories 허용 범위
 interface SalesRow {
@@ -232,6 +233,53 @@ export const GroupSelectionOff: StoryObj<typeof AggregationGrid<SelRow>> = {
     showFooter: false,
     expanded: true,
   },
+};
+
+// ─── MOD-GRID-60: row-group state save/restore (useViewStatePersistence) ─────
+// ★non-vacuous: grouping is persisted to storage; after a REMOUNT (key bump = fresh component that
+// re-reads storage in its useState initializer) the grouping is restored — without persistence the
+// remount would reset to []. Buttons drive the persisted setter directly (no flaky drag).
+function PersistedAggGrid(): JSX.Element {
+  const [grouping, setGrouping] = useViewStatePersistence<string[]>({
+    storageKey: 'mod60-agg-grouping',
+    initial: [],
+  });
+  return (
+    <div>
+      <button type="button" data-testid="group-dept" onClick={() => setGrouping(['dept'])}>
+        group by dept
+      </button>
+      <div data-testid="grouping-state">{grouping.join(',')}</div>
+      <AggregationGrid<SalesRow>
+        data={mockSalesData}
+        columns={aggColumns}
+        enableAggregation
+        grouping={grouping}
+        onGroupingChange={setGrouping}
+        expanded
+      />
+    </div>
+  );
+}
+
+function GroupingPersistDemo(): JSX.Element {
+  const [k, setK] = useState(0);
+  return (
+    <div>
+      <button type="button" data-testid="remount" onClick={() => setK((n) => n + 1)}>
+        remount
+      </button>
+      <PersistedAggGrid key={k} />
+    </div>
+  );
+}
+
+export const GroupingPersist: StoryObj = {
+  name: '행 그룹 상태 저장/복원',
+  beforeEach: () => {
+    setLicenseState(validLicense);
+  },
+  render: () => <GroupingPersistDemo />,
 };
 
 // ─── GroupPanel ─────────────────────────────────────────────────────────

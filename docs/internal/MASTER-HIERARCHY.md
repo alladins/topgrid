@@ -1005,6 +1005,17 @@
 
 > dev-harness 수확: **Enterprise backlog 7번째(advisor Tier 3)**. ★verify-first: filters 패널 0(genuine 부재; ToolPanel=컬럼, MultiFilter=개별 컬럼). 증분=통합 필터 surface(ToolPanel callback-only 철학 재사용, SideBar host=MOD-58 합성). node 신규 0(패널 UI=브라우저, fabricate 금지=LESS-006). chromium 발산=입력→값 반영+활성 카운트 집계(다중 컬럼 동시)+clear-all. 기존 패널/필터 무수정. **Misc UX 6/4/4→7/4/3**, COMMERCIAL-GAP ❌22→21·✅235→236·🟡70(reconcile 19/19·330·0 mismatch). full-suite 104/104 green(retries; 96 passed+8 flaky+0 failed). 신규 lesson 없음.
 
+### `mod-grid-60` — 뷰 상태 저장/복원 (view-state save: row-group + pivot, **MIT**, grid-core) ✅ 채움 — {G-1} 완주 (Enterprise backlog 8번째)
+
+소스: `packages/grid-core/src/internal/{viewStateEnvelope.ts, viewStateEnvelope.test.ts}`(node) + `useViewStatePersistence.ts` + `index.ts` export, stories `grid-pro-agg/stories/Aggregation.stories.tsx`(GroupingPersist) + `grid-pro-pivot/stories/PivotInteraction.stories.tsx`(PivotConfigPersist), spec `.claude/dev-harness/specs/MOD-GRID-60.md`. dev-harness 43번째. **Enterprise ❌ backlog 8번째**(advisor Tier 1 node-pure). 갭분석 State theming ❌ **2건** 닫기(row-group + pivot state save).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 순수 엔벨로프(G-1) | `serializeViewState<T>(value,version)→string` / `deserializeViewState<T>(raw,version)→T\|null` | **종결형**(순수) | versioned {v,p} 엔벨로프. version mismatch/parse 실패/wrong shape→null(stale 폐기). serializeState {v,p} 동형 | node **11/0**: round-trip(grouping/pivot config)·version mismatch·parse 실패·wrong shape·empty·version 0 | 채움 |
+| persist 훅+배선(G-1) | `useViewStatePersistence<T>({storageKey,initial,version?,storageType?})→[value,setValue]` | **배선형** | useExpandedPersistence 선례(독립 훅, useGridState 무수정). getStorage/readRaw/writeRaw + 엔벨로프. 소비자가 grouping(agg)/config(pivot) 영속 배선 | chromium 2/2: ★grouping/pivot config 적용→remount(fresh 컴포넌트 storage 재read)→복원 | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 8번째(advisor Tier 1=node-pure anchor)**. ★advisor 사전 reconcile: useExpandedPersistence(grid-pro-master)가 per-package persist 선례=straddle 아님(독립 훅, grid-core 엔벨로프 재사용). **node-pure 엔벨로프=correctness anchor**(versioned round-trip/version mismatch/parse 실패→null, node 11/0), 훅 wiring+remount 복원=chromium(LESS-006 split). generic `useViewStatePersistence<T>`(MIT, grid-core)로 grouping(agg)·pivot config(pivot) **둘 다** 영속=2 ❌ 닫음. 소비자 opt-in(callback-only, grid 상태 미주입). remount=fresh 컴포넌트 useState 초기화가 storage 재read=복원 증명(persistence 없으면 initial 리셋=발산). ★grid-pro-agg 에 grid-core devDep 추가(스토리 import). **State theming 10/4/3→12/4/1**, COMMERCIAL-GAP ❌21→19·✅236→238·🟡70(reconcile 19/19·330·0 mismatch). full-suite 106/106 green(retries; 95+11 flaky+0 failed). 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1371,6 +1382,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-60 grid-core 뷰 상태 저장/복원 (Enterprise backlog 8, MIT)** — ✅ **구현됨 → §3 `mod-grid-60` 참조** (dev-harness 43번째). spec=`specs/MOD-GRID-60.md`
+- Goal: row-group state save/restore + pivot state save/restore (2 ❌) — AG 그룹/피벗 상태 영속 대응. generic 영속 훅 + 순수 versioned 엔벨로프.
+- In: 순수 `serializeViewState`/`deserializeViewState`(versioned, node 11/0) + `useViewStatePersistence<T>` 훅(grid-core MIT) + 소비자 배선 스토리(agg grouping·pivot config). useGridState/기존 무수정.
+- Out: 자동 grid 배선(callback-only)·8-key useStoragePersist 통합(별개). AC: 엔벨로프 round-trip/version/parse(node)·grouping/config remount→복원(chromium). ★설계(advisor): node-pure anchor+훅 wiring; useExpandedPersistence 선례(straddle 아님). tier MIT.
 
 **MOD-GRID-59 grid-pro-panel 필터 도구 패널 (Enterprise backlog 7, Pro)** — ✅ **구현됨 → §3 `mod-grid-59` 참조** (dev-harness 42번째). spec=`specs/MOD-GRID-59.md`
 - Goal: filters tool panel — AG filters tool panel 대응. 통합 컬럼 필터 surface. callback-only.

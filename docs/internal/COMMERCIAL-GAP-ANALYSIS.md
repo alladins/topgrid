@@ -86,6 +86,10 @@
 > grid-pro-panel `FiltersToolPanel({columns,onFilterChange,onClearAll?})` 통합 컬럼 필터 surface(활성 카운트 집계, callback-only=ToolPanel 철학, SideBar host) →
 > **❌21 / ✅236 / 🟡70**(Misc UX 카테고리 6/4/4 → **7/4/3**, 합 330 불변, reconcile 19/19). chromium 1/1(★컬럼 입력→값 반영+활성 표시+카운트·다중 컬럼 동시·clear-all 리셋·SideBar 합성)
 > + full-suite 104/104 green(retries). node 0(패널 UI=브라우저, 정직).
+> ★ **MOD-60 델타(2026-06-07, Enterprise backlog 8번째 — advisor Tier 1 node-pure)**: `Row-group state save/restore` + `Pivot state save/restore` ❌→✅ (2건) —
+> grid-core 순수 `serializeViewState`/`deserializeViewState`(versioned {v,p} 엔벨로프, version mismatch/parse 실패→null, **node 11/0**) + generic `useViewStatePersistence<T>`(useExpandedPersistence 선례) →
+> **❌19 / ✅238 / 🟡70**(State theming 카테고리 10/4/3 → **12/4/1**, 합 330 불변, reconcile 19/19). chromium 2/2(★grouping/pivot config 적용→remount(fresh 컴포넌트 storage 재read)→복원; persistence 없으면 리셋)
+> + full-suite 106/106 green(retries). ★node-pure 엔벨로프=correctness anchor(round-trip/버전/parse), 훅 wiring+remount 복원=chromium. 소비자가 grouping/config 영속 배선(callback-only).
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -116,9 +120,9 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌21, MOD-59 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌19, MOD-60 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 13 + 기타 0 = **21**, reconcile 통과; ★MOD-59 Filters tool panel ❌→✅(Enterprise 14→13, Misc UX 4→3); ★MOD-58 Side bar ❌→✅(Enterprise 15→14, Misc UX 5→4); ★MOD-57 Auto group column ❌→✅(Enterprise 16→15, Master/Detail&Tree 2→1); ★MOD-56 Group selection ❌→✅(Enterprise 17→16, Selection 0 ❌); ★MOD-55 Select-all-pages ❌→✅(Enterprise 18→17, Selection 2→1); MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 11 + 기타 0 = **19**, reconcile 통과; ★MOD-60 Row-group/Pivot state save ❌→✅ 2건(Enterprise 13→11, State theming 3→1); ★MOD-59 Filters tool panel ❌→✅(Enterprise 14→13, Misc UX 4→3); ★MOD-58 Side bar ❌→✅(Enterprise 15→14, Misc UX 5→4); ★MOD-57 Auto group column ❌→✅(Enterprise 16→15, Master/Detail&Tree 2→1); ★MOD-56 Group selection ❌→✅(Enterprise 17→16, Selection 0 ❌); ★MOD-55 Select-all-pages ❌→✅(Enterprise 18→17, Selection 2→1); MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌26(MOD-54 반영) 기준으로 정정.
 
 - **Community 8 (table-stakes)**: ① 자율 빌드 아님(제품 결정 → **advisor 위임**, 2026-06-07)=RTL(**의도적 연기**: invasive·한국우선 저가치)
@@ -127,8 +131,8 @@
   ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 13 (deep — 다수 vN 보류)**: sticky group
-  headers · **pivot 2**(panel/server-side; ★MOD-44·53·54 닫힘) · (★MOD-55~59 select-all-pages·group selection·auto group column·side bar·filters tool panel ❌→✅ 닫힘) ·
+- **Enterprise 11 (deep — 다수 vN 보류)**: sticky group
+  headers/rows · **pivot 2**(panel/server-side; ★MOD-44·53·54 닫힘) · (★MOD-55~60 select-all-pages·group selection·auto group column·side bar·filters tool panel·row-group/pivot state save ❌→✅ 닫힘) ·
   viewport row model · auto group col(★MOD-48: tree getDataPath ❌→🟡) · master-detail+virtualization · Excel cell styles ·
   **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
   panel drag · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
@@ -171,7 +175,7 @@
 | Export, clipboard & print | 15 | 13 | 1 | 1 |
 | Integrated charts & sparklines | 17 | 10 | 4 | 1 |
 | Accessibility & keyboard | 18 | 13 | 5 | 0 |
-| State, theming & i18n | 17 | 10 | 4 | 3 |
+| State, theming & i18n | 17 | 12 | 4 | 1 |
 | Spreadsheet (Wijmo FlexSheet focus) | 23 | 14 | 6 | 3 |
 | Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 7 | 4 | 3 |
 | **합계** | **330** | **227** | **70** | **30** |
@@ -543,8 +547,8 @@
 | Sort state save/restore | Community | FlexGrid | ✅ 구현 | `grid-core useGridState 'sorting' (SortingState); serializeState.ts case 'sorting'` — VERIFIED. TanStack SortingState passed through unwrapped; sorting is in the 8-key model and serializeState isDefaultState. |
 | Filter model save/restore | Community | FlexGrid | ✅ 구현 | `grid-core useGridState 'columnFilters' (ColumnFiltersState); serializeState.ts case 'columnFilters'` — VERIFIED. Filter state persisted as TanStack ColumnFiltersState (useGridState L158, serializeState isDefaultState handles columnFilters). (AG Grid's advanced filter model is Enterprise, but basic filter-model save is Community.) |
 | Selection & pagination state save/restore | Community | — | ✅ 구현 | `grid-core useGridState 'rowSelection'/'pagination'; serializeState.ts cases; clearSelectionKey trigger` — VERIFIED. rowSelection and pagination are part of the 8-key persisted model; clearSelectionKey useEffect (useGridState L255-266) auto-resets rowSelection on external trigger. |
-| Row-group state save/restore | Enterprise | — | ❌ 미구현 | GridStateKey union (types.ts L902-910) has no grouping/expanded/pivot key. Row grouping itself is not modeled as persistable state. AG Grid row grouping is Enterprise. |
-| Pivot state save/restore | Enterprise | — | ❌ 미구현 | grid-pro-pivot builds pivot columns but pivot config is not part of useGridState's 8 persisted keys; no pivot-state serialization. AG Grid pivot is Enterprise. |
+| Row-group state save/restore | Enterprise | — | ✅ 구현(MOD-60 G-1) | `grid-core useViewStatePersistence<T>({storageKey,initial,version}) + pure serializeViewState/deserializeViewState (versioned {v,p} envelope, node 11/0); 소비자가 grouping 을 영속 (<AggregationGrid grouping onGroupingChange>)` — chromium 1/1: ★grouping 적용→remount(fresh 컴포넌트 storage 재read)→복원(persistence 없으면 []로 리셋). 버전 불일치/parse 실패→initial fallback. AG row grouping 영속 대응. |
+| Pivot state save/restore | Enterprise | — | ✅ 구현(MOD-60 G-1) | `grid-core useViewStatePersistence + serializeViewState envelope; 소비자가 PivotConfig 를 영속 (<PivotGrid config enableConfigControls onConfigChange>)` — chromium 1/1: ★transpose→config 변경 영속→remount→복원(transposed rows 유지). node 11/0(envelope round-trip/version/parse). AG pivot 영속 대응. |
 | localStorage/sessionStorage persistence with versioned envelope + corruption guard | — | — | ✅ 구현 | `grid-core useStoragePersist (storageKey/version/storage local\|session, debounceMs 300); {v,p} envelope; version-mismatch/parse-fail -> removeItem; QuotaExceededError skip+warn; SSR guard` — VERIFIED. useStoragePersist.ts builds {v,p} envelope, removeKey on JSON.parse fail / shape mismatch / version mismatch; storageAdapter writeRaw swallows QuotaExceededError with console.warn label; getStorage returns null on SSR/unavailable. Neither AG Grid nor Wijmo ship a built-in storage-persistence helper, so topgrid exceeds them here. |
 | URL query-param state sync (shareable/bookmarkable grid state) | — | — | ✅ 구현 | `grid-core useUrlSync (history.replaceState, keys default 8, prefix, debounceMs); serializeGridState/deserializeGridState round-trip; isDefaultState removes default keys from URL` — VERIFIED. useUrlSync.ts uses window.history.replaceState (router-agnostic), defaults to ALL 8 keys, supports prefix/debounceMs, hydrates on mount; serializeGridState preserves foreign query params (new URLSearchParams(existing)) and isDefaultState drops default-value keys. No equivalent built-in in AG Grid or Wijmo. |
 | Prebuilt themes (e.g. quartz/alpine/balham) | Community | FlexGrid | 🟡 부분(MOD-29 G-2 부분: dark 프리셋 1종(명명 번들 아님)) | VERIFIED MISSING. No CSS files ship in src of any package (glob packages/**/src/**/*.css = none). Styling is Tailwind utility classNames embedded in components; no theme bundle. Consumer gets zero prebuilt themes. |
@@ -687,8 +691,8 @@
 | Chart toolbar / interactive chart-type switcher | Integrated charts & sparklines | Enterprise | ✅ 구현(MOD-34 G-3 ChartCard) | Verified: grep for toolbar/chartType/legend/axis in grid-pro-chart returns 0; no UI to change chart type at runtime. |
 | Chart panel/composition (dock, range adjust handles, settings panel) | Integrated charts & sparklines | Enterprise | ❌ 미구현 | Verified: RangeChartPanel is a single inline div with relative root for watermark; no docking, range editing, or settings panel in source. |
 | Cross-filtering charts (chart filters grid / linked selection) | Integrated charts & sparklines | Enterprise | 🟡 부분(MOD-47) | `grid-pro-filter selectionsToFilter` 선택→필터 매핑(같은필드 OR·다른필드 AND, type=컬럼메타, MOD-46 식 재사용) ship + node. 차트 클릭→setFilter wiring 부재 → 🟡(browser). |
-| Row-group state save/restore | State, theming & i18n | Enterprise | ❌ 미구현 | GridStateKey union (types.ts L902-910) has no grouping/expanded/pivot key. Row grouping itself is not modeled as persistable state. AG Grid row grouping is Enterprise. |
-| Pivot state save/restore | State, theming & i18n | Enterprise | ❌ 미구현 | grid-pro-pivot builds pivot columns but pivot config is not part of useGridState's 8 persisted keys; no pivot-state serialization. AG Grid pivot is Enterprise. |
+| Row-group state save/restore | State, theming & i18n | Enterprise | ✅ 구현(MOD-60) | grid-core useViewStatePersistence + 순수 serializeViewState 엔벨로프(node 11/0). 소비자가 grouping 영속. chromium 1/1(grouping→remount→복원). AG 대응. |
+| Pivot state save/restore | State, theming & i18n | Enterprise | ✅ 구현(MOD-60) | grid-core useViewStatePersistence. 소비자가 PivotConfig 영속. chromium 1/1(transpose→remount→복원). AG 대응. |
 | Excel import/export of the spreadsheet (.xlsx with formulas) | Spreadsheet (Wijmo FlexSheet focus) | Enterprise | ❌ 미구현 | Verified. FlexSheet has native load/save of .xlsx preserving formulas/formats. AG Grid Excel export is Enterprise (values, not a formula sheet). grid-export cannot serialize the sheet engine. |
 | Undo / redo of cell edits | Spreadsheet (Wijmo FlexSheet focus) | Enterprise | ✅ 구현(MOD-32 G-3) | Verified. FlexSheet has undo/redo. AG Grid undo/redo (cell edits) is Enterprise. topgrid grid-pro-edit-plus has an undo/redo command stack for data grids (MASTER-HIERARCHY mod-grid-23 G-2) but it is not wired to the sheet engine. |
 | Status bar built-in components (agg/selected/total/filtered count) | Misc UX (status bar, panels, context menu, overlays, row drag) | Enterprise | ✅ 구현(MOD-33 G-1) | Verified absent: no agAggregation/SelectedRowCount-equivalent built-ins; caller computes values. |

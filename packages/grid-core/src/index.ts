@@ -36,6 +36,12 @@ export { isBlank, blankToUndefined } from './internal/sortNulls';
 export { useGridState } from './useGridState'; // ★ MOD-GRID-02 G-001
 export { useUrlSync } from './useUrlSync'; // ★ MOD-GRID-02 G-005
 export { useStoragePersist } from './useStoragePersist'; // ★ MOD-GRID-02 G-006
+// MOD-GRID-60: generic view-state persistence (row grouping / pivot config / …) + pure envelope.
+export {
+  useViewStatePersistence,
+  type UseViewStatePersistenceOptions,
+} from './useViewStatePersistence';
+export { serializeViewState, deserializeViewState } from './internal/viewStateEnvelope';
 export type {
   GridProps,
   GridRowSelectionOptions,
