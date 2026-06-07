@@ -1834,6 +1834,37 @@
       "closure": "★Tool panel reorder via drag=✅: 순수 reorderColumnOrder(grid-core 추출=header-drag↔tool-panel-drag 단일 의미론, node 10/0)+ToolPanel onColumnDrop(stateless). ★advisor 재조정: 증거(Grid columnOrder uncontrolled·GridHandle setColumnOrder 없음·갭=ToolPanel-scoped)가 1차 가정(grid-header 배선) 번복→core surgery 회피(post-sort defer 류), ToolPanel stateless 로 비공허(MOD-64 trap 회피). useColumnDrag 이미 ref-first(LESS-009)→리팩터 안전+헤더-drag chromium 신규로 사전-부재 커버리지 폐쇄. Out: pinned-column drop(ToolPanelColumn isPinned 없음)·up/down 버튼(delta) 공존.",
       "module_summary": "Enterprise backlog 12번째(DnD 클러스터 2, advisor). grid-core 순수 reorderColumnOrder(useColumnDrag inline math 추출=공유, node 10/0)+ToolPanel onColumnDrop(stateless DnD, ref-keyed). ★advisor: grid-header 배선=core surgery 금지(uncontrolled columnOrder), ToolPanel-scoped 비공허. Out: pinned·버튼공존. 111/111 green. LESS-009 N=3.",
       "version_note": "grid-core 차기 batch minor(reorderColumnOrder export)·grid-pro-panel minor(ToolPanel onColumnDrop + grid-core devDep), 미발행."
+    },
+    "MOD-GRID-66": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(G-1 순수 transferRow + G-2 grid-core opt-in 배선)",
+      "priority": "Enterprise ❌ backlog 13번째(advisor, DnD 클러스터 3번째[마지막])",
+      "phase": "done (G-1/G-2 완주 → §3, ✅)",
+      "spec": "specs/MOD-GRID-66.md (rubric 76/80, gate-B 선작성)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "drag-between-grids/row transfer — grid-core 순수 transferRow + opt-in onRowDragStart(소스)/onRowDrop(타깃). consumer-owns-payload(dataTransfer 미사용). enableRowReorder 무수정 별 opt-in, OFF byte-identical.",
+      "g1": {
+        "surface": "transferRow<T>(source,target,rowId,getId)→{source:T[],target:T[]} (source 서 rowId 행 제거→target 끝 추가; 부재=same refs; 원본 불변). moveRow(MOD-33) 형의 자매.",
+        "verified_node": "12/0(transferRow.test.ts): 이전(source 제거+target 끝)·first/last·moved 데이터 보존·no-op(부재) source/target same ref·원본 불변·real=new arrays·empty target."
+      },
+      "g2": {
+        "surface": "GridProps onRowDragStart?(rowId)(제공 시 행 draggable+dragstart emit row.id, consumer-owns-payload)·onRowDrop?()(제공 시 scroll container=drop target). Grid.tsx rowDragOutProps/rowDropTargetProps additive. enableRowReorder 와 별 opt-in(혼용 금지=vN). OFF byte-identical.",
+        "verified_chromium": "1/1(drag-between-grids.spec.ts) ★end-to-end: 스토리서 그리드 A·B 가 dragged id state 공유(두 그리드 위)→A 행 dragstart→B drop→소비자 transferRow→행이 A서 사라지고 B에 출현(getRowId 안정 id, dispatchEvent 구동). 소스 행 draggable=true 확인."
+      },
+      "verification": "node 12/0·typecheck 0·build green·chromium 1/1 + full-suite 112/112 green(무-flake). enableRowReorder/rowDragProps 무수정. OFF byte-identical(콜백 미제공=무 props).",
+      "done_gate": {
+        "lesson": "신규 lesson 없음 — LESS-009 N=4(consumer-owns-payload 로 일반화: dataTransfer cross-event 회피, DnD 클러스터 표준).",
+        "matrix_row": "§3 mod-grid-66 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Drag between grids ❌→✅(Misc UX 8/4/2→9/4/1) reconcile 19/19(242/71/14·330·0 mismatch·Community 6→5)"
+      },
+      "rubric_specify": "76/80",
+      "closure": "★Drag between grids=✅: 순수 transferRow(node 12/0)+grid-core opt-in(onRowDragStart/onRowDrop), end-to-end(행 A→B 이전) 입증. ★advisor build-vs-defer(Grid.tsx read): 외부 drop=additive opt-in(OFF byte-identical, 기존 row render/enableRowReorder 무수정)=build(post-sort hot-path 얽힘과 구별, 계약-침습 아님). ★LESS-009 일반화 N=4=consumer-owns-payload(드래그 id 두 그리드 위 state, dataTransfer 미사용→bare dispatchEvent 신뢰, MOD-61 territory 회피). Out: 동일 그리드 reorder 혼용(disambiguation)·target index·가상화 소스=vN. DnD 클러스터 완결(64·65·66).",
+      "module_summary": "Enterprise backlog 13번째(DnD 클러스터 3=마지막, advisor). grid-core 순수 transferRow(node 12/0)+opt-in onRowDragStart/onRowDrop(additive, OFF byte-identical). ★consumer-owns-payload(LESS-009 N=4)·build-vs-defer=Grid.tsx read. Out: reorder 혼용·target index·virt 소스. 112/112 green.",
+      "version_note": "grid-core 차기 batch minor(transferRow export + onRowDragStart/onRowDrop props), 미발행."
     }
   },
   "release_queue": {

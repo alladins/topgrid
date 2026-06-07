@@ -749,6 +749,20 @@ export interface GridProps<TData> {
   /** 행 재정렬 드롭 콜백(MOD-GRID-33 G-3) — 표시 인덱스 `from`→`to`. 소비자가 `moveRow` 로 data 적용. */
   onRowReorder?: (from: number, to: number) => void;
 
+  /**
+   * 그리드 간 행 드래그 — 드래그 소스(MOD-GRID-66, default 없음=비활성). 제공 시 데이터 행이 draggable
+   * 이 되어 dragstart 시 `onRowDragStart(rowId)` 호출(`rowId` = TanStack `row.id`). 소비자가 드래그된 행
+   * id 를 **두 그리드 위 state 로 들어올려** 보관한다(consumer-owns-payload, dataTransfer 미사용). 대상
+   * 그리드의 `onRowDrop` 과 짝. enableRowReorder 와 **별 opt-in**(같은 그리드서 혼용 금지=vN). OFF 시 byte-identical.
+   */
+  onRowDragStart?: (rowId: string) => void;
+  /**
+   * 그리드 간 행 드래그 — 드롭 타깃(MOD-GRID-66, default 없음=비활성). 제공 시 그리드 본문 영역이 drop
+   * target 이 되어(드롭 시) `onRowDrop()` 호출. 소비자가 자기 `dragged` id 를 읽어 순수 `transferRow` 로
+   * 소스→타깃 data 를 적용한다. OFF 시 byte-identical.
+   */
+  onRowDrop?: () => void;
+
   // ─── G-003 신규: 빈 상태 slot (D6/D7) ───
   /**
    * 빈 결과 상태 ReactNode slot.

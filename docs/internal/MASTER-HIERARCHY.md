@@ -1066,6 +1066,19 @@
 
 ---
 
+### `mod-grid-66` — 그리드 간 행 드래그 (drag-between-grids / row transfer, grid-core) ✅ — {G-1, G-2} 완주 (Enterprise backlog 13번째 — DnD 클러스터 3번째[마지막])
+
+소스: grid-core `src/internal/{transferRow.ts, transferRow.test.ts}`(node) + `types.ts`(onRowDragStart/onRowDrop props) + `Grid.tsx`(rowDragOutProps/rowDropTargetProps additive) + `index.ts` export, story `stories/Grid.drag-between-grids.stories.tsx`(2 그리드 공유 state), test `tests/visual/drag-between-grids.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-66.md`. dev-harness 48번째. **Enterprise ❌ backlog 13번째**(advisor, DnD 클러스터 마지막). 갭분석 Misc UX(Community) ❌ 1(Drag between grids) → ✅.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 순수 transferRow(G-1) | `transferRow<T>(source,target,rowId,getId)→{source,target}` (소스서 제거→타깃 끝, no-op=same ref) | **종결형**(순수 map) | moveRow(MOD-33) 형의 자매. 소비자가 onRowDrop 서 적용 | node **12/0**: 이전·first/last·no-op(부재) same ref·불변·new arrays·empty target | 채움 |
+| Grid opt-in 배선(G-2) | GridProps `onRowDragStart?(rowId)`(소스 draggable)·`onRowDrop?()`(타깃 본문 drop) | **배선형** | additive opt-in(OFF byte-identical), enableRowReorder 무수정 별 opt-in. consumer-owns-payload(dataTransfer 미사용) | chromium 1/1 ★end-to-end: 드래그 id 두 그리드 위 state→A dragstart→B drop→행 A→B 이전 | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 13번째 = DnD 클러스터 3번째[마지막](advisor)**. ★**build-vs-defer 게이트=Grid.tsx read**(advisor): 외부 drop-target 을 신규 opt-in 으로 OFF byte-identical·기존 row render/enableRowReorder 무수정 추가 **가능**→build(post-sort 의 hot-path 전반 얽힘과 **구별**, 계약-침습 아님; enableRowReorder 동형). ★**LESS-009 일반화(N=4): consumer-owns-payload** — 교차-그리드 payload 를 dataTransfer 로 운반(합성 cross-event=MOD-61 territory) 대신 **두 그리드 위 소비자 state 로 들어올림**→핸들러 dataTransfer 미의존→bare dispatchEvent 신뢰. ★발산=행이 A서 사라지고 B에 출현(end-to-end). **Out 명시**: 동일 그리드 reorder+외부drop 혼용(disambiguation)·target index 지정·가상화 소스=vN. **Misc UX 8/4/2→9/4/1**(❌→✅), COMMERCIAL-GAP ❌15→14·✅241→242·🟡71(reconcile 19/19·330·0 mismatch, Community 6→5). full-suite 112/112 green. 신규 lesson 없음(LESS-009 N=4).
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
@@ -1430,6 +1443,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-66 grid-core 그리드 간 행 드래그 (Enterprise backlog 13 — DnD 클러스터 3[마지막], MIT)** — ✅ **구현됨 → §3 `mod-grid-66` 참조** (dev-harness 48번째). spec=`specs/MOD-GRID-66.md`
+- Goal: drag-between-grids/row transfer — AG row drag managed+외부 drop 대응. 순수 transferRow + grid-core opt-in(onRowDragStart/onRowDrop).
+- In: grid-core 순수 `transferRow(node 12/0)`+export + GridProps onRowDragStart/onRowDrop + Grid.tsx additive 배선(OFF byte-identical) + 2-그리드 story+test.
+- Out: 동일 그리드 reorder+외부drop 혼용(disambiguation)=vN · target index 지정=vN · 가상화 소스=vN. AC: transferRow 이전+no-op(node)·★A→B 행 이전(chromium end-to-end)+OFF byte-identical. tier MIT. ★consumer-owns-payload(LESS-009 N=4)·build-vs-defer=Grid.tsx read.
 
 **MOD-GRID-65 grid-pro-panel+grid-core 도구 패널 드래그 재정렬 (Enterprise backlog 12 — DnD 클러스터 2, Pro)** — ✅ **구현됨 → §3 `mod-grid-65` 참조** (dev-harness 47번째). spec=`specs/MOD-GRID-65.md`
 - Goal: tool panel reorder via drag(Misc UX) — AG columns tool panel drag 대응. 순수 reorderColumnOrder(grid-core 추출=공유) + ToolPanel onColumnDrop DnD.

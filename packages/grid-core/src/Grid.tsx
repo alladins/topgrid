@@ -634,6 +634,7 @@ function GridInner<TData>(
         {...dataRowAttrs(dataRowAriaIndex(headerRowCount, rowPos), ariaSelectable, row.getIsSelected())}
         data-index={row.index}
         {...(sticky ? { 'data-pinned-row': sticky } : rowDragProps(rowPos, row.index))}
+        {...(sticky ? {} : rowDragOutProps(row.id))}
         style={{
           ...(row.getIsSelected() ? selectionOutlineStyle : {}),
           ...(sticky ? {} : rowDropStyle(rowPos, row.index)),
@@ -900,6 +901,26 @@ function GridInner<TData>(
       ? { boxShadow: 'inset 0 2px 0 0 #2563eb' }
       : {};
 
+  // MOD-GRID-66: 그리드 간 행 드래그(drag-between-grids). enableRowReorder 와 별 opt-in.
+  // 드래그 소스 = onRowDragStart 제공 시 행 draggable + dragstart 시 row.id emit(consumer-owns-payload,
+  // dataTransfer 미사용 → 합성 dispatchEvent 신뢰, LESS-009). 미제공 시 {} = byte-identical.
+  const rowDragOutActive = props.onRowDragStart !== undefined && !rowReorderActive;
+  const rowDragOutProps = (rowId: string): Record<string, unknown> =>
+    rowDragOutActive
+      ? { draggable: true, onDragStart: () => props.onRowDragStart?.(rowId) }
+      : {};
+  // 드롭 타깃 = onRowDrop 제공 시 본문 영역(scroll container)이 drop 수락. 미제공 시 {} = byte-identical.
+  const rowDropTargetProps: Record<string, unknown> =
+    props.onRowDrop !== undefined
+      ? {
+          onDragOver: (e: ReactDragEvent<HTMLDivElement>) => e.preventDefault(),
+          onDrop: (e: ReactDragEvent<HTMLDivElement>) => {
+            e.preventDefault();
+            props.onRowDrop?.();
+          },
+        }
+      : {};
+
   return (
     <div
       className={`flex flex-col ${props.className ?? ''}`}
@@ -927,6 +948,8 @@ function GridInner<TData>(
         // MOD-GRID-33 G-2: 오버레이 활성 시 inline position:relative(storybook Tailwind-less 서 'relative'
         // 클래스 inert → 오버레이 absolute 가 컨테이너에 앵커되려면 inline 필수, P27-1).
         style={props.loadingOverlay === true ? { ...containerStyle, position: 'relative' } : containerStyle}
+        // MOD-GRID-66: 그리드 간 행 드래그 드롭 타깃(onRowDrop 제공 시만; 미제공=무 props=byte-identical).
+        {...rowDropTargetProps}
       >
         {/* Commit C: 컬럼 가상화 시 table-layout:fixed + 전체 컬럼 폭 → 컬럼이 getSize 너비를
             유지하고 pad 가 실제 스크롤 폭을 만든다. (가로 스크롤 컨테이너 자체는 기존

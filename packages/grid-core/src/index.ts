@@ -13,6 +13,8 @@ export { themeToVars, darkTheme } from './internal/theme';
 export type { GridTheme } from './internal/theme';
 // MOD-GRID-33 G-3 row reorder — pure array move; consumer applies it in onRowReorder.
 export { moveRow } from './internal/moveRow';
+// MOD-GRID-66: 그리드 간 행 이전(drag-between-grids) 순수 — 소비자가 onRowDrop 에서 적용.
+export { transferRow } from './internal/transferRow';
 // MOD-GRID-43: 증분 행 트랜잭션(순수 helper, controlled-data — 소비자가 자기 state 에 적용).
 export { applyRowTransaction, createTransactionBatcher } from './internal/transaction';
 export type {
