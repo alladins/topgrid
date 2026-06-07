@@ -96,6 +96,9 @@ export type { ColumnInfo } from './legacy/ColumnInfo';
 export { createGroupedColumns } from './column/createGroupedColumns';
 /** @deprecated No production users. Will be removed in next major together with `createGroupedColumns`. (ADR-013) */
 export type { TopgridColumnGroup } from './column/createGroupedColumns';
+// MOD-GRID-57: auto group column factory (indent + expand toggle + node value) for tree/grouped data.
+export { createAutoGroupColumn } from './column/createAutoGroupColumn';
+export type { AutoGroupColumnOptions } from './column/createAutoGroupColumn';
 // MOD-GRID-04: Column Factory (G-003 — 컬럼 가시성 + 순서 영속화)
 /** @deprecated No production users outside grid-core. Superseded by ADR-007 storage adapter. Removed in next major. (ADR-013) */
 export { useColumnPersistence } from './column/useColumnPersistence';

@@ -975,6 +975,16 @@
 
 > dev-harness 수확: **Enterprise backlog 4번째(advisor Tier 1)**. ★verify-first: AggregationGrid=selection 인프라 0(genuine 부재). ★rollup=TanStack `enableSubRowSelection`(default) 제공 — 그룹 토글=subtree, getIsAllSubRowsSelected/getIsSomeSelected=tri-state. 증분=selection state + __select__ 컬럼(leaf) + GroupRow 그룹 체크박스(colSpan 경로=checkbox td + label colSpan-1, inline-agg 경로=__select__ 위치). node 신규 0(selection rollup=브라우저 상태, fabricate 금지=LESS-006). chromium 발산=하위 전체 선택 카운트+leaf uncheck→그룹 mixed. opt-in byte-identical(enableRowSelection=false=checkbox 0). 기존 GroupRow colSpan/inline-agg(MOD-54)/FooterRow 무수정(체크박스 additive). **Selection 14/2/1→15/2/0(0 ❌)**, COMMERCIAL-GAP ❌25→24·✅232→233·🟡70(reconcile 19/19·330·0 mismatch). chromium 101/101(99+2). 신규 lesson 없음.
 
+### `mod-grid-57` — 자동 그룹 컬럼 (auto group column, **MIT**, grid-core) ✅ 채움 — {G-1} 완주 (Enterprise backlog 5번째)
+
+소스: `packages/grid-core/src/column/createAutoGroupColumn.tsx` + `index.ts` export, story `stories/Grid.auto-group-column.stories.tsx`, spec `.claude/dev-harness/specs/MOD-GRID-57.md`. dev-harness 40번째. **Enterprise ❌ backlog 5번째**(advisor Tier 2 verify-first). 갭분석 Master/Detail & Tree ❌ 1 닫기.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| auto group column(G-1) | `createAutoGroupColumn<TData>({header,getValue,indentUnit,size})→ColumnDef` | **배선형** | cell=row.depth*indentUnit 들여쓰기 + getCanExpand chevron(toggleExpanded) + getValue 노드값. Grid getSubRows+enableExpanding 좌측 prepend. createCheckboxColumn 팩토리 패턴 | chromium 1/1: ★초기 collapsed(자식 부재)→root expand 토글→자식 출현(deeper indent)·leaf 토글 없음. node 0(렌더 팩토리=브라우저) | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 5번째(advisor Tier 2 verify-first)**. ★grep: grid-core auto group column 0(expand state 존재하나 indent/toggle 렌더는 소비자 cell 몫=genuine 부재). 증분=단일 컬럼 팩토리(createCheckboxColumn 패턴 재사용; row.depth/getCanExpand/toggleExpanded=TanStack). node 신규 0(렌더=브라우저, fabricate 금지=LESS-006). chromium 발산=collapsed→expand 자식 출현+depth 들여쓰기 발산+leaf 토글 없음. 소비자 opt-in(컬럼 prepend), 기존 Grid expand 무수정. **MOD-48 getDataPath 데이터모델의 렌더 절반**(getDataPath 🟡 유지=소비자 getSubRows 배선; line 250/723 "auto group col w/ chevron"=grid-pro-agg GroupRow 별개 🟡 유지). **Master/Detail & Tree 8/6/2→9/6/1**, COMMERCIAL-GAP ❌24→23·✅233→234·🟡70(reconcile 19/19·330·0 mismatch). chromium 102/102(101+1). 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1341,6 +1351,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-57 grid-core 자동 그룹 컬럼 (Enterprise backlog 5, MIT)** — ✅ **구현됨 → §3 `mod-grid-57` 참조** (dev-harness 40번째). spec=`specs/MOD-GRID-57.md`
+- Goal: auto group column — AG autoGroupColumnDef 대응. createAutoGroupColumn 팩토리(indent+toggle+value).
+- In: `createAutoGroupColumn<TData>({header,getValue,indentUnit,size})` + index export. 기존 Grid expand 무수정. tree=getSubRows+enableExpanding 좌측 prepend.
+- Out: 그룹 집계(grid-pro-agg)·group-by 자동구성·multi-auto-group-col. AC: collapsed→expand 자식 출현·자식 indent>root·leaf 토글 없음(chromium). node 0. tier MIT. MOD-48 getDataPath 렌더 절반.
 
 **MOD-GRID-56 grid-pro-agg 그룹/계층 선택 (Enterprise backlog 4, Pro)** — ✅ **구현됨 → §3 `mod-grid-56` 참조** (dev-harness 39번째). spec=`specs/MOD-GRID-56.md`
 - Goal: group/hierarchy selection — AG groupSelectsChildren 대응. TanStack enableSubRowSelection cascade.

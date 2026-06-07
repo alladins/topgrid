@@ -1606,6 +1606,33 @@
       "closure": "★Group/hierarchy selection=✅(그룹 토글=subtree·leaf rollup=tri-state). ★rollup=TanStack enableSubRowSelection(default) 재사용, 증분=AggregationGrid selection 인프라(기존 0)+GroupRow 그룹 체크박스(양 분기). node 0(브라우저). opt-in byte-identical. ★pre-existing 타이밍 flake 누적 관찰(grid-pagination/row-click/a11y, 재실행 green). advisor.",
       "module_summary": "Enterprise backlog 4번째(advisor Tier 1). TanStack enableSubRowSelection rollup + AggregationGrid selection 인프라 + GroupRow tri-state 체크박스. node 0(브라우저)·chromium 발산. 기존 GroupRow/FooterRow 무수정(101/101). 신규 lesson 없음.",
       "version_note": "grid-pro-agg 0.3.0→차기 batch minor (enableRowSelection 추가, 미발행)."
+    },
+    "MOD-GRID-57": {
+      "package": "grid-core (MIT)",
+      "tier": "MIT",
+      "weight": "Full(1-Goal: auto group column 팩토리)",
+      "priority": "Enterprise ❌ backlog 5번째(advisor Tier 2 verify-first)",
+      "phase": "done (1-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-57.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "auto group column — createAutoGroupColumn 팩토리(indent+expand toggle+value). tree(getSubRows+enableExpanding) 좌측 prepend. 기존 Grid expand 무수정.",
+      "g1": {
+        "surface": "createAutoGroupColumn<TData>({header,getValue,indentUnit,size})→ColumnDef. cell=row.depth*indentUnit + getCanExpand chevron(toggleExpanded) + getValue. index export.",
+        "verified_chromium": "1/1(grid-auto-group-column.spec.ts): 초기 collapsed(자식 부재)→root expand 토글→자식 출현(deeper indent)·leaf 토글 없음.",
+        "verified_node": "신규 0(렌더 팩토리=브라우저, fabricate 금지=LESS-006)."
+      },
+      "verification": "typecheck 0·build green·chromium 1/1 + 전체 회귀 102/102(101+1; full-suite 7 transient flake=서버/부하 hiccup, 28/28 재실행 green=무관). 기존 Grid expand 무수정.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-006; createCheckboxColumn 팩토리 패턴 재사용=문서)",
+        "matrix_row": "§3 mod-grid-57 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Auto group column ❌→✅(Master/Detail&Tree 8/6/2→9/6/1) reconcile 19/19(234/70/23·330·0 mismatch·Enterprise 16→15)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★Auto group column=✅(단일 컬럼 indent+toggle+value 팩토리). ★MOD-48 getDataPath 렌더 절반(getDataPath 🟡 유지=소비자 getSubRows; line 250/723 grid-pro-agg GroupRow 별개 🟡 유지). node 0(렌더=브라우저). createCheckboxColumn 팩토리 패턴+TanStack expand API. ★pre-existing flake full-suite 부하서 7 분산(재실행 green). advisor Tier 2 verify-first.",
+      "module_summary": "Enterprise backlog 5번째(advisor Tier 2 verify-first). createAutoGroupColumn 팩토리. node 0(브라우저)·chromium 발산(collapsed→expand+indent). 기존 Grid expand 무수정(102/102). 신규 lesson 없음.",
+      "version_note": "grid-core 0.4.0→차기 batch minor (createAutoGroupColumn 추가, 미발행)."
     }
   },
   "release_queue": {

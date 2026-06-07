@@ -74,6 +74,10 @@
 > TanStack enableSubRowSelection cascade) → **❌24 / ✅233 / 🟡70**(Selection 카테고리 14/2/1 → **15/2/0**=0 ❌, 합 330 불변, reconcile 19/19).
 > chromium 2/2(★그룹 체크박스→하위 3 leaves 선택(checked)·leaf 1 uncheck→그룹 indeterminate(mixed)·OFF byte-identical) + 회귀 101/101. node 0(rollup=TanStack 브라우저 상태, 정직).
 > ★Selection 0 ❌. AggregationGrid selection 인프라 신규(기존 0).
+> ★ **MOD-57 델타(2026-06-07, Enterprise backlog 5번째 — advisor Tier 2 verify-first)**: `Auto group column` ❌→✅ —
+> grid-core `createAutoGroupColumn<TData>({header,getValue,indentUnit,size})` 팩토리: cell=row.depth 들여쓰기 + getCanExpand chevron(toggleExpanded) + getValue 노드값 →
+> **❌23 / ✅234 / 🟡70**(Master/Detail & Tree 카테고리 8/6/2 → **9/6/1**, 합 330 불변, reconcile 19/19). chromium 1/1(★초기 collapsed→root expand→자식 출현(deeper indent)·leaf 토글 없음)
+> + 회귀 102/102. node 0(렌더 팩토리=브라우저, 정직). ★MOD-48 getDataPath 데이터모델의 렌더 절반(getDataPath 🟡 유지=소비자 getSubRows 배선). (line 250/723 "auto group col w/ chevron"=grid-pro-agg GroupRow 별개 🟡 유지.)
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -104,9 +108,9 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌24, MOD-56 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌23, MOD-57 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 16 + 기타 0 = **24**, reconcile 통과; ★MOD-56 Group selection ❌→✅(Enterprise 17→16, Selection 0 ❌); ★MOD-55 Select-all-pages ❌→✅(Enterprise 18→17, Selection 2→1); MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 15 + 기타 0 = **23**, reconcile 통과; ★MOD-57 Auto group column ❌→✅(Enterprise 16→15, Master/Detail&Tree 2→1); ★MOD-56 Group selection ❌→✅(Enterprise 17→16, Selection 0 ❌); ★MOD-55 Select-all-pages ❌→✅(Enterprise 18→17, Selection 2→1); MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
 > 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌26(MOD-54 반영) 기준으로 정정.
 
 - **Community 8 (table-stakes)**: ① 자율 빌드 아님(제품 결정 → **advisor 위임**, 2026-06-07)=RTL(**의도적 연기**: invasive·한국우선 저가치)
@@ -115,8 +119,8 @@
   ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 16 (deep — 다수 vN 보류)**: sticky group
-  headers · **pivot 2**(panel/server-side; ★MOD-44·53·54 닫힘) · (★MOD-55 select-all-pages·★MOD-56 group selection ❌→✅ 닫힘) ·
+- **Enterprise 15 (deep — 다수 vN 보류)**: sticky group
+  headers · **pivot 2**(panel/server-side; ★MOD-44·53·54 닫힘) · (★MOD-55 select-all-pages·★MOD-56 group selection·★MOD-57 auto group column ❌→✅ 닫힘) ·
   viewport row model · auto group col(★MOD-48: tree getDataPath ❌→🟡) · master-detail+virtualization · Excel cell styles ·
   **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
   panel drag · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
@@ -154,7 +158,7 @@
 | Row models / data | 18 | 14 | 3 | 1 |
 | Pagination | 17 | 12 | 5 | 0 |
 | Virtualization & performance | 20 | 12 | 4 | 3 |
-| Master/Detail & Tree Data | 16 | 8 | 6 | 2 |
+| Master/Detail & Tree Data | 16 | 9 | 6 | 1 |
 | Pinned/floating & full-width rows | 15 | 11 | 3 | 1 |
 | Export, clipboard & print | 15 | 13 | 1 | 1 |
 | Integrated charts & sparklines | 17 | 10 | 4 | 1 |
@@ -425,7 +429,7 @@
 | Detail grids / nested sub-grids (managed) | Enterprise | FlexGrid | 🟡 부분 | `grid-pro-master renderDetailRow can return a <Grid>, but no detailGridOptions API` — Verified: only a single renderDetailRow ReactNode slot exists; no managed detail-grid lifecycle/options API in types.ts or MasterDetailGrid.tsx. |
 | Tree data via parent-child children (getSubRows) | Enterprise | FlexGrid | ✅ 구현 | `grid-core getSubRows + enableExpanding wire TanStack getExpandedRowModel (buildTableOptions.ts)` — Verified: buildTableOptions.ts L230/L248 sets getExpandedRowModel on enableExpanding and forwards getSubRows; depth indent via row.depth (ExpandToggleCell 16px). |
 | Tree data via flat path (getDataPath) | Enterprise | — | 🟡 부분(MOD-48) | `grid-core buildTreeFromPaths(data, getDataPath) → TreeNode[] — flat path-rows → 계층(synthetic-parent dedup·explicit-prefix data 부착·NUL-key); 소비자가 getSubRows=(n)=>n.children 로 사용` — 데이터-모델 절반 ship + node 11/0(★dedup spine). **표현 절반(auto group column=설정형 path-label group-col) 부재**(`__expand__`+indent=degenerate) → 🟡(auto-group-col render=browser, getDataPath+auto-group-col=coherent 쌍). |
-| Auto group column | Enterprise | — | ❌ 미구현 | Verified absent: grep for autoGroupColumn/groupingColumnDef returned no matches; __expand__ toggle col + 16px indent is not an auto group column. |
+| Auto group column | Enterprise | — | ✅ 구현(MOD-57 G-1) | `grid-core createAutoGroupColumn<TData>({header,getValue,indentUnit,size}) → ColumnDef: cell = row.depth*indentUnit indent + getCanExpand chevron(toggleExpanded) + getValue(node); tree(getSubRows+enableExpanding) 좌측 prepend` — chromium 1/1: ★초기 collapsed(자식 부재)→root 토글 expand→자식 출현(deeper indent)·leaf 토글 없음. AG autoGroupColumnDef 대응. (MOD-48 getDataPath 데이터모델의 렌더 절반) |
 | Expand/collapse imperative API (expandAll/collapseAll) | Enterprise | FlexGrid | 🟡 부분 | `grid-pro-master MasterDetailGrid GridHandle.expandAll/collapseAll via toggleAllRowsExpanded` — Verified: MasterDetailGrid.tsx implements expandAll/collapseAll; grid-core useGridImperativeHandle.ts has NO expandAll/collapseAll (only addRow/deleteRow/updateRow/scrollTo/getSelection/clearSelection/refresh/startEditing), so the grid-core tree path is initial-expand only. |
 | Controlled/uncontrolled expanded state | Enterprise | FlexGrid | ✅ 구현 | `grid-pro-master masterDetail.expandedRowKeys + onExpandChange (keysToExpandedState bridge)` — Verified: MasterDetailGrid.tsx bridges external string[] (row.id) to/from TanStack ExpandedState via keysToExpandedState/expandedStateToKeys; useEffect syncs controlled keys, else internal useState. |
 | Initial expanded seed (default expansion) | Enterprise | FlexGrid | ✅ 구현 | `grid-core defaultExpanded: ExpandedState \| boolean (Grid.tsx); TreeGrid alias maps expandAll->true` — Verified: Grid.tsx L100-106 derives initialExpanded from defaultExpanded (true=expand all, object=seed specific, else {}); legacy/TreeGrid.tsx maps expandAll->defaultExpanded. Uncontrolled initial value only. |
@@ -664,7 +668,7 @@
 | Group / hierarchy selection (group selects children, leaf rolls up to group) | Selection | Enterprise | ✅ 구현(MOD-56) | grid-pro-agg enableRowSelection? → __select__ 컬럼 + GroupRow tri-state 그룹 체크박스(TanStack enableSubRowSelection cascade). chromium 2/2(그룹→하위 3 leaves·leaf uncheck→indeterminate·OFF byte-identical). AG groupSelectsChildren 대응. |
 | Viewport row model (server pushes exact visible viewport, real-time) | Row models / data | Enterprise | ❌ 미구현 | AG's Viewport Row Model (enterprise) for streaming/real-time servers. No equivalent in any @topgrid package; verified MASTER-HIERARCHY §22 mod-grid-22 lists only SSRM block lazy load / infinite scroll / server sort-filter / lazy group, no viewport model. |
 | Tree data via flat path (getDataPath) | Master/Detail & Tree Data | Enterprise | 🟡 부분(MOD-48) | `grid-core buildTreeFromPaths` flat path→계층(synthetic-parent dedup, NUL-key) ship + node 11/0. 소비자가 getSubRows 로 사용. auto group column 렌더 부재 → 🟡(browser). |
-| Auto group column | Master/Detail & Tree Data | Enterprise | ❌ 미구현 | Verified absent: grep for autoGroupColumn/groupingColumnDef returned no matches; __expand__ toggle col + 16px indent is not an auto group column. |
+| Auto group column | Master/Detail & Tree Data | Enterprise | ✅ 구현(MOD-57) | grid-core createAutoGroupColumn 팩토리(indent+expand toggle+value). chromium 1/1(collapsed→expand→자식 indent·leaf 토글 없음). AG autoGroupColumnDef 대응. MOD-48 getDataPath 렌더 절반. |
 | Master-detail + virtualization | Master/Detail & Tree Data | Enterprise | ❌ 미구현 | Verified: MasterDetailGrid.tsx scrollTo is a no-op stub and renders a plain non-virtualized <table>; large detail/tree datasets unsupported in the master-detail component. |
 | Auto-aggregation of pinned/floating rows (grid computes the totals) | Pinned/floating & full-width rows | Enterprise | 🟡 부분(MOD-45) | `grid-pro-agg computeAggregateRow` 자동집계 compute 프리미티브 ship + node(소비자가 floatingBottomRows 전달). grid auto-wiring 부재 → 🟡(browser). |
 | Sticky group rows / sticky row groups (group header sticks while its children scroll) | Pinned/floating & full-width rows | Enterprise | ❌ 미구현 | VERIFIED missing: GroupRow.tsx has colSpan but grep for sticky/position on group rows = 0. AG Grid groupRowsSticky / suppressGroupRowsSticky is enterprise. topgrid group rows scroll normally. |
