@@ -14,8 +14,26 @@
 > **MOD-49**(Track1-1): pagination 3 ❌→✅. **MOD-50**(Track2-1): full-row editing ❌→✅(useFullRowEdit, chromium 회귀 **84/84**).
 > **advisor 제품결정 순서**: full-row editing✅ → custom cell editor slot(다음) → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치).
 
-> **이 세션은 트랙 1·2 미착수로 마감.** 새 세션에서 아래 중 택일해 시작한다. 먼저 읽을 것:
-> `docs/internal/COMMERCIAL-GAP-ANALYSIS.md`(갭 현황) · `state.json`(모듈별 `split_remainder`) · 본 가이드 · 메모리 `dev-harness-loop-progress`.
+### ▶ 새 세션 즉시 시작 (2026-06-07 갱신)
+
+> **다음 액션 = MOD-51 custom cell editor slot**(Track 2, 설계 확정). 그 다음 column spanning(bound-or-defer) → Enterprise ❌20 backlog
+> (advisor triage). **작동 방식**(사용자 지시): 설계·우선순위 **advisor 위임**, commit-per-module, 끝까지 진행. **publish(npm)·origin push 만 사용자 게이트.**
+> 먼저 읽을 것: 본 HANDOFF + 메모리 `dev-harness-loop-progress`(재개 지점) + `state.json`(MOD-49/50 + split_remainder) + COMMERCIAL-GAP(갭 현황 ❌30).
+
+> **MOD-51 설계(advisor 확정)**: `EditableCell.renderEditor?(ctx:{value,onChange,commit,cancel,focusRef})=>ReactNode` **render-prop lifecycle slot**
+> (registry 아님). grid-renderers(MIT). 비공허 검증 = **lifecycle 발산**: slot editor 가 Enter→commit·Esc→cancel·진입 autofocus 를 받음
+> (raw `cell` editor 는 무료로 못 받음). 통과 시 ✅, convenience 뿐이면 🟡 정직 기록(over-claim 금지).
+
+> **★chromium 하네스 재가동(매 세션 선행, ss-srv.mjs=gitignore 미커밋)**:
+> 1. `node -v`(≥22.6) · chromium 설치 확인. 2. `apps/docs/ss-srv.mjs` 복원: `git show 6d8355d^:apps/docs/ss-srv.mjs` 내용을 Write.
+> 3. `pnpm -r --workspace-concurrency=1 build` (직렬, peerDep DTS 안전) → `pnpm -F docs build-storybook`.
+> 4. `node apps/docs/ss-srv.mjs &` → **sleep 3 + `curl -s -o /dev/null -w "%{http_code}" :6006/index.json`**(200 확인; sleep 2=flake).
+> 5. 베이스라인 재확인: `cd apps/docs && pnpm exec playwright test --config=playwright.config.ts --grep-invert "visual regression:"` → **84/84 green**.
+> 6. 모듈마다 story 추가 후 `build-storybook` 재실행(서버는 파일 fresh-read=재시작 불필요), per-feature spec 실행.
+
+> **루프 규약**(누적): 진입 게이트 B(spec 파일 + MASTER §6.2 스케치) + C(rubric 점수) · node-spine(순수) + chromium 발산(LESS-006, "보임"식 금지) ·
+> commit-per-module · COMMERCIAL-GAP **프로그래매틱 reconcile**(per-category 상세표 = ground truth, 19/19·330, summary mismatch 0 검산) ·
+> §6.2→§3 이관 · state.json + 메모리 갱신. ★정직성(audit 핵심): 과장된 ❌(부분 기존 충족)은 위장 flip 금지 · 미검증 가드는 "unverified" 로 기록(AP-004).
 
 ### 🟦 트랙 1 — browser 클러스터 (UI/렌더/wiring; 다수 🟡→✅ 승격 + ❌ 닫기)
 > **선행**: chromium/storybook 하네스 세팅. 절차 = 메모리 `dev-harness-loop-progress` 「핵심 규약」 섹션(storybook-static :6006 via ss-srv.mjs
@@ -46,9 +64,10 @@
 - **RTL 레이아웃** → ⛔ **의도적 연기(advisor 결정, silent gap 아님)**. invasive(`computePinnedOffset` 등 전 LTR 전제), 한국시장 우선순위 낮음
   → 자율 build = 큰 invasive 변경 대비 거의 0 가치. **결정으로 기록**(❌ 유지, 차기 우선순위 재평가 시 재고).
 
-### 빠른 시작 예시
-> 트랙 1: "browser 라운드 시작해 — pivot panel 부터" → chromium 하네스 세팅 후 spec-gate(advisor)부터.
-> 트랙 2: "제품 결정 하자 — full-row editing 부터" → 설계 옵션 제시 → 결정 → 진행.
+### 빠른 시작 예시 (현 상태 = MOD-50 까지 완료)
+> 기본(이어서): "계속" / "MOD-51 부터" → 하네스 재가동(위 6단계) → MOD-51 custom editor slot spec-gate(advisor) → build.
+> 트랙 1 전환: "browser 클러스터 — pivot panel 부터" → 동일 하네스 + grid-pro-pivot split_remainder.
+> 결정만: "column spanning 어떻게 할지" / "RTL 다시 볼지" → advisor triage 재확인.
 
 ---
 
