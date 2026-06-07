@@ -11,7 +11,14 @@
  * D7: verifyOrWarn NOT called here (already called in AggregationGrid.tsx).
  */
 
+import { computeAggregateRow } from '../computeAggregateRow';
 import type { GroupRowProps } from '../types';
+
+/** Format an inline group aggregate: integers as-is, decimals to 2 places, null → blank. */
+function formatGroupAgg(value: number | null): string {
+  if (value === null) return '';
+  return Number.isInteger(value) ? String(value) : value.toFixed(2);
+}
 
 /**
  * Group header row component.
@@ -23,6 +30,8 @@ export function GroupRow<TData extends object>({
   indentUnit = 4,
   className,
   renderGroupRow,
+  aggSpec,
+  leafColumns,
 }: GroupRowProps<TData>) {
   // Custom renderer path
   if (renderGroupRow) {
@@ -37,6 +46,59 @@ export function GroupRow<TData extends object>({
   const defaultClass = 'border-b bg-blue-50 font-medium cursor-pointer';
   const trClass = className !== undefined ? `${defaultClass} ${className}` : defaultClass;
 
+  const labelCell = (
+    <>
+      <span className="mr-1 text-xs select-none">
+        {row.getIsExpanded() ? '▼' : '▶'}
+      </span>
+      <span>{String(row.groupingValue ?? '')}</span>
+      <span className="ml-2 text-xs text-gray-500">({row.subRows.length})</span>
+    </>
+  );
+
+  // MOD-GRID-54: inline per-column aggregates on the group header (avg-of-avgs safe — computed from
+  // this group's SOURCE leaf rows, not a re-aggregation of subgroup aggregates). Visible when collapsed.
+  if (aggSpec && leafColumns) {
+    // ★ getLeafRows() includes intermediate group rows in TanStack v8, and a group row's `original`
+    // is its first child's — counting those double-weights and corrupts the source aggregate. Filter
+    // to ACTUAL leaf data rows (no subRows) so computeAggregateRow sees only source rows (avg-of-avgs safe).
+    const leaves = row
+      .getLeafRows()
+      .filter((r) => r.subRows.length === 0)
+      .map((r) => r.original as Record<string, unknown>);
+    const aggs = computeAggregateRow(leaves, aggSpec);
+    return (
+      <tr className={trClass}>
+        {leafColumns.map((col) => {
+          if (col.id === row.groupingColumnId) {
+            return (
+              <td
+                key={col.id}
+                className="py-2 pr-3"
+                style={{ paddingLeft: `${paddingLeft}px` }}
+                onClick={row.getToggleExpandedHandler()}
+                data-group-label=""
+              >
+                {labelCell}
+              </td>
+            );
+          }
+          const hasAgg = Object.prototype.hasOwnProperty.call(aggs, col.field);
+          return (
+            <td
+              key={col.id}
+              className="py-2 px-3 text-sm"
+              onClick={row.getToggleExpandedHandler()}
+              {...(hasAgg ? { 'data-group-agg': col.field } : {})}
+            >
+              {hasAgg ? formatGroupAgg(aggs[col.field]) : ''}
+            </td>
+          );
+        })}
+      </tr>
+    );
+  }
+
   return (
     <tr className={trClass}>
       <td
@@ -45,13 +107,7 @@ export function GroupRow<TData extends object>({
         style={{ paddingLeft: `${paddingLeft}px` }}
         onClick={row.getToggleExpandedHandler()}
       >
-        <span className="mr-1 text-xs select-none">
-          {row.getIsExpanded() ? '▼' : '▶'}
-        </span>
-        <span>{String(row.groupingValue ?? '')}</span>
-        <span className="ml-2 text-xs text-gray-500">
-          ({row.subRows.length})
-        </span>
+        {labelCell}
       </td>
     </tr>
   );

@@ -945,6 +945,16 @@
 
 > dev-harness 수확: **Enterprise ❌20 backlog 1번째**(제품결정 4종 종결 후 진입, advisor triage 선정). ★**reuse-gate 비대칭 발견**: collapsePivotRows(MOD-31 G-2)의 컬럼 쌍둥이지만, row collapse 가 깨끗한 것은 computePivot 이 **모든 레벨 subtotal 행을 source 집계로 사전 방출**하기 때문 — 컬럼축은 **중간 그룹 셀 부재**+모델 source 미보유 → 모델만으론 collapsed 그룹 true AVG 복원 불가. **설계(advisor 분기 reconcile)**: computePivot **additive 수정**(computeCells 가 컬럼-combo prefix별 source-집계 셀도 방출) = 진정한 대칭(행축 subtotal ↔ 열축 group-cell). 별도 source-recompute spine(emit/grouping 중복)은 기각. **★MOD-18 이후 computePivot 첫 additive 터치**(정직 기록) — 커밋 computePivot 테스트 0(MOD-18 "26"=audit 일회성) → **characterization-first**(현 leaf/subtotal/grandTotal 핀→unmodified 9/15 그린→additive 후 15/15, characterization 불변=additive 증명). behavior-preserving-additive(읽지 않는 prefix 키만, columnTree/columnLeafKeys/rows 불변, 0/1 차원 inert=byte-identical, 5 기존 spine 테스트 무영향). ★**avg-of-avgs 정직성이 node 로 이동**(advisor): correctness-critical 단언(그룹 AVG=true source mean)을 node 가, chromium 은 render 발산만(자식 DOM 부재+그룹값). 자식 컬럼 **불균등 행수**(Q1 1행·Q2 3행)로 avg-of-child-avgs(15)≠true(17.5) 정확 숫자 단언. opt-in byte-identical(enableColumnCollapse=false). vacuity 앵커=≥2 컬럼차원. ★**transpose 리셋 정직 기록(AP-004, 3번째)**: collapsedColKeys transpose 리셋=wired·chromium 미검증, 단 실패 모드 benign(컬럼 키 시맨틱→stale=inert, MOD-31 순차 __id 의 wrong-group 과 달리 무해)→annotate. ★perf 인지(릴리스): computeCells 가 ≥2 차원 pivot 전부에 그룹 셀 방출(enableColumnCollapse 무관), correctness 무영향·표준(AG 동형), 대형 pivot 게이트는 차후 perf 패스. **Pivoting 18/2/3→19/2/2**, COMMERCIAL-GAP ❌28→27·✅229→230·🟡70(reconcile 19/19·330·0 mismatch). chromium 94/94(92+2). 신규 lesson 없음.
 
+### `mod-grid-54` — 그룹 헤더 인라인 집계 (group-header inline aggregates, **Pro**, grid-pro-agg) ✅ 채움 — {G-1} 완주 (Enterprise backlog 2번째)
+
+소스: `packages/grid-pro-agg/src/internal/GroupRow.tsx`(per-column 인라인 분기) + `AggregationGrid.tsx`(showGroupAggregates·aggSpec/leafColumns 도출·전달) + `types.ts`, story `stories/Aggregation.stories.tsx`(GroupHeaderAggregates/Off), spec `.claude/dev-harness/specs/MOD-GRID-54.md`. dev-harness 37번째. **Enterprise ❌ backlog 2번째**(advisor triage Tier 1). 갭분석 Row grouping ❌ 1 닫기.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 그룹 헤더 인라인 집계(G-1) | `showGroupAggregates?` + GroupRow per-column 셀(grouping=토글/키/카운트, agg col=computeAggregateRow 값) | **배선형** | computeAggregateRow(MOD-45, source-safe) 재사용. `row.getLeafRows().filter(subRows 0)` 실제 leaf 원본만 집계(중첩 그룹 avg-of-avgs 안전). 헤더 항상 렌더=collapsed 시에도 가시. FooterRow 별개 유지 | chromium 3/3: ★dept avg=true source 30(NOT avg-of-team-avgs 37.5)·collapsed 시 헤더 집계 잔존·OFF byte-identical. node correctness=computeAggregateRow 15/0 재사용 | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 2번째(advisor triage Tier 1=node-correctness anchor)**. ★reuse-gate: GroupRow=단일 colSpan(카운트만), FooterRow=그룹 끝 집계(collapsed 시 숨김). 갭=헤더 행 인라인 집계+collapsed 시에도. ★**avg-of-avgs 안전**(advisor 핵심): TanStack getVisibleCells(중첩=mean-of-means 위험) 대신 **computeAggregateRow(MOD-45, source 직접, node 15/0 재사용)** 를 그룹의 실제 leaf 원본에 적용. ★**발견(런타임 함정)**: `row.getLeafRows()`=TanStack v8 에서 **중간 그룹 행 포함**+그룹 행의 `.original`=첫 자식 → 그대로 집계하면 double-weight(영업팀 32=잘못). `subRows.length===0` 필터로 실제 leaf 만 → true source(30). chromium 으로 검출(node 만으론 못 봄=LESS-006 동류). correctness anchor=computeAggregateRow node(재사용, fabricate 안 함), 인라인 렌더/collapsed 가시=chromium 발산. opt-in byte-identical(showGroupAggregates=false=기존 단일 colSpan). FooterRow·computeAggregateRow·기존 GroupRow colSpan 경로 무수정. **Row grouping 11/6/2→12/6/1**, COMMERCIAL-GAP ❌27→26·✅230→231·🟡70(reconcile 19/19·330·0 mismatch). chromium 97/97(94+3). 신규 lesson 없음.
+
 ---
 
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
@@ -1311,6 +1321,12 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-54 grid-pro-agg 그룹 헤더 인라인 집계 (Enterprise backlog 2, Pro)** — ✅ **구현됨 → §3 `mod-grid-54` 참조** (dev-harness 37번째). spec=`specs/MOD-GRID-54.md`
+- Goal: group-header inline aggregates (incl. when collapsed) — AG group row agg 대응. computeAggregateRow(source-safe) 재사용.
+- In: `showGroupAggregates?` + GroupRow per-column 인라인 셀(grouping=라벨, agg col=computeAggregateRow 값) + AggregationGrid aggSpec/leafColumns 도출. 기존 colSpan 경로·FooterRow·computeAggregateRow 무수정.
+- Out: footer 행(유지)·custom group-agg 포매터·TanStack getVisibleCells 집계(avg-of-avgs 위험=배제).
+- AC: dept avg=true source(불균등 자식, 정확 숫자)·collapsed 시 잔존·OFF byte-identical(chromium). node correctness=computeAggregateRow 15/0 재사용. ★발견: getLeafRows()=중간 그룹 행 포함→실제 leaf(subRows 0) 필터 필수. tier Pro.
 
 **MOD-GRID-53 grid-pro-pivot collapsible pivot column groups (Enterprise backlog 1, Pro)** — ✅ **구현됨 → §3 `mod-grid-53` 참조** (dev-harness 36번째). spec=`specs/MOD-GRID-53.md`
 - Goal: collapsible/expandable pivot column groups — 컬럼-그룹 헤더 chevron→자식 leaf 컬럼 숨김 + 그룹 source-집계 셀 표시. AG pivot column group collapse 대응.

@@ -62,14 +62,19 @@ test('G-2 (row-virt): a scrolled-in spanning row stays coherent (no L-01 orphan,
   await expect(page.getByText('b40', { exact: true }), 'span row not yet windowed').toHaveCount(0);
 
   // scroll the MergingGrid internal scroll container (its CSS height is bounded by the story).
+  // ★ poll the scroll+count: a single programmatic scrollTop can clamp if set before the bounded
+  // height has laid out, and react-virtual updates async — re-applying until the span row windows
+  // makes the gate robust (not a behavior change, just non-flaky).
   const scroller = page.locator('.cs-virt-wrap > div');
-  await scroller.evaluate((el) => {
-    el.scrollTop = 1400; // ≈ row 40 × 36px estimated height
-  });
-
-  // ★ after scrolling row 40 into the window, its colSpan is intact and covered cells are absent.
   const spanCell = page.locator('#storybook-root tbody td[colspan="3"]');
-  await expect(spanCell, '★spanning row windowed').toHaveCount(1);
+  await expect
+    .poll(async () => {
+      await scroller.evaluate((el) => {
+        el.scrollTop = 1400; // ≈ row 40 × 36px estimated height
+      });
+      return spanCell.count();
+    }, { message: '★spanning row windowed after scroll' })
+    .toBe(1);
   await expect(spanCell).toHaveText('b40');
   const spanRow = rows(page).filter({ has: page.locator('td[colspan="3"]') });
   await expect(spanRow.locator('td'), '★covered cells absent under virt').toHaveCount(3);

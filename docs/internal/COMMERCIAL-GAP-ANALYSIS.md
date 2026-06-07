@@ -60,6 +60,11 @@
 > reconcile 19/19). chromium 2/2(★collapse→자식 컬럼 DOM 부재+그룹 집계값 17.50·OFF byte-identical) + 회귀 94/94. ★advisor: collapsePivotRows(행) 쌍둥이지만
 > 비대칭(컬럼은 그룹 셀 사전 방출 부재)→computePivot additive(행축 subtotal ↔ 열축 group-cell, 둘 다 source 사전계산). avg-of-avgs 정직성=node 단언.
 > ★Enterprise backlog 진입(제품결정 4종 종결 후 1번째).
+> ★ **MOD-54 델타(2026-06-07, Enterprise backlog 2번째 — advisor triage Tier 1)**: `Aggregated values inline on group header (incl. collapsed)` ❌→✅ —
+> AggregationGrid `showGroupAggregates` + GroupRow per-column 인라인 셀(grouping col=토글+키+카운트, agg col=`computeAggregateRow(row.getLeafRows() 실제 leaf만 필터, source 집계)`,
+> avg-of-avgs 안전=MOD-45 재사용 node 15/0) → **❌26 / ✅231 / 🟡70**(Row grouping 카테고리 11/6/2 → **12/6/1**, 합 330 불변, reconcile 19/19).
+> chromium 3/3(★dept avg=true source 30 NOT avg-of-team-avgs 37.5·collapsed 시에도 헤더 집계 잔존·OFF byte-identical) + 회귀 97/97. ★advisor Tier 1(node-correctness anchor=
+> computeAggregateRow 재사용). ★발견: getLeafRows()=중간 그룹 행 포함+그룹 .original=첫 자식 → 실제 leaf(subRows 0) 필터 필수(double-weight 회피). FooterRow(그룹 끝) 별개 유지.
 > ★ **MOD-45 델타(2026-06-07, vN-6)**: Enterprise grouping node-pure substance 1 = `computeAggregateRow`(source 직접 집계, avg-of-avgs 안전) →
 > `grand-total footer` ❌→🟡 · `auto-agg floating rows` ❌→🟡(둘 다 compute 프리미티브 ship+node, 렌더/auto-wiring=browser) → **❌37 / ✅223 / 🟡67**(Enterprise 25→23).
 
@@ -90,10 +95,10 @@
 | 프리셋 테마(quartz/alpine류) | ❌ | 🟡 | MOD-29 G-2 부분(dark 1종) | — |
 | 광범위 Excel 함수 라이브러리 | ❌ | 🟡 | MOD-32/42 부분(IF/비교/논리/text/math + VLOOKUP/DATE·YEAR·MONTH·DAY/PMT·FV·PV); ~25 vs 400+ → 🟡 유지 | node |
 
-### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌27, MOD-53 반영)
+### 잔여 ❌ 우선순위 (2026-06-07 검증, tier별 = ❌26, MOD-54 반영)
 
-> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 19 + 기타 0 = **27**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2)).
-> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌27(MOD-53 반영) 기준으로 정정.
+> tier 는 카테고리 상세표의 AG Grid 컬럼에서 프로그래매틱 tally(Community 8 + Enterprise 18 + 기타 0 = **26**, reconcile 통과; MOD-40/41 기타 5→1, MOD-43 Community 15→13, MOD-44~48 Enterprise 27→20, MOD-49 Pagination 3(Community 13→11·기타 1→0), ★MOD-50 Full-row editing ❌→✅(Community 11→10), ★MOD-51 Custom cell editor slot ❌→✅(Community 10→9, Editing 0 ❌), ★MOD-52 Column spanning ❌→✅(Community 9→8, Column features 0 ❌), ★MOD-53 Collapsible pivot column groups ❌→✅(Enterprise 20→19, Pivoting 3→2), ★MOD-54 Group-header inline agg ❌→✅(Enterprise 19→18, Row grouping 2→1)).
+> 이전 "dedup 68/Community 31" prose 는 MOD-33 시점·예시 stale(닫힌 기능 다수 포함)이었음 — 현 ❌26(MOD-54 반영) 기준으로 정정.
 
 - **Community 8 (table-stakes)**: ① 자율 빌드 아님(제품 결정 → **advisor 위임**, 2026-06-07)=RTL(**의도적 연기**: invasive·한국우선 저가치)
   (★MOD-50: Full-row editing ❌→✅·★MOD-51: Custom cell editor slot ❌→✅·★MOD-52: Column spanning ❌→✅ 닫힘 — 제품결정 4종 중 3 build, RTL 만 잔여) ② vN 연기 5=post-sort
@@ -101,8 +106,8 @@
   ★MOD-49: auto-page-size·custom page formatter ❌→✅ 닫힘) ③ 시트 스코프 2=cell/number formatting
   (currency 등)·cell styling(fonts/fill/merged). (행클릭선택·셀툴팁·flash·getRowId·column menu·row pinning·aria-sort·roving 등은
   MOD-35~39 로 닫힘=이 목록서 제외.)
-- **Enterprise 19 (deep — 다수 vN 보류)**: group-header inline agg · sticky group
-  headers · **pivot 2**(panel/server-side; ★MOD-44: total customization ❌→✅·result filter ❌→🟡; ★MOD-53: collapsible cols ❌→✅ 닫힘) · select-all-pages · group selection ·
+- **Enterprise 18 (deep — 다수 vN 보류)**: sticky group
+  headers · **pivot 2**(panel/server-side; ★MOD-44: total customization ❌→✅·result filter ❌→🟡; ★MOD-53: collapsible cols ❌→✅; ★MOD-54: group-header inline agg ❌→✅ 닫힘) · select-all-pages · group selection ·
   viewport row model · auto group col(★MOD-48: tree getDataPath ❌→🟡) · master-detail+virtualization · Excel cell styles ·
   **차트 panel/dock**(★MOD-47: cross-filter ❌→🟡) · row-group/pivot state save · sidebar/filters panel · context submenu · tool
   panel drag · .xlsx sheet import. (★MOD-45: grand-total footer·auto-agg floating ❌→🟡 닫힘=제외.)
@@ -132,7 +137,7 @@
 | Column features | 14 | 9 | 5 | 0 |
 | Sorting | 18 | 15 | 2 | 1 |
 | Filtering | 13 | 12 | 1 | 0 |
-| Row grouping & aggregation | 19 | 11 | 6 | 2 |
+| Row grouping & aggregation | 19 | 12 | 6 | 1 |
 | Pivoting | 23 | 19 | 2 | 2 |
 | Selection | 17 | 13 | 2 | 2 |
 | Editing | 18 | 14 | 4 | 0 |
@@ -223,7 +228,7 @@
 | Extended aggregation funcs (first, last, range, std, var) | Enterprise | FlexGrid | 🟡 부분 | `grid-pro-agg: BUILT_IN_AGGREGATION_KEYS verified = ['sum','avg','min','max','count'] only (aggregationFns.ts L37-38); first/last/range/std/var NOT present. Achievable only via registerAggregationFn custom registry. VERIFIED` — VERIFIED absent as built-ins. Wijmo Aggregate enum ships First/Last/Range/Std/StdPop/Var/VarPop natively; AG Grid has first/last. topgrid: no built-ins for these; user must hand-write each via registerAggregationFn (no library helpers provided) -> partial. |
 | Per-group footer / subtotal rows | Enterprise | FlexGrid | ✅ 구현 | `grid-pro-agg AggregationGrid showFooter (default true); FooterRow.tsx renders cell.getIsAggregated() ? (aggregatedCell ?? cell) : null; buildInterleavedRows inserts footer descriptor at each group end (deepest first, isGroupEnd = nextDepth<row.depth \|\| last). VERIFIED L94-122, FooterRow L41-46` — VERIFIED: synthetic footer interleaved per group via manual RowDescriptor build (TanStack does not emit footers). Caveat: footer only rendered for EXPANDED groups (collapsed groups emit no footer) and groups with subRows.length>0 (EC-002). AG Grid Enterprise groupIncludeFooter; Wijmo showGroups subtotal rows. |
 | Grand total / overall footer row (whole-grid aggregate) | Enterprise | FlexGrid | 🟡 부분(MOD-45) | `grid-pro-agg computeAggregateRow(data, spec) — 전역 집계값 한 행 계산(source 직접=avg-of-avgs 안전, 로컬 number[] 리듀서 ADR-001)` — whole-grid 집계 **compute 프리미티브** ship + node 15/0(★avg-of-avgs 회피 단언). **렌더된 footer 행 부재**(AggregationGrid pinned footer 미배선) → 🟡(렌더=browser 클러스터). |
-| Aggregated values displayed inline on the group header row (incl. when collapsed) | Enterprise | FlexGrid | ❌ 미구현 | `grid-pro-agg internal/GroupRow.tsx renders only ▼/▶ toggle + String(row.groupingValue ?? '') + (row.subRows.length); no aggregate values. Aggregates live only in FooterRow which is gated to expanded groups. VERIFIED GroupRow.tsx L48-54` — VERIFIED: group header shows group key + child count only, never aggregate totals; collapsed group shows no totals. AG Grid / Wijmo render aggregate values inline on the (collapsed) group row. Distinct from per-group footer. renderGroupRow override could add them but no built-in support. |
+| Aggregated values displayed inline on the group header row (incl. when collapsed) | Enterprise | FlexGrid | ✅ 구현(MOD-54 G-1) | `grid-pro-agg AggregationGrid showGroupAggregates + GroupRow.tsx per-column inline cells: grouping col = toggle+key+count, meta.aggregationFn cols = computeAggregateRow(row.getLeafRows().filter(no subRows) originals) — source-aggregated, avg-of-avgs safe (MOD-45, node 15/0)` — chromium 3/3: ★dept group inline avg = true source mean 30 (NOT avg-of-team-avgs 37.5)·visible when COLLAPSED (header always renders, footer hidden)·OFF byte-identical (single colSpan). FooterRow(그룹 끝) 유지=별개. AG group row agg 대응. |
 | Group expand / collapse toggle (per group) | Enterprise | FlexGrid | ✅ 구현 | `grid-pro-agg GroupRow row.getToggleExpandedHandler() on <td onClick> (GroupRow.tsx L46); getIsExpanded() -> ▼/▶ (L49); getExpandedRowModel enabled via enableAggregation; expanded prop + onExpandedChange wiring. VERIFIED` — VERIFIED: standard TanStack expand. AG Grid group expand/collapse; Wijmo CollectionViewGroup isCollapsed. |
 | Default expanded state / expand-to-depth-N convenience | Enterprise | FlexGrid | 🟡 부분 | `grid-pro-agg expanded?: ExpandedState \| false (false normalized to {} in AggregationGrid.tsx L178); pass true=all, {}=none, or explicit Record<string,boolean>. grep for defaultExpand/expandToDepth/groupDefaultExpand/isGroupOpen = 0 hits. VERIFIED` — VERIFIED: topgrid supports all/none/explicit map but NO depth-level shortcut and NO per-group predicate callback. AG Grid groupDefaultExpanded (depth N) + isGroupOpenByDefault callback; Wijmo similar. -> partial. |
 | Group-level sorting (reorder groups by aggregate/key) | Enterprise | FlexGrid | 🟡 부분 | `grid-pro-agg enableGroupSort (default false) -> getSortedRowModel() (AggregationGrid.tsx L274); clickable header <th> getToggleSortingHandler() (L379); sorting/onSortingChange controlled or internal useState. VERIFIED` — VERIFIED: sort applied after grouped model so groups reorder, but ONLY by the raw grouping-column value, not by an aggregated measure (e.g. cannot sort regions by SUM(sales)). Single sort toggle ▲/▼ per column; no separate group-vs-leaf or aggregate-based group sort. AG Grid/Wijmo can sort groups by aggregate value. -> partial. |
@@ -634,7 +639,7 @@
 | Multi filter (multiple conditions per column with AND/OR, e.g. text + set combined) | Filtering | Enterprise | ✅ 구현(MOD-30 G-3(grid-pro-filter)) | Verified absent. Each topgrid column has a single FilterFn with an internal operator switch (filterFns.ts); operator-switch handlers clear prior state rather than stacking. No compound AND/OR condition builder or stacking of two filter types on one column. AG agMultiColumnFilter is Enterprise. |
 | Advanced filter (cross-column expression/query builder UI) | Filtering | Enterprise | 🟡 부분(MOD-46) | `grid-pro-filter advancedFilter.ts` cross-column 식 모델+재귀 평가기+순수 매처(type-explicit) ship + node 25/0. 쿼리빌더 UI 부재 → 🟡(UI=browser). |
 | Grand total / overall footer row (whole-grid aggregate) | Row grouping & aggregation | Enterprise | 🟡 부분(MOD-45) | `grid-pro-agg computeAggregateRow` 전역 집계 compute 프리미티브 ship + node(avg-of-avgs 안전). 렌더된 footer 행 부재 → 🟡(렌더=browser). |
-| Aggregated values displayed inline on the group header row (incl. when collapsed) | Row grouping & aggregation | Enterprise | ❌ 미구현 | VERIFIED: group header shows group key + child count only, never aggregate totals; collapsed group shows no totals. AG Grid / Wijmo render aggregate values inline on the (collapsed) group row. Distinct from per-group footer. renderGroupRow override could add them but no built-in support. |
+| Aggregated values displayed inline on the group header row (incl. when collapsed) | Row grouping & aggregation | Enterprise | ✅ 구현(MOD-54) | grid-pro-agg showGroupAggregates + GroupRow per-column 인라인 셀(computeAggregateRow source 집계, avg-of-avgs 안전). chromium 3/3(dept avg=true source 30 NOT 37.5·collapsed 시에도 헤더 잔존·OFF byte-identical). FooterRow 별개 유지. AG 대응. |
 | Sticky / pinned group headers while scrolling | Row grouping & aggregation | Enterprise | ❌ 미구현 | VERIFIED: virtualization drops off-screen group headers (no sticky). AG Grid Enterprise groupRowsSticky (suppressGroupRowsSticky). Wijmo n/a. |
 | Pivot panel / drag-and-drop pivot column tool panel UI | Pivoting | Enterprise | ❌ 미구현 | VERIFIED MISSING: grep of grid-pro-pivot/src for Panel/drag/dnd = no matches. No PivotPanel/toolPanel/drag-drop component. AG Grid has the Columns tool panel pivot drop zones; Wijmo has PivotPanel. topgrid pivot config is code-declarative only. |
 | Interactive runtime pivot configuration (add/remove/reorder dims via UI or API events) | Pivoting | Enterprise | ✅ 구현(MOD-31 G-3) | VERIFIED MISSING: grep for onConfigChange/setConfig = no matches; PivotGridProps (PivotGrid.tsx 28-47) exposes only data/config/pivotMode/passthroughColumns/enableVirtualization/className. PivotConfig is a static prop; consumer must re-pass a new config object to change dims. |

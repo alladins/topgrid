@@ -1525,6 +1525,33 @@
       "module_summary": "Enterprise ❌20 backlog 1번째(제품결정 4종 종결 후). computePivot 컬럼-그룹 prefix 셀 additive(source 재집계=행축 subtotal 의 열축 대칭)+buildPivotColumns/PivotGrid collapse 배선. characterization-first(첫 computePivot 터치)+avg-of-avgs node+render chromium. 기존 row-emit/5 spine 무수정(94/94). 신규 lesson 없음.",
       "version_note": "grid-pro-pivot 0.3.0→차기 batch minor (computePivot 그룹 셀+enableColumnCollapse 추가, 미발행). +esbuild devDep(test). ★perf 인지(릴리스): computeCells 가 ≥2 차원 pivot 전부에 그룹-prefix 셀 방출(enableColumnCollapse 무관, computePivot 은 render prop 미인지), correctness 무영향·표준(AG 동형), 대형 pivot 게이트는 차후 perf 패스.",
       "backlog_note": "Enterprise ❌19 잔여(advisor triage): group-header inline agg·sticky group headers·pivot 2(panel/server-side)·select-all-pages·group selection·viewport row model·auto group col·master-detail+virt·Excel cell styles·chart panel·row-group/pivot state save·sidebar/filters panel·context submenu·tool panel drag·.xlsx import."
+    },
+    "MOD-GRID-54": {
+      "package": "grid-pro-agg (Pro)",
+      "tier": "Pro",
+      "weight": "Full(1-Goal: 그룹 헤더 인라인 집계)",
+      "priority": "Enterprise ❌ backlog 2번째(advisor triage Tier 1=node-correctness anchor)",
+      "phase": "done (1-Goal 완주 → §3)",
+      "spec": "specs/MOD-GRID-54.md (rubric 77/80)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "group-header inline aggregates (incl. when collapsed) — GroupRow per-column 인라인 집계(computeAggregateRow source-safe 재사용). FooterRow 별개 유지. 기존 colSpan 경로 무수정.",
+      "g1": {
+        "surface": "showGroupAggregates? + GroupRow per-column 셀(grouping=토글/키/카운트, agg col=computeAggregateRow(row.getLeafRows().filter(subRows 0) 원본, aggSpec)) + AggregationGrid aggSpec/leafColumns 도출.",
+        "verified_chromium": "3/3(agg-group-header-inline.spec.ts): dept avg=true source 30(NOT avg-of-team-avgs 37.5, 불균등 자식)·collapsed 시 헤더 집계 잔존·OFF byte-identical.",
+        "verified_node": "correctness=computeAggregateRow 15/0 재사용(MOD-45, source-safe; 신규 node 0=fabricate 안 함)."
+      },
+      "verification": "node correctness=computeAggregateRow 재사용·typecheck 0·build green·chromium 3/3 + 전체 회귀 97/97(94+3). 기존 colSpan/FooterRow/computeAggregateRow 무수정.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음(LESS-003·LESS-006; getLeafRows 중간 그룹 행 함정·avg-of-avgs source 재집계=문서)",
+        "matrix_row": "§3 mod-grid-54 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Group-header inline agg ❌→✅(Row grouping 11/6/2→12/6/1) reconcile 19/19(231/70/26·330·0 mismatch·Enterprise 19→18)"
+      },
+      "rubric_specify": "77/80",
+      "closure": "★Group-header inline agg=✅(source-correct, collapsed 시에도). ★avg-of-avgs 안전=computeAggregateRow(MOD-45 source 직접) 재사용(TanStack getVisibleCells 중첩 mean-of-means 배제). ★런타임 함정 발견(chromium 검출): getLeafRows()=TanStack v8 중간 그룹 행 포함+그룹 .original=첫 자식→double-weight(영업팀 32 오답)→subRows.length===0 필터로 실제 leaf만(30). ★expanded controlled→story onExpandedChange+useState. FooterRow 별개. advisor Tier 1(node-correctness anchor=재사용).",
+      "module_summary": "Enterprise backlog 2번째(advisor Tier 1). computeAggregateRow(source-safe, MOD-45) 재사용 + GroupRow per-column 인라인 렌더. correctness=node 재사용·렌더/collapsed=chromium. getLeafRows 함정=실제 leaf 필터(chromium 검출). 기존 colSpan/FooterRow 무수정(97/97). 신규 lesson 없음.",
+      "version_note": "grid-pro-agg 0.3.0→차기 batch minor (showGroupAggregates 추가, 미발행)."
     }
   },
   "release_queue": {

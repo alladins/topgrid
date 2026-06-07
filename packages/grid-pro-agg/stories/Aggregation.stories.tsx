@@ -4,18 +4,21 @@
 // C-1 준수: AggregationGridProps + GroupPanelProps 소스 확인
 //   - AggregationGrid: { data, columns (AggregationColumnDef[]), enableAggregation?, grouping?, expanded? }
 //   - GroupPanel: { grouping, columns (Column<T,unknown>[]), onGroupingChange, emptyText? }
+import { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   getCoreRowModel,
   getGroupedRowModel,
   getExpandedRowModel,
   useReactTable,
+  type ExpandedState,
 } from '@tanstack/react-table';
 import {
   AggregationGrid,
   GroupPanel,
 } from '@topgrid/grid-pro-agg';
 import type { AggregationColumnDef } from '@topgrid/grid-pro-agg';
+import { setLicenseState } from '@topgrid/grid-license';
 
 // C-3 예외: mock rows — Storybook stories 허용 범위
 interface SalesRow {
@@ -102,6 +105,70 @@ export const WithFooter: Story = {
     enableAggregation: true,
     grouping: ['dept'],
     showFooter: true,
+    expanded: true,
+  },
+};
+
+// ─── MOD-GRID-54: group-header inline aggregates (incl. when collapsed) ──────
+// ★nested grouping (dept→team) + avg with UNEQUAL team row counts so the dept group's avg
+// (=30, true source mean of 10,20,60) ≠ avg-of-team-avgs (=avg(15,60)=37.5). The header value
+// is computed from source leaf rows via computeAggregateRow → avg-of-avgs safe; proven in chromium.
+interface ScoreRow {
+  dept: string;
+  team: string;
+  score: number;
+}
+const inlineAggData: ScoreRow[] = [
+  { dept: '영업팀', team: '1팀', score: 10 },
+  { dept: '영업팀', team: '1팀', score: 20 },
+  { dept: '영업팀', team: '2팀', score: 60 },
+];
+const inlineAggColumns: AggregationColumnDef<ScoreRow>[] = [
+  { accessorKey: 'dept', header: '부서' },
+  { accessorKey: 'team', header: '팀' },
+  { accessorKey: 'score', header: '점수', meta: { aggregationFn: 'avg' } },
+];
+const validLicense = { status: { valid: true as const }, rawKey: 'test', setAt: 0 };
+
+// Stateful wrapper: AggregationGrid expansion is controlled (state.expanded), so uncontrolled
+// collapse needs onExpandedChange→useState. Starts expanded so the chromium test can collapse 영업팀
+// and assert the inline aggregate stays on the (still-rendered) group header.
+function InlineAggDemo() {
+  const [expanded, setExpanded] = useState<ExpandedState>(true);
+  return (
+    <AggregationGrid<ScoreRow>
+      data={inlineAggData}
+      columns={inlineAggColumns}
+      enableAggregation
+      grouping={['dept', 'team']}
+      showGroupAggregates
+      showFooter={false}
+      expanded={expanded}
+      onExpandedChange={setExpanded}
+    />
+  );
+}
+
+export const GroupHeaderAggregates: StoryObj<typeof InlineAggDemo> = {
+  name: '그룹 헤더 인라인 집계 (collapsed 시에도)',
+  beforeEach: () => {
+    setLicenseState(validLicense);
+  },
+  render: () => <InlineAggDemo />,
+};
+
+// OFF: showGroupAggregates 미지정 → 그룹 헤더 = 단일 colSpan 라벨(인라인 집계 셀 0, byte-identical).
+export const GroupHeaderAggregatesOff: StoryObj<typeof AggregationGrid<ScoreRow>> = {
+  name: '그룹 헤더 인라인 집계 OFF (byte-identical)',
+  beforeEach: () => {
+    setLicenseState(validLicense);
+  },
+  args: {
+    data: inlineAggData,
+    columns: inlineAggColumns,
+    enableAggregation: true,
+    grouping: ['dept', 'team'],
+    showFooter: false,
     expanded: true,
   },
 };

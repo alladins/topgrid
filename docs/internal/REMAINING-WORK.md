@@ -8,17 +8,18 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
 
-> **현 상태**: vN node-pure 9(MOD-40~48) + Track 1 MOD-49 + **Track 2 제품결정 4종 종결(MOD-50~52 build·RTL 연기)** + **Enterprise ❌20 backlog 진입: MOD-53 done(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
-> COMMERCIAL-GAP **❌47→27**(✅230/🟡70/❌27; **Column features·Editing 0 ❌·Pivoting 19/2/2**). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53·MOD-54 done(2026-06-07)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
+> COMMERCIAL-GAP **❌47→26**(✅231/🟡70/❌26; **Column features·Editing 0 ❌·Pivoting 19/2/2·Row grouping 12/6/1**). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **★settled defer 5(⛔)**: RTL·viewport row model·debounced-scroll·row-animation·auto-virt-threshold (advisor — invasive/node-substance-0/vacuity-trap/design-reversal).
 > **★작동 방식(사용자 advisor 위임)**: 설계·우선순위 advisor 판단 위임, 끝까지 진행. publish/push 만 사용자 게이트 유지.
 > **MOD-49** pagination✅ · **MOD-50** full-row editing✅ · **MOD-51** custom cell editor slot✅ · **MOD-52** column spanning✅ · **MOD-53** collapsible pivot column groups✅(grid-pro-pivot, chromium 회귀 **94/94**).
 > **제품결정 4종**: full-row✅·custom editor✅·column spanning✅·**RTL=의도적 연기**(3 build, RTL 잔여). → Enterprise backlog 진입.
 
 ### ▶ 새 세션 즉시 시작 (2026-06-07 갱신)
 
-> **다음 액션 = Enterprise ❌19 backlog(advisor triage)**. 후보(browser/pure 혼합): group-header inline agg·sticky group headers(grid-pro-agg) · pivot 2(panel/server-side, grid-pro-pivot) ·
-> select-all-pages·group selection(grid-core) · viewport row model · auto group col·master-detail+virt(tree) · Excel cell styles(grid-export) · chart panel(grid-pro-chart) ·
-> row-group/pivot state save · sidebar/filters panel·context submenu·tool panel drag(grid-pro-panel/master) · .xlsx import.
+> **다음 액션 = Enterprise ❌18 backlog(advisor triage, 자율 진행)**. advisor 순서: Tier1(★group-header agg✅ done · view-state save[row-group+pivot] · group selection) →
+> Tier2(verify-first: select-all-pages·auto group col·post-sort) → Tier3(render/interaction=🟡 가능: sticky group headers·context submenu·side bar·filters panel·tool-panel drag·pivot panel DnD·master-detail+virt·chart panel·drag-between-grids) →
+> Tier4(library/sheet: .xlsx import/export·Excel cell styles·sheet number-format·sheet cell-styling). ★**각 모듈 reuse-gate 렌더 파일 먼저 읽기**. fork/🟡/⛔ 에만 advisor 복귀.
 > **작동 방식**: 설계·우선순위 **advisor 위임**, commit-per-module, 끝까지 진행. **publish(npm)·origin push 만 사용자 게이트.**
 > 먼저 읽을 것: 본 HANDOFF + 메모리 `dev-harness-loop-progress`(재개 지점) + `state.json`(MOD-49~53 + split_remainder) + COMMERCIAL-GAP(갭 현황 ❌27).
 

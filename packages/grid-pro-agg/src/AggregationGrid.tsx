@@ -152,6 +152,7 @@ export function AggregationGrid<TData extends object>({
   expanded = {},
   // G-002 new props
   showFooter = true,
+  showGroupAggregates = false,
   groupRowClassName,
   footerRowClassName,
   renderGroupRow,
@@ -277,6 +278,39 @@ export function AggregationGrid<TData extends object>({
   const allRows = table.getRowModel().rows;
   const columnCount = table.getAllColumns().length;
 
+  // MOD-GRID-54: derive the column→aggregationFn spec (built-in keys only — computeAggregateRow's
+  // contract) and the visible leaf columns (id + data field) for inline group-header aggregates.
+  const groupAggSpec = useMemo(() => {
+    if (!showGroupAggregates) return undefined;
+    const spec: Record<string, AggregationFnKey> = {};
+    for (const col of columns) {
+      const key = col.meta?.aggregationFn;
+      const field =
+        (col as AggregationColumnDef<TData> & { accessorKey?: string }).accessorKey ?? col.id;
+      if (
+        key !== undefined &&
+        field !== undefined &&
+        (BUILT_IN_AGGREGATION_KEYS as readonly string[]).includes(key)
+      ) {
+        spec[field] = key as AggregationFnKey;
+      }
+    }
+    return spec;
+  }, [showGroupAggregates, columns]);
+
+  const groupAggLeafColumns = useMemo(
+    () =>
+      showGroupAggregates
+        ? table.getVisibleLeafColumns().map((c) => ({
+            id: c.id,
+            field:
+              (c.columnDef as { accessorKey?: string }).accessorKey ?? c.id,
+          }))
+        : undefined,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [showGroupAggregates, table, groupingState, columns],
+  );
+
   // ---------------------------------------------------------------------------
   // Pre-compute interleaved descriptor array (D4: synthetic footer interleaving)
   // Used by BOTH render paths so virtualizer count is correct (allRows + footers).
@@ -310,6 +344,9 @@ export function AggregationGrid<TData extends object>({
           columnCount={columnCount}
           {...(groupRowClassName !== undefined ? { className: groupRowClassName } : {})}
           {...(renderGroupRow !== undefined ? { renderGroupRow } : {})}
+          {...(groupAggSpec !== undefined && groupAggLeafColumns !== undefined
+            ? { aggSpec: groupAggSpec, leafColumns: groupAggLeafColumns }
+            : {})}
         />
       );
     }

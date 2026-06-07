@@ -8,6 +8,7 @@
 
 import type { Cell, Column, ColumnDef, ExpandedState, OnChangeFn, Row, SortingState } from '@tanstack/react-table';
 import type { ReactNode } from 'react';
+import type { AggregateSpec } from './computeAggregateRow';
 
 // ---------------------------------------------------------------------------
 // Public aggregation function key union (user-facing)
@@ -67,6 +68,16 @@ export interface GroupRowProps<TData extends object> {
   className?: string;
   /** Custom renderer — if provided, replaces default render (group key + count + toggle icon). */
   renderGroupRow?: (row: Row<TData>) => ReactNode;
+  /**
+   * MOD-GRID-54: inline group-header aggregates. When both `aggSpec` and `leafColumns` are
+   * provided, GroupRow renders per-column cells (grouping column = toggle+key+count; columns in
+   * `aggSpec` = source-aggregated value via computeAggregateRow over `row.getLeafRows()` — avg-of-avgs
+   * safe for nested groups; others = blank) instead of the single colSpan label cell. Visible even
+   * when the group is collapsed (the header row always renders).
+   */
+  aggSpec?: AggregateSpec;
+  /** MOD-GRID-54: visible leaf columns (id + data field) for per-column inline aggregate rendering. */
+  leafColumns?: ReadonlyArray<{ id: string; field: string }>;
 }
 
 // ---------------------------------------------------------------------------
@@ -137,6 +148,14 @@ export interface AggregationGridProps<TData extends object> {
    * @default true
    */
   showFooter?: boolean;
+
+  /**
+   * MOD-GRID-54: render per-column aggregate values inline on each group HEADER row (source-
+   * aggregated via computeAggregateRow, avg-of-avgs safe; visible even when the group is collapsed).
+   * Aggregation per column comes from `meta.aggregationFn`. Independent of `showFooter`.
+   * @default false
+   */
+  showGroupAggregates?: boolean;
 
   /** Additional Tailwind className for group header rows. */
   groupRowClassName?: string;
