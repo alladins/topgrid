@@ -45,8 +45,11 @@ G-1 applyRowDraft merge/immutability(node). G-2 ≥2 셀 동시 에디터·atomi
 ## constraints
 - **MIT**(grid-core, license gate 0 — 기존 편집 무-게이트 확인). 외부 dep 0(grid-renderers EditableCell=story 배선, 코어 의존 아님).
 - **LESS-006**: 훅 상태/원자성=브라우저 행동→chromium 발산(정적 presence 금지). 순수 applyRowDraft 만 node.
-- **상호작용 가드(advisor)**: ① per-cell ⊥ full-row(행 편집 진입 시 stray per-cell editor 0) ② validateRow 거짓→commit 차단(invalid 행
-  silent commit 금지). validateRow=소비자 주입(Pro dep 회피).
+- **validateRow 가드(optional hook point)**: commitRow 가 `validateRow?(draftRow)` false 시 차단(편집 유지) — 코드에 구현됨, **단 chromium
+  미검증**(AP-004: 안 돌린 검사는 0 아님 → "delivered guard" 아닌 "unverified hook point" 로 정직 기록). validateRow=소비자 주입(Pro
+  buildValidator 파생, license 경계 무위반).
+- **per-cell vs full-row = 배타 가드 불필요(N/A)**: per-cell 편집은 소비자가 EditableCell 을 직접 배선(grid-core 공유 편집 상태 없음),
+  full-row 는 별개 useFullRowEdit 훅 — **공유 상태 0 → 상호 배제할 대상 자체가 없음**(advisor 정정: 무-op 가드를 delivered 로 광고 금지).
 - 기존 onUpdateRow/EditableCell 무수정(신규 훅+순수 파일).
 
 ## 의존
@@ -87,7 +90,9 @@ applyRowDraft=**종결형**(순수). useFullRowEdit+UI 배선=**배선형**(chro
 - **★발견(소비자 배선 주의, reuse-gate)**: EditableCell(uncontrolled 내부 draft, commit-on-blur)을 full-row 에 쓰려면 **셀 컴포넌트 안정 식별자
   필수**(useMemo([]) 컬럼 + editRef.current 로 라이브 API). 컬럼/셀 매 렌더 재생성 시 flexRender 가 새 타입 createElement → setDraftCell 마다
   remount(포커스/draft 유실). MOD-26 "useKeyboardEdit 부적합" 동류의 reuse-gate 통찰 — 단 본 모듈은 안정화로 EditableCell 재사용 성립(native 회피).
-  스토리/문서에 기록(코어 lesson 아님=React-general). validateRow 가드=소비자 주입(Pro buildValidator 파생 — license 경계 무위반).
+  스토리/문서에 기록(코어 lesson 아님=React-general).
+- **★정직성 정정(advisor AP-004)**: validateRow=구현됐으나 **chromium 미검증**(optional hook point 로 기록, delivered guard 아님). per-cell⊥
+  full-row=**무-op**(공유 상태 0 → 배제 대상 없음, 가드로 광고 안 함). follow-up: validateRow 게이트 chromium 1 추가 가능(저비용).
 - **제품결정 진행**(advisor 위임): full-row editing=✅. 다음=custom cell editor slot(MOD-51). column spanning=bound-or-defer. RTL=의도적 연기.
 
 ## 모듈 완주 요약

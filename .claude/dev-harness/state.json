@@ -1429,8 +1429,8 @@
         "index_updated": "COMMERCIAL-GAP Full-row editing ❌→✅(Editing 12/4/2→13/4/1) reconcile 19/19(227/70/30·330·0 mismatch·Community 11→10)"
       },
       "rubric_specify": "77/80",
-      "closure": "★Full-row editing=✅(atomic edit/commit/cancel, node spine+chromium 발산). ★draftRef 미러=원자성 키(blur 동틱 stale 회피). ★reuse-gate 발견=EditableCell full-row 재사용은 안정 셀 식별자(useMemo+editRef) 필수(소비자 배선 문서). 가드 2(per-cell⊥full-row·validateRow). advisor.",
-      "module_summary": "Track 2 제품결정 1번째(advisor 위임). EditableCell.isEditing 셀→행 승격+controlled-data+atomic raw-truth(draftRef). 코어 render 무수정(84/84). 신규 lesson 없음.",
+      "closure": "★Full-row editing=✅(atomic edit/commit/cancel, node spine+chromium 발산). ★draftRef 미러=원자성 키(blur 동틱 stale 회피). ★reuse-gate 발견=EditableCell full-row 재사용은 안정 셀 식별자(useMemo+editRef) 필수(소비자 배선 문서). ★정직성 정정(advisor AP-004): validateRow=구현됐으나 chromium 미검증(optional hook point, delivered guard 아님)·per-cell⊥full-row=무-op(공유 상태 0). advisor.",
+      "module_summary": "Track 2 제품결정 1번째(advisor 위임). EditableCell.isEditing 셀→행 승격+controlled-data+atomic raw-truth(draftRef). 코어 render 무수정(84/84). validateRow=미검증 hook point(정정). 신규 lesson 없음.",
       "version_note": "grid-core 0.4→차기 batch(미발행).",
       "product_decision_note": "제품결정 4종(advisor 위임): full-row editing=✅ / custom cell editor slot=MOD-51 / column spanning=bound-or-defer / RTL=의도적 연기(invasive·한국우선 저가치)."
     }

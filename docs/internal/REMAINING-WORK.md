@@ -35,12 +35,16 @@
 - **MOD-49 (browser/format-lib)**: go-to-page 입력(pagination, 소형) · .xlsx sheet **import**(xlsx 라이브러리) · Excel cell styles(서식 렌더).
 - **viewport row model**(서버 스트리밍 프로토콜) = node substance 0, browser/server 트랙.
 
-### 🟨 트랙 2 — 제품 결정 4종 (사용자 설계 결정 필요 = STOP-and-ask)
-> 이전 "전부 vN" 결정. 각각 **설계 옵션·트레이드오프를 사용자와 정한 뒤** 진행(또는 연기 확정).
-- **Column spanning(body colSpan)**: 비-bounded(col-virt/핀/ARIA 얽힘). full-width 스팬은 이미 4경로 존재. → 어디까지 지원할지 결정.
-- **Custom cell editor slot**: 편집 컴포넌트 등록 API 모양 결정(예 `columnDef.editor` slot vs registry).
-- **Full-row editing**: per-cell→행 단위 edit/commit. 편집 상태 모델(누가 소유)·커밋 단위 결정.
-- **RTL 레이아웃**: invasive(핀 오프셋 LTR 전제 `computePinnedOffset` 등). 한국시장 우선순위 낮음 → 할지/연기 확정.
+### 🟨 트랙 2 — 제품 결정 4종 (★2026-06-07 사용자 advisor 위임 → STOP-and-ask 해제, advisor triage)
+> 사용자 지시: 설계·우선순위 advisor 위임, 끝까지 진행(publish/push 만 사용자 게이트). advisor triage 결과:
+- **Full-row editing** → ✅ **완료(MOD-50)**. useFullRowEdit + applyRowDraft, chromium 회귀 84/84.
+- **Custom cell editor slot** → 🔜 **build 예정(MOD-51)**. advisor: 소비자가 이미 `cell` 로 임의 editor 렌더 가능(broad capability 존재) →
+  비공허 증분 = **EditableCell `renderEditor` lifecycle slot**(Enter-commit·Esc-cancel·autofocus = raw cell 은 무료로 못 받음). render-prop
+  slot(registry 아님 — per-column·lifecycle-bound, AG 의 string-config 직렬화 needs 없음). 이게 통과해야 ✅, 아니면 🟡(convenience).
+- **Column spanning(body colSpan)** → 🔜 **bound-or-defer(MOD-52?)**. full-width 스팬 이미 4경로. arbitrary body colSpan=col-virt/핀/ARIA 얽힘.
+  advisor: **bounded 버전(비-virt·비-pinned·문서화 한계)이 비공허 단언 있으면 build, "전부 지원"만 정직 스코프면 defer**. → bounded build 후보.
+- **RTL 레이아웃** → ⛔ **의도적 연기(advisor 결정, silent gap 아님)**. invasive(`computePinnedOffset` 등 전 LTR 전제), 한국시장 우선순위 낮음
+  → 자율 build = 큰 invasive 변경 대비 거의 0 가치. **결정으로 기록**(❌ 유지, 차기 우선순위 재평가 시 재고).
 
 ### 빠른 시작 예시
 > 트랙 1: "browser 라운드 시작해 — pivot panel 부터" → chromium 하네스 세팅 후 spec-gate(advisor)부터.
