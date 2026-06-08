@@ -1,6 +1,6 @@
 {
   "name": "@topgrid/grid-renderers",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "type": "module",
   "license": "MIT",
   "description": "Cell renderers: Button, Badge, Check, Link, Number, Date, Icon",

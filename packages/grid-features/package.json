@@ -1,6 +1,6 @@
 {
   "name": "@topgrid/grid-features",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "type": "module",
   "license": "MIT",
   "description": "Column reorder, multi-sort, filter UI features",
