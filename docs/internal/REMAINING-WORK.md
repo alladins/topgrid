@@ -8,8 +8,9 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
 
-> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53~60·62~70 done(2026-06-07~08)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
-> COMMERCIAL-GAP **❌47→9**(✅246/🟡72/❌9; **Column features·Editing·Selection·Pivoting·Row models/data·Spreadsheet 0 ❌·시트 스코프 ❌ 0**). full-suite **116/116 green**(playwright retries:2). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53~60·62~71 done(2026-06-07~08)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
+> COMMERCIAL-GAP **❌47→8**(✅247/🟡72/❌8; **Column features·Editing·Selection·Pivoting·Row models/data·Spreadsheet·Master/Detail&Tree 0 ❌·시트 스코프 ❌ 0**). full-suite **117/117 green**(playwright retries:2). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **★MOD-71(2026-06-08, render tail 2)**: Master-detail + virtualization ❌→✅ — grid-pro-master MasterDetailGrid enableVirtualization(react-virtual ★measureElement 동적+tbody-per-row=가변 detail 측정)+scrollTo 배선. chromium 1/1(★200행→DOM window<60·스크롤 이동·expand detail). ★advisor 🟡 예측(고정높이 estimator) 상회→✅. OFF byte-identical.
 > **★MOD-70(2026-06-08, render tail 1)**: Sticky group rows ❌→✅ + Sticky/pinned group headers while scrolling ❌→🟡 — grid-pro-agg enableStickyGroupRows + GroupRow td 인라인 position:sticky(★border-collapse→td·P27-1 인라인). chromium 1/1(★200px 스크롤 후 헤더 computed top 고정, 비공허). 비-virt 모델(virt off-window unmount=🟡). OFF byte-identical.
 > **★MOD-69(2026-06-08, 비-DnD tail 3)**: Excel import/export of spreadsheet(.xlsx with formulas) ❌→✅ — grid-export 시트↔xlsx 브리지(순수 변환 + import/export). ★경계 실증(LESS-004): xlsx@0.18.5 가 수식(.f) round-trip 보존·스타일(.s) strip → 수식=✅(node 17/0 real-lib), 셀 스타일=별 ❌ 행. chromium 1/1(엔진 재계산). **Spreadsheet 0 ❌**. ★Excel cell styles=경계상 deliverable 없음→정직 ❌ 유지(disposition).
 > **★MOD-67~68(2026-06-08, 비-DnD tail, reuse-heavy/friendly)**: MOD-67 Server-side pivoting ❌→✅(SSRM additive pivot + 순수 buildServerPivotColumns node 13/0, core scroll-path 무수정, Pivoting 0 ❌). MOD-68 Viewport row model ❌→✅(push-based 실시간 모델: ViewportDatasource + React-free createViewportRowModel[in-place 라이브] + 순수 materializeViewport node 15/0, SSRM 무수정 독립, Row models/data 0 ❌). ★둘 다 MOD-22 SSRM 재사용·build-vs-defer=read(label pre-defer 금지). ★대형=code 먼저 커밋 후 doc-sync(compaction 대비).
@@ -23,9 +24,9 @@
 
 ### ▶ 새 세션 즉시 시작 (2026-06-07 갱신)
 
-> **다음 액션 = Enterprise ❌9 backlog(advisor triage, 자율 진행)**. ★DnD(64·65·66)+SSRM reuse-tail(67·68)+.xlsx formulas(69)+sticky group rows(70) 완료. ★남은 buildable 2개(render tail, 🟡-leaning):
-> **master-detail+virtualization**(★🟡 가능=row 가상화 고정높이 추정 vs 가변 detail 패널 높이 충돌, virtualizer 동적측정 read 로 판정) · **chart panel/dock**(render). **Excel cell styles=경계상 ❌ 유지**(disposition 확정, .s strip=LESS-004 silent no-op, 빌드 안 함). (context submenu=⛔ harness-blocked; post-sort·debounced-scroll·row-animation·auto-virt·RTL=settled defer.) →
-> ★**reuse-gate 렌더 파일 먼저**(build-vs-defer=read). "끝까지"=disposition 결정(🟡→✅ flip 아님; 비공허 입증 불가 시 정직 🟡, vacuous "렌더됨" 금지). ★대형=code 먼저 커밋 후 doc-sync. ★**❌ floor ≈ 7~8(설계상)**: 5 Community settled defer + Excel cell styles(edition-blocked) + context submenu(⛔)=영구. "done"=잔여 buildable 2개 disposition 결정이지 ❌=0 아님. fork/🟡/⛔ 에만 advisor 복귀. ★메모리 프론트매터=하네스 normalizer 간헐 삭제→재복원 모듈급 노력 금지(HANDOFF=durable anchor).
+> **다음 액션 = Enterprise ❌8 backlog(advisor triage, 자율 진행)**. ★DnD(64·65·66)+SSRM(67·68)+.xlsx(69)+sticky(70)+MD virt(71) 완료. ★**남은 buildable 1개 = chart panel/dock**(render, advisor: 가장 unbounded=fresh context 권장; MOD-34 차트 잔여 panel/dock+cross-filter[🟡]). reuse-gate read 먼저(build-vs-defer/disposition; vacuous "렌더됨" 금지, 비공허 입증 불가 시 정직 🟡).
+> **Excel cell styles=경계상 ❌ 유지**(disposition 확정, .s strip=LESS-004 silent no-op, 빌드 안 함). (context submenu=⛔ harness-blocked; post-sort·debounced-scroll·row-animation·auto-virt·RTL=settled defer.) →
+> ★**reuse-gate 렌더 파일 먼저**(build-vs-defer=read). "끝까지"=disposition 결정(🟡→✅ flip 아님). ★대형=code 먼저 커밋 후 doc-sync. ★**❌ floor = 정확히 7(설계상)**: 5 Community settled defer(RTL·post-sort·debounced-scroll·row-animation·auto-virt) + Excel cell styles(edition-blocked) + context submenu(⛔)=영구. chart panel 닫히면(✅/🟡) **buildable 0 = "done"**(❌≈7 floor, 전부 문서화된 이유). fork/🟡/⛔ 에만 advisor 복귀. ★메모리 프론트매터=normalizer 간헐 삭제→재복원 모듈급 노력 금지(HANDOFF=durable).
 > **작동 방식**: 설계·우선순위 **advisor 위임**, commit-per-module, 끝까지 진행. **publish(npm)·origin push 만 사용자 게이트.**
 > 먼저 읽을 것: 본 HANDOFF + 메모리 `dev-harness-loop-progress`(재개 지점) + `state.json`(MOD-49~53 + split_remainder) + COMMERCIAL-GAP(갭 현황 ❌27).
 

@@ -43,3 +43,10 @@ grid-pro-master 내부(MasterDetailGrid + react-virtual). story=MasterDetailGrid
 - [x] Goal(가상화 measureElement 비공허) **9/10** · [x] In/Out(가로/무한/sticky Out·disposition 분기) **10/10** · [x] AC(windowing+expand·OFF byte-identical) **10/10**
 - [x] reuse-gate(agg spacer·measureElement·MasterRow) **10/10** · [x] constraints(동적 측정·OFF byte-identical) **10/10** · [x] 의존(내부+react-virtual peer) **9/10**
 - [x] 추측 0(verified) **9/10** · [x] 분류(배선형, 순수 0 정직) **9/10** · **합계 76/80 통과.**
+
+---
+
+## G-1 결과 (완료 — 2026-06-08) → MOD-71 = ✅, §3 이관
+**구현**(grid-pro-master, 비-virt/MasterRow/DetailRow 무수정): MasterDetailGrid `enableVirtualization`/`estimatedRowHeight`(=48)/`virtualMaxHeight`(=360) → react-virtual `useVirtualizer`(★measureElement 동적) + tbody-per-row(각 master 행+detail = 측정 `<tbody>` data-index ref) + top/bottom spacer tbody + scrollTo 배선(virtualizer.scrollToIndex). OFF=기존 단일 tbody byte-identical. react-virtual peer/dev.
+**검증**: typecheck 0·build green·**chromium 1/1**(master-detail-virtualization.spec.ts ★200행→DOM window<60·1500px 스크롤→window 이동[index 0 이탈]·expand→detail 렌더, repeat-each=3 안정) + **full-suite 117/117 green**(OFF byte-identical). 초기 1-flake→결정적 단언(index 0 이탈 poll)으로 de-flake.
+**closure(advisor)**: ★예측(고정높이 estimator→🟡) 상회: measureElement 동적 측정이 가변 detail 정확 측정→✅. tbody-per-row=Fragment-of-2-trs measureElement 단일-요소 회피. Master/Detail&Tree 0 ❌, ❌9→8·✅246→247·🟡72(reconcile 19/19·330, Enterprise 4→3). Out: 가로 가상화·무한/서버 로드·가상화 sticky=vN. 신규 lesson 없음.

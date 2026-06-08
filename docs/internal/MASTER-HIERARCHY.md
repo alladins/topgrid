@@ -1130,6 +1130,18 @@
 
 ---
 
+### `mod-grid-71` — 마스터-디테일 가상화 (master-detail + virtualization, grid-pro-master) ✅ — {G-1} 완주 (Enterprise backlog 18번째 — render tail 2)
+
+소스: grid-pro-master `src/MasterDetailGrid.tsx`(virt 경로+scrollTo 배선) + `src/types.ts`(props) + `package.json`(react-virtual peer/dev), story `stories/MasterDetail.stories.tsx`(Virtualized 200행), test `tests/visual/master-detail-virtualization.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-71.md`. dev-harness 53번째. **Enterprise ❌ backlog 18번째**(advisor, render tail). 갭분석 Master/Detail&Tree ❌(virt)→✅(**카테고리 0 ❌**). 기존 비-virt 경로/MasterRow/DetailRow 무수정.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 가상화 배선(G-1) | MasterDetailGrid `enableVirtualization`/`estimatedRowHeight`/`virtualMaxHeight` + scrollTo | **배선형**(순수 0 정직) | ★react-virtual **measureElement 동적 + tbody-per-row**(master+detail=단일 측정 tbody→가변 detail ResizeObserver 측정). OFF byte-identical | chromium 1/1: ★200행→DOM tbody window<60·1500px 스크롤→window 이동(index 0 이탈)·expand→detail 렌더 | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 18번째 = render tail 2(advisor)**. ★**advisor 예측(고정높이 estimator→🟡) 상회**: **measureElement 동적 측정**(ResizeObserver)이 가변높이 detail 패널을 정확 측정→✅(고정 estimate 아님). ★**tbody-per-row**=Fragment-of-2-trs(master+detail)의 measureElement 단일-요소 가정 위반 회피(각 행 = 측정 가능한 `<tbody>`). scrollTo no-op stub 해소(virtualizer.scrollToIndex). ★비공허(advisor): "200행 렌더됨"이 아닌 **DOM window<60 + 스크롤 window 이동 + expand 측정**. additive opt-in, OFF byte-identical(기존 master-detail 회귀 통과). **Master/Detail&Tree ❌ 1→0**, COMMERCIAL-GAP ❌9→8·✅246→247·🟡72(reconcile 19/19·330·0 mismatch, Enterprise 4→3). full-suite 117/117 green. **Out 명시**: 가로 가상화·무한/서버 로드(SSRM 별개)·가상화 sticky 헤더=vN. 신규 lesson 없음.
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
@@ -1494,6 +1506,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-71 grid-pro-master 마스터-디테일 가상화 (Enterprise backlog 18 — render tail 2, Pro)** — ✅ **구현됨 → §3 `mod-grid-71` 참조** (dev-harness 53번째). spec=`specs/MOD-GRID-71.md`
+- Goal: master-detail + virtualization — FlexGrid 가상화 대응. react-virtual measureElement 동적(가변 detail).
+- In: MasterDetailGrid enableVirtualization/estimatedRowHeight/virtualMaxHeight + react-virtual measureElement + tbody-per-row + scrollTo 배선 + story(200행)+test. react-virtual peer/dev.
+- Out: 가로 가상화·무한/서버 로드(SSRM 별개)·가상화 sticky 헤더=vN. AC: ★200행→DOM window<60·스크롤 이동·expand detail(chromium)·OFF byte-identical. tier Pro. ★measureElement 동적+tbody-per-row(advisor 🟡 예측 상회→✅).
 
 **MOD-GRID-70 grid-pro-agg 고정 그룹 헤더 (Enterprise backlog 17 — render tail 1, Pro)** — ✅+🟡 **구현됨 → §3 `mod-grid-70` 참조** (dev-harness 52번째). spec=`specs/MOD-GRID-70.md`
 - Goal: sticky group rows(group header sticks while children scroll) — AG groupRowsSticky 대응. 비-virt sticky.
