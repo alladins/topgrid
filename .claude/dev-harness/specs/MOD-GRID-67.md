@@ -46,3 +46,21 @@ buildServerPivotColumns=**종결형**(순수 map). controller/hook pivot 배선=
 - [x] Goal(buildServerPivotColumns map + SSRM additive end-to-end) **9/10** · [x] In/Out(client-pivot/pivot+group 혼용 Out) **10/10** · [x] AC(node 트리·서버-피벗 렌더·flat byte-identical) **10/10**
 - [x] reuse-gate(MOD-22 SSRM·optional additive·build-vs-defer read) **10/10** · [x] constraints(core scroll-path 무수정·LESS-006) **10/10** · [x] 의존(내부, 외부 0) **9/10**
 - [x] 추측 0(verified) **9/10** · [x] 분류(종결형+배선형) **9/10** · **합계 76/80 통과.**
+
+---
+
+## G-1·G-2 결과 (완료 — 2026-06-08) → MOD-67 = ✅, §3 이관
+**구현**(grid-pro-serverside, core scroll-path[block cache/epoch/virtualizer/materialize] 무수정):
+- G-1 순수 `buildServerPivotColumns(fields,separator='|')→ServerPivotColumn[]`(flat field→중첩 컬럼 그룹, accessorKey=full field) + index export.
+- G-2 GetRowsRequest `pivotMode/pivotCols/valueCols`(optional) · GetRowsResult `pivotResultFields`(optional) · serverSideController pivotRequest() 조건부 spread(미설정=byte-identical)+fields 캡처→onChange 3rd arg · useServerSideData `pivot` 옵션/`pivotColumns` 노출 · tsconfig test exclude.
+
+**검증**: **node 13/0**(`buildServerPivotColumns.test.ts`) · typecheck 0 · build green · **chromium 1/1**(`server-side-pivot.spec.ts`) + **full-suite 113/113 green**(★기존 SSRM InfiniteScroll 회귀 통과=flat byte-identical).
+- ★end-to-end: mock pivotMode datasource→useServerSideData pivotColumns→Grid 동적 Q1/Q2 그룹 헤더+서버 값(East 100/200·West 70/90) 렌더(pivot 응답 전 부재).
+
+## ★ closure + 발견 (advisor)
+- **Server-side pivoting = ✅**: COMMERCIAL-GAP **Pivoting 20/2/1→21/2/0(0 ❌)**, **❌14→13·✅242→243·🟡71**(reconcile 19/19·330·0 mismatch·Enterprise 9→8).
+- **build-vs-defer(SSRM read)**: additive request/response 확장 + core scroll-path 무수정 → build. reuse-heavy(MOD-22 SSRM 전체 재사용).
+- **Out 명시**: 클라이언트 피벗 계산(서버 소관)·피벗+lazy group 동시·집계 의미론·컬럼 재빌드 캐싱=vN.
+
+## 모듈 완주 요약
+2-Goal(✅): Enterprise backlog 14번째(비-DnD tail 1, reuse-heavy, advisor). 순수 buildServerPivotColumns(node 13/0)+SSRM additive pivot 배선(MOD-22 재사용, core scroll-path 무수정, flat byte-identical). ★Pivoting 카테고리 0 ❌ 도달. 113/113 green. 신규 lesson 없음.

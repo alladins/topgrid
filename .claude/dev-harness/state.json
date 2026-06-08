@@ -1865,6 +1865,37 @@
       "closure": "★Drag between grids=✅: 순수 transferRow(node 12/0)+grid-core opt-in(onRowDragStart/onRowDrop), end-to-end(행 A→B 이전) 입증. ★advisor build-vs-defer(Grid.tsx read): 외부 drop=additive opt-in(OFF byte-identical, 기존 row render/enableRowReorder 무수정)=build(post-sort hot-path 얽힘과 구별, 계약-침습 아님). ★LESS-009 일반화 N=4=consumer-owns-payload(드래그 id 두 그리드 위 state, dataTransfer 미사용→bare dispatchEvent 신뢰, MOD-61 territory 회피). Out: 동일 그리드 reorder 혼용(disambiguation)·target index·가상화 소스=vN. DnD 클러스터 완결(64·65·66).",
       "module_summary": "Enterprise backlog 13번째(DnD 클러스터 3=마지막, advisor). grid-core 순수 transferRow(node 12/0)+opt-in onRowDragStart/onRowDrop(additive, OFF byte-identical). ★consumer-owns-payload(LESS-009 N=4)·build-vs-defer=Grid.tsx read. Out: reorder 혼용·target index·virt 소스. 112/112 green.",
       "version_note": "grid-core 차기 batch minor(transferRow export + onRowDragStart/onRowDrop props), 미발행."
+    },
+    "MOD-GRID-67": {
+      "package": "grid-pro-serverside (Pro)",
+      "tier": "Pro",
+      "weight": "Full(G-1 순수 buildServerPivotColumns + G-2 SSRM additive pivot 배선)",
+      "priority": "Enterprise ❌ backlog 14번째(advisor 우선순위=비-DnD tail 1, reuse-heavy clean-✅)",
+      "phase": "done (G-1/G-2 완주 → §3, ✅)",
+      "spec": "specs/MOD-GRID-67.md (rubric 76/80, gate-B 선작성)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "server-side / lazy pivoting — grid-pro-serverside SSRM additive pivot(request pivotMode/pivotCols/valueCols + result pivotResultFields) + 순수 buildServerPivotColumns(flat field→중첩 컬럼) + useServerSideData pivot 옵션/pivotColumns. AG SSRM 모델(서버 피벗 수행, client=동적 컬럼 도출). core scroll-path 무수정.",
+      "g1": {
+        "surface": "buildServerPivotColumns(fields:string[], separator='|')→ServerPivotColumn[]{id,header,accessorKey?,columns?} — flat pivot-result field 를 separator 분해→중첩 그룹(dim=헤더, 마지막 세그먼트=leaf, accessorKey=full field, first-seen 순서 보존). grid-core ColumnDef 호환.",
+        "verified_node": "13/0(buildServerPivotColumns.test.ts): 단일 dim(2 그룹)·중첩 2-dim·first-seen 순서·단일세그(flat leaf)·빈 입력·중복 field·custom separator·group id=path prefix."
+      },
+      "g2": {
+        "surface": "GetRowsRequest +pivotMode?/pivotCols?/valueCols?(optional) · GetRowsResult +pivotResultFields? · serverSideController pivotRequest() 조건부 spread(미설정=request byte-identical)+res.pivotResultFields 캡처→onChange 3rd arg · useServerSideData pivot?{pivotCols,valueCols,separator?} 옵션+pivotColumns(buildServerPivotColumns 파생) 노출.",
+        "verified_chromium": "1/1(server-side-pivot.spec.ts) ★end-to-end: mock pivotMode datasource(피벗 행+pivotResultFields 반환)→useServerSideData pivotColumns→Grid columns=[regionCol,...pivotColumns]→동적 Q1/Q2 그룹 헤더+서버 값(East 100/200·West 70/90) 렌더(pivot 응답 전 부재). ★core scroll-path 무수정."
+      },
+      "verification": "node 13/0·typecheck 0·build green·chromium 1/1 + full-suite 113/113 green(★기존 SSRM InfiniteScroll 회귀 통과=flat 모드 controller byte-identical). block cache/epoch/virtualizer/materialize 불변.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음 — reuse-heavy(MOD-22 SSRM 전체 재사용)+additive optional(groupKeys 패턴 동형). build-vs-defer=read(additive/core 무수정→build).",
+        "matrix_row": "§3 mod-grid-67 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Server-side pivoting ❌→✅(Pivoting 20/2/1→21/2/0=0 ❌) reconcile 19/19(243/71/13·330·0 mismatch·Enterprise 9→8)"
+      },
+      "rubric_specify": "76/80",
+      "closure": "★Server-side pivoting=✅: SSRM additive pivot 계약(request pivotMode/pivotCols/valueCols + result pivotResultFields, optional=flat byte-identical)+순수 buildServerPivotColumns(node 13/0)+useServerSideData pivotColumns, end-to-end(서버-피벗 동적 컬럼 렌더). ★advisor build-vs-defer(SSRM read): additive 확장+core scroll-path(block cache/epoch/virtualizer) 무수정→build(post-sort hot-path 얽힘과 구별, reuse-heavy=MOD-22 전체). ★Pivoting 카테고리 0 ❌ 도달. Out: 클라이언트 피벗 계산(서버 소관)·피벗+lazy group 동시·집계 의미론=vN. 비-DnD tail 시작=reuse-heavy clean-✅ 입증.",
+      "module_summary": "Enterprise backlog 14번째(비-DnD tail 1, reuse-heavy, advisor). grid-pro-serverside SSRM additive pivot(MOD-22 재사용)+순수 buildServerPivotColumns(node 13/0)+useServerSideData pivotColumns. ★core scroll-path 무수정·flat byte-identical. Pivoting 0 ❌ 도달. 113/113 green.",
+      "version_note": "grid-pro-serverside 차기 batch minor(buildServerPivotColumns export + GetRowsRequest/Result pivot 필드 + useServerSideData pivot 옵션), 미발행."
     }
   },
   "release_queue": {

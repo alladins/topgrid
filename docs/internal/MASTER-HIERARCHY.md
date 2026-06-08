@@ -1079,6 +1079,19 @@
 
 ---
 
+### `mod-grid-67` — 서버사이드 피벗 (server-side / lazy pivoting, grid-pro-serverside) ✅ — {G-1, G-2} 완주 (Enterprise backlog 14번째 — 비-DnD tail 1, reuse-heavy)
+
+소스: grid-pro-serverside `src/internal/{buildServerPivotColumns.ts, buildServerPivotColumns.test.ts}`(node) + `types.ts`(GetRowsRequest/Result additive) + `internal/serverSideController.ts`(pivot 배선) + `useServerSideData.ts`(pivot 옵션/pivotColumns) + `index.ts` export + `tsconfig.json`(test exclude), story `stories/ServerSidePivot.stories.tsx`, test `tests/visual/server-side-pivot.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-67.md`. dev-harness 49번째. **Enterprise ❌ backlog 14번째**(advisor, 비-DnD tail 시작=reuse-heavy clean-✅). 갭분석 Pivoting ❌ 1 → ✅(**카테고리 0 ❌**).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 순수 buildServerPivotColumns(G-1) | `buildServerPivotColumns(fields,separator='\|')→ServerPivotColumn[]` | **종결형**(순수 map) | 서버 flat field→중첩 컬럼 그룹(dim=그룹, 마지막=leaf, accessorKey=full field, first-seen 순서). grid-core ColumnDef 호환 | node **13/0**: 단일/다중 dim·순서·빈/단일세그·중복·custom sep·group id=path prefix | 채움 |
+| SSRM additive 배선(G-2) | GetRowsRequest pivotMode/pivotCols/valueCols · Result pivotResultFields · useServerSideData pivot/pivotColumns | **배선형** | MOD-22 SSRM 재사용. controller pivotRequest 조건부 spread + fields 캡처. ★core scroll-path(block cache/epoch/virtualizer) 무수정 | chromium 1/1 ★end-to-end: pivotMode datasource→동적 Q1/Q2 헤더+서버 값 렌더 | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 14번째 = 비-DnD tail 1번째(reuse-heavy, advisor 우선순위)**. ★**build-vs-defer(SSRM read)**: pivot=request/response **additive 확장**(GetRowsRequest groupKeys 패턴 동형 optional)+순수 컬럼 도출, **core scroll-path 무수정**→build(post-sort hot-path 얽힘과 구별). MOD-22 SSRM 전체 재사용(block cache/epoch/controller/hook). AG SSRM 모델=서버 피벗→client 는 pivotResultFields 로 동적 컬럼. ★flat 모드 byte-identical(pivotRequest 조건부 spread, 기존 SSRM InfiniteScroll 회귀 통과). **Out 명시**: 클라이언트 피벗 계산(서버 소관, computePivot 별개)·피벗+lazy group 동시·집계 의미론=vN. **Pivoting 20/2/1→21/2/0**(❌→✅, **카테고리 0 ❌**), COMMERCIAL-GAP ❌14→13·✅242→243·🟡71(reconcile 19/19·330·0 mismatch, Enterprise 9→8). full-suite 113/113 green. 신규 lesson 없음.
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
@@ -1443,6 +1456,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-67 grid-pro-serverside 서버사이드 피벗 (Enterprise backlog 14 — 비-DnD tail 1, Pro)** — ✅ **구현됨 → §3 `mod-grid-67` 참조** (dev-harness 49번째). spec=`specs/MOD-GRID-67.md`
+- Goal: server-side / lazy pivoting — AG SSRM pivoting 대응. 순수 buildServerPivotColumns + SSRM pivot 계약 확장.
+- In: 순수 `buildServerPivotColumns(node 13/0)`+export + GetRowsRequest/Result additive(pivotMode/pivotCols/valueCols·pivotResultFields) + controller/hook pivot 배선 + 2-mode story+test.
+- Out: 클라이언트 피벗 계산(서버 소관)·피벗+lazy group 동시(disambiguation)·집계 의미론·컬럼 재빌드 캐싱=vN. AC: buildServerPivotColumns 트리(node)·★서버-피벗 동적 컬럼 렌더(chromium end-to-end)·flat byte-identical. tier Pro. ★core scroll-path 무수정·reuse-heavy(MOD-22 SSRM).
 
 **MOD-GRID-66 grid-core 그리드 간 행 드래그 (Enterprise backlog 13 — DnD 클러스터 3[마지막], MIT)** — ✅ **구현됨 → §3 `mod-grid-66` 참조** (dev-harness 48번째). spec=`specs/MOD-GRID-66.md`
 - Goal: drag-between-grids/row transfer — AG row drag managed+외부 drop 대응. 순수 transferRow + grid-core opt-in(onRowDragStart/onRowDrop).
