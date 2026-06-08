@@ -549,6 +549,9 @@ importers:
       '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
+      '@topgrid/grid-export':
+        specifier: workspace:*
+        version: link:../grid-export
       '@topgrid/grid-pro-range':
         specifier: workspace:*
         version: link:../grid-pro-range

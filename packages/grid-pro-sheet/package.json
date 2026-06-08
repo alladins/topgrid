@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "@topgrid/grid-core": "workspace:*",
+    "@topgrid/grid-export": "workspace:*",
     "@topgrid/grid-pro-range": "workspace:*",
     "esbuild": "^0.25.0"
   }
