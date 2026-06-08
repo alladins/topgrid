@@ -6,6 +6,7 @@
  *
  * Responsibilities:
  * - `separator: true` items → `<hr>` element (AC-008)
+ * - `icon` rendered leading the label; `children` → nested submenu (MOD-61 redo)
  * - `disabled` evaluation at render time against `targetRow` (D7, AC-007)
  * - `shortcut` hint display on the right side of each item (AC-005)
  * - Outside-click → `onClose()` via `mousedown` listener (AC-012)
@@ -14,7 +15,7 @@
  * @see G-002-spec.md Section 5.3 / Section 9
  */
 
-import { useEffect, useRef, type ReactElement } from 'react';
+import { useEffect, useRef, useState, type ReactElement } from 'react';
 import { createPortal } from 'react-dom';
 import type { Cell } from '@tanstack/react-table';
 import type { ContextMenuItem } from '../types';
@@ -41,12 +42,6 @@ interface ContextMenuPortalProps<TData> {
 
 /**
  * Clamps menu position so it stays within the viewport.
- *
- * @param x - Requested left position (clientX from contextmenu event).
- * @param y - Requested top position (clientY from contextmenu event).
- * @param menuWidth - Estimated / measured menu width in px.
- * @param menuHeight - Estimated / measured menu height in px.
- * @returns Adjusted `{ x, y }` clamped to viewport bounds.
  */
 function clampPosition(
   x: number,
@@ -60,6 +55,112 @@ function clampPosition(
     x: x + menuWidth > vw ? Math.max(0, vw - menuWidth) : x,
     y: y + menuHeight > vh ? Math.max(0, vh - menuHeight) : y,
   };
+}
+
+/**
+ * A single menu row. Recursive: an item with `children` renders a nested
+ * `<ul role="menu">` submenu that opens on hover (onMouseEnter) or click-toggle.
+ *
+ * Click-toggle is the deterministic open path (the chromium gate clicks the
+ * parent, avoiding React's synthetic-onMouseEnter timing — LESS-009 discipline).
+ */
+function MenuItemRow<TData>(props: {
+  item: ContextMenuItem<TData>;
+  index: number;
+  targetRow: TData;
+  targetCell: Cell<TData, unknown>;
+  onClose: () => void;
+}): ReactElement {
+  const { item, index, targetRow, targetCell, onClose } = props;
+  const [subOpen, setSubOpen] = useState(false);
+
+  // Separator (AC-008)
+  if (item.separator === true) {
+    return (
+      <li key={index} role="separator">
+        <hr className="my-1 border-gray-200" />
+      </li>
+    );
+  }
+
+  const isDisabled =
+    typeof item.disabled === 'function'
+      ? item.disabled(targetRow)
+      : (item.disabled ?? false);
+
+  const hasChildren = item.children !== undefined && item.children.length > 0;
+
+  function handleClick(e: { nativeEvent: MouseEvent }) {
+    if (isDisabled) return;
+    if (hasChildren) {
+      // Parent: opens its submenu (idempotent, never fires onClick). Open — not
+      // toggle — so it is deterministic regardless of a preceding hover-open
+      // (Playwright click hovers first; a toggle would close it). Closing is via
+      // hover-out (onMouseLeave) or outside-click.
+      setSubOpen(true);
+      return;
+    }
+    item.onClick?.(targetRow, targetCell, e.nativeEvent);
+    onClose();
+  }
+
+  return (
+    <li
+      key={index}
+      role="menuitem"
+      aria-disabled={isDisabled}
+      aria-haspopup={hasChildren ? 'menu' : undefined}
+      className="relative"
+      onMouseEnter={hasChildren ? () => setSubOpen(true) : undefined}
+      onMouseLeave={hasChildren ? () => setSubOpen(false) : undefined}
+    >
+      <button
+        type="button"
+        className={[
+          'w-full flex items-center gap-2 px-3 py-1.5 text-left text-gray-700',
+          'hover:bg-gray-100 focus:bg-gray-100 focus:outline-none',
+          isDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'cursor-pointer',
+        ].join(' ')}
+        disabled={isDisabled}
+        onClick={isDisabled ? undefined : handleClick}
+      >
+        {item.icon !== undefined && (
+          <span className="shrink-0 w-4 text-center" data-menu-icon>
+            {item.icon}
+          </span>
+        )}
+        <span className="flex-1">{item.label}</span>
+        {hasChildren ? (
+          <span className="ml-auto text-xs text-gray-400 shrink-0" data-submenu-arrow>
+            ▶
+          </span>
+        ) : (
+          item.shortcut !== undefined && (
+            <span className="ml-auto text-xs text-gray-400 shrink-0">{item.shortcut}</span>
+          )
+        )}
+      </button>
+
+      {hasChildren && subOpen && (
+        <ul
+          role="menu"
+          data-submenu
+          className="absolute left-full top-0 -mt-1 bg-white border border-gray-200 rounded shadow-lg py-1 text-sm min-w-[140px]"
+        >
+          {item.children!.map((child, ci) => (
+            <MenuItemRow<TData>
+              key={ci}
+              item={child}
+              index={ci}
+              targetRow={targetRow}
+              targetCell={targetCell}
+              onClose={onClose}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
 }
 
 /**
@@ -93,7 +194,6 @@ function ContextMenuPortalInner<TData>(
   if (!isOpen) return null;
 
   // Estimate menu dimensions for viewport clamping.
-  // Use a generous estimate (200×(items.length * 32)) when DOM not yet measured.
   const estimatedHeight = items.length * 32 + 8;
   const estimatedWidth = 200;
   const { x, y } = clampPosition(position.x, position.y, estimatedWidth, estimatedHeight);
@@ -105,49 +205,16 @@ function ContextMenuPortalInner<TData>(
       className="fixed z-50 bg-white border border-gray-200 rounded shadow-lg py-1 text-sm min-w-[160px]"
       style={{ left: x, top: y }}
     >
-      {items.map((item, index) => {
-        // Separator item (AC-008)
-        if (item.separator === true) {
-          return (
-            <li key={index} role="separator">
-              <hr className="my-1 border-gray-200" />
-            </li>
-          );
-        }
-
-        // Evaluate disabled (D7): function evaluated at render time against targetRow
-        const isDisabled =
-          typeof item.disabled === 'function'
-            ? item.disabled(targetRow)
-            : (item.disabled ?? false);
-
-        return (
-          <li key={index} role="menuitem" aria-disabled={isDisabled}>
-            <button
-              type="button"
-              className={[
-                'w-full flex items-center gap-2 px-3 py-1.5 text-left text-gray-700',
-                'hover:bg-gray-100 focus:bg-gray-100 focus:outline-none',
-                isDisabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : 'cursor-pointer',
-              ].join(' ')}
-              disabled={isDisabled}
-              onClick={
-                isDisabled
-                  ? undefined
-                  : (e) => {
-                      item.onClick(targetRow, targetCell, e.nativeEvent);
-                      onClose();
-                    }
-              }
-            >
-              <span className="flex-1">{item.label}</span>
-              {item.shortcut !== undefined && (
-                <span className="ml-auto text-xs text-gray-400 shrink-0">{item.shortcut}</span>
-              )}
-            </button>
-          </li>
-        );
-      })}
+      {items.map((item, index) => (
+        <MenuItemRow<TData>
+          key={index}
+          item={item}
+          index={index}
+          targetRow={targetRow}
+          targetCell={targetCell}
+          onClose={onClose}
+        />
+      ))}
     </ul>
   );
 

@@ -204,7 +204,9 @@ function ContextMenuGridInner<TData>(
         if (!isDisabled) {
           // The spec signature requires `MouseEvent` (native, not React synthetic).
           // targetCell is narrowed to Cell<TData, unknown> by the null guard above.
-          item.onClick(targetRow, targetCell, new MouseEvent('click'));
+          // onClick is optional (submenu parents omit it); top-level shortcuts only —
+          // submenu-child shortcuts are out of scope (MOD-61 redo).
+          item.onClick?.(targetRow, targetCell, new MouseEvent('click'));
           close();
         }
         e.preventDefault();

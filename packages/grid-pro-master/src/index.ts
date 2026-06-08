@@ -10,6 +10,10 @@ export type { MasterDetailGridProps, MasterDetailOptions, RenderDetailRow } from
 export { ContextMenuGrid } from './ContextMenuGrid';
 export type { ContextMenuGridProps, ContextMenuItem } from './types';
 
+// MOD-61 (redo): built-in menu items + pure clipboard-text helper
+export { makeCopyCellItem, type MakeCopyCellItemOptions } from './internal/makeCopyCellItem';
+export { cellValueToClipboardText } from './internal/clipboard';
+
 // G-003 (MOD-GRID-16): Expanded persistence hook (Option B — independent, D17)
 export { useExpandedPersistence } from './internal/useExpandedPersistence';
 export type { UseExpandedPersistenceOptions } from './internal/useExpandedPersistence';

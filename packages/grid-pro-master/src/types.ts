@@ -175,13 +175,31 @@ export interface ContextMenuItem<TData> {
   separator?: boolean;
 
   /**
+   * Optional leading icon, rendered to the left of the label.
+   * Any `ReactNode` (e.g. an SVG element or an emoji string).
+   */
+  icon?: ReactNode;
+
+  /**
+   * Optional submenu. When provided, this item opens a nested context menu on
+   * hover instead of (or in addition to) firing `onClick`. A `▶` affordance is
+   * rendered on the right and `aria-haspopup="menu"` is set.
+   *
+   * Submenu items are themselves `ContextMenuItem`s, so nesting is recursive.
+   */
+  children?: ContextMenuItem<TData>[];
+
+  /**
    * Click handler for this menu item.
+   *
+   * Optional — submenu parent items (those with `children`) typically omit it,
+   * since clicking only toggles the submenu. Leaf items should provide it.
    *
    * @param row   - The `original` data of the right-clicked row.
    * @param cell  - The TanStack `Cell<TData, unknown>` that was right-clicked.
    * @param event - The original `MouseEvent`.
    */
-  onClick: (row: TData, cell: Cell<TData, unknown>, event: MouseEvent) => void;
+  onClick?: (row: TData, cell: Cell<TData, unknown>, event: MouseEvent) => void;
 }
 
 /**
