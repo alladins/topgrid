@@ -31,6 +31,10 @@ import {
   type ServerSideController,
 } from './internal/serverSideController.js';
 import { materialize, createBlockCache } from './internal/blockCache.js';
+import {
+  buildServerPivotColumns,
+  type ServerPivotColumn,
+} from './internal/buildServerPivotColumns.js';
 import type { ServerSideDatasource, RowPlaceholder } from './types.js';
 
 /** {@link useServerSideData} options. */
@@ -43,6 +47,12 @@ export interface UseServerSideDataOptions {
    * placeholder array is allocated; no LRU eviction.)
    */
   rowCount: number;
+  /**
+   * Server-side pivot (MOD-GRID-67) — optional. When set, requests carry `pivotMode`/`pivotCols`/
+   * `valueCols`; the response's `pivotResultFields` are surfaced as {@link UseServerSideDataResult.pivotColumns}.
+   * Absent = flat/group mode (byte-identical to before). Captured once like `datasource`.
+   */
+  pivot?: { pivotCols: string[]; valueCols: string[]; separator?: string };
 }
 
 /**
@@ -71,6 +81,12 @@ export interface UseServerSideDataResult<TData> {
   gridProps: ServerSideGridProps<TData>;
   /** Current known total row count (grows as `lastRow` is learned). */
   totalCount: number;
+  /**
+   * Server-side pivot (MOD-GRID-67) — the derived nested pivot-result column tree from the server's
+   * `pivotResultFields` (empty until a pivot response arrives / when not pivoting). Spread into
+   * `<Grid columns={[...fixedCols, ...pivotColumns]} />`.
+   */
+  pivotColumns: ServerPivotColumn[];
   /** Invalidate the cache (epoch++) and re-fetch the visible range — drops in-flight responses. */
   refresh: () => void;
 }
@@ -89,16 +105,28 @@ export function useServerSideData<TData>(
     materialize(createBlockCache<TData>(options.blockSize), options.rowCount),
   );
   const [totalCount, setTotalCount] = useState<number>(options.rowCount);
+  // MOD-GRID-67: derived pivot-result columns (empty until a pivot response arrives).
+  const [pivotColumns, setPivotColumns] = useState<ServerPivotColumn[]>([]);
+  const pivotSeparator = options.pivot?.separator;
 
   // Controller created once. setData/setTotalCount are stable → controller never re-created.
   const controllerRef = useRef<ServerSideController<TData> | null>(null);
   if (controllerRef.current === null) {
     controllerRef.current = createServerSideController<TData>(
       datasource,
-      { blockSize: options.blockSize, rowCount: options.rowCount },
-      (nextData, nextTotal) => {
+      {
+        blockSize: options.blockSize,
+        rowCount: options.rowCount,
+        ...(options.pivot !== undefined
+          ? { pivot: { pivotCols: options.pivot.pivotCols, valueCols: options.pivot.valueCols } }
+          : {}),
+      },
+      (nextData, nextTotal, pivotResultFields) => {
         setData(nextData);
         setTotalCount(nextTotal);
+        if (pivotResultFields !== undefined) {
+          setPivotColumns(buildServerPivotColumns(pivotResultFields, pivotSeparator));
+        }
       },
     );
   }
@@ -149,6 +177,7 @@ export function useServerSideData<TData>(
       virtualizerOptions: { onChange: onVirtualizerChange },
     },
     totalCount,
+    pivotColumns,
     refresh: controller.refresh,
   };
 }

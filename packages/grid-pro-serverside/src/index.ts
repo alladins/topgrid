@@ -44,6 +44,10 @@ export type {
   ServerSideGridProps,
 } from './useServerSideData.js';
 
+// MOD-GRID-67: server-side pivot — pure pivot-result column derivation (server returns field keys).
+export { buildServerPivotColumns } from './internal/buildServerPivotColumns.js';
+export type { ServerPivotColumn } from './internal/buildServerPivotColumns.js';
+
 // G-3 lazy grouping (hierarchical cache): pure tree core + React-free controller + thin hook.
 export {
   createTreeCache,

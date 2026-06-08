@@ -41,6 +41,16 @@ export interface GetRowsRequest {
   groupKeys?: string[];
   /** Columns being grouped, outermost first (absent/empty = no grouping). */
   rowGroupCols?: string[];
+  /**
+   * Server-side pivot (MOD-GRID-67) — **optional, absent = no pivot** (flat/group behavior unchanged).
+   * When `pivotMode` is true the server pivots `valueCols` across `pivotCols` and returns rows keyed
+   * by the generated pivot-result fields, plus the field list in {@link GetRowsResult.pivotResultFields}.
+   */
+  pivotMode?: boolean;
+  /** Pivot dimension columns (outermost first) — the values become column groups. */
+  pivotCols?: string[];
+  /** Value/measure columns aggregated within each pivot column combination. */
+  valueCols?: string[];
 }
 
 /**
@@ -53,6 +63,12 @@ export interface GetRowsResult<TData> {
   rows: TData[];
   /** Absolute total row count when known (end reached), else undefined. */
   lastRow?: number;
+  /**
+   * Server-side pivot (MOD-GRID-67) — the generated pivot-result field keys (e.g. `"East|sales"`),
+   * in column order. The grid feeds these to `buildServerPivotColumns` to derive the dynamic column
+   * tree. Absent for non-pivot responses. (Typically identical across blocks of one query.)
+   */
+  pivotResultFields?: string[];
 }
 
 /** Consumer-supplied datasource. The single seam between the grid and the server. */

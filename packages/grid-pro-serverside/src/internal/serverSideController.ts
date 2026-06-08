@@ -27,11 +27,14 @@ import type {
   FilterModel,
   RowPlaceholder,
   BlockCacheState,
+  GetRowsRequest,
 } from '../types.js';
 
 export interface ServerSideControllerOptions {
   blockSize: number;
   rowCount: number;
+  /** Server-side pivot (MOD-GRID-67) — optional. Absent = flat/group request unchanged. */
+  pivot?: { pivotCols: string[]; valueCols: string[] };
 }
 
 export interface ServerSideController<TData> {
@@ -68,17 +71,30 @@ function toFilterModel(filters: ColumnFiltersState): FilterModel {
 export function createServerSideController<TData>(
   datasource: ServerSideDatasource<TData>,
   options: ServerSideControllerOptions,
-  onChange: (data: Array<TData | RowPlaceholder>, totalCount: number) => void,
+  onChange: (
+    data: Array<TData | RowPlaceholder>,
+    totalCount: number,
+    pivotResultFields?: string[],
+  ) => void,
 ): ServerSideController<TData> {
   const { blockSize } = options;
   let cache: BlockCacheState<TData> = createBlockCache<TData>(blockSize);
   let sortModel: SortModelItem[] = [];
   let filterModel: FilterModel = {};
   let range = { start: 0, end: 0 };
+  // MOD-GRID-67: latest server pivot-result fields (undefined until a pivot response arrives).
+  let pivotResultFields: string[] | undefined;
 
   const totalOf = (): number => cache.rowCount ?? options.rowCount;
   const getData = (): Array<TData | RowPlaceholder> => materialize(cache, totalOf());
-  const emit = (): void => onChange(getData(), totalOf());
+  const emit = (): void => onChange(getData(), totalOf(), pivotResultFields);
+
+  // MOD-GRID-67: pivot request fields — included ONLY when pivot is configured, so a non-pivot
+  // request is byte-identical to before (groupKeys-style optional additive).
+  const pivotRequest = (): Pick<GetRowsRequest, 'pivotMode' | 'pivotCols' | 'valueCols'> =>
+    options.pivot !== undefined
+      ? { pivotMode: true, pivotCols: options.pivot.pivotCols, valueCols: options.pivot.valueCols }
+      : {};
 
   const ensureRange = (visibleStart: number, visibleEnd: number): void => {
     range = { start: visibleStart, end: visibleEnd };
@@ -88,8 +104,9 @@ export function createServerSideController<TData>(
       cache = markLoading(cache, blockIndex);
       const { startRow, endRow } = blockBounds(blockIndex, blockSize);
       datasource
-        .getRows({ startRow, endRow, sortModel, filterModel })
+        .getRows({ startRow, endRow, sortModel, filterModel, ...pivotRequest() })
         .then((res) => {
+          if (res.pivotResultFields !== undefined) pivotResultFields = res.pivotResultFields;
           cache = acceptBlock(cache, blockIndex, res.rows, epoch, res.lastRow);
           emit();
         })
