@@ -8,8 +8,9 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
 
-> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53~60·62~68 done(2026-06-07~08)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
-> COMMERCIAL-GAP **❌47→12**(✅244/🟡71/❌12; **Column features·Editing·Selection·Pivoting·Row models/data 0 ❌·시트 스코프 ❌ 0**). full-suite **114/114 green**(playwright retries:2). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53~60·62~69 done(2026-06-07~08)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
+> COMMERCIAL-GAP **❌47→11**(✅245/🟡71/❌11; **Column features·Editing·Selection·Pivoting·Row models/data·Spreadsheet 0 ❌·시트 스코프 ❌ 0**). full-suite **116/116 green**(playwright retries:2). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **★MOD-69(2026-06-08, 비-DnD tail 3)**: Excel import/export of spreadsheet(.xlsx with formulas) ❌→✅ — grid-export 시트↔xlsx 브리지(순수 변환 + import/export). ★경계 실증(LESS-004): xlsx@0.18.5 가 수식(.f) round-trip 보존·스타일(.s) strip → 수식=✅(node 17/0 real-lib), 셀 스타일=별 ❌ 행. chromium 1/1(엔진 재계산). **Spreadsheet 0 ❌**. ★Excel cell styles=경계상 deliverable 없음→정직 ❌ 유지(disposition).
 > **★MOD-67~68(2026-06-08, 비-DnD tail, reuse-heavy/friendly)**: MOD-67 Server-side pivoting ❌→✅(SSRM additive pivot + 순수 buildServerPivotColumns node 13/0, core scroll-path 무수정, Pivoting 0 ❌). MOD-68 Viewport row model ❌→✅(push-based 실시간 모델: ViewportDatasource + React-free createViewportRowModel[in-place 라이브] + 순수 materializeViewport node 15/0, SSRM 무수정 독립, Row models/data 0 ❌). ★둘 다 MOD-22 SSRM 재사용·build-vs-defer=read(label pre-defer 금지). ★대형=code 먼저 커밋 후 doc-sync(compaction 대비).
 > **★MOD-64~66 = DnD 클러스터 완결(2026-06-08)**: MOD-64 Pivot panel DnD(movePivotField node 13/0+PivotPanel, end-to-end 재-피벗). MOD-65 Tool panel reorder via drag(grid-core reorderColumnOrder=useColumnDrag 공유 node 10/0+ToolPanel stateless; 헤더-drag 가드 신규). MOD-66 Drag between grids(순수 transferRow node 12/0 + grid-core opt-in onRowDragStart/onRowDrop, OFF byte-identical, end-to-end 행 A→B 이전). **신규 LESS-009**(ref-keyed DnD: 핸들러 dataTransfer 직접 접근 금지 + consumer-owns-payload, N=4 — DnD 클러스터 표준; dispatchEvent 무-flake=flaky 아님 입증).
 > ★suite flake(부하 타이밍, 무관 기능 전반): **MOD-58 동반 `apps/docs/playwright.config.ts` retries:2 추가로 안정화**(full-suite green; clean 1회 통과·flake 만 재시도). 근본 timing harden(expect.poll)은 후속 선택.
@@ -21,9 +22,9 @@
 
 ### ▶ 새 세션 즉시 시작 (2026-06-07 갱신)
 
-> **다음 액션 = Enterprise ❌12 backlog(advisor triage, 자율 진행)**. ★DnD 클러스터(64·65·66)+SSRM reuse-tail(67 server-pivot·68 viewport) 완료. 잔여(전부 비-DnD):
-> sticky group headers/rows(🟡-prone, GroupRow position styling+P27-1 inline-style 하네스 quirk) · master-detail+virtualization · chart panel/dock(render) · **Excel cell styles·.xlsx import**(★library-edition-gated=LESS-004, **경계-read 먼저**=community xlsx 가 cell style write/import 가능한지; 불가면 정직 🟡/defer, write→read 라운드트립 입증). (context submenu=⛔ harness-blocked; post-sort·debounced-scroll·row-animation·auto-virt·RTL=settled defer.) →
-> ★**각 모듈 reuse-gate 렌더 파일 먼저 읽기**(build-vs-defer 는 read 로 — additive/OFF byte-identical/reuse 가능하면 build, 계약-침습/hot-path 전반 얽힘/edition-gated 면 🟡/defer). "끝까지"=각 항목 disposition 결정(🟡→✅ flip 아님). ★대형 모듈=code 먼저 커밋 후 doc-sync. fork/🟡/⛔ 에만 advisor 복귀.
+> **다음 액션 = Enterprise ❌11 backlog(advisor triage, 자율 진행)**. ★DnD(64·65·66)+SSRM reuse-tail(67·68)+.xlsx formulas(69) 완료. 잔여 render/🟡-prone tail:
+> sticky group headers/rows(★🟡-prone=GroupRow position styling+P27-1 inline-style 하네스 quirk[floating rows·loading overlay 서 경험]) · master-detail+virtualization(★🟡 가능=row 가상화 고정높이 vs 가변 detail 충돌, virtualizer 동적측정 read) · chart panel/dock(render) · **Excel cell styles=경계상 ❌ 유지(disposition 확정, .s strip, 빌드 시 LESS-004 silent no-op)**. (context submenu=⛔ harness-blocked; post-sort·debounced-scroll·row-animation·auto-virt·RTL=settled defer.) →
+> ★**각 모듈 reuse-gate 렌더 파일 먼저 읽기**(build-vs-defer 는 read 로). "끝까지"=각 항목 disposition 결정(🟡→✅ flip 아님; sticky/MD+virt 는 비공허 입증 불가 시 정직 🟡). ★대형 모듈=code 먼저 커밋 후 doc-sync. fork/🟡/⛔ 에만 advisor 복귀. ★메모리 프론트매터(name/description) 하네스 normalizer 가 간헐 삭제 → REMAINING-WORK HANDOFF 가 durable resume anchor(프론트매터 재복원에 모듈급 노력 쓰지 말 것).
 > **작동 방식**: 설계·우선순위 **advisor 위임**, commit-per-module, 끝까지 진행. **publish(npm)·origin push 만 사용자 게이트.**
 > 먼저 읽을 것: 본 HANDOFF + 메모리 `dev-harness-loop-progress`(재개 지점) + `state.json`(MOD-49~53 + split_remainder) + COMMERCIAL-GAP(갭 현황 ❌27).
 

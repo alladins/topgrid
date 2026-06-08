@@ -1928,6 +1928,38 @@
       "closure": "★Viewport row model=✅: push-based ViewportDatasource(init/setViewportRange/setRowData)+React-free createViewportRowModel(sparse map+★in-place 라이브 갱신)+순수 materializeViewport(node 15/0)+useViewportRowModel hook, end-to-end(viewport push 렌더+실시간 셀 갱신). ★advisor: label pre-defer 금지→read 로 판정(viewport=push+실시간 in-place=SSRM pull/infinite scroll 과 제어흐름 상이=genuine 부재; 'server-streaming node-substance-0' 옛 추정 번복). ★build-vs-defer: additive 신규 컨트롤러/hook/ds + Grid 가상화·RowPlaceholder 재사용 + core/SSRM 무수정 → build(독립 add-on). Out: 서버 정렬/필터/그룹·eviction·행 shift=vN. Row models/data 카테고리 0 ❌.",
       "module_summary": "Enterprise backlog 15번째(비-DnD tail 2, reuse-friendly, advisor). grid-pro-serverside push-based viewport 모델(SSRM 무수정 독립): 순수 materializeViewport+React-free createViewportRowModel(in-place 라이브)+useViewportRowModel hook. node 15/0·chromium 1/1·114/114 green. Row models/data 0 ❌. ★build-vs-defer=read(label pre-defer 금지).",
       "version_note": "grid-pro-serverside 차기 batch minor(viewport 모델 export: createViewportRowModel/materializeViewport/useViewportRowModel/ViewportDatasource), 미발행."
+    },
+    "MOD-GRID-69": {
+      "package": "grid-export (MIT/Lite)",
+      "tier": "MIT/Lite",
+      "weight": "Full(G-1 순수 변환 + G-2 xlsx 브리지 import/export)",
+      "priority": "Enterprise ❌ backlog 16번째(advisor, 비-DnD tail 3, library-edition-gated 경계-read)",
+      "phase": "done (G-1/G-2 완주 → §3, ✅)",
+      "spec": "specs/MOD-GRID-69.md (rubric 76/80, gate-B 선작성)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "Excel import/export of the spreadsheet(.xlsx with formulas) — grid-export 시트↔xlsx 브리지: 순수 변환(sheetRawToXlsxCell/xlsxCellToSheetRaw) + importXlsxToSheetCells/exportSheetCellsToXlsx. 수식(.f) 보존. 셀 스타일(.s)=community strip=별 ❌ 행. lib-agnostic Record<ref,raw> 계약(grid-pro-sheet 무수정).",
+      "g1": {
+        "surface": "sheetRawToXlsxCell(raw,computed?)→XlsxCell(=formula→{t,f,v}[★수식 셀=캐시 v 필수, computed=getDisplay; f-only=lib drop]·숫자→{t:n,v}·문자→{t:s,v}) + xlsxCellToSheetRaw(cell)→raw(.f→'='+f·v→String).",
+        "verified_node": "17 중 변환 10: 수식+computed/no-computed fallback v:0/text result·숫자·문자·빈·라운드트립 항등."
+      },
+      "g2": {
+        "surface": "exportSheetCellsToXlsx(cells,computed?,file)·exportSheetCellsToXlsxBuffer(Uint8Array)·importXlsxToSheetCells(ArrayBuffer|Uint8Array)→Record<ref,raw>(수식=raw '=…'). buildWorksheet !ref bounding. grid-export XLSX read/write 재사용.",
+        "verified_node": "17/0(sheetXlsx.test.ts) ★real xlsx lib 라운드트립 7: cells→exportSheetCellsToXlsxBuffer→importXlsxToSheetCells→수식 A3 '=A1+A2' 생존·값 A1/A2/B1 생존.",
+        "verified_chromium": "1/1(sheet-xlsx-import.spec.ts) ★end-to-end: base64 .xlsx(A3==A1+A2)→importXlsxToSheetCells→createSheet setCell→엔진이 가져온 수식 재계산=A3 display 30 + raw '=A1+A2' 보존(A1=10·A2=20·B1=hi). story=grid-pro-sheet createSheet+grid-export import(devDep, MOD-65 선례)."
+      },
+      "verification": "node 17/0(sheetXlsx.test.ts, real xlsx lib 라운드트립 포함)·typecheck 0·build green·chromium 1/1 + full-suite 116/116 green. grid-pro-sheet/기존 grid-export export 무수정.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음 — LESS-004 재적용(pinned edition 경계 라운드트립 실증: .f 보존·.s strip). 수식 셀=캐시 v 필수(probe 실측).",
+        "matrix_row": "§3 mod-grid-69 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Excel import/export(.xlsx formulas) ❌→✅(Spreadsheet 1→0) reconcile 19/19(245/71/11·330·0 mismatch·Enterprise 7→6). Excel cell styles=경계상 ❌ 유지(disposition)."
+      },
+      "rubric_specify": "76/80",
+      "closure": "★Excel import/export of spreadsheet(.xlsx with formulas)=✅: 순수 변환+importXlsxToSheetCells/exportSheetCellsToXlsx(grid-export xlsx 재사용), 수식(.f) round-trip 보존. ★경계 실증(node probe, LESS-004): xlsx@0.18.5 .f write→read 보존·.s strip → 수식=✅, 셀 스타일=별 ❌ 행. ★수식 셀=캐시 값 v 필수(f-only=lib drop, export 가 computed=getDisplay 캐시). lib-agnostic Record<ref,raw>(grid-pro-sheet 무수정). Spreadsheet 카테고리 0 ❌. ★Excel cell styles=경계상 deliverable partial 없음→정직 ❌ 유지(가짜 🟡 금지, disposition 확정). Out: 셀 스타일·멀티시트·number format=vN.",
+      "module_summary": "Enterprise backlog 16번째(비-DnD tail 3, advisor). grid-export 시트↔.xlsx 브리지(수식 보존): 순수 변환+import/export, node 17/0(real-lib 라운드트립)·chromium 1/1(엔진 재계산). ★경계-read(LESS-004): .f 보존·.s strip. grid-pro-sheet 무수정. Spreadsheet 0 ❌. 116/116 green.",
+      "version_note": "grid-export 차기 batch minor(sheetXlsx 브리지 export: import/exportSheetCellsToXlsx + 순수 변환), 미발행. grid-pro-sheet devDep=grid-export(story)."
     }
   },
   "release_queue": {

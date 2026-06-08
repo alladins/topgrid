@@ -1105,6 +1105,19 @@
 
 ---
 
+### `mod-grid-69` — 시트 .xlsx 가져오기/내보내기 (Excel import/export with formulas, grid-export) ✅ — {G-1, G-2} 완주 (Enterprise backlog 16번째 — 비-DnD tail 3)
+
+소스: grid-export `src/{sheetXlsx.ts, sheetXlsx.test.ts}`(node, real xlsx lib) + `index.ts` export + `tsconfig.json`(test exclude), story `grid-pro-sheet/stories/{SheetXlsxImport.stories.tsx, xlsxFixture.ts}` + grid-export devDep, test `tests/visual/sheet-xlsx-import.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-69.md`. dev-harness 51번째. **Enterprise ❌ backlog 16번째**(advisor, library-edition-gated 경계-read). 갭분석 Spreadsheet ❌ 1(.xlsx formula import/export) → ✅(**카테고리 0 ❌**). grid-pro-sheet 무수정(lib-agnostic Record<ref,raw> 계약).
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 순수 변환(G-1) | `sheetRawToXlsxCell(raw,computed?)`·`xlsxCellToSheetRaw(cell)` | **종결형**(순수 map) | =formula↔{t,f,v} (★수식 셀=캐시 v 필수, computed=getDisplay) | node(17 중): 수식/숫자/문자/빈·라운드트립 항등 | 채움 |
+| xlsx 브리지(G-2) | `importXlsxToSheetCells(data)`·`exportSheetCellsToXlsx(Buffer)` | **배선형** | grid-export xlsx(read/write) 재사용. grid-pro-sheet setCell/getRaw 계약 | node 17/0(★real-lib cells→.xlsx→cells 수식 `=A1+A2` 생존) / chromium 1/1: base64 .xlsx→엔진 재계산 30 | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 16번째 = 비-DnD tail 3(advisor, library-edition-gated 경계-read 먼저)**. ★**경계 실증(node probe, LESS-004)**: pinned `xlsx@0.18.5` 가 cell `.f`(수식) write→read **라운드트립 보존**·`.s`(스타일)만 strip → **수식 import/export=✅·셀 스타일=별 ❌ 행(Excel cell styles, MOD-25 검증, 경계상 deliverable partial 없음→정직 ❌ 유지, 가짜 🟡 금지)**. ★**수식 셀=캐시 값 v 필수**(f-only=lib drop, probe 실측 → export 가 computed[getDisplay] 를 v 로 캐시). build-vs-defer=경계-read(수식=community 가능→build). **Out 명시**: 셀 스타일(.s)·멀티시트·number format=vN. **Spreadsheet ❌ 1→0**, COMMERCIAL-GAP ❌12→11·✅244→245·🟡71(reconcile 19/19·330·0 mismatch, Enterprise 7→6). full-suite 116/116 green. 신규 lesson 없음(LESS-004 N=재적용).
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
@@ -1469,6 +1482,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-69 grid-export 시트 .xlsx 가져오기/내보내기 (Enterprise backlog 16 — 비-DnD tail 3, MIT/Lite)** — ✅ **구현됨 → §3 `mod-grid-69` 참조** (dev-harness 51번째). spec=`specs/MOD-GRID-69.md`
+- Goal: Excel import/export of the spreadsheet(.xlsx with formulas) — Wijmo FlexSheet 수식 load/save 대응. 순수 변환 + xlsx 브리지.
+- In: 순수 sheetRawToXlsxCell/xlsxCellToSheetRaw + importXlsxToSheetCells/exportSheetCellsToXlsx(Buffer)(node 17/0 real-lib) + index export + story+test.
+- Out: 셀 스타일(.s strip=별 ❌ 행)·멀티시트 import·number format=vN. AC: 변환 라운드트립(node)·★수식 보존 round-trip(node real-lib)·가져온 수식 엔진 재계산(chromium). tier MIT/Lite. ★경계-read(LESS-004): .f 보존·.s strip; 수식 셀=캐시 v 필수.
 
 **MOD-GRID-68 grid-pro-serverside 뷰포트 행 모델 (Enterprise backlog 15 — 비-DnD tail 2, Pro)** — ✅ **구현됨 → §3 `mod-grid-68` 참조** (dev-harness 50번째). spec=`specs/MOD-GRID-68.md`
 - Goal: viewport row model(real-time push) — AG Viewport Row Model 대응. push-based(SSRM pull 과 구별) + 실시간 in-place.
