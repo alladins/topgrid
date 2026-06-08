@@ -1142,6 +1142,18 @@
 
 ---
 
+### `mod-grid-72` — 차트 패널 도킹 (chart panel/composition: dock, grid-pro-chart) 🟡 — {G-1} 완주 (Enterprise backlog 19번째 — render tail 3, ★마지막 buildable)
+
+소스: grid-pro-chart `src/ChartCard.tsx`(dock prop) + `src/index.ts`(ChartDock export), story `stories/ChartCard.stories.tsx`(Docked), test `tests/visual/chart-panel-dock.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-72.md`. dev-harness 54번째. **Enterprise ❌ backlog 19번째**(advisor, 마지막 buildable). 갭분석 Integrated charts ❌(chart panel/composition)→🟡(2/3). RangeChart/RangeChartPanel 무수정.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| ChartCard dock(G-1) | ChartCard `dock?:'top'\|'bottom'\|'left'\|'right'` | **배선형**(순수 0 정직) | ★reuse-gate(LESS-003): ChartCard 가 이미 type 스위처=settings → 신규 패널 폐기, dock 만 additive. inline-flex flexDirection(P27-1) | chromium 1/1: dock=left→툴바 차트 좌측(bbox)+도킹 중 type 전환(bar→line, polyline) | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 19번째 = render tail 3, ★마지막 buildable 항목(advisor)**. ★**reuse-gate(LESS-003)**: ChartCard(MOD-34 G-3)가 이미 chart-type 스위처 툴바=settings panel 핵심 보유 → 신규 ChartSettingsPanel 작성=중복으로 **폐기**, ChartCard 에 누락된 **dock**(composition)만 additive(inline-flex flexDirection, P27-1 인라인). ★비공허(advisor): "패널 렌더됨"이 아닌 **dock=left→툴바가 차트 svg 좌측(computed bbox)+도킹 중 type 전환 작동**(data-chart-type·polyline). ★**disposition 🟡(2/3)**: settings panel(type 전환=ChartCard 기존)+dock(신규) 전달, **range adjust handles=라이브 grid-pro-range 셀선택 배선 vN**(gap line 540 동형)=Out → over-claim 회피(MOD-63 패턴). **Integrated charts ❌→🟡**, COMMERCIAL-GAP ❌8→7·✅247·🟡72→73(reconcile 19/19·330·0 mismatch, Enterprise 3→2). full-suite 118/118 green(기존 ChartCard 회귀=dock 기본 top byte-identical-equiv). **Out 명시**: range-adjust·차트 라이브러리 내장·cross-filter(MOD-47 🟡)=vN. 신규 lesson 없음(LESS-003 재적용). ★**buildable backlog 0 도달**: 잔여 ❌7=전부 by-design floor(Community settled defer 5+Excel cell styles edition-blocked+context submenu ⛔).
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
@@ -1506,6 +1518,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-72 grid-pro-chart 차트 패널 도킹 (Enterprise backlog 19 — render tail 3, ★마지막 buildable, Pro)** — 🟡 **부분 → §3 `mod-grid-72` 참조** (dev-harness 54번째). spec=`specs/MOD-GRID-72.md`
+- Goal: chart panel/composition(dock) — AG chart settings/toolbar 대응. ★reuse-gate: ChartCard 기존 type 스위처(settings)+dock 추가.
+- In: ChartCard `dock`(top/bottom/left/right, inline-flex) + ChartDock export + story+test. RangeChart/RangeChartPanel 무수정.
+- Out: range adjust handles(라이브 grid-pro-range vN)·차트 라이브러리 내장·cross-filter(MOD-47 🟡)=vN. AC: ★dock=left 툴바 좌측+도킹 중 type 전환(chromium). tier Pro. ★LESS-003(ChartSettingsPanel 중복 폐기, dock 만 additive). 🟡=2/3(settings+dock, range-adjust vN).
 
 **MOD-GRID-71 grid-pro-master 마스터-디테일 가상화 (Enterprise backlog 18 — render tail 2, Pro)** — ✅ **구현됨 → §3 `mod-grid-71` 참조** (dev-harness 53번째). spec=`specs/MOD-GRID-71.md`
 - Goal: master-detail + virtualization — FlexGrid 가상화 대응. react-virtual measureElement 동적(가변 detail).

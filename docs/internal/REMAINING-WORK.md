@@ -8,8 +8,10 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
 
-> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53~60·62~71 done(2026-06-07~08)**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
-> COMMERCIAL-GAP **❌47→8**(✅247/🟡72/❌8; **Column features·Editing·Selection·Pivoting·Row models/data·Spreadsheet·Master/Detail&Tree 0 ❌·시트 스코프 ❌ 0**). full-suite **117/117 green**(playwright retries:2). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53~60·62~72 done(2026-06-07~08) → ★buildable backlog 0 도달**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
+> COMMERCIAL-GAP **❌47→7 = by-design floor**(✅247/🟡73/❌7; **Column features·Editing·Selection·Pivoting·Row models/data·Spreadsheet·Master/Detail&Tree 0 ❌·시트 스코프 ❌ 0**). full-suite **118/118 green**(playwright retries:2). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
+> **★MOD-72(2026-06-08, render tail 3, ★마지막 buildable)**: Chart panel/composition ❌→🟡 — ChartCard `dock`(composition) additive. ★reuse-gate(LESS-003): ChartCard 가 이미 type 스위처=settings → 신규 패널 폐기, dock 만 추가. chromium 1/1(dock=left 툴바 좌측+type 전환). range-adjust handles=라이브 grid-range vN=Out → 🟡(2/3).
+> **★잔여 ❌7 = 전부 by-design 영구(buildable 0)**: Community 5(RTL·post-sort·debounced-scroll·row-animation·auto-virt=settled defer) + Excel cell styles(edition-blocked, community xlsx .s strip) + context submenu(⛔ ContextMenuGrid 하네스 렌더 실패 LESS-002). **모든 buildable Enterprise/Pro 기능 dispositioned**(✅ 또는 정직 🟡).
 > **★MOD-71(2026-06-08, render tail 2)**: Master-detail + virtualization ❌→✅ — grid-pro-master MasterDetailGrid enableVirtualization(react-virtual ★measureElement 동적+tbody-per-row=가변 detail 측정)+scrollTo 배선. chromium 1/1(★200행→DOM window<60·스크롤 이동·expand detail). ★advisor 🟡 예측(고정높이 estimator) 상회→✅. OFF byte-identical.
 > **★MOD-70(2026-06-08, render tail 1)**: Sticky group rows ❌→✅ + Sticky/pinned group headers while scrolling ❌→🟡 — grid-pro-agg enableStickyGroupRows + GroupRow td 인라인 position:sticky(★border-collapse→td·P27-1 인라인). chromium 1/1(★200px 스크롤 후 헤더 computed top 고정, 비공허). 비-virt 모델(virt off-window unmount=🟡). OFF byte-identical.
 > **★MOD-69(2026-06-08, 비-DnD tail 3)**: Excel import/export of spreadsheet(.xlsx with formulas) ❌→✅ — grid-export 시트↔xlsx 브리지(순수 변환 + import/export). ★경계 실증(LESS-004): xlsx@0.18.5 가 수식(.f) round-trip 보존·스타일(.s) strip → 수식=✅(node 17/0 real-lib), 셀 스타일=별 ❌ 행. chromium 1/1(엔진 재계산). **Spreadsheet 0 ❌**. ★Excel cell styles=경계상 deliverable 없음→정직 ❌ 유지(disposition).
@@ -24,9 +26,10 @@
 
 ### ▶ 새 세션 즉시 시작 (2026-06-07 갱신)
 
-> **다음 액션 = Enterprise ❌8 backlog(advisor triage, 자율 진행)**. ★DnD(64·65·66)+SSRM(67·68)+.xlsx(69)+sticky(70)+MD virt(71) 완료. ★**남은 buildable 1개 = chart panel/dock**(render, advisor: 가장 unbounded=fresh context 권장; MOD-34 차트 잔여 panel/dock+cross-filter[🟡]). reuse-gate read 먼저(build-vs-defer/disposition; vacuous "렌더됨" 금지, 비공허 입증 불가 시 정직 🟡).
-> **Excel cell styles=경계상 ❌ 유지**(disposition 확정, .s strip=LESS-004 silent no-op, 빌드 안 함). (context submenu=⛔ harness-blocked; post-sort·debounced-scroll·row-animation·auto-virt·RTL=settled defer.) →
-> ★**reuse-gate 렌더 파일 먼저**(build-vs-defer=read). "끝까지"=disposition 결정(🟡→✅ flip 아님). ★대형=code 먼저 커밋 후 doc-sync. ★**❌ floor = 정확히 7(설계상)**: 5 Community settled defer(RTL·post-sort·debounced-scroll·row-animation·auto-virt) + Excel cell styles(edition-blocked) + context submenu(⛔)=영구. chart panel 닫히면(✅/🟡) **buildable 0 = "done"**(❌≈7 floor, 전부 문서화된 이유). fork/🟡/⛔ 에만 advisor 복귀. ★메모리 프론트매터=normalizer 간헐 삭제→재복원 모듈급 노력 금지(HANDOFF=durable).
+> **다음 액션 = ★없음(buildable backlog 0 도달)**. DnD(64·65·66)+SSRM(67·68)+.xlsx(69)+sticky(70)+MD virt(71)+chart dock(72) 완료. 모든 buildable Enterprise/Pro 기능 dispositioned(✅ 또는 정직 🟡).
+> **잔여 ❌7 = 전부 by-design 영구**: ① Community settled defer 5(RTL=invasive·한국우선 저가치 / post-sort=hot-path / debounced-scroll·row-animation·auto-virt=vacuity-trap/design-reversal, advisor 판단) ② Excel cell styles(edition-blocked: community xlsx@0.18.5 .s strip, Pro xlsx 필요) ③ context submenu(⛔ harness-blocked: ContextMenuGrid storybook single-react 렌더 실패 LESS-002).
+> ★**재가동 시 옵션**(전부 사용자 결정 영역): (a) **발행 batch**(MOD-50~72 누적 변경=@topgrid/* minor bump+publish, Granular Token Bypass-2FA travia71) — 가장 가치 높은 미실행 작업. (b) RTL 등 settled defer 재평가(사용자 우선순위 변경 시). (c) ContextMenuGrid 하네스 렌더 복구(react/tanstack single-react 조사)→context submenu 재시도. (d) 🟡 항목 심화(cross-filter live wiring·range-adjust handles·merged cells 등=각각 라이브/대형). 
+> ★규율: reuse-gate read 먼저·build-vs-defer=read·code 먼저 커밋 후 doc-sync·비공허 발산·정직 disposition(🟡→✅ flip 금지). publish·origin push만 사용자 게이트. ★메모리 프론트매터=normalizer 간헐 삭제→재복원 모듈급 노력 금지(HANDOFF=durable).
 > **작동 방식**: 설계·우선순위 **advisor 위임**, commit-per-module, 끝까지 진행. **publish(npm)·origin push 만 사용자 게이트.**
 > 먼저 읽을 것: 본 HANDOFF + 메모리 `dev-harness-loop-progress`(재개 지점) + `state.json`(MOD-49~53 + split_remainder) + COMMERCIAL-GAP(갭 현황 ❌27).
 

@@ -2012,6 +2012,32 @@
       "closure": "★Master-detail + virtualization=✅: MasterDetailGrid enableVirtualization(react-virtual). ★advisor 예측(고정높이 estimator→🟡) 상회: measureElement 동적 측정(ResizeObserver)이 가변높이 detail 패널 정확 측정→✅. ★tbody-per-row=Fragment-of-2-trs(master+detail) measureElement 단일-요소 가정 위반 회피. scrollTo no-op stub 해소. ★비공허(advisor): 200행→DOM window<60+스크롤 이동+expand 측정(렌더됨=vacuous 금지). additive opt-in OFF byte-identical. Master/Detail&Tree 카테고리 0 ❌. Out: 가로 가상화·무한/서버 로드(SSRM 별개)·가상화 sticky 헤더=vN.",
       "module_summary": "Enterprise backlog 18번째(render tail 2, advisor). grid-pro-master master-detail 가상화(react-virtual measureElement 동적+tbody-per-row=가변 detail 측정). chromium 1/1(200행 window<60+스크롤+expand)·117/117 green(OFF byte-identical). ★advisor 🟡 예측 상회→✅. Master/Detail&Tree 0 ❌. 신규 lesson 없음.",
       "version_note": "grid-pro-master 차기 batch minor(enableVirtualization/estimatedRowHeight/virtualMaxHeight + react-virtual peer dep), 미발행."
+    },
+    "MOD-GRID-72": {
+      "package": "grid-pro-chart (Pro)",
+      "tier": "Pro",
+      "weight": "Full(G-1 ChartCard dock, 순수 0=정직)",
+      "priority": "Enterprise ❌ backlog 19번째(advisor, render tail 3, ★마지막 buildable)",
+      "phase": "done (G-1 완주 → §3, 🟡 부분)",
+      "spec": "specs/MOD-GRID-72.md (rubric 76/80, gate-B 선작성)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "chart panel/composition(dock) — ChartCard dock prop(툴바 도킹). ★reuse-gate(LESS-003): ChartCard 이미 type 스위처=settings panel→신규 패널 폐기, dock 만 additive. RangeChart/RangeChartPanel 무수정. range-adjust handles=vN.",
+      "g1": {
+        "surface": "ChartCard dock?:'top'|'bottom'|'left'|'right'(=top)→루트 inline-flex flexDirection(top=column·left=row 등)+툴바 방향(horizontal=column)+data-chart-dock 속성. 기존 type-switch(settings) 유지. P27-1 인라인 flex.",
+        "verified_chromium": "1/1(chart-panel-dock.spec.ts) ★비공허: dock=left→data-chart-dock=left+툴바[data-chart-toolbar] bbox 가 차트 svg[data-chart-type] 좌측(toolbar.x+w ≤ chart.x)+도킹 중 type 버튼[data-type-btn=line] 클릭→차트 재렌더(data-chart-type=line·polyline 등장). 시작 bar(polyline 0)."
+      },
+      "verification": "typecheck 0·build green·chromium 1/1 + full-suite 118/118 green(기존 ChartCard TypeSwitcher 회귀=dock 기본 top byte-identical-equiv). RangeChart/RangeChartPanel 무수정.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음 — LESS-003 재적용(reuse-gate: ChartCard 기존 type 스위처 발견→신규 ChartSettingsPanel 중복 폐기, dock 만 additive). P27-1 인라인 flex.",
+        "matrix_row": "§3 mod-grid-72 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Chart panel/composition ❌→🟡(Integrated charts; range-adjust=vN) reconcile 19/19(247/73/7·330·0 mismatch·Enterprise 3→2). ★buildable backlog 0 도달=❌7 by-design floor."
+      },
+      "rubric_specify": "76/80",
+      "closure": "★Chart panel/composition=🟡(2/3): ChartCard dock(composition, 신규)+settings panel(type 스위처, MOD-34 기존)=2/3 전달, ★range adjust handles=라이브 grid-pro-range 셀선택 배선 vN(gap line 540 동형)=Out→over-claim 회피(MOD-63 패턴). ★reuse-gate(LESS-003): ChartCard 이미 type 스위처→신규 ChartSettingsPanel 작성=중복으로 폐기, dock 만 additive. ★비공허: dock=left 툴바 좌측+도킹 중 type 전환(렌더됨=vacuous 금지). ★마지막 buildable 항목=buildable backlog 0 도달, 잔여 ❌7=전부 by-design floor(Community settled defer 5+Excel cell styles edition-blocked+context submenu ⛔).",
+      "module_summary": "Enterprise backlog 19번째(render tail 3, ★마지막 buildable, advisor). grid-pro-chart ChartCard dock(composition). ★reuse-gate(LESS-003): ChartCard 기존 type 스위처 발견→신규 패널 폐기, dock 만 추가. chromium 1/1(dock=left+type 전환)·118/118 green. 🟡(2/3: settings+dock, range-adjust=vN). ★buildable backlog 0=❌7 by-design floor.",
+      "version_note": "grid-pro-chart 차기 batch minor(ChartCard dock prop + ChartDock export), 미발행."
     }
   },
   "release_queue": {
