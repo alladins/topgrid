@@ -1092,6 +1092,19 @@
 
 ---
 
+### `mod-grid-68` — 뷰포트 행 모델 (viewport row model / real-time push, grid-pro-serverside) ✅ — {G-1, G-2} 완주 (Enterprise backlog 15번째 — 비-DnD tail 2, reuse-friendly)
+
+소스: grid-pro-serverside `src/internal/{viewportRowModel.ts, viewportRowModel.test.ts}`(node) + `useViewportRowModel.ts` + `index.ts` export, story `stories/Viewport.stories.tsx`, test `tests/visual/viewport-row-model.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-68.md`. dev-harness 50번째. **Enterprise ❌ backlog 15번째**(advisor, 비-DnD tail reuse-friendly). 갭분석 Row models/data ❌ 1 → ✅(**카테고리 0 ❌**). 기존 SSRM(block cache/controller) 무수정=독립 모델.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| 순수 materializeViewport(G-1) | `materializeViewport<T>(rows:Map<number,T>, rowCount)→Array<T\|RowPlaceholder>` | **종결형**(순수 map) | sparse 맵→placeholder 채운 배열. MOD-22 RowPlaceholder/isRowPlaceholder 재사용 | node(15 중): 부분/전체/빈/0·placeholder rowIndex | 채움 |
+| 컨트롤러+hook(G-2) | `createViewportRowModel(ds,{rowCount},onChange)`(React-free) · `useViewportRowModel` hook | **배선형** | push-based: ds.init({setRowCount,setRowData}) + setRange→setViewportRange. ★in-place 라이브 갱신. Grid 가상화 배선(useServerSideData 동형) | node: init·push·★in-place·범위초과 가드·resize / chromium 1/1: viewport push 렌더+실시간 셀 갱신 | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 15번째 = 비-DnD tail 2번째(reuse-friendly, advisor)**. ★**advisor: label pre-defer 금지→read 로 판정**: viewport=**push-based**(ds 가 setRowData 로 행 push)+**실시간 in-place** → SSRM(pull)·infinite scroll(🟡)와 제어흐름 상이=genuine 부재. "server-streaming node-substance-0" 옛 추정 **번복**(sparse store+materialize+in-place=node-substance, node 15/0). ★**build-vs-defer**: additive 신규 컨트롤러/hook/datasource + Grid 가상화·RowPlaceholder 재사용 + **core scroll-path·기존 SSRM 무수정** → build(독립 add-on). AG IViewportDatasource(init/setViewportRange/setRowData) 모델. **Out 명시**: 서버 정렬/필터/그룹(SSRM/ds 소관)·버퍼 밖 eviction(v1 보관)·행 shift 실시간=vN. **Row models/data ❌ 1→0**, COMMERCIAL-GAP ❌13→12·✅243→244·🟡71(reconcile 19/19·330·0 mismatch, Enterprise 8→7). full-suite 114/114 green. 신규 lesson 없음.
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
@@ -1456,6 +1469,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-68 grid-pro-serverside 뷰포트 행 모델 (Enterprise backlog 15 — 비-DnD tail 2, Pro)** — ✅ **구현됨 → §3 `mod-grid-68` 참조** (dev-harness 50번째). spec=`specs/MOD-GRID-68.md`
+- Goal: viewport row model(real-time push) — AG Viewport Row Model 대응. push-based(SSRM pull 과 구별) + 실시간 in-place.
+- In: 순수 `materializeViewport`(node) + ViewportDatasource 타입 + React-free `createViewportRowModel`(node 15/0) + `useViewportRowModel` hook + index export + story+test.
+- Out: 서버 정렬/필터/그룹(SSRM/ds 소관)·버퍼 밖 eviction(v1 보관)·행 shift 실시간=vN. AC: materializeViewport+컨트롤러 push/in-place(node)·★viewport 렌더+실시간 셀 갱신(chromium). tier Pro. ★core/SSRM 무수정 독립 add-on·build-vs-defer=read.
 
 **MOD-GRID-67 grid-pro-serverside 서버사이드 피벗 (Enterprise backlog 14 — 비-DnD tail 1, Pro)** — ✅ **구현됨 → §3 `mod-grid-67` 참조** (dev-harness 49번째). spec=`specs/MOD-GRID-67.md`
 - Goal: server-side / lazy pivoting — AG SSRM pivoting 대응. 순수 buildServerPivotColumns + SSRM pivot 계약 확장.

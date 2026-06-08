@@ -1896,6 +1896,38 @@
       "closure": "★Server-side pivoting=✅: SSRM additive pivot 계약(request pivotMode/pivotCols/valueCols + result pivotResultFields, optional=flat byte-identical)+순수 buildServerPivotColumns(node 13/0)+useServerSideData pivotColumns, end-to-end(서버-피벗 동적 컬럼 렌더). ★advisor build-vs-defer(SSRM read): additive 확장+core scroll-path(block cache/epoch/virtualizer) 무수정→build(post-sort hot-path 얽힘과 구별, reuse-heavy=MOD-22 전체). ★Pivoting 카테고리 0 ❌ 도달. Out: 클라이언트 피벗 계산(서버 소관)·피벗+lazy group 동시·집계 의미론=vN. 비-DnD tail 시작=reuse-heavy clean-✅ 입증.",
       "module_summary": "Enterprise backlog 14번째(비-DnD tail 1, reuse-heavy, advisor). grid-pro-serverside SSRM additive pivot(MOD-22 재사용)+순수 buildServerPivotColumns(node 13/0)+useServerSideData pivotColumns. ★core scroll-path 무수정·flat byte-identical. Pivoting 0 ❌ 도달. 113/113 green.",
       "version_note": "grid-pro-serverside 차기 batch minor(buildServerPivotColumns export + GetRowsRequest/Result pivot 필드 + useServerSideData pivot 옵션), 미발행."
+    },
+    "MOD-GRID-68": {
+      "package": "grid-pro-serverside (Pro)",
+      "tier": "Pro",
+      "weight": "Full(G-1 순수 materializeViewport + G-2 push 컨트롤러/hook 배선)",
+      "priority": "Enterprise ❌ backlog 15번째(advisor, 비-DnD tail 2, reuse-friendly)",
+      "phase": "done (G-1/G-2 완주 → §3, ✅)",
+      "spec": "specs/MOD-GRID-68.md (rubric 76/80, gate-B 선작성)",
+      "goals": {
+        "G-1": "done",
+        "G-2": "done"
+      },
+      "scope": "viewport row model(real-time push) — push-based(SSRM pull 과 구별): ViewportDatasource(init/setViewportRange/push 콜백) + React-free createViewportRowModel(sparse map + in-place 라이브 갱신) + 순수 materializeViewport + useViewportRowModel hook. 기존 SSRM(block cache/controller) 무수정 독립 모델.",
+      "g1": {
+        "surface": "materializeViewport<T>(rows:Map<number,T>, rowCount)→Array<T|RowPlaceholder> — sparse 맵→placeholder 채운 배열. MOD-22 RowPlaceholder/isRowPlaceholder 형태 재사용.",
+        "verified_node": "15 중 materialize: 부분 로드·전체·빈 맵→all placeholder·rowCount 0→[]·placeholder rowIndex 보유."
+      },
+      "g2": {
+        "surface": "createViewportRowModel(datasource,{rowCount},onChange)(React-free): datasource.init({setRowCount,setRowData}) 1회 + setRange→setViewportRange(push 유발) + setRowData 콜백→sparse map 갱신(★재-push index=in-place, rowCount 초과 가드)→emit. useViewportRowModel hook=Grid 가상화 배선(virtualizerOptions.onChange→setRange, useServerSideData 동형)+unmount destroy.",
+        "verified_node": "15/0(viewportRowModel.test.ts): init setRowCount(5)·all placeholder·setRange→setViewportRange·push 행 materialize·미터치 placeholder·★in-place 갱신(index 1 B→B2, index 2 무영향)·범위초과 가드·setRowCount resize.",
+        "verified_chromium": "1/1(viewport-row-model.spec.ts) ★end-to-end: mock viewport datasource(setViewportRange→범위 행 push)→Grid viewport 행 렌더(row-0) + 서버 push 시뮬 버튼→가시 셀 in-place 갱신(row-0→UPDATED, old 사라짐, 타 행 row-1 무영향)."
+      },
+      "verification": "node 15/0(viewportRowModel.test.ts)·typecheck 0·build green·chromium 1/1 + full-suite 114/114 green(★기존 SSRM 회귀 통과=독립 add-on, block cache/controller 무수정).",
+      "done_gate": {
+        "lesson": "신규 lesson 없음 — reuse-friendly(RowPlaceholder/Grid 가상화/React-free 컨트롤러 패턴). build-vs-defer=read(label pre-defer 금지=push-based 가 SSRM 와 별 제어흐름=genuine 부재, additive=build).",
+        "matrix_row": "§3 mod-grid-68 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Viewport row model ❌→✅(Row models/data 1→0) reconcile 19/19(244/71/12·330·0 mismatch·Enterprise 8→7)"
+      },
+      "rubric_specify": "76/80",
+      "closure": "★Viewport row model=✅: push-based ViewportDatasource(init/setViewportRange/setRowData)+React-free createViewportRowModel(sparse map+★in-place 라이브 갱신)+순수 materializeViewport(node 15/0)+useViewportRowModel hook, end-to-end(viewport push 렌더+실시간 셀 갱신). ★advisor: label pre-defer 금지→read 로 판정(viewport=push+실시간 in-place=SSRM pull/infinite scroll 과 제어흐름 상이=genuine 부재; 'server-streaming node-substance-0' 옛 추정 번복). ★build-vs-defer: additive 신규 컨트롤러/hook/ds + Grid 가상화·RowPlaceholder 재사용 + core/SSRM 무수정 → build(독립 add-on). Out: 서버 정렬/필터/그룹·eviction·행 shift=vN. Row models/data 카테고리 0 ❌.",
+      "module_summary": "Enterprise backlog 15번째(비-DnD tail 2, reuse-friendly, advisor). grid-pro-serverside push-based viewport 모델(SSRM 무수정 독립): 순수 materializeViewport+React-free createViewportRowModel(in-place 라이브)+useViewportRowModel hook. node 15/0·chromium 1/1·114/114 green. Row models/data 0 ❌. ★build-vs-defer=read(label pre-defer 금지).",
+      "version_note": "grid-pro-serverside 차기 batch minor(viewport 모델 export: createViewportRowModel/materializeViewport/useViewportRowModel/ViewportDatasource), 미발행."
     }
   },
   "release_queue": {

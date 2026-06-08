@@ -47,3 +47,22 @@ materializeViewport=**종결형**(순수 map). createViewportRowModel/hook=**배
 - [x] Goal(materializeViewport map + push 컨트롤러 end-to-end) **9/10** · [x] In/Out(정렬/필터/eviction/shift Out) **10/10** · [x] AC(node map+컨트롤러·실시간 chromium) **10/10**
 - [x] reuse-gate(RowPlaceholder·Grid 가상화·React-free 컨트롤러·build-vs-defer read) **10/10** · [x] constraints(core 무수정·SSRM 독립·LESS-006) **10/10** · [x] 의존(내부, 외부 0) **9/10**
 - [x] 추측 0(verified) **9/10** · [x] 분류(종결형+배선형) **9/10** · **합계 76/80 통과.**
+
+---
+
+## G-1·G-2 결과 (완료 — 2026-06-08) → MOD-68 = ✅, §3 이관
+**구현**(grid-pro-serverside, 기존 SSRM[block cache/controller] 무수정 독립 모델):
+- G-1 순수 `materializeViewport<T>(rows:Map<number,T>, rowCount)→Array<T|RowPlaceholder>`(sparse→placeholder, MOD-22 RowPlaceholder 재사용).
+- G-2 React-free `createViewportRowModel(ds,{rowCount},onChange)`(ds.init({setRowCount,setRowData})+setRange→setViewportRange+★in-place 라이브 갱신+범위 가드) + `useViewportRowModel` hook(Grid 가상화 배선+unmount destroy) + index export.
+
+**검증**: **node 15/0**(`viewportRowModel.test.ts`: materialize 부분/전체/빈/0 + 컨트롤러 init·push·★in-place·범위초과 가드·resize) · typecheck 0 · build green · **chromium 1/1**(`viewport-row-model.spec.ts`) + **full-suite 114/114 green**(★기존 SSRM 회귀 통과=독립 add-on).
+- ★end-to-end: mock viewport datasource→viewport 행 push 렌더(row-0) + 서버 push 시뮬→가시 셀 in-place(row-0→UPDATED, 타 행 무영향).
+
+## ★ closure + 발견 (advisor)
+- **Viewport row model = ✅**: COMMERCIAL-GAP **Row models/data ❌ 1→0**, **❌13→12·✅243→244·🟡71**(reconcile 19/19·330·0 mismatch·Enterprise 8→7).
+- **advisor: label pre-defer 금지→read 로 판정**: push-based+실시간 in-place=SSRM(pull)·infinite scroll(🟡)과 제어흐름 상이=genuine 부재. "server-streaming node-substance-0" 옛 추정 번복(sparse store+materialize+in-place=node-substance).
+- **build-vs-defer**: additive 신규 컨트롤러/hook/ds + Grid 가상화·RowPlaceholder 재사용 + core/SSRM 무수정 → build(독립 add-on).
+- **Out 명시**: 서버 정렬/필터/그룹·버퍼 밖 eviction·행 shift 실시간=vN.
+
+## 모듈 완주 요약
+2-Goal(✅): Enterprise backlog 15번째(비-DnD tail 2, reuse-friendly, advisor). push-based viewport 모델(SSRM 무수정 독립): 순수 materializeViewport+React-free createViewportRowModel(in-place 라이브)+useViewportRowModel hook. node 15/0·chromium 1/1·114/114 green. Row models/data 0 ❌. 신규 lesson 없음.
