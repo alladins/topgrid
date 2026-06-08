@@ -77,3 +77,19 @@ export const FromPivotResult: StoryObj = {
     return <RangeChart type="bar" series={series} categories={categories} width={440} ariaLabel="피벗 차트" />;
   },
 };
+
+// ── MOD-GRID-72: dock composition (toolbar docked to a side) ─────────────────
+// The settings/type toolbar docks left of the chart (composition); the type switcher still works.
+export const Docked: StoryObj = {
+  name: '차트 패널 도킹 (툴바 좌측) + 타입 스위처',
+  render: () => (
+    <ChartCard
+      title="도킹"
+      dock="left"
+      initialType="bar"
+      series={[{ name: 'revenue', values: [30, 80, 45, 95, 60], color: '#2563eb' }]}
+      categories={['1월', '2월', '3월', '4월', '5월']}
+      ariaLabel="도킹 차트"
+    />
+  ),
+};

@@ -32,7 +32,7 @@ export {
 } from './internal/chartScale.js';
 
 // MOD-GRID-34 G-3: type-switcher toolbar + matrix→series bridge (range-selection & pivot charting).
-export { ChartCard, type ChartCardProps } from './ChartCard.js';
+export { ChartCard, type ChartCardProps, type ChartDock } from './ChartCard.js';
 export {
   seriesFromMatrix,
   seriesFromPivot,
