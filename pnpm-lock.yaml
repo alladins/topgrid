@@ -6,6 +6,8 @@ settings:
 
 overrides:
   react-datepicker: 8.3.0
+  react: ^18.3.1
+  react-dom: ^18.3.1
 
 importers:
 
@@ -42,13 +44,13 @@ importers:
         specifier: ^5.2.0
         version: 5.2.0(eslint@9.39.4)
       react:
-        specifier: ^18
+        specifier: ^18.3.1
         version: 18.3.1
       react-datepicker:
         specifier: 8.3.0
         version: 8.3.0(react-dom@18.3.1)(react@18.3.1)
       react-dom:
-        specifier: ^18
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       size-limit:
         specifier: ^11.0.0
@@ -102,10 +104,10 @@ importers:
         specifier: ^1.40
         version: 1.60.0
       react:
-        specifier: ^18.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
       storybook:
         specifier: ^8.0.0
@@ -121,10 +123,10 @@ importers:
     dependencies:
       '@tanstack/react-table':
         specifier: ^8.0.0
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       '@tanstack/react-virtual':
         specifier: ^3.0.0
-        version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
+        version: 3.13.24(react-dom@18.3.1)(react@18.3.1)
       '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
@@ -192,11 +194,11 @@ importers:
         specifier: ^3.5.0
         version: 3.8.4(jspdf@2.5.2)
       react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
       xlsx:
         specifier: ^0.18.5
         version: 0.18.5
@@ -205,16 +207,16 @@ importers:
     dependencies:
       '@tanstack/react-table':
         specifier: ^8.0.0
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       '@tanstack/react-virtual':
         specifier: ^3.0.0
-        version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
+        version: 3.13.24(react-dom@18.3.1)(react@18.3.1)
       react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-renderers':
         specifier: workspace:*
@@ -229,18 +231,18 @@ importers:
         specifier: ^3.5.0
         version: 3.8.4(jspdf@2.5.2)
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
     devDependencies:
       '@tanstack/react-table':
         specifier: ^8.21.3
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       '@types/react':
         specifier: ^19.0.0
         version: 19.2.14
       react:
-        specifier: ^19.1.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       tsup:
         specifier: ^8.0.0
         version: 8.5.1(typescript@5.8.3)
@@ -255,22 +257,22 @@ importers:
     dependencies:
       '@tanstack/react-table':
         specifier: ^8.0.0
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       '@tanstack/react-virtual':
         specifier: ^3.0.0
-        version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
+        version: 3.13.24(react-dom@18.3.1)(react@18.3.1)
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
       react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       react-datepicker:
         specifier: 8.3.0
-        version: 8.3.0(react-dom@19.2.6)(react@19.2.6)
+        version: 8.3.0(react-dom@18.3.1)(react@18.3.1)
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
         specifier: workspace:*
@@ -279,29 +281,29 @@ importers:
   packages/grid-license:
     dependencies:
       react:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
 
   packages/grid-pro-agg:
     dependencies:
       '@tanstack/react-table':
         specifier: ^8.0.0
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       '@tanstack/react-virtual':
         specifier: ^3.0.0
-        version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
+        version: 3.13.24(react-dom@18.3.1)(react@18.3.1)
       '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
         specifier: workspace:*
@@ -316,26 +318,26 @@ importers:
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
 
   packages/grid-pro-datamap:
     dependencies:
       '@tanstack/react-table':
         specifier: ^8.0.0
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
 
   packages/grid-pro-edit-plus:
     dependencies:
@@ -346,10 +348,10 @@ importers:
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
@@ -368,10 +370,10 @@ importers:
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
@@ -385,7 +387,7 @@ importers:
     dependencies:
       '@tanstack/react-table':
         specifier: ^8.0.0
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
@@ -393,30 +395,30 @@ importers:
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
 
   packages/grid-pro-master:
     dependencies:
       '@tanstack/react-table':
         specifier: ^8.0.0
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
     devDependencies:
       '@tanstack/react-virtual':
         specifier: ^3.0.0
-        version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
+        version: 3.13.24(react-dom@18.3.1)(react@18.3.1)
       '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
@@ -425,19 +427,19 @@ importers:
     dependencies:
       '@tanstack/react-table':
         specifier: ^8.0.0
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       '@tanstack/react-virtual':
         specifier: ^3.0.0
-        version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
+        version: 3.13.24(react-dom@18.3.1)(react@18.3.1)
       '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
         specifier: workspace:*
@@ -455,10 +457,10 @@ importers:
         specifier: workspace:*
         version: link:../grid-pro-agg
       react:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
@@ -480,10 +482,10 @@ importers:
         specifier: workspace:*
         version: link:../grid-pro-agg
       react:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
       esbuild:
@@ -494,19 +496,19 @@ importers:
     dependencies:
       '@tanstack/react-table':
         specifier: ^8.0.0
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       '@tanstack/react-virtual':
         specifier: ^3.0.0
-        version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
+        version: 3.13.24(react-dom@18.3.1)(react@18.3.1)
       '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
         specifier: workspace:*
@@ -524,10 +526,10 @@ importers:
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
@@ -543,10 +545,10 @@ importers:
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
@@ -566,16 +568,16 @@ importers:
     dependencies:
       '@tanstack/react-table':
         specifier: ^8.0.0
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
       react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
         specifier: workspace:*
@@ -585,13 +587,13 @@ importers:
     dependencies:
       '@tanstack/react-table':
         specifier: '>=8.0.0 <9.0.0'
-        version: 8.21.3(react-dom@19.2.6)(react@19.2.6)
+        version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       react:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6
+        specifier: ^18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
-        version: 19.2.6(react@19.2.6)
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
         specifier: workspace:*
@@ -603,10 +605,10 @@ importers:
         specifier: '>=8.0.0 <9.0.0'
         version: 8.21.3(react-dom@18.3.1)(react@18.3.1)
       react:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1
       react-dom:
-        specifier: ^18.0.0 || ^19.0.0
+        specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
       '@topgrid/grid-core':
@@ -2801,8 +2803,8 @@ packages:
     resolution: {integrity: sha512-rUOujwIpxJRgD7+kicVsI3D5sqBvdiRTquzWBpTEXZs8ZXfGbfzpus5HqumaNYTppN2HvH8E2yNuRwYdHJeOlA==}
     peerDependencies:
       '@types/react': '>= 16.8.0 < 20.0.0'
-      react: '>= 16.8.0 < 20.0.0'
-      react-dom: '>= 16.8.0 < 20.0.0'
+      react: ^18.3.1
+      react-dom: ^18.3.1
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -2824,8 +2826,8 @@ packages:
     resolution: {integrity: sha512-Bg2wdDsoQVlNCcEKuEJAU04tvHCqgx8rIu+uIoM4pRtcx3TBKJuXutJik3LTA8LRc9YEyHkrYUrmcC0D7BYf+g==}
     peerDependencies:
       '@types/react': '>= 16.8.0 < 20.0.0'
-      react: '>= 16.8.0 < 20.0.0'
-      react-dom: '>= 16.8.0 < 20.0.0'
+      react: ^18.3.1
+      react-dom: ^18.3.1
       search-insights: '>= 1 < 3'
     peerDependenciesMeta:
       '@types/react':
@@ -2981,8 +2983,8 @@ packages:
     peerDependencies:
       '@docusaurus/faster': '*'
       '@mdx-js/react': ^3.0.0
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     peerDependenciesMeta:
       '@docusaurus/faster':
         optional: true
@@ -3077,8 +3079,8 @@ packages:
     resolution: {integrity: sha512-GRmeb/wQ+iXRrFwcHBfgQhrJxGElgCsoTWZYDhccjsZVne1p8MK/EpQVIloXttz76TCe78kKD5AEG9n1xc1oxQ==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/logger': 3.10.1
       '@docusaurus/utils': 3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)
@@ -3126,8 +3128,8 @@ packages:
   /@docusaurus/module-type-aliases@3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-YoOZKUdGlp8xSYhuAkGdSo5Ydkbq4V4eK3sD8v0a2hloxCWdQbNBhkc+Ko9QyjpESc0BYcIGM5iHVAy5hdFV6w==}
     peerDependencies:
-      react: '*'
-      react-dom: '*'
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/types': 3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)
       '@types/history': 4.7.11
@@ -3160,8 +3162,8 @@ packages:
     engines: {node: '>=20.0'}
     peerDependencies:
       '@docusaurus/plugin-content-docs': '*'
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/core': 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
       '@docusaurus/logger': 3.10.1
@@ -3214,8 +3216,8 @@ packages:
     resolution: {integrity: sha512-2jRVrtzjf8LClGTHQlwlwuD3wQXRx3WEoF7XUarJ8Ou+0onV+SLtejsyfY9JLpfUh9hPhXM4pbBGkyAY4Bi3HQ==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/core': 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
       '@docusaurus/logger': 3.10.1
@@ -3266,8 +3268,8 @@ packages:
     resolution: {integrity: sha512-huJpaRPMl42nsFwuCXvV8bVDj2MazuwRJIUylI/RSlmZeJssVoZXeCjVf1y+1Drtpa9SKcdGn8yoJ76IRJijtw==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/core': 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
       '@docusaurus/mdx-loader': 3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)
@@ -3344,8 +3346,8 @@ packages:
     resolution: {integrity: sha512-9KqOpKNfAyqGZykRb9LhIT/vyRF6sm/ykhjj/39JvaJahDS+jZJE0Z1Wfz9q3DUNDTMNN0Q7u/kk4rKKU+IJuA==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/core': 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
       '@docusaurus/types': 3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)
@@ -3384,8 +3386,8 @@ packages:
     resolution: {integrity: sha512-8o0P1KtmgdYQHH+oInitPpRWI0Of5XednAX4+DMhQNSmGSRNrsEEHg1ebv35m9AgRClfAytCJ5jA9KvcASTyuA==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/core': 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
       '@docusaurus/types': 3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)
@@ -3422,8 +3424,8 @@ packages:
     resolution: {integrity: sha512-pu3xIUo5o/zCMLfUY9BO5KOwSH0zIsAGyFRPvXHayFSA5XIhCU/SFuB0g0ZNjFn9niZLCaNvoeAuOGFJZq0fdw==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/core': 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
       '@docusaurus/types': 3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)
@@ -3461,8 +3463,8 @@ packages:
     resolution: {integrity: sha512-f6fyGHiCm7kJHBtAisGQS5oNBnpnMTYQZxDXeVrnw/3zWU+LMA22pr6UHGYkBKDbN+qPC5QHG3NuOfzQLq3+Lw==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/core': 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
       '@docusaurus/types': 3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)
@@ -3499,8 +3501,8 @@ packages:
     resolution: {integrity: sha512-C26MbmmqgdjkDq1htaZ3aD7LzEDKFWXfpyQpt0EOUThuq5nV77zDaedV20yHcVo9p+3ey9aZ4pbHA0D3QcZTzg==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/core': 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
       '@docusaurus/logger': 3.10.1
@@ -3542,8 +3544,8 @@ packages:
     resolution: {integrity: sha512-6SFxsmjWFkVLDmBUvFK6i72QjUwqyQFe4Ovz+SUJophJjOyVG3ZZG5IQpBC/kX/Gfv1yWeU9nWauH6F6Q7QX/Q==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/core': 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
       '@docusaurus/types': 3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)
@@ -3584,8 +3586,8 @@ packages:
     resolution: {integrity: sha512-YO/FL8v1zmbxoTso6mjMz/RDjhaTJxb1UpFFTDdY5847LLDCeyYiYlrhyTbgN1RIN3xnkLKZ9Lj1x8hUzI4JOg==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/core': 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
       '@docusaurus/plugin-content-blog': 3.10.1(@docusaurus/plugin-content-docs@3.10.1)(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
@@ -3635,7 +3637,7 @@ packages:
   /@docusaurus/react-loadable@6.0.0(react@18.3.1):
     resolution: {integrity: sha512-YMMxTUQV/QFSnbgrP3tjDzLHRg7vsbMn8e9HAa8o/1iXoiomo48b7sk/kkmWEuWNDPJVlKSJRB6Y2fHqdJk+SQ==}
     peerDependencies:
-      react: '*'
+      react: ^18.3.1
     dependencies:
       '@types/react': 19.2.14
       react: 18.3.1
@@ -3645,8 +3647,8 @@ packages:
     resolution: {integrity: sha512-VU1RK0qb2pab0si4r7HFK37cYco8VzqLj3u1PspVipSr/z/GPVKHO4/HXbnePqHoWDk8urjyGSeatH0NIMBM1A==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/core': 3.10.1(@mdx-js/react@3.1.1)(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)(typescript@5.8.3)
       '@docusaurus/logger': 3.10.1
@@ -3705,8 +3707,8 @@ packages:
     engines: {node: '>=20.0'}
     peerDependencies:
       '@docusaurus/plugin-content-docs': '*'
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@docusaurus/mdx-loader': 3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)
       '@docusaurus/module-type-aliases': 3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1)
@@ -3744,8 +3746,8 @@ packages:
     resolution: {integrity: sha512-OTaARARVZj2GvkJQjB+1jOIxntRaXea+G+fMsNqrZBAU1O1vJKDW22R7kECOHW27oJCLFN9HKaZeRrfAUyviug==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@algolia/autocomplete-core': 1.19.8(@algolia/client-search@5.52.1)(algoliasearch@5.52.1)(search-insights@2.17.3)
       '@docsearch/react': 4.6.3(@algolia/client-search@5.52.1)(@types/react@19.2.14)(algoliasearch@5.52.1)(react-dom@18.3.1)(react@18.3.1)(search-insights@2.17.3)
@@ -3805,8 +3807,8 @@ packages:
   /@docusaurus/types@3.10.1(clean-css@5.3.3)(cssnano@6.1.2)(esbuild@0.25.12)(html-minifier-terser@7.2.0)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-XYMK8k1szDCFMw2V+Xyen0g7Kee1sP3dtFnl7vkGkZOkeAJ/oPDQPL8iz4HBKOo/cwU8QeV6onVjMqtP+tFzsw==}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@mdx-js/mdx': 3.1.1
       '@types/history': 4.7.11
@@ -3840,8 +3842,8 @@ packages:
   /@docusaurus/types@3.10.1(esbuild@0.25.12)(postcss@8.5.14)(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-XYMK8k1szDCFMw2V+Xyen0g7Kee1sP3dtFnl7vkGkZOkeAJ/oPDQPL8iz4HBKOo/cwU8QeV6onVjMqtP+tFzsw==}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@mdx-js/mdx': 3.1.1
       '@types/history': 4.7.11
@@ -4598,50 +4600,24 @@ packages:
   /@floating-ui/react-dom@2.1.8(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-cC52bHwM/n/CxS87FH0yWdngEZrjdtLW/qVruo68qg+prK7ZQ4YGdut2GyDVpoGeAYe/h899rVeOVm6Oi40k2A==}
     peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@floating-ui/dom': 1.7.6
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-    dev: true
-
-  /@floating-ui/react-dom@2.1.8(react-dom@19.2.6)(react@19.2.6):
-    resolution: {integrity: sha512-cC52bHwM/n/CxS87FH0yWdngEZrjdtLW/qVruo68qg+prK7ZQ4YGdut2GyDVpoGeAYe/h899rVeOVm6Oi40k2A==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
-    dependencies:
-      '@floating-ui/dom': 1.7.6
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
-    dev: false
 
   /@floating-ui/react@0.27.19(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-31B8h5mm8YxotlE7/AU/PhNAl8eWxAmjL/v2QOxroDNkTFLk3Uu82u63N3b6TXa4EGJeeZLVcd/9AlNlVqzeog==}
     peerDependencies:
-      react: '>=17.0.0'
-      react-dom: '>=17.0.0'
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@floating-ui/react-dom': 2.1.8(react-dom@18.3.1)(react@18.3.1)
       '@floating-ui/utils': 0.2.11
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       tabbable: 6.4.0
-    dev: true
-
-  /@floating-ui/react@0.27.19(react-dom@19.2.6)(react@19.2.6):
-    resolution: {integrity: sha512-31B8h5mm8YxotlE7/AU/PhNAl8eWxAmjL/v2QOxroDNkTFLk3Uu82u63N3b6TXa4EGJeeZLVcd/9AlNlVqzeog==}
-    peerDependencies:
-      react: '>=17.0.0'
-      react-dom: '>=17.0.0'
-    dependencies:
-      '@floating-ui/react-dom': 2.1.8(react-dom@19.2.6)(react@19.2.6)
-      '@floating-ui/utils': 0.2.11
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
-      tabbable: 6.4.0
-    dev: false
 
   /@floating-ui/utils@0.2.11:
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
@@ -5079,7 +5055,7 @@ packages:
     resolution: {integrity: sha512-f++rKLQgUVYDAtECQ6fn/is15GkEH9+nZPM3MS0RcxVqoTfawHvDlSCH7JbMhAM6uJ32v3eXLvLmLvjGu7PTQw==}
     peerDependencies:
       '@types/react': '>=16'
-      react: '>=16'
+      react: ^18.3.1
     dependencies:
       '@types/mdx': 2.0.13
       '@types/react': 19.2.14
@@ -5564,8 +5540,8 @@ packages:
   /@slorber/react-helmet-async@1.3.0(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-e9/OK8VhwUSc67diWI8Rb3I0YgI9/SBQtnhe9aEuK6MhZm7ntZZimXgwXnd8W96YTmSOb9M4d8LwhRZyhWr/1A==}
     peerDependencies:
-      react: ^16.6.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.6.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@babel/runtime': 7.29.2
       invariant: 2.2.4
@@ -5668,7 +5644,7 @@ packages:
   /@storybook/addon-links@8.6.18(react@18.3.1)(storybook@8.6.18):
     resolution: {integrity: sha512-FFlQcPRTgXoFZr2uawtf7lNc/ceIVRhU13BkJbJZKlil3+C8ORFDO1vnREzHje9JzeOWm/rzI0ay0RVetCcXzg==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+      react: ^18.3.1
       storybook: ^8.6.18
     peerDependenciesMeta:
       react:
@@ -5720,8 +5696,8 @@ packages:
   /@storybook/blocks@8.6.14(react-dom@18.3.1)(react@18.3.1)(storybook@8.6.18):
     resolution: {integrity: sha512-rBMHAfA39AGHgkrDze4RmsnQTMw1ND5fGWobr9pDcJdnDKWQWNRD7Nrlxj0gFlN3n4D9lEZhWGdFrCbku7FVAQ==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
       storybook: ^8.6.14
     peerDependenciesMeta:
       react:
@@ -5809,8 +5785,8 @@ packages:
     resolution: {integrity: sha512-hcFZIjW8yQz8O8//2WTIXylm5Xsgc+lW9ISLgUk1xGmptIJQRdlhVIXCpSyLrQaaRiyhQRaVg7l3BD9S216BHw==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -5835,8 +5811,8 @@ packages:
   /@storybook/react-dom-shim@8.6.14(react-dom@18.3.1)(react@18.3.1)(storybook@8.6.18):
     resolution: {integrity: sha512-0hixr3dOy3f3M+HBofp3jtMQMS+sqzjKNgl7Arfuj3fvjmyXOks/yGjDImySR4imPtEllvPZfhiQNlejheaInw==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+      react: ^18.3.1
+      react-dom: ^18.3.1
       storybook: ^8.6.14
     dependencies:
       react: 18.3.1
@@ -5847,8 +5823,8 @@ packages:
   /@storybook/react-dom-shim@8.6.18(react-dom@18.3.1)(react@18.3.1)(storybook@8.6.18):
     resolution: {integrity: sha512-N4xULcAWZQTUv4jy1/d346Tyb4gufuC3UaLCuU/iVSZ1brYF4OW3ANr+096btbMxY8pR/65lmtoqr5CTGwnBvA==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+      react: ^18.3.1
+      react-dom: ^18.3.1
       storybook: ^8.6.18
     dependencies:
       react: 18.3.1
@@ -5861,8 +5837,8 @@ packages:
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@storybook/test': 8.6.18
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+      react: ^18.3.1
+      react-dom: ^18.3.1
       storybook: ^8.6.18
       vite: ^4.0.0 || ^5.0.0 || ^6.0.0
     peerDependenciesMeta:
@@ -5893,8 +5869,8 @@ packages:
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@storybook/test': 8.6.18
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+      react: ^18.3.1
+      react-dom: ^18.3.1
       storybook: ^8.6.18
       typescript: '>= 4.2.x'
     peerDependenciesMeta:
@@ -6091,43 +6067,22 @@ packages:
     resolution: {integrity: sha512-5nNMTSETP4ykGegmVkhjcS8tTLW6Vl4axfEGQN3v0zdHYbK4UfoqfPChclTrJ4EoK9QynqAu9oUf8VEmrpZ5Ww==}
     engines: {node: '>=12'}
     peerDependencies:
-      react: '>=16.8'
-      react-dom: '>=16.8'
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@tanstack/table-core': 8.21.3
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-
-  /@tanstack/react-table@8.21.3(react-dom@19.2.6)(react@19.2.6):
-    resolution: {integrity: sha512-5nNMTSETP4ykGegmVkhjcS8tTLW6Vl4axfEGQN3v0zdHYbK4UfoqfPChclTrJ4EoK9QynqAu9oUf8VEmrpZ5Ww==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      react: '>=16.8'
-      react-dom: '>=16.8'
-    dependencies:
-      '@tanstack/table-core': 8.21.3
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
 
   /@tanstack/react-virtual@3.13.24(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-aIJvz5OSkhNIhZIpYivrxrPTKYsjW9Uzy+sP/mx0S3sev2HyvPb7xmjbYvokzEpfgYHy/HjzJ2zFAETuUfgCpg==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@tanstack/virtual-core': 3.14.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-
-  /@tanstack/react-virtual@3.13.24(react-dom@19.2.6)(react@19.2.6):
-    resolution: {integrity: sha512-aIJvz5OSkhNIhZIpYivrxrPTKYsjW9Uzy+sP/mx0S3sev2HyvPb7xmjbYvokzEpfgYHy/HjzJ2zFAETuUfgCpg==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    dependencies:
-      '@tanstack/virtual-core': 3.14.0
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
 
   /@tanstack/table-core@8.21.3:
     resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}
@@ -12368,7 +12323,7 @@ packages:
   /prism-react-renderer@2.4.1(react@18.3.1):
     resolution: {integrity: sha512-ey8Ls/+Di31eqzUxC46h8MksNuGx/n0AAC8uKpwFau4RPDYLuE3EXTp8N8G2vX2N7UC/+IXeNUnlWBGGcAG+Ig==}
     peerDependencies:
-      react: '>=16.0.0'
+      react: ^18.3.1
     dependencies:
       '@types/prismjs': 1.26.6
       clsx: 2.1.1
@@ -12516,28 +12471,14 @@ packages:
   /react-datepicker@8.3.0(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-DhfrIJnTPJTUVRtXU7c7zooug40rD6q+Fc8UTCt19dYEotLpDQgTN98MfocY6Rc4S99oOFFEoxyanOM/TKauuw==}
     peerDependencies:
-      react: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
-      react-dom: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
+      react: ^18.3.1
+      react-dom: ^18.3.1
     dependencies:
       '@floating-ui/react': 0.27.19(react-dom@18.3.1)(react@18.3.1)
       clsx: 2.1.1
       date-fns: 4.1.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-    dev: true
-
-  /react-datepicker@8.3.0(react-dom@19.2.6)(react@19.2.6):
-    resolution: {integrity: sha512-DhfrIJnTPJTUVRtXU7c7zooug40rD6q+Fc8UTCt19dYEotLpDQgTN98MfocY6Rc4S99oOFFEoxyanOM/TKauuw==}
-    peerDependencies:
-      react: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
-      react-dom: ^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc
-    dependencies:
-      '@floating-ui/react': 0.27.19(react-dom@19.2.6)(react@19.2.6)
-      clsx: 2.1.1
-      date-fns: 4.1.0
-      react: 19.2.6
-      react-dom: 19.2.6(react@19.2.6)
-    dev: false
 
   /react-docgen-typescript@2.4.0(typescript@5.8.3):
     resolution: {integrity: sha512-ZtAp5XTO5HRzQctjPU0ybY0RRCQO19X/8fxn3w7y2VVTUbGHDKULPTL4ky3vB05euSgG5NpALhEhDPvQ56wvXg==}
@@ -12574,14 +12515,6 @@ packages:
       react: 18.3.1
       scheduler: 0.23.2
 
-  /react-dom@19.2.6(react@19.2.6):
-    resolution: {integrity: sha512-0prMI+hvBbPjsWnxDLxlCGyM8PN6UuWjEUCYmZhO67xIV9Xasa/r/vDnq+Xyq4Lo27g8QSbO5YzARu0D1Sps3g==}
-    peerDependencies:
-      react: ^19.2.6
-    dependencies:
-      react: 19.2.6
-      scheduler: 0.27.0
-
   /react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
     dev: true
@@ -12594,7 +12527,7 @@ packages:
     resolution: {integrity: sha512-tk7o7QG9oYyELWHL8xiMQ8x4WzjCzbWNyig3uexmkLb54r8jO0yH3WCWx8UZS0c49eSA4QUmG5caiRJ8fAn58g==}
     engines: {node: '>=18'}
     peerDependencies:
-      react: ^18.0.0 || ^19.0.0
+      react: ^18.3.1
     dependencies:
       react: 18.3.1
     dev: true
@@ -12614,7 +12547,7 @@ packages:
   /react-router-config@5.1.1(react-router@5.3.4)(react@18.3.1):
     resolution: {integrity: sha512-DuanZjaD8mQp1ppHjgnnUnyOlqYXZVjnov/JzFhjLEwd3Z4dYjMSnqrEzzGThH47vpCOqPPwJM2FtthLeJ8Pbg==}
     peerDependencies:
-      react: '>=15'
+      react: ^18.3.1
       react-router: '>=5'
     dependencies:
       '@babel/runtime': 7.29.2
@@ -12625,7 +12558,7 @@ packages:
   /react-router-dom@5.3.4(react@18.3.1):
     resolution: {integrity: sha512-m4EqFMHv/Ih4kpcBCONHbkT68KoAeHN4p3lAGoNryfHi0dMy0kCzEZakiKRsvg5wHZ/JLrLW8o8KomWiz/qbYQ==}
     peerDependencies:
-      react: '>=15'
+      react: ^18.3.1
     dependencies:
       '@babel/runtime': 7.29.2
       history: 4.10.1
@@ -12640,7 +12573,7 @@ packages:
   /react-router@5.3.4(react@18.3.1):
     resolution: {integrity: sha512-Ys9K+ppnJah3QuaRiLxk+jDWOR1MekYQrlytiXxC1RyfbdsZkS5pvKAzCCr031xHixZwpnsYNT5xysdFHQaYsA==}
     peerDependencies:
-      react: '>=15'
+      react: ^18.3.1
     dependencies:
       '@babel/runtime': 7.29.2
       history: 4.10.1
@@ -12659,10 +12592,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       loose-envify: 1.4.0
-
-  /react@19.2.6:
-    resolution: {integrity: sha512-sfWGGfavi0xr8Pg0sVsyHMAOziVYKgPLNrS7ig+ivMNb3wbCBw3KxtflsGBAwD3gYQlE/AEZsTLgToRrSCjb0Q==}
-    engines: {node: '>=0.10.0'}
 
   /read-yaml-file@1.1.0:
     resolution: {integrity: sha512-VIMnQi/Z4HT2Fxuwg5KrY174U1VdUIASQVWXXyqtNRtxSr9IYkn1rsI6Tb6HsrHCmB7gVpNwX6JxPTHcH6IoTA==}
@@ -13085,9 +13014,6 @@ packages:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
     dependencies:
       loose-envify: 1.4.0
-
-  /scheduler@0.27.0:
-    resolution: {integrity: sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q==}
 
   /schema-dts@1.1.5:
     resolution: {integrity: sha512-RJr9EaCmsLzBX2NDiO5Z3ux2BVosNZN5jo0gWgsyKvxKIUL5R3swNvoorulAeL9kLB0iTSX7V6aokhla2m7xbg==}
