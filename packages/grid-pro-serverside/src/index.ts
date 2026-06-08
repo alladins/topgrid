@@ -48,6 +48,24 @@ export type {
 export { buildServerPivotColumns } from './internal/buildServerPivotColumns.js';
 export type { ServerPivotColumn } from './internal/buildServerPivotColumns.js';
 
+// MOD-GRID-68: viewport row model — push-based real-time model (separate from SSRM pull).
+export {
+  createViewportRowModel,
+  materializeViewport,
+} from './internal/viewportRowModel.js';
+export type {
+  ViewportDatasource,
+  ViewportDatasourceParams,
+  ViewportRowModel,
+  ViewportRowModelOptions,
+} from './internal/viewportRowModel.js';
+export { useViewportRowModel } from './useViewportRowModel.js';
+export type {
+  UseViewportRowModelOptions,
+  UseViewportRowModelResult,
+  ViewportGridProps,
+} from './useViewportRowModel.js';
+
 // G-3 lazy grouping (hierarchical cache): pure tree core + React-free controller + thin hook.
 export {
   createTreeCache,
