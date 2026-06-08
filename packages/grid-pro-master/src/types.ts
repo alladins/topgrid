@@ -97,6 +97,17 @@ export interface MasterDetailGridProps<TData> extends GridProps<TData> {
    * @see MasterDetailOptions
    */
   masterDetail?: MasterDetailOptions<TData>;
+
+  /**
+   * MOD-GRID-71: row virtualization for large master-detail datasets (`@tanstack/react-virtual`).
+   * Each master row (+ its expanded detail) is a measured `<tbody>` so the virtualizer **dynamically
+   * measures** variable-height detail panels (`measureElement`), not a fixed estimate. `enableVirtualization`
+   * is inherited from `GridProps`. OFF = the plain non-virtualized table (byte-identical).
+   * @default 48 (estimatedRowHeight) / 360 (virtualMaxHeight)
+   */
+  estimatedRowHeight?: number;
+  /** MOD-GRID-71: scroll-container max height (px) when `enableVirtualization` is on. @default 360 */
+  virtualMaxHeight?: number;
 }
 
 // ─── G-002: Context Menu ────────────────────────────────────────────────────

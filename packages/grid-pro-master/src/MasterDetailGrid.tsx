@@ -20,10 +20,12 @@ import {
   Fragment,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
   type ReactElement,
   type Ref,
 } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import {
   flexRender,
   getCoreRowModel,
@@ -178,6 +180,10 @@ function MasterDetailGridInner<TData>(
 
   const { renderDetailRow, masterDetail } = props;
 
+  // MOD-GRID-71: scrollTo target — set to the virtualizer's scrollToIndex when virtualized (below),
+  // read by the imperative handle at call time (was a no-op stub).
+  const scrollToRef = useRef<((index: number) => void) | undefined>(undefined);
+
   // ── Expanded state: controlled vs uncontrolled ──
   const isControlled = masterDetail?.expandedRowKeys !== undefined;
 
@@ -255,8 +261,10 @@ function MasterDetailGridInner<TData>(
         }
         props.onUpdateRow?.(rowId, patch);
       },
-      scrollTo: (_index: number) => {
-        // no-op stub — virtualization not wired in MasterDetailGrid (G-004 is grid-core scope)
+      scrollTo: (index: number) => {
+        // MOD-GRID-71: wired to the virtualizer's scrollToIndex when enableVirtualization is on;
+        // remains a no-op in the non-virtualized path (scrollToRef stays undefined).
+        scrollToRef.current?.(index);
       },
       getSelection: (): TData[] => {
         return table.getSelectedRowModel().rows.map((r) => r.original);
@@ -281,6 +289,89 @@ function MasterDetailGridInner<TData>(
   const headerGroups = table.getHeaderGroups();
   const rows = table.getRowModel().rows;
   const colCount = effectiveColumns.length;
+
+  // ── MOD-GRID-71: row virtualization (opt-in). Each master row (+ its detail) is a measured
+  // <tbody> so the virtualizer measures variable-height detail panels dynamically (measureElement),
+  // not a fixed estimate. OFF → the plain non-virtualized table below (byte-identical). ──
+  const virtualize = props.enableVirtualization === true;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const estimatedRowHeight = props.estimatedRowHeight ?? 48;
+  const virtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => estimatedRowHeight,
+    overscan: 6,
+  });
+  // wire the imperative scrollTo to the virtualizer when virtualized (was a no-op stub).
+  scrollToRef.current = virtualize
+    ? (index: number) => virtualizer.scrollToIndex(index)
+    : undefined;
+
+  if (virtualize) {
+    const virtualItems = virtualizer.getVirtualItems();
+    const totalSize = virtualizer.getTotalSize();
+    const padTop = virtualItems.length > 0 ? virtualItems[0]!.start : 0;
+    const padBottom =
+      virtualItems.length > 0 ? totalSize - virtualItems[virtualItems.length - 1]!.end : 0;
+    return (
+      <div className={`${props.className ?? ''} relative`.trim()}>
+        <div ref={scrollRef} style={{ overflow: 'auto', maxHeight: props.virtualMaxHeight ?? 360, position: 'relative' }}>
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              {headerGroups.map((headerGroup) => (
+                <tr key={headerGroup.id} className="border-b border-gray-200 bg-gray-100">
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className="px-4 py-2 text-left font-semibold text-gray-700"
+                      style={header.column.id === EXPAND_COLUMN_ID ? { width: 40 } : undefined}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            {/* top spacer tbody */}
+            {padTop > 0 && (
+              <tbody aria-hidden="true">
+                <tr style={{ height: padTop }}>
+                  <td colSpan={colCount} style={{ padding: 0 }} />
+                </tr>
+              </tbody>
+            )}
+            {/* one measured <tbody> per visible master row (+ its detail) */}
+            {virtualItems.map((vi) => {
+              const row = rows[vi.index]!;
+              return (
+                <tbody key={row.id} data-index={vi.index} ref={virtualizer.measureElement}>
+                  <MasterRow<TData>
+                    row={row}
+                    renderDetailRow={renderDetailRow}
+                    colCount={colCount}
+                    onRowClick={props.onRowClick}
+                    onRowDoubleClick={props.onRowDoubleClick}
+                    onCellClick={props.onCellClick}
+                  />
+                </tbody>
+              );
+            })}
+            {/* bottom spacer tbody */}
+            {padBottom > 0 && (
+              <tbody aria-hidden="true">
+                <tr style={{ height: padBottom }}>
+                  <td colSpan={colCount} style={{ padding: 0 }} />
+                </tr>
+              </tbody>
+            )}
+          </table>
+        </div>
+        {_lic.watermarkRequired && <Watermark required />}
+      </div>
+    );
+  }
 
   return (
     <div className={`${props.className ?? ''} relative`.trim()}>

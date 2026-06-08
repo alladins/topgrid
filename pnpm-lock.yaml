@@ -414,6 +414,9 @@ importers:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.2.6(react@19.2.6)
     devDependencies:
+      '@tanstack/react-virtual':
+        specifier: ^3.0.0
+        version: 3.13.24(react-dom@19.2.6)(react@19.2.6)
       '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
@@ -6125,7 +6128,6 @@ packages:
       '@tanstack/virtual-core': 3.14.0
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
-    dev: false
 
   /@tanstack/table-core@8.21.3:
     resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}

@@ -179,3 +179,45 @@ export const ContextMenuWithRowSelection: StoryObj<typeof ContextMenuGrid> = {
     ],
   },
 };
+
+// ─── MOD-GRID-71: master-detail + virtualization ───────────────────────────
+// 200 master rows + variable-height detail panels. enableVirtualization windows the rows (only a
+// small DOM window of measured <tbody> elements); measureElement measures expanded detail heights
+// dynamically. The chromium test asserts the window is far smaller than 200 + scrolling moves it +
+// expanding a visible row renders its detail.
+interface BigRow {
+  id: number;
+  name: string;
+  value: number;
+}
+const bigData: BigRow[] = Array.from({ length: 200 }, (_, i) => ({
+  id: i + 1,
+  name: `행 ${i + 1}`,
+  value: (i + 1) * 100,
+}));
+const bigColumns = createColumns<BigRow>([
+  { id: 'id', name: 'ID', type: 'number', width: '80' },
+  { id: 'name', name: '이름', type: 'text', width: '200' },
+  { id: 'value', name: '값', type: 'number', width: '120' },
+]);
+
+export const Virtualized: StoryObj<typeof MasterDetailGrid> = {
+  name: '마스터-디테일 가상화 (200행 + 가변 detail)',
+  args: {
+    data: bigData,
+    columns: bigColumns,
+    enableVirtualization: true,
+    virtualMaxHeight: 300,
+    estimatedRowHeight: 44,
+    renderDetailRow: (row) => {
+      const r = row.original as BigRow;
+      return (
+        <div data-detail={r.id} style={{ padding: 12, background: '#f1f5f9' }}>
+          <div>상세: {r.name}</div>
+          <div>값 ×2 = {r.value * 2}</div>
+          <div>값 ×3 = {r.value * 3}</div>
+        </div>
+      );
+    },
+  },
+};
