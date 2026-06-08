@@ -1960,6 +1960,32 @@
       "closure": "★Excel import/export of spreadsheet(.xlsx with formulas)=✅: 순수 변환+importXlsxToSheetCells/exportSheetCellsToXlsx(grid-export xlsx 재사용), 수식(.f) round-trip 보존. ★경계 실증(node probe, LESS-004): xlsx@0.18.5 .f write→read 보존·.s strip → 수식=✅, 셀 스타일=별 ❌ 행. ★수식 셀=캐시 값 v 필수(f-only=lib drop, export 가 computed=getDisplay 캐시). lib-agnostic Record<ref,raw>(grid-pro-sheet 무수정). Spreadsheet 카테고리 0 ❌. ★Excel cell styles=경계상 deliverable partial 없음→정직 ❌ 유지(가짜 🟡 금지, disposition 확정). Out: 셀 스타일·멀티시트·number format=vN.",
       "module_summary": "Enterprise backlog 16번째(비-DnD tail 3, advisor). grid-export 시트↔.xlsx 브리지(수식 보존): 순수 변환+import/export, node 17/0(real-lib 라운드트립)·chromium 1/1(엔진 재계산). ★경계-read(LESS-004): .f 보존·.s strip. grid-pro-sheet 무수정. Spreadsheet 0 ❌. 116/116 green.",
       "version_note": "grid-export 차기 batch minor(sheetXlsx 브리지 export: import/exportSheetCellsToXlsx + 순수 변환), 미발행. grid-pro-sheet devDep=grid-export(story)."
+    },
+    "MOD-GRID-70": {
+      "package": "grid-pro-agg (Pro)",
+      "tier": "Pro",
+      "weight": "Full(G-1 sticky 배선, 순수 substance 0=정직)",
+      "priority": "Enterprise ❌ backlog 17번째(advisor, render tail 1=clean ✅ 후보)",
+      "phase": "done (G-1 완주 → §3, ✅+🟡)",
+      "spec": "specs/MOD-GRID-70.md (rubric 76/80, gate-B 병행 작성)",
+      "goals": {
+        "G-1": "done"
+      },
+      "scope": "sticky group rows(group header sticks while children scroll) — 비-virt: AggregationGrid enableStickyGroupRows/stickyGroupMaxHeight + GroupRow sticky(그룹 td 인라인 position:sticky;top:0). 가상화 sticky=별개(virt off-window unmount EC-004→🟡 행). 기존 경로 OFF byte-identical.",
+      "g1": {
+        "surface": "GroupRow sticky?→그룹 td 인라인 {position:sticky,top:0,zIndex:5,background}(★border-collapse 가 tr sticky 차단→td; aggSpec/colSpan 양 경로+data-group-label) + AggregationGrid enableStickyGroupRows?/stickyGroupMaxHeight?(=240)→비-virt 인라인 bounded 스크롤 div(overflow:auto+maxHeight) 래퍼. P27-1 인라인 load-bearing(Tailwind inert).",
+        "verified_chromium": "1/1(sticky-group-rows.spec.ts) ★비공허: 영업팀 헤더 컨테이너 top 시작(|diff|<60)→bounded 컨테이너 200px 실제 스크롤(scrollTop>100)→헤더 computed top 여전히 컨테이너 top ≈ 고정(|diff|<60)=sticky engaged(비-sticky 면 200px 밀려 off-top)."
+      },
+      "verification": "typecheck 0·build green·chromium 1/1 + full-suite 116/116 green(★기존 agg chromium 회귀[group-header-aggregates·group-selection 등] 통과=OFF byte-identical). 기존 GroupRow/colSpan/agg 경로·비-virt 동작 무수정.",
+      "done_gate": {
+        "lesson": "신규 lesson 없음 — P27-1 인라인 재적용(Tailwind sticky/overflow/height inert→인라인) + border-collapse→td sticky(MOD-24 선례).",
+        "matrix_row": "§3 mod-grid-70 채움 + §6.2 등재",
+        "index_updated": "COMMERCIAL-GAP Sticky group rows ❌→✅(Pinned/floating)·Sticky/pinned group headers while scrolling ❌→🟡(Row grouping, virt drop) reconcile 19/19(246/72/9·330·0 mismatch·Enterprise 6→4)"
+      },
+      "rubric_specify": "76/80",
+      "closure": "★Sticky group rows(group header sticks while children scroll)=✅(비-virt): AggregationGrid enableStickyGroupRows + GroupRow sticky(그룹 td 인라인 position:sticky). ★Sticky/pinned group headers while scrolling=🟡(비-virt 전달·가상화 off-window unmount EC-004 잔존). ★P27-1 인라인 load-bearing·border-collapse→td(MOD-24 선례). ★비공허(advisor): 200px 실제 스크롤 후 헤더 computed top 고정(렌더됨=vacuous 금지). additive opt-in OFF byte-identical. Out: 가상화 sticky·다중레벨 stacking offset·thead sticky=vN. Pinned/floating ❌→✅·Row grouping ❌→🟡, Enterprise 6→4.",
+      "module_summary": "Enterprise backlog 17번째(render tail 1, advisor). grid-pro-agg 비-virt sticky 그룹 헤더(enableStickyGroupRows + GroupRow td 인라인 position:sticky, P27-1+border-collapse→td). chromium 1/1(200px 스크롤 후 헤더 고정, 비공허)·116/116 green(OFF byte-identical). Pinned/floating ✅·Row grouping 🟡(virt drop). 신규 lesson 없음.",
+      "version_note": "grid-pro-agg 차기 batch minor(enableStickyGroupRows/stickyGroupMaxHeight prop + GroupRow sticky), 미발행."
     }
   },
   "release_queue": {

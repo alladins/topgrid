@@ -1118,6 +1118,18 @@
 
 ---
 
+### `mod-grid-70` — 고정 그룹 헤더 (sticky group rows, grid-pro-agg) ✅+🟡 — {G-1} 완주 (Enterprise backlog 17번째 — render tail 1)
+
+소스: grid-pro-agg `src/internal/GroupRow.tsx`(sticky td) + `src/AggregationGrid.tsx`(enableStickyGroupRows + bounded 래퍼) + `src/types.ts`(props), story `stories/Aggregation.stories.tsx`(StickyGroupRows), test `tests/visual/sticky-group-rows.spec.ts`, spec `.claude/dev-harness/specs/MOD-GRID-70.md`. dev-harness 52번째. **Enterprise ❌ backlog 17번째**(advisor, render tail=clean ✅ 후보). 갭분석 Pinned/floating ❌(group header sticks while children scroll)→✅ · Row grouping ❌(sticky/pinned group headers while scrolling, virt drop)→🟡.
+
+| 기능 | API 표면 | 분류 | 연결 관계 | 세부 | 상태 |
+|------|----------|------|----------|------|------|
+| sticky 배선(G-1) | AggregationGrid `enableStickyGroupRows`/`stickyGroupMaxHeight` + GroupRow `sticky` | **배선형**(순수 0 정직) | 그룹 td 인라인 position:sticky;top:0(★border-collapse→tr 불가=td; P27-1 인라인) + 비-virt bounded 스크롤 래퍼. OFF byte-identical | chromium 1/1: ★200px 스크롤(scrollTop>0)→헤더 computed top=컨테이너 top 고정 | 채움 |
+
+> dev-harness 수확: **Enterprise backlog 17번째 = render tail 1(advisor)**. ★**P27-1 인라인 load-bearing**(Tailwind sticky/overflow/height 클래스 하네스서 inert) + ★**border-collapse 가 `<tr>` sticky 차단→그룹 `<td>` 에 적용**(MOD-24 floating rows 인라인 sticky 선례). ★**비공허 발산**(advisor): "헤더 렌더됨"이 아닌 **200px 실제 스크롤 후 헤더 computed top 이 컨테이너 top 고정**(비-sticky 면 밀려 off-top). additive opt-in, OFF byte-identical(기존 agg chromium 회귀 통과). ★**비-virt 모델 정직**: 가상화는 off-window 그룹 헤더 unmount(EC-004)→virt+sticky=🟡(Row grouping 행, "sticky/pinned group headers while scrolling"). **Pinned/floating ❌→✅ · Row grouping ❌→🟡**, COMMERCIAL-GAP ❌11→9·✅245→246·🟡71→72(reconcile 19/19·330·0 mismatch, Enterprise 6→4). full-suite 116/116 green. **Out 명시**: 가상화 sticky·다중레벨 stacking offset·thead sticky=vN. 신규 lesson 없음.
+
+---
+
 ## 4. cross-module 관계 그리드 (패키지 wiring 매트릭스)
 
 행 = 제공/주입 측, 열 = 소비/수신 측. 대표 5패키지(core / renderers / pro-tracking / license / meta)의
@@ -1482,6 +1494,11 @@ PoC 후 단계적 결정.
 > **★ MOD-50~ = Track 2 제품결정(2026-06-07, 사용자 advisor 위임)**. 이전 "제품 결정 4종=STOP-and-ask" 를 사용자가 **advisor 판단 위임**
 > 으로 전환(설계·우선순위 advisor 결정, 끝까지 진행; publish/origin push 만 사용자 게이트 유지). advisor 순서: full-row editing →
 > custom cell editor slot → column spanning(bound-or-defer) → **RTL=의도적 연기**(invasive·한국우선 저가치, 결정으로 기록).
+
+**MOD-GRID-70 grid-pro-agg 고정 그룹 헤더 (Enterprise backlog 17 — render tail 1, Pro)** — ✅+🟡 **구현됨 → §3 `mod-grid-70` 참조** (dev-harness 52번째). spec=`specs/MOD-GRID-70.md`
+- Goal: sticky group rows(group header sticks while children scroll) — AG groupRowsSticky 대응. 비-virt sticky.
+- In: AggregationGrid enableStickyGroupRows/stickyGroupMaxHeight + GroupRow sticky(그룹 td 인라인 position:sticky, P27-1) + 비-virt bounded 래퍼 + story+test.
+- Out: 가상화 sticky(off-window unmount=별 행 🟡)·다중레벨 stacking offset·thead sticky=vN. AC: ★200px 스크롤 후 헤더 computed top=컨테이너 top 고정(chromium)·OFF byte-identical. tier Pro. ★border-collapse→td·P27-1 인라인.
 
 **MOD-GRID-69 grid-export 시트 .xlsx 가져오기/내보내기 (Enterprise backlog 16 — 비-DnD tail 3, MIT/Lite)** — ✅ **구현됨 → §3 `mod-grid-69` 참조** (dev-harness 51번째). spec=`specs/MOD-GRID-69.md`
 - Goal: Excel import/export of the spreadsheet(.xlsx with formulas) — Wijmo FlexSheet 수식 load/save 대응. 순수 변환 + xlsx 브리지.
