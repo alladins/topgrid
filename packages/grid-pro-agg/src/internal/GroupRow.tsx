@@ -11,6 +11,7 @@
  * D7: verifyOrWarn NOT called here (already called in AggregationGrid.tsx).
  */
 
+import type { CSSProperties } from 'react';
 import { computeAggregateRow } from '../computeAggregateRow';
 import type { GroupRowProps } from '../types';
 
@@ -33,11 +34,19 @@ export function GroupRow<TData extends object>({
   aggSpec,
   leafColumns,
   showSelect,
+  sticky,
 }: GroupRowProps<TData>) {
   // Custom renderer path
   if (renderGroupRow) {
     return <>{renderGroupRow(row)}</>;
   }
+
+  // MOD-GRID-70: inline sticky on the group cells (border-collapse blocks sticky on <tr>; Tailwind
+  // sticky classes are inert in the bounded-scroll harness — inline is load-bearing, P27-1). Opaque
+  // background so leaf rows scroll under it.
+  const stickyTd: CSSProperties = sticky
+    ? { position: 'sticky', top: 0, zIndex: 5, background: '#eff6ff' }
+    : {};
 
   // MOD-GRID-56: tri-state group selection checkbox. checked = all sub-rows selected; indeterminate
   // = some-but-not-all (TanStack getIsSomeSelected); toggling selects/deselects the subtree.
@@ -93,7 +102,7 @@ export function GroupRow<TData extends object>({
         {leafColumns.map((col) => {
           if (col.id === '__select__') {
             return (
-              <td key={col.id} className="py-2 px-3">
+              <td key={col.id} className="py-2 px-3" style={stickyTd}>
                 {groupCheckbox}
               </td>
             );
@@ -103,7 +112,7 @@ export function GroupRow<TData extends object>({
               <td
                 key={col.id}
                 className="py-2 pr-3"
-                style={{ paddingLeft: `${paddingLeft}px` }}
+                style={{ ...stickyTd, paddingLeft: `${paddingLeft}px` }}
                 onClick={row.getToggleExpandedHandler()}
                 data-group-label=""
               >
@@ -116,6 +125,7 @@ export function GroupRow<TData extends object>({
             <td
               key={col.id}
               className="py-2 px-3 text-sm"
+              style={stickyTd}
               onClick={row.getToggleExpandedHandler()}
               {...(hasAgg ? { 'data-group-agg': col.field } : {})}
             >
@@ -130,13 +140,14 @@ export function GroupRow<TData extends object>({
   return (
     <tr className={trClass}>
       {groupCheckbox !== null && (
-        <td className="py-2 px-3">{groupCheckbox}</td>
+        <td className="py-2 px-3" style={stickyTd}>{groupCheckbox}</td>
       )}
       <td
         colSpan={groupCheckbox !== null ? Math.max(1, columnCount - 1) : columnCount}
         className="py-2 pr-3"
-        style={{ paddingLeft: `${paddingLeft}px` }}
+        style={{ ...stickyTd, paddingLeft: `${paddingLeft}px` }}
         onClick={row.getToggleExpandedHandler()}
+        data-group-label=""
       >
         {labelCell}
       </td>

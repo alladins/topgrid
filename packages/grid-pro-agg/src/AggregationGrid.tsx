@@ -160,6 +160,8 @@ export function AggregationGrid<TData extends object>({
   footerRowClassName,
   renderGroupRow,
   renderFooterRow,
+  enableStickyGroupRows = false,
+  stickyGroupMaxHeight = 240,
   enableVirtualization = false,
   estimatedRowHeight = 40,
   virtualOverscan = 5,
@@ -393,6 +395,7 @@ export function AggregationGrid<TData extends object>({
             ? { aggSpec: groupAggSpec, leafColumns: groupAggLeafColumns }
             : {})}
           {...(enableRowSelection ? { showSelect: true } : {})}
+          {...(enableStickyGroupRows ? { sticky: true } : {})}
         />
       );
     }
@@ -439,6 +442,15 @@ export function AggregationGrid<TData extends object>({
             {...(emptyGroupPanelText !== undefined ? { emptyText: emptyGroupPanelText } : {})}
           />
         )}
+        {/* MOD-GRID-70: bounded scroll container (inline — Tailwind height/overflow inert in the
+            harness, P27-1) so group-cell `position:sticky` engages while children scroll. */}
+        <div
+          style={
+            enableStickyGroupRows
+              ? { overflow: 'auto', maxHeight: stickyGroupMaxHeight, position: 'relative' }
+              : undefined
+          }
+        >
         <table className="w-full border-collapse text-sm">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -486,6 +498,7 @@ export function AggregationGrid<TData extends object>({
             {interleavedRows.map(renderDescriptor)}
           </tbody>
         </table>
+        </div>
         {_lic.watermarkRequired && <Watermark required />}
       </div>
     );

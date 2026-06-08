@@ -85,6 +85,13 @@ export interface GroupRowProps<TData extends object> {
    * `__select__` column position.
    */
   showSelect?: boolean;
+  /**
+   * MOD-GRID-70: sticky group header. When true, the group row's cells get inline
+   * `position: sticky; top: 0` (inline — Tailwind classes are inert in the bounded scroll harness,
+   * P27-1) so the header stays pinned while its children scroll under it. Applied to the `<td>`s
+   * (not the `<tr>`) because `position: sticky` on a `<tr>` does not engage under `border-collapse`.
+   */
+  sticky?: boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -185,6 +192,20 @@ export interface AggregationGridProps<TData extends object> {
 
   /** Custom footer row renderer. */
   renderFooterRow?: (row: Row<TData>, cells: Cell<TData, unknown>[]) => ReactNode;
+
+  /**
+   * MOD-GRID-70: sticky group headers (non-virtualized path). When true, the grid body becomes a
+   * bounded scroll container (`stickyGroupMaxHeight`) and each group header sticks to the top while
+   * its children scroll under it (AG `groupRowsSticky`). Virtualization drops off-window headers, so
+   * this is the non-virtualized model; leave `enableVirtualization` off.
+   * @default false
+   */
+  enableStickyGroupRows?: boolean;
+  /**
+   * MOD-GRID-70: max height (px) of the bounded scroll container when `enableStickyGroupRows` is on.
+   * @default 240
+   */
+  stickyGroupMaxHeight?: number;
 
   /**
    * Enable row virtualization via `@tanstack/react-virtual`.

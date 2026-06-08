@@ -312,3 +312,39 @@ export const GroupPanelStory: StoryObj<typeof GroupPanelDemo> = {
   name: 'GroupPanel 드래그 그룹핑',
   render: () => <GroupPanelDemo />,
 };
+
+// ---------------------------------------------------------------------------
+// MOD-GRID-70: sticky group headers — the group header sticks to the top of a bounded scroll
+// container while its children scroll under it. Many rows per group + a short maxHeight so the
+// chromium test can scroll within a group and assert the header stays pinned (computed position).
+// ---------------------------------------------------------------------------
+interface DeptRow {
+  id: number;
+  dept: string;
+  employee: string;
+  revenue: number;
+}
+const stickyData: DeptRow[] = Array.from({ length: 24 }, (_, i) => ({
+  id: i + 1,
+  dept: i < 12 ? '영업팀' : '개발팀',
+  employee: `직원${i + 1}`,
+  revenue: 1000000 + i * 10000,
+}));
+const stickyColumns: AggregationColumnDef<DeptRow>[] = [
+  { accessorKey: 'dept', header: '부서' },
+  { accessorKey: 'employee', header: '직원' },
+  { accessorKey: 'revenue', header: '매출', meta: { aggregationFn: 'sum' } },
+];
+
+export const StickyGroupRows: StoryObj<typeof AggregationGrid<DeptRow>> = {
+  name: '고정 그룹 헤더 (sticky group rows)',
+  args: {
+    data: stickyData,
+    columns: stickyColumns,
+    enableAggregation: true,
+    grouping: ['dept'],
+    expanded: true,
+    enableStickyGroupRows: true,
+    stickyGroupMaxHeight: 160,
+  },
+};
