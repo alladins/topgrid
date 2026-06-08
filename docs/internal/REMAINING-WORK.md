@@ -6,7 +6,19 @@
 
 ---
 
-## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-07 기준) ★★
+## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-09 갱신) ★★
+
+> ### ▶ 2026-06-09 세션 결과 (발행 + 하네스 fix + context submenu)
+> **1. ★발행 batch 완료·검증·push(사용자 (a) 승인)**: MOD-40~72 누적분 → **전 21패키지 lockstep minor bump**(exact-pin 그래프 일관성; `workspace:*`→정확버전 핀이라 grid-core 0.4.0→0.5.0 시 의존 전체 재발행 강제). `grid-core 0.5.0`·`grid 0.6.0`·`features 0.8.0` 등. release 커밋 `a7fb35c`. 직렬빌드→pack 치환검증→canary(토큰)→`pnpm --filter "@topgrid/*" publish`(topo order)→**21/21 npm 라이브**→소비자 설치 스모크 clean(ERESOLVE 0). **사용자가 origin push 완료**(a7fb35c 까지 원격 반영). 절차/교훈=[[npm-publish-topgrid]].
+> **2. ★하네스 fix(커밋 `92406e4`, 사용자 (A) 승인, ⚠️미push)**: storybook chromium 하네스가 **react@18(apps/docs)⊗react@19(패키지) `@tanstack/react-table` dual-instance**로 grid-core 의존 스토리 렌더 실패(`getAllColumns` throw)했음 → root `pnpm.overrides` 에 react/react-dom `^18.3.1` 추가+`pnpm install`+`pnpm prune`(.pnpm 각 1 변형). `resolve.dedupe` 불충분=override 가 정답. **full functional suite 복원**. regression 아님(pre-existing, 발행 제품 무관=소비자 react 단일).
+> **3. ★context submenu(MOD-61 redo, 커밋 `351678f`+doc `c4d592e`, 🟡, ⚠️미push·미발행)**: harness fix 선행 후 ContextMenuItem icon?/children?(submenu)+Portal 재귀 렌더+내장 makeCopyCellItem(순수 node 9/0). chromium 2/2(repeat-each=3)+**full suite 120/120 green**. **🟡(✅ 아님)**: submenu+icon+copy 전달, export factory 미제공=세트 미완. COMMERCIAL-GAP **❌7→6 / 🟡73→74**(Misc UX). ★2 버그였음(하네스 react dual-instance 실재 + 스토리 컬럼 포맷 `{accessorKey,header}`→`{id,name,type}` 필요=MOD-24 교훈). ★MasterDetail `--default` 스토리에 동일 컬럼 버그 잔존(스펙 미커버=플래그만).
+> **★현재 미해결 사용자 게이트(2개)**: (1) **origin push**: main=origin 대비 **3커밋 ahead**(92406e4·351678f·c4d592e, a7fb35c 는 push됨). (2) **npm 발행**: context submenu+하네스 fix 는 npm 미반영(`grid-pro-master@0.4.0`)=신규 미발행 누적. 발행하려면 grid-pro-master(+exact-pin lockstep 의존 전체) bump 필요([[npm-publish-topgrid]]).
+> **★다음 재가동 옵션**: (b) settled defer 재평가(RTL 등=advisor 영구 판단, 사용자 우선순위 변경 시만). (d) 🟡 심화(cross-filter live·range-adjust handles·merged cells·**context submenu export factory(makeExportItem)/submenu 깊이**). Excel cell styles=❌ 영구(edition-blocked). **잔여 ❌6=전부 by-design floor**(Community settled defer 5 + Excel cell styles 1).
+> **★chromium 하네스 재가동**(매 세션 선행, ss-srv.mjs=미추적→재생성 필요): `git show 6d8355d^:apps/docs/ss-srv.mjs` Write → `pnpm install`(override 반영됨) → `pnpm -r --workspace-concurrency=1 build` → `pnpm -F docs build-storybook` → `node apps/docs/ss-srv.mjs` → curl :6006 200 → `cd apps/docs && pnpm exec playwright test --config=playwright.config.ts --grep-invert "visual regression:"`(**120/120 기대**). 진단 probe=`packages/<pkg>/` 안에 두고 패키지명 import(단일 react resolve).
+>
+> ---
+>
+> ### ▶ 이전 상태 (2026-06-07~08, MOD-50~72 buildable backlog 0)
 
 > **현 상태**: 제품결정 4종 종결(MOD-50~52·RTL 연기) + **Enterprise ❌ backlog 자율 진행(사용자: 끝까지, advisor 위임): MOD-53~60·62~72 done(2026-06-07~08) → ★buildable backlog 0 도달**, 전부 로컬 `main` 커밋(reconcile 19/19·330).
 > COMMERCIAL-GAP **❌47→7 = by-design floor**(✅247/🟡73/❌7; **Column features·Editing·Selection·Pivoting·Row models/data·Spreadsheet·Master/Detail&Tree 0 ❌·시트 스코프 ❌ 0**). full-suite **118/118 green**(playwright retries:2). working tree clean. origin 미푸시·npm 미발행(둘 다 사용자 결정).
