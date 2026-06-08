@@ -80,10 +80,11 @@
 - **RTL 레이아웃** → ⛔ **의도적 연기(advisor 결정, silent gap 아님)**. invasive(`computePinnedOffset` 등 전 LTR 전제), 한국시장 우선순위 낮음
   → 자율 build = 큰 invasive 변경 대비 거의 0 가치. **결정으로 기록**(❌ 유지, 차기 우선순위 재평가 시 재고). **제품결정 4종 중 유일 잔여**.
 
-### 빠른 시작 예시 (현 상태 = MOD-52 까지 완료, 제품결정 4종 종결)
-> 기본(이어서): "계속" / "다음" → 하네스 재가동(위 6단계) → Enterprise ❌20 backlog 다음 모듈 spec-gate(advisor) → build.
-> 트랙 1/Enterprise 전환: "browser 클러스터 — pivot panel 부터" → 동일 하네스 + grid-pro-pivot split_remainder.
-> 결정만: "RTL 다시 볼지" → advisor triage 재확인(현재 의도적 연기).
+### 빠른 시작 예시
+> ★**아래 트랙 1/2 섹션은 MOD-52 시점 역사적 기록(stale)** — 현재 상태는 **이 문서 최상단 HANDOFF 블록**(❌7·buildable backlog 0·MOD-72 까지 완료) 참조.
+> 기본(이어서): 자율 buildable backlog **완료**. "발행" → 하네스 무관, MOD-50~72 누적 @topgrid/* minor bump+publish(Granular Token Bypass-2FA travia71, **사용자 게이트**, [[npm-publish-topgrid]]).
+> chromium 작업 재개 시(🟡 심화·context submenu 등): 하네스 재가동(상단 6단계: ss-srv.mjs 복원→`pnpm -r build`→`build-storybook`→`node apps/docs/ss-srv.mjs`→curl :6006 200).
+> 결정만: "RTL/settled defer 다시 볼지" → advisor triage 재확인(현재 의도적 연기).
 
 ---
 
