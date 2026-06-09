@@ -15,7 +15,7 @@
 | **합계** | **330** | **330** | **330** |
 
 > ✅ **재집계 완료 (2026-06-06)**: "검증 재집계" 열은 카테고리 상세표 행(=ground truth, MOD-34~39 닫힘·roving 🟡 반영)에서
-> **프로그래매틱 재계산**했고 **19/19 카테고리 reconcile**(파싱 카운트 == 선언 기능 수)+**합 330** 검산을 통과했다(손-추정 아님).
+> **프로그래매틱 재계산**했고 **19/19 카테고리 reconcile**(파싱 카운트 == 선언 기능 수)+**합 330** 검산을 통과했다(손-추정 아님). ⚠️ **단 이 reconcile 는 MOD-39 baseline 시점 기준**이며, MOD-55~72 동안 요약표가 드리프트해 **현재는 미통과**(아래 요약표 STALE 경고 참조, 2026-06-09). Ground truth=「잔여 ❌ 우선순위」 섹션(❌6).
 > 「재감사(MOD-33)」 열은 MOD-28~33 시점 스냅샷으로 이력 보존. 행별 상태는 카테고리 상세표·MASTER §3 이 SSoT.
 > 「잔여 ❌ 우선순위」 tier 분해는 MOD-39 기준 ❌47(Community 15 + Enterprise 27 + 기타 5)로 재산정됐고, **MOD-40 반영분은 다음 줄**.
 > ★ **MOD-40 델타(2026-06-06, vN-1)**: `$A$1 절대참조` ❌→✅ · `상대참조 on copy/fill` ❌→🟡(엔진 프리미티브 `translateFormula`
@@ -202,6 +202,8 @@
 > **2026-06-06 검증 재집계**(MOD-39 까지): 아래 ✅/🟡/❌ 는 카테고리 상세표 행(=ground truth, MOD-34~39 ✅·roving 🟡 반영)
 > 에서 **프로그래매틱 재계산 + 카테고리별 reconcile**(파싱 카운트 == 선언 기능 수, 19/19 통과, 합=330)했다. 손-추정 아님.
 > (참고 최초감사 baseline 178/60/89 는 위 「종합」표 참조.)
+>
+> ⚠️ **STALE 경고(2026-06-09 실측 발견)**: 아래 요약표는 **MOD-55~72 델타를 부분만 반영**해 드리프트했다 — 실측 합산 시 **✅240 / 🟡71 / ❌16**(합 330)으로, 「잔여 ❌ 우선순위」 섹션·per-feature 상세표가 가리키는 현 실태(**❌6**)와 불일치한다(예: Pivoting·Master/Detail·Pinned·State·Charts 등은 MOD-53~72 에서 닫혔으나 요약표엔 ❌ 잔존). **그동안 commit 들의 "reconcile 19/19" 문구는 재실행 없이 계승된 것=실측 미통과**(advisor 지적). **Ground truth = per-feature 상세표 + 「잔여 ❌ 우선순위」 섹션(❌6)**. ★요약표 전면 재-tally 는 미해결 doc-integrity 과제(상세표 2개[AG-컬럼 표 + 카테고리-그룹 표]끼리도 카운트 불일치하여 canonical 확립 선행 필요). 아래 표는 정정 전까지 **비권위**.
 
 | 카테고리 | 기능 | ✅ | 🟡 | ❌ |
 |---|---|---|---|---|
@@ -645,7 +647,7 @@
 | Filters tool panel | Enterprise | — | ✅ 구현(MOD-59 G-1) | `grid-pro-panel FiltersToolPanel({columns:{id,label,value}[], onFilterChange, onClearAll?}) — 모든 컬럼 필터를 한 패널에 나열+활성 카운트 집계; callback-only(ToolPanel 철학); SideBar host` — chromium 1/1: ★컬럼 입력→값 반영+활성 표시+카운트·다중 컬럼 동시·clear-all 리셋·SideBar 합성. AG filters tool panel 대응. |
 | Row group panel (drag-to-group bar) | Enterprise | FlexGrid | ✅ 구현 | `@topgrid/grid-pro-panel RowGroupPanel.tsx re-exports grid-pro-agg GroupPanel.tsx (onDragOver/onDrop/dataTransfer 'columnId'/addToGrouping)` — Verified: HTML5-drag grouping chips delegated to agg GroupPanel (full drag/drop + chip remove); Wijmo via wijmo.grid.grouppanel. |
 | Context menu (right-click) | Enterprise | — | 🟡 부분 | `@topgrid/grid-pro-master ContextMenuGrid.tsx (contextMenuItems, onContextMenu, createPortal via ContextMenuPortal.tsx)` — Verified: declarative items with shortcuts/separators/disabled, portal-rendered with viewport clamping; no submenus/icons/built-ins. |
-| Context menu submenus / icons / built-in items (copy/export) | Enterprise | — | ✅ 구현(MOD-61 redo) | `@topgrid/grid-pro-master ContextMenuItem icon?/children? + ContextMenuPortal 재귀 MenuItemRow + makeCopyCellItem + makeExportItem` — submenu(hover/click open, ▶·aria-haspopup) + icon(leading) + 내장 **copy**(makeCopyCellItem, 순수 cellValueToClipboardText) + 내장 **export**(makeExportItem, grid-export exportRowsToExcel, PAT-005 injectable exporter). chromium(submenu click→자식·icon·내장 copy/export 렌더) + node 18/0(clipboard 9 + makeExportItem 9). built-in items(copy/export) 세트 완성. (export=Excel; CSV/PDF built-in=vN.) ★하네스 fix(react@18 단일화) 선행. ★발행 미반영(npm grid-pro-master 0.4.0=미포함). |
+| Context menu submenus / icons / built-in items (copy/export) | Enterprise | — | ✅ 구현(MOD-61 redo) | `@topgrid/grid-pro-master ContextMenuItem icon?/children? + ContextMenuPortal 재귀 MenuItemRow + makeCopyCellItem + makeExportItem` — submenu(hover/click open, ▶·aria-haspopup) + icon(leading) + 내장 **copy**(makeCopyCellItem, 순수 cellValueToClipboardText) + 내장 **export**(makeExportItem, 기본 exporter=grid-export `exportRowsToExcel` 에 와이어링). chromium(submenu click→자식·icon·내장 copy/export 렌더) + node 18/0(clipboard 9 + makeExportItem 9). ★정직 경계: node 는 **주입 spy 로 onClick→exporter 호출만 검증**(PAT-005), 실제 .xlsx 생성은 grid-export 자체 테스트(MOD-69) 커버=여기서 end-to-end 미재검(중복 회피·headless 다운로드 단언 회피). built-in items(copy/export) 세트 완성. (export=Excel; CSV/PDF built-in=vN.) ★하네스 fix(react@18 단일화) 선행. ★발행 미반영(npm grid-pro-master 0.4.0=미포함). |
 | Loading overlay | Community | — | ✅ 구현(MOD-33 G-2) | `@topgrid/grid-core Grid.tsx L575 loading=true -> SkeletonRows (internal/Skeleton.tsx)` — Verified: tbody replaced with animate-pulse skeleton rows (thead preserved), not a true overlay over existing data. |
 | No-rows / empty overlay | Community | — | ✅ 구현 | `@topgrid/grid-core Grid.tsx (emptyState/emptyText props) + internal/EmptyState.tsx (slot->text->defaultText priority)` — Verified: slot or text empty state rendered as colSpan row when no rows; priority slot then text then default. |
 | Row drag-and-drop (reorder within grid) | Community | FlexGrid | ✅ 구현(MOD-33 G-3) | `none (grid-core drag = column-drag only: useColumnDrag.ts setData('columnId'); no row draggable/onRowDrag)` — Verified absent: only column-drag and group-panel drag exist; no row reorder via draggable rows. |
