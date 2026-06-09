@@ -8,9 +8,12 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-09 갱신) ★★
 
-> ### ▶ 2026-06-09 자율 라운드 진행중 (publish + doc-integrity + 🟡 심화)
-> **완료**: ①context submenu 발행(grid-pro-master 0.5.0+grid 0.7.0, 2/2 라이브, 사용자 push) ②doc-integrity 재-tally(COMMERCIAL-GAP canonical ✅247/🟡74/❌6/➖3, commit `efd0c28`, 사용자 push) ③**MOD-73 CSV/PDF 내보내기 항목**(grid-export 행배열 exportRowsToCsv/Pdf + makeExportItem format dispatch, node 18+15/0, commit `e9b7489`, ★additive enrichment=flip 아님, ⚠️미발행).
-> **진행중**: 🟡 심화 — merged cells(sheet, computeSheetMerges node 모델 + render) → cross-filter live(chart→grid). chromium 하네스 재가동(ss-srv.mjs 복원됨, baseline 120/120 게이트 후 진행; green 아니면 node-pure 모델만+render defer). advisor: cross-filter=하네스 정당화 주작업, merged-cells=cheap rider(=vN PoC, flip 아님).
+> ### ▶ 2026-06-09 자율 라운드 종료 (publish + doc-integrity + 🟡 심화 3종 → buildable+verifiable 소진)
+> **완료**: ①context submenu 발행(grid-pro-master 0.5.0+grid 0.7.0, 2/2 라이브, 사용자 push) ②doc-integrity 재-tally(COMMERCIAL-GAP canonical ✅247/🟡74/❌6/➖3, `efd0c28`, push됨) ③**MOD-73 CSV/PDF 내보내기 항목**(grid-export exportRowsToCsv/Pdf + makeExportItem format dispatch, node 18+15/0, `e9b7489`, additive=flip 아님) ④**MOD-74 시트 셀 병합**(computeSheetMerges node 19/0 + SheetGrid merges? rowSpan/colSpan, chromium 1/1, `d2624e7`, PoC 구조 렌더=🟡 유지) ⑤**MOD-75 cross-filter 차트 primitive**(RangeChart onSelectCategory + linked highlight, chromium 1/1, `0625697`, 🟡 유지=highlight 만 닫힘).
+> **★chromium 하네스 재가동 성공**(override fix 92406e4 효과): ss-srv.mjs 복원→baseline **120/120** green→3 모듈 후 **full suite 122/122** green. 하네스 건강.
+> **★종료 상태(advisor 확정)**: **buildable+verifiable work 소진** — 3종 🟡 심화는 정직 disposition(flip 0, COMMERCIAL-GAP reconcile 불변 330/247/74/6/3). 잔여=vN/by-design floor 뿐. "끝까지"=억지 목록 생성 아님(handoff buildable backlog=0 위에 3 honest 🟡-advancement 추가).
+> **★신규 vN(record, 강제 금지)**: (1) cross-filter **실 setFilter 배선**(getFilteredRowModel 경유 controlled columnFilters/globalFilter fn=makeAdvancedFilterFn → 진짜 ✅, base Grid 의 controlled global filter fn 노출 여부 선조사) (2) merged-cells **merge-aware 편집/선택** semantics(Wijmo 병합 패리티) (3) CSV/PDF **실 PDF 렌더 chromium 검증**(현 jspdf=wiring node-test만).
+> **★미발행 누적(다음 publish batch)**: MOD-73(grid-export·grid-pro-master)·74(grid-pro-sheet)·75(grid-pro-chart·grid-pro-filter[+grid-pro-chart devDep]) 전부 npm 미반영. 발행 시 변경 패키지+exact-pin 의존자 산정([[npm-publish-topgrid]] minimal-subgraph). **publish·origin push=사용자 게이트**.
 
 > ### ▶ 2026-06-09 세션 결과 (발행 + 하네스 fix + context submenu)
 > **1. ★발행 batch 완료·검증·push(사용자 (a) 승인)**: MOD-40~72 누적분 → **전 21패키지 lockstep minor bump**(exact-pin 그래프 일관성; `workspace:*`→정확버전 핀이라 grid-core 0.4.0→0.5.0 시 의존 전체 재발행 강제). `grid-core 0.5.0`·`grid 0.6.0`·`features 0.8.0` 등. release 커밋 `a7fb35c`. 직렬빌드→pack 치환검증→canary(토큰)→`pnpm --filter "@topgrid/*" publish`(topo order)→**21/21 npm 라이브**→소비자 설치 스모크 clean(ERESOLVE 0). **사용자가 origin push 완료**(a7fb35c 까지 원격 반영). 절차/교훈=[[npm-publish-topgrid]].
