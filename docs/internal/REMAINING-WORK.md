@@ -8,6 +8,10 @@
 
 ## ★★ 다음 세션 진입 가이드 (HANDOFF — 2026-06-09 갱신) ★★
 
+> ### ▶ 2026-06-09 자율 라운드 진행중 (publish + doc-integrity + 🟡 심화)
+> **완료**: ①context submenu 발행(grid-pro-master 0.5.0+grid 0.7.0, 2/2 라이브, 사용자 push) ②doc-integrity 재-tally(COMMERCIAL-GAP canonical ✅247/🟡74/❌6/➖3, commit `efd0c28`, 사용자 push) ③**MOD-73 CSV/PDF 내보내기 항목**(grid-export 행배열 exportRowsToCsv/Pdf + makeExportItem format dispatch, node 18+15/0, commit `e9b7489`, ★additive enrichment=flip 아님, ⚠️미발행).
+> **진행중**: 🟡 심화 — merged cells(sheet, computeSheetMerges node 모델 + render) → cross-filter live(chart→grid). chromium 하네스 재가동(ss-srv.mjs 복원됨, baseline 120/120 게이트 후 진행; green 아니면 node-pure 모델만+render defer). advisor: cross-filter=하네스 정당화 주작업, merged-cells=cheap rider(=vN PoC, flip 아님).
+
 > ### ▶ 2026-06-09 세션 결과 (발행 + 하네스 fix + context submenu)
 > **1. ★발행 batch 완료·검증·push(사용자 (a) 승인)**: MOD-40~72 누적분 → **전 21패키지 lockstep minor bump**(exact-pin 그래프 일관성; `workspace:*`→정확버전 핀이라 grid-core 0.4.0→0.5.0 시 의존 전체 재발행 강제). `grid-core 0.5.0`·`grid 0.6.0`·`features 0.8.0` 등. release 커밋 `a7fb35c`. 직렬빌드→pack 치환검증→canary(토큰)→`pnpm --filter "@topgrid/*" publish`(topo order)→**21/21 npm 라이브**→소비자 설치 스모크 clean(ERESOLVE 0). **사용자가 origin push 완료**(a7fb35c 까지 원격 반영). 절차/교훈=[[npm-publish-topgrid]].
 > **2. ★하네스 fix(커밋 `92406e4`, 사용자 (A) 승인, ✅push됨)**: storybook chromium 하네스가 **react@18(apps/docs)⊗react@19(패키지) `@tanstack/react-table` dual-instance**로 grid-core 의존 스토리 렌더 실패(`getAllColumns` throw)했음 → root `pnpm.overrides` 에 react/react-dom `^18.3.1` 추가+`pnpm install`+`pnpm prune`(.pnpm 각 1 변형). `resolve.dedupe` 불충분=override 가 정답. **full functional suite 복원**. regression 아님(pre-existing, 발행 제품 무관=소비자 react 단일).
