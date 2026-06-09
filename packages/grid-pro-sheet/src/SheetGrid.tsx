@@ -11,13 +11,14 @@
  * PoC: absolute refs, value-copy (no relative-ref adjustment), inline edit via double-click/Enter.
  */
 
-import { useCallback, useState, type CSSProperties, type KeyboardEvent } from 'react';
+import { useCallback, useMemo, useState, type CSSProperties, type KeyboardEvent } from 'react';
 import { useCellRange, useClipboard, isInRange } from '@topgrid/grid-pro-range';
 import type { CellUpdate } from '@topgrid/grid-pro-range';
 import { useSheet } from './useSheet.js';
 import { toA1 } from './internal/cellAddress.js';
 import { formatSheetValue, type SheetCellFormat } from './internal/formatSheetValue.js';
 import { sheetStyleToCss, type SheetCellStyle } from './internal/sheetStyleToCss.js';
+import { computeSheetMerges } from './internal/computeSheetMerges.js';
 
 export interface SheetGridProps {
   /** Number of rows (default 12). */
@@ -35,6 +36,12 @@ export interface SheetGridProps {
    * Merged onto the cell; the range-selection highlight still wins.
    */
   cellStyles?: Record<string, SheetCellStyle>;
+  /**
+   * MOD-GRID-74: 셀 병합 — A1 범위 문자열 배열(e.g. `['A1:C2', 'B5:B7']`).
+   * 좌상단 anchor 셀이 `<td rowSpan colSpan>` 로 렌더되고 피복 셀은 렌더 생략(HTML table 병합).
+   * 겹침/경계 규칙은 {@link computeSheetMerges} 참조(first-wins·clamp·1×1 무시).
+   */
+  merges?: string[];
 }
 
 const cellStyle: CSSProperties = {
@@ -47,11 +54,17 @@ const cellStyle: CSSProperties = {
 };
 const headerStyle: CSSProperties = { ...cellStyle, background: '#f3f4f6', textAlign: 'center', fontWeight: 600 };
 
-export function SheetGrid({ rows = 12, cols = 6, formats, cellStyles }: SheetGridProps): JSX.Element {
+export function SheetGrid({ rows = 12, cols = 6, formats, cellStyles, merges }: SheetGridProps): JSX.Element {
   const { setCell, getDisplay, getRaw, undo, redo, canUndo, canRedo } = useSheet();
   const [editing, setEditing] = useState<{ row: number; col: number } | null>(null);
   const [editText, setEditText] = useState('');
   const { range, handleMouseDown, handleMouseEnter, handleMouseUp } = useCellRange();
+
+  // MOD-GRID-74: 병합 모델 — anchor(span) / covered(skip).
+  const { anchors, covered } = useMemo(
+    () => computeSheetMerges(merges ?? [], rows, cols),
+    [merges, rows, cols],
+  );
 
   const refOf = (row: number, col: number): string => toA1(col, row);
 
@@ -125,12 +138,16 @@ export function SheetGrid({ rows = 12, cols = 6, formats, cellStyles }: SheetGri
               <th style={headerStyle}>{row + 1}</th>
               {Array.from({ length: cols }, (_, col) => {
                 const ref = refOf(row, col);
+                // MOD-GRID-74: 피복 셀은 anchor 의 rowSpan/colSpan 에 흡수되어 <td> 를 렌더하지 않는다.
+                if (covered.has(ref)) return null;
+                const span = anchors.get(ref);
                 const isEditing = editing?.row === row && editing?.col === col;
                 const selected = isInRange(row, col, range);
                 return (
                   <td
                     key={ref}
                     data-cell={ref}
+                    {...(span ? { rowSpan: span.rowSpan, colSpan: span.colSpan } : {})}
                     onMouseDown={(e) => handleMouseDown(row, col, e.shiftKey)}
                     onMouseEnter={() => handleMouseEnter(row, col)}
                     onDoubleClick={() => startEdit(row, col)}

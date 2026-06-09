@@ -29,6 +29,17 @@ export const Styled: Story = {
   },
 };
 
+// MOD-GRID-74: 셀 병합. A1:C2 = 3열×2행 사각 블록(anchor A1, 피복 5셀은 DOM 부재);
+// B4:B5 = 세로 2행 병합. D1 등 비병합 셀은 그대로 렌더.
+export const Merged: Story = {
+  name: '셀 병합 (A1:C2 + B4:B5)',
+  args: {
+    rows: 5,
+    cols: 5,
+    merges: ['A1:C2', 'B4:B5'],
+  },
+};
+
 // MOD-GRID-62: per-cell number formatting. B2=currency, C2=percent(1dp), D2=number(2dp); A2=no format.
 // Type a numeric value into a formatted cell → the displayed value is formatted (stored value
 // unchanged). Non-formatted cells render raw (byte-identical).
