@@ -6,16 +6,18 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사 | 재감사(MOD-33) | **검증 재집계(MOD-50, 2026-06-07)** |
-|---|---|---|---|
-| ✅ 구현(full) | 178 (54%) | 199 (60%) | **227 (69%)** |
-| 🟡 부분(partial) | 60 (18%) | 60 (18%) | **70 (21%)** |
-| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | **30 (9%)** |
-| ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) |
-| **합계** | **330** | **330** | **330** |
+| 상태 | 최초감사 | 재감사(MOD-33) | 검증 재집계(MOD-50, 2026-06-07) | **현재(MOD-72, 2026-06-09 canonical)** |
+|---|---|---|---|---|
+| ✅ 구현(full) | 178 (54%) | 199 (60%) | 227 (69%) | **247 (75%)** |
+| 🟡 부분(partial) | 60 (18%) | 60 (18%) | 70 (21%) | **74 (22%)** |
+| ❌ 미구현(missing) | 89 (27%) | 68 (21%) | 30 (9%) | **6 (2%)** |
+| ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) | **3 (1%)** |
+| **합계** | **330** | **330** | **330** | **330** |
 
-> ✅ **재집계 완료 (2026-06-06)**: "검증 재집계" 열은 카테고리 상세표 행(=ground truth, MOD-34~39 닫힘·roving 🟡 반영)에서
-> **프로그래매틱 재계산**했고 **19/19 카테고리 reconcile**(파싱 카운트 == 선언 기능 수)+**합 330** 검산을 통과했다(손-추정 아님). ⚠️ **단 이 reconcile 는 MOD-39 baseline 시점 기준**이며, MOD-55~72 동안 요약표가 드리프트해 **현재는 미통과**(아래 요약표 STALE 경고 참조, 2026-06-09). Ground truth=「잔여 ❌ 우선순위」 섹션(❌6).
+> ✅ **재집계 완료 (2026-06-09 재-tally, canonical)**: "현재(MOD-72)" 열은 카테고리 상세표 per-feature 행(=ground truth)에서
+> **프로그래매틱 재계산**했고 **19/19 카테고리 reconcile**(파싱 카운트 == 선언 기능 수)+**합 330** 검산을 통과했다(손-추정 아님). 또한
+> per-feature 상세표(330행)와 「우선순위 갭」 subset 표(149행)가 **동일한 6개 ❌ 행**에서 교차 reconcile. **이전 STALE 드리프트(MOD-55~72) 해소**
+> — 이전 추정 "✅240/🟡71/❌16" 은 오집계, 실측=✅247/🟡74/❌6/➖3. Ground truth=「잔여 ❌ 우선순위」 섹션(❌6)과 일치.
 > 「재감사(MOD-33)」 열은 MOD-28~33 시점 스냅샷으로 이력 보존. 행별 상태는 카테고리 상세표·MASTER §3 이 SSoT.
 > 「잔여 ❌ 우선순위」 tier 분해는 MOD-39 기준 ❌47(Community 15 + Enterprise 27 + 기타 5)로 재산정됐고, **MOD-40 반영분은 다음 줄**.
 > ★ **MOD-40 델타(2026-06-06, vN-1)**: `$A$1 절대참조` ❌→✅ · `상대참조 on copy/fill` ❌→🟡(엔진 프리미티브 `translateFormula`
@@ -189,44 +191,47 @@
 
 ## 요약 (Executive Summary)
 
-@topgrid 는 AG Grid Community + Wijmo FlexGrid 의 **핵심 그리드 기능을 대체로 충족**(54% 완전 구현)하며, enterprise 급 차별 기능 일부(피벗·SSRM 서버사이드·컬럼 가상화·통합 차트·스프레드시트 PoC)도 보유한다. 다만 상태가 부분(18%)·미구현(27%)인 영역이 남아 **풀 AG Grid Enterprise + Wijmo 패리티에는 미달**이다. topgrid 는 headless(TanStack 기반)라 일부 기능은 "소비자가 raw `ColumnDef`/콜백으로 직접 배선" 형태로만 가능(=부분)하다.
+@topgrid 는 AG Grid Community + Wijmo FlexGrid 의 **핵심 그리드 기능을 대체로 충족**(2026-06-09 canonical: **75% 완전 구현**)하며, enterprise 급 차별 기능 일부(피벗·SSRM 서버사이드·컬럼 가상화·통합 차트·스프레드시트 PoC)도 보유한다. 다만 상태가 부분(22%)·미구현(2%)인 영역이 남아 **풀 AG Grid Enterprise + Wijmo 패리티에는 미달**이다. topgrid 는 headless(TanStack 기반)라 일부 기능은 "소비자가 raw `ColumnDef`/콜백으로 직접 배선" 형태로만 가능(=부분)하다.
 
-**강한 영역**(구현 비율 상위): Export, clipboard & print(13/15) · Cell rendering & styling(13/18) · Sorting(12/18) · Editing(14/18, 0 ❌) · Selection(11/17).
+**강한 영역**(구현 비율 상위, 2026-06-09 canonical): Filtering(12/13) · Pivoting(21/23) · Export, clipboard & print(13/15) · Sorting(15/18) · Selection(15/18) · Cell rendering & styling(15/18) · Editing(14/18, 0 ❌).
 
-**주요 갭 영역**(미구현 다수, 2026-06-07 검증 ❌ 기준): Spreadsheet (Wijmo FlexSheet focus)(❌3, MOD-40/41 −4) · Pivoting(❌3, MOD-44 −2) · Misc UX(❌5) · Master-Detail·State theming·Virtualization·Pagination(각 ❌3) · Row models / data(❌1, MOD-43 −2). (이전 최초감사 기준 Pivoting 10·A11y 8 등은 MOD-28~39 로 닫힘.)
+**주요 갭 영역**(2026-06-09 canonical 기준): **미구현 ❌6 = by-design floor** — Virtualization & performance(❌3: debounced-scroll·row-animation·auto-virt-threshold) + Sorting(❌1: post-sort callback)·Export(❌1: Excel cell styles)·State theming(❌1: RTL) 각 1. **부분 🟡 다수 영역**(소비자 배선/렌더 후속): Spreadsheet(🟡7) · Row grouping & aggregation(🟡7) · Accessibility(🟡6) · Master/Detail & Tree(🟡6). (MOD-28~72 로 Pivoting·Master-Detail·Pinned·State·Charts·Pagination·Misc UX 등의 이전 ❌ 는 전부 닫힘.)
 
 > 표시 규약: ✅=코드 근거로 확인된 구현 · 🟡=부분(headless passthrough만/일부 한계/소비자 배선 필요) · ❌=미구현 · ➖=headless 그리드에 비해당. 상태는 **adversarial 검증**(근거 코드 재확인, over-claim 차단)을 거쳤다.
 
 ### 카테고리별 요약
 
-> **2026-06-06 검증 재집계**(MOD-39 까지): 아래 ✅/🟡/❌ 는 카테고리 상세표 행(=ground truth, MOD-34~39 ✅·roving 🟡 반영)
-> 에서 **프로그래매틱 재계산 + 카테고리별 reconcile**(파싱 카운트 == 선언 기능 수, 19/19 통과, 합=330)했다. 손-추정 아님.
+> **2026-06-09 재-tally 완료(MOD-72 반영, canonical)**: 아래 ✅/🟡/❌/➖ 는 「카테고리별 상세」 per-feature 표(=ground truth)
+> 에서 **프로그래매틱 재계산 + 카테고리별 reconcile**(파싱 카운트 == 선언 기능 수, **19/19 통과**, 합=330)했다. 손-추정 아님.
+> **두 독립 표 교차검증**: per-feature 상세표(330행)와 「우선순위 갭」 subset 표(149행)가 **동일한 6개 ❌ 행**에서 reconcile.
 > (참고 최초감사 baseline 178/60/89 는 위 「종합」표 참조.)
 >
-> ⚠️ **STALE 경고(2026-06-09 실측 발견)**: 아래 요약표는 **MOD-55~72 델타를 부분만 반영**해 드리프트했다 — 실측 합산 시 **✅240 / 🟡71 / ❌16**(합 330)으로, 「잔여 ❌ 우선순위」 섹션·per-feature 상세표가 가리키는 현 실태(**❌6**)와 불일치한다(예: Pivoting·Master/Detail·Pinned·State·Charts 등은 MOD-53~72 에서 닫혔으나 요약표엔 ❌ 잔존). **그동안 commit 들의 "reconcile 19/19" 문구는 재실행 없이 계승된 것=실측 미통과**(advisor 지적). **Ground truth = per-feature 상세표 + 「잔여 ❌ 우선순위」 섹션(❌6)**. ★요약표 전면 재-tally 는 미해결 doc-integrity 과제(상세표 2개[AG-컬럼 표 + 카테고리-그룹 표]끼리도 카운트 불일치하여 canonical 확립 선행 필요). 아래 표는 정정 전까지 **비권위**.
+> ✅ **이전 STALE 해소(2026-06-09)**: MOD-55~72 동안 드리프트했던 요약표를 canonical 재-tally 로 정정 — 이전 추정 "✅240/🟡71/❌16" 은
+> 오집계였고, 실측은 **✅247 / 🟡74 / ❌6 / ➖3**(합 330). ❌6 = by-design floor(Community 5: RTL·post-sort·debounced-scroll·
+> row-animation·auto-virt + Excel cell styles 1). 「잔여 ❌ 우선순위」 섹션과 일치.
 
-| 카테고리 | 기능 | ✅ | 🟡 | ❌ |
-|---|---|---|---|---|
-| Column features | 14 | 9 | 5 | 0 |
-| Sorting | 18 | 15 | 2 | 1 |
-| Filtering | 13 | 12 | 1 | 0 |
-| Row grouping & aggregation | 19 | 12 | 6 | 1 |
-| Pivoting | 23 | 19 | 2 | 2 |
-| Selection | 17 | 15 | 2 | 0 |
-| Editing | 18 | 14 | 4 | 0 |
-| Cell rendering & styling | 18 | 15 | 3 | 0 |
-| Row models / data | 18 | 14 | 3 | 1 |
-| Pagination | 17 | 12 | 5 | 0 |
-| Virtualization & performance | 20 | 12 | 4 | 3 |
-| Master/Detail & Tree Data | 16 | 9 | 6 | 1 |
-| Pinned/floating & full-width rows | 15 | 11 | 3 | 1 |
-| Export, clipboard & print | 15 | 13 | 1 | 1 |
-| Integrated charts & sparklines | 17 | 10 | 4 | 1 |
-| Accessibility & keyboard | 18 | 13 | 5 | 0 |
-| State, theming & i18n | 17 | 12 | 4 | 1 |
-| Spreadsheet (Wijmo FlexSheet focus) | 23 | 15 | 7 | 1 |
-| Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 8 | 4 | 2 |
-| **합계** | **330** | **227** | **70** | **30** |
+| 카테고리 | 기능 | ✅ | 🟡 | ❌ | ➖ |
+|---|---|---|---|---|---|
+| Column features | 14 | 9 | 5 | 0 | 0 |
+| Sorting | 18 | 15 | 2 | 1 | 0 |
+| Filtering | 13 | 12 | 1 | 0 | 0 |
+| Row grouping & aggregation | 19 | 12 | 7 | 0 | 0 |
+| Pivoting | 23 | 21 | 2 | 0 | 0 |
+| Selection | 17 | 15 | 2 | 0 | 0 |
+| Editing | 18 | 14 | 4 | 0 | 0 |
+| Cell rendering & styling | 18 | 15 | 3 | 0 | 0 |
+| Row models / data | 18 | 15 | 3 | 0 | 0 |
+| Pagination | 17 | 12 | 5 | 0 | 0 |
+| Virtualization & performance | 20 | 12 | 4 | 3 | 1 |
+| Master/Detail & Tree Data | 16 | 10 | 6 | 0 | 0 |
+| Pinned/floating & full-width rows | 15 | 12 | 3 | 0 | 0 |
+| Export, clipboard & print | 15 | 13 | 1 | 1 | 0 |
+| Integrated charts & sparklines | 17 | 10 | 5 | 0 | 2 |
+| Accessibility & keyboard | 18 | 12 | 6 | 0 | 0 |
+| State, theming & i18n | 17 | 12 | 4 | 1 | 0 |
+| Spreadsheet (Wijmo FlexSheet focus) | 23 | 16 | 7 | 0 | 0 |
+| Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 10 | 4 | 0 | 0 |
+| **합계** | **330** | **247** | **74** | **6** | **3** |
 
 ## 카테고리별 상세
 
@@ -661,7 +666,7 @@
 
 > ✅ **행별 status 동기화 검증(2026-06-06)**: 본 표 149행의 topgrid marker 를 카테고리 상세표(ground truth)와 프로그래매틱
 > 대조 → **149/149 일치, 불일치 0**(모듈 작업 중 함께 flip 유지돼 이미 current). 즉 멤버십은 최초감사 149건이나 **각 행 status 는
-> MOD-28~39 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 223/70/34」(MOD-48 반영)·「카테고리별 요약」 참조.
+> MOD-28~72 닫힘이 반영된 최신**(다수가 ✅ 로 flip됨). 집계 숫자는 상단 「종합 ✅247/🟡74/❌6」(2026-06-09 canonical)·「카테고리별 요약」 참조. ★본 subset 표(149행) 재파싱: ✅69/🟡74/❌6 — 상세표와 **동일 6개 ❌** 교차 reconcile.
 
 | 기능 | 카테고리 | AG Grid | topgrid | 비고 |
 |---|---|---|---|---|
