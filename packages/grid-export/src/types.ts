@@ -272,6 +272,54 @@ export interface ExportRowsOptions {
   emptyBehavior?: EmptyBehavior;
 }
 
+/**
+ * `exportRowsToCsv` 옵션 (ADR-005 행 배열 export 의 CSV 평행)
+ *
+ * `scope` 는 행 배열 입력에서 무의미하므로 제외.
+ */
+export interface ExportRowsCsvOptions {
+  /**
+   * 다운로드 파일명 (확장자 없으면 .csv 자동 추가)
+   * @default 'export.csv'
+   */
+  fileName?: string;
+  /**
+   * CSV 구분자 — ',' (기본, RFC 4180) 또는 '\t' (TSV)
+   * @default ','
+   */
+  delimiter?: ',' | '\t';
+  /**
+   * 데이터 행 0건 시 동작
+   * @default 'skip'
+   */
+  emptyBehavior?: EmptyBehavior;
+}
+
+/**
+ * `exportRowsToPdf` 옵션 (ADR-005 행 배열 export 의 PDF 평행)
+ *
+ * `scope` 는 행 배열 입력에서 무의미하므로 제외.
+ */
+export interface ExportRowsPdfOptions {
+  /**
+   * 다운로드 파일명 (확장자 없으면 .pdf 자동 추가)
+   * @default 'export.pdf'
+   */
+  fileName?: string;
+  /** PDF 최상단 제목 행 (없으면 생략) */
+  title?: string;
+  /**
+   * 페이지 방향 — 'p' portrait (기본) / 'l' landscape
+   * @default 'p'
+   */
+  orientation?: 'p' | 'l';
+  /**
+   * 데이터 행 0건 시 동작
+   * @default 'skip'
+   */
+  emptyBehavior?: EmptyBehavior;
+}
+
 // ── G-004: 인쇄 옵션 ───────────────────────────────────────────────────────
 
 /**

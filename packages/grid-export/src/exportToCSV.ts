@@ -1,24 +1,7 @@
 import type { Table } from '@tanstack/react-table';
 import type { CSVExportOptions } from './types';
 import { getRowsByScope } from './internal/getRowsByScope';
-
-// ---------------------------------------------------------------------------
-// Internal helper — RFC 4180 이스케이프
-// ---------------------------------------------------------------------------
-
-/**
- * RFC 4180 §2: 구분자/큰따옴표/개행 포함 시 큰따옴표 래핑 + 내부 따옴표 이중화
- * (외부 라이브러리 0 — 순수 string 조작, AC-001, AC-003)
- */
-function escapeCsvValue(value: string, delimiter: string): string {
-  const needsQuoting =
-    value.includes(delimiter) ||
-    value.includes('"') ||
-    value.includes('\n') ||
-    value.includes('\r');
-  if (!needsQuoting) return value;
-  return '"' + value.split('"').join('""') + '"';
-}
+import { escapeCsvValue } from './internal/csvSerialize';
 
 // ---------------------------------------------------------------------------
 // Public API

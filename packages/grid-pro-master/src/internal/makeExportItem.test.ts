@@ -33,5 +33,24 @@ const custom = makeExportItem<Row>({ rows, columns, label: 'CSV', icon: '★', e
 ok('label override', custom.label === 'CSV');
 ok('icon override', custom.icon === '★');
 
+// MOD-73: format dispatch — default label per format
+ok('default format = excel', makeExportItem<Row>({ rows, columns, exporter: () => {} }).label === 'Excel 내보내기');
+ok('format=csv default label', makeExportItem<Row>({ rows, columns, format: 'csv', exporter: () => {} }).label === 'CSV 내보내기');
+ok('format=pdf default label', makeExportItem<Row>({ rows, columns, format: 'pdf', exporter: () => {} }).label === 'PDF 내보내기');
+
+// MOD-73: injected exporter receives closed-over rows/columns/options regardless of format
+let csvCap: { rows: Row[]; columns: unknown[]; options?: unknown } | null = null;
+const csvItem = makeExportItem<Row>({
+  rows,
+  columns,
+  format: 'csv',
+  exportOptions: { fileName: 'orders.csv', delimiter: '\t' },
+  exporter: (r, c, o) => { csvCap = { rows: r, columns: c, options: o }; },
+});
+csvItem.onClick!(rows[0]!, {} as never, {} as never);
+ok('csv exporter invoked', csvCap !== null);
+ok('csv exporter got rows', csvCap!.rows === rows);
+ok('csv exporter got csv options', (csvCap!.options as { delimiter?: string })?.delimiter === '\t');
+
 console.log(`makeExportItem.test.ts: ${pass} passed, ${fail} failed`);
 if (fail > 0) process.exit(1);

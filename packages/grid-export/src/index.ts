@@ -9,8 +9,13 @@ export { exportToPdf } from './exportToPdf';
 export { copyToClipboard } from './copyToClipboard';
 export { printGrid } from './printGrid';
 
-// ADR-005: Row-array based Excel export (non-Table entry)
+// ADR-005: Row-array based export (non-Table entry) — Excel + CSV + PDF
 export { exportRowsToExcel } from './exportRowsToExcel';
+export { exportRowsToCsv } from './exportRowsToCsv';
+export { exportRowsToPdf } from './exportRowsToPdf';
+// Pure serializers (browser-independent, node-testable)
+export { buildRowsCsv, escapeCsvValue } from './internal/csvSerialize';
+export { buildRowsPdfTable, type PdfTableData } from './internal/buildRowsPdfTable';
 
 // MOD-GRID-25 G-2: 다중 시트 Excel export
 export { exportSheetsToExcel } from './exportSheetsToExcel';
@@ -36,6 +41,8 @@ export type {
   // ADR-005: Row-array export types
   ExcelColumn,
   ExportRowsOptions,
+  ExportRowsCsvOptions,
+  ExportRowsPdfOptions,
   // MOD-GRID-25: 다중 시트 export types
   ExcelSheet,
   MultiSheetOptions,
