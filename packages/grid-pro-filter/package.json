@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@topgrid/grid-core": "workspace:*",
-    "@topgrid/grid-features": "workspace:*"
+    "@topgrid/grid-features": "workspace:*",
+    "@topgrid/grid-pro-chart": "workspace:*"
   }
 }

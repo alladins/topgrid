@@ -24,6 +24,17 @@ export interface RangeChartProps {
   ariaLabel?: string;
   /** className appended to the root `<svg>`. */
   className?: string;
+  /**
+   * MOD-GRID-75 (cross-filter): fired when a category slot (bar/point) is clicked, with its
+   * 0-based index. Consumers map index→category label and feed `selectionsToFilter`
+   * (`@topgrid/grid-pro-filter`) to drive a linked grid filter. When set, marks become clickable.
+   */
+  onSelectCategory?: (index: number) => void;
+  /**
+   * MOD-GRID-75 (linked highlight): the currently-selected category index (or `null`/omitted for
+   * none). The selected slot stays full-opacity; unselected slots dim — the visual link to the grid.
+   */
+  selectedCategory?: number | null;
 }
 
 /** Zero-dep default palette (no chart library — C-001/AP-001). */
@@ -62,9 +73,16 @@ export function RangeChart({
   showTooltip = true,
   ariaLabel = 'chart',
   className,
+  onSelectCategory,
+  selectedCategory,
 }: RangeChartProps): JSX.Element {
   const [hover, setHover] = useState<HoverState | null>(null);
   const lic = useLicenseStatus();
+
+  // MOD-GRID-75: cross-filter selection — clickable marks + linked-highlight opacity.
+  const selectable = onSelectCategory !== undefined;
+  const markOpacity = (index: number): number =>
+    selectedCategory == null || selectedCategory === index ? 1 : 0.3;
 
   const legendH = showLegend && series.length > 0 ? 18 : 0;
   const geo = computeChartGeometry(series, { width, height, margin: { top: 8 + legendH } });
@@ -175,6 +193,15 @@ export function RangeChart({
                   height={h}
                   fill={color}
                   data-value={p.value}
+                  data-category-index={p.index}
+                  {...(selectable
+                    ? {
+                        opacity: markOpacity(p.index),
+                        cursor: 'pointer',
+                        'data-selected': selectedCategory === p.index ? '' : undefined,
+                        onClick: () => onSelectCategory!(p.index),
+                      }
+                    : {})}
                   onMouseEnter={onEnter({ x: x + barW / 2, y: top, value: p.value, name: s.name })}
                 />
               );

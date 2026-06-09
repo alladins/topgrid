@@ -382,6 +382,9 @@ importers:
       '@topgrid/grid-features':
         specifier: workspace:*
         version: link:../grid-features
+      '@topgrid/grid-pro-chart':
+        specifier: workspace:*
+        version: link:../grid-pro-chart
 
   packages/grid-pro-header:
     dependencies:
