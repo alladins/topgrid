@@ -39,8 +39,9 @@ test('rich: icon + built-in copy item + submenu opens on click revealing childre
   // ★ 아이콘 렌더 (data-menu-icon, ≥1).
   await expect(menu.locator('[data-menu-icon]').first()).toBeVisible();
 
-  // ★ 내장 복사 항목 (makeCopyCellItem).
+  // ★ 내장 항목 세트 (copy/export): makeCopyCellItem + makeExportItem.
   await expect(menu.getByRole('menuitem', { name: /셀 복사/ })).toHaveCount(1);
+  await expect(menu.getByRole('menuitem', { name: /Excel 내보내기/ })).toHaveCount(1);
 
   // ★ 서브메뉴 부모(aria-haspopup)는 ▶ 어포던스, 초기엔 서브메뉴 닫힘.
   const exportItem = menu.locator('[role="menuitem"][aria-haspopup="menu"]');

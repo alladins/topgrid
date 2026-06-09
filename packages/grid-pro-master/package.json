@@ -24,9 +24,10 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/internal/clipboard.test.ts"
+    "test": "node --experimental-strip-types src/internal/clipboard.test.ts && node --experimental-strip-types src/internal/makeExportItem.test.ts"
   },
   "dependencies": {
+    "@topgrid/grid-export": "workspace:*",
     "@topgrid/grid-license": "workspace:*"
   },
   "peerDependencies": {

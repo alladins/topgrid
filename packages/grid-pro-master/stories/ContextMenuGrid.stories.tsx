@@ -1,7 +1,7 @@
 // MOD-61 (redo): ContextMenuGrid 스토리 — base(flat) + rich(submenu/icon/built-in).
 // C-3 예외: mock rows 데이터는 Storybook stories 에서만 허용.
 import type { Meta, StoryObj } from '@storybook/react';
-import { ContextMenuGrid, makeCopyCellItem } from '@topgrid/grid-pro-master';
+import { ContextMenuGrid, makeCopyCellItem, makeExportItem } from '@topgrid/grid-pro-master';
 import type { ContextMenuItem } from '@topgrid/grid-pro-master';
 import { createColumns } from '@topgrid/grid-core';
 
@@ -38,13 +38,23 @@ const flatItems: ContextMenuItem<OrderRow>[] = [
   },
 ];
 
-// icon + submenu(children) + built-in copy item
+// icon + submenu(children) + 내장 항목(copy/export) — built-in 세트
 const richItems: ContextMenuItem<OrderRow>[] = [
   makeCopyCellItem<OrderRow>(),
+  makeExportItem<OrderRow>({
+    rows: orderData,
+    columns: [
+      { key: 'id', header: 'ID' },
+      { key: 'customer', header: '고객' },
+      { key: 'status', header: '상태' },
+      { key: 'amount', header: '금액', format: 'number' },
+    ],
+    exportOptions: { fileName: 'orders.xlsx' },
+  }),
   { label: '수정', icon: '✎', shortcut: 'E', onClick: () => {} },
   { separator: true, label: '' },
   {
-    label: '내보내기',
+    label: '내보내기 형식',
     icon: '⤓',
     children: [
       { label: 'CSV로 내보내기', onClick: () => {} },
