@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "pnpm -r --filter './packages/*' build",
+    "build": "pnpm -r --filter \"@topgrid/*\" --workspace-concurrency=1 build",
     "typecheck": "pnpm -r --filter './packages/*' exec tsc --noEmit",
     "test": "pnpm -r test",
     "visual:test": "pnpm -F docs visual:test",
-    "size": "pnpm -r --filter './packages/*' build && size-limit",
+    "size": "pnpm build && size-limit",
     "size-limit": "size-limit",
     "size-limit:ci": "size-limit --json",
     "lint": "eslint packages apps",
