@@ -24,11 +24,11 @@ const mockData: SpreadsheetRow[] = Array.from({ length: 10 }, (_, i) => ({
 }));
 
 const columns = createColumns<SpreadsheetRow>([
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'a', header: 'A열' },
-  { accessorKey: 'b', header: 'B열' },
-  { accessorKey: 'c', header: 'C열' },
-  { accessorKey: 'd', header: 'D열' },
+  { id: 'id', name: 'ID', type: 'number' },
+  { id: 'a', name: 'A열', type: 'number' },
+  { id: 'b', name: 'B열', type: 'number' },
+  { id: 'c', name: 'C열', type: 'number' },
+  { id: 'd', name: 'D열', type: 'number' },
 ]);
 
 const meta: Meta<typeof RangeSelectGrid> = {

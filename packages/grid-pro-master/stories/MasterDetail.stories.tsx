@@ -54,18 +54,18 @@ const deptEmployees: Record<number, EmployeeRow[]> = {
 };
 
 const deptColumns = createColumns<DeptRow>([
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'name', header: '부서명' },
-  { accessorKey: 'location', header: '위치' },
-  { accessorKey: 'headCount', header: '인원' },
-  { accessorKey: 'budget', header: '예산' },
+  { id: 'id', name: 'ID', type: 'number' },
+  { id: 'name', name: '부서명', type: 'text' },
+  { id: 'location', name: '위치', type: 'text' },
+  { id: 'headCount', name: '인원', type: 'number' },
+  { id: 'budget', name: '예산', type: 'number' },
 ]);
 
 const empColumns = createColumns<EmployeeRow>([
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'name', header: '이름' },
-  { accessorKey: 'role', header: '역할' },
-  { accessorKey: 'salary', header: '급여' },
+  { id: 'id', name: 'ID', type: 'number' },
+  { id: 'name', name: '이름', type: 'text' },
+  { id: 'role', name: '역할', type: 'text' },
+  { id: 'salary', name: '급여', type: 'number' },
 ]);
 
 // ─── MasterDetailGrid ─────────────────────────────────────────────────────

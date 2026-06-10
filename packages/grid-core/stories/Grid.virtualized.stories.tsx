@@ -32,11 +32,11 @@ const LARGE_DATA_5000: LargeRow[] = Array.from({ length: 5000 }, (_, i) => ({
 }));
 
 const columns = createColumns<LargeRow>([
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'name', header: '이름' },
-  { accessorKey: 'value', header: '수치' },
-  { accessorKey: 'dept', header: '부서' },
-  { accessorKey: 'email', header: '이메일' },
+  { id: 'id', name: 'ID', type: 'number' },
+  { id: 'name', name: '이름', type: 'text' },
+  { id: 'value', name: '수치', type: 'number' },
+  { id: 'dept', name: '부서', type: 'text' },
+  { id: 'email', name: '이메일', type: 'text' },
 ]);
 
 const meta: Meta<typeof Grid> = {

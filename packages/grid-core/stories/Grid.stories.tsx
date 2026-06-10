@@ -29,11 +29,11 @@ const mockData: MockRow[] = [
 ];
 
 const columns = createColumns<MockRow>([
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'name', header: '이름' },
-  { accessorKey: 'dept', header: '부서' },
-  { accessorKey: 'role', header: '역할' },
-  { accessorKey: 'status', header: '상태' },
+  { id: 'id', name: 'ID', type: 'number' },
+  { id: 'name', name: '이름', type: 'text' },
+  { id: 'dept', name: '부서', type: 'text' },
+  { id: 'role', name: '역할', type: 'text' },
+  { id: 'status', name: '상태', type: 'text' },
 ]);
 
 // ─── Grid ───────────────────────────────────────────────────────────────────

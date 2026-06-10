@@ -33,10 +33,10 @@ const mockData: SpreadsheetRow[] = Array.from({ length: 5 }, (_, i) => ({
 }));
 
 const columns = createColumns<SpreadsheetRow>([
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'a', header: 'A' },
-  { accessorKey: 'b', header: 'B' },
-  { accessorKey: 'c', header: 'C' },
+  { id: 'id', name: 'ID', type: 'number' },
+  { id: 'a', name: 'A', type: 'number' },
+  { id: 'b', name: 'B', type: 'number' },
+  { id: 'c', name: 'C', type: 'number' },
 ]);
 
 const meta: Meta<typeof RangeSelectGrid> = {

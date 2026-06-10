@@ -30,9 +30,9 @@ const mockData: DeptRow[] = [
 ];
 
 const columns = createColumns<DeptRow>([
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'name', header: 'Department' },
-  { accessorKey: 'budget', header: 'Budget' },
+  { id: 'id', name: 'ID', type: 'number' },
+  { id: 'name', name: 'Department', type: 'text' },
+  { id: 'budget', name: 'Budget', type: 'number' },
 ]);
 
 const meta: Meta<typeof MasterDetailGrid> = {

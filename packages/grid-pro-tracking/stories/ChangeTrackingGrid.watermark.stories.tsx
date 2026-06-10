@@ -33,10 +33,10 @@ const mockData: EmployeeRow[] = [
 ];
 
 const columns = createColumns<EmployeeRow>([
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'name', header: 'Name' },
-  { accessorKey: 'dept', header: 'Department' },
-  { accessorKey: 'salary', header: 'Salary' },
+  { id: 'id', name: 'ID', type: 'number' },
+  { id: 'name', name: 'Name', type: 'text' },
+  { id: 'dept', name: 'Department', type: 'text' },
+  { id: 'salary', name: 'Salary', type: 'number' },
 ]);
 
 const meta: Meta<typeof ChangeTrackingGrid> = {

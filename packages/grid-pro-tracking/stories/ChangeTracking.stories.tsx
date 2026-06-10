@@ -28,11 +28,11 @@ const mockEmployees: EmployeeRow[] = [
 ];
 
 const columns = createColumns<EmployeeRow>([
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'name', header: '이름' },
-  { accessorKey: 'dept', header: '부서' },
-  { accessorKey: 'salary', header: '급여' },
-  { accessorKey: 'status', header: '상태' },
+  { id: 'id', name: 'ID', type: 'number' },
+  { id: 'name', name: '이름', type: 'text' },
+  { id: 'dept', name: '부서', type: 'text' },
+  { id: 'salary', name: '급여', type: 'number' },
+  { id: 'status', name: '상태', type: 'text' },
 ]);
 
 const meta: Meta<typeof ChangeTrackingGrid> = {
