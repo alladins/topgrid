@@ -1,61 +1,61 @@
 # 문서 사이트 배포 (topgrid.platree.com)
 
-> Docusaurus + Storybook 정적 사이트를 자체 서버에 rsync 로 배포한다. **빌드(repo)는 이 세션/CI, 서버 명령(rsync)은 사용자**가 실행한다.
+> Docusaurus + Storybook 정적 사이트를 자체 서버에 업로드한다. **빌드(repo)는 이 세션/CI, 서버 업로드/설치는 사용자**가 실행한다. 절차는 2026-05-31 서버 셋업 history 에서 복원(아래).
 
-## 호스팅 구성 (참조)
-- **URL**: https://topgrid.platree.com
-- **서버**: `gedebms` · 공인 IP `49.247.14.212` · Rocky Linux 9.6
-- **★SSH 접속**: `~/.ssh/config` 의 `Host gedebms` 별칭 사용 = **`appuser`@49.247.14.212**, key `~/.ssh/server_appuser_key`. 명령에 `gedebms:` 를 쓰면 유저·키 자동 적용. (웹 루트 파일 owner 는 `topgrid` 일 수 있으나 **SSH 로그인 유저는 appuser**.) ★전제: `server_appuser_key` 가 `~/.ssh/` 에 있어야 함 — 없으면 scp/rsync/ssh 모두 `Permission denied (publickey)`.
-- **웹 루트**: `/var/www/topgrid` (nginx ACL `u:nginx:rX` + default ACL 자동 상속 → root 불필요; appuser 쓰기 권한 = 서버 ACL 의존, 실패 시 권한 확인)
-- **nginx**: `/etc/nginx/conf.d/topgrid.conf` (CSP·rate-limit·하드닝)
-- **TLS**: Let's Encrypt, certbot webroot(`/var/www/certbot`), 자동갱신 `certbot-renew.timer` + `renew_hook = systemctl reload nginx`. 80블록 `location /.well-known/acme-challenge/` 는 갱신 핵심 — 건드리지 말 것.
-- **Docusaurus**: `baseUrl:'/'`, `routeBasePath:'/'`(docs 가 루트), 랜딩=`docs/intro.md`(`slug:/`). i18n ko(기본)+en(`/en/`).
+## 호스팅 구성
+- **URL**: https://topgrid.platree.com · **서버**: `gedebms` / `49.247.14.212` / Rocky Linux 9.6
+- **배포 계정**: **`topgrid`** (파일 owner `topgrid:cusapp`, 홈 `/app/topgrid`). 인증 = 비밀번호(로컬에 topgrid SSH 키 없음) → keyless 원하면 로컬 공개키를 서버 `topgrid ~/.ssh/authorized_keys` 에 등록. ★`~/.ssh/config` 의 `gedebms`(=appuser)는 **다른 계정** — docs 배포와 무관(혼동 주의).
+- **staging**: `/app/topgrid/www` (= topgrid `~/www`). scp/SFTP 업로드 착지점. `/app` 비표준 경로라 SELinux fcontext 수동 지정됨.
+- **웹 루트(nginx 서빙)**: `/var/www/topgrid` (owner topgrid, **nginx ACL `u:nginx:rX` + default ACL 자동 상속** → 신규 파일 권한 자동). SELinux `httpd_sys_content_t`.
+- **TLS**: Let's Encrypt webroot(`/var/www/certbot`), 자동갱신 `certbot-renew.timer` + reload hook. 80블록 `/.well-known/acme-challenge/` 보존.
 
-## 배포 절차
-
-### 1. 패키지 빌드 (storybook 스토리가 `@topgrid/*` dist 를 해소하므로 선행 필수)
+## 빌드 (repo)
 ```bash
-# repo 루트에서 — 직렬 빌드(DTS race 회피, build script 가 보장)
-pnpm build
-```
-
-### 2. 사이트 빌드 — ★`build:site` (Storybook + Docusaurus). `build` 만 쓰면 `/storybook/` 가 404
-```bash
-cd apps/docs
-pnpm build:site
-# = storybook build -o static/storybook && docusaurus build
+pnpm build                       # 1) 패키지 dist (storybook 스토리가 @topgrid/* 해소 → 선행 필수, 직렬)
+cd apps/docs && pnpm build:site  # 2) ★build:site (storybook→static/storybook + docusaurus). build 만 쓰면 /storybook/ 404
 # 결과: apps/docs/build/ = index.html(ko) + en/ + storybook/ + assets/ ...
 ```
-빌드 검증(선택): `apps/docs/build/index.html`·`build/en/index.html`·`build/storybook/index.html` 존재 확인.
 
-### 3. 배포 — ★사용자 실행 (서버 SSH 접근 필요)
+## 배포 (사용자 실행) — 원본 절차 = 2단계 (scp staging → 관리자 cp 웹루트)
 
-**scp (사용)** — `build/` 의 전 항목을 웹 루트로 복사(build/ 에 top-level dotfile 없음 → `*` 로 전부 커버):
+### 방식 A — 직접 웹루트 (웹루트가 topgrid 소유 + default ACL 이라 가능, 권장)
 ```bash
-scp -r apps/docs/build/* gedebms:/var/www/topgrid/   # gedebms 별칭 = appuser@49.247.14.212 + key (~/.ssh/config)
+# (로컬) rsync 미설치 → scp. build/ top-level dotfile 없음 → * 로 전부 커버
+scp -r apps/docs/build/* topgrid@49.247.14.212:/var/www/topgrid/
 ```
-- ★scp 는 `--delete` 가 없어 **서버의 stale 파일을 지우지 않는다**. 페이지를 *수정*만 한 배포(파일명 동일 HTML 덮어쓰기 + content-hash asset 신규)는 무해. 페이지를 *삭제*했거나 완전 클린 동기화가 필요하면 아래 rsync 또는 사전 정리 사용.
-- default ACL 덕에 권한 자동 → root 불필요, nginx reload 불요(정적 파일).
+- 신규 파일은 default ACL 로 nginx 읽기 자동. SELinux 403 시 관리자 셸에서 `restorecon -RFv /var/www/topgrid` 1회.
+- scp 가 stale 미제거(`--delete` 없음) — 수정-only 배포는 무해(content-hash asset).
 
-**rsync (대안, 클린 동기화)** — stale 제거 포함:
+### 방식 B — 원본 2단계 (staging 경유, history 그대로)
 ```bash
-rsync -avz --delete apps/docs/build/ gedebms:/var/www/topgrid/   # gedebms = appuser@... + key
+# (로컬) staging 으로 업로드
+scp -r apps/docs/build/* topgrid@49.247.14.212:/app/topgrid/www/
+# (서버, 관리자/root 셸) staging → 웹루트 설치
+cp -a /app/topgrid/www/. /var/www/topgrid/
+restorecon -Rv /var/www/topgrid
+nginx -t && systemctl reload nginx
 ```
 
-### 4. 확인
+### keyless 활성화 (선택, topgrid 셸에서 1회)
 ```bash
-curl -sI https://topgrid.platree.com/ | head -1            # 200
-curl -sI https://topgrid.platree.com/comparison | head -1  # 200
-curl -sI https://topgrid.platree.com/storybook/ | head -1  # 200 (storybook 포함 확인)
-curl -sI https://topgrid.platree.com/en/ | head -1         # 200 (영문)
+mkdir -p ~/.ssh && chmod 700 ~/.ssh
+echo '<로컬 ~/.ssh/id_ed25519.pub 내용>' >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
 ```
-브라우저: comparison 페이지 수치(✅248/75%)·Storybook 데모 링크 동작 확인.
+
+## 확인
+```bash
+curl -sI https://topgrid.platree.com/comparison | head -1   # 200 → ✅248/75% 반영
+curl -sI https://topgrid.platree.com/storybook/ | head -1   # 200 → storybook 포함
+curl -sI https://topgrid.platree.com/en/ | head -1          # 200 → 영문
+```
 
 ## 트러블슈팅
-- **`Permission denied (publickey)` / `no such identity: server_appuser_key`** — 배포 머신에 `~/.ssh/server_appuser_key` 가 없음. scp·rsync·ssh 모두 실패. 해결: (a) 키가 있는 머신에서 배포, 또는 (b) `server_appuser_key` 를 `~/.ssh/` 에 복원(권한 600), 또는 (c) 새 키 발급 후 서버 appuser `~/.ssh/authorized_keys` 에 공개키 등록(기존 접근 경로 필요). 연결 테스트: `ssh -o BatchMode=yes gedebms whoami`.
-- **목적지 쓰기 거부** — appuser 가 `/var/www/topgrid` 에 쓰기 불가하면 서버 ACL(`setfacl -m u:appuser:rwx ...`) 또는 owner/sudo 확인.
+- **`Permission denied (publickey,...,password)`** — topgrid 인증 실패. 비밀번호 재확인 또는 위 keyless 등록. ★`topgrid@` 가 맞음(appuser 아님).
+- **SELinux 403 (페이지 안 뜸)** — 관리자 `restorecon -RFv /var/www/topgrid`. staging(`/app/...`)은 fcontext 수동 필요(이미 설정됨).
+- **`rsync: command not found`** — 로컬에 rsync 없음. scp 사용(이 문서 기준).
 
 ## 주의
-- ★**`build:site` 를 쓸 것**(`build` 는 Docusaurus 만 → `/storybook/` 링크 404). comparison·live-demos 가 `/storybook/` 링크를 가짐.
-- TypeDoc 자동 API(`/api`)는 현재 비활성(`docusaurus-plugin-typedoc` 버전 정합 이슈) — 복구 시 `build:site` 산출에 `/api` 부활(P3 항목).
-- 서버 인프라(nginx conf·TLS·ACL) 변경은 본 문서 범위 밖 — [[docs-site-hosting]] 메모리 참조.
+- ★**`build:site`** 사용(`build` 는 Docusaurus 만 → `/storybook/` 404). comparison·live-demos 가 `/storybook/` 링크 보유.
+- TypeDoc 자동 API(`/api`)는 현재 비활성(버전 정합) — P3 항목.
+- 인프라 상세 = [[docs-site-hosting]] 메모리.
