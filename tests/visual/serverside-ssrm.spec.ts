@@ -43,16 +43,22 @@ test('far scroll lazy-loads the visible block exactly once; grid not loaded up f
   // laziness: the grid is NOT fully loaded up front (far blocks absent).
   expect(new Set(starts).size, 'few blocks loaded on mount (lazy)').toBeLessThan(TOTAL_BLOCKS);
 
-  // jump to the bottom (double-scroll to settle dynamic measurement), then read what's visible.
+  // jump to the bottom; SSRM blocks lazy-load on scroll with dynamic measurement, so poll
+  // (re-scroll + re-read) until a mid-visible row far from the top has its REAL data RENDERED
+  // (block loaded) — a condition wait tied to the exact downstream check, not a settle-time guess.
   const scroller = scrollerOf(root);
-  await scroller.evaluate((el) => el.scrollTo(0, 10_000_000));
-  await page.waitForTimeout(300);
-  await scroller.evaluate((el) => el.scrollTo(0, 10_000_000));
-  await page.waitForTimeout(300);
-
-  const vis = await visibleIndices(root);
-  const idx = vis[Math.floor(vis.length / 2)]!; // a row currently in view near the bottom
-  expect(idx, 'scrolled far from the top').toBeGreaterThan(300);
+  let idx = 0;
+  await expect(async () => {
+    await scroller.evaluate((el) => el.scrollTo(0, 10_000_000));
+    const v = await visibleIndices(root);
+    expect(v.length, 'rows visible after scroll').toBeGreaterThan(0);
+    idx = v[Math.floor(v.length / 2)]!; // a row currently in view near the bottom
+    expect(idx, 'scrolled far from the top').toBeGreaterThan(300);
+    await expect(
+      root.getByText(`row-${idx}`, { exact: true }),
+      'mid-visible row data rendered (block loaded)',
+    ).toBeVisible({ timeout: 1000 });
+  }).toPass();
 
   // that visible row shows REAL data (its block lazy-loaded on scroll), and its block fired once.
   await expect(root.getByText(`row-${idx}`, { exact: true })).toBeVisible();

@@ -30,10 +30,12 @@ test('a group header stays pinned to the top while its children scroll', async (
     return c.scrollTop;
   });
   expect(scrolled, 'container actually scrolled').toBeGreaterThan(100);
-  await page.waitForTimeout(80);
 
   // ★ after scroll: the header is STILL pinned at the container top (sticky engaged), not pushed up.
-  const containerTopAfter = await table.evaluate((t) => t.parentElement!.getBoundingClientRect().top);
-  const headerTopAfter = (await header.boundingBox())!.y;
-  expect(Math.abs(headerTopAfter - containerTopAfter), 'header stayed pinned after scroll').toBeLessThan(60);
+  // Retry the position read instead of guessing a settle time.
+  await expect(async () => {
+    const containerTopAfter = await table.evaluate((t) => t.parentElement!.getBoundingClientRect().top);
+    const headerTopAfter = (await header.boundingBox())!.y;
+    expect(Math.abs(headerTopAfter - containerTopAfter), 'header stayed pinned after scroll').toBeLessThan(60);
+  }).toPass();
 });

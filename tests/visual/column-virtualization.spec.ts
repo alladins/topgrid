@@ -48,16 +48,16 @@ test.describe('column virtualization', () => {
 
     // ── scroll right ────────────────────────────────────────────────
     await scrollerOf(root).evaluate((el) => el.scrollTo(2200, 0));
-    await page.waitForTimeout(200);
-
-    const after = await headerLabels(root);
-    // pins survive the scroll.
-    expect(after, 'left pin persists').toContain('C00');
-    expect(after, 'right pin persists').toContain('C21');
-    // window shifted: an early center column dropped out, a far one came in.
-    expect(after, 'early center now off-screen').not.toContain('C01');
-    expect(after, 'far center now rendered').toContain('C19');
-    expect(after.length, 'still windowed after scroll').toBeLessThan(COL_COUNT);
+    // windowing re-renders the header on scroll — retry the whole post-scroll check instead of a sleep.
+    await expect(async () => {
+      const after = await headerLabels(root);
+      expect(after, 'left pin persists').toContain('C00');
+      expect(after, 'right pin persists').toContain('C21');
+      // window shifted: an early center column dropped out, a far one came in.
+      expect(after, 'early center now off-screen').not.toContain('C01');
+      expect(after, 'far center now rendered').toContain('C19');
+      expect(after.length, 'still windowed after scroll').toBeLessThan(COL_COUNT);
+    }).toPass();
   });
 
   test('header ↔ body share the same cell structure and column alignment', async ({
@@ -69,16 +69,19 @@ test.describe('column virtualization', () => {
     const root = page.locator('#storybook-root');
     await root.locator('table').first().waitFor({ state: 'visible' });
     await scrollerOf(root).evaluate((el) => el.scrollTo(1200, 0));
-    await page.waitForTimeout(200);
 
     const headerCells = root.locator('thead tr').first().locator('th');
     const bodyRow = root.locator('tbody tr[data-index]').first(); // data row, not pad/floating
     const bodyCells = bodyRow.locator('td');
 
-    const hn = await headerCells.count();
-    const bn = await bodyCells.count();
-    expect(hn, 'header cell count == body cell count (same segments incl pads)').toBe(bn);
-    expect(hn).toBeGreaterThan(2);
+    // windowing re-renders on scroll — retry the count read until header/body segments settle equal.
+    let hn = 0;
+    await expect(async () => {
+      hn = await headerCells.count();
+      const bn = await bodyCells.count();
+      expect(hn, 'header cell count == body cell count (same segments incl pads)').toBe(bn);
+      expect(hn).toBeGreaterThan(2);
+    }).toPass();
 
     for (let i = 0; i < hn; i++) {
       const hb = await headerCells.nth(i).boundingBox();
@@ -95,13 +98,14 @@ test.describe('column virtualization', () => {
     await root.locator('table').first().waitFor({ state: 'visible' });
 
     await scrollerOf(root).evaluate((el) => el.scrollTo(2200, 1500));
-    await page.waitForTimeout(200);
 
-    // column windowing still active under combined scroll.
-    const labels = await headerLabels(root);
-    expect(labels, 'left pin present').toContain('C00');
-    expect(labels, 'right pin present').toContain('C21');
-    expect(labels.length, 'column-windowed').toBeLessThan(COL_COUNT);
+    // column windowing still active under combined scroll — retry the whole check instead of a sleep.
+    await expect(async () => {
+      const labels = await headerLabels(root);
+      expect(labels, 'left pin present').toContain('C00');
+      expect(labels, 'right pin present').toContain('C21');
+      expect(labels.length, 'column-windowed').toBeLessThan(COL_COUNT);
+    }).toPass();
 
     // row windowing active: not all 100 rows are in the DOM.
     const bodyRows = root.locator('tbody tr[data-index]');

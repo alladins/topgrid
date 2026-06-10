@@ -60,7 +60,19 @@ test('SPINE: windowed rows/cells report ABSOLUTE aria-rowindex/colindex (not DOM
 
   // scroll down so the rendered rows are a window far from the top.
   await root.locator('div:has(> table)').first().evaluate((el) => el.scrollTo(0, 1500));
-  await page.waitForTimeout(200);
+  // wait for the windowed re-render (a row far from the top is present) via a condition, not a sleep.
+  await expect
+    .poll(
+      async () =>
+        Math.max(
+          0,
+          ...(await root
+            .locator('tbody tr[data-index]')
+            .evaluateAll((els) => els.map((e) => Number(e.getAttribute('data-index'))))),
+        ),
+      { message: 'rows windowed far from the top' },
+    )
+    .toBeGreaterThan(20);
 
   // every visible data row: aria-rowindex === data-index + 2 (1 header row → +1, +1 for 1-based).
   const rows = root.locator('tbody tr[data-index]');
@@ -137,11 +149,12 @@ test('G-2: keyboard nav (aria-activedescendant) survives virtualization (out-of-
 
   // ★ jump far down so the active cell scrolls OUT of the initial window.
   for (let i = 0; i < 6; i++) await table.press('PageDown');
-  await page.waitForTimeout(250);
-  ad = await table.getAttribute('aria-activedescendant');
-  expect(ad, 'activedescendant after far nav').toBeTruthy();
-  // the active cell must be mounted (scrolled into view) — not a dangling id.
-  await expect(root.locator(`[id="${ad}"]`), 'active cell mounted after windowed nav').toHaveCount(1);
+  // windowed nav: poll until activedescendant updates AND its cell is mounted — not a fixed sleep.
+  await expect(async () => {
+    ad = await table.getAttribute('aria-activedescendant');
+    expect(ad, 'activedescendant after far nav').toBeTruthy();
+    await expect(root.locator(`[id="${ad}"]`), 'active cell mounted after windowed nav').toHaveCount(1);
+  }).toPass();
   // focus must stay on role=grid, NOT collapse to <body> (the whole point of activedescendant).
   const focusRole = await page.evaluate(() => document.activeElement?.getAttribute('role'));
   expect(focusRole, 'focus stays on role=grid after out-of-window nav (not body)').toBe('grid');
