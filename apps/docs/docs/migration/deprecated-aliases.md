@@ -5,6 +5,11 @@ sidebar_position: 5
 
 # Deprecated Alias 목록
 
+:::warning 현행 API 불일치 — 재작성 예정
+권장 대체 예제의 `<Grid mode="client">` 표기는 **현행 API와 불일치**한다 — 현재 `<Grid>`에는 top-level
+`mode` prop이 없다. client 모드는 `<Grid columns data />`가 기본. **현행 패턴으로 재작성 예정**.
+:::
+
 `@topgrid/grid-core`는 이전 Grid 변형 컴포넌트와의 하위 호환성을 위해
 **5개의 legacy alias**를 제공한다. 이 alias들은 C-23 semver 정책에 따라
 **최소 1 minor 버전 동안 유지**된다.

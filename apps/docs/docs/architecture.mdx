@@ -1,107 +1,83 @@
 # 아키텍처
 
-topgrid는 13개 패키지로 구성된 monorepo 구조입니다.
+topgrid는 21개 패키지로 구성된 monorepo 구조입니다.
 공개(MIT) 패키지와 Pro(상용 라이선스) 패키지로 분류됩니다.
 
 ## 패키지 목록
 
-| 패키지 | 분류 | 설명 |
-|--------|------|------|
-| `@topgrid/grid` | Open (MIT) | 메타 패키지 — 전체 공개 패키지 re-export |
-| `@topgrid/grid-core` | Open (MIT) | TanStack Table 추상화 wrapper + `useGridState` 핵심 hook |
-| `@topgrid/grid-features` | Open (MIT) | 정렬·필터·페이지네이션 등 공통 기능 빌더 옵션 |
-| `@topgrid/grid-export` | Open (MIT) | Excel/CSV/PDF 내보내기 (`xlsx`, `jspdf` peer) |
-| `@topgrid/grid-renderers` | Open (MIT) | 셀 렌더러 컴포넌트 모음 (날짜·숫자·배지 등) |
-| `@topgrid/grid-license` | Open (MIT) | 런타임 Pro 라이선스 검증 모듈 |
-| `@topgrid/grid-pro-agg` | Pro | 집계(Aggregation) — 그룹별 합계·평균·카운트 |
-| `@topgrid/grid-pro-datamap` | Pro | 데이터 매핑 — 코드→라벨 변환, 계층형 셀렉트 |
-| `@topgrid/grid-pro-header` | Pro | 고급 헤더 — 다중 헤더 병합, 고정 헤더 |
-| `@topgrid/grid-pro-master` | Pro | 마스터-디테일 — 행 확장 + 중첩 그리드 |
-| `@topgrid/grid-pro-merging` | Pro | 셀 병합 — 동일 값 자동 rowSpan/colSpan |
-| `@topgrid/grid-pro-range` | Pro | 범위 선택 — 드래그 셀 선택·복사·붙여넣기 |
-| `@topgrid/grid-pro-tracking` | Pro | 변경 추적 — 편집 행·셀 dirty 상태 관리 |
+### 공개 (MIT) — 7
 
-## 의존성 다이어그램
+| 패키지 | 설명 |
+|--------|------|
+| `@topgrid/grid` | 메타 패키지 — 전체 패키지 re-export 파사드 |
+| `@topgrid/grid-core` | TanStack Table 추상화 wrapper + `useGridState`·`<Grid>`·가상화·페이지네이션·정렬/필터 배선 |
+| `@topgrid/grid-features` | 필터 UI(text/number/date/set·글로벌·플로팅)·다중 정렬 |
+| `@topgrid/grid-renderers` | 셀 렌더러 11종(텍스트·숫자·날짜·배지·링크·버튼·체크·아이콘·태그·아바타·진행률) + 레지스트리 |
+| `@topgrid/grid-sizing` | 컬럼 사이징 — auto-size·size-to-fit·star(비율) 폭 |
+| `@topgrid/grid-export` | Excel/CSV/PDF 내보내기·클립보드·인쇄 (`xlsx`·`jspdf` peer) |
+| `@topgrid/grid-license` | 런타임 Pro 라이선스 검증 |
+
+### Pro (상용 라이선스) — 14
+
+| 패키지 | 설명 |
+|--------|------|
+| `@topgrid/grid-pro-agg` | 집계/그룹 — 그룹별 합계·평균·카운트, 그룹 footer·패널 |
+| `@topgrid/grid-pro-pivot` | 피벗 — 다축 피벗 테이블·소계·전치·피벗 패널(DnD) |
+| `@topgrid/grid-pro-serverside` | 서버사이드 행 모델(SSRM) — 블록 lazy 로드·무한 스크롤·뷰포트 모델·서버 트리 |
+| `@topgrid/grid-pro-master` | 마스터-디테일·트리·컨텍스트 메뉴 |
+| `@topgrid/grid-pro-merging` | 셀 병합 — rowSpan/colSpan |
+| `@topgrid/grid-pro-header` | 다중행 헤더·컬럼 그룹 |
+| `@topgrid/grid-pro-datamap` | 데이터 매핑 — 코드→라벨(FK 표시), async 맵 |
+| `@topgrid/grid-pro-tracking` | 변경 추적 — 편집 행·셀 dirty 상태 |
+| `@topgrid/grid-pro-range` | 범위 선택 — 드래그 선택·fill handle·클립보드 복사/붙여넣기 |
+| `@topgrid/grid-pro-edit-plus` | 편집 심화 — 검증 룰·undo/redo·find & replace·셀 코멘트 |
+| `@topgrid/grid-pro-filter` | 멀티(AND/OR)·어드밴스드(교차 컬럼 식)·크로스 필터 |
+| `@topgrid/grid-pro-chart` | 통합 차트·스파크라인 (zero-dep SVG 엔진) |
+| `@topgrid/grid-pro-panel` | 사이드바·툴 패널(컬럼 가시성/순서)·상태바·필터 패널 |
+| `@topgrid/grid-pro-sheet` | 스프레드시트 엔진(PoC) — A1 수식·의존 그래프 재계산·셀 서식/스타일/병합 |
+
+## 의존성 규칙
 
 ```mermaid
 graph TD
   subgraph Open["Open (MIT)"]
-    grid["@topgrid/grid<br/>(메타)"]
+    grid["@topgrid/grid (메타)"]
     grid-core["@topgrid/grid-core"]
     grid-features["@topgrid/grid-features"]
     grid-export["@topgrid/grid-export"]
     grid-renderers["@topgrid/grid-renderers"]
+    grid-sizing["@topgrid/grid-sizing"]
     grid-license["@topgrid/grid-license"]
   end
 
-  subgraph Pro["Pro (상용 라이선스)"]
-    pro-agg["@topgrid/grid-pro-agg"]
-    pro-datamap["@topgrid/grid-pro-datamap"]
-    pro-header["@topgrid/grid-pro-header"]
-    pro-master["@topgrid/grid-pro-master"]
-    pro-merging["@topgrid/grid-pro-merging"]
-    pro-range["@topgrid/grid-pro-range"]
-    pro-tracking["@topgrid/grid-pro-tracking"]
-  end
-
-  subgraph Peers["peer dependencies"]
-    react["react ^18"]
-    tanstack["@tanstack/react-table ^8"]
-    virtual["@tanstack/react-virtual ^3"]
+  subgraph Pro["Pro (14 패키지 — 상용 라이선스)"]
+    proAll["grid-pro-{agg,pivot,serverside,master,merging,header,<br/>datamap,tracking,range,edit-plus,filter,chart,panel,sheet}"]
   end
 
   grid --> grid-core
   grid --> grid-features
   grid --> grid-renderers
-  grid-core --> grid-features
-  pro-agg --> grid-core
-  pro-datamap --> grid-core
-  pro-header --> grid-core
-  pro-master --> grid-core
-  pro-merging --> grid-core
-  pro-range --> grid-core
-  pro-tracking --> grid-core
-  pro-agg --> grid-license
-  pro-datamap --> grid-license
-  pro-header --> grid-license
-  pro-master --> grid-license
-  pro-merging --> grid-license
-  pro-range --> grid-license
-  pro-tracking --> grid-license
-  grid-core --> react
-  grid-core --> tanstack
-  grid-core --> virtual
+  grid --> grid-export
+  grid -.->|re-export| Pro
+  grid-core --> react["react ^18 \| ^19"]
+  grid-core --> tanstack["@tanstack/react-table ^8"]
+  grid-core --> virtual["@tanstack/react-virtual ^3"]
+  proAll -->|모든 Pro| grid-license
+  proAll -.->|대부분| grid-core
 ```
 
-## 디렉토리 구조
-
-```
-topgrid/
-├── packages/           # 공개 배포 패키지 (pnpm publish)
-│   ├── grid/           # MIT — 메타 패키지
-│   ├── grid-core/      # MIT — 핵심 hook
-│   ├── grid-features/  # MIT — 기능 빌더
-│   ├── grid-export/    # MIT — 내보내기
-│   ├── grid-renderers/ # MIT — 렌더러
-│   ├── grid-license/   # MIT — 라이선스 검증
-│   ├── grid-pro-agg/   # Pro — 집계
-│   ├── grid-pro-datamap/  # Pro — 데이터 매핑
-│   ├── grid-pro-header/   # Pro — 고급 헤더
-│   ├── grid-pro-master/   # Pro — 마스터-디테일
-│   ├── grid-pro-merging/  # Pro — 셀 병합
-│   ├── grid-pro-range/    # Pro — 범위 선택
-│   └── grid-pro-tracking/ # Pro — 변경 추적
-└── apps/
-    └── docs/           # private — Docusaurus + TypeDoc API 문서 사이트
-```
+- **모든 Pro 패키지 → `@topgrid/grid-license`** (런타임 라이선스 게이트).
+- **대부분의 Pro → `@topgrid/grid-core`** (`<Grid>` 기반 위 구성).
+- 일부 Pro는 **다른 Pro/Open을 합성**한다: `grid-pro-pivot`·`grid-pro-panel` → `grid-pro-agg` · `grid-pro-edit-plus` → `grid-pro-tracking` · `grid-pro-filter` → `grid-features` · `grid-pro-sheet` → `grid-pro-range` · `grid-pro-master` → `grid-export`.
+- 내부 의존은 `workspace:*` → 발행 시 정확버전 핀(lockstep). 파사드 `@topgrid/grid`가 전 패키지를 re-export.
 
 ## Pro 패키지 라이선스 활성화
 
 Pro 패키지 사용 시 `@topgrid/grid-license`를 통해 런타임 라이선스 검증이 실행됩니다.
-앱 진입점에서 라이선스 키를 한 번 초기화하세요.
+앱 진입점에서 라이선스 키를 한 번 설정하세요.
 
 ```tsx
-import { initLicense } from '@topgrid/grid-license';
+import { setLicenseKey } from '@topgrid/grid-license';
 
-initLicense('YOUR-LICENSE-KEY');
+setLicenseKey('YOUR-LICENSE-KEY');
 ```

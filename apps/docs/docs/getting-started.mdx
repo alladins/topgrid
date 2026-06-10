@@ -1,46 +1,61 @@
 # 시작하기
 
 topgrid는 TanStack Table v8 기반의 headless React 그리드 라이브러리입니다.
-13개 패키지로 구성된 monorepo로, 공개(MIT) + Pro 기능 모두 지원합니다.
+21개 패키지로 구성된 monorepo로, 공개(MIT) 코어 + Pro 기능을 모두 제공합니다.
 
 ## 설치
 
 ```bash
 # 공개 패키지 (headless core)
-pnpm add @topgrid/grid @topgrid/grid-core @topgrid/grid-features @topgrid/grid-renderers
-
-# Pro 패키지 (라이선스 필요)
-pnpm add @topgrid/grid-pro-agg @topgrid/grid-pro-datamap @topgrid/grid-pro-header \
-         @topgrid/grid-pro-master @topgrid/grid-pro-merging @topgrid/grid-pro-range \
-         @topgrid/grid-pro-tracking
+pnpm add @topgrid/grid @topgrid/grid-core @topgrid/grid-features \
+         @topgrid/grid-renderers @topgrid/grid-export @topgrid/grid-license
 
 # peer dependencies
 pnpm add react react-dom @tanstack/react-table @tanstack/react-virtual
 ```
 
+Pro 패키지(피벗·서버사이드·차트·스프레드시트·고급 필터·편집·집계 등)는 라이선스가 필요합니다 —
+[아키텍처](./architecture)의 패키지 목록과 [기능 비교](./comparison)를 참고하세요.
+
+```bash
+# 예: 필요한 Pro 패키지만 선택 설치
+pnpm add @topgrid/grid-pro-pivot @topgrid/grid-pro-serverside @topgrid/grid-pro-chart
+```
+
 ## 기본 사용 예시
+
+`<Grid>`는 `columns`/`data`를 직접 받습니다(headless — TanStack `ColumnDef` 그대로 사용).
 
 ```tsx
 import { Grid } from '@topgrid/grid';
-import { useGridState } from '@topgrid/grid-core';
+import type { ColumnDef } from '@tanstack/react-table';
 
-const columns = [
+interface Person {
+  id: number;
+  name: string;
+}
+
+const columns: ColumnDef<Person>[] = [
   { accessorKey: 'id', header: 'ID' },
   { accessorKey: 'name', header: '이름' },
 ];
 
-const data = [
+const data: Person[] = [
   { id: 1, name: '홍길동' },
   { id: 2, name: '김철수' },
 ];
 
 export function BasicGrid() {
-  const gridState = useGridState({ columns, data });
-  return <Grid state={gridState} />;
+  return <Grid<Person> columns={columns} data={data} enableSort enableFilter />;
 }
 ```
 
+정렬·필터·페이지네이션·선택 등은 `enableSort` / `enableFilter` / `enablePagination` 같은
+플래그로 켭니다. 상태를 외부에서 제어하려면 `@topgrid/grid-core`의 `useGridState` 훅으로
+controlled state(`onSortingChange` 등)를 배선할 수 있습니다.
+
 ## 다음 단계
 
-- [아키텍처](./architecture) — 13개 패키지 구조와 의존성 다이어그램
-- Pro 기능 — `@topgrid/grid-license`를 통한 라이선스 활성화 후 Pro 패키지 사용 가능
+- [아키텍처](./architecture) — 21개 패키지 구조와 의존성 다이어그램
+- [기능 비교](./comparison) — AG Grid / Wijmo 대비 기능 매트릭스
+- Pro 기능 — `@topgrid/grid-license`의 `setLicenseKey()`로 라이선스 활성화 후 Pro 패키지 사용

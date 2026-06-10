@@ -5,6 +5,13 @@ sidebar_position: 2
 
 # DataTable → `<Grid mode="server">` 이전 가이드
 
+:::warning 현행 API 불일치 — 재작성 예정
+이 가이드의 `<Grid mode="client" | "server">` 예제는 **현행 API와 불일치**한다. 현재 `<Grid>`에는
+top-level `mode` prop이 없다(`pagination`/`rowSelection`은 중첩 옵션). 서버 사이드는 `manualPagination`
+등 플래그 또는 `@topgrid/grid-pro-serverside`의 `useServerSideData(datasource)` → `<Grid columns {...gridProps} />`
+패턴이 현행이다. **이 가이드는 현행 client/server 패턴으로 재작성 예정**(아래 `mode=` 예제는 그대로 신뢰하지 말 것).
+:::
+
 `DataTable`은 레거시의 서버 페이지네이션 중심 범용 테이블 컴포넌트로,
 8개 Grid 변형과 아키텍처가 다르다. `ColumnInfo`/`ButtonInfo`/`RowActionInfo`
 prop 구조를 사용하며, `listAction(act, value)` 단일 콜백으로 모든 액션을 처리한다.

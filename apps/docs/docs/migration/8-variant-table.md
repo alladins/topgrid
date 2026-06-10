@@ -5,6 +5,12 @@ sidebar_position: 1
 
 # 8개 Grid 변형 → `<Grid>` 이전 가이드
 
+:::warning 현행 API 불일치 — 재작성 예정
+표·예제의 `<Grid mode="client">` 표기는 **현행 API와 불일치**한다. 현재 `<Grid>`에는 top-level `mode`
+prop이 없다 — client 모드는 별도 플래그 없이 `<Grid columns data />`가 기본이고, server는 `manualPagination`
+플래그 또는 `useServerSideData` 패턴이다. **현행 패턴으로 재작성 예정**.
+:::
+
 이 문서는 레거시 코드베이스에서 사용하던 8개의 Grid 변형 컴포넌트를
 `@topgrid/grid-core`의 통합 `<Grid>` 컴포넌트(및 관련 Pro 패키지)로 이전하는
 **참조 테이블**이다. 실제 파일 단위 이전은 MOD-GRID-17 이하 각 Goal에서 수행한다.

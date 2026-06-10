@@ -1,46 +1,62 @@
 # Getting Started
 
 topgrid is a headless React grid library built on TanStack Table v8.
-It is organized as a monorepo of 13 packages, supporting both open-source (MIT) and Pro features.
+It is organized as a monorepo of 21 packages, supporting both open-source (MIT) core and Pro features.
 
 ## Installation
 
 ```bash
 # Open packages (headless core)
-pnpm add @topgrid/grid @topgrid/grid-core @topgrid/grid-features @topgrid/grid-renderers
-
-# Pro packages (license required)
-pnpm add @topgrid/grid-pro-agg @topgrid/grid-pro-datamap @topgrid/grid-pro-header \
-         @topgrid/grid-pro-master @topgrid/grid-pro-merging @topgrid/grid-pro-range \
-         @topgrid/grid-pro-tracking
+pnpm add @topgrid/grid @topgrid/grid-core @topgrid/grid-features \
+         @topgrid/grid-renderers @topgrid/grid-export @topgrid/grid-license
 
 # peer dependencies
 pnpm add react react-dom @tanstack/react-table @tanstack/react-virtual
 ```
 
+Pro packages (pivot, server-side row model, charts, spreadsheet, advanced filtering,
+editing, aggregation, and more) require a license — see the package list in
+[Architecture](./architecture) and the [feature comparison](./comparison).
+
+```bash
+# e.g. install only the Pro packages you need
+pnpm add @topgrid/grid-pro-pivot @topgrid/grid-pro-serverside @topgrid/grid-pro-chart
+```
+
 ## Basic Usage
+
+`<Grid>` takes `columns`/`data` directly (headless — use TanStack `ColumnDef` as-is).
 
 ```tsx
 import { Grid } from '@topgrid/grid';
-import { useGridState } from '@topgrid/grid-core';
+import type { ColumnDef } from '@tanstack/react-table';
 
-const columns = [
+interface Person {
+  id: number;
+  name: string;
+}
+
+const columns: ColumnDef<Person>[] = [
   { accessorKey: 'id', header: 'ID' },
   { accessorKey: 'name', header: 'Name' },
 ];
 
-const data = [
+const data: Person[] = [
   { id: 1, name: 'Alice' },
   { id: 2, name: 'Bob' },
 ];
 
 export function BasicGrid() {
-  const gridState = useGridState({ columns, data });
-  return <Grid state={gridState} />;
+  return <Grid<Person> columns={columns} data={data} enableSort enableFilter />;
 }
 ```
 
+Enable sorting, filtering, pagination, selection, etc. via flags like `enableSort` /
+`enableFilter` / `enablePagination`. For externally controlled state, wire controlled
+state (`onSortingChange`, etc.) with the `useGridState` hook from `@topgrid/grid-core`.
+
 ## Next Steps
 
-- [Architecture](./architecture) — 13-package structure and dependency diagram
-- Pro features — available after license activation via `@topgrid/grid-license`
+- [Architecture](./architecture) — 21-package structure and dependency diagram
+- [Feature comparison](./comparison) — feature matrix vs AG Grid / Wijmo
+- Pro features — activate a license via `setLicenseKey()` from `@topgrid/grid-license`
