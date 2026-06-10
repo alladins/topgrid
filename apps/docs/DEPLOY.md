@@ -27,13 +27,19 @@ pnpm build:site
 ```
 빌드 검증(선택): `apps/docs/build/index.html`·`build/en/index.html`·`build/storybook/index.html` 존재 확인.
 
-### 3. 배포 (rsync) — ★사용자 실행 (서버 SSH 접근 필요)
+### 3. 배포 — ★사용자 실행 (서버 SSH 접근 필요)
+
+**scp (사용)** — `build/` 의 전 항목을 웹 루트로 복사(build/ 에 top-level dotfile 없음 → `*` 로 전부 커버):
 ```bash
-# repo 루트 기준 (또는 apps/docs 에서 build/ 경로 조정)
+scp -r apps/docs/build/* topgrid@49.247.14.212:/var/www/topgrid/
+```
+- ★scp 는 `--delete` 가 없어 **서버의 stale 파일을 지우지 않는다**. 페이지를 *수정*만 한 배포(파일명 동일 HTML 덮어쓰기 + content-hash asset 신규)는 무해. 페이지를 *삭제*했거나 완전 클린 동기화가 필요하면 아래 rsync 또는 사전 정리 사용.
+- default ACL 덕에 권한 자동 → root 불필요, nginx reload 불요(정적 파일).
+
+**rsync (대안, 클린 동기화)** — stale 제거 포함:
+```bash
 rsync -avz --delete apps/docs/build/ topgrid@49.247.14.212:/var/www/topgrid/
 ```
-- `--delete`: 서버에서 build/ 에 없는 파일 제거(클린 동기화). build/ 가 완전한지 먼저 확인.
-- default ACL 덕에 권한 자동 → root 불필요, nginx reload 불요(정적 파일).
 
 ### 4. 확인
 ```bash
