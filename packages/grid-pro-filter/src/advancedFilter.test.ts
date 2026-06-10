@@ -3,6 +3,7 @@ import {
   evaluateAdvancedFilter,
   makeAdvancedFilterFn,
   matchCondition,
+  advancedGlobalFilterFn,
   type AdvancedFilterExpr,
 } from './advancedFilter.ts';
 
@@ -69,6 +70,18 @@ ok('unknown operator → false', matchCondition(5, 'number', 'xyz' as never, 5) 
 // ── empty / all-inert group → true (no constraint) ──
 ok('empty group → true', evaluateAdvancedFilter(group('and', []), { x: 1 }) === true);
 ok('all-inert group → true', evaluateAdvancedFilter(group('or', [cond('a', 'number', 'eq')]), { a: 5 }) === true);
+
+// ── MOD-76: advancedGlobalFilterFn (TanStack globalFilterFn adapter — reads row.original) ──
+ok('★ globalFilterFn: matching expr on row.original → true',
+  advancedGlobalFilterFn({ original: { region: 'North' } }, 'x', cond('region', 'text', 'eq', 'North')) === true);
+ok('★ globalFilterFn: non-matching expr → false',
+  advancedGlobalFilterFn({ original: { region: 'East' } }, 'x', cond('region', 'text', 'eq', 'North')) === false);
+ok('★ globalFilterFn: null filterValue → true (unconstrained)',
+  advancedGlobalFilterFn({ original: { region: 'East' } }, 'x', null) === true);
+ok('★ globalFilterFn: undefined filterValue → true',
+  advancedGlobalFilterFn({ original: { region: 'East' } }, 'x', undefined) === true);
+ok('★ globalFilterFn: columnId ignored (row-level, same answer per column)',
+  advancedGlobalFilterFn({ original: { region: 'North' } }, 'anyColumn', cond('region', 'text', 'eq', 'North')) === true);
 
 console.log(`advancedFilter spine: ${pass} passed, ${fail} failed`);
 if (fail) throw new Error(`${fail} failed`);

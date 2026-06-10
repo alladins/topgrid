@@ -6,15 +6,15 @@
 
 > ★ **재감사 갱신 (2026-06, MOD-28~33 반영)** — 아래 표는 MOD-28(a11y)·29(i18n/테마)·30(필터)·31(피벗 상호작용)·32(시트 함수/undo)·33(상태바/오버레이/행드래그) **커밋에 묶여 검증된** 닫힘만 반영(상태-동기화; 재감사는 over-claim 차단 위해 커밋+게이트 근거만 flip). 상세는 바로 아래 「재감사 델타」 참조.
 
-| 상태 | 최초감사 | 재감사(MOD-33) | 검증 재집계(MOD-50, 2026-06-07) | **현재(MOD-72, 2026-06-09 canonical)** |
+| 상태 | 최초감사 | 재감사(MOD-33) | 검증 재집계(MOD-50, 2026-06-07) | **현재(MOD-76, 2026-06-10 canonical)** |
 |---|---|---|---|---|
-| ✅ 구현(full) | 178 (54%) | 199 (60%) | 227 (69%) | **247 (75%)** |
-| 🟡 부분(partial) | 60 (18%) | 60 (18%) | 70 (21%) | **74 (22%)** |
+| ✅ 구현(full) | 178 (54%) | 199 (60%) | 227 (69%) | **248 (75%)** |
+| 🟡 부분(partial) | 60 (18%) | 60 (18%) | 70 (21%) | **73 (22%)** |
 | ❌ 미구현(missing) | 89 (27%) | 68 (21%) | 30 (9%) | **6 (2%)** |
 | ➖ N/A | 3 (1%) | 3 (1%) | 3 (1%) | **3 (1%)** |
 | **합계** | **330** | **330** | **330** | **330** |
 
-> ✅ **재집계 완료 (2026-06-09 재-tally, canonical)**: "현재(MOD-72)" 열은 카테고리 상세표 per-feature 행(=ground truth)에서
+> ✅ **재집계 완료 (2026-06-09 재-tally, canonical)**: "현재(MOD-76)" 열은 카테고리 상세표 per-feature 행(=ground truth)에서
 > **프로그래매틱 재계산**했고 **19/19 카테고리 reconcile**(파싱 카운트 == 선언 기능 수)+**합 330** 검산을 통과했다(손-추정 아님). 또한
 > per-feature 상세표(330행)와 「우선순위 갭」 subset 표(149행)가 **동일한 6개 ❌ 행**에서 교차 reconcile. **이전 STALE 드리프트(MOD-55~72) 해소**
 > — 이전 추정 "✅240/🟡71/❌16" 은 오집계, 실측=✅247/🟡74/❌6/➖3. Ground truth=「잔여 ❌ 우선순위」 섹션(❌6)과 일치.
@@ -226,12 +226,12 @@
 | Master/Detail & Tree Data | 16 | 10 | 6 | 0 | 0 |
 | Pinned/floating & full-width rows | 15 | 12 | 3 | 0 | 0 |
 | Export, clipboard & print | 15 | 13 | 1 | 1 | 0 |
-| Integrated charts & sparklines | 17 | 10 | 5 | 0 | 2 |
+| Integrated charts & sparklines | 17 | 11 | 4 | 0 | 2 |
 | Accessibility & keyboard | 18 | 12 | 6 | 0 | 0 |
 | State, theming & i18n | 17 | 12 | 4 | 1 | 0 |
 | Spreadsheet (Wijmo FlexSheet focus) | 23 | 16 | 7 | 0 | 0 |
 | Misc UX (status bar, panels, context menu, overlays, row drag) | 14 | 10 | 4 | 0 | 0 |
-| **합계** | **330** | **247** | **74** | **6** | **3** |
+| **합계** | **330** | **248** | **73** | **6** | **3** |
 
 ## 카테고리별 상세
 
@@ -565,7 +565,7 @@
 | Chart types: column/pie/scatter/bubble/histogram etc. | Enterprise | ○ | ➖ N/A | Chart type is entirely the consumer's renderChart concern; topgrid ships no chart type catalog. |
 | Chart panel/composition (dock, range adjust handles, settings panel) | Enterprise | — | 🟡 부분(MOD-72) | ChartCard `dock`(top/bottom/left/right, 툴바 도킹) + settings panel(type 스위처, MOD-34 기존). chromium 1/1(dock=left→툴바 좌측+도킹 중 type 전환). **range adjust handles=라이브 grid-pro-range 셀선택 배선 vN** → 번들 2/3=🟡. |
 | Export/image of integrated chart | Enterprise | ○ | ➖ N/A | No built-in chart means no chart download/getChartImageDataURL; would be the injected library's job. |
-| Cross-filtering charts (chart filters grid / linked selection) | Enterprise | — | 🟡 부분(MOD-47 모델 + MOD-75 click/highlight) | `grid-pro-filter selectionsToFilter(selections) → AdvancedFilterExpr — 선택→필터 매핑(같은필드 OR·다른필드 AND, type=컬럼메타)` — 선택→필터 **모델** ship + node 15/0(MOD-46 식 재사용·★cross-field AND/same-field OR·typed). **MOD-75: RangeChart `onSelectCategory`(차트 클릭 primitive) + `selectedCategory` linked highlight ship+chromium 1/1**(bar 클릭→연결 grid 필터 6→3→2→6, 선택 bar data-selected·미선택 dim). 정직 경계: demo 는 data-prop 필터(predicate)라 **grid 내부 setFilter 배선(getFilteredRowModel 경유 columnFilters/globalFilter)은 미배선=vN** → 🟡 유지. |
+| Cross-filtering charts (chart filters grid / linked selection) | Enterprise | — | ✅ 구현(MOD-47 모델 + MOD-75 click/highlight + MOD-76 실 setFilter) | `grid-pro-filter selectionsToFilter → AdvancedFilterExpr`(같은필드 OR·다른필드 AND, typed, node) + `advancedGlobalFilterFn`(TanStack globalFilterFn 어댑터, node 5) + RangeChart `onSelectCategory`/`selectedCategory`. **MOD-76: 실 setFilter 배선**—raw `useReactTable` + controlled globalFilter + globalFilterFn=advancedGlobalFilterFn + getFilteredRowModel; 차트 클릭→`table.setGlobalFilter(selectionsToFilter(...))`→**그리드가 내부 필터**(렌더 행=getRowModel=필터 모델, data-prop pre-filter 아님). chromium 1/1(bar 클릭→내부 필터 6→3→2→6·linked highlight·재클릭 해제). ★global search ✅ 와 동일 raw-table globalFilter 구조(zero grid-core 변경)=동일 기준 ✅. |
 | Pro license gate on chart panel (watermark when unlicensed) | — | — | ✅ 구현 | `@topgrid/grid-pro-chart RangeChartPanel useLicenseStatus + <Watermark required/> (RangeChartPanel.tsx:52,68); index checkLicense() (index.ts:11)` — Module-load license check; unlicensed panel composites a watermark overlay when lic.watermarkRequired; confirmed in source and grid-license. |
 
 ### Accessibility & keyboard
@@ -743,7 +743,7 @@
 | Sparkline markers / min-max / tooltips / axes | Integrated charts & sparklines | Enterprise | ✅ 구현(MOD-34 G-2: 축/툴팁 RangeChart + min-max 마커 Sparkline) | Verified: SparklineCellProps (lines 21-34) exposes no marker, min/max highlight, tooltip, or axis options; bare SVG shape only. |
 | Chart toolbar / interactive chart-type switcher | Integrated charts & sparklines | Enterprise | ✅ 구현(MOD-34 G-3 ChartCard) | Verified: grep for toolbar/chartType/legend/axis in grid-pro-chart returns 0; no UI to change chart type at runtime. |
 | Chart panel/composition (dock, range adjust handles, settings panel) | Integrated charts & sparklines | Enterprise | 🟡 부분(MOD-72) | ChartCard dock(툴바 도킹 top/bottom/left/right) + settings(type 스위처, MOD-34 기존). chromium 1/1(dock=left+type 전환). range adjust handles=라이브 grid-pro-range vN → 2/3=🟡. |
-| Cross-filtering charts (chart filters grid / linked selection) | Integrated charts & sparklines | Enterprise | 🟡 부분(MOD-47 모델 + MOD-75 click/highlight) | `grid-pro-filter selectionsToFilter` 선택→필터 매핑(같은필드 OR·다른필드 AND, type=컬럼메타, MOD-46 식 재사용) ship + node. MOD-75: RangeChart onSelectCategory + selectedCategory linked highlight ship+chromium 1/1(bar 클릭→grid 필터·linked dim). grid 내부 setFilter 배선(getFilteredRowModel)=vN(demo=data-prop 필터) → 🟡. |
+| Cross-filtering charts (chart filters grid / linked selection) | Integrated charts & sparklines | Enterprise | ✅ 구현(MOD-47 모델 + MOD-75 click/highlight + MOD-76 실 setFilter) | selectionsToFilter + advancedGlobalFilterFn(globalFilterFn 어댑터) + RangeChart onSelectCategory/selectedCategory. MOD-76: raw useReactTable + globalFilter + getFilteredRowModel→차트 클릭이 그리드 내부 필터 구동(getRowModel=필터 모델, data-prop 아님). chromium 1/1(6→3→2→6·highlight·재클릭). global search ✅ 와 동일 raw-table 구조→동일 기준 ✅. |
 | Row-group state save/restore | State, theming & i18n | Enterprise | ✅ 구현(MOD-60) | grid-core useViewStatePersistence + 순수 serializeViewState 엔벨로프(node 11/0). 소비자가 grouping 영속. chromium 1/1(grouping→remount→복원). AG 대응. |
 | Pivot state save/restore | State, theming & i18n | Enterprise | ✅ 구현(MOD-60) | grid-core useViewStatePersistence. 소비자가 PivotConfig 영속. chromium 1/1(transpose→remount→복원). AG 대응. |
 | Excel import/export of the spreadsheet (.xlsx with formulas) | Spreadsheet (Wijmo FlexSheet focus) | Enterprise | ✅ 구현(MOD-69) | grid-export importXlsxToSheetCells/exportSheetCellsToXlsx + 순수 변환. ★수식(.f) round-trip 보존(node 17/0 real-lib). chromium 1/1(base64 .xlsx→엔진 재계산 30). 셀 스타일(.s)=별 ❌ 행. FlexSheet 수식 load/save 대응. |

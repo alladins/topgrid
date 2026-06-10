@@ -155,3 +155,27 @@ export function makeAdvancedFilterFn(
 ): (row: Record<string, unknown>) => boolean {
   return (row) => evaluateAdvancedFilter(expr, row);
 }
+
+/**
+ * MOD-GRID-76: TanStack `globalFilterFn` 어댑터 — global filter 값을 {@link AdvancedFilterExpr} 로 보고
+ * **행 단위로** 평가한다(columnId 무시 = 행-레벨). `null`/`undefined` 식 → 무제약(true).
+ *
+ * 이것이 차트 cross-filter 의 **실 setFilter 배선**이다: `setGlobalFilter(selectionsToFilter(selections))`
+ * 로 차트 선택을 그리드의 `getFilteredRowModel` 에 흘려보내면 **그리드가 내부적으로 필터**한다(필터 상태가
+ * data prop 가 아니라 테이블에 산다 — global search ✅ 와 동일 구조의 raw-table 배선).
+ *
+ * @example
+ * const table = useReactTable({ data, columns, state: { globalFilter },
+ *   onGlobalFilterChange: setGlobalFilter, globalFilterFn: advancedGlobalFilterFn,
+ *   getColumnCanGlobalFilter: () => true, getCoreRowModel: getCoreRowModel(),
+ *   getFilteredRowModel: getFilteredRowModel() });
+ * // chart: onSelectCategory={(i) => table.setGlobalFilter(selectionsToFilter([{ field, type, value: cats[i] }]))}
+ */
+export function advancedGlobalFilterFn(
+  row: { original: Record<string, unknown> },
+  _columnId: string,
+  filterValue: AdvancedFilterExpr | null | undefined,
+): boolean {
+  if (filterValue == null) return true;
+  return evaluateAdvancedFilter(filterValue, row.original);
+}

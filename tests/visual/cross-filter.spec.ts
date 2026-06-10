@@ -1,14 +1,16 @@
 import { test, expect, type Page, type Locator } from '@playwright/test';
 
-// MOD-GRID-75 — chart cross-filtering end-to-end. ★behavior-gated, non-vacuous: clicking a region
-// bar drives selectionsToFilter → grid data filter (row count drops to that region) AND the linked
-// highlight (clicked bar keeps full opacity + data-selected; others dim). Clicking again clears.
+// MOD-GRID-75/76 — chart cross-filtering through the grid's ACTUAL filter model. ★behavior-gated,
+// non-vacuous: clicking a region bar calls table.setGlobalFilter(selectionsToFilter(...)); the table
+// filters INTERNALLY (getFilteredRowModel) and the rendered rows (getRowModel) drop to that region —
+// NOT a parent-side data-prop pre-filter. + linked highlight (selected bar data-selected, others dim).
 const FRAME = (id: string) => `/iframe.html?id=${id}&viewMode=story`;
 const ID = 'pro-crossfilter--default';
 const bar = (page: Page, i: number): Locator =>
   page.locator(`#storybook-root [data-category-index="${i}"]`).first();
+// rows rendered from table.getRowModel().rows = the grid's filtered model output.
 const gridRows = (page: Page): Locator =>
-  page.locator('#storybook-root [data-testid="linked-grid"] tbody tr[data-index]');
+  page.locator('#storybook-root [data-testid="linked-grid"] tbody tr[data-row]');
 
 test('chart bar click filters linked grid + highlights selection; re-click clears', async ({
   page,

@@ -20,6 +20,7 @@ export {
   evaluateAdvancedFilter,
   makeAdvancedFilterFn,
   matchCondition,
+  advancedGlobalFilterFn,
 } from './advancedFilter.js';
 export type {
   AdvancedFilterExpr,
@@ -28,6 +29,6 @@ export type {
   FilterOperator,
   FilterValueType,
 } from './advancedFilter.js';
-// MOD-GRID-47: cross-filter 매핑(선택→식, 같은필드 OR·다른필드 AND). 차트 클릭→setFilter wiring=browser/후속.
+// MOD-GRID-47: cross-filter 매핑(선택→식, 같은필드 OR·다른필드 AND). MOD-76: advancedGlobalFilterFn(advancedFilter)=실 setFilter 배선.
 export { selectionsToFilter } from './crossFilter.js';
 export type { FilterSelection } from './crossFilter.js';
