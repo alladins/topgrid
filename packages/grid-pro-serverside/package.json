@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "echo TODO"
+    "test": "node --experimental-strip-types src/internal/buildServerPivotColumns.test.ts && node --experimental-strip-types src/internal/viewportRowModel.test.ts"
   },
   "dependencies": {
     "@topgrid/grid-license": "workspace:*"
