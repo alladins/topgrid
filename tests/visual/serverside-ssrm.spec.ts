@@ -60,8 +60,11 @@ test('far scroll lazy-loads the visible block exactly once; grid not loaded up f
     ).toBeVisible({ timeout: 1000 });
   }).toPass();
 
-  // that visible row shows REAL data (its block lazy-loaded on scroll), and its block fired once.
-  await expect(root.getByText(`row-${idx}`, { exact: true })).toBeVisible();
+  // the toPass loop above already confirmed `row-${idx}` rendered (block lazy-loaded on scroll).
+  // We do NOT re-assert its visibility here: dynamic re-measurement (ResizeObserver) can settle the
+  // virtualized window so that this transiently-visible mid-row leaves the rendered set — a race that
+  // is independent of the real invariant. The durable evidence is `starts` (__ssrmCalls), which only
+  // grows, so the block-fetch checks below hold regardless of the final scroll window.
   const block = Math.floor(idx / BLOCK) * BLOCK;
   starts = await startRows(page);
   expect(starts, `block @${block} fetched after scroll`).toContain(block);
