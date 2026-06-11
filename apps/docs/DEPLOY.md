@@ -23,7 +23,8 @@ cd apps/docs && pnpm build:site  # 2) ★build:site (storybook→static/storyboo
 # (로컬) rsync 미설치 → scp. build/ top-level dotfile 없음 → * 로 전부 커버
 scp -r apps/docs/build/* topgrid@49.247.14.212:/var/www/topgrid/
 ```
-- 신규 파일은 default ACL 로 nginx 읽기 자동. SELinux 403 시 관리자 셸에서 `restorecon -RFv /var/www/topgrid` 1회.
+- 신규 파일은 default ACL 로 nginx 읽기 자동. **단, 새 디렉터리(예: `storybook/`)가 추가된 배포면 ACL mask 붕괴(트러블슈팅 A) 예방차원에서 관리자 셸 1회**: `setfacl -R -m u:nginx:rX /var/www/topgrid && setfacl -R -d -m u:nginx:rX /var/www/topgrid && restorecon -RFv /var/www/topgrid`.
+- SELinux 403 시 관리자 셸에서 `restorecon -RFv /var/www/topgrid` 1회.
 - scp 가 stale 미제거(`--delete` 없음) — 수정-only 배포는 무해(content-hash asset).
 
 ### 방식 B — 원본 2단계 (staging 경유, history 그대로)
@@ -52,7 +53,10 @@ curl -sI https://topgrid.platree.com/en/ | head -1          # 200 → 영문
 
 ## 트러블슈팅
 - **`Permission denied (publickey,...,password)`** — topgrid 인증 실패. 비밀번호 재확인 또는 위 keyless 등록. ★`topgrid@` 가 맞음(appuser 아님).
-- **SELinux 403 (페이지 안 뜸)** — 관리자 `restorecon -RFv /var/www/topgrid`. staging(`/app/...`)은 fcontext 수동 필요(이미 설정됨).
+- **403 — nginx 로그 `"...index.html" is forbidden (13: Permission denied)`** = 파일은 있는데 nginx 못 읽음. 두 레이어 중 하나:
+  - **(A) ACL mask 붕괴 (2026-06-11 실제 발생, 가장 흔함)** — 배포 후 새로 생긴 디렉터리(예: `storybook/`)가 mode `0707` 류(group 비트 0)로 만들어지면, named ACL(`user:nginx:r-x`)이 있어도 **access `mask::---`** 로 깎여 `#effective:---` → nginx traverse 불가. `getfacl <dir>` 에서 `mask::---` + `#effective:---` 확인. **해결 = setfacl 재적용**(mask 자동 재계산): `setfacl -R -m u:nginx:rX /var/www/topgrid && setfacl -R -d -m u:nginx:rX /var/www/topgrid`. (★03:38 의 초기 setfacl 은 그때 존재한 파일만 덮음 → *이후* 배포분은 매번 재적용 필요. default ACL 은 권한은 상속해도 `cp -a`/이상 mode 로 만들어진 dir 의 access mask 붕괴는 막지 못함.)
+  - **(B) SELinux 컨텍스트** — `restorecon -RFv /var/www/topgrid`. (출력이 비면 SELinux 는 무죄 → (A) 의심.) staging(`/app/...`)은 fcontext 수동 필요(이미 설정됨).
+  - 진단: `ls -laZ <작동파일> <막힌파일>` + `getfacl <dir>` + `namei -l <막힌파일>`(ACL 있으면 `ls`/`namei` group 자리는 mask 표시 — `drwx---rwx` 의 `---` 가 곧 mask).
 - **`rsync: command not found`** — 로컬에 rsync 없음. scp 사용(이 문서 기준).
 
 ## 주의
