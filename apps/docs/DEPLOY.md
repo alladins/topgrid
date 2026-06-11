@@ -6,7 +6,7 @@
 - **URL**: https://topgrid.platree.com · **서버**: `gedebms` / `49.247.14.212` / Rocky Linux 9.6
 - **배포 계정**: **`topgrid`** (파일 owner `topgrid:cusapp`, 홈 `/app/topgrid`). 인증 = 비밀번호(로컬에 topgrid SSH 키 없음) → keyless 원하면 로컬 공개키를 서버 `topgrid ~/.ssh/authorized_keys` 에 등록. ★`~/.ssh/config` 의 `gedebms`(=appuser)는 **다른 계정** — docs 배포와 무관(혼동 주의).
 - **staging**: `/app/topgrid/www` (= topgrid `~/www`). scp/SFTP 업로드 착지점. `/app` 비표준 경로라 SELinux fcontext 수동 지정됨.
-- **웹 루트(nginx 서빙)**: `/var/www/topgrid` (owner topgrid, **nginx ACL `u:nginx:rX` + default ACL 자동 상속** → 신규 파일 권한 자동). SELinux `httpd_sys_content_t`.
+- **웹 루트(nginx 서빙)**: `/var/www/topgrid` (owner topgrid). nginx 는 **평범한 권한 `dir 755 / file 644`(= other r-x/r--)로 읽는다 — ACL 사용 안 함**. SELinux `httpd_sys_content_t`. ★**ACL 금지**(2026-06-11 교훈): topgrid umask 가 `070`→신규 dir `0707`(group 0)+named ACL 조합 시 access `mask::---` 로 붕괴해 nginx 차단이 *반복*됨. ACL 제거 후 755/644 면 nginx 가 other 로 읽어 안정적. → topgrid `~/.bashrc` 에 `umask 022` 설정됨.
 - **TLS**: Let's Encrypt webroot(`/var/www/certbot`), 자동갱신 `certbot-renew.timer` + reload hook. 80블록 `/.well-known/acme-challenge/` 보존.
 
 ## 빌드 (repo)
@@ -18,23 +18,25 @@ cd apps/docs && pnpm build:site  # 2) ★build:site (storybook→static/storyboo
 
 ## 배포 (사용자 실행) — 원본 절차 = 2단계 (scp staging → 관리자 cp 웹루트)
 
-### 방식 A — 직접 웹루트 (웹루트가 topgrid 소유 + default ACL 이라 가능, 권장)
+### 방식 A — 직접 웹루트 scp + 권한 정규화 (★권장, 2026-06-11 검증)
 ```bash
-# (로컬) rsync 미설치 → scp. build/ top-level dotfile 없음 → * 로 전부 커버
+# 1) (로컬) rsync 미설치 → scp. build/ top-level dotfile 없음 → * 로 전부 커버
 scp -r apps/docs/build/* topgrid@49.247.14.212:/var/www/topgrid/
-```
-- 신규 파일은 default ACL 로 nginx 읽기 자동. **단, 새 디렉터리(예: `storybook/`)가 추가된 배포면 ACL mask 붕괴(트러블슈팅 A) 예방차원에서 관리자 셸 1회**: `setfacl -R -m u:nginx:rX /var/www/topgrid && setfacl -R -d -m u:nginx:rX /var/www/topgrid && restorecon -RFv /var/www/topgrid`.
-- SELinux 403 시 관리자 셸에서 `restorecon -RFv /var/www/topgrid` 1회.
-- scp 가 stale 미제거(`--delete` 없음) — 수정-only 배포는 무해(content-hash asset).
 
-### 방식 B — 원본 2단계 (staging 경유, history 그대로)
+# 2) (서버, 관리자/root 셸) 권한 정규화 — ★매 배포 마지막 단계 필수
+setfacl -Rb /var/www/topgrid                          # ACL 전부 제거 (mask 붕괴 원천 차단)
+find /var/www/topgrid -type d -exec chmod 755 {} \;   # 디렉터리 traverse
+find /var/www/topgrid -type f -exec chmod 644 {} \;   # 파일 읽기
+restorecon -RFv /var/www/topgrid                      # SELinux (대개 no-op)
+```
+- ★**ACL 쓰지 말 것**(`setfacl -Rb` 로 제거). 755/644 면 nginx 가 other 로 읽음 → mask 붕괴 재발 불가(2026-06-11 확정: chmod 만으로는 ACL 있으면 안 풀렸고, ACL 제거 후 200).
+- chmod/setfacl 은 owner(topgrid)로도 가능하나, 관리자 셸이면 확실.
+- scp 가 stale 미제거(`--delete` 없음) — 페이지 형태(평면↔디렉터리)가 바뀐 배포는 stale 충돌 가능 → 의심 시 `rm -rf /var/www/topgrid/* ` 후 재업로드(클린).
+
+### ⛔ 방식 B (staging → `cp -a`) — 비권장
 ```bash
-# (로컬) staging 으로 업로드
-scp -r apps/docs/build/* topgrid@49.247.14.212:/app/topgrid/www/
-# (서버, 관리자/root 셸) staging → 웹루트 설치
-cp -a /app/topgrid/www/. /var/www/topgrid/
-restorecon -Rv /var/www/topgrid
-nginx -t && systemctl reload nginx
+# cp -a 는 staging 의 깨진 권한(0707/mask---)을 웹루트에 그대로 덮어 403 을 *재발*시킴 (2026-06-11 반복 원인).
+# 부득이 사용 시 위 「방식 A 2)」 권한 정규화를 cp 직후 반드시 실행.
 ```
 
 ### keyless 활성화 (선택, topgrid 셸에서 1회)
@@ -53,10 +55,18 @@ curl -sI https://topgrid.platree.com/en/ | head -1          # 200 → 영문
 
 ## 트러블슈팅
 - **`Permission denied (publickey,...,password)`** — topgrid 인증 실패. 비밀번호 재확인 또는 위 keyless 등록. ★`topgrid@` 가 맞음(appuser 아님).
-- **403 — nginx 로그 `"...index.html" is forbidden (13: Permission denied)`** = 파일은 있는데 nginx 못 읽음. 두 레이어 중 하나:
-  - **(A) ACL mask 붕괴 (2026-06-11 실제 발생, 가장 흔함)** — 배포 후 새로 생긴 디렉터리(예: `storybook/`)가 mode `0707` 류(group 비트 0)로 만들어지면, named ACL(`user:nginx:r-x`)이 있어도 **access `mask::---`** 로 깎여 `#effective:---` → nginx traverse 불가. `getfacl <dir>` 에서 `mask::---` + `#effective:---` 확인. **해결 = setfacl 재적용**(mask 자동 재계산): `setfacl -R -m u:nginx:rX /var/www/topgrid && setfacl -R -d -m u:nginx:rX /var/www/topgrid`. (★03:38 의 초기 setfacl 은 그때 존재한 파일만 덮음 → *이후* 배포분은 매번 재적용 필요. default ACL 은 권한은 상속해도 `cp -a`/이상 mode 로 만들어진 dir 의 access mask 붕괴는 막지 못함.)
-  - **(B) SELinux 컨텍스트** — `restorecon -RFv /var/www/topgrid`. (출력이 비면 SELinux 는 무죄 → (A) 의심.) staging(`/app/...`)은 fcontext 수동 필요(이미 설정됨).
-  - 진단: `ls -laZ <작동파일> <막힌파일>` + `getfacl <dir>` + `namei -l <막힌파일>`(ACL 있으면 `ls`/`namei` group 자리는 mask 표시 — `drwx---rwx` 의 `---` 가 곧 mask).
+- **403 Forbidden (순수 nginx 페이지) — `"...index.html" is forbidden (13: Permission denied)`** = 파일은 있는데 nginx 못 읽음. **이 서버의 단골 원인 = ACL mask 붕괴**(umask 070 → dir `0707` → named ACL access `mask::---` → nginx 차단). ★**확정 해결(2026-06-11): ACL 제거 + 755/644**:
+  ```bash
+  setfacl -Rb /var/www/topgrid
+  find /var/www/topgrid -type d -exec chmod 755 {} \;
+  find /var/www/topgrid -type f -exec chmod 644 {} \;
+  restorecon -RFv /var/www/topgrid
+  sudo -u nginx cat /var/www/topgrid/storybook/index.html >/dev/null && echo OK   # 검증
+  ```
+  ★**주의: `chmod` 만으로는 안 풀린다** — ACL 이 남아 있으면 mask 가 다시 붕괴. 반드시 `setfacl -Rb`(ACL 제거)를 **먼저**. (`getfacl <dir>` 에 `mask::---`+`#effective:---` 보이면 이 케이스. `namei -l` 의 `drwx---rwx` 가운데 `---` 가 곧 mask.)
+- **403 — 로그가 `directory index of "..." is forbidden`** = 권한 아님, nginx 가 index 못 찾음(autoindex/index 디렉티브 설정) → vhost `try_files $uri $uri/ ...` + `index index.html` 확인.
+- **SELinux 403** — `restorecon -RFv /var/www/topgrid`. (출력이 비면 SELinux 무죄.)
+- **Docusaurus 404 페이지(스타일 있는 "페이지를 찾을 수 없습니다")** = 권한 OK 인데 해당 라우트 파일 부재/형태 불일치. 빌드는 디렉터리 형태(`foo/index.html`)이므로 nginx `try_files` 에 `$uri/` 폴백 필요. stale 평면 `.html` 잔존 시 클린 재배포.
 - **`rsync: command not found`** — 로컬에 rsync 없음. scp 사용(이 문서 기준).
 
 ## 주의
