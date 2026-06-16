@@ -1,0 +1,32 @@
+{
+  "name": "@topgrid/grid-core-headless",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "description": "Framework-agnostic grid core (table-core 기반). React/Vue 어댑터가 공유 소비. W1 Phase 0.",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types src/buildTableOptions.test.ts"
+  },
+  "devDependencies": {
+    "@tanstack/table-core": "8.21.3"
+  },
+  "peerDependencies": {
+    "@tanstack/table-core": "^8.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

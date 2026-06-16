@@ -243,4 +243,25 @@
 ### 10-4. 함의
 - W1 리스크 프로필: **"feasibility 미지"→"known engineering"** 으로 전환. 핵심 아키텍처 가정이 실코드로 확인됨.
 - §2-3 ROM(5~8개월)은 **신뢰도 상승하나 여전히 ROM** — 비용 중심은 이제 (검증된 미지수가 아니라) **렌더 포팅 + 하드4 hook 재작성**의 분량.
-- **다음 단위 = W1 Phase 0 본착수**: `buildTableOptions`+상태를 실제 `@topgrid/grid-core-headless`(table-core) 패키지로 추출 → React 어댑터 재구성 ∥ Vue 어댑터. (PTLPSM 통계-그리드 형태를 Vue 어댑터 1차 마일스톤으로.)
+- **다음 단위 = W1 Phase 0 본착수**: `buildTableOptions`+상태를 실제 `@topgrid/grid-core-headless`(table-core) 패키지로 추출 → React 어댑터 재구성 ∥ Vue 어댑터. (PTLPSM 통계-그리드 형태를 Vue 어댑터 1차 마일스톤으로.) → **§11 에서 1차 증분 완료**.
+
+---
+
+## 11. W1 Phase 0 — `@topgrid/grid-core-headless` 추출 1차 증분 (2026-06-16, ✅ 완료·검증)
+
+> advisor 안전 순서(①격리 빌드 → ②재배선 → ③suite green → 원본 삭제) 그대로 실행. **복사본 없음**(원본 로직 이동, fork 회피).
+
+### 11-1. 한 것
+- **신규 패키지 `@topgrid/grid-core-headless`**(table-core 기반, React 의존 0): `buildTableOptions`·`buildPaginationOptions`·`normalizeSelection` + 계약 타입(`TableOptionsInput`/`GridStateBag`/`BuildOptionsResult`/`HeadlessRowSelectionOptions`/`HeadlessPaginationOptions`) 추출. import 를 `@tanstack/react-table`→`@tanstack/table-core`(동일 심볼=동일 인스턴스, 런타임 무변). 유일 React 결합 `createCheckboxColumn` 은 **팩토리 주입**(`CreateSelectionColumn`), selection 정규화+prepend 정책은 headless 에 순수 유지.
+- **grid-core 재배선**: `internal/buildTableOptions.ts` 를 **13줄 thin 어댑터**로 교체(headless 위임 + React 체크박스 주입, 2-arg API 보존 → 유일 호출부 `Grid.tsx:129` 무수정). `internal/buildPaginationOptions.ts` **삭제**(orphan). grid-core `dependencies` 에 `@topgrid/grid-core-headless: workspace:*` 추가.
+- **구조적 타이핑 브리지**: grid-core 의 React `GridProps<TData>` 가 headless `TableOptionsInput<TData>` 를 구조적으로 만족 → grid-core/types.ts·다른 importer **무수정**(blast radius=grid-core 내부 2파일).
+
+### 11-2. 검증 (전부 green)
+- headless 격리: typecheck 0 / build 0 / **node characterization 27 passed**(flag→키 존재·effectiveColumns.length·selectionMode·pagination shape; deep-equal 회피=함수 인스턴스).
+- 전체: `pnpm build` 직렬 topo **전 패키지 green**(headless→grid-core→…→facade grid@0.9.0) · `pnpm -r test` **EXIT 0**(headless 27 + grid-core 전부) · **chromium full suite 122/122 green**(=행위 패리티 게이트, 재배선 byte-identical 입증).
+- ★**fork 없음**: 원본 매핑 로직은 headless 로 *이동*(복사 아님), grid-core 는 위임만. 단일 진실원천.
+
+### 11-3. 남은 것 (다음 증분)
+- **`useGridState` 디커플**(React 상태머신 → 순수 reducer + 프레임워크별 바인딩) = 다음 하드 증분.
+- 하드4(features/master/range)·렌더 레이어(.tsx→.vue)·Vue 어댑터 신규.
+- ★**발행 함의**(user gate): grid-core 가 이제 `@topgrid/grid-core-headless` 런타임 의존 → 발행 시 headless 선발행 + exact-pin lockstep([[npm-publish-topgrid]]). 발행은 미실행(사용자 게이트).

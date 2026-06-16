@@ -211,6 +211,9 @@ importers:
       '@tanstack/react-virtual':
         specifier: ^3.0.0
         version: 3.13.24(react-dom@18.3.1)(react@18.3.1)
+      '@topgrid/grid-core-headless':
+        specifier: workspace:*
+        version: link:../grid-core-headless
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -221,6 +224,12 @@ importers:
       '@topgrid/grid-renderers':
         specifier: workspace:*
         version: link:../grid-renderers
+
+  packages/grid-core-headless:
+    devDependencies:
+      '@tanstack/table-core':
+        specifier: 8.21.3
+        version: 8.21.3
 
   packages/grid-export:
     dependencies:
