@@ -16,7 +16,7 @@
 | **W2** | 엔터프라이즈 차트 | **build 아님 → integrate**(ECharts/AG Charts wrap, opt-in 패키지). 경량 스파크라인은 유지 | **1.5~2.5개월** |
 | **W3** | React 정식 제품화 (DX) | W1의 React-어댑터 부분 **+** 컴포넌트 API·문서·예제 폴리시 | W1 내포 + **0.5~1개월** |
 
-★**즉시 트랙(별개, 월 단위 대기 불가)**: PTLPSM(Nuxt3/Vue3) 통계 화면은 위 W1 완료를 기다리지 말고 **Vue-네이티브 그리드 또는 React 아일랜드**로 즉시 진행 → §5.
+★**PTLPSM(Nuxt3/Vue3) = W1 의 1차 소비자**(2026-06-16 사용자 결정, 별개 임시 트랙 폐기): Vue 전용이라 W1 Vue 어댑터가 곧 해법. 임시 우회 안 함 → **W1 PoC 의 수직 슬라이스를 PTLPSM 통계-그리드 형태로 잡아** 최초 마일스톤이 곧 PTLPSM-usable 이 되게 한다(스테이지드 딜리버리) → §5.
 
 ★**의존성**: `W3 ⊂ W1`. `W1 Phase 0(headless 추출)`은 Vue·엔터프라이즈-Vue-차트의 **공통 선행**. W2(차트)는 React 한정이면 W1과 독립, Vue 차트까지면 W1 Phase 0 필요.
 
@@ -121,12 +121,10 @@
 
 ---
 
-## 5. 즉시 트랙 — PTLPSM 언블록 (전략 로드맵과 분리)
+## 5. PTLPSM — W1 으로 흡수 (별개 트랙 폐기, 2026-06-16 사용자 결정)
 
-PTLPSM(Nuxt3/Vue3) 통계 화면은 W1(월 단위)을 **기다리지 않는다**.
-- **(A) Vue-네이티브 그리드**(권장): AG Grid(Vue 바인딩)·또는 Vue 그리드. 통계 차트는 PTLPSM 기존 차트 라이브러리 유지.
-- **(B) React 아일랜드**: topgrid 고유 기능(피벗/시트/마스터디테일)이 그 화면에 *반드시* 필요할 때만, 해당 화면만 `<ClientOnly>` + `createRoot` 로 React 마운트(번들·유지보수 비용 감수).
-- 결정 기준: 통계 화면이 topgrid 고유 Pro 기능을 요구하는가? 아니면 일반 그리드면 충분한가.
+★**사용자 결정: PTLPSM 임시 트랙 제외.** PTLPSM(Nuxt3/Vue3)은 Vue 전용이므로 **W1 의 Vue 전용 라이브러리가 곧 PTLPSM 해법**이다. 임시 우회(React 아일랜드 / 타사 Vue 그리드)는 **채택 안 함** — W1 Vue 어댑터 산출물을 그대로 PTLPSM 통계 화면에 적용한다.
+- 함의: W1 의 Vue 어댑터 우선순위·요구사항에 **PTLPSM 통계 화면(그래프·그리드) 유스케이스를 1차 소비자로 반영**(스펙 단계 입력).
 
 ---
 
@@ -146,15 +144,16 @@ PTLPSM(Nuxt3/Vue3) 통계 화면은 W1(월 단위)을 **기다리지 않는다**
 
 | 순위 | 항목 | 유형 | 선행 의존 | ROM(1 시니어) | 비고 |
 |------|------|------|-----------|---------------|------|
-| P0 | **즉시: PTLPSM 언블록** | 별개 트랙 | 없음 | 화면 수준(일) | Vue-native 또는 React island |
-| P1 | **W1 Phase 0 — headless 코어 추출** | 신규 big rock | 없음(최우선 선행) | 6~10주 | Vue·엔터프라이즈Vue차트의 공통 관문 |
+| **P0** | **W1 ①분석 + ③PoC (키스톤·임계경로)** | 신규 big rock | 없음(최우선) | 5~7주 | ★전체 Vue 약속의 미검증 가정을 버리는-스파이크로 실증. PoC 슬라이스 = PTLPSM 통계-그리드 형태 |
+| P0 | W2 ①라이브러리 평가 (저비용 병렬) | 신규 | 없음(독립) | 1~2주 | 임계경로 아님, 병렬 가능 |
+| P1 | **W1 Phase 0 — headless 코어 추출** | 신규 big rock | W1 PoC 통과 | 6~10주 | Vue·엔터프라이즈Vue차트의 공통 관문 |
 | P1 | W1 — React 어댑터 재구성 | 신규 | W1 Phase 0 | 3~5주 | W3 내포 |
-| P2 | W1 — Vue 어댑터 | 신규 | W1 Phase 0 | 8~14주 | 하드 4패키지가 비용 중심 |
+| P2 | W1 — Vue 어댑터 (= PTLPSM 해법) | 신규 | W1 Phase 0 | 8~14주 | 하드 4패키지가 비용 중심 |
 | P2 | **W2 — 엔터프라이즈 차트(integrate)** | 신규 big rock | (React만)독립 / (Vue)W1 P0 | 6~10주 | ECharts/AG Charts wrap, opt-in |
 | P3 | W3 — React DX 폴리시 | 신규 | W1 React 어댑터 | 2~4주 | API·문서·예제 |
 | P4 | B/C/D 잔여 백로그 | 기존 floor | — | 소 | §6, 대부분 by-design/사용자결정 |
 
-★**권장 실행 순서**: P0(즉시·병렬) → W1 ①분석 + ③PoC 로 **추정치부터 확정** → 확정 후 Phase 0 → React 재구성 ∥ Vue → W2 → W3 DX. W2(React 한정)는 W1 과 병렬 가능.
+★**권장 실행 순서(advisor)**: **W1 ①분석+③PoC 가 키스톤(먼저)** — 버리는-스파이크로 핵심 가정 실증 후에야 추정치·Vue 약속이 근거를 얻는다. W2 라이브러리 평가는 저비용·독립이라 병렬로 끼우되 임계경로를 밀어내지 않는다. PoC 통과 → Phase 0 → React 재구성 ∥ Vue(=PTLPSM 해법) → W2 → W3 DX.
 
 ---
 
@@ -170,8 +169,46 @@ PTLPSM(Nuxt3/Vue3) 통계 화면은 W1(월 단위)을 **기다리지 않는다**
 3. 차트 라이브러리 라이선스/번들/SSR 적합성 — 평가 단계서 확정.
 4. 멀티프레임워크 발행 그래프 복잡도 증가(exact-pin lockstep 이력 cf. [[npm-publish-topgrid]]).
 
-### 다음 액션 (사용자 결정)
-- (a) **W1 ①분석 + ③PoC 착수** = 가장 가치 높음(추정치·feasibility 확정 → 나머지 의사결정 근거).
-- (b) W2 차트 라이브러리 평가(독립 착수 가능).
-- (c) PTLPSM 즉시 트랙 방향(A vs B) 결정.
-- 본 로드맵은 dev-harness 루프(spec→implement→verify)와 호환 — 각 워크스트림을 MOD 모듈로 분해해 진행.
+### 다음 액션 (방향 확정 2026-06-16 — advisor 위임)
+- **(착수) W1 ①분석 + ③PoC = 키스톤·임계경로**. 버리는-스파이크로 make-or-break(grid-core ~148 훅 디커플 + Vue 반응성↔headless 동기화) 실증. PoC 성공 타깃 = **PTLPSM 통계-그리드 형태의 수직 슬라이스**(§9 분석 산출물 참조).
+- **(병렬·저비용) W2 ①라이브러리 평가** — 독립, 임계경로 아님.
+- PTLPSM 임시 트랙 = 폐기(§5, W1 로 흡수).
+- 본 로드맵은 dev-harness 루프(spec→implement→verify)와 호환 — 각 워크스트림을 MOD 모듈로 분해해 진행. **W1 ①분석 상세 = §9.**
+
+---
+
+## 9. W1 ①분석 산출물 — grid-core 디커플 인벤토리 + PoC 스파이크 스펙 (착수, 2026-06-16)
+
+> 방향 확정에 따른 키스톤 분석. 코드 실측(grid-core/src). ★본 분석의 목적 = **make-or-break 가정을 PoC 스파이크로 좁혀** 정의하는 것이지, 추정치를 확정 약속으로 만드는 게 아님.
+
+### 9-1. grid-core 커스텀 훅 16종 — 디커플 분류
+| 훅 | 성격 | 디커플 전략 | 등급 |
+|----|------|-----------|------|
+| `useGridState` | ★코어 상태머신 배선(8 슬라이스, useState/useRef 다수) | 상태 전이 로직을 **순수 reducer 로 추출** → React/Vue 각자 반응성으로 구동 | **HARD(키스톤)** |
+| `useControllableState` | controlled/uncontrolled 패턴 | 패턴 자체는 양 프레임워크 공통 개념, 각자 재구현(소형) | MEDIUM |
+| `useGridVirtualizer`·`useColumnVirtualizer` | react-virtual 바인딩 | `@tanstack/virtual-core` 위 → React=react-virtual / Vue=`@tanstack/vue-virtual` | MEDIUM |
+| `useColumnDrag` | DOM 드래그 이벤트 | 순수 계산(reorderColumnOrder 이미 추출됨) + 프레임워크별 이벤트 바인딩 얇게 | MEDIUM |
+| `useAutoPageSize` | ResizeObserver | 옵저버 로직 이식 가능(프레임워크 무관 API), 얇은 래퍼 | EASY |
+| `useColumnPersistence`·`useColumnOrderPersist`·`useStoragePersist`·`useViewStatePersistence`·`useUrlSync` | 영속(직렬화 + storage/effect) | 직렬화는 이미 순수(serializeViewState 등) → effect 부분만 프레임워크별 | EASY |
+| `useFullRowEdit` | 행 편집 상태 | applyRowDraft 순수 추출됨 → 상태 보관만 프레임워크별 | EASY |
+| `useGridImperativeHandle` | React ref 핸들 | Vue=`defineExpose`/expose 로 대응 | MEDIUM |
+| `useDebouncedCallback`·`useDeprecationWarn`·`useAutoSelectFirstRow` | 유틸/effect | 사소, 각자 재구현 | EASY |
+
+★**핵심 비용은 `useGridState` 하나**(나머지는 EASY/MEDIUM). React 훅 사용 총계: useState 50·useRef 46·useEffect 44·useCallback 27·useMemo 2.
+
+### 9-2. TanStack 디커플 매핑
+- 현재: `useReactTable`(11 파일) = `table-core`의 `createTable` + React 상태배선. `flexRender` = React 셀 렌더.
+- 목표: **`@tanstack/table-core`의 `createTable` + 프레임워크 무관 옵션빌더**(현 `buildTableOptions` 가 좋은 출발점) → React=`useReactTable`/`flexRender`, Vue=`useVueTable`/Vue `FlexRender`.
+- row-model(`getCoreRowModel` 등)·타입(`SortingState` 등)은 table-core 재export → **그대로 공유**.
+
+### 9-3. PoC 스파이크 스펙 (버리는 코드, make-or-break 전용)
+- **범위(최소 수직 슬라이스)**: data + columns + **정렬 + 필터**만. 가상화/피닝/편집 **제외**(스파이크 목적은 아키텍처 가정 검증).
+- **할 일**: `buildTableOptions` + 상태를 headless 모듈(table-core)로 추출 → 동일 코어를 **React 와 Vue 양쪽에서 렌더+정렬+필터** 입증.
+- **성공 타깃(advisor)**: PTLPSM 통계-그리드 형태 = **정렬·필터되는 데이터 그리드**(+ 단순 차트 바인딩 = W2 접점). 토이 아니라 **PTLPSM 최초 마일스톤으로 바로 쓸 수 있는** 형태.
+  - ※ PTLPSM 실제 통계 화면 컬럼/데이터 형태 = **별도 워크스페이스(D:\dev\lpsystem) 조사 필요** → 스펙 입력. 미확보 시 일반 통계 그리드(집계 행·다컬럼·정렬/필터)로 대체 정의.
+- **결정 게이트**: ① headless 추출이 grid-core 핵심 동작 보존? ② **Vue 반응성(ref/reactive)이 headless 상태머신과 깨끗이 동기화?**(최대 미지수). 둘 다 통과 → Phase 0 본착수. 실패 → Vue 약속·ROM 재스코프(정직 재평가).
+- **검증**: 동일 node 로직 테스트 양쪽 공유 + React/Vue 각 렌더 동작.
+
+### 9-4. 이 분석으로 좁혀진 것
+- Vue 난이도 = "from-scratch"가 아니라 **`useGridState` 디커플 + 하드4 composable 재작성**으로 국소화 확인.
+- 다음 실행 단위 = **PoC 스파이크 구현**(위 9-3). 통과 전까지 §2-3 ROM(5~8개월)은 미확정 예비치 유지.
