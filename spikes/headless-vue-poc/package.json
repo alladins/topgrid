@@ -1,0 +1,18 @@
+{
+  "name": "headless-vue-poc",
+  "private": true,
+  "type": "module",
+  "description": "W1 키스톤 PoC 스파이크(버리는 코드): 동일 headless 코어(@tanstack/table-core)가 React/Vue 양쪽에서 정렬·필터 구동 + Vue 반응성↔상태머신 동기화 실증",
+  "scripts": {
+    "gate1:react": "node src/gate1-react.mjs",
+    "gate2:vue": "node src/gate2-vue.mjs"
+  },
+  "dependencies": {
+    "@tanstack/table-core": "8.21.3",
+    "@tanstack/react-table": "8.21.3",
+    "@tanstack/vue-table": "8.21.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "vue": "^3.5.0"
+  }
+}

@@ -211,4 +211,34 @@
 
 ### 9-4. 이 분석으로 좁혀진 것
 - Vue 난이도 = "from-scratch"가 아니라 **`useGridState` 디커플 + 하드4 composable 재작성**으로 국소화 확인.
-- 다음 실행 단위 = **PoC 스파이크 구현**(위 9-3). 통과 전까지 §2-3 ROM(5~8개월)은 미확정 예비치 유지.
+- 다음 실행 단위 = **PoC 스파이크 구현**(위 9-3). → **§10 에서 실행·통과**.
+
+---
+
+## 10. W1 ③PoC 스파이크 결과 — make-or-break 가정 실증 (2026-06-16, ✅ PASS)
+
+> 위치: `spikes/headless-vue-poc/`(워크스페이스 밖 격리, 버리는 코드). `@tanstack/table-core 8.21.3` + `@tanstack/vue-table` + `@tanstack/react-table` + `vue3` 격리 설치. **실제 실행으로 검증**(LESS-006: "보임"식 금지, node 실행).
+
+### 10-1. 게이트 판정
+| 게이트 | 검증 내용 | 결과 |
+|--------|----------|------|
+| **①** | render 함수 없는 **동일 `columnData` + table-core row model** 을 React(`useReactTable`)/Vue(`useVueTable`) 양쪽이 소비 → 정렬·필터 결과 **동일** | ✅ PASS |
+| **②(make-or-break)** | **Vue `ref` 상태 변경**(sorting/columnFilters)이 headless table-core row model 에 반영(initial→sort→filter) = **Vue 반응성 ↔ headless 상태머신 동기화** | ✅ PASS |
+
+실측 출력(양쪽 동일): `afterSort=[부산,인천,서울,광주,대구]`(매출 desc, 동률 안정정렬) · `afterFilter=[광주]`('주' 포함). 재현: `cd spikes/headless-vue-poc && node src/gate1-react.mjs && node src/gate2-vue.mjs`.
+
+### 10-2. 입증된 것 (논지 검증)
+- **데이터/행위 레이어(정렬·필터·row model)는 프레임워크 무관 = 한 곳에서 공유 가능.** 프레임워크별로 다른 건 **렌더(cell/header)뿐**임을 실증(columnData 에 render 0).
+- **Vue 반응성이 headless 상태머신과 깨끗이 동기화** — react-table 과 동일한 `get state / onChange` 옵션 패턴으로 성립. **W1 의 최대 미지수(§2-4 리스크#2) 해소.**
+- 패턴: `useVueTable({ get data, get columns, state:{get sorting(){return ref.value}}, onSortingChange })` + `effectScope`.
+
+### 10-3. 입증 안 된 것 (정직한 범위 한계 — over-claim 방지)
+- **렌더 레이어 미포팅**: cell/header 의 .tsx→.vue 변환은 별도(알려진) 작업, 본 스파이크 범위 아님.
+- **가상화 미실행**: `@tanstack/vue-virtual` 연동 미검증(슬라이스서 제외).
+- **grid-core 전체 `useGridState` 디커플·하드4(features/master/range) 미착수**: 본 슬라이스는 최소(정렬+필터)만.
+- 스파이크는 **버리는 코드**(프로덕션 아님).
+
+### 10-4. 함의
+- W1 리스크 프로필: **"feasibility 미지"→"known engineering"** 으로 전환. 핵심 아키텍처 가정이 실코드로 확인됨.
+- §2-3 ROM(5~8개월)은 **신뢰도 상승하나 여전히 ROM** — 비용 중심은 이제 (검증된 미지수가 아니라) **렌더 포팅 + 하드4 hook 재작성**의 분량.
+- **다음 단위 = W1 Phase 0 본착수**: `buildTableOptions`+상태를 실제 `@topgrid/grid-core-headless`(table-core) 패키지로 추출 → React 어댑터 재구성 ∥ Vue 어댑터. (PTLPSM 통계-그리드 형태를 Vue 어댑터 1차 마일스톤으로.)
