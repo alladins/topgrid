@@ -33,20 +33,13 @@ import type {
 import type { GridState, GridStateKey, GridStateValues, UseGridStateOptions } from './types';
 import { useControllableState } from './internal/useControllableState';
 import { useDebouncedCallback } from './internal/useDebouncedCallback';
-
-// ─── G-004: 각 state 키의 기본값 (initialState 미제공 시 fallback, EC-01) ───
-// module scope 선언으로 매 render 재생성 회피 + useCallback deps 안정성 보장.
-// 값은 G-002 useControllableState defaultValue (L122/L130/L141/L152/L163/L174/L185/L196) 와 일치.
-const DEFAULT_GRID_STATE_VALUES: GridStateValues<unknown> = {
-  sorting: [],
-  columnFilters: [],
-  rowSelection: {},
-  pagination: { pageIndex: 0, pageSize: 10 },
-  columnPinning: {},
-  columnOrder: [],
-  columnSizing: {},
-  columnVisibility: {},
-};
+// W1 Phase 0: 기본값(단일 진실원천)·reset 값 계산을 framework-agnostic headless 에서 가져온다.
+// 반응성(useControllableState/useEffect/useRef)만 React 로 남는다(by design).
+import {
+  DEFAULT_GRID_STATE_VALUES,
+  GRID_STATE_KEYS,
+  resolveResetValues,
+} from '@topgrid/grid-core-headless';
 
 /**
  * 8개 TanStack 표준 state + setter를 한 번에 반환하는 통합 훅.
@@ -149,7 +142,7 @@ export function useGridState<TData = unknown>(
   // ─── sorting ───
   const [sorting, setSorting] = useControllableState<SortingState>({
     value: options?.state?.sorting,
-    defaultValue: options?.initialState?.sorting ?? [],
+    defaultValue: options?.initialState?.sorting ?? DEFAULT_GRID_STATE_VALUES.sorting,
     onChange: (next) =>
       debouncedOnStateChange({ ...snapshotRef.current, sorting: next }, 'sorting'),
   });
@@ -157,7 +150,7 @@ export function useGridState<TData = unknown>(
   // ─── columnFilters ───
   const [columnFilters, setColumnFilters] = useControllableState<ColumnFiltersState>({
     value: options?.state?.columnFilters,
-    defaultValue: options?.initialState?.columnFilters ?? [],
+    defaultValue: options?.initialState?.columnFilters ?? DEFAULT_GRID_STATE_VALUES.columnFilters,
     onChange: (next) =>
       debouncedOnStateChange(
         { ...snapshotRef.current, columnFilters: next },
@@ -168,7 +161,7 @@ export function useGridState<TData = unknown>(
   // ─── rowSelection ───
   const [rowSelection, setRowSelection] = useControllableState<RowSelectionState>({
     value: options?.state?.rowSelection,
-    defaultValue: options?.initialState?.rowSelection ?? {},
+    defaultValue: options?.initialState?.rowSelection ?? DEFAULT_GRID_STATE_VALUES.rowSelection,
     onChange: (next) =>
       debouncedOnStateChange(
         { ...snapshotRef.current, rowSelection: next },
@@ -179,7 +172,7 @@ export function useGridState<TData = unknown>(
   // ─── pagination ───
   const [pagination, setPagination] = useControllableState<PaginationState>({
     value: options?.state?.pagination,
-    defaultValue: options?.initialState?.pagination ?? { pageIndex: 0, pageSize: 10 },
+    defaultValue: options?.initialState?.pagination ?? DEFAULT_GRID_STATE_VALUES.pagination,
     onChange: (next) =>
       debouncedOnStateChange(
         { ...snapshotRef.current, pagination: next },
@@ -190,7 +183,7 @@ export function useGridState<TData = unknown>(
   // ─── columnPinning ───
   const [columnPinning, setColumnPinning] = useControllableState<ColumnPinningState>({
     value: options?.state?.columnPinning,
-    defaultValue: options?.initialState?.columnPinning ?? {},
+    defaultValue: options?.initialState?.columnPinning ?? DEFAULT_GRID_STATE_VALUES.columnPinning,
     onChange: (next) =>
       debouncedOnStateChange(
         { ...snapshotRef.current, columnPinning: next },
@@ -201,7 +194,7 @@ export function useGridState<TData = unknown>(
   // ─── columnOrder ───
   const [columnOrder, setColumnOrder] = useControllableState<ColumnOrderState>({
     value: options?.state?.columnOrder,
-    defaultValue: options?.initialState?.columnOrder ?? [],
+    defaultValue: options?.initialState?.columnOrder ?? DEFAULT_GRID_STATE_VALUES.columnOrder,
     onChange: (next) =>
       debouncedOnStateChange(
         { ...snapshotRef.current, columnOrder: next },
@@ -212,7 +205,7 @@ export function useGridState<TData = unknown>(
   // ─── columnSizing ───
   const [columnSizing, setColumnSizing] = useControllableState<ColumnSizingState>({
     value: options?.state?.columnSizing,
-    defaultValue: options?.initialState?.columnSizing ?? {},
+    defaultValue: options?.initialState?.columnSizing ?? DEFAULT_GRID_STATE_VALUES.columnSizing,
     onChange: (next) =>
       debouncedOnStateChange(
         { ...snapshotRef.current, columnSizing: next },
@@ -223,7 +216,7 @@ export function useGridState<TData = unknown>(
   // ─── columnVisibility ───
   const [columnVisibility, setColumnVisibility] = useControllableState<VisibilityState>({
     value: options?.state?.columnVisibility,
-    defaultValue: options?.initialState?.columnVisibility ?? {},
+    defaultValue: options?.initialState?.columnVisibility ?? DEFAULT_GRID_STATE_VALUES.columnVisibility,
     onChange: (next) =>
       debouncedOnStateChange(
         { ...snapshotRef.current, columnVisibility: next },
@@ -265,79 +258,20 @@ export function useGridState<TData = unknown>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clearSelectionKey]);
 
-  // ─── G-004: resetState (AC-001, D5) ───
-  // controlled 키: useControllableState setter 가 isControlled 분기로 onChange 만 호출 (D5).
-  // uncontrolled 키: 내부 setInternalValue 호출 + onChange 발화.
-  // initialStateRef.current 는 mount 시 1회 캡처된 값 (D6).
-  const resetState = useCallback(() => {
-    const init = initialStateRef.current;
-    setSorting(init.sorting ?? DEFAULT_GRID_STATE_VALUES.sorting);
-    setColumnFilters(init.columnFilters ?? DEFAULT_GRID_STATE_VALUES.columnFilters);
-    setRowSelection(init.rowSelection ?? DEFAULT_GRID_STATE_VALUES.rowSelection);
-    setPagination(init.pagination ?? DEFAULT_GRID_STATE_VALUES.pagination);
-    setColumnPinning(init.columnPinning ?? DEFAULT_GRID_STATE_VALUES.columnPinning);
-    setColumnOrder(init.columnOrder ?? DEFAULT_GRID_STATE_VALUES.columnOrder);
-    setColumnSizing(init.columnSizing ?? DEFAULT_GRID_STATE_VALUES.columnSizing);
-    setColumnVisibility(
-      init.columnVisibility ?? DEFAULT_GRID_STATE_VALUES.columnVisibility,
-    );
-  }, [
-    setSorting,
-    setColumnFilters,
-    setRowSelection,
-    setPagination,
-    setColumnPinning,
-    setColumnOrder,
-    setColumnSizing,
-    setColumnVisibility,
-  ]);
-
-  // ─── G-004: resetSection (AC-002, D3, EC-02, EC-03) ───
-  // 단일 key 또는 배열 Union. Set 으로 dedup → 멱등 (EC-03).
-  // 알 수 없는 key 는 무시 (EC-02 런타임 방어 — TypeScript 가 compile time 차단).
-  const resetSection = useCallback(
-    (key: GridStateKey | GridStateKey[]) => {
-      const keys = [...new Set(Array.isArray(key) ? key : [key])];
-      const init = initialStateRef.current;
-      for (const k of keys) {
-        switch (k) {
-          case 'sorting':
-            setSorting(init.sorting ?? DEFAULT_GRID_STATE_VALUES.sorting);
-            break;
-          case 'columnFilters':
-            setColumnFilters(
-              init.columnFilters ?? DEFAULT_GRID_STATE_VALUES.columnFilters,
-            );
-            break;
-          case 'rowSelection':
-            setRowSelection(
-              init.rowSelection ?? DEFAULT_GRID_STATE_VALUES.rowSelection,
-            );
-            break;
-          case 'pagination':
-            setPagination(init.pagination ?? DEFAULT_GRID_STATE_VALUES.pagination);
-            break;
-          case 'columnPinning':
-            setColumnPinning(
-              init.columnPinning ?? DEFAULT_GRID_STATE_VALUES.columnPinning,
-            );
-            break;
-          case 'columnOrder':
-            setColumnOrder(init.columnOrder ?? DEFAULT_GRID_STATE_VALUES.columnOrder);
-            break;
-          case 'columnSizing':
-            setColumnSizing(
-              init.columnSizing ?? DEFAULT_GRID_STATE_VALUES.columnSizing,
-            );
-            break;
-          case 'columnVisibility':
-            setColumnVisibility(
-              init.columnVisibility ?? DEFAULT_GRID_STATE_VALUES.columnVisibility,
-            );
-            break;
-          // default: 알 수 없는 key 는 no-op (EC-02 런타임 방어)
-        }
-      }
+  // ─── G-004: reset 디스패치 (W1 Phase 0) ───
+  // 복원 '값 계산'은 framework-agnostic headless `resolveResetValues`(순수, node 특성화됨)에 위임.
+  // 여기선 계산된 값 맵을 React setter 로 디스패치만 한다(반응성=프레임워크별, by design).
+  // controlled 키: setter 가 isControlled 분기로 onChange 만 호출 (D5).
+  const applyReset = useCallback(
+    (vals: Partial<GridStateValues<TData>>) => {
+      if (vals.sorting !== undefined) setSorting(vals.sorting);
+      if (vals.columnFilters !== undefined) setColumnFilters(vals.columnFilters);
+      if (vals.rowSelection !== undefined) setRowSelection(vals.rowSelection);
+      if (vals.pagination !== undefined) setPagination(vals.pagination);
+      if (vals.columnPinning !== undefined) setColumnPinning(vals.columnPinning);
+      if (vals.columnOrder !== undefined) setColumnOrder(vals.columnOrder);
+      if (vals.columnSizing !== undefined) setColumnSizing(vals.columnSizing);
+      if (vals.columnVisibility !== undefined) setColumnVisibility(vals.columnVisibility);
     },
     [
       setSorting,
@@ -349,6 +283,24 @@ export function useGridState<TData = unknown>(
       setColumnSizing,
       setColumnVisibility,
     ],
+  );
+
+  // resetState (AC-001): 전체 8 key 를 initial(없으면 DEFAULT)로 복원.
+  const resetState = useCallback(() => {
+    applyReset(resolveResetValues<TData>(GRID_STATE_KEYS, initialStateRef.current));
+  }, [applyReset]);
+
+  // resetSection (AC-002): 단일/배열 key 부분 복원. Set dedup·unknown-key no-op 은 resolveResetValues 내부.
+  const resetSection = useCallback(
+    (key: GridStateKey | GridStateKey[]) => {
+      applyReset(
+        resolveResetValues<TData>(
+          Array.isArray(key) ? key : [key],
+          initialStateRef.current,
+        ),
+      );
+    },
+    [applyReset],
   );
 
   return {

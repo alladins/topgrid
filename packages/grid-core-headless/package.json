@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/buildTableOptions.test.ts"
+    "test": "node --experimental-strip-types src/buildTableOptions.test.ts && node --experimental-strip-types src/gridState.test.ts"
   },
   "devDependencies": {
     "@tanstack/table-core": "8.21.3"

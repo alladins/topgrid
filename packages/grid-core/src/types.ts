@@ -1016,24 +1016,10 @@ export interface BaseGridProps<TData> {
  * @see useGridState
  * @see G-002-spec.md Section 2.1
  */
-export interface GridStateValues<_TData = unknown> {
-  /** 정렬 state (TanStack `SortingState`). */
-  sorting: SortingState;
-  /** 컬럼 필터 state (TanStack `ColumnFiltersState`). */
-  columnFilters: ColumnFiltersState;
-  /** 행 선택 state (TanStack `RowSelectionState`). */
-  rowSelection: RowSelectionState;
-  /** 페이지네이션 state (TanStack `PaginationState`). */
-  pagination: PaginationState;
-  /** 컬럼 핀 state (TanStack `ColumnPinningState`). */
-  columnPinning: ColumnPinningState;
-  /** 컬럼 순서 state (TanStack `ColumnOrderState`). */
-  columnOrder: ColumnOrderState;
-  /** 컬럼 너비 state (TanStack `ColumnSizingState`). */
-  columnSizing: ColumnSizingState;
-  /** 컬럼 표시 state (TanStack `VisibilityState`). */
-  columnVisibility: VisibilityState;
-}
+// W1 Phase 0: GridStateValues / GridStateKey 정의는 framework-agnostic @topgrid/grid-core-headless 로 이관.
+// types.ts 내부 사용 위해 import + 기존 소비처(모두 './types' 경유)·facade 보존 위해 re-export.
+import type { GridStateKey, GridStateValues } from '@topgrid/grid-core-headless';
+export type { GridStateKey, GridStateValues };
 
 /**
  * `useGridState`의 8개 state key union.
@@ -1042,15 +1028,7 @@ export interface GridStateValues<_TData = unknown> {
  * @see UseGridStateOptions
  * @see G-002-spec.md Section 2.1
  */
-export type GridStateKey =
-  | 'sorting'
-  | 'columnFilters'
-  | 'rowSelection'
-  | 'pagination'
-  | 'columnPinning'
-  | 'columnOrder'
-  | 'columnSizing'
-  | 'columnVisibility';
+// (GridStateKey 는 위에서 GridStateValues 와 함께 @topgrid/grid-core-headless 로부터 import + re-export 됨.)
 
 /**
  * `useGridState<TData>(options?)` 의 파라미터 타입.

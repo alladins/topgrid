@@ -262,6 +262,11 @@
 - ★**fork 없음**: 원본 매핑 로직은 headless 로 *이동*(복사 아님), grid-core 는 위임만. 단일 진실원천.
 
 ### 11-3. 남은 것 (다음 증분)
-- **`useGridState` 디커플**(React 상태머신 → 순수 reducer + 프레임워크별 바인딩) = 다음 하드 증분.
 - 하드4(features/master/range)·렌더 레이어(.tsx→.vue)·Vue 어댑터 신규.
 - ★**발행 함의**(user gate): grid-core 가 이제 `@topgrid/grid-core-headless` 런타임 의존 → 발행 시 headless 선발행 + exact-pin lockstep([[npm-publish-topgrid]]). 발행은 미실행(사용자 게이트).
+
+### 11-4. useGridState 디커플 2차 증분 (2026-06-17, ✅ 완료·검증)
+> ★**정직 범위**: 반응성(useState/ref)은 추출 *안 함*=프레임워크별 by design. headless 로 옮긴 건 **state 형상 계약 + 기본값(단일 진실원천) + reset 값 계산(순수)** 뿐. "useGridState 디커플"이 아니라 "state-shape/reset 로직 추출".
+- **headless 추가**(`gridState.ts`): `GridStateValues`/`GridStateKey` 타입 + `GRID_STATE_KEYS` + `DEFAULT_GRID_STATE_VALUES`(단일 진실원천) + 순수 `resolveResetValues(keys,initialState)`(Set dedup·unknown no-op·`initial??DEFAULT`). node **resolveResetValues 7 passed**(deep-equal, plain data).
+- **grid-core 재배선**: `types.ts` 가 `GridStateValues`/`GridStateKey` 를 headless 에서 import+re-export(소비처 8파일 모두 `'./types'` 경유 → 무수정). `useGridState.ts`: 로컬 DEFAULT 상수 제거→headless import, **inline 초기값 8곳도 공유 상수 경유**(초기·reset 기본값 단일화=advisor (a)), resetState 8줄+resetSection switch 중복 → `resolveResetValues`+`applyReset`(setter 디스패치만 React) 로 dedupe.
+- 검증: grid-core typecheck 0 / `pnpm build` 전패키지 green / `pnpm -r test` EXIT0(headless 27+7) / **chromium 122 green**(121 pass+1 retry-흡수 flake=기존 master-detail-virt react-virtual 타이밍, 본 변경 무관). ★fork 없음.
