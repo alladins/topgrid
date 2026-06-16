@@ -223,9 +223,11 @@
 | 게이트 | 검증 내용 | 결과 |
 |--------|----------|------|
 | **①** | render 함수 없는 **동일 `columnData` + table-core row model** 을 React(`useReactTable`)/Vue(`useVueTable`) 양쪽이 소비 → 정렬·필터 결과 **동일** | ✅ PASS |
-| **②(make-or-break)** | **Vue `ref` 상태 변경**(sorting/columnFilters)이 headless table-core row model 에 반영(initial→sort→filter) = **Vue 반응성 ↔ headless 상태머신 동기화** | ✅ PASS |
+| **②(make-or-break)** | **`table.setSorting()/setColumnFilters()`**(테이블 API → onChange→ref 라운드트립) 변경 시, **`watchEffect` 로 구독한 row model 이 재실행(effectRuns 1→2)되어 갱신** = Vue 반응성 ↔ headless 상태머신 **반응형** 동기화 | ✅ PASS |
 
-실측 출력(양쪽 동일): `afterSort=[부산,인천,서울,광주,대구]`(매출 desc, 동률 안정정렬) · `afterFilter=[광주]`('주' 포함). 재현: `cd spikes/headless-vue-poc && node src/gate1-react.mjs && node src/gate2-vue.mjs`.
+실측(양쪽 동일): `afterSort=[부산,인천,서울,광주,대구]`(매출 desc, 동률 안정정렬) · `afterFilter=[광주]`. 게이트② `effectRuns 1→2`(반응형 재실행 입증). 재현: `cd spikes/headless-vue-poc && node src/gate1-react.mjs && node src/gate2-vue.mjs`.
+
+★**정직 기록(게이트② 강화 경위, advisor 적발)**: 최초 게이트②는 ref 변경 *직후 동기적으로* `getRowModel()` 을 읽었는데 — 이는 table-core **메모이제이션+게터**만 검증한 것이지 Vue 반응성이 아니었음(판별: `ref`→plain object 로 바꿔도 통과, `gate2-discriminator.mjs` 가 ⚠️로 실증). → **watchEffect 구독 + `table.setSorting()` 라운드트립 + `nextTick`** 으로 정정해 *진짜* 반응성(effect 재실행)을 검증. over-claim 직전 시정.
 
 ### 10-2. 입증된 것 (논지 검증)
 - **데이터/행위 레이어(정렬·필터·row model)는 프레임워크 무관 = 한 곳에서 공유 가능.** 프레임워크별로 다른 건 **렌더(cell/header)뿐**임을 실증(columnData 에 render 0).
