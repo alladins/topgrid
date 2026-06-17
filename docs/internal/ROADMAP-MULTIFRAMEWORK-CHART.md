@@ -270,7 +270,46 @@
 - **headless `filter.ts`**: `textFilterFn`/`numberFilterFn`/`dateRangeFilterFn`/`selectFilterFn` + 순수 값/연산자 타입(TextFilterValue·NumberFilterValue·DateFilterValue·*Operator) 이관. import react-table→table-core. **date-fns 의존 추가**(dateRangeFilterFn). node **filterFns 13 characterization**.
 - **grid-features 재배선**: `filter-ui/filterFns.ts`→headless re-export shim; `filter-ui/types.ts`→순수 5타입 headless import+re-export(React prop 타입은 잔류, ★혼합 types 파일 분리); package.json headless peer+devDep. ★cross-package 소비자 **grid-pro-filter**(패키지 루트 경유)=무수정 typecheck green.
 - 검증: grid-features+grid-pro-filter typecheck 0 / `pnpm build` 전패키지 green / `pnpm -r test` EXIT0(headless 13) / **chromium 122 green**(121+1 retry-흡수 flake=기존 master-detail-virt, 무관). ★fork 없음.
-- 다음(옵션1 잔여): grid-features 잔여 순수 코어(buildConditionalFormat·multi-sort·column-drag reorder) → 그 후 **master/range**(advisor 체크백 fork=더 무겁고 다른 coupling 가능).
+- ★**grid-features 헤드리스 표면 소진 확정**(advisor): filterFns 외 잔여는 추출 부적합 — buildConditionalFormat=grid-core 콜백 글루(framework-neutral 아님), useMultiSort=marginal 40줄 헬퍼(Grid 미사용, defer), column-drag=이미 grid-core 이전됨.
+
+#### 증분 1b: grid-pro-range 순수 코어 추출 (2026-06-17, ✅ 122 green, 0 flaky)
+- master/range 스카우트(purity+consumer grep) 결과: **grid-pro-range 에 real pure core 존재**(advisor 예측 적중=range math). headless `range.ts`=normalizeRange·isInRange·detectSeriesStep·fillRange·stringifyTsv·parseTsv + 순수 타입(CellCoord·CellRange·CellUpdate·FillDirection). node **10 characterization**(역방향 정규화·등차 fill·비수치 modulo[기존 동작 보존, 내 기대 교정]·TSV RFC4180 roundtrip).
+- grid-pro-range 재배선: internal/normalize·fillRange·tsvUtils→re-export shim, types.ts→4타입 import+re-export(React hook 잔류), headless dep. ★cross-package 소비자 **없음**(전부 내부). 검증: typecheck 0/build green/node EXIT0/chromium 122 green(grid-pro-range reuse 테스트 포함). fork 없음.
+- ★**옵션1 disposition(advisor discriminating outcome)**: 의미있는 헤드리스 추출 코어 = **filterFns(1a) + range math(1b) 로 사실상 소진**. 잔여 grid-pro-master 순수=clipboard/makeExportItem(소형, grid-export 글루). **master/range 의 bulk(master 41 hooks·range 73 hooks=selection rect·drag·master-detail 조정)는 inherently React interaction → Vue 용으로 *재작성*(추출 아님)=옵션2형 작업.** → 다음은 grid-pro-master 소형 순수(선택) 후 **옵션2(grid-vue 기능확대/master·range Vue 컴포넌트)로 전환이 자연스러움**(사용자 결정: 옵션1 더 짜낼지 vs 옵션2 진입).
+
+### 11-6b. 옵션1 마무리 — 증분 1c: clipboard 추출 (2026-06-17, ✅ 122 green)
+- headless `clipboard.ts`=`cellValueToClipboardText`(null/object/primitive 매핑) 이관, node 7. grid-pro-master internal/clipboard.ts→re-export shim. ★`makeExportItem`=grid-export+ContextMenuItem 글루→**추출 안 함**(disposition). 검증: typecheck0/build/node/chromium 122 green 0 flaky.
+- ★**옵션1 추출 표면 완전 소진**: filterFns(1a)+range math(1b)+clipboard(1c). master/range bulk=React interaction→옵션2형.
+
+### 11-7. 옵션2 — grid-vue 기능 확대: 필터 (2026-06-17, ✅ 1→2 시너지 실현)
+> 사용자 "둘 다 진행"(옵션1 마무리 + 옵션2 진입).
+- grid-vue `<Grid>` `enableFilter` prop + 필터 입력행. 입력→`column.setFilterValue`→onColumnFiltersChange→ref→getFilteredRowModel 재계산→DOM 행 live 필터. 컬럼 `filterFn` 으로 **★옵션1(1a) 추출 headless `textFilterFn` 을 Vue 가 그대로 소비** = 1→2 시너지 실증. index 에서 headless filterFns/range/clipboard 재export(Vue 편의).
+- 검증(live DOM, SSR 아님): mount + 필터 input '부' → 3행→1행(부산) live. grid-vue node **9 passed**(정렬 클릭+selection 시임+필터). typecheck0(★setup-happydom=테스트인프라 tsc 제외, happy-dom NodeJS 타입 회피)/build/`pnpm -r test` green.
+- ★범위: text 필터만.
+
+#### 옵션2 — grid-vue 범위 선택 (2026-06-17, ✅ 1b→2 시너지)
+- grid-vue `enableRangeSelection` prop: 클릭=앵커, shift+클릭=범위 확장. 선택 셀=★1b 추출 headless `normalizeRange`/`isInRange` 로 data-selected 표시(반응형). **filterFns(1a→2)+range math(1b→2) 둘 다 Vue 가 소비** = headless 추출↔소비 양방향 완결.
+- 검증(live DOM): mount + 클릭(0,0)+shift(1,1) → 4셀 live 선택. grid-vue node **10 passed**(정렬+selection 시임+필터+범위선택). 커밋 `ec1124a`.
+- ★범위: 클릭 범위선택만.
+
+#### 옵션2 — grid-vue 드래그-fill (2026-06-17, ✅ 1b 순수 코어 전부 활용)
+- grid-vue 가 headless `fillRange` 를 호출: 범위 선택 후 fill 핸들 mousedown → 아래 대상 셀 클릭 → fillRange 등차/순환 계산 → 변경가능 데이터 복사본 적용. **filterFns(1a) + normalizeRange/isInRange + fillRange(1b) 전부 grid-vue 가 가져다 씀** = 추출한 headless 순수 코어 완전 활용.
+- ★통합 발견: vue-table `getRowModel` 은 data **참조** 기준 메모 → 배열 인덱스 in-place 할당은 재계산 안 됨 → **새 배열로 교체(참조 변경)** 해야 재렌더.
+- 검증(live DOM): 선택 [10,20] → 핸들 mousedown → 대상 클릭 → rows 30,40(등차) live. grid-vue node **12 passed**. 커밋 `89c1621`.
+- ★용어: "소비(consume)" 대신 "호출/가져다 씀/사용"(사용자 피드백 [[communication-precise-terms]]).
+
+#### 옵션2 — grid-vue pagination (2026-06-17, ✅, 커밋 5607cb9)
+- grid-vue `enablePagination`+`pageSize`. headless `buildTableOptions` 가 enablePagination 시 getPaginationRowModel 배선→`table.getRowModel()`=현재 페이지만. 이전/다음 버튼=table API. 검증(live): pageSize 2+5행→page0[1,2], 다음→page1[3,4], 1/3→2/3. grid-vue node **16 passed**.
+
+### 11-8. 옵션3 — React 어댑터 headless 정렬: disposition (2026-06-17, ✅ 이미 정렬됨)
+> advisor: 옵션3 = "React 어댑터가 공유 headless 코어 위에 있나?" → **이미 완료·검증됨**, 24-모듈 백로그 아님. 판정 테스트="현재 비-React 소비자가 실제로 그 모듈을 호출하나?" — grid-vue pagination 은 getPaginationRowModel 만 쓰고 clampGoToPage/computeAutoPageSize 는 안 씀=소비자 0 → 추출=YAGNI(1a/1b/1c 는 Vue 기능이 실제로 쓸 때만 옮겼음).
+- **확인됨**: grid-core·grid-features·grid-pro-range·grid-pro-master 전부 `@topgrid/grid-core-headless` 의존 선언; shim(filterFns·normalize·fillRange·tsvUtils·clipboard) 로컬 정의 0=순수 re-export; grid-core buildTableOptions=13줄 thin 어댑터(중복 아님). React 코어 흐름(buildTableOptions·useGridState defaults/reset·filterFns/range/clipboard)이 headless 경유, **chromium 122 green = React 어댑터가 공유 코어 위에서 동작 증명**.
+- **grid-core 잔여 ~24 순수 모듈**(moveRow·sortNulls·viewStateEnvelope·transaction·applyRowDraft·computeColumnWindow·clampGoToPage 등)=**fork 아님**(grid-vue 가 그 기능 없어 중복 0). **extract-on-demand**(Vue 기능이 필요로 할 때 1a/1b/1c 패턴으로 이관). 지금 24개 추출=소비자 없는 투기적 작업(거부).
+- ★(b) 커널(사용자 결정 사항, 자율 진행 금지): "headless=완전한 framework-agnostic 단일 진실원천" 을 제품 목표로 삼으면 24개가 결국 이관되나, 비용(24 shim+lockstep 재발행) 보고 사용자가 명시 결정.
+
+### ★★ 마일스톤: 옵션 1·2·3 실질 완료 (2026-06-17) ★★
+> 동일 headless 코어가 **React(grid-core, chromium 122 green) + Vue(grid-vue, sort/select/filter/range/fill/pagination, node 16 live)** 양쪽 구동. Phase 0 가설(framework-agnostic 코어 공유) 실코드 완전 입증.
+> **남은 것 = "마무리"가 아니라 신규 大워크스트림**: (1) Vue master/detail+range **완전 컴포넌트**(옵션2형, 대형) (2) **W2 엔터프라이즈 차트**(ECharts/AG Charts integrate, 미착수) (3) **발행 게이트**(★`@topgrid/grid-core-headless`+`grid-vue` npm 미발행 → PTLPSM 등 아무도 못 씀, user-gated). → 사용자 결정 사항.
 
 ### 11-5. Vue 어댑터 스켈레톤 3차 증분 (2026-06-17, ✅ 완료·검증)
 > ★범위(정직): "minimal Vue 어댑터가 **실제** headless 코어 소비; 정렬-via-클릭을 mounted DOM 에서 입증; selection 주입 시임 동작. 프로덕션 완성 아님 — filter/pin/virt/pagination/editing·하드4 미포함."
