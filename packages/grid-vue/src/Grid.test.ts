@@ -80,4 +80,20 @@ console.log('[grid-vue] filter before/after rows:', beforeFilter, '→', afterFi
 ok(beforeFilter === data.length, `필터 전 ${data.length}행`);
 ok(afterFilter === 1 && afterRegions[0] === '부산', "★'부' 입력→headless textFilterFn 으로 DOM 행 1개(부산) live 필터");
 
-console.log(`\n✅ grid-vue: ${pass} passed, 0 failed — 정렬 클릭(live)+selection 시임+필터(headless filterFn live)`);
+// ★옵션2: 범위 선택 — headless range math(1b 추출분: normalizeRange/isInRange)를 Vue 가 소비.
+// 클릭(0,0)+shift클릭(1,1)→정규화 범위 (0,0)-(1,1)=4셀 data-selected (live DOM).
+const c4 = document.createElement('div');
+document.body.appendChild(c4);
+createApp(Grid, { data, columns, enableRangeSelection: true }).mount(c4);
+await nextTick();
+const cellAt = (r: number, ci: number) =>
+  c4.querySelector(`tbody td[data-row-index="${r}"][data-col-index="${ci}"]`) as HTMLElement;
+cellAt(0, 0).dispatchEvent(new MouseEvent('click', { bubbles: true })); // 앵커
+await nextTick();
+cellAt(1, 1).dispatchEvent(new MouseEvent('click', { bubbles: true, shiftKey: true })); // 범위 확장
+await nextTick();
+const selectedCount = c4.querySelectorAll('tbody td[data-selected]').length;
+console.log('[grid-vue] range select cells:', selectedCount);
+ok(selectedCount === 4, "★(0,0)+shift(1,1)→headless normalizeRange/isInRange 로 4셀 live 선택");
+
+console.log(`\n✅ grid-vue: ${pass} passed, 0 failed — 정렬(live)+selection 시임+필터(headless filterFn)+범위선택(headless range math)`);

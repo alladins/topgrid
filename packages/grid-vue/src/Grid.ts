@@ -15,6 +15,10 @@ import {
 import type { ColumnDef } from '@tanstack/table-core';
 import {
   buildTableOptions,
+  isInRange,
+  normalizeRange,
+  type CellCoord,
+  type CellRange,
   type GridStateBag,
   type RowSelectionMode,
   type TableOptionsInput,
@@ -30,6 +34,7 @@ export const Grid = defineComponent({
     columns: { type: Array as PropType<ColumnDef<Row, unknown>[]>, required: true },
     enableSort: { type: Boolean, default: false },
     enableFilter: { type: Boolean, default: false },
+    enableRangeSelection: { type: Boolean, default: false },
     rowSelection: { type: String as PropType<RowSelectionMode>, default: 'none' },
   },
   setup(props) {
@@ -95,6 +100,20 @@ export const Grid = defineComponent({
       },
     });
 
+    // ★옵션2: 범위 선택 — headless range math(normalizeRange/isInRange) 소비(1b→2 시너지).
+    // 클릭=앵커, shift+클릭=범위 확장. 선택 셀은 isInRange 로 data-selected 표시(반응형).
+    const selection = ref<CellRange | null>(null);
+    const anchor = ref<CellCoord | null>(null);
+    const selectCell = (r: number, c: number, shift: boolean) => {
+      const coord: CellCoord = { row: r, col: c };
+      if (shift && anchor.value) {
+        selection.value = normalizeRange({ start: anchor.value, end: coord });
+      } else {
+        anchor.value = coord;
+        selection.value = { start: coord, end: coord };
+      }
+    };
+
     return () =>
       h('table', { 'data-topgrid-vue': '' }, [
         h('thead', [
@@ -155,13 +174,28 @@ export const Grid = defineComponent({
             h(
               'tr',
               { 'data-row-id': row.id },
-              row.getVisibleCells().map((cell) => {
+              row.getVisibleCells().map((cell, ci) => {
                 const cdef = cell.column.columnDef.cell;
-                return h('td', { 'data-col': cell.column.id }, [
-                  cdef
-                    ? h(FlexRender, { render: cdef, props: cell.getContext() })
-                    : String(cell.getValue() ?? ''),
-                ]);
+                const selected =
+                  props.enableRangeSelection && isInRange(row.index, ci, selection.value);
+                return h(
+                  'td',
+                  {
+                    'data-col': cell.column.id,
+                    'data-row-index': row.index,
+                    'data-col-index': ci,
+                    'data-selected': selected ? '' : undefined,
+                    style: selected ? 'background:#dbeafe' : undefined,
+                    onClick: props.enableRangeSelection
+                      ? (e: MouseEvent) => selectCell(row.index, ci, e.shiftKey)
+                      : undefined,
+                  },
+                  [
+                    cdef
+                      ? h(FlexRender, { render: cdef, props: cell.getContext() })
+                      : String(cell.getValue() ?? ''),
+                  ],
+                );
               }),
             ),
           ),
