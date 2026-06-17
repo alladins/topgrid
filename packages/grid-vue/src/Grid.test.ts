@@ -122,4 +122,25 @@ const filled = [fcell(2).textContent?.trim(), fcell(3).textContent?.trim()];
 console.log('[grid-vue] drag-fill rows 2,3:', filled);
 ok(filled[0] === '30' && filled[1] === '40', '★드래그-fill: headless fillRange 로 등차 30,40 채움(live)');
 
-console.log(`\n✅ grid-vue: ${pass} passed, 0 failed — 정렬+selection+필터+범위선택+드래그fill(headless fillRange) 전부 live`);
+// ★옵션2 pagination — headless buildTableOptions 의 getPaginationRowModel 배선을 가져다 씀.
+// pageSize 2 + 5행 → 페이지당 2행, 다음 버튼 클릭 → 다른 페이지 행(live DOM).
+const c6 = document.createElement('div');
+document.body.appendChild(c6);
+const pgData = [{ n: 1 }, { n: 2 }, { n: 3 }, { n: 4 }, { n: 5 }];
+const pgCols = [{ id: 'n', accessorKey: 'n', header: 'N' }];
+createApp(Grid, { data: pgData, columns: pgCols, enablePagination: true, pageSize: 2 }).mount(c6);
+await nextTick();
+const pgRows = () => c6.querySelectorAll('tbody tr').length;
+const pageInfo = () => c6.querySelector('[data-page-info]')?.textContent;
+const pgVals = () => [...c6.querySelectorAll('tbody td[data-col="n"]')].map((td) => td.textContent);
+ok(pgRows() === 2, `page0: pageSize 2 → 2행(실제 ${pgRows()})`);
+ok(pageInfo() === '1 / 3', `page info 1/3(실제 ${pageInfo()})`);
+const page0 = pgVals();
+(c6.querySelector('[data-page-next]') as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true }));
+await nextTick();
+const page1 = pgVals();
+console.log('[grid-vue] pagination page0→page1:', page0, '→', page1, pageInfo());
+ok(pageInfo() === '2 / 3', '다음 클릭 → page info 2/3');
+ok(page1[0] === '3' && page1[1] === '4', '★다음→page1 행(3,4) live(headless pagination row model)');
+
+console.log(`\n✅ grid-vue: ${pass} passed, 0 failed — 정렬+selection+필터+범위선택+드래그fill+pagination 전부 live(headless 코어)`);

@@ -36,6 +36,8 @@ export const Grid = defineComponent({
     enableSort: { type: Boolean, default: false },
     enableFilter: { type: Boolean, default: false },
     enableRangeSelection: { type: Boolean, default: false },
+    enablePagination: { type: Boolean, default: false },
+    pageSize: { type: Number, default: 10 },
     rowSelection: { type: String as PropType<RowSelectionMode>, default: 'none' },
   },
   setup(props) {
@@ -43,7 +45,7 @@ export const Grid = defineComponent({
     const sorting = ref<GridStateBag['sorting']>([]);
     const columnFilters = ref<GridStateBag['columnFilters']>([]);
     const rowSelection = ref<GridStateBag['rowSelection']>({});
-    const pagination = ref<GridStateBag['pagination']>({ pageIndex: 0, pageSize: 10 });
+    const pagination = ref<GridStateBag['pagination']>({ pageIndex: 0, pageSize: props.pageSize });
     const columnPinning = ref<GridStateBag['columnPinning']>({});
     const columnSizing = ref<GridStateBag['columnSizing']>({});
     const expanded = ref<GridStateBag['expanded']>({});
@@ -146,8 +148,8 @@ export const Grid = defineComponent({
       fillingFrom.value = null;
     };
 
-    return () =>
-      h('table', { 'data-topgrid-vue': '' }, [
+    return () => {
+      const tableEl = h('table', { 'data-topgrid-vue': '' }, [
         h('thead', [
           ...table.getHeaderGroups().map((hg) =>
             h(
@@ -253,5 +255,34 @@ export const Grid = defineComponent({
           ),
         ),
       ]);
+      if (!props.enablePagination) return tableEl;
+      // ★옵션2 pagination: headless buildTableOptions 가 enablePagination 시 getPaginationRowModel 배선.
+      // 버튼은 table API(previousPage/nextPage) 호출 → onPaginationChange → ref → 현재 페이지만 렌더.
+      const ps = table.getState().pagination;
+      return h('div', [
+        tableEl,
+        h('div', { 'data-pagination': '' }, [
+          h(
+            'button',
+            {
+              'data-page-prev': '',
+              disabled: !table.getCanPreviousPage(),
+              onClick: () => table.previousPage(),
+            },
+            '이전',
+          ),
+          h('span', { 'data-page-info': '' }, `${ps.pageIndex + 1} / ${table.getPageCount()}`),
+          h(
+            'button',
+            {
+              'data-page-next': '',
+              disabled: !table.getCanNextPage(),
+              onClick: () => table.nextPage(),
+            },
+            '다음',
+          ),
+        ]),
+      ]);
+    };
   },
 });
