@@ -24,6 +24,18 @@ export {
   type NumberFilterValue,
   type DateFilterValue,
 } from './filter';
+export {
+  normalizeRange,
+  isInRange,
+  detectSeriesStep,
+  fillRange,
+  stringifyTsv,
+  parseTsv,
+  type CellCoord,
+  type CellRange,
+  type CellUpdate,
+  type FillDirection,
+} from './range';
 export type {
   BuildOptionsResult,
   CreateSelectionColumn,

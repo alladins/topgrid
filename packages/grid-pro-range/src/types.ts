@@ -10,21 +10,12 @@
  */
 import type { ColumnDef } from '@tanstack/react-table';
 import type { RefObject } from 'react';
+// W1 Phase 0: 순수 범위 타입(CellCoord/CellRange/CellUpdate/FillDirection)은
+// @topgrid/grid-core-headless 로 이관. 내부 prop 타입 사용(import) + 소비처 보존(re-export).
+import type { CellCoord, CellRange, CellUpdate, FillDirection } from '@topgrid/grid-core-headless';
+export type { CellCoord, CellRange, CellUpdate, FillDirection };
 
-/** 2D 셀 좌표 (0-based, row/col index). */
-export interface CellCoord {
-  row: number;
-  col: number;
-}
-
-/**
- * 직사각형 셀 범위.
- * start/end는 정규화 전 임의 방향 허용 — normalizeRange로 정규화.
- */
-export interface CellRange {
-  start: CellCoord;
-  end: CellCoord;
-}
+// (CellRange 는 상단 @topgrid/grid-core-headless import+re-export.)
 
 /**
  * RangeSelectGrid props (L0 backward-compat 포함 — AC-010).
@@ -43,18 +34,9 @@ export interface RangeSelectGridProps<TData extends object> {
 
 // ── G-003: Drag-fill types ────────────────────────────────────────────────────
 
-/** 채우기 방향 (Excel 4방향, D5). */
-export type FillDirection = 'up' | 'down' | 'left' | 'right';
+// (FillDirection 은 상단 @topgrid/grid-core-headless import+re-export.)
 
-/**
- * 단일 셀 업데이트 단위.
- * 제네릭 <TCell>으로 any 미사용 (AC-001, AC-002).
- */
-export interface CellUpdate<TCell = unknown> {
-  row: number;
-  col: number;
-  value: TCell;
-}
+// (CellUpdate 는 상단 @topgrid/grid-core-headless import+re-export.)
 
 /**
  * DragFillHandle 컴포넌트 Props (AC-003).

@@ -27,6 +27,7 @@
     "test": "echo TODO"
   },
   "dependencies": {
+    "@topgrid/grid-core-headless": "workspace:*",
     "@topgrid/grid-license": "workspace:*"
   },
   "devDependencies": {

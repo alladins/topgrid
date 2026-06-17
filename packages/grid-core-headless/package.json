@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/buildTableOptions.test.ts && node --experimental-strip-types src/gridState.test.ts && node --experimental-strip-types src/filter.test.ts"
+    "test": "node --experimental-strip-types src/buildTableOptions.test.ts && node --experimental-strip-types src/gridState.test.ts && node --experimental-strip-types src/filter.test.ts && node --experimental-strip-types src/range.test.ts"
   },
   "dependencies": {
     "date-fns": "^4.1.0"
