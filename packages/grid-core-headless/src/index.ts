@@ -36,6 +36,7 @@ export {
   type CellUpdate,
   type FillDirection,
 } from './range';
+export { cellValueToClipboardText } from './clipboard';
 export type {
   BuildOptionsResult,
   CreateSelectionColumn,

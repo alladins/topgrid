@@ -27,6 +27,7 @@
     "test": "node --experimental-strip-types src/internal/clipboard.test.ts && node --experimental-strip-types src/internal/makeExportItem.test.ts"
   },
   "dependencies": {
+    "@topgrid/grid-core-headless": "workspace:*",
     "@topgrid/grid-export": "workspace:*",
     "@topgrid/grid-license": "workspace:*"
   },
