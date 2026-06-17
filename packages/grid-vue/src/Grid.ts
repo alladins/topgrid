@@ -29,6 +29,7 @@ export const Grid = defineComponent({
     data: { type: Array as PropType<Row[]>, required: true },
     columns: { type: Array as PropType<ColumnDef<Row, unknown>[]>, required: true },
     enableSort: { type: Boolean, default: false },
+    enableFilter: { type: Boolean, default: false },
     rowSelection: { type: String as PropType<RowSelectionMode>, default: 'none' },
   },
   setup(props) {
@@ -96,9 +97,8 @@ export const Grid = defineComponent({
 
     return () =>
       h('table', { 'data-topgrid-vue': '' }, [
-        h(
-          'thead',
-          table.getHeaderGroups().map((hg) =>
+        h('thead', [
+          ...table.getHeaderGroups().map((hg) =>
             h(
               'tr',
               hg.headers.map((header) => {
@@ -121,7 +121,34 @@ export const Grid = defineComponent({
               }),
             ),
           ),
-        ),
+          // ★옵션2: 필터 입력행 — headless textFilterFn(column.filterFn) 을 소비. 입력→setFilterValue→
+          // onColumnFiltersChange→ref→getFilteredRowModel 재계산→행 필터(live 반응성).
+          props.enableFilter
+            ? h(
+                'tr',
+                { 'data-filter-row': '' },
+                table.getHeaderGroups()[0]!.headers.map((header) =>
+                  h(
+                    'th',
+                    {},
+                    header.column.getCanFilter()
+                      ? [
+                          h('input', {
+                            'data-filter-col': header.column.id,
+                            onInput: (e: Event) => {
+                              const v = (e.target as HTMLInputElement).value;
+                              header.column.setFilterValue(
+                                v ? { operator: 'contains', value: v } : undefined,
+                              );
+                            },
+                          }),
+                        ]
+                      : [],
+                  ),
+                ),
+              )
+            : null,
+        ]),
         h(
           'tbody',
           table.getRowModel().rows.map((row) =>

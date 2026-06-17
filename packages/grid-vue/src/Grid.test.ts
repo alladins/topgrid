@@ -4,7 +4,7 @@
 import './setup-happydom.ts'; // ★vue import 보다 먼저 — DOM 글로벌 등록 후 Vue runtime-dom 평가
 import assert from 'node:assert/strict';
 import { createApp, nextTick } from 'vue';
-import { Grid } from '../dist/index.mjs';
+import { Grid, textFilterFn } from '../dist/index.mjs';
 
 const data = [
   { region: '서울', sales: 320 },
@@ -56,4 +56,28 @@ await nextTick();
 const selBoxes = c2.querySelectorAll('td[data-col="__select__"] input[type="checkbox"]');
 ok(selBoxes.length === data.length, `selection 주입 시임: 행마다 체크박스(${selBoxes.length}=${data.length})`);
 
-console.log(`\n✅ grid-vue: ${pass} passed, 0 failed — 헤더 클릭→DOM 행 재정렬(live) + selection 주입 시임`);
+// ★옵션2: 필터 — headless textFilterFn(1a 추출분)을 Vue 가 소비. 입력→DOM 행 live 필터.
+const c3 = document.createElement('div');
+document.body.appendChild(c3);
+const filterCols = [
+  { id: 'region', accessorKey: 'region', header: '지역', filterFn: textFilterFn },
+  { id: 'sales', accessorKey: 'sales', header: '매출' },
+];
+createApp(Grid, { data, columns: filterCols, enableFilter: true }).mount(c3);
+await nextTick();
+const rowCount = () => c3.querySelectorAll('tbody tr').length;
+const beforeFilter = rowCount();
+const regionFilterInput = c3.querySelector(
+  'thead tr[data-filter-row] th input[data-filter-col="region"]',
+) as HTMLInputElement;
+ok(!!regionFilterInput, '필터 입력행에 region 필터 input 렌더');
+regionFilterInput.value = '부'; // '부산' 만 매치
+regionFilterInput.dispatchEvent(new Event('input', { bubbles: true }));
+await nextTick();
+const afterFilter = rowCount();
+const afterRegions = [...c3.querySelectorAll('tbody tr td[data-col="region"]')].map((td) => td.textContent);
+console.log('[grid-vue] filter before/after rows:', beforeFilter, '→', afterFilter, afterRegions);
+ok(beforeFilter === data.length, `필터 전 ${data.length}행`);
+ok(afterFilter === 1 && afterRegions[0] === '부산', "★'부' 입력→headless textFilterFn 으로 DOM 행 1개(부산) live 필터");
+
+console.log(`\n✅ grid-vue: ${pass} passed, 0 failed — 정렬 클릭(live)+selection 시임+필터(headless filterFn live)`);
