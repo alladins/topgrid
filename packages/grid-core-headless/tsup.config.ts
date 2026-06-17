@@ -11,5 +11,5 @@ export default defineConfig({
   outExtension({ format }) {
     return { js: format === 'esm' ? '.mjs' : '.cjs' };
   },
-  external: ['@tanstack/table-core'],
+  external: ['@tanstack/table-core', 'date-fns'],
 });

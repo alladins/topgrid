@@ -14,23 +14,22 @@
 
 import type * as React from 'react';
 import type { Column, Table } from '@tanstack/react-table';
-
-// ---------------------------------------------------------------------------
-// TextFilter 값 타입 (AC-001)
-// ---------------------------------------------------------------------------
-
-/** 텍스트 필터 연산자. contains/equals/startsWith/endsWith 4종. */
-export type TextFilterOperator = 'contains' | 'equals' | 'startsWith' | 'endsWith';
-
-/**
- * TanStack columnFilters에 저장되는 TextFilter 값.
- * `column.setFilterValue(v: TextFilterValue | undefined)` 로 설정.
- * undefined = 필터 해제.
- */
-export interface TextFilterValue {
-  operator: TextFilterOperator;
-  value: string;
-}
+// W1 Phase 0: 순수 filter 값/연산자 타입은 framework-agnostic @topgrid/grid-core-headless 로 이관.
+// 내부 prop 타입 사용(import) + 기존 소비처(index·grid-pro-filter=패키지 루트 경유) 보존(re-export).
+import type {
+  TextFilterOperator,
+  TextFilterValue,
+  NumberFilterOperator,
+  NumberFilterValue,
+  DateFilterValue,
+} from '@topgrid/grid-core-headless';
+export type {
+  TextFilterOperator,
+  TextFilterValue,
+  NumberFilterOperator,
+  NumberFilterValue,
+  DateFilterValue,
+};
 
 // ---------------------------------------------------------------------------
 // FilterPopover Props (Section 8)
@@ -98,25 +97,7 @@ export interface TextFilterProps<TData> {
 // NumberFilter 값 타입 (MOD-GRID-09 G-002)
 // ---------------------------------------------------------------------------
 
-/** 숫자 필터 연산자. 7종. */
-export type NumberFilterOperator = '=' | '!=' | '>' | '<' | '>=' | '<=' | 'between';
-
-/**
- * TanStack columnFilters에 저장되는 NumberFilter 값.
- * `column.setFilterValue(v: NumberFilterValue | undefined)` 로 설정.
- * - 단항 연산자: `value` 사용, `min`/`max` undefined.
- * - `between`: `min`/`max` 사용, `value` undefined.
- * - undefined = 필터 해제.
- */
-export interface NumberFilterValue {
-  operator: NumberFilterOperator;
-  /** 단항 연산자용 값 (=, !=, >, <, >=, <=). between 시 미사용. */
-  value?: number;
-  /** between 하한값 (min <= cell). */
-  min?: number;
-  /** between 상한값 (cell <= max). */
-  max?: number;
-}
+// (NumberFilterOperator/NumberFilterValue 는 상단 @topgrid/grid-core-headless import+re-export.)
 
 /**
  * NumberFilter 컴포넌트 Props.
@@ -144,17 +125,7 @@ export interface NumberFilterProps<TData> {
 // DateFilter 값 타입 (MOD-GRID-09 G-003)
 // ---------------------------------------------------------------------------
 
-/**
- * TanStack columnFilters에 저장되는 DateFilter 값.
- * `column.setFilterValue(v: DateFilterValue | undefined)` 로 설정.
- * - from?: 범위 시작일 (inclusive, startOfDay 정규화)
- * - to?: 범위 종료일 (inclusive, endOfDay 정규화)
- * - 양쪽 모두 undefined = 필터 해제 (autoRemove)
- */
-export interface DateFilterValue {
-  from?: Date;
-  to?: Date;
-}
+// (DateFilterValue 는 상단 @topgrid/grid-core-headless import+re-export.)
 
 /**
  * DateFilter 컴포넌트 Props.

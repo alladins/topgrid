@@ -25,6 +25,7 @@
   },
   "peerDependencies": {
     "@topgrid/grid-core": "workspace:*",
+    "@topgrid/grid-core-headless": "workspace:*",
     "@tanstack/react-table": "^8.0.0",
     "@tanstack/react-virtual": "^3.0.0",
     "date-fns": "^4.1.0",
@@ -50,6 +51,7 @@
     "access": "public"
   },
   "devDependencies": {
-    "@topgrid/grid-core": "workspace:*"
+    "@topgrid/grid-core": "workspace:*",
+    "@topgrid/grid-core-headless": "workspace:*"
   }
 }

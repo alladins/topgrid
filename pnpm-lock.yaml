@@ -226,6 +226,10 @@ importers:
         version: link:../grid-renderers
 
   packages/grid-core-headless:
+    dependencies:
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
     devDependencies:
       '@tanstack/table-core':
         specifier: 8.21.3
@@ -286,6 +290,9 @@ importers:
       '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
+      '@topgrid/grid-core-headless':
+        specifier: workspace:*
+        version: link:../grid-core-headless
 
   packages/grid-license:
     dependencies:
@@ -14463,7 +14470,7 @@ packages:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
-      postcss: 8.5.14
+      postcss: 8.5.15
       rollup: 4.60.3
       tinyglobby: 0.2.16
     optionalDependencies:

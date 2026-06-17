@@ -265,6 +265,13 @@
 - 하드4(features/master/range)·렌더 레이어(.tsx→.vue)·Vue 어댑터 신규.
 - ★**발행 함의**(user gate): grid-core 가 이제 `@topgrid/grid-core-headless` 런타임 의존 → 발행 시 headless 선발행 + exact-pin lockstep([[npm-publish-topgrid]]). 발행은 미실행(사용자 게이트).
 
+### 11-6. 옵션1 하드4 디커플 — 증분 1a: grid-features filterFns 추출 (2026-06-17, ✅)
+> 사용자 1→2→3 순 autonomous(advisor 위임). 옵션1=features→master→range 순 멀티증분. ★정직: "filter predicate 함수 추출; filter UI 는 React 잔류"(grid-features 디커플 아님). 1→2 시너지: 추출된 filterFns 를 옵션2(Vue 필터)가 공유 소비 가능.
+- **headless `filter.ts`**: `textFilterFn`/`numberFilterFn`/`dateRangeFilterFn`/`selectFilterFn` + 순수 값/연산자 타입(TextFilterValue·NumberFilterValue·DateFilterValue·*Operator) 이관. import react-table→table-core. **date-fns 의존 추가**(dateRangeFilterFn). node **filterFns 13 characterization**.
+- **grid-features 재배선**: `filter-ui/filterFns.ts`→headless re-export shim; `filter-ui/types.ts`→순수 5타입 headless import+re-export(React prop 타입은 잔류, ★혼합 types 파일 분리); package.json headless peer+devDep. ★cross-package 소비자 **grid-pro-filter**(패키지 루트 경유)=무수정 typecheck green.
+- 검증: grid-features+grid-pro-filter typecheck 0 / `pnpm build` 전패키지 green / `pnpm -r test` EXIT0(headless 13) / **chromium 122 green**(121+1 retry-흡수 flake=기존 master-detail-virt, 무관). ★fork 없음.
+- 다음(옵션1 잔여): grid-features 잔여 순수 코어(buildConditionalFormat·multi-sort·column-drag reorder) → 그 후 **master/range**(advisor 체크백 fork=더 무겁고 다른 coupling 가능).
+
 ### 11-5. Vue 어댑터 스켈레톤 3차 증분 (2026-06-17, ✅ 완료·검증)
 > ★범위(정직): "minimal Vue 어댑터가 **실제** headless 코어 소비; 정렬-via-클릭을 mounted DOM 에서 입증; selection 주입 시임 동작. 프로덕션 완성 아님 — filter/pin/virt/pagination/editing·하드4 미포함."
 - **신규 `@topgrid/grid-vue`**(packages/grid-vue): Vue 3 `<Grid>`(defineComponent+h, SFC 아님) = `@topgrid/grid-core-headless` `buildTableOptions` + `@tanstack/vue-table` `useVueTable` 소비. Vue 체크박스 컬럼 팩토리(`createVueCheckboxColumn`)=headless `CreateSelectionColumn` 시임의 Vue 구현.

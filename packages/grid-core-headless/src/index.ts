@@ -13,6 +13,17 @@ export {
   type GridStateKey,
   type GridStateValues,
 } from './gridState';
+export {
+  textFilterFn,
+  numberFilterFn,
+  dateRangeFilterFn,
+  selectFilterFn,
+  type TextFilterOperator,
+  type TextFilterValue,
+  type NumberFilterOperator,
+  type NumberFilterValue,
+  type DateFilterValue,
+} from './filter';
 export type {
   BuildOptionsResult,
   CreateSelectionColumn,
