@@ -15,6 +15,7 @@ import {
 import type { ColumnDef } from '@tanstack/table-core';
 import {
   buildTableOptions,
+  fillRange,
   isInRange,
   normalizeRange,
   type CellCoord,
@@ -48,6 +49,9 @@ export const Grid = defineComponent({
     const expanded = ref<GridStateBag['expanded']>({});
     const columnVisibility = ref<GridStateBag['columnVisibility']>({});
     const columnOrder = ref<GridStateBag['columnOrder']>([]);
+
+    // ★옵션2 드래그-fill: 채우기 결과가 화면에 보이려면 데이터가 변경 가능해야 함 → props.data 복사본.
+    const rows = ref<Row[]>(props.data.map((r) => ({ ...r })));
 
     const apply = <T>(r: { value: T }, u: T | ((p: T) => T)) => {
       r.value = typeof u === 'function' ? (u as (p: T) => T)(r.value) : u;
@@ -83,7 +87,7 @@ export const Grid = defineComponent({
     );
 
     const table = useVueTable<Row>({
-      get data() { return props.data; },
+      get data() { return rows.value; },
       get columns() { return built.effectiveColumns; },
       ...built.options,
       // ★state 만 Vue 반응형 getter 로 오버라이드(eager 스냅샷 대체).
@@ -112,6 +116,34 @@ export const Grid = defineComponent({
         anchor.value = coord;
         selection.value = { start: coord, end: coord };
       }
+    };
+
+    // ★드래그-fill: fill 핸들 mousedown → 채우기 시작, 아래쪽 대상 셀 클릭 → headless fillRange 호출.
+    // 컬럼 인덱스 → 데이터 키(accessorKey) 변환(스켈레톤: 단순 컬럼 가정).
+    const colKey = (ci: number): string => {
+      const cd = props.columns[ci] as { accessorKey?: string; id?: string } | undefined;
+      return cd?.accessorKey ?? cd?.id ?? String(ci);
+    };
+    const fillingFrom = ref<CellRange | null>(null);
+    const startFill = () => {
+      fillingFrom.value = selection.value;
+    };
+    const applyFillTo = (targetRow: number) => {
+      const src = fillingFrom.value;
+      if (!src) return;
+      const n = normalizeRange(src);
+      if (targetRow <= n.end.row) return; // 스켈레톤: 아래 방향만. 핸들 자체 클릭=무동작(유지).
+      const count = targetRow - n.end.row;
+      const updates = fillRange<unknown>(n, 'down', count, (r, c) => rows.value[r]?.[colKey(c)]);
+      // ★새 배열로 교체(참조 변경) — vue-table getRowModel 은 data 참조 기준 메모라
+      //   인덱스 in-place 할당은 재계산 안 됨.
+      const next = rows.value.slice();
+      for (const u of updates) {
+        const cur = next[u.row];
+        if (cur) next[u.row] = { ...cur, [colKey(u.col)]: u.value };
+      }
+      rows.value = next;
+      fillingFrom.value = null;
     };
 
     return () =>
@@ -178,6 +210,12 @@ export const Grid = defineComponent({
                 const cdef = cell.column.columnDef.cell;
                 const selected =
                   props.enableRangeSelection && isInRange(row.index, ci, selection.value);
+                const sel = selection.value ? normalizeRange(selection.value) : null;
+                const isFillCorner =
+                  props.enableRangeSelection &&
+                  !!sel &&
+                  row.index === sel.end.row &&
+                  ci === sel.end.col;
                 return h(
                   'td',
                   {
@@ -187,13 +225,27 @@ export const Grid = defineComponent({
                     'data-selected': selected ? '' : undefined,
                     style: selected ? 'background:#dbeafe' : undefined,
                     onClick: props.enableRangeSelection
-                      ? (e: MouseEvent) => selectCell(row.index, ci, e.shiftKey)
+                      ? (e: MouseEvent) => {
+                          if (fillingFrom.value) applyFillTo(row.index);
+                          else selectCell(row.index, ci, e.shiftKey);
+                        }
                       : undefined,
                   },
                   [
                     cdef
                       ? h(FlexRender, { render: cdef, props: cell.getContext() })
                       : String(cell.getValue() ?? ''),
+                    isFillCorner
+                      ? h('span', {
+                          'data-fill-handle': '',
+                          style:
+                            'display:inline-block;width:8px;height:8px;background:#2563eb;cursor:crosshair;margin-left:4px',
+                          onMousedown: (e: MouseEvent) => {
+                            e.stopPropagation();
+                            startFill();
+                          },
+                        })
+                      : null,
                   ],
                 );
               }),

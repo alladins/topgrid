@@ -96,4 +96,30 @@ const selectedCount = c4.querySelectorAll('tbody td[data-selected]').length;
 console.log('[grid-vue] range select cells:', selectedCount);
 ok(selectedCount === 4, "★(0,0)+shift(1,1)→headless normalizeRange/isInRange 로 4셀 live 선택");
 
-console.log(`\n✅ grid-vue: ${pass} passed, 0 failed — 정렬(live)+selection 시임+필터(headless filterFn)+범위선택(headless range math)`);
+// ★옵션2 드래그-fill — grid-vue 가 headless fillRange 를 호출. 선택 [10,20] → 핸들 mousedown →
+// 아래 대상 클릭 → 등차 시리즈(30,40) 채움(live DOM). 1b range math 를 grid-vue 가 완전히 활용.
+const c5 = document.createElement('div');
+document.body.appendChild(c5);
+const fillData = [{ n: 10 }, { n: 20 }, { n: 0 }, { n: 0 }];
+const fillColumns = [{ id: 'n', accessorKey: 'n', header: 'N' }];
+createApp(Grid, { data: fillData, columns: fillColumns, enableRangeSelection: true }).mount(c5);
+await nextTick();
+const fcell = (r: number) =>
+  c5.querySelector(`tbody td[data-row-index="${r}"][data-col-index="0"]`) as HTMLElement;
+fcell(0).dispatchEvent(new MouseEvent('click', { bubbles: true })); // 앵커 (0,0)=10
+await nextTick();
+fcell(1).dispatchEvent(new MouseEvent('click', { bubbles: true, shiftKey: true })); // 범위 10,20
+await nextTick();
+const handle = c5.querySelector(
+  'td[data-row-index="1"][data-col-index="0"] span[data-fill-handle]',
+) as HTMLElement;
+ok(!!handle, 'fill 핸들이 선택 우하단 셀에 렌더');
+handle.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })); // 채우기 시작
+await nextTick();
+fcell(3).dispatchEvent(new MouseEvent('click', { bubbles: true })); // 대상 (3,0) → row 2,3 채움
+await nextTick();
+const filled = [fcell(2).textContent?.trim(), fcell(3).textContent?.trim()];
+console.log('[grid-vue] drag-fill rows 2,3:', filled);
+ok(filled[0] === '30' && filled[1] === '40', '★드래그-fill: headless fillRange 로 등차 30,40 채움(live)');
+
+console.log(`\n✅ grid-vue: ${pass} passed, 0 failed — 정렬+selection+필터+범위선택+드래그fill(headless fillRange) 전부 live`);
