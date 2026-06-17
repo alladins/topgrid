@@ -265,6 +265,14 @@
 - 하드4(features/master/range)·렌더 레이어(.tsx→.vue)·Vue 어댑터 신규.
 - ★**발행 함의**(user gate): grid-core 가 이제 `@topgrid/grid-core-headless` 런타임 의존 → 발행 시 headless 선발행 + exact-pin lockstep([[npm-publish-topgrid]]). 발행은 미실행(사용자 게이트).
 
+### 11-5. Vue 어댑터 스켈레톤 3차 증분 (2026-06-17, ✅ 완료·검증)
+> ★범위(정직): "minimal Vue 어댑터가 **실제** headless 코어 소비; 정렬-via-클릭을 mounted DOM 에서 입증; selection 주입 시임 동작. 프로덕션 완성 아님 — filter/pin/virt/pagination/editing·하드4 미포함."
+- **신규 `@topgrid/grid-vue`**(packages/grid-vue): Vue 3 `<Grid>`(defineComponent+h, SFC 아님) = `@topgrid/grid-core-headless` `buildTableOptions` + `@tanstack/vue-table` `useVueTable` 소비. Vue 체크박스 컬럼 팩토리(`createVueCheckboxColumn`)=headless `CreateSelectionColumn` 시임의 Vue 구현.
+- ★**통합 시임 발견(스켈레톤이 드러낸 진짜 학습)**: headless `buildTableOptions.options.state` 는 **eager 스냅샷**(React=매 render 재호출이라 무방). Vue(setup 1회)에선 얼어붙으므로 **`state` 만 Vue 반응형 getter 로 오버라이드**. 나머지(row models·enable 플래그·onChange 핸들러·selection 주입)는 headless **그대로 재사용**=진짜 공유. → 후속 headless 정제 후보(state-building 분리 노출).
+- **검증(advisor 비협상=live DOM)**: happy-dom **실제 mount + 헤더 클릭 + DOM 행 재정렬 단언**(SSR 금지=gate-2 함정류). node **6 passed**(before→1st click desc→2nd click asc, 전부 다름=live 반응성; ★숫자 컬럼 첫 클릭 desc=TanStack sortDescFirst 휴리스틱, 실측이 기대 교정) + selection 시임(행마다 체크박스). + `pnpm build` 전패키지 green(grid-vue 통합).
+- ★**zero-React 확정**(아키텍처 증명): `pnpm why react`=빈 결과, `@topgrid/grid-core` 없음(headless 만). Phase 0 분리가 프레임워크 독립을 실제로 샀음.
+- 다음: 하드4(features/master/range) 디커플 → Vue 어댑터에 기능 확대(filter/selection live/pin), 또는 React 어댑터를 동일 headless 위로 정렬.
+
 ### 11-4. useGridState 디커플 2차 증분 (2026-06-17, ✅ 완료·검증)
 > ★**정직 범위**: 반응성(useState/ref)은 추출 *안 함*=프레임워크별 by design. headless 로 옮긴 건 **state 형상 계약 + 기본값(단일 진실원천) + reset 값 계산(순수)** 뿐. "useGridState 디커플"이 아니라 "state-shape/reset 로직 추출".
 - **headless 추가**(`gridState.ts`): `GridStateValues`/`GridStateKey` 타입 + `GRID_STATE_KEYS` + `DEFAULT_GRID_STATE_VALUES`(단일 진실원천) + 순수 `resolveResetValues(keys,initialState)`(Set dedup·unknown no-op·`initial??DEFAULT`). node **resolveResetValues 7 passed**(deep-equal, plain data).
