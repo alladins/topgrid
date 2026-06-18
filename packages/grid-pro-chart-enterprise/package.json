@@ -27,6 +27,7 @@
     "test": "node --experimental-strip-types src/internal/matrixToEChartsOption.test.ts"
   },
   "dependencies": {
+    "@topgrid/grid-license": "workspace:*",
     "@topgrid/grid-pro-chart": "workspace:*",
     "echarts": "^5.5.0"
   },

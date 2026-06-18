@@ -342,6 +342,9 @@ importers:
 
   packages/grid-pro-chart-enterprise:
     dependencies:
+      '@topgrid/grid-license':
+        specifier: workspace:*
+        version: link:../grid-license
       '@topgrid/grid-pro-chart':
         specifier: workspace:*
         version: link:../grid-pro-chart

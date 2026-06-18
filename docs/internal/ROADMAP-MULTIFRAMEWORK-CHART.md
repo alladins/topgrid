@@ -6,8 +6,8 @@
 > **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
 > **★W2 단계① 완료(2026-06-18)**: 라이브러리 평가 매트릭스 → **Apache ECharts(Apache-2.0) 선정**(기본/번들 어댑터). 결정 렌즈=우리가 상용 재배포 제품(grid-license 동봉)이라 재배포-무료가 필수 → Highcharts(OEM 의무 전가)·AG Charts(갭 핵심타입=유료 Enterprise) 부적격. ECharts 만 §3-2 갭을 무료로 충족 + framework-agnostic core(W1 정렬) + SSR `renderToSVGString`(Nuxt PTLPSM 적합). Highcharts/AG Charts=BYO-라이선스 어댑터로만 개방(우리 미발행). 상세·매트릭스·출처=§3-4.
 > **★W2 단계② 완료(2026-06-18)**: 스펙+ADR 확정. **[[ADR-003]]**(`.claude/dev-harness/decisions/`) + **스펙** `docs/internal/SPEC-grid-pro-chart-enterprise.md`. 핵심 결정: 신규 opt-in `@topgrid/grid-pro-chart-enterprise` = **ECharts thin 자작 어댑터**(echarts-for-react 기각=번들·SSR·무-의존 제어), **기존 `MatrixChartData` 브리지·`RangeChartPanel` 시임·license 게이트 재사용**(integrate=시임 오염 아님, R1), SVG 스파크라인은 additive 공존(C-001, R3). Highcharts/AG Charts=BYO 어댑터로만 개방(R4). 상세 §3-5.
-> **★W2 단계③ 증분1 완료(2026-06-18)**: 신규 패키지 `packages/grid-pro-chart-enterprise@0.1.0` 스캐폴드 + **순수 `matrixToEChartsOption` 엔진**(MatrixChartData→EChartsOption, ECharts/grid-pro-chart=type-only 임포트=zero-dep node test). 구현 타입군 3종(cartesian/stacked·scatter·pie). 검증: **node 10 passed**(100%-stack 정규화·secondary-axis 라우팅 등 non-vacuous)·typecheck 0(★`skipLibCheck:true`=echarts@5.6.0 자체 .d.ts `export =`+exactOptional 버그, grid-features 선례)·**`pnpm build` 전패키지 green**·`pnpm -r test` green. 상세 §3-6.
-> **★다음 = 단계③ 증분2**(live 코드): thin `EChartsChart` wrapper(echarts/core init/dispose/ResizeObserver) → `createEChartsRenderer`(기존 `RangeChartPanel` 시임 호환 팩토리) → `EnterpriseChartPanel`(툴바·export `getDataURL`·cross-filter). + 카탈로그 확장(radar/heatmap/candlestick/…). 검증=chromium(live 렌더·legend toggle·export 라운드트립). ★발행은 별도 게이트. 스펙 §3·§5.
+> **★W2 단계③ 증분1+2 완료(2026-06-18)**: 신규 `packages/grid-pro-chart-enterprise@0.1.0` = 순수 `matrixToEChartsOption` 엔진(증분1) + **live React 표면**(증분2): thin `EChartsChart`(echarts/core **SVG 렌더러** init/dispose/ResizeObserver, 선택 모듈 등록 D3)·`EnterpriseChartPanel`(툴바 타입스위처·export `getDataURL`·cross-filter·license watermark PAT-003)·`createEChartsRenderer`(기존 `RangeChartPanel` 시임 호환 팩토리=D1/R1 루프 완결). 검증: node 10 + **chromium 4 신규 green**(live SVG 마운트·타입스위치가 ECharts 인스턴스 도달=`data-rendered-type` getOption() 리드백·export SVG dataURL·license 게이트)·**full 비주얼 스위트 126 passed 0 fail**(기존 122+신규 4, 무회귀)·typecheck0·`pnpm build` 전패키지 green. 상세 §3-6·§3-7.
+> **★다음 = 단계③ 증분3**(카탈로그 확장): radar/heatmap/candlestick/boxplot/funnel/treemap/sankey/bubble — 각 타입 데이터 reshape + echarts 모듈 등록 + node 단언. 또는 **발행 게이트**(증분1+2 누적=신규 `@topgrid/grid-pro-chart-enterprise` + echarts 의존, user-gated). ★Windows 로컬 비주얼 실행 메모: 포트 6006=Hyper-V 예외대역(5975-6074) → 자유포트(예 9009)+throwaway config 로 실행(WSL2 면 6006 직행).
 
 > 작성 2026-06-16. 사용자 요청: "전체 하이어라키 매트릭스에 추가할 진행 목록 + 소요 심층분석 + 분석/스펙/검증/구현/검증 단계화".
 > **본 문서의 효과(소요) 수치는 전부 ROM(Rough Order of Magnitude)** — 확정 약속이 아니라 *분석/스펙 단계의 산출물로 확정될 예비치*. (이 저장소의 anti-over-claim 규율 적용: 추측을 권위 수치로 세탁 금지.)
@@ -192,6 +192,24 @@
 
 #### 남은 것 (증분2)
 - thin `EChartsChart`(자작 wrapper, echarts/core init/setOption/dispose/ResizeObserver)·`createEChartsRenderer`(기존 시임 팩토리)·`EnterpriseChartPanel`(툴바·export·cross-filter) + 카탈로그 확장(radar/heatmap/candlestick/boxplot/funnel/treemap/sankey/bubble). 발행=별도 게이트.
+
+### 3-7. W2 단계③ 증분2 — live React 표면 + chromium 게이트 (2026-06-18, ✅ first live)
+
+> 증분1(순수 엔진) 위 **live**. 신규 의존 사용=`echarts/core`+선택 모듈(BarChart·LineChart·ScatterChart·PieChart·GridComponent·TooltipComponent·LegendComponent·**SVGRenderer**). ★범위(정직): live wrapper·panel·factory + chromium. **카탈로그 확장(radar/heatmap/…)=증분3 으로 연기**(각 타입 distinct reshape).
+
+#### 한 것
+- **`EChartsChart`(thin 자작 wrapper, ADR-003 D2)**: `echarts.init(el,_,{renderer:'svg'})` → 인라인 `<svg>`(canvas 아님=DOM 검사가능·SSR 친화·non-vacuous 게이트의 근거). useEffect 3개=init/dispose(once)·cross-filter click bind·option push. ★`setOption` 후 `getOption().series[0].type` 를 `data-rendered-type` 로 리플렉트=ECharts 가 **실제로 옵션을 수용**했다는 신호(React state 아님). ResizeObserver→resize. **선택 모듈 등록(D3)**=barrel import 회피.
+- **`EnterpriseChartPanel`(R1=관심사 격리)**: 툴바 타입스위처(bar/line/area/stacked-bar/pie/scatter)·Export(`getDataURL({type:'svg'})`→`data-export-result-len` 리플렉트)·cross-filter(`onCrossFilter`)·**license watermark**(`useLicenseStatus`+`Watermark`, PAT-003). 최소 시임 `RangeChartPanel` 무변경.
+- **`createEChartsRenderer(spec)`(D1/R1 루프 완결)**: 기존 `RangeChartPanel.renderChart?: (RangeSeries[])=>ReactNode` 시임 호환 팩토리 반환(RangeSeries lossy→인덱스 카테고리). 최소 시임만 가진 소비자도 ECharts 백엔드 주입 가능=시임 오염 없이 통합.
+- index 에 `checkLicense()` 모듈로드 게이트(PAT-003) + live 표면 export. grid-license 의존 추가.
+
+#### 검증 (전부 green)
+- **chromium 4 신규 passed**(`tests/visual/enterprise-chart.spec.ts`): (1)bar 스토리 인라인 SVG 마운트+rendered-type 'bar' (2)★타입스위치 bar→pie 가 ECharts 인스턴스 도달(rendered-type flip=stale 옵션이면 실패) (3)Export SVG dataURL len>100 라운드트립 (4)license 게이트 unlicensed→watermark·licensed→none.
+- **full 비주얼 스위트 126 passed 0 fail**(기존 122+신규 4, 무회귀)·`skipLibCheck` 외 typecheck0·`pnpm build` 전패키지 green.
+- ★**Windows 로컬 실행 메모**: 포트 6006=Hyper-V 예외대역(5975-6074, `netsh ... excludedportrange`)→EACCES. 자유포트(9009)+throwaway playwright config(committed config 무변경)로 실행. WSL2 환경이면 6006 직행(README 절차).
+
+#### 남은 것 (증분3)
+- 카탈로그 확장 8타입(각 reshape+모듈등록+node 단언). 또는 발행(증분1+2 누적, user-gated).
 
 ---
 
