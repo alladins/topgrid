@@ -4,7 +4,8 @@
 > **현 git 상태(재부팅 HANDOFF)**: working tree **clean**. **main 이 origin/main 보다 앞섬 = release `f2d179b`(버전 bump) + docs handoff 커밋이 미푸시(★origin push = user-gated, 미실행)**. 새 세션 첫 액션 후보 = (a)`git push`(사용자 승인 시) 또는 (b)바로 W2 착수. npm 6개는 이미 live(아래)이므로 push 안 해도 발행물엔 영향 없음.
 > **발행 완료(2026-06-18, npm live·스모크 통과)**: 6개 = **@topgrid/grid-core-headless@0.1.0**(신규) · **@topgrid/grid-vue@0.1.0**(신규) · grid-core@**0.6.0** · grid-features@**0.9.0** · grid-pro-range@**0.4.0** · grid-pro-master@**0.7.0**. publisher=travia71, Bypass-2FA 토큰=비대화형 통과(OTP 프롬프트 없음). 절차: 수동 bump(★changeset version 미사용=major-escalation 회피 [[changeset-peerdep-major-escalation]]) → pnpm build green → pnpm -r test EXIT0 → **pnpm pack ×6 tarball 검증(workspace:* 전부 구체핀 치환·누출 0)** → topo 발행(headless→grid-core→features/range/master→grid-vue) → 소비자 스모크(`npm i @topgrid/grid-vue vue @tanstack/vue-table`=ERESOLVE 0, grid-vue→headless@0.1.0 라이브 해소). 상세 §11.9.
 > **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
-> **★다음 세션 = W2 엔터프라이즈 차트 착수**: ★build 아니라 **integrate**. 경량 SVG 스파크라인(grid-pro-chart) 유지 + 신규 opt-in 패키지가 `RangeChartPanel` 주입 시임으로 외부 라이브러리(ECharts/AG Charts) wrap. 첫 단계=①라이브러리 평가(ECharts MIT vs AG Charts vs Highcharts: 라이선스·번들·SSR·Vue+React 지원). 상세 §3.
+> **★W2 단계① 완료(2026-06-18)**: 라이브러리 평가 매트릭스 → **Apache ECharts(Apache-2.0) 선정**(기본/번들 어댑터). 결정 렌즈=우리가 상용 재배포 제품(grid-license 동봉)이라 재배포-무료가 필수 → Highcharts(OEM 의무 전가)·AG Charts(갭 핵심타입=유료 Enterprise) 부적격. ECharts 만 §3-2 갭을 무료로 충족 + framework-agnostic core(W1 정렬) + SSR `renderToSVGString`(Nuxt PTLPSM 적합). Highcharts/AG Charts=BYO-라이선스 어댑터로만 개방(우리 미발행). 상세·매트릭스·출처=§3-4.
+> **★다음 세션 = W2 단계② 스펙/ADR**(코드 변경 전 게이트): `@topgrid/grid-pro-chart-enterprise` API 표면(chart-from-range·타입 카탈로그·Insert-Chart 툴바·cross-filter·export) + 주입 시임 확장 ADR + ECharts wrapper 전략(커뮤니티 `echarts-for-react` vs 얇은 자작). ADR 승인 후 단계③ 구현. integrate(build 아님), grid-pro-chart SVG 스파크라인은 유지(C-001).
 
 > 작성 2026-06-16. 사용자 요청: "전체 하이어라키 매트릭스에 추가할 진행 목록 + 소요 심층분석 + 분석/스펙/검증/구현/검증 단계화".
 > **본 문서의 효과(소요) 수치는 전부 ROM(Rough Order of Magnitude)** — 확정 약속이 아니라 *분석/스펙 단계의 산출물로 확정될 예비치*. (이 저장소의 anti-over-claim 규율 적용: 추측을 권위 수치로 세탁 금지.)
@@ -110,6 +111,42 @@
 ### 3-3. ROM
 - integrate 경로 **≈ 1.5~2.5개월(1 시니어)**. (Vue 차트까지면 W1 Phase 0 선행.)
 - from-scratch 경로 = **비권장**(다년·다인). 본 로드맵 채택 안 함.
+
+### 3-4. W2 단계① — 라이브러리 평가 매트릭스 + 선정 (2026-06-18, ✅ 평가 산출물)
+
+> §3-1 단계①의 산출물. **분석 deliverable**(코드 변경 0, 스펙/구현 아님). 근거 = 2026-06 웹 실측(라이선스·번들·SSR·프레임워크). ★수치/조건은 시점성 있음 → 계약 시 재확인(over-claim 방지).
+
+#### ★평가를 지배하는 단일 렌즈: **재배포 가능성(license)**
+@topgrid 자체가 **상용 재배포 제품**(`@topgrid/grid-license`+watermark 동봉, 소비자가 상업적으로 사용·재배포). 따라서 **기본 번들(default adapter)에 묶을 차트 라이브러리는 상용 재배포를 무료로 허용**해야 함 — 소비자에게 per-seat/OEM 라이선스 의무를 전가하면 안 됨. 이 한 가지가 후보를 깨끗하게 정렬한다.
+
+#### 평가 매트릭스 (3 후보)
+| 기준 | **Apache ECharts** | **AG Charts** | **Highcharts** |
+|------|--------------------|----------------|-----------------|
+| 라이선스 | **Apache-2.0**(전체 무료·재배포 OK) | Community=**MIT**(무료) / Enterprise=상용 EULA | **상용 전용**(무료=비상업 한정) |
+| ★재배포(우리 케이스) | ✅ 제약 0 | 🟡 MIT 티어만; 엔터프라이즈 타입 쓰면 상용 | ❌ OEM 라이선스 필요($5k~$50k+/yr), 의무 하류 전가 |
+| 차트 타입(무료 범위) | ✅ **최광**: line/bar/area/pie/scatter/candlestick/radar/heatmap/treemap/sankey/funnel/boxplot/graph 등 거의 전부 무료 | 🟡 Community=pie/area/bar/scatter/bubble+축/범례/툴팁; **heatmap·sankey·radar·waterfall·financial·zoom·애니메이션=Enterprise** | ✅ 광범(financial 강점) — 단 전부 상용 |
+| §3-2 갭 충족 | ✅ 무료로 대부분 해소 | ❌ 갭의 핵심(heatmap/sankey/financial/zoom)이 Enterprise=유료 | ✅(유료) |
+| 번들 | ✅ tree-shakable(~100kb gz core, 선택 import 로 더 축소) | 🟡 중간 | 🟡 모듈식 |
+| SSR | ✅ **공식 `renderToSVGString`**(5.3+, zero-dep, ssr:true) | 🟡 제한적 | ✅ Node export-server(이미지/PDF 리포트 강점) |
+| React/Vue | core=framework-agnostic + wrapper(`echarts-for-react`=커뮤니티, `vue-echarts`=공식급) | ✅ **공식** `ag-charts-react`·`ag-charts-vue3` | ✅ 공식 `highcharts-react-official`·`highcharts-vue` |
+| export | getDataURL(PNG/SVG) | 이미지 export(고급=Enterprise) | exporting 모듈(PNG/PDF/SVG, offline) |
+
+#### ★선정: **Apache ECharts (Apache-2.0) = 기본/번들 어댑터의 1순위**
+- **이유 1(결정적)**: 우리 제품이 상용 재배포이므로 Apache-2.0 가 유일하게 마찰 없는 선택. AG Charts 는 §3-2 갭의 핵심 타입이 Enterprise(유료)라 "엔터프라이즈 차트 갭 메우기"라는 목적과 충돌하고, 그 순간 하류 라이선스 문제가 재발. Highcharts 는 OEM 의무 전가로 기본 번들 부적격.
+- **이유 2(범위)**: §3-2 의 부재 타입(candlestick·heatmap·treemap·radar·sankey·funnel·boxplot·stacked·다축·zoom/pan·애니메이션)이 **ECharts 무료 범위에서 거의 전부 충족**.
+- **이유 3(아키텍처 시너지=W1)**: ECharts core 가 framework-agnostic → "**차트 어댑터 코어 1 + 얇은 React/Vue wrapper 2**" 구조가 W1 의 headless-core+어댑터 패턴과 정확히 정렬. SSR(`renderToSVGString`)은 PTLPSM(Nuxt3) 소비자 시나리오와도 맞음.
+- **아키텍처 적합**: 기존 주입 시임 `RangeChartPanel.renderChart?: (series)=>ReactNode`(C-001/AP-001, 라이브러리 의존 0 유지)에 **신규 opt-in `@topgrid/grid-pro-chart-enterprise` 가 ECharts 어댑터를 주입**. grid-pro-chart 본체는 SVG 스파크라인 그대로 유지(C-001 존중). grid-vue 용은 동일 어댑터 코어에 Vue wrapper.
+
+#### ★정직한 한계/리스크 (over-claim 방지)
+- `echarts-for-react`=**커뮤니티 유지**(Apache 공식 아님). 리스크 완화 옵션: 우리 시임이 이미 있으니 **얇은 자체 wrapper 자작**(ECharts core 직접 mount/dispose)도 저비용 대안 — 스펙 단계서 결정.
+- 라이선스/가격/티어 경계는 **2026-06 시점 웹 실측** — 계약/채택 확정 시 각 vendor 공식 문서 재확인 필수.
+- Highcharts 는 **완전 배제 아님**: financial/SSR-리포트가 강하므로 "**소비자 BYO(자체 라이선스) 어댑터**" 경로로 남겨둠(주입 시임이라 소비자가 자기 Highcharts 로 renderChart 주입 가능) — 단 우리가 번들/발행하지 않음.
+- AG Charts 도 동일하게 BYO-Enterprise 어댑터로 열어둘 수 있음(전략적으론 AG Grid=그리드 경쟁사라 기본 채택은 부적절).
+
+#### ★다음 = §3-1 단계② 스펙/ADR (미착수, 코드 변경 전 게이트)
+`@topgrid/grid-pro-chart-enterprise` API 표면(chart-from-range·타입 카탈로그·"Insert Chart" 툴바·cross-filter·export 계약) + 주입 시임 확장 ADR + ECharts 어댑터 wrapper 전략(커뮤니티 wrapper vs 자작). 구현(단계③) 전 ADR 승인 게이트.
+
+**출처(2026-06 실측)**: [AG Charts Community vs Enterprise](https://www.ag-grid.com/charts/javascript/community-vs-enterprise/) · [ag-charts-community npm](https://www.npmjs.com/package/ag-charts-community) · [Highcharts Standard License](https://shop.highcharts.com/license) · [Highcharts shop/FAQ](https://shop.highcharts.com/faq) · [ECharts SSR Handbook](https://apache.github.io/echarts-handbook/en/how-to/cross-platform/server/) · [echarts npm](https://www.npmjs.com/package/echarts) · [vue-echarts npm](https://www.npmjs.com/package/vue-echarts).
 
 ---
 
