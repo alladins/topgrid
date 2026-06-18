@@ -8,7 +8,8 @@ zero-dependency SVG sparklines and `RangeChart` in `@topgrid/grid-pro-chart` are
 coexist — use those for in-cell visuals, and reach for this package when you need the full
 enterprise chart catalog (stacked / scatter / pie / and more as the catalog grows).
 
-`echarts` is a peer-style external: your app provides a single ECharts instance.
+`echarts` is a **peer dependency** (echarts `5.x` or `6.x`): your app installs it, so the whole
+app shares a single ECharts instance (one `echarts.use()` registry) rather than bundling a copy.
 
 ## Status (scaffold)
 

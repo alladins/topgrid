@@ -9,7 +9,7 @@
 > **★W2 단계② 완료(2026-06-18)**: 스펙+ADR 확정. **[[ADR-003]]**(`.claude/dev-harness/decisions/`) + **스펙** `docs/internal/SPEC-grid-pro-chart-enterprise.md`. 핵심 결정: 신규 opt-in `@topgrid/grid-pro-chart-enterprise` = **ECharts thin 자작 어댑터**(echarts-for-react 기각=번들·SSR·무-의존 제어), **기존 `MatrixChartData` 브리지·`RangeChartPanel` 시임·license 게이트 재사용**(integrate=시임 오염 아님, R1), SVG 스파크라인은 additive 공존(C-001, R3). Highcharts/AG Charts=BYO 어댑터로만 개방(R4). 상세 §3-5.
 > **★W2 단계③ 증분1+2 완료(2026-06-18)**: 신규 `packages/grid-pro-chart-enterprise@0.1.0` = 순수 `matrixToEChartsOption` 엔진(증분1) + **live React 표면**(증분2): thin `EChartsChart`(echarts/core **SVG 렌더러** init/dispose/ResizeObserver, 선택 모듈 등록 D3)·`EnterpriseChartPanel`(툴바 타입스위처·export `getDataURL`·cross-filter·license watermark PAT-003)·`createEChartsRenderer`(기존 `RangeChartPanel` 시임 호환 팩토리=D1/R1 루프 완결). 검증: node 10 + **chromium 4 신규 green**(live SVG 마운트·타입스위치가 ECharts 인스턴스 도달=`data-rendered-type` getOption() 리드백·export SVG dataURL·license 게이트)·**full 비주얼 스위트 126 passed 0 fail**(기존 122+신규 4, 무회귀)·typecheck0·`pnpm build` 전패키지 green. 상세 §3-6·§3-7.
 > **★W2 단계③ 발행 완료(2026-06-18, npm live·스모크 통과)**: `@topgrid/grid-pro-chart-enterprise@0.1.0` 발행. publisher=travia71, Bypass-2FA 비대화형(OTP 0). 절차: 의존 사전검증(grid-license@0.3.0·grid-pro-chart@0.4.0 둘 다 로컬=npm 일치→lockstep 불요)→build/test(node 18)→**pnpm pack tarball 검증**(workspace:*→구체핀 0.3.0/0.4.0 치환·echarts ^5.5.0·files=dist+README·누출0)→`pnpm publish <dir> --no-git-checks --access public`→스모크(`npm i`=13 packages, **ERESOLVE 0·취약점 0**, tree=enterprise→license/chart/echarts@5.6.0 해소). ★net-new 패키지명=registry read-replica 전파 ~3.5분 지연(기존 패키지 bump 보다 느림, publish 자체는 즉시 성공). 상세 §3-9.
-> **★알려진 한계(follow-up)**: echarts 를 **regular dependency**(^5.5.0)로 선언 → 소비자가 echarts 6.x 별도 설치 시 2벌 공존(ADR-003 D3 "단일 인스턴스" 의도 미달). echarts **6.x 호환 평가 + echarts-as-peer 전환**은 후속(현 발행물은 echarts 5.6.0 으로 내부정합). 상세 §3-9.
+> **★echarts peer 후속 = 코드 완료(2026-06-18, 0.2.0 republish 대기=user-gated)**: 0.1.0 의 echarts regular-dep 한계 해소. echarts→**peerDependency `^5.5.0 || ^6.0.0`**(+devDep ^6.0.0). **echarts 6.x 실측 호환 확인**(typecheck0·node 18·build·**chromium 7 green @ echarts 6.1.0**=init/SVG렌더러/use/getOption/getDataURL/17타입/모듈명 5→6 안정). pack 검증=echarts deps 밖·peer 로·구체핀·누출0. **0.2.0 republish 는 발행 게이트(미실행)**. 상세 §3-10.
 > **★W2 단계③ 증분3 완료(2026-06-18)**: 카탈로그 **8타입 확장** = bubble·funnel·treemap·radar·heatmap·candlestick·boxplot·sankey. 각 reshape 패밀리(single-series {name,value}·radar indicator·heatmap x/y/value triple·per-category stat tuple O,C,L,H/min~max·sankey nodes+links·bubble=scatter+symbolSize). echarts 모듈 선택 등록 확장(RadarChart·HeatmapChart·CandlestickChart·BoxplotChart·FunnelChart·TreemapChart·SankeyChart + RadarComponent·VisualMapComponent). 검증: **node 18 passed**(타입별 reshape 단언)·**chromium 7 passed**(+radar/heatmap/candlestick **live 마운트 게이트**=모듈 등록 입증)·full 스위트 무회귀(기존 flake master-detail-virt만 retries 흡수, 격리 재실행 pass)·typecheck0·build green. 상세 §3-8.
 > **★다음 = 발행 게이트**(증분1~3 누적, user-gated): 신규 `@topgrid/grid-pro-chart-enterprise@0.1.0`(echarts 의존) npm 발행 — headless/grid-vue 때처럼 pnpm pack 검증→topo 발행. 또는 추가 폴리시(toolbar 에 신규 타입 노출·BYO Highcharts/AG 어댑터·Vue wrapper). ★Windows 로컬 비주얼: 포트 6006=Hyper-V 예외대역(5975-6074)→자유포트(9009)+throwaway config(committed 무변경), WSL2 면 6006 직행.
 
@@ -248,6 +248,24 @@
 
 #### ★다음 후보 (user-gated 또는 폴리시)
 (a)git push(미실행 로컬 커밋, user-gated) (b)echarts-as-peer + 6.x 평가(위 한계 해소) (c)toolbar 신규 타입 노출 (d)Vue wrapper(grid-vue 용 ECharts) (e)BYO Highcharts/AG 어댑터 (f)W3/PTLPSM 통합.
+
+### 3-10. echarts peer 전환 + 6.x 호환(advisor 우선순위 #1) — 0.2.0 (2026-06-18, ✅ 코드·검증 / republish 대기)
+
+> 사용자 "advisor 일임 계속 진행". advisor 판정: 출시물 무결성(A) > Vue wrapper(C, 大워크스트림) > toolbar(B, 코스메틱). A 먼저 실행.
+
+#### 한 것
+- **echarts: dependency→peerDependency `^5.5.0 || ^6.0.0`** + devDependency `^6.0.0`(우리 빌드/스토리/테스트용). 이유: echarts 는 stateful(전역 `echarts.use()` 레지스트리·테마) → **소비자 단일 인스턴스**가 옳음(ADR-003 D3 의도). regular-dep 면 소비자가 echarts 별도 설치 시 2벌 공존(모듈 등록이 인스턴스별 분리=버그 클래스).
+- README: echarts=peer(5.x/6.x) 명시. version 0.1.0→**0.2.0**(dep→peer=소비자 대면 breaking, 0.x minor).
+
+#### 검증 (echarts 6.1.0 실측, advisor=추측 금지)
+- typecheck0·**node 18**·build green @ echarts 6.1.0.
+- **chromium 7 passed @ echarts 6.1.0**(bar/타입스위치/export + radar/heatmap/candlestick live 게이트 + license) → init·`{renderer:'svg'}`·`use()`·`getOption()`·`getDataURL()`·17타입 옵션·모듈명(RadarComponent·VisualMapComponent 등) **5→6 전부 안정** 입증.
+- pack(0.2.0): echarts=peer(deps 밖)·@topgrid 구체핀(0.3.0/0.4.0)·workspace 누출 false.
+- ★결론: peer 범위 `^5.5.0 || ^6.0.0` 양 major 실측 근거 확보(5.x=0.1.0 발행시 5.6.0, 6.x=금회 6.1.0).
+
+#### 남은 것
+- **0.2.0 republish**(user-gated): 절차=§3-9 동일(pack 검증 완료→`pnpm publish <dir> --no-git-checks --access public`→net-new 아님이라 즉시 전파→스모크). 0.1.0 supersede.
+- 다음 advisor 후보: (#2) **Vue용 ECharts wrapper**(grid-vue 가 순수 `matrixToEChartsOption` 재사용=W1×W2 시너지, framework-agnostic 엔진이 이미 있음) → 별도 단위. (#3 보류) toolbar 17타입 노출=소비자 styling 영역.
 
 ---
 
