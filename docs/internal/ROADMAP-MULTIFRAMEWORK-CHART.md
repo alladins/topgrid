@@ -1,12 +1,15 @@
 # TWGRID 전략 로드맵 — 멀티프레임워크(Vue+React) · 엔터프라이즈 차트 · 잔여작업
 
-> ## ★★ 발행 배치 W1 완료 (2026-06-18) → 다음 세션 = W2 차트 착수 ★★
-> **현 git 상태(재부팅 HANDOFF)**: working tree **clean**. **main 이 origin/main 보다 앞섬 = release `f2d179b`(버전 bump) + docs handoff 커밋이 미푸시(★origin push = user-gated, 미실행)**. 새 세션 첫 액션 후보 = (a)`git push`(사용자 승인 시) 또는 (b)바로 W2 착수. npm 6개는 이미 live(아래)이므로 push 안 해도 발행물엔 영향 없음.
+> ## ★★ W1 발행(6개) + W2 엔터프라이즈 차트 단계①~③ 완료·발행 (2026-06-18) ★★
+> **★W2 차트 전체 완료**: 단계①(ECharts 선정 §3-4)→②(ADR-003 §3-5)→③ 증분1~3(스캐폴드·순수엔진·live wrapper·풀 카탈로그 17타입 §3-6~8)→**발행 `@topgrid/grid-pro-chart-enterprise@0.1.0` npm live·스모크 통과(§3-9)**. 검증: node 18 + chromium 7 + full 비주얼 무회귀. 알려진 한계=echarts regular-dep ^5.5.0(6.x peer 전환 후속, §3-9).
+> **현 git 상태(재부팅 HANDOFF)**: working tree **clean**. **main 이 origin/main 보다 앞섬 = W2 커밋들(ADR·스펙·증분1~3·발행 docs) 미푸시(★origin push = user-gated)**. npm 발행물은 이미 live 이므로 push 안 해도 영향 없음. 새 세션 첫 액션 후보 = (a)`git push`(사용자 승인 시) (b)echarts 6.x/peer 후속(§3-9 한계) (c)W3/PTLPSM.
 > **발행 완료(2026-06-18, npm live·스모크 통과)**: 6개 = **@topgrid/grid-core-headless@0.1.0**(신규) · **@topgrid/grid-vue@0.1.0**(신규) · grid-core@**0.6.0** · grid-features@**0.9.0** · grid-pro-range@**0.4.0** · grid-pro-master@**0.7.0**. publisher=travia71, Bypass-2FA 토큰=비대화형 통과(OTP 프롬프트 없음). 절차: 수동 bump(★changeset version 미사용=major-escalation 회피 [[changeset-peerdep-major-escalation]]) → pnpm build green → pnpm -r test EXIT0 → **pnpm pack ×6 tarball 검증(workspace:* 전부 구체핀 치환·누출 0)** → topo 발행(headless→grid-core→features/range/master→grid-vue) → 소비자 스모크(`npm i @topgrid/grid-vue vue @tanstack/vue-table`=ERESOLVE 0, grid-vue→headless@0.1.0 라이브 해소). 상세 §11.9.
 > **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
 > **★W2 단계① 완료(2026-06-18)**: 라이브러리 평가 매트릭스 → **Apache ECharts(Apache-2.0) 선정**(기본/번들 어댑터). 결정 렌즈=우리가 상용 재배포 제품(grid-license 동봉)이라 재배포-무료가 필수 → Highcharts(OEM 의무 전가)·AG Charts(갭 핵심타입=유료 Enterprise) 부적격. ECharts 만 §3-2 갭을 무료로 충족 + framework-agnostic core(W1 정렬) + SSR `renderToSVGString`(Nuxt PTLPSM 적합). Highcharts/AG Charts=BYO-라이선스 어댑터로만 개방(우리 미발행). 상세·매트릭스·출처=§3-4.
 > **★W2 단계② 완료(2026-06-18)**: 스펙+ADR 확정. **[[ADR-003]]**(`.claude/dev-harness/decisions/`) + **스펙** `docs/internal/SPEC-grid-pro-chart-enterprise.md`. 핵심 결정: 신규 opt-in `@topgrid/grid-pro-chart-enterprise` = **ECharts thin 자작 어댑터**(echarts-for-react 기각=번들·SSR·무-의존 제어), **기존 `MatrixChartData` 브리지·`RangeChartPanel` 시임·license 게이트 재사용**(integrate=시임 오염 아님, R1), SVG 스파크라인은 additive 공존(C-001, R3). Highcharts/AG Charts=BYO 어댑터로만 개방(R4). 상세 §3-5.
 > **★W2 단계③ 증분1+2 완료(2026-06-18)**: 신규 `packages/grid-pro-chart-enterprise@0.1.0` = 순수 `matrixToEChartsOption` 엔진(증분1) + **live React 표면**(증분2): thin `EChartsChart`(echarts/core **SVG 렌더러** init/dispose/ResizeObserver, 선택 모듈 등록 D3)·`EnterpriseChartPanel`(툴바 타입스위처·export `getDataURL`·cross-filter·license watermark PAT-003)·`createEChartsRenderer`(기존 `RangeChartPanel` 시임 호환 팩토리=D1/R1 루프 완결). 검증: node 10 + **chromium 4 신규 green**(live SVG 마운트·타입스위치가 ECharts 인스턴스 도달=`data-rendered-type` getOption() 리드백·export SVG dataURL·license 게이트)·**full 비주얼 스위트 126 passed 0 fail**(기존 122+신규 4, 무회귀)·typecheck0·`pnpm build` 전패키지 green. 상세 §3-6·§3-7.
+> **★W2 단계③ 발행 완료(2026-06-18, npm live·스모크 통과)**: `@topgrid/grid-pro-chart-enterprise@0.1.0` 발행. publisher=travia71, Bypass-2FA 비대화형(OTP 0). 절차: 의존 사전검증(grid-license@0.3.0·grid-pro-chart@0.4.0 둘 다 로컬=npm 일치→lockstep 불요)→build/test(node 18)→**pnpm pack tarball 검증**(workspace:*→구체핀 0.3.0/0.4.0 치환·echarts ^5.5.0·files=dist+README·누출0)→`pnpm publish <dir> --no-git-checks --access public`→스모크(`npm i`=13 packages, **ERESOLVE 0·취약점 0**, tree=enterprise→license/chart/echarts@5.6.0 해소). ★net-new 패키지명=registry read-replica 전파 ~3.5분 지연(기존 패키지 bump 보다 느림, publish 자체는 즉시 성공). 상세 §3-9.
+> **★알려진 한계(follow-up)**: echarts 를 **regular dependency**(^5.5.0)로 선언 → 소비자가 echarts 6.x 별도 설치 시 2벌 공존(ADR-003 D3 "단일 인스턴스" 의도 미달). echarts **6.x 호환 평가 + echarts-as-peer 전환**은 후속(현 발행물은 echarts 5.6.0 으로 내부정합). 상세 §3-9.
 > **★W2 단계③ 증분3 완료(2026-06-18)**: 카탈로그 **8타입 확장** = bubble·funnel·treemap·radar·heatmap·candlestick·boxplot·sankey. 각 reshape 패밀리(single-series {name,value}·radar indicator·heatmap x/y/value triple·per-category stat tuple O,C,L,H/min~max·sankey nodes+links·bubble=scatter+symbolSize). echarts 모듈 선택 등록 확장(RadarChart·HeatmapChart·CandlestickChart·BoxplotChart·FunnelChart·TreemapChart·SankeyChart + RadarComponent·VisualMapComponent). 검증: **node 18 passed**(타입별 reshape 단언)·**chromium 7 passed**(+radar/heatmap/candlestick **live 마운트 게이트**=모듈 등록 입증)·full 스위트 무회귀(기존 flake master-detail-virt만 retries 흡수, 격리 재실행 pass)·typecheck0·build green. 상세 §3-8.
 > **★다음 = 발행 게이트**(증분1~3 누적, user-gated): 신규 `@topgrid/grid-pro-chart-enterprise@0.1.0`(echarts 의존) npm 발행 — headless/grid-vue 때처럼 pnpm pack 검증→topo 발행. 또는 추가 폴리시(toolbar 에 신규 타입 노출·BYO Highcharts/AG 어댑터·Vue wrapper). ★Windows 로컬 비주얼: 포트 6006=Hyper-V 예외대역(5975-6074)→자유포트(9009)+throwaway config(committed 무변경), WSL2 면 6006 직행.
 
@@ -231,7 +234,20 @@
 - ★toolbar 노출은 6타입 유지(bar/line/area/stacked-bar/pie/scatter); 신규 8타입은 `initialType`/`spec`/`createEChartsRenderer` 경유(toolbar 확장은 폴리시 선택).
 
 #### ★카탈로그 표면 완성 → 다음 = 발행 게이트
-17 타입 전부 구현·검증. 발행(`@topgrid/grid-pro-chart-enterprise@0.1.0`+echarts, user-gated)이 다음 가장 가치 높은 미실행.
+17 타입 전부 구현·검증. 발행(`@topgrid/grid-pro-chart-enterprise@0.1.0`+echarts, user-gated)이 다음 가장 가치 높은 미실행. → §3-9 에서 발행 완료.
+
+### 3-9. W2 단계③ 발행 — npm live (2026-06-18, ✅ 스모크 통과) ★발행 게이트 해소
+
+> 사용자 승인("발행을 진행"). 신규 `@topgrid/grid-pro-chart-enterprise@0.1.0` 가 npm 에 존재 → PTLPSM 등 외부 소비 가능.
+
+- **사전 검증(lockstep 판정)**: 런타임 의존 `@topgrid/grid-license`(로컬 0.3.0)·`@topgrid/grid-pro-chart`(로컬 0.4.0) 둘 다 **로컬 버전=npm 발행본 일치**(npm view 확인) → workspace:* 구체핀 치환이 라이브 registry 에서 해소 가능 → **선발행/lockstep 불요**(W1 headless 와 달리 신규 의존 없음).
+- **절차(전 단계 green)**: build(dts 포함)→test(node 18)→**`pnpm pack` tarball 검증**: `@topgrid/grid-license@0.3.0`·`@topgrid/grid-pro-chart@0.4.0` 구체핀 치환·`echarts@^5.5.0`·peer react/react-dom·`files`=dist+README·TOMIS/내부경로 누출 0→`pnpm publish packages/grid-pro-chart-enterprise --no-git-checks --access public`(positional dir 형식, [[npm-publish-topgrid]]).
+- **소비자 스모크(npm live)**: temp 폴더 `npm i @topgrid/grid-pro-chart-enterprise echarts react react-dom`→13 packages, **ERESOLVE 0·취약점 0**. tree=enterprise@0.1.0→grid-license@0.3.0·grid-pro-chart@0.4.0(license deduped)·echarts@5.6.0 라이브 해소.
+- ★**net-new 패키지명 전파 지연**: publish 즉시 성공(`+ ...@0.1.0`)이나 registry.npmjs.org read-replica 가 **~3.5분** 후 200(기존 패키지 version bump 은 즉시; **최초 패키지명은 메타도큐 생성이 느림**). curl 직접 폴링으로 확인 후 스모크. → 다음 신규 패키지 발행 시 스모크 전 폴링 루프 권장.
+- ★**알려진 한계(follow-up, 수용)**: echarts=**regular dependency `^5.5.0`**(peer 아님). 소비자가 echarts 6.x 별도 설치 시 5.x+6.x **2벌 공존**(ADR-003 D3 "소비자 단일 인스턴스 dedupe" 의도 미달). 현 발행물은 echarts 5.6.0 내부정합·동작 정상. 후속=**echarts 6.x 호환 평가**(6.x 도 Apache-2.0) **+ echarts-as-peerDependency 전환**(소비자가 단일 echarts 주입) — minor bump 으로 처리.
+
+#### ★다음 후보 (user-gated 또는 폴리시)
+(a)git push(미실행 로컬 커밋, user-gated) (b)echarts-as-peer + 6.x 평가(위 한계 해소) (c)toolbar 신규 타입 노출 (d)Vue wrapper(grid-vue 용 ECharts) (e)BYO Highcharts/AG 어댑터 (f)W3/PTLPSM 통합.
 
 ---
 
