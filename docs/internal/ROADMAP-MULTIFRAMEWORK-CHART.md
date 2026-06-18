@@ -6,7 +6,8 @@
 > **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
 > **★W2 단계① 완료(2026-06-18)**: 라이브러리 평가 매트릭스 → **Apache ECharts(Apache-2.0) 선정**(기본/번들 어댑터). 결정 렌즈=우리가 상용 재배포 제품(grid-license 동봉)이라 재배포-무료가 필수 → Highcharts(OEM 의무 전가)·AG Charts(갭 핵심타입=유료 Enterprise) 부적격. ECharts 만 §3-2 갭을 무료로 충족 + framework-agnostic core(W1 정렬) + SSR `renderToSVGString`(Nuxt PTLPSM 적합). Highcharts/AG Charts=BYO-라이선스 어댑터로만 개방(우리 미발행). 상세·매트릭스·출처=§3-4.
 > **★W2 단계② 완료(2026-06-18)**: 스펙+ADR 확정. **[[ADR-003]]**(`.claude/dev-harness/decisions/`) + **스펙** `docs/internal/SPEC-grid-pro-chart-enterprise.md`. 핵심 결정: 신규 opt-in `@topgrid/grid-pro-chart-enterprise` = **ECharts thin 자작 어댑터**(echarts-for-react 기각=번들·SSR·무-의존 제어), **기존 `MatrixChartData` 브리지·`RangeChartPanel` 시임·license 게이트 재사용**(integrate=시임 오염 아님, R1), SVG 스파크라인은 additive 공존(C-001, R3). Highcharts/AG Charts=BYO 어댑터로만 개방(R4). 상세 §3-5.
-> **★다음 세션 = W2 단계③ 구현**(첫 코드): `packages/grid-pro-chart-enterprise/` 스캐폴드 → 순수 `matrixToEChartsOption`(node-test 우선=zero-dep 타입 카탈로그) → thin `EChartsChart` wrapper → `EnterpriseChartPanel`(툴바·export·cross-filter). 검증=node(순수 매핑)+chromium(live 렌더/legend/export). ★발행은 별도 게이트(단계③ 후). 스펙 §3·§5 참조.
+> **★W2 단계③ 증분1 완료(2026-06-18)**: 신규 패키지 `packages/grid-pro-chart-enterprise@0.1.0` 스캐폴드 + **순수 `matrixToEChartsOption` 엔진**(MatrixChartData→EChartsOption, ECharts/grid-pro-chart=type-only 임포트=zero-dep node test). 구현 타입군 3종(cartesian/stacked·scatter·pie). 검증: **node 10 passed**(100%-stack 정규화·secondary-axis 라우팅 등 non-vacuous)·typecheck 0(★`skipLibCheck:true`=echarts@5.6.0 자체 .d.ts `export =`+exactOptional 버그, grid-features 선례)·**`pnpm build` 전패키지 green**·`pnpm -r test` green. 상세 §3-6.
+> **★다음 = 단계③ 증분2**(live 코드): thin `EChartsChart` wrapper(echarts/core init/dispose/ResizeObserver) → `createEChartsRenderer`(기존 `RangeChartPanel` 시임 호환 팩토리) → `EnterpriseChartPanel`(툴바·export `getDataURL`·cross-filter). + 카탈로그 확장(radar/heatmap/candlestick/…). 검증=chromium(live 렌더·legend toggle·export 라운드트립). ★발행은 별도 게이트. 스펙 §3·§5.
 
 > 작성 2026-06-16. 사용자 요청: "전체 하이어라키 매트릭스에 추가할 진행 목록 + 소요 심층분석 + 분석/스펙/검증/구현/검증 단계화".
 > **본 문서의 효과(소요) 수치는 전부 ROM(Rough Order of Magnitude)** — 확정 약속이 아니라 *분석/스펙 단계의 산출물로 확정될 예비치*. (이 저장소의 anti-over-claim 규율 적용: 추측을 권위 수치로 세탁 금지.)
@@ -173,6 +174,24 @@
 
 #### ★다음 = 단계③ 구현(첫 코드)
 `packages/grid-pro-chart-enterprise/` 스캐폴드 → 순수 매핑 node-test → wrapper → 패널. 검증 node+chromium. 발행은 단계③ 후 별도 게이트.
+
+### 3-6. W2 단계③ 증분1 — 패키지 스캐폴드 + 순수 매핑 엔진 (2026-06-18, ✅ 첫 코드)
+
+> 첫 코드. 신규 의존 `echarts@5.6.0` 도입. ★범위(정직): **순수 매핑 엔진 + node test 만**. React wrapper·패널·카탈로그 잔여 타입은 증분2(live=chromium 필요, repo 패턴=순수 먼저).
+
+#### 한 것
+- **신규 패키지 `@topgrid/grid-pro-chart-enterprise@0.1.0`**(`packages/grid-pro-chart-enterprise/`): package.json/tsconfig/tsup/README/EULA + `src/index.ts`. deps=`echarts`(external, 소비자 단일 인스턴스 dedupe)·`@topgrid/grid-pro-chart`(workspace:*, **`MatrixChartData` 타입 재사용=ADR-003 D1**), peer=react.
+- **순수 `matrixToEChartsOption(MatrixChartData, ChartOptionSpec) → EChartsOption`**(`src/internal/`): ★echarts·grid-pro-chart 둘 다 **type-only import**(strip-types 가 erase → node test 가 echarts 런타임 없이 동작=zero-dep). 구현 타입군 3 SHAPE: **cartesian/stacked**(line·bar·area·stacked-bar·stacked-area·**100-stacked-bar=per-category 100 정규화**·**secondaryAxisSeries=yAxisIndex 라우팅**)·**scatter**([idx,value] pairs)·**pie/doughnut**(축 0, 첫 series→{name,value} slices). `EnterpriseChartType` union=**구현된 것만 노출**(미구현 타입=throw, 카탈로그 거짓말 금지).
+- ★grid-pro-chart 의 SVG 스파크라인/`RangeChart`/`RangeChartPanel` **무변경**(C-001/R3 공존).
+
+#### 검증 (전부 green)
+- **node 10 passed**(non-vacuous: 100%-stack 정규화 raw 10/30→25/75 단언·secondary-axis 라우팅·pie 축 제거·unsupported throw).
+- typecheck 0 — ★`skipLibCheck:true` 오버라이드(echarts@5.6.0 *자체* .d.ts 가 `export =`(TS1203 under ESM)+`GraphSeriesOption` exactOptionalPropertyTypes 비호환. **우리 src 는 여전히 strict**. grid-features 선례=upstream 타입 버그 동일 패턴).
+- **`pnpm build` 전패키지 topo green**(신규 패키지 dist cjs/esm/dts)·`pnpm -r test` green.
+- ★chromium 미실행=의도적: 신규 패키지=소비자 0 leaf, 기존 src 변경 0 → 행위 패리티 영향 없음(순수 매핑은 node 가 적정 게이트). live 렌더는 증분2 wrapper 와 함께 chromium.
+
+#### 남은 것 (증분2)
+- thin `EChartsChart`(자작 wrapper, echarts/core init/setOption/dispose/ResizeObserver)·`createEChartsRenderer`(기존 시임 팩토리)·`EnterpriseChartPanel`(툴바·export·cross-filter) + 카탈로그 확장(radar/heatmap/candlestick/boxplot/funnel/treemap/sankey/bubble). 발행=별도 게이트.
 
 ---
 

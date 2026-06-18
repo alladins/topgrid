@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "composite": false,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true // W2 단계③: echarts@5.6.0 ships `export =` (TS1203 under ESM) + a GraphSeriesOption exactOptionalPropertyTypes incompatibility in its own .d.ts. Same precedent as grid-features (upstream typing bug). Our src still strict-checked.
+  },
+  "include": ["src/**/*"]
+}
