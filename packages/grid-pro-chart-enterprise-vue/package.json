@@ -1,0 +1,41 @@
+{
+  "name": "@topgrid/grid-pro-chart-enterprise-vue",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "SEE LICENSE IN EULA",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Pro: Enterprise charting for Vue 3 (Apache ECharts) — reuses the framework-neutral @topgrid/grid-chart-core engine",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types src/EnterpriseChartPanel.test.ts"
+  },
+  "dependencies": {
+    "@topgrid/grid-chart-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "echarts": "^5.5.0 || ^6.0.0",
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^15.0.0",
+    "echarts": "^6.0.0",
+    "vue": "^3.5.0"
+  }
+}

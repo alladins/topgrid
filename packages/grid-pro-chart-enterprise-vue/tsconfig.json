@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "composite": false,
+    "noEmit": true,
+    "types": [],
+    "skipLibCheck": true // echarts@6 ships `export =` (TS1203) + exactOptional incompatibilities in its own .d.ts (same precedent as grid-chart-core/grid-pro-chart-enterprise). Our src stays strict.
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.ts", "src/setup-happydom.ts"]
+}

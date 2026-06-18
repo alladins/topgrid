@@ -368,6 +368,22 @@ importers:
         specifier: ^6.0.0
         version: 6.1.0
 
+  packages/grid-pro-chart-enterprise-vue:
+    dependencies:
+      '@topgrid/grid-chart-core':
+        specifier: workspace:*
+        version: link:../grid-chart-core
+    devDependencies:
+      '@happy-dom/global-registrator':
+        specifier: ^15.0.0
+        version: 15.11.7
+      echarts:
+        specifier: ^6.0.0
+        version: 6.1.0
+      vue:
+        specifier: ^3.5.0
+        version: 3.5.38(typescript@5.8.3)
+
   packages/grid-pro-datamap:
     dependencies:
       '@tanstack/react-table':
