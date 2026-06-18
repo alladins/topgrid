@@ -1,7 +1,7 @@
 # TWGRID 전략 로드맵 — 멀티프레임워크(Vue+React) · 엔터프라이즈 차트 · 잔여작업
 
 > ## ★★ 발행 배치 W1 완료 (2026-06-18) → 다음 세션 = W2 차트 착수 ★★
-> **현 git 상태(재부팅 HANDOFF)**: working tree **clean**. HEAD=`f2d179b`(chore release). **main 이 origin/main 보다 1커밋 앞섬 = `f2d179b` 미푸시(★origin push = user-gated, 미실행)**. 새 세션 첫 액션 후보 = (a)`git push`(사용자 승인 시) 또는 (b)바로 W2 착수. npm 6개는 이미 live(아래)이므로 push 안 해도 발행물엔 영향 없음.
+> **현 git 상태(재부팅 HANDOFF)**: working tree **clean**. **main 이 origin/main 보다 앞섬 = release `f2d179b`(버전 bump) + docs handoff 커밋이 미푸시(★origin push = user-gated, 미실행)**. 새 세션 첫 액션 후보 = (a)`git push`(사용자 승인 시) 또는 (b)바로 W2 착수. npm 6개는 이미 live(아래)이므로 push 안 해도 발행물엔 영향 없음.
 > **발행 완료(2026-06-18, npm live·스모크 통과)**: 6개 = **@topgrid/grid-core-headless@0.1.0**(신규) · **@topgrid/grid-vue@0.1.0**(신규) · grid-core@**0.6.0** · grid-features@**0.9.0** · grid-pro-range@**0.4.0** · grid-pro-master@**0.7.0**. publisher=travia71, Bypass-2FA 토큰=비대화형 통과(OTP 프롬프트 없음). 절차: 수동 bump(★changeset version 미사용=major-escalation 회피 [[changeset-peerdep-major-escalation]]) → pnpm build green → pnpm -r test EXIT0 → **pnpm pack ×6 tarball 검증(workspace:* 전부 구체핀 치환·누출 0)** → topo 발행(headless→grid-core→features/range/master→grid-vue) → 소비자 스모크(`npm i @topgrid/grid-vue vue @tanstack/vue-table`=ERESOLVE 0, grid-vue→headless@0.1.0 라이브 해소). 상세 §11.9.
 > **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
 > **★다음 세션 = W2 엔터프라이즈 차트 착수**: ★build 아니라 **integrate**. 경량 SVG 스파크라인(grid-pro-chart) 유지 + 신규 opt-in 패키지가 `RangeChartPanel` 주입 시임으로 외부 라이브러리(ECharts/AG Charts) wrap. 첫 단계=①라이브러리 평가(ECharts MIT vs AG Charts vs Highcharts: 라이선스·번들·SSR·Vue+React 지원). 상세 §3.
