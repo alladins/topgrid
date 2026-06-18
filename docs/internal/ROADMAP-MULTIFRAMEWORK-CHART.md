@@ -1,5 +1,18 @@
 # TWGRID 전략 로드맵 — 멀티프레임워크(Vue+React) · 엔터프라이즈 차트 · 잔여작업
 
+> ## ★★ 다음 세션 즉시 시작 — 발행 PENDING (2026-06-18 재부팅 전 HANDOFF) ★★
+> **현 상태**: W1 옵션1·2·3 실질 완료(아래 §11 마일스톤). 코드 전부 커밋·푸시됨(HEAD `b0883b3`, origin 동기화, working tree clean). **아무것도 npm 발행 안 됨, 버전 bump 미적용**.
+> **사용자 결정(AskUserQuestion)**: **6개 발행** = 신규 2(grid-core-headless, grid-vue) + React 4 재발행(grid-core/features/range/master). [advisor 는 2개 권장했으나 사용자가 6개 선택=npm 일관성.]
+> **pre-flight 검증 완료(되돌릴 수 있는 단계)**: ①npm auth=travia71+토큰 OK ②headless·grid-vue=npm E404(신규) ③★**`pnpm pack`/`pnpm publish` 사용**(npm pack 은 `workspace:*` 치환 안 함=깨진 tarball, 이미 적발) ④grid-vue pnpm-pack→headless@0.1.0 정확 핀 확인 ⑤배치-외부 의존(grid-renderers 0.3.0·grid-license 0.3.0·grid-export 0.6.0) 전부 npm 일치=workspace:* 핀 해소됨.
+> **다음 실행(정확):**
+> 1. **수동 버전 bump**(★`changeset version` 금지=major-escalation 함정 [[changeset-peerdep-major-escalation]]): grid-core 0.5.0→**0.6.0**, grid-features 0.8.0→**0.9.0**, grid-pro-range 0.3.0→**0.4.0**, grid-pro-master 0.6.0→**0.7.0**. headless·grid-vue=**0.1.0 유지**.
+> 2. `pnpm build`(전체 클린 재빌드 green 확인).
+> 3. **pnpm pack 각 6개 → tarball package.json 검증**: workspace:* 치환됨 + 핀 버전이 npm 에 존재(grid-core@0.6.0·headless@0.1.0=배치내 / grid-export@0.6.0·license@0.3.0·renderers@0.3.0=기존 npm).
+> 4. **발행 topo 순**: headless → grid-core → (grid-features, grid-pro-range, grid-pro-master) → grid-vue. (`pnpm --filter <pkg> publish`; pnpm 이 workspace:* 치환.) ★2FA/OTP 대화형 프롬프트 뜨면 그 단계는 사용자 몫(Bypass-2FA 토큰이 비대화형 처리 기대).
+> 5. **소비자 스모크**: 새 폴더 `npm i @topgrid/grid-vue vue @tanstack/vue-table` → ERESOLVE 0. (facade `@topgrid/grid` 는 배치 밖=옛 grid-core@0.5.0 핀 유지, npm 에 존재하므로 정상 — 부분 재발행의 알려진 한계, 완전정합=21-lockstep은 사용자 미선택.)
+> 6. `chore(release)` 커밋 + 메모리/로드맵 갱신. [[npm-publish-topgrid]] 절차 준수.
+> **그 다음 = W2 엔터프라이즈 차트 착수**: ★build 아니라 **integrate**. 경량 SVG 스파크라인(grid-pro-chart) 유지 + 신규 opt-in 패키지가 `RangeChartPanel` 주입 시임으로 외부 라이브러리(ECharts/AG Charts) wrap. 첫 단계=①라이브러리 평가(ECharts MIT vs AG Charts vs Highcharts: 라이선스·번들·SSR·Vue+React 지원). 상세 §3.
+
 > 작성 2026-06-16. 사용자 요청: "전체 하이어라키 매트릭스에 추가할 진행 목록 + 소요 심층분석 + 분석/스펙/검증/구현/검증 단계화".
 > **본 문서의 효과(소요) 수치는 전부 ROM(Rough Order of Magnitude)** — 확정 약속이 아니라 *분석/스펙 단계의 산출물로 확정될 예비치*. (이 저장소의 anti-over-claim 규율 적용: 추측을 권위 수치로 세탁 금지.)
 > 근거 = 2026-06-16 코드 실측(아키텍처 감사 + 차트 감사). 추측 아님.
