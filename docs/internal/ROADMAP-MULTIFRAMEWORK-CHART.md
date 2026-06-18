@@ -2,9 +2,9 @@
 
 > ## ★★ W1 발행(6개) + W2 엔터프라이즈 차트 단계①~③ 완료·발행 (2026-06-18) ★★
 > **★W2 차트 전체 완료**: 단계①(ECharts 선정 §3-4)→②(ADR-003 §3-5)→③ 증분1~3(스캐폴드·순수엔진·live wrapper·풀 카탈로그 17타입 §3-6~8)→**발행 `@topgrid/grid-pro-chart-enterprise@0.1.0` npm live·스모크 통과(§3-9)**. 검증: node 18 + chromium 7 + full 비주얼 무회귀. 알려진 한계=echarts regular-dep ^5.5.0(6.x peer 전환 후속, §3-9).
-> **★발행 게이트 2건 대기(user-gated, 코드·검증 완료)**: (1)**`grid-pro-chart-enterprise@0.2.0` republish**=echarts→peer + 6.x 호환(§3-10, pack 검증 완료). (2)[다음 증분 시] grid-chart-core 추출+lockstep. → 사용자가 republish 승인하면 §3-9 절차로 즉시.
-> **★advisor 우선순위 #2 = Vue 엔터프라이즈 차트**: 아키텍처 결정 박음 = **[[ADR-004]]**(순수 엔진 `matrixToEChartsOption`→framework-neutral `@topgrid/grid-chart-core` 추출, extract-on-demand; React=re-export shim, Vue 신규; 렌더 셸만 프레임워크별). 실행 증분①=grid-chart-core 추출(React 패키지 byte-identical 재배선+chromium 재검증) → 증분②=grid-vue 식 Vue 컴포넌트. **미착수**(다음 세션 즉시시작 가능).
-> **현 git 상태**: working tree **clean**. main 이 origin 보다 앞섬(W2 커밋 다수, ★origin push=user-gated). npm 0.1.0 은 live(0.2.0 republish 대기).
+> **★발행 완료(2026-06-18~19, npm live·스모크 통과)**: (1)`@topgrid/grid-pro-chart-enterprise@0.2.0`(echarts→peer) → (2)**ADR-004 추출 배치**: `@topgrid/grid-chart-core@0.1.0`(신규 framework-neutral 엔진) + `@topgrid/grid-pro-chart-enterprise@0.3.0`(re-export shim+core 핀). 스모크: `npm i enterprise echarts`=**echarts 6.1.0 deduped=단일 인스턴스**(D3/ADR-004 의도 실증)·취약점 0·ERESOLVE 0. 상세 §3-10·§3-11.
+> **★advisor #2 진행상황**: ADR-004 결정 + **증분① grid-chart-core 추출 완료·발행**(React byte-identical=chromium 7 green). **남은 것=증분② Vue 컴포넌트**(`grid-pro-chart-enterprise-vue` 신규: grid-vue 식 `EChartsChart`/`EnterpriseChartPanel`, **grid-chart-core 엔진 재사용**=React 결합 0). 미착수=다음 세션 즉시시작.
+> **현 git 상태**: working tree **clean**. main 이 origin 보다 앞섬(★origin push=user-gated). npm: enterprise@0.3.0 + chart-core@0.1.0 live.
 > **발행 완료(2026-06-18, npm live·스모크 통과)**: 6개 = **@topgrid/grid-core-headless@0.1.0**(신규) · **@topgrid/grid-vue@0.1.0**(신규) · grid-core@**0.6.0** · grid-features@**0.9.0** · grid-pro-range@**0.4.0** · grid-pro-master@**0.7.0**. publisher=travia71, Bypass-2FA 토큰=비대화형 통과(OTP 프롬프트 없음). 절차: 수동 bump(★changeset version 미사용=major-escalation 회피 [[changeset-peerdep-major-escalation]]) → pnpm build green → pnpm -r test EXIT0 → **pnpm pack ×6 tarball 검증(workspace:* 전부 구체핀 치환·누출 0)** → topo 발행(headless→grid-core→features/range/master→grid-vue) → 소비자 스모크(`npm i @topgrid/grid-vue vue @tanstack/vue-table`=ERESOLVE 0, grid-vue→headless@0.1.0 라이브 해소). 상세 §11.9.
 > **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
 > **★W2 단계① 완료(2026-06-18)**: 라이브러리 평가 매트릭스 → **Apache ECharts(Apache-2.0) 선정**(기본/번들 어댑터). 결정 렌즈=우리가 상용 재배포 제품(grid-license 동봉)이라 재배포-무료가 필수 → Highcharts(OEM 의무 전가)·AG Charts(갭 핵심타입=유료 Enterprise) 부적격. ECharts 만 §3-2 갭을 무료로 충족 + framework-agnostic core(W1 정렬) + SSR `renderToSVGString`(Nuxt PTLPSM 적합). Highcharts/AG Charts=BYO-라이선스 어댑터로만 개방(우리 미발행). 상세·매트릭스·출처=§3-4.
@@ -265,9 +265,25 @@
 - pack(0.2.0): echarts=peer(deps 밖)·@topgrid 구체핀(0.3.0/0.4.0)·workspace 누출 false.
 - ★결론: peer 범위 `^5.5.0 || ^6.0.0` 양 major 실측 근거 확보(5.x=0.1.0 발행시 5.6.0, 6.x=금회 6.1.0).
 
-#### 남은 것
-- **0.2.0 republish**(user-gated): 절차=§3-9 동일(pack 검증 완료→`pnpm publish <dir> --no-git-checks --access public`→net-new 아님이라 즉시 전파→스모크). 0.1.0 supersede.
-- 다음 advisor 후보: (#2) **Vue용 ECharts wrapper**(grid-vue 가 순수 `matrixToEChartsOption` 재사용=W1×W2 시너지, framework-agnostic 엔진이 이미 있음) → 별도 단위. (#3 보류) toolbar 17타입 노출=소비자 styling 영역.
+#### 남은 것 → §3-11 에서 발행 완료
+- **0.2.0 republish** ✅ 발행(§아래). 다음 advisor 후보 #2 Vue = §3-11 에서 증분①(추출) 실행.
+
+### 3-11. echarts peer 발행 + ADR-004 grid-chart-core 추출 발행 (2026-06-18~19, ✅ "둘 다")
+
+> 사용자 "둘 다"=(a)0.2.0 republish + (b)Vue 증분①(grid-chart-core 추출). 둘 다 실행·발행·스모크 통과.
+
+#### (a) `grid-pro-chart-enterprise@0.2.0` — echarts→peer
+- §3-10 코드 발행. 스모크: 0.2.0 live, peerDependencies echarts `^5.5.0 || ^6.0.0`·deps=@topgrid 2핀. 0.1.0 supersede.
+
+#### (b) ADR-004 증분① — `@topgrid/grid-chart-core` 추출 (fork 없음)
+- **신규 `@topgrid/grid-chart-core@0.1.0`**: 순수 `matrixToEChartsOption`+카탈로그 17타입+node 18 테스트 **이관**. ★**완전 중립**: `dependencies: {}`(echarts=type-only optional peer, react/vue/grid 0). 입력타입 `ChartMatrix`/`ChartSeriesInput` **여기 정의**(grid-pro-chart `MatrixChartData` 가 구조적으로 만족=structural-typing 브리지, W1 §11-1 패턴) → grid-pro-chart(react peer) 의존 회피=Vue 가 React 상속 안 함.
+- **grid-pro-chart-enterprise@0.3.0 재배선**: `internal/matrixToEChartsOption.ts`+test **삭제**, index/Panel/Renderer 가 `@topgrid/grid-chart-core` 에서 import(re-export shim). dep `grid-chart-core: workspace:*` 추가. **공개 표면 무변경**.
+- 검증: core(node 18·typecheck0·build) + enterprise(typecheck0·build) + **chromium 7 green=byte-identical**(추출이 React 행위 무변경 입증, fork 없음) + `pnpm build` 전패키지 green.
+- **lockstep 발행**(topo): grid-chart-core@0.1.0 → grid-pro-chart-enterprise@0.3.0(core@0.1.0 구체핀). pack 검증=core deps {}·enterprise core 핀·누출 0.
+- ★**스모크 핵심 성과**: `npm i @topgrid/grid-pro-chart-enterprise echarts`=**echarts 6.1.0 deduped**(top-level + enterprise + chart-core 가 **단일 echarts 인스턴스** 공유) → ADR-003 D3 "소비자 단일 인스턴스" + ADR-004(중립 코어) 의도 **실코드 실증**. 취약점 0·ERESOLVE 0.
+
+#### ★다음 = 증분② Vue 컴포넌트 (미착수)
+신규 `@topgrid/grid-pro-chart-enterprise-vue`: grid-vue 식 Vue `EChartsChart`(defineComponent+h, echarts init/dispose=onMounted/onBeforeUnmount)·`EnterpriseChartPanel` Vue. **grid-chart-core 엔진 그대로 재사용**(W1×W2 시너지=동일 엔진이 React+Vue 양쪽 구동). 검증=happy-dom live mount(grid-vue 패턴). 발행=user-gated.
 
 ---
 

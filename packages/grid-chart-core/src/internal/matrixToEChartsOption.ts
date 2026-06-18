@@ -1,13 +1,16 @@
 /**
- * MatrixChartData → ECharts option — pure, node-testable, zero runtime echarts (ADR-003 D1/D2).
+ * Labelled matrix → ECharts option — pure, node-testable, framework-neutral (ADR-004).
  *
- * ★ This is the catalog engine: it maps the EXISTING grid-pro-chart range/pivot bridge output
- * (`MatrixChartData = { categories, series: ChartSeries[] }`) onto an ECharts `EChartsOption`.
- * No chart is rendered here — only a plain option object is built — so the whole engine is proven
- * in node (zero deps) and the live ECharts mount stays a thin wrapper concern (EChartsChart).
+ * ★ The catalog engine: maps a labelled 2-D matrix (`ChartMatrix = { categories, series }`) onto an
+ * ECharts `EChartsOption`. No chart is rendered here — only a plain option object is built — so the
+ * whole engine is proven in node (zero deps) and the live ECharts mount stays a thin, per-framework
+ * wrapper concern (React: grid-pro-chart-enterprise; Vue: grid-pro-chart-enterprise-vue).
  *
- * `echarts` is a TYPE-ONLY import: `node --experimental-strip-types` erases it, so the node test
- * runs without echarts installed; `tsc` still type-checks the option shape.
+ * This package has NO React/Vue and NO grid coupling. `echarts` is a TYPE-ONLY import (erased by
+ * `node --experimental-strip-types`; an optional peer for TS consumers). The input `ChartMatrix` is
+ * defined HERE (not imported from the React grid-pro-chart) so neither this package nor a Vue
+ * consumer inherits React peers — grid-pro-chart's `MatrixChartData` structurally satisfies it
+ * (structural-typing bridge, same pattern as W1 headless GridProps ↔ TableOptionsInput).
  *
  * Catalog families (how the generic matrix is reshaped):
  *   - cartesian/stacked:  line · bar · area · stacked-bar · stacked-area · 100-stacked-bar
@@ -19,7 +22,22 @@
  *   - sankey:             nodes = categories ∪ series names; links = (category → series, value)
  */
 import type { EChartsOption } from 'echarts';
-import type { MatrixChartData } from '@topgrid/grid-pro-chart';
+
+/** One named numeric series of a {@link ChartMatrix} (pure data; no framework types). */
+export interface ChartSeriesInput {
+  name: string;
+  values: number[];
+  color?: string;
+}
+
+/**
+ * Framework-neutral chart input — a labelled 2-D matrix. grid-pro-chart's `MatrixChartData`
+ * (`seriesFromMatrix` / `seriesFromPivot` output) structurally satisfies this.
+ */
+export interface ChartMatrix {
+  categories: string[];
+  series: ChartSeriesInput[];
+}
 
 /** Chart types implemented by the catalog engine. */
 export type EnterpriseChartType =
@@ -59,7 +77,7 @@ const CARTESIAN = new Set<EnterpriseChartType>([
 ]);
 
 /** Per-category percentage normalisation for 100%-stacked charts (sum across series → 100 at each x). */
-function normalizeTo100(series: MatrixChartData['series']): MatrixChartData['series'] {
+function normalizeTo100(series: ChartMatrix['series']): ChartMatrix['series'] {
   const catCount = series.reduce((m, s) => Math.max(m, s.values.length), 0);
   const totals = Array.from({ length: catCount }, (_, c) =>
     series.reduce((sum, s) => sum + (Number.isFinite(s.values[c]) ? s.values[c] : 0), 0),
@@ -74,30 +92,27 @@ function normalizeTo100(series: MatrixChartData['series']): MatrixChartData['ser
 }
 
 /** First series → `{name, value}` items (pie / doughnut / funnel / treemap share this shape). */
-function namedValues(data: MatrixChartData): Array<{ name: string; value: number }> {
+function namedValues(data: ChartMatrix): Array<{ name: string; value: number }> {
   const first = data.series[0];
   return (first?.values ?? []).map((value, i) => ({ name: data.categories[i] ?? String(i), value }));
 }
 
 /** Per-category stat tuples: row i = [series[0..arity-1].values[i]]. Drives candlestick / boxplot. */
-function statRows(data: MatrixChartData, arity: number): number[][] {
+function statRows(data: ChartMatrix, arity: number): number[][] {
   const catCount = data.series.reduce((m, s) => Math.max(m, s.values.length), 0);
   return Array.from({ length: catCount }, (_, i) =>
     Array.from({ length: arity }, (_, k) => data.series[k]?.values[i] ?? 0),
   );
 }
 
-const finiteValues = (data: MatrixChartData): number[] =>
+const finiteValues = (data: ChartMatrix): number[] =>
   data.series.flatMap((s) => s.values.filter((v) => Number.isFinite(v)));
 
 /**
  * Map a labelled matrix (range or pivot bridge output) to an ECharts option for the given type.
  * Pure: same inputs → same plain object. Throws on a type outside the implemented catalog.
  */
-export function matrixToEChartsOption(
-  data: MatrixChartData,
-  spec: ChartOptionSpec,
-): EChartsOption {
+export function matrixToEChartsOption(data: ChartMatrix, spec: ChartOptionSpec): EChartsOption {
   const { type } = spec;
   const showLabel = spec.dataLabels ?? false;
 
@@ -226,9 +241,7 @@ export function matrixToEChartsOption(
     );
     return {
       tooltip: { trigger: 'item' },
-      series: [
-        { type: 'sankey', data: [...nodeNames].map((name) => ({ name })), links },
-      ],
+      series: [{ type: 'sankey', data: [...nodeNames].map((name) => ({ name })), links }],
     };
   }
 

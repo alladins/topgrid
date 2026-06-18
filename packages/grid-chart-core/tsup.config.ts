@@ -11,13 +11,6 @@ export default defineConfig({
   outExtension({ format }) {
     return { js: format === 'esm' ? '.mjs' : '.cjs' };
   },
-  // echarts (+ subpaths) stays external — consumers dedupe a single ECharts instance (ADR-003 D3).
-  external: [
-    'react',
-    'react-dom',
-    /^echarts(\/|$)/,
-    '@topgrid/grid-chart-core',
-    '@topgrid/grid-pro-chart',
-    '@topgrid/grid-license',
-  ],
+  // echarts (+ subpaths) is type-only here; keep it external regardless.
+  external: [/^echarts(\/|$)/],
 });

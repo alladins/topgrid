@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import type { RangeSeries } from '@topgrid/grid-pro-chart';
-import { matrixToEChartsOption, type ChartOptionSpec } from './internal/matrixToEChartsOption.js';
+import { matrixToEChartsOption, type ChartOptionSpec } from '@topgrid/grid-chart-core';
 import { EChartsChart } from './EChartsChart.js';
 
 /**

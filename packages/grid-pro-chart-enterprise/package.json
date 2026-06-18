@@ -1,6 +1,6 @@
 {
   "name": "@topgrid/grid-pro-chart-enterprise",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "license": "SEE LICENSE IN EULA",
   "publishConfig": {
@@ -24,9 +24,10 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/internal/matrixToEChartsOption.test.ts"
+    "test": "echo \"chromium-gated (tests/visual/enterprise-chart.spec.ts); pure engine tested in @topgrid/grid-chart-core\""
   },
   "dependencies": {
+    "@topgrid/grid-chart-core": "workspace:*",
     "@topgrid/grid-license": "workspace:*",
     "@topgrid/grid-pro-chart": "workspace:*"
   },

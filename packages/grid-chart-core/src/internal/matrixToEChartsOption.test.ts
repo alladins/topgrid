@@ -1,4 +1,4 @@
-// grid-pro-chart-enterprise node spine — matrixToEChartsOption. Runs via: node --experimental-strip-types.
+// grid-chart-core node spine — matrixToEChartsOption. Runs via: node --experimental-strip-types.
 // ★ Non-vacuous: the mapping changes SHAPE per family (axes appear/disappear, data is reshaped) and
 // 100-stacked-bar actually NORMALISES values to 100 per category, secondary-axis ROUTES named series
 // to yAxisIndex 1. Charting the wrong option is a silent, plausible bug — same data, wrong picture.

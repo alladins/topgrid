@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState, type JSX } from 'react';
 import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 import type { MatrixChartData } from '@topgrid/grid-pro-chart';
-import { matrixToEChartsOption, type EnterpriseChartType } from './internal/matrixToEChartsOption.js';
+import { matrixToEChartsOption, type EnterpriseChartType } from '@topgrid/grid-chart-core';
 import { EChartsChart, type ChartSelection, type EChartsInstance } from './EChartsChart.js';
 
 /**

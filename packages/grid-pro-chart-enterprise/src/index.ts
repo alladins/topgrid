@@ -9,12 +9,16 @@ import { checkLicense } from '@topgrid/grid-license';
 // PAT-003 — module-load license gate (side effect; same as grid-pro-chart).
 checkLicense();
 
-// 증분1: pure catalog engine (node-tested, zero-dep).
+// 증분1: pure catalog engine — re-export from the framework-neutral core (ADR-004). The engine
+// moved to @topgrid/grid-chart-core (no React) so the Vue counterpart can reuse it; this package's
+// public surface is unchanged (shim, byte-identical re-export — no fork).
 export {
   matrixToEChartsOption,
   type EnterpriseChartType,
   type ChartOptionSpec,
-} from './internal/matrixToEChartsOption.js';
+  type ChartMatrix,
+  type ChartSeriesInput,
+} from '@topgrid/grid-chart-core';
 
 // 증분2: live React surface (chromium-gated).
 export {

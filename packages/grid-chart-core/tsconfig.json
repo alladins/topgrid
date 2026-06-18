@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "composite": false,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true // echarts@6 ships `export =` (TS1203 under ESM) + exactOptional incompatibilities in its own .d.ts (same precedent as grid-pro-chart-enterprise/grid-features). Our src stays strict.
+  },
+  "include": ["src/**/*"]
+}
