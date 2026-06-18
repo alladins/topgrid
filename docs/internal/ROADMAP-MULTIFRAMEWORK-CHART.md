@@ -1,17 +1,9 @@
 # TWGRID 전략 로드맵 — 멀티프레임워크(Vue+React) · 엔터프라이즈 차트 · 잔여작업
 
-> ## ★★ 다음 세션 즉시 시작 — 발행 PENDING (2026-06-18 재부팅 전 HANDOFF) ★★
-> **현 상태**: W1 옵션1·2·3 실질 완료(아래 §11 마일스톤). 코드 전부 커밋·푸시됨(HEAD `b0883b3`, origin 동기화, working tree clean). **아무것도 npm 발행 안 됨, 버전 bump 미적용**.
-> **사용자 결정(AskUserQuestion)**: **6개 발행** = 신규 2(grid-core-headless, grid-vue) + React 4 재발행(grid-core/features/range/master). [advisor 는 2개 권장했으나 사용자가 6개 선택=npm 일관성.]
-> **pre-flight 검증 완료(되돌릴 수 있는 단계)**: ①npm auth=travia71+토큰 OK ②headless·grid-vue=npm E404(신규) ③★**`pnpm pack`/`pnpm publish` 사용**(npm pack 은 `workspace:*` 치환 안 함=깨진 tarball, 이미 적발) ④grid-vue pnpm-pack→headless@0.1.0 정확 핀 확인 ⑤배치-외부 의존(grid-renderers 0.3.0·grid-license 0.3.0·grid-export 0.6.0) 전부 npm 일치=workspace:* 핀 해소됨.
-> **다음 실행(정확):**
-> 1. **수동 버전 bump**(★`changeset version` 금지=major-escalation 함정 [[changeset-peerdep-major-escalation]]): grid-core 0.5.0→**0.6.0**, grid-features 0.8.0→**0.9.0**, grid-pro-range 0.3.0→**0.4.0**, grid-pro-master 0.6.0→**0.7.0**. headless·grid-vue=**0.1.0 유지**.
-> 2. `pnpm build`(전체 클린 재빌드 green 확인).
-> 3. **pnpm pack 각 6개 → tarball package.json 검증**: workspace:* 치환됨 + 핀 버전이 npm 에 존재(grid-core@0.6.0·headless@0.1.0=배치내 / grid-export@0.6.0·license@0.3.0·renderers@0.3.0=기존 npm).
-> 4. **발행 topo 순**: headless → grid-core → (grid-features, grid-pro-range, grid-pro-master) → grid-vue. (`pnpm --filter <pkg> publish`; pnpm 이 workspace:* 치환.) ★2FA/OTP 대화형 프롬프트 뜨면 그 단계는 사용자 몫(Bypass-2FA 토큰이 비대화형 처리 기대).
-> 5. **소비자 스모크**: 새 폴더 `npm i @topgrid/grid-vue vue @tanstack/vue-table` → ERESOLVE 0. (facade `@topgrid/grid` 는 배치 밖=옛 grid-core@0.5.0 핀 유지, npm 에 존재하므로 정상 — 부분 재발행의 알려진 한계, 완전정합=21-lockstep은 사용자 미선택.)
-> 6. `chore(release)` 커밋 + 메모리/로드맵 갱신. [[npm-publish-topgrid]] 절차 준수.
-> **그 다음 = W2 엔터프라이즈 차트 착수**: ★build 아니라 **integrate**. 경량 SVG 스파크라인(grid-pro-chart) 유지 + 신규 opt-in 패키지가 `RangeChartPanel` 주입 시임으로 외부 라이브러리(ECharts/AG Charts) wrap. 첫 단계=①라이브러리 평가(ECharts MIT vs AG Charts vs Highcharts: 라이선스·번들·SSR·Vue+React 지원). 상세 §3.
+> ## ★★ 발행 배치 W1 완료 (2026-06-18) → 다음 세션 = W2 차트 착수 ★★
+> **발행 완료(2026-06-18, npm live·스모크 통과)**: 6개 = **@topgrid/grid-core-headless@0.1.0**(신규) · **@topgrid/grid-vue@0.1.0**(신규) · grid-core@**0.6.0** · grid-features@**0.9.0** · grid-pro-range@**0.4.0** · grid-pro-master@**0.7.0**. publisher=travia71, Bypass-2FA 토큰=비대화형 통과(OTP 프롬프트 없음). 절차: 수동 bump(★changeset version 미사용=major-escalation 회피 [[changeset-peerdep-major-escalation]]) → pnpm build green → pnpm -r test EXIT0 → **pnpm pack ×6 tarball 검증(workspace:* 전부 구체핀 치환·누출 0)** → topo 발행(headless→grid-core→features/range/master→grid-vue) → 소비자 스모크(`npm i @topgrid/grid-vue vue @tanstack/vue-table`=ERESOLVE 0, grid-vue→headless@0.1.0 라이브 해소). 상세 §11.9.
+> **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
+> **★다음 세션 = W2 엔터프라이즈 차트 착수**: ★build 아니라 **integrate**. 경량 SVG 스파크라인(grid-pro-chart) 유지 + 신규 opt-in 패키지가 `RangeChartPanel` 주입 시임으로 외부 라이브러리(ECharts/AG Charts) wrap. 첫 단계=①라이브러리 평가(ECharts MIT vs AG Charts vs Highcharts: 라이선스·번들·SSR·Vue+React 지원). 상세 §3.
 
 > 작성 2026-06-16. 사용자 요청: "전체 하이어라키 매트릭스에 추가할 진행 목록 + 소요 심층분석 + 분석/스펙/검증/구현/검증 단계화".
 > **본 문서의 효과(소요) 수치는 전부 ROM(Rough Order of Magnitude)** — 확정 약속이 아니라 *분석/스펙 단계의 산출물로 확정될 예비치*. (이 저장소의 anti-over-claim 규율 적용: 추측을 권위 수치로 세탁 금지.)
@@ -323,6 +315,14 @@
 ### ★★ 마일스톤: 옵션 1·2·3 실질 완료 (2026-06-17) ★★
 > 동일 headless 코어가 **React(grid-core, chromium 122 green) + Vue(grid-vue, sort/select/filter/range/fill/pagination, node 16 live)** 양쪽 구동. Phase 0 가설(framework-agnostic 코어 공유) 실코드 완전 입증.
 > **남은 것 = "마무리"가 아니라 신규 大워크스트림**: (1) Vue master/detail+range **완전 컴포넌트**(옵션2형, 대형) (2) **W2 엔터프라이즈 차트**(ECharts/AG Charts integrate, 미착수) (3) **발행 게이트**(★`@topgrid/grid-core-headless`+`grid-vue` npm 미발행 → PTLPSM 등 아무도 못 씀, user-gated). → 사용자 결정 사항.
+
+### 11-9. W1 발행 배치 — 6개 npm 발행 (2026-06-18, ✅ live·스모크 통과) ★발행 게이트 해소
+> 사용자 승인(AskUserQuestion "6개 전부 발행"). 위 마일스톤 (3) 발행 게이트를 해소 — `@topgrid/grid-core-headless`+`grid-vue` 가 이제 npm 에 존재 → PTLPSM 등 외부 소비 가능.
+- **발행물(6)**: grid-core-headless@**0.1.0**(신규)·grid-vue@**0.1.0**(신규)·grid-core@**0.6.0**·grid-features@**0.9.0**·grid-pro-range@**0.4.0**·grid-pro-master@**0.7.0**. publisher=travia71, Bypass-2FA 토큰=비대화형 통과(OTP 프롬프트 0).
+- **절차(전 단계 green)**: ①수동 bump 4개(★`changeset version` 미사용=peerDep major-escalation 함정 회피 [[changeset-peerdep-major-escalation]]) ②`pnpm build` 전패키지 green ③`pnpm -r test` EXIT0(grid-vue 16 live·headless·grid-core·master 전부) ④**`pnpm pack` ×6 tarball 검증**: workspace:* 전부 구체핀 치환·누출 0(grid-vue/core→headless@0.1.0 배치내, features peerDep→grid-core@0.6.0, master→export@0.6.0·license@0.3.0 기존npm) — ★`pnpm pack`(not npm pack=workspace 미치환) ⑤**topo 발행**: headless→grid-core→(features,range,master)→grid-vue, 각 `pnpm publish <dir> --no-git-checks --access public`(★`pnpm -C <dir> publish` 는 `--no-git-checks` 를 npm 으로 잘못 forward=EUSAGE; **positional dir 형식이 정답**).
+- **소비자 스모크(npm live)**: 새 폴더 `npm i @topgrid/grid-vue vue @tanstack/vue-table` → 28 packages, **ERESOLVE 0**, 취약점 0. `npm ls`=grid-vue@0.1.0→grid-core-headless@0.1.0 라이브 registry 해소 확인.
+- **알려진 한계(수용)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재→정상). 완전정합(21-lockstep)은 사용자 미선택=부분 재발행의 알려진 한계. [[npm-publish-topgrid]].
+- ★**다음 = W2 엔터프라이즈 차트 착수**(§3): integrate 경로, 첫 단계=라이브러리 평가(ECharts/AG Charts/Highcharts).
 
 ### 11-5. Vue 어댑터 스켈레톤 3차 증분 (2026-06-17, ✅ 완료·검증)
 > ★범위(정직): "minimal Vue 어댑터가 **실제** headless 코어 소비; 정렬-via-클릭을 mounted DOM 에서 입증; selection 주입 시임 동작. 프로덕션 완성 아님 — filter/pin/virt/pagination/editing·하드4 미포함."
