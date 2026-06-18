@@ -5,7 +5,8 @@
 > **발행 완료(2026-06-18, npm live·스모크 통과)**: 6개 = **@topgrid/grid-core-headless@0.1.0**(신규) · **@topgrid/grid-vue@0.1.0**(신규) · grid-core@**0.6.0** · grid-features@**0.9.0** · grid-pro-range@**0.4.0** · grid-pro-master@**0.7.0**. publisher=travia71, Bypass-2FA 토큰=비대화형 통과(OTP 프롬프트 없음). 절차: 수동 bump(★changeset version 미사용=major-escalation 회피 [[changeset-peerdep-major-escalation]]) → pnpm build green → pnpm -r test EXIT0 → **pnpm pack ×6 tarball 검증(workspace:* 전부 구체핀 치환·누출 0)** → topo 발행(headless→grid-core→features/range/master→grid-vue) → 소비자 스모크(`npm i @topgrid/grid-vue vue @tanstack/vue-table`=ERESOLVE 0, grid-vue→headless@0.1.0 라이브 해소). 상세 §11.9.
 > **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
 > **★W2 단계① 완료(2026-06-18)**: 라이브러리 평가 매트릭스 → **Apache ECharts(Apache-2.0) 선정**(기본/번들 어댑터). 결정 렌즈=우리가 상용 재배포 제품(grid-license 동봉)이라 재배포-무료가 필수 → Highcharts(OEM 의무 전가)·AG Charts(갭 핵심타입=유료 Enterprise) 부적격. ECharts 만 §3-2 갭을 무료로 충족 + framework-agnostic core(W1 정렬) + SSR `renderToSVGString`(Nuxt PTLPSM 적합). Highcharts/AG Charts=BYO-라이선스 어댑터로만 개방(우리 미발행). 상세·매트릭스·출처=§3-4.
-> **★다음 세션 = W2 단계② 스펙/ADR**(코드 변경 전 게이트): `@topgrid/grid-pro-chart-enterprise` API 표면(chart-from-range·타입 카탈로그·Insert-Chart 툴바·cross-filter·export) + 주입 시임 확장 ADR + ECharts wrapper 전략(커뮤니티 `echarts-for-react` vs 얇은 자작). ADR 승인 후 단계③ 구현. integrate(build 아님), grid-pro-chart SVG 스파크라인은 유지(C-001).
+> **★W2 단계② 완료(2026-06-18)**: 스펙+ADR 확정. **[[ADR-003]]**(`.claude/dev-harness/decisions/`) + **스펙** `docs/internal/SPEC-grid-pro-chart-enterprise.md`. 핵심 결정: 신규 opt-in `@topgrid/grid-pro-chart-enterprise` = **ECharts thin 자작 어댑터**(echarts-for-react 기각=번들·SSR·무-의존 제어), **기존 `MatrixChartData` 브리지·`RangeChartPanel` 시임·license 게이트 재사용**(integrate=시임 오염 아님, R1), SVG 스파크라인은 additive 공존(C-001, R3). Highcharts/AG Charts=BYO 어댑터로만 개방(R4). 상세 §3-5.
+> **★다음 세션 = W2 단계③ 구현**(첫 코드): `packages/grid-pro-chart-enterprise/` 스캐폴드 → 순수 `matrixToEChartsOption`(node-test 우선=zero-dep 타입 카탈로그) → thin `EChartsChart` wrapper → `EnterpriseChartPanel`(툴바·export·cross-filter). 검증=node(순수 매핑)+chromium(live 렌더/legend/export). ★발행은 별도 게이트(단계③ 후). 스펙 §3·§5 참조.
 
 > 작성 2026-06-16. 사용자 요청: "전체 하이어라키 매트릭스에 추가할 진행 목록 + 소요 심층분석 + 분석/스펙/검증/구현/검증 단계화".
 > **본 문서의 효과(소요) 수치는 전부 ROM(Rough Order of Magnitude)** — 확정 약속이 아니라 *분석/스펙 단계의 산출물로 확정될 예비치*. (이 저장소의 anti-over-claim 규율 적용: 추측을 권위 수치로 세탁 금지.)
@@ -147,6 +148,31 @@
 `@topgrid/grid-pro-chart-enterprise` API 표면(chart-from-range·타입 카탈로그·"Insert Chart" 툴바·cross-filter·export 계약) + 주입 시임 확장 ADR + ECharts 어댑터 wrapper 전략(커뮤니티 wrapper vs 자작). 구현(단계③) 전 ADR 승인 게이트.
 
 **출처(2026-06 실측)**: [AG Charts Community vs Enterprise](https://www.ag-grid.com/charts/javascript/community-vs-enterprise/) · [ag-charts-community npm](https://www.npmjs.com/package/ag-charts-community) · [Highcharts Standard License](https://shop.highcharts.com/license) · [Highcharts shop/FAQ](https://shop.highcharts.com/faq) · [ECharts SSR Handbook](https://apache.github.io/echarts-handbook/en/how-to/cross-platform/server/) · [echarts npm](https://www.npmjs.com/package/echarts) · [vue-echarts npm](https://www.npmjs.com/package/vue-echarts).
+
+### 3-5. W2 단계② — 스펙 + ADR-003 (2026-06-18, ✅ 설계 산출물·코드 0)
+
+> §3-1 단계②의 산출물. **설계 deliverable**(스캐폴드 전 게이트). 정본 = **[[ADR-003]]**(`.claude/dev-harness/decisions/ADR-003-enterprise-chart-echarts-adapter.md`) + **스펙** `docs/internal/SPEC-grid-pro-chart-enterprise.md`. 본 절은 요약.
+
+#### ★실측이 바꾼 전제 (grid-pro-chart 가 이미 가진 것)
+단계② 착수 시 소스 대조 결과, grid-pro-chart 는 from-scratch 대상이 **아니었음** — 이미 보유:
+- 주입 시임 `RangeChartPanel.renderChart?: (RangeSeries[]) => ReactNode`(C-001/AP-001=라이브러리 0),
+- **데이터 브리지 `seriesFromMatrix`/`seriesFromPivot` → `MatrixChartData = {categories, series: ChartSeries[]}`**(range 선택·피벗 둘 다 이 하나로 환원),
+- 빌트인 SVG `RangeChart`(line/bar/area) + `ChartCard`(타입 스위처).
+→ 엔터프라이즈 패키지 = "기존 브리지·시임 위 ECharts 백엔드 얹기" = **integrate**(설계 §3-4 재확인).
+
+#### ADR-003 핵심 결정 (각 trade-off 동반, 상세=ADR 본문)
+- **D1**: 데이터 입력 = **리치 `MatrixChartData` 브리지 재사용**(엔터프라이즈는 x축 라벨 필요 → lossy `RangeSeries` 아님). 최소 시임 `RangeSeries`/`RangeChartPanel` **무변경**(C-001 보존).
+- **D2**: ECharts wrapper = **얇은 자작 어댑터**(`echarts-for-react` 기각). 번들 제어·SSR(`renderToSVGString`)·무-의존·버전 자율 > lifecycle 유지편의. lifecycle=~50줄 init/dispose/ResizeObserver.
+- **D3**: ECharts **선택 모듈 등록**(`echarts/core`+필요 charts/components), barrel import 금지 = opt-in 번들 위생.
+- **R1(거부)**: 최소 시임에 엔터프라이즈 관심사(축·cross-filter·export) 욱여넣기 → `RangeSeries` 계약 오염·다수에 비용 전가. 대신 **별도 `EnterpriseChartPanel`** 이 관심사 격리. ([[LESS-005]] 역: 시임 있어도 *최소 계약*이면 리치는 별도 브리지·패널로 흡수.)
+- **R3(거부)**: SVG `RangeChart`→ECharts 교체 = C-001 위반. 스파크라인 SVG 유지 + 엔터프라이즈 **additive opt-in** 공존.
+- **R4(거부)**: AG Charts/Highcharts 번들(§3-4 기각 재확인). 단 주입 시임이라 **소비자 BYO 어댑터**(자기 라이선스로 renderChart 주입)는 열림 — 우리 미발행.
+
+#### 스펙 공개 표면(제안, 구현서 확정 전)
+순수 `matrixToEChartsOption(MatrixChartData, ChartOptionSpec)` (node-test 우선=타입 카탈로그) · thin `EChartsChart`(자작 wrapper) · `createEChartsRenderer(spec)`(기존 시임 호환 팩토리) · `EnterpriseChartPanel`(툴바·export `getDataURL`·cross-filter 콜백). 타입 카탈로그=line/bar/area/stacked/pie/doughnut/scatter/bubble/radar/heatmap/candlestick/boxplot/funnel/treemap/sankey.
+
+#### ★다음 = 단계③ 구현(첫 코드)
+`packages/grid-pro-chart-enterprise/` 스캐폴드 → 순수 매핑 node-test → wrapper → 패널. 검증 node+chromium. 발행은 단계③ 후 별도 게이트.
 
 ---
 
