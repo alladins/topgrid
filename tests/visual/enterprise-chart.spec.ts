@@ -60,6 +60,25 @@ test('Export produces a non-empty SVG data URL', async ({ page }: { page: Page }
   expect(len, 'SVG data URL is substantial, not an empty stub').toBeGreaterThan(100);
 });
 
+// 증분3 — catalog expansion live gate: the trickier types must actually mount in ECharts (proves
+// the chart/coordinate/visualMap modules are registered, not just that the option object is shaped).
+for (const [story, renderedType] of [
+  ['radar', 'radar'],
+  ['heatmap', 'heatmap'],
+  ['candlestick', 'candlestick'],
+] as const) {
+  test(`catalog: ${story} mounts live and ECharts renders "${renderedType}"`, async ({
+    page,
+  }: { page: Page }) => {
+    await page.goto(FRAME(`${BASE}--${story}`));
+    await expect(page.locator('#storybook-root [data-echarts-root] svg')).toBeVisible();
+    await expect(page.locator('#storybook-root [data-echarts-root]')).toHaveAttribute(
+      'data-rendered-type',
+      renderedType,
+    );
+  });
+}
+
 test('Pro license gate: unlicensed → watermark, licensed → none (PAT-003)', async ({
   page,
 }: { page: Page }) => {

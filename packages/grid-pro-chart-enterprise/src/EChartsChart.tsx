@@ -1,7 +1,25 @@
 import { useEffect, useRef, type JSX } from 'react';
 import * as echarts from 'echarts/core';
-import { BarChart, LineChart, ScatterChart, PieChart } from 'echarts/charts';
-import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components';
+import {
+  BarChart,
+  LineChart,
+  ScatterChart,
+  PieChart,
+  FunnelChart,
+  TreemapChart,
+  RadarChart,
+  HeatmapChart,
+  CandlestickChart,
+  BoxplotChart,
+  SankeyChart,
+} from 'echarts/charts';
+import {
+  GridComponent,
+  TooltipComponent,
+  LegendComponent,
+  VisualMapComponent,
+  RadarComponent,
+} from 'echarts/components';
 import { SVGRenderer } from 'echarts/renderers';
 import type { EChartsOption } from 'echarts';
 
@@ -21,9 +39,18 @@ echarts.use([
   LineChart,
   ScatterChart,
   PieChart,
+  FunnelChart,
+  TreemapChart,
+  RadarChart,
+  HeatmapChart,
+  CandlestickChart,
+  BoxplotChart,
+  SankeyChart,
   GridComponent,
   TooltipComponent,
   LegendComponent,
+  VisualMapComponent,
+  RadarComponent,
   SVGRenderer,
 ]);
 

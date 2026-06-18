@@ -7,7 +7,8 @@
 > **★W2 단계① 완료(2026-06-18)**: 라이브러리 평가 매트릭스 → **Apache ECharts(Apache-2.0) 선정**(기본/번들 어댑터). 결정 렌즈=우리가 상용 재배포 제품(grid-license 동봉)이라 재배포-무료가 필수 → Highcharts(OEM 의무 전가)·AG Charts(갭 핵심타입=유료 Enterprise) 부적격. ECharts 만 §3-2 갭을 무료로 충족 + framework-agnostic core(W1 정렬) + SSR `renderToSVGString`(Nuxt PTLPSM 적합). Highcharts/AG Charts=BYO-라이선스 어댑터로만 개방(우리 미발행). 상세·매트릭스·출처=§3-4.
 > **★W2 단계② 완료(2026-06-18)**: 스펙+ADR 확정. **[[ADR-003]]**(`.claude/dev-harness/decisions/`) + **스펙** `docs/internal/SPEC-grid-pro-chart-enterprise.md`. 핵심 결정: 신규 opt-in `@topgrid/grid-pro-chart-enterprise` = **ECharts thin 자작 어댑터**(echarts-for-react 기각=번들·SSR·무-의존 제어), **기존 `MatrixChartData` 브리지·`RangeChartPanel` 시임·license 게이트 재사용**(integrate=시임 오염 아님, R1), SVG 스파크라인은 additive 공존(C-001, R3). Highcharts/AG Charts=BYO 어댑터로만 개방(R4). 상세 §3-5.
 > **★W2 단계③ 증분1+2 완료(2026-06-18)**: 신규 `packages/grid-pro-chart-enterprise@0.1.0` = 순수 `matrixToEChartsOption` 엔진(증분1) + **live React 표면**(증분2): thin `EChartsChart`(echarts/core **SVG 렌더러** init/dispose/ResizeObserver, 선택 모듈 등록 D3)·`EnterpriseChartPanel`(툴바 타입스위처·export `getDataURL`·cross-filter·license watermark PAT-003)·`createEChartsRenderer`(기존 `RangeChartPanel` 시임 호환 팩토리=D1/R1 루프 완결). 검증: node 10 + **chromium 4 신규 green**(live SVG 마운트·타입스위치가 ECharts 인스턴스 도달=`data-rendered-type` getOption() 리드백·export SVG dataURL·license 게이트)·**full 비주얼 스위트 126 passed 0 fail**(기존 122+신규 4, 무회귀)·typecheck0·`pnpm build` 전패키지 green. 상세 §3-6·§3-7.
-> **★다음 = 단계③ 증분3**(카탈로그 확장): radar/heatmap/candlestick/boxplot/funnel/treemap/sankey/bubble — 각 타입 데이터 reshape + echarts 모듈 등록 + node 단언. 또는 **발행 게이트**(증분1+2 누적=신규 `@topgrid/grid-pro-chart-enterprise` + echarts 의존, user-gated). ★Windows 로컬 비주얼 실행 메모: 포트 6006=Hyper-V 예외대역(5975-6074) → 자유포트(예 9009)+throwaway config 로 실행(WSL2 면 6006 직행).
+> **★W2 단계③ 증분3 완료(2026-06-18)**: 카탈로그 **8타입 확장** = bubble·funnel·treemap·radar·heatmap·candlestick·boxplot·sankey. 각 reshape 패밀리(single-series {name,value}·radar indicator·heatmap x/y/value triple·per-category stat tuple O,C,L,H/min~max·sankey nodes+links·bubble=scatter+symbolSize). echarts 모듈 선택 등록 확장(RadarChart·HeatmapChart·CandlestickChart·BoxplotChart·FunnelChart·TreemapChart·SankeyChart + RadarComponent·VisualMapComponent). 검증: **node 18 passed**(타입별 reshape 단언)·**chromium 7 passed**(+radar/heatmap/candlestick **live 마운트 게이트**=모듈 등록 입증)·full 스위트 무회귀(기존 flake master-detail-virt만 retries 흡수, 격리 재실행 pass)·typecheck0·build green. 상세 §3-8.
+> **★다음 = 발행 게이트**(증분1~3 누적, user-gated): 신규 `@topgrid/grid-pro-chart-enterprise@0.1.0`(echarts 의존) npm 발행 — headless/grid-vue 때처럼 pnpm pack 검증→topo 발행. 또는 추가 폴리시(toolbar 에 신규 타입 노출·BYO Highcharts/AG 어댑터·Vue wrapper). ★Windows 로컬 비주얼: 포트 6006=Hyper-V 예외대역(5975-6074)→자유포트(9009)+throwaway config(committed 무변경), WSL2 면 6006 직행.
 
 > 작성 2026-06-16. 사용자 요청: "전체 하이어라키 매트릭스에 추가할 진행 목록 + 소요 심층분석 + 분석/스펙/검증/구현/검증 단계화".
 > **본 문서의 효과(소요) 수치는 전부 ROM(Rough Order of Magnitude)** — 확정 약속이 아니라 *분석/스펙 단계의 산출물로 확정될 예비치*. (이 저장소의 anti-over-claim 규율 적용: 추측을 권위 수치로 세탁 금지.)
@@ -210,6 +211,27 @@
 
 #### 남은 것 (증분3)
 - 카탈로그 확장 8타입(각 reshape+모듈등록+node 단언). 또는 발행(증분1+2 누적, user-gated).
+
+### 3-8. W2 단계③ 증분3 — 카탈로그 확장 8타입 (2026-06-18, ✅ 풀 카탈로그)
+
+> 증분1 엔진 + 증분2 live 표면 위에 나머지 타입을 채움. ★각 타입은 **데이터 reshape 형태가 달라** 개별 브랜치(타입 리터럴 → TS 유니온 마찰 회피).
+
+#### 추가 타입 + reshape 패밀리
+- **single-series {name,value}**(pie 와 동형): `funnel`·`treemap`(첫 series→items, 축 0).
+- **scatter+size**: `bubble`=scatter 베이스 + **`symbolSize` 함수**(value→크기; 매트릭스에 없는 3차원을 value 로 인코딩, rendered-type='scatter').
+- **radar**: categories→indicator 축(각 max=전체 최대), 각 series→1 폴리곤(`{name, value: values}`). 모듈 `RadarChart`+**`RadarComponent`**(좌표계).
+- **heatmap**: (x=category, y=series, value) **triple** + `visualMap`(도메인=min/max). 모듈 `HeatmapChart`+**`VisualMapComponent`**.
+- **per-category stat tuple**: `candlestick`(series 0..3=O,C,L,H)·`boxplot`(series 0..4=min,Q1,med,Q3,max) → row i=각 series 의 i번째. 모듈 `CandlestickChart`·`BoxplotChart`.
+- **sankey**: nodes=categories ∪ series명, links=(category→series, value>0) 만. 모듈 `SankeyChart`.
+
+#### 검증 (전부 green)
+- **node 18 passed**(기존 10 + 신규 8; 각 타입 reshape 단언=candlestick OCLH 튜플·radar indicator max·heatmap triple·sankey link 필터 등 non-vacuous).
+- **chromium 7 passed**(기존 4 + **신규 3 카탈로그 live 게이트**=radar/heatmap/candlestick 가 실제 ECharts 에 마운트+`data-rendered-type` 일치 → ★모듈 등록 누락이면 런타임 throw 로 실패하므로 RadarComponent·VisualMapComponent 등록을 실증).
+- full 비주얼 스위트=enterprise 7 전원 pass, 유일 실패=기존 `master-detail-virtualization` react-virtual 타이밍 flake(본 변경 무관, 격리 재실행 1 passed; canonical config retries 흡수). typecheck0·`pnpm build` 전패키지 green.
+- ★toolbar 노출은 6타입 유지(bar/line/area/stacked-bar/pie/scatter); 신규 8타입은 `initialType`/`spec`/`createEChartsRenderer` 경유(toolbar 확장은 폴리시 선택).
+
+#### ★카탈로그 표면 완성 → 다음 = 발행 게이트
+17 타입 전부 구현·검증. 발행(`@topgrid/grid-pro-chart-enterprise@0.1.0`+echarts, user-gated)이 다음 가장 가치 높은 미실행.
 
 ---
 

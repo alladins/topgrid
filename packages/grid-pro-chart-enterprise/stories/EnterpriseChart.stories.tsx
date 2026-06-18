@@ -33,6 +33,31 @@ export const Pie: Story = {
   args: { data, initialType: 'pie', enableToolbar: true, enableExport: true },
 };
 
+// Catalog-expansion live gates (증분3) — these exercise the trickier ECharts module registrations:
+// radar → RadarComponent, heatmap → VisualMapComponent + HeatmapChart, candlestick → CandlestickChart.
+export const Radar: Story = {
+  args: { data, initialType: 'radar', enableToolbar: false },
+};
+
+export const Heatmap: Story = {
+  args: { data, initialType: 'heatmap', enableToolbar: false },
+};
+
+// OHLC fixture: series 0..3 = open, close, low, high.
+const ohlc: MatrixChartData = {
+  categories: ['D1', 'D2', 'D3'],
+  series: [
+    { name: 'open', values: [10, 20, 15] },
+    { name: 'close', values: [15, 18, 22] },
+    { name: 'low', values: [8, 16, 14] },
+    { name: 'high', values: [17, 22, 24] },
+  ],
+};
+
+export const Candlestick: Story = {
+  args: { data: ohlc, initialType: 'candlestick', enableToolbar: false },
+};
+
 export const Unlicensed: Story = {
   // PAT-003: without a valid Pro license the panel is watermarked.
   beforeEach: () => {
