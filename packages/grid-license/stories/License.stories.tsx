@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Watermark } from '../src/Watermark.js';
-import { setLicenseState } from '../src/state.js';
-import { checkLicense } from '../src/checkLicense.js';
+import { setLicenseState, checkLicense } from '@topgrid/grid-license-core';
 
 const meta: Meta<typeof Watermark> = {
   title: 'grid-license/Watermark',

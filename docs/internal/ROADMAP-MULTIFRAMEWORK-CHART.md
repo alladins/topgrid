@@ -6,8 +6,9 @@
 > **★advisor #2 완료·발행**: ADR-004 + 증분①(grid-chart-core 추출·발행) + 증분② Vue 컴포넌트 **발행 완료**. **동일 grid-chart-core 엔진이 React+Vue 양쪽 구동=W2 차트 멀티프레임워크 완성**(§3-12). 스모크: Vue 트리 React 0·echarts 단일 인스턴스 deduped.
 > **현 git 상태**: working tree **clean**. main 이 origin 보다 앞섬(★origin push=user-gated). **npm live(차트)**: grid-chart-core@0.1.0 · grid-pro-chart-enterprise@0.3.0(React) · grid-pro-chart-enterprise-vue@0.1.0(Vue).
 > **★advisor 추가판단(nothing-critical 위임)**: toolbar 노출 채택(출시 17타입 중 11개가 UI 미도달 = 출시 가치 잠금해제, 최소·패리티). license-core=mass republish 비용과다·PTLPSM=세션범위밖·BYO=투기적 → 보류. **`toolbarTypes` prop 구현 완료**(React 0.4.0·Vue 0.2.0, chromium 8·happy-dom 11 green). **2패키지 republish 대기(user-gated)**. 상세 §3-13.
-> **★toolbarTypes 발행 완료**: enterprise@0.4.0 + enterprise-vue@0.2.0 npm live. **npm live(차트 3종 최신)**: grid-chart-core@0.1.0 · grid-pro-chart-enterprise@0.4.0(React) · grid-pro-chart-enterprise-vue@0.2.0(Vue).
-> **다음 후보(미실행, 비크리티컬)**: (a)neutral license-core 추출(Vue 자동 게이트, 단 grid-license mass republish 비용) (b)W3/PTLPSM 통합(별도 프로젝트=세션범위밖) (c)BYO Highcharts/AG 어댑터(투기적). → 크리티컬 없음, advisor 위임 시 잔여 가치 낮음=체크포인트 적기.
+> **★license-core 추출 완료(ADR-005, 2026-06-19)**: `@topgrid/grid-license-core` 신규 추출 → Vue 차트 **자동 워터마크 게이트**(prop override 유지). ★발행 블래스트=**2뿐**(프레임워크 분리=mass republish 불필요 발견). full chromium **130 green=byte-identical**(grid-license 재배선 무회귀). 발행 대기=grid-license-core@0.1.0 + enterprise-vue@0.3.0. 상세 §3-14.
+> **npm live(차트 최신)**: grid-chart-core@0.1.0 · grid-pro-chart-enterprise@0.4.0(React) · grid-pro-chart-enterprise-vue@0.2.0→**0.3.0 발행대기**(Vue, auto-gate) · **grid-license-core@0.1.0 발행대기**.
+> **다음(advisor 위임 진행)**: (c)BYO Highcharts/AG 어댑터(시임 개방 실증). 잔여=toolbar 폴리시·grid-license lockstep 꼬리(차기 릴리스)·W3/PTLPSM(담당자 직접, 우리는 불안정 통지).
 > **발행 완료(2026-06-18, npm live·스모크 통과)**: 6개 = **@topgrid/grid-core-headless@0.1.0**(신규) · **@topgrid/grid-vue@0.1.0**(신규) · grid-core@**0.6.0** · grid-features@**0.9.0** · grid-pro-range@**0.4.0** · grid-pro-master@**0.7.0**. publisher=travia71, Bypass-2FA 토큰=비대화형 통과(OTP 프롬프트 없음). 절차: 수동 bump(★changeset version 미사용=major-escalation 회피 [[changeset-peerdep-major-escalation]]) → pnpm build green → pnpm -r test EXIT0 → **pnpm pack ×6 tarball 검증(workspace:* 전부 구체핀 치환·누출 0)** → topo 발행(headless→grid-core→features/range/master→grid-vue) → 소비자 스모크(`npm i @topgrid/grid-vue vue @tanstack/vue-table`=ERESOLVE 0, grid-vue→headless@0.1.0 라이브 해소). 상세 §11.9.
 > **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
 > **★W2 단계① 완료(2026-06-18)**: 라이브러리 평가 매트릭스 → **Apache ECharts(Apache-2.0) 선정**(기본/번들 어댑터). 결정 렌즈=우리가 상용 재배포 제품(grid-license 동봉)이라 재배포-무료가 필수 → Highcharts(OEM 의무 전가)·AG Charts(갭 핵심타입=유료 Enterprise) 부적격. ECharts 만 §3-2 갭을 무료로 충족 + framework-agnostic core(W1 정렬) + SSR `renderToSVGString`(Nuxt PTLPSM 적합). Highcharts/AG Charts=BYO-라이선스 어댑터로만 개방(우리 미발행). 상세·매트릭스·출처=§3-4.
@@ -319,6 +320,26 @@
 - Vue: build·**happy-dom node 11 passed**(신규 3: toolbarTypes 3버튼·radar 버튼 존재·클릭→rendered-type 'radar').
 - pack: enterprise@0.4.0(deps 라이브 3핀)·vue@0.2.0(grid-chart-core@0.1.0 핀)·누출0.
 - ★**발행 완료(2026-06-19, npm live)**: `grid-pro-chart-enterprise@0.4.0` + `grid-pro-chart-enterprise-vue@0.2.0`(version bump=즉시 전파, npm view 확인). 의존 전부 기존 live=lockstep 불요.
+
+### 3-14. license-core 추출 — Vue 자동 워터마크 게이트 (ADR-005, 2026-06-19, ✅ 코드·검증 / 발행 대기)
+
+> advisor 위임 진행(추천순서 (a)). §3-12 한계(Vue 가 `watermark` prop 주입 의존) 해소.
+
+#### 한 것
+- **신규 `@topgrid/grid-license-core@0.1.0`**: grid-license 의 neutral 부분(state 싱글톤·checkLicense·setLicenseKey·verifySignature·types) **이동**(git rename=fork 아님). deps 0, react 0.
+- **grid-license 재배선**: index/useLicenseStatus/useWatermarkEnforcement/License.stories 가 core 에서 import, index re-export(공개 표면 무변경), dep+tsup external 추가. version 0.3.0 유지(미재발행).
+- **Vue 차트 auto-gate**: `EnterpriseChartPanel` 이 core `checkLicense`/`subscribeLicense` 로 반응형 워터마크(unlicensed→표시, valid→없음). `watermark` prop=override(omit→auto). index 에 setLicenseKey/checkLicense 재export. 0.2.0→**0.3.0**.
+
+#### ★발행 블래스트 = 2 (mass republish 아님 — ADR-005 핵심 발견)
+React/Vue 는 다른 프레임워크 앱서 소비 → 라이선스 싱글톤 split(한 앱 두 인스턴스)이 발생 안 함 → **grid-license@0.3.0 + React 의존 12 패키지 재발행 불요**. 발행=core(신규)+Vue 차트(bump) 2개만.
+
+#### 검증 (전부 green)
+- grid-license-core typecheck0·build. grid-license 재배선 typecheck0·build.
+- Vue happy-dom **node 12 passed**(auto-gate non-vacuous: unlicensed/licensed/override).
+- ★**full chromium 비주얼 130 passed 0 fail**=grid-license 재배선 byte-identical(전 watermark 테스트 무회귀). pack: core deps {}·Vue 0.3.0 2-core 핀·누출0.
+
+#### 다음
+- 발행(2): grid-license-core@0.1.0 → enterprise-vue@0.3.0(topo). 그 후 (c) BYO 어댑터.
 
 ---
 

@@ -3,18 +3,19 @@
  * framework-neutral `@topgrid/grid-chart-core` engine. Vue counterpart of the React
  * EnterpriseChartPanel; the engine (`matrixToEChartsOption`) is shared verbatim (ADR-004).
  *
- * ★License gate: unlike the React package, this package does NOT import `@topgrid/grid-license`
- * (which declares React peers — pulling it in would re-leak React into the Vue tree, defeating
- * ADR-004). Instead the watermark is an injected `watermark` prop the host supplies (e.g. from its
- * own `checkLicense().watermarkRequired`). A neutral license-core extraction would let this auto-gate
- * like React — tracked as a follow-up, not done here (scope).
+ * ★License gate: auto-gates via `@topgrid/grid-license-core` (the framework-NEUTRAL license source —
+ * NOT the React `@topgrid/grid-license`, so no React peer leaks into the Vue tree). When the app has
+ * registered a valid key (`setLicenseKey` from grid-license-core), no watermark shows; otherwise it
+ * composites one — reactively (subscribes to license-state changes). The `watermark` prop overrides:
+ * omit → auto; pass `true`/`false` → force.
  */
-import { computed, defineComponent, h, ref, type PropType } from 'vue';
+import { computed, defineComponent, h, onBeforeUnmount, onMounted, ref, type PropType } from 'vue';
 import {
   matrixToEChartsOption,
   type ChartMatrix,
   type EnterpriseChartType,
 } from '@topgrid/grid-chart-core';
+import { checkLicense, subscribeLicense } from '@topgrid/grid-license-core';
 import { EChartsChart, type ChartSelection } from './EChartsChart.js';
 
 /** Default toolbar types — a subset; pass `toolbarTypes` to surface more of the 17-type catalog. */
@@ -31,8 +32,8 @@ export const EnterpriseChartPanel = defineComponent({
     toolbarTypes: { type: Array as PropType<EnterpriseChartType[]>, default: () => DEFAULT_TOOLBAR_TYPES },
     enableExport: { type: Boolean, default: true },
     onCrossFilter: { type: Function as PropType<(sel: ChartSelection) => void>, default: undefined },
-    /** Host-supplied license gate (this package imports no React-coupled grid-license). */
-    watermark: { type: Boolean, default: false },
+    /** License watermark override: omit → auto-gate via license state; `true`/`false` → force. */
+    watermark: { type: Boolean, default: undefined },
     title: { type: String, default: undefined },
   },
   setup(props) {
@@ -40,6 +41,19 @@ export const EnterpriseChartPanel = defineComponent({
     const rootEl = ref<HTMLDivElement | null>(null);
     const chartRef = ref<{ exportImage: (f?: 'svg' | 'png') => string } | null>(null);
     const option = computed(() => matrixToEChartsOption(props.data, { type: type.value }));
+
+    // Auto license gate (reactive): unless the `watermark` prop forces a value.
+    const autoWatermark = ref(checkLicense().watermarkRequired);
+    let unsub: (() => void) | undefined;
+    onMounted(() => {
+      unsub = subscribeLicense(() => {
+        autoWatermark.value = checkLicense().watermarkRequired;
+      });
+    });
+    onBeforeUnmount(() => unsub?.());
+    const showWatermark = computed(() =>
+      props.watermark === undefined ? autoWatermark.value : props.watermark,
+    );
 
     const handleExport = (): void => {
       const url = chartRef.value?.exportImage('svg') ?? '';
@@ -78,7 +92,7 @@ export const EnterpriseChartPanel = defineComponent({
           option: option.value,
           ...(props.onCrossFilter ? { onSelect: props.onCrossFilter } : {}),
         }),
-        props.watermark
+        showWatermark.value
           ? h(
               'div',
               {

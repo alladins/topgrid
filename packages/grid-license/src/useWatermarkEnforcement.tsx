@@ -2,8 +2,7 @@ import { useEffect } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 
 import { Watermark } from './Watermark.js';
-import { checkLicense } from './checkLicense.js';
-import { subscribeLicense } from './state.js';
+import { checkLicense, subscribeLicense } from '@topgrid/grid-license-core';
 
 // ---------------------------------------------------------------------------
 // Module-level singleton state.

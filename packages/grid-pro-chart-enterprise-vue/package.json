@@ -1,6 +1,6 @@
 {
   "name": "@topgrid/grid-pro-chart-enterprise-vue",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "license": "SEE LICENSE IN EULA",
   "publishConfig": {
@@ -27,7 +27,8 @@
     "test": "node --experimental-strip-types src/EnterpriseChartPanel.test.ts"
   },
   "dependencies": {
-    "@topgrid/grid-chart-core": "workspace:*"
+    "@topgrid/grid-chart-core": "workspace:*",
+    "@topgrid/grid-license-core": "workspace:*"
   },
   "peerDependencies": {
     "echarts": "^5.5.0 || ^6.0.0",

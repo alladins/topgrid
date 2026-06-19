@@ -7,6 +7,7 @@ import './setup-happydom.ts'; // ★must precede vue (Vue runtime-dom captures g
 import assert from 'node:assert/strict';
 import { createApp, nextTick } from 'vue';
 import { EnterpriseChartPanel } from '../dist/index.mjs';
+import { setLicenseState } from '@topgrid/grid-license-core';
 
 const data = {
   categories: ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -53,13 +54,30 @@ await nextTick();
 const len = Number(root.getAttribute('data-export-result-len'));
 ok(Number.isFinite(len) && len > 100, '★Export produced a substantial SVG data URL');
 
-// --- injected watermark gate (this package imports no React grid-license) ---
-const c2 = document.createElement('div');
-document.body.appendChild(c2);
-createApp(EnterpriseChartPanel, { data, watermark: true }).mount(c2);
+// --- auto license gate via grid-license-core (non-vacuous: licensed vs unlicensed differ) ---
+// unlicensed (default singleton state) → auto watermark, no prop needed.
+setLicenseState({ status: { valid: false, reason: 'invalid' }, rawKey: '', setAt: 0 });
+const cU = document.createElement('div');
+document.body.appendChild(cU);
+createApp(EnterpriseChartPanel, { data }).mount(cU);
 await nextTick();
-ok(c2.querySelector('[data-watermark]') !== null, 'watermark=true → watermark composited');
-ok(c1.querySelector('[data-watermark]') === null, 'watermark=false (default) → none');
+ok(cU.querySelector('[data-watermark]') !== null, '★unlicensed → auto watermark (no prop)');
+
+// valid license → NO watermark (auto) — without this, an always-on watermark would also pass.
+setLicenseState({ status: { valid: true }, rawKey: 'test', setAt: 0 });
+const cL = document.createElement('div');
+document.body.appendChild(cL);
+createApp(EnterpriseChartPanel, { data }).mount(cL);
+await nextTick();
+ok(cL.querySelector('[data-watermark]') === null, '★valid license → no watermark (auto-gate bound to state)');
+
+// prop override: watermark=false forces hidden even when unlicensed.
+setLicenseState({ status: { valid: false, reason: 'invalid' }, rawKey: '', setAt: 0 });
+const cF = document.createElement('div');
+document.body.appendChild(cF);
+createApp(EnterpriseChartPanel, { data, watermark: false }).mount(cF);
+await nextTick();
+ok(cF.querySelector('[data-watermark]') === null, 'watermark=false overrides auto (forced hidden)');
 
 // --- toolbarTypes: custom set surfaces non-default catalog types ---
 const c3 = document.createElement('div');

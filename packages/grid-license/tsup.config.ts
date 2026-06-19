@@ -14,6 +14,7 @@ export default defineConfig({
   external: [
     'react',
     'react-dom',
+    '@topgrid/grid-license-core',
     '@tanstack/react-table',
     '@tanstack/react-virtual',
     'xlsx',

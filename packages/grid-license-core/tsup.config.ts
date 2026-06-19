@@ -11,5 +11,4 @@ export default defineConfig({
   outExtension({ format }) {
     return { js: format === 'esm' ? '.mjs' : '.cjs' };
   },
-  external: ['vue', /^echarts(\/|$)/, '@topgrid/grid-chart-core', '@topgrid/grid-license-core'],
 });

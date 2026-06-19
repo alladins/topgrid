@@ -12,3 +12,6 @@ export {
   type ChartMatrix,
   type ChartSeriesInput,
 } from '@topgrid/grid-chart-core';
+
+// License (framework-neutral core — no React). Register a key once at app entry to clear the watermark.
+export { setLicenseKey, checkLicense } from '@topgrid/grid-license-core';

@@ -302,12 +302,17 @@ importers:
 
   packages/grid-license:
     dependencies:
+      '@topgrid/grid-license-core':
+        specifier: workspace:*
+        version: link:../grid-license-core
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+
+  packages/grid-license-core: {}
 
   packages/grid-pro-agg:
     dependencies:
@@ -373,6 +378,9 @@ importers:
       '@topgrid/grid-chart-core':
         specifier: workspace:*
         version: link:../grid-chart-core
+      '@topgrid/grid-license-core':
+        specifier: workspace:*
+        version: link:../grid-license-core
     devDependencies:
       '@happy-dom/global-registrator':
         specifier: ^15.0.0

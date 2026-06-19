@@ -1,8 +1,7 @@
 import { useSyncExternalStore } from 'react';
 
-import type { LicenseCheckResult } from './types.js';
-import { checkLicense } from './checkLicense.js';
-import { getCachedCheck, subscribeLicense } from './state.js';
+import type { LicenseCheckResult } from '@topgrid/grid-license-core';
+import { checkLicense, getCachedCheck, subscribeLicense } from '@topgrid/grid-license-core';
 
 // `useSyncExternalStore` requires `getSnapshot` to return the same reference
 // across calls unless the underlying state actually changed; otherwise React
