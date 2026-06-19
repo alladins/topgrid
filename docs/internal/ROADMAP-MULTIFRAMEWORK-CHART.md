@@ -9,7 +9,8 @@
 > **★license-core 추출 완료(ADR-005, 2026-06-19)**: `@topgrid/grid-license-core` 신규 추출 → Vue 차트 **자동 워터마크 게이트**(prop override 유지). ★발행 블래스트=**2뿐**(프레임워크 분리=mass republish 불필요 발견). full chromium **130 green=byte-identical**(grid-license 재배선 무회귀). 발행 대기=grid-license-core@0.1.0 + enterprise-vue@0.3.0. 상세 §3-14.
 > **npm live(차트 최신)**: grid-chart-core@0.1.0 · grid-pro-chart-enterprise@0.4.0(React) · grid-pro-chart-enterprise-vue@0.2.0→**0.3.0 발행대기**(Vue, auto-gate) · **grid-license-core@0.1.0 발행대기**.
 > **★(c) BYO 어댑터 완료(2026-06-19)**: ADR-003 R4(Highcharts/AG=시임 개방) 실증+문서화. `RangeChartPanel.renderChart` 에 **비-ECharts 렌더러 주입**이 동작함을 chromium 2 green 으로 증명(기존 미커버 갭) + BYO 가이드(`docs/internal/guides/byo-chart-adapter.md`, Highcharts/AG 주입 예제). 신규 패키지·의존·발행 0(순수 additive 스토리+테스트+문서). 상세 §3-15.
-> **잔여(전부 비크리티컬, 미실행)**: toolbar 폴리시 심화 · grid-license lockstep 꼬리(차기 grid-license 릴리스 시) · W3/PTLPSM(담당자 직접 통합, 우리는 불안정 항목 통지 역할) · 문서사이트 차트 반영. → 차트 워크스트림(W2) 설계·구현·멀티프레임워크·발행·BYO 까지 완결.
+> **★Vue 실브라우저 검증 완료(2026-06-19)**: (b) 통지 #1(Vue happy-dom만, 실브라우저 미검증) 해소. 신규 e2e 하네스(esbuild 번들+Playwright webServer)로 **real chromium 4 green**(real-layout render·type-switch·export·**real 막대클릭 cross-filter**=hit-testing). 발행 불요(devDep esbuild/@playwright/test + e2e/ 하네스, 패키지 표면 무변경). 상세 §3-16.
+> **잔여(전부 비크리티컬, 미실행)**: **Nuxt SSR/hydration 배선**((b)통지 #2, onMounted client-only=SSR 서버렌더 0) · toolbar 폴리시 · grid-license lockstep 꼬리 · 문서사이트 차트 반영 · React enterprise 도 e2e/SSR 동형 검토. → W2 차트=설계·구현·멀티프레임워크·발행·BYO·실브라우저 검증까지 완결.
 > **발행 완료(2026-06-18, npm live·스모크 통과)**: 6개 = **@topgrid/grid-core-headless@0.1.0**(신규) · **@topgrid/grid-vue@0.1.0**(신규) · grid-core@**0.6.0** · grid-features@**0.9.0** · grid-pro-range@**0.4.0** · grid-pro-master@**0.7.0**. publisher=travia71, Bypass-2FA 토큰=비대화형 통과(OTP 프롬프트 없음). 절차: 수동 bump(★changeset version 미사용=major-escalation 회피 [[changeset-peerdep-major-escalation]]) → pnpm build green → pnpm -r test EXIT0 → **pnpm pack ×6 tarball 검증(workspace:* 전부 구체핀 치환·누출 0)** → topo 발행(headless→grid-core→features/range/master→grid-vue) → 소비자 스모크(`npm i @topgrid/grid-vue vue @tanstack/vue-table`=ERESOLVE 0, grid-vue→headless@0.1.0 라이브 해소). 상세 §11.9.
 > **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
 > **★W2 단계① 완료(2026-06-18)**: 라이브러리 평가 매트릭스 → **Apache ECharts(Apache-2.0) 선정**(기본/번들 어댑터). 결정 렌즈=우리가 상용 재배포 제품(grid-license 동봉)이라 재배포-무료가 필수 → Highcharts(OEM 의무 전가)·AG Charts(갭 핵심타입=유료 Enterprise) 부적격. ECharts 만 §3-2 갭을 무료로 충족 + framework-agnostic core(W1 정렬) + SSR `renderToSVGString`(Nuxt PTLPSM 적합). Highcharts/AG Charts=BYO-라이선스 어댑터로만 개방(우리 미발행). 상세·매트릭스·출처=§3-4.
@@ -353,6 +354,20 @@ grid-license-core@0.1.0(신규) + enterprise-vue@0.3.0(topo). 스모크: `npm i 
 
 #### ★범위·발행
 신규 패키지·차트 라이브러리 의존·발행 **전부 0** — 순수 additive(grid-pro-chart 스토리+테스트 + 가이드). 기존 코드 변경 0 → 회귀면 없음(full 스위트 130 무영향, 신규 2 additive). AG Charts Community(MIT) 실어댑터 패키지화는 *실수요 등장 시*(extract-on-demand) — 현재 투기 회피.
+
+### 3-16. Vue 차트 실브라우저 e2e 검증 (2026-06-19, ✅ (b)통지 #1 해소)
+
+> advisor 위임 진행: 잔여 중 최고가치=Vue 실브라우저 미검증(PTLPSM/Nuxt 최우선 리스크). React=chromium 게이트 보유, Vue=happy-dom 만이었음. Storybook=react-vite(Vue 불가) → 독립 하네스로 닫음.
+
+#### 한 것
+- **e2e 하네스**(`packages/grid-pro-chart-enterprise-vue/e2e/`): `main.ts`(EnterpriseChartPanel mount, setLicenseState valid, toolbarTypes/cross-filter 와이어)·`index.html`·**esbuild 번들**(`build:e2e`→app.js, Vue 컴포넌트=h() 라 plugin-vue 불요)·`playwright.config.ts`(webServer=http-server 자동기동, 포트 9011=excluded 대역 밖). devDep esbuild+@playwright/test 추가.
+- **real chromium 4 passed**: (1)real-layout 렌더(width:'100%'→real clientWidth>600, 600 fallback 아님) (2)type-switch bar→radar ECharts 도달 (3)export SVG dataURL (4)★**real 픽셀 막대클릭→cross-filter** 발화(ECharts hit-testing=happy-dom 불가 경로).
+
+#### ★범위·발행
+패키지 공개 표면 무변경(e2e/=files 제외, 미발행). devDep만 추가. ★실측 교훈: Vue 컴포넌트가 `h()`(SFC 아님)라 무거운 vite/plugin-vue 없이 esbuild 단독 번들 가능. happy-dom 워크어라운드(명시 width/height)가 real-browser 에서도 정상(clientWidth 우선).
+
+#### 남은 것
+- Nuxt SSR/hydration((b)통지 #2): `renderToSVGString` 서버엔트리 미배선=feature(검증 아님). 수요 시.
 
 ---
 

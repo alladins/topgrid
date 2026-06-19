@@ -14,13 +14,14 @@ Install: `pnpm add @topgrid/grid-pro-chart-enterprise-vue echarts vue` (echarts 
 ## ✅ Stabilized (verified)
 - **Option engine** — `matrixToEChartsOption` covers all 17 types; proven by node tests (shape-asserted, non-vacuous).
 - **Client-side mount + reactivity** — `EnterpriseChartPanel` mounts an inline `<svg>`, toolbar type-switch reaches the ECharts instance, export produces an SVG data URL, license auto-gate (unlicensed→watermark, valid→none). Proven by **happy-dom live mount** (node 12).
+- **Real-browser (chromium) E2E** — render with real layout (`width:'100%'`→real clientWidth), real-pixel type-switch, export, and **cross-filter on a real bar click** (real hit-testing). Proven by `e2e/vue-chart.e2e.spec.ts` (chromium 4). Run: `pnpm --filter @topgrid/grid-pro-chart-enterprise-vue build && pnpm --filter @topgrid/grid-pro-chart-enterprise-vue build:e2e && pnpm --filter @topgrid/grid-pro-chart-enterprise-vue exec playwright test --config e2e/playwright.config.ts`.
 - **Zero React** — confirmed at install level (`pnpm why react` empty); license auto-gate works without React.
 - **Single ECharts instance** — echarts is a peer dep; deduped across the tree.
 
 ## ⚠️ NOT yet stabilized — expect rough edges / report back
-1. **Real-browser E2E is unverified for Vue.** Our Vue verification is happy-dom (Node), NOT a real
-   browser. The React package has a chromium suite; the Vue package does not yet. **First thing to validate
-   in PTLPSM: that charts render + interact in an actual browser.**
+1. ~~Real-browser E2E is unverified for Vue.~~ **RESOLVED (2026-06-19)** — `e2e/vue-chart.e2e.spec.ts`
+   runs the Vue panel in real chromium (render/layout/type-switch/export/cross-filter, 4 green). The
+   remaining browser-shaped unknown is Nuxt SSR (next item).
 2. **Nuxt SSR / hydration is unwired.** `EChartsChart` initialises ECharts in `onMounted` (client only).
    Under Nuxt SSR the chart renders **nothing server-side** and appears on client hydration. ECharts'
    `renderToSVGString` SSR path is NOT integrated. If you need server-rendered charts (SEO, no-JS), that is

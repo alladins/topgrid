@@ -23,6 +23,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "build:e2e": "esbuild e2e/main.ts --bundle --format=esm --outfile=e2e/app.js",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types src/EnterpriseChartPanel.test.ts"
   },
@@ -36,7 +37,9 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^15.0.0",
+    "@playwright/test": "^1.60.0",
     "echarts": "^6.0.0",
+    "esbuild": "^0.24.0",
     "vue": "^3.5.0"
   }
 }

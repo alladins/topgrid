@@ -50,3 +50,6 @@ playwright-report/
 
 # storybook-static 정적 서버 (chromium 게이트용, 매 실행 재생성 — 커밋 금지)
 apps/docs/ss-srv.mjs
+
+# Vue chart e2e bundle (esbuild output)
+packages/grid-pro-chart-enterprise-vue/e2e/app.js
