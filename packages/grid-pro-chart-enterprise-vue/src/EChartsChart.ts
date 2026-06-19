@@ -6,56 +6,15 @@
  * the Vue lifecycle (onMounted init / watch setOption / onBeforeUnmount dispose), mirroring React's
  * EChartsChart. SVG renderer → inline `<svg>` (DOM-inspectable, SSR-friendly).
  *
- * echarts module registration is duplicated here (not in grid-chart-core, which stays echarts-
- * runtime-free): `echarts.use([...])` is global setup, not logic — the render shell is per-framework
- * anyway (W1 §10).
+ * Selective echarts module registration lives in `./echarts-setup` (shared with the SSR helper).
+ * This component renders client-side (ECharts inits in onMounted); for server-rendered static charts
+ * use `renderChartToSvgString` (./ssr) — see the consumer SSR notes.
  */
 import { defineComponent, h, onBeforeUnmount, onMounted, ref, watch, type PropType } from 'vue';
-import * as echarts from 'echarts/core';
-import {
-  BarChart,
-  LineChart,
-  ScatterChart,
-  PieChart,
-  FunnelChart,
-  TreemapChart,
-  RadarChart,
-  HeatmapChart,
-  CandlestickChart,
-  BoxplotChart,
-  SankeyChart,
-} from 'echarts/charts';
-import {
-  GridComponent,
-  TooltipComponent,
-  LegendComponent,
-  VisualMapComponent,
-  RadarComponent,
-} from 'echarts/components';
-import { SVGRenderer } from 'echarts/renderers';
+import { echarts, type EChartsInstance } from './echarts-setup.js';
 import type { EChartsOption } from 'echarts';
 
-echarts.use([
-  BarChart,
-  LineChart,
-  ScatterChart,
-  PieChart,
-  FunnelChart,
-  TreemapChart,
-  RadarChart,
-  HeatmapChart,
-  CandlestickChart,
-  BoxplotChart,
-  SankeyChart,
-  GridComponent,
-  TooltipComponent,
-  LegendComponent,
-  VisualMapComponent,
-  RadarComponent,
-  SVGRenderer,
-]);
-
-export type EChartsInstance = ReturnType<typeof echarts.init>;
+export type { EChartsInstance };
 
 export interface ChartSelection {
   name: string;

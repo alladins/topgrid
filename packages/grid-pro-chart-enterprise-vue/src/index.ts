@@ -4,6 +4,9 @@
 export { EChartsChart, type ChartSelection, type EChartsInstance } from './EChartsChart.js';
 export { EnterpriseChartPanel } from './EnterpriseChartPanel.js';
 
+// SSR: render a static chart SVG server-side (no DOM) for Nuxt/SSR — see vue-chart-consumer-notes.
+export { renderChartToSvgString, type SsrChartSize } from './ssr.js';
+
 // Re-export the engine + types for Vue consumers' convenience (range/pivot → option).
 export {
   matrixToEChartsOption,

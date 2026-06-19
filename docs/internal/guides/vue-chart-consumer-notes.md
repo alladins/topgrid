@@ -7,7 +7,7 @@
 ## Published (npm live)
 - `@topgrid/grid-chart-core@0.1.0` — framework-neutral engine (`matrixToEChartsOption`, 17 chart types).
 - `@topgrid/grid-license-core@0.1.0` — neutral license state/checks (no React).
-- `@topgrid/grid-pro-chart-enterprise-vue@0.3.0` — Vue render shell (`EChartsChart`, `EnterpriseChartPanel`).
+- `@topgrid/grid-pro-chart-enterprise-vue@0.4.0` — Vue render shell (`EChartsChart`, `EnterpriseChartPanel`) + SSR helper (`renderChartToSvgString`).
 
 Install: `pnpm add @topgrid/grid-pro-chart-enterprise-vue echarts vue` (echarts 5.x or 6.x; single shared instance).
 
@@ -22,10 +22,23 @@ Install: `pnpm add @topgrid/grid-pro-chart-enterprise-vue echarts vue` (echarts 
 1. ~~Real-browser E2E is unverified for Vue.~~ **RESOLVED (2026-06-19)** — `e2e/vue-chart.e2e.spec.ts`
    runs the Vue panel in real chromium (render/layout/type-switch/export/cross-filter, 4 green). The
    remaining browser-shaped unknown is Nuxt SSR (next item).
-2. **Nuxt SSR / hydration is unwired.** `EChartsChart` initialises ECharts in `onMounted` (client only).
-   Under Nuxt SSR the chart renders **nothing server-side** and appears on client hydration. ECharts'
-   `renderToSVGString` SSR path is NOT integrated. If you need server-rendered charts (SEO, no-JS), that is
-   an open item — tell us and we'll prioritise an SSR entry.
+2. **Nuxt SSR — PARTIAL (2026-06-19).** Two facts:
+   - ✅ **`EnterpriseChartPanel` is SSR-safe** — `renderToString` emits the container + toolbar without a
+     DOM and without throwing (verified, `src/ssr.test.ts`). Under Nuxt the panel renders client-side after
+     hydration. So you can use it directly (no `<ClientOnly>` needed to avoid crashes).
+   - ✅ **Server static SVG helper** — `renderChartToSvgString(option, { width, height })` renders a chart to
+     an SVG string headless (ECharts SSR mode, no DOM; verified). Use it to emit a server-rendered static
+     chart (SEO / first paint), then let the interactive panel take over on the client.
+   - ⚠️ **What we did NOT ship: in-place SSR→hydrate of the *same* node.** ECharts' SVG embeds incremental
+     ids that need not be byte-identical across the server and client render, which can trip Vue hydration —
+     so we did not auto-hydrate a server SVG into the live panel. Pick one of the patterns below.
+
+### Nuxt patterns
+- **Interactive (simplest):** render `<EnterpriseChartPanel .../>`. It is SSR-safe; the chart appears on
+  client hydration. No server chart pixels (fine for in-app dashboards).
+- **Server static + client interactive:** server-render `renderChartToSvgString(...)` into a placeholder for
+  first paint/SEO; mount `<EnterpriseChartPanel>` (or swap on `onMounted`) for interactivity. You control the
+  swap, avoiding the id-mismatch hydration trap.
 3. **Export = SVG only.** `EnterpriseChartPanel`'s Export button calls `getDataURL({type:'svg'})`. PNG is
    possible via the same API but not surfaced; **PDF is not supported** (bring your own).
 4. **Cross-filter is a callback, not wired to a grid.** `@cross-filter` emits the clicked datum; you map it
@@ -35,5 +48,6 @@ Install: `pnpm add @topgrid/grid-pro-chart-enterprise-vue echarts vue` (echarts 
    entry, or the panel shows the Pro watermark.
 
 ## How to report
-Issues with the above (especially #1 real-browser and #2 SSR) → file against the topgrid chart packages so
-we can fold real-browser/SSR coverage into the published packages. Integration code itself stays in PTLPSM.
+Issues with the above → file against the topgrid chart packages. If in-place SSR→hydrate of the live panel
+(static server chart that hydrates to interactive on the *same* node) turns out to matter for PTLPSM, tell us
+— that is the one piece we deliberately deferred. Integration code itself stays in PTLPSM.

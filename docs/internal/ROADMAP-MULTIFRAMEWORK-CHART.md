@@ -10,7 +10,8 @@
 > **npm live(차트 최신)**: grid-chart-core@0.1.0 · grid-pro-chart-enterprise@0.4.0(React) · grid-pro-chart-enterprise-vue@0.2.0→**0.3.0 발행대기**(Vue, auto-gate) · **grid-license-core@0.1.0 발행대기**.
 > **★(c) BYO 어댑터 완료(2026-06-19)**: ADR-003 R4(Highcharts/AG=시임 개방) 실증+문서화. `RangeChartPanel.renderChart` 에 **비-ECharts 렌더러 주입**이 동작함을 chromium 2 green 으로 증명(기존 미커버 갭) + BYO 가이드(`docs/internal/guides/byo-chart-adapter.md`, Highcharts/AG 주입 예제). 신규 패키지·의존·발행 0(순수 additive 스토리+테스트+문서). 상세 §3-15.
 > **★Vue 실브라우저 검증 완료(2026-06-19)**: (b) 통지 #1(Vue happy-dom만, 실브라우저 미검증) 해소. 신규 e2e 하네스(esbuild 번들+Playwright webServer)로 **real chromium 4 green**(real-layout render·type-switch·export·**real 막대클릭 cross-filter**=hit-testing). 발행 불요(devDep esbuild/@playwright/test + e2e/ 하네스, 패키지 표면 무변경). 상세 §3-16.
-> **잔여(전부 비크리티컬, 미실행)**: **Nuxt SSR/hydration 배선**((b)통지 #2, onMounted client-only=SSR 서버렌더 0) · toolbar 폴리시 · grid-license lockstep 꼬리 · 문서사이트 차트 반영 · React enterprise 도 e2e/SSR 동형 검토. → W2 차트=설계·구현·멀티프레임워크·발행·BYO·실브라우저 검증까지 완결.
+> **★SSR 배선 완료(2026-06-19)**: (b)통지 #2 해소(부분, 정직). `renderChartToSvgString` SSR 헬퍼(headless SVG, ECharts ssr 모드)+컴포넌트 SSR-safe(renderToString 무크래시). node SSR **5 green**(헬퍼+renderToString). ★in-place SSR→hydrate(같은 노드)는 ECharts SVG id 비결정성→Vue hydration 트랩 위험으로 **의도적 미배선**(2패턴 문서화). enterprise-vue 0.3.0→**0.4.0 발행대기**. 상세 §3-17.
+> **잔여(전부 비크리티컬, 미실행)**: in-place SSR-hydrate(수요 시) · toolbar 폴리시 · grid-license lockstep 꼬리 · 문서사이트 차트 반영 · React enterprise e2e 동형 검토. → W2 차트=설계·구현·멀티프레임워크·발행·BYO·실브라우저·SSR 까지 완결.
 > **발행 완료(2026-06-18, npm live·스모크 통과)**: 6개 = **@topgrid/grid-core-headless@0.1.0**(신규) · **@topgrid/grid-vue@0.1.0**(신규) · grid-core@**0.6.0** · grid-features@**0.9.0** · grid-pro-range@**0.4.0** · grid-pro-master@**0.7.0**. publisher=travia71, Bypass-2FA 토큰=비대화형 통과(OTP 프롬프트 없음). 절차: 수동 bump(★changeset version 미사용=major-escalation 회피 [[changeset-peerdep-major-escalation]]) → pnpm build green → pnpm -r test EXIT0 → **pnpm pack ×6 tarball 검증(workspace:* 전부 구체핀 치환·누출 0)** → topo 발행(headless→grid-core→features/range/master→grid-vue) → 소비자 스모크(`npm i @topgrid/grid-vue vue @tanstack/vue-table`=ERESOLVE 0, grid-vue→headless@0.1.0 라이브 해소). 상세 §11.9.
 > **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
 > **★W2 단계① 완료(2026-06-18)**: 라이브러리 평가 매트릭스 → **Apache ECharts(Apache-2.0) 선정**(기본/번들 어댑터). 결정 렌즈=우리가 상용 재배포 제품(grid-license 동봉)이라 재배포-무료가 필수 → Highcharts(OEM 의무 전가)·AG Charts(갭 핵심타입=유료 Enterprise) 부적격. ECharts 만 §3-2 갭을 무료로 충족 + framework-agnostic core(W1 정렬) + SSR `renderToSVGString`(Nuxt PTLPSM 적합). Highcharts/AG Charts=BYO-라이선스 어댑터로만 개방(우리 미발행). 상세·매트릭스·출처=§3-4.
@@ -368,6 +369,22 @@ grid-license-core@0.1.0(신규) + enterprise-vue@0.3.0(topo). 스모크: `npm i 
 
 #### 남은 것
 - Nuxt SSR/hydration((b)통지 #2): `renderToSVGString` 서버엔트리 미배선=feature(검증 아님). 수요 시.
+
+### 3-17. Vue 차트 SSR 배선 (2026-06-19, ✅ 부분·정직 / 발행 대기)
+
+> advisor 위임 진행. (b)통지 #2(Nuxt SSR). ★정직 범위 결정: 실 Nuxt hydration 미검증 환경이라 추측 auto-hydration 발행 거부 → 검증 가능한 형태로만 배선.
+
+#### 한 것
+- **`echarts-setup.ts`**: 모듈 등록(use[...]) 공유 추출(컴포넌트+SSR 헬퍼 1소스, D3). EChartsChart 가 거기서 import(중복 제거).
+- **`renderChartToSvgString(option, {width,height})`**(`ssr.ts`): ECharts ssr 모드(`init(null,{ssr:true})`→`renderToSVGString`)로 **headless SVG 문자열**(DOM 0). index export. 0.3.0→0.4.0(additive).
+- 컴포넌트 **SSR-safe**(onMounted=client-only, render 시 DOM 접근 0 → renderToString 무크래시).
+
+#### 검증 (전부 green, 브라우저 불필요)
+- **node SSR 5 passed**(`ssr.test.ts`): renderChartToSvgString → `<svg`+path/rect+substantial / `vue/server-renderer` renderToString(EnterpriseChartPanel) → data-echarts-root+toolbar 무크래시.
+- happy-dom **12** + **e2e real chromium 4**(echarts-setup 리팩터 후 client path 무회귀 재확인).
+
+#### ★의도적 미배선 (over-claim 방지)
+in-place SSR→hydrate(서버 SVG 가 같은 노드서 interactive 로 hydrate): ECharts SVG **incremental id 비결정성** → server/client 문자열 불일치 가능 → Vue hydration 트랩. 실 Nuxt 검증 불가 환경서 발행=추측. → **2 패턴 문서화**(interactive=client-only 렌더 / server-static=헬퍼+client 패널 스왑, 소비자 제어). 수요 확정 시 별도.
 
 ---
 
