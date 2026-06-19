@@ -338,8 +338,8 @@ React/Vue 는 다른 프레임워크 앱서 소비 → 라이선스 싱글톤 sp
 - Vue happy-dom **node 12 passed**(auto-gate non-vacuous: unlicensed/licensed/override).
 - ★**full chromium 비주얼 130 passed 0 fail**=grid-license 재배선 byte-identical(전 watermark 테스트 무회귀). pack: core deps {}·Vue 0.3.0 2-core 핀·누출0.
 
-#### 다음
-- 발행(2): grid-license-core@0.1.0 → enterprise-vue@0.3.0(topo). 그 후 (c) BYO 어댑터.
+#### ★발행 완료(2026-06-19, npm live·스모크 통과)
+grid-license-core@0.1.0(신규) + enterprise-vue@0.3.0(topo). 스모크: `npm i ...-vue echarts vue` → enterprise-vue→grid-chart-core+grid-license-core, **React 0(zero-React 유지=라이선스 자동게이트가 React 없이 동작)**·취약점0. (a) 완결. 다음=(c) BYO 어댑터.
 
 ---
 
