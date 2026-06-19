@@ -8,7 +8,8 @@
 > **★advisor 추가판단(nothing-critical 위임)**: toolbar 노출 채택(출시 17타입 중 11개가 UI 미도달 = 출시 가치 잠금해제, 최소·패리티). license-core=mass republish 비용과다·PTLPSM=세션범위밖·BYO=투기적 → 보류. **`toolbarTypes` prop 구현 완료**(React 0.4.0·Vue 0.2.0, chromium 8·happy-dom 11 green). **2패키지 republish 대기(user-gated)**. 상세 §3-13.
 > **★license-core 추출 완료(ADR-005, 2026-06-19)**: `@topgrid/grid-license-core` 신규 추출 → Vue 차트 **자동 워터마크 게이트**(prop override 유지). ★발행 블래스트=**2뿐**(프레임워크 분리=mass republish 불필요 발견). full chromium **130 green=byte-identical**(grid-license 재배선 무회귀). 발행 대기=grid-license-core@0.1.0 + enterprise-vue@0.3.0. 상세 §3-14.
 > **npm live(차트 최신)**: grid-chart-core@0.1.0 · grid-pro-chart-enterprise@0.4.0(React) · grid-pro-chart-enterprise-vue@0.2.0→**0.3.0 발행대기**(Vue, auto-gate) · **grid-license-core@0.1.0 발행대기**.
-> **다음(advisor 위임 진행)**: (c)BYO Highcharts/AG 어댑터(시임 개방 실증). 잔여=toolbar 폴리시·grid-license lockstep 꼬리(차기 릴리스)·W3/PTLPSM(담당자 직접, 우리는 불안정 통지).
+> **★(c) BYO 어댑터 완료(2026-06-19)**: ADR-003 R4(Highcharts/AG=시임 개방) 실증+문서화. `RangeChartPanel.renderChart` 에 **비-ECharts 렌더러 주입**이 동작함을 chromium 2 green 으로 증명(기존 미커버 갭) + BYO 가이드(`docs/internal/guides/byo-chart-adapter.md`, Highcharts/AG 주입 예제). 신규 패키지·의존·발행 0(순수 additive 스토리+테스트+문서). 상세 §3-15.
+> **잔여(전부 비크리티컬, 미실행)**: toolbar 폴리시 심화 · grid-license lockstep 꼬리(차기 grid-license 릴리스 시) · W3/PTLPSM(담당자 직접 통합, 우리는 불안정 항목 통지 역할) · 문서사이트 차트 반영. → 차트 워크스트림(W2) 설계·구현·멀티프레임워크·발행·BYO 까지 완결.
 > **발행 완료(2026-06-18, npm live·스모크 통과)**: 6개 = **@topgrid/grid-core-headless@0.1.0**(신규) · **@topgrid/grid-vue@0.1.0**(신규) · grid-core@**0.6.0** · grid-features@**0.9.0** · grid-pro-range@**0.4.0** · grid-pro-master@**0.7.0**. publisher=travia71, Bypass-2FA 토큰=비대화형 통과(OTP 프롬프트 없음). 절차: 수동 bump(★changeset version 미사용=major-escalation 회피 [[changeset-peerdep-major-escalation]]) → pnpm build green → pnpm -r test EXIT0 → **pnpm pack ×6 tarball 검증(workspace:* 전부 구체핀 치환·누출 0)** → topo 발행(headless→grid-core→features/range/master→grid-vue) → 소비자 스모크(`npm i @topgrid/grid-vue vue @tanstack/vue-table`=ERESOLVE 0, grid-vue→headless@0.1.0 라이브 해소). 상세 §11.9.
 > **알려진 한계(수용됨)**: facade `@topgrid/grid` 은 배치 밖=옛 grid-core@0.5.0 핀 유지(npm 존재하므로 정상). 완전정합(21-lockstep)은 사용자 미선택. [[npm-publish-topgrid]].
 > **★W2 단계① 완료(2026-06-18)**: 라이브러리 평가 매트릭스 → **Apache ECharts(Apache-2.0) 선정**(기본/번들 어댑터). 결정 렌즈=우리가 상용 재배포 제품(grid-license 동봉)이라 재배포-무료가 필수 → Highcharts(OEM 의무 전가)·AG Charts(갭 핵심타입=유료 Enterprise) 부적격. ECharts 만 §3-2 갭을 무료로 충족 + framework-agnostic core(W1 정렬) + SSR `renderToSVGString`(Nuxt PTLPSM 적합). Highcharts/AG Charts=BYO-라이선스 어댑터로만 개방(우리 미발행). 상세·매트릭스·출처=§3-4.
@@ -340,6 +341,18 @@ React/Vue 는 다른 프레임워크 앱서 소비 → 라이선스 싱글톤 sp
 
 #### ★발행 완료(2026-06-19, npm live·스모크 통과)
 grid-license-core@0.1.0(신규) + enterprise-vue@0.3.0(topo). 스모크: `npm i ...-vue echarts vue` → enterprise-vue→grid-chart-core+grid-license-core, **React 0(zero-React 유지=라이선스 자동게이트가 React 없이 동작)**·취약점0. (a) 완결. 다음=(c) BYO 어댑터.
+
+### 3-15. BYO 차트 어댑터 — 시임 개방 실증 + 가이드 (2026-06-19, ✅ 발행 불요)
+
+> advisor 위임 진행(추천순서 (c)). ADR-003 R4("Highcharts/AG=BYO 어댑터로 개방, 우리 미번들")를 실코드+문서로 닫음. ★실측 갭: `RangeChartPanel.renderChart` 시임이 chromium 미커버(스토리/테스트 0)였음.
+
+#### 한 것
+- **가이드** `docs/internal/guides/byo-chart-adapter.md`: 3-레이어 표(스파크라인 zero-dep / ECharts 번들 / BYO) · `renderChart` 시임 설명 · **Highcharts·AG Charts 주입 코드 예제** · range/pivot→series 브리지 재사용 · 라이선스 자세(ECharts=Apache-2.0 번들, Highcharts/AG=소비자 BYO 라이선스).
+- **스토리** `RangeChartPanel.stories.tsx`(ByoRenderer/NoRenderer): 비-ECharts 커스텀 SVG 렌더러 주입(Highcharts/AG 대역).
+- **chromium 2 passed** `range-chart-panel-byo.spec.ts`: (1)주입 렌더러가 시임 통해 렌더+★데이터→geometry 실행(95 막대>30 막대=주입 렌더러 로직 실재) (2)renderChart 없으면 graceful placeholder(throw 0).
+
+#### ★범위·발행
+신규 패키지·차트 라이브러리 의존·발행 **전부 0** — 순수 additive(grid-pro-chart 스토리+테스트 + 가이드). 기존 코드 변경 0 → 회귀면 없음(full 스위트 130 무영향, 신규 2 additive). AG Charts Community(MIT) 실어댑터 패키지화는 *실수요 등장 시*(extract-on-demand) — 현재 투기 회피.
 
 ---
 
