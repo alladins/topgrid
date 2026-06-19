@@ -22,6 +22,7 @@ topgrid 는 **TanStack Table v8 기반**의 React 그리드 라이브러리다. 
 | Excel-style 범위 선택 + 키보드 | + `@topgrid/grid-pro-range` (Pro) |
 | Master-Detail (펼치기) + 우클릭 메뉴 | + `@topgrid/grid-pro-master` (Pro) |
 | Group / Sum / Avg 집계 | + `@topgrid/grid-pro-agg` (Pro) |
+| 차트·시각화 (셀 스파크라인 ~ 엔터프라이즈 17종, React/Vue) | + 차트 패키지 → `charting.md` (Pro) |
 
 - **MIT 4 패키지** (`grid-core` / `grid-renderers` / `grid-features` / `grid-export`)
   는 자유 사용.
