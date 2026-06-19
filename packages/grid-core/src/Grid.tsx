@@ -45,6 +45,7 @@ import { useColumnDrag } from './internal/column-drag/useColumnDrag';
 import { DropIndicator } from './internal/column-drag/DropIndicator';
 import { SortClearButton } from './internal/multi-sort/SortClearButton';
 import { buildTableOptions } from './internal/buildTableOptions';
+import { shouldWarnMissingRowId, MISSING_ROW_ID_WARNING } from './internal/devWarnings';
 import { buildFloatingRows } from './internal/buildFloatingRows';
 import { computeColumnWindow, type ColumnWindow } from './internal/computeColumnWindow';
 import { useColumnVirtualizer } from './internal/useColumnVirtualizer';
@@ -245,6 +246,19 @@ function GridInner<TData>(
       );
     }
     // mount 시 1회. eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // W3 DX: the #1 footgun — identity-dependent features (selection / reorder / pinning / cell-flash)
+  // enabled but no getRowId → they silently track the wrong rows after sort/filter (dev warn, mount 1회).
+  useEffect(() => {
+    if (
+      typeof process !== 'undefined' &&
+      process?.env?.NODE_ENV !== 'production' &&
+      shouldWarnMissingRowId(props)
+    ) {
+      console.warn(MISSING_ROW_ID_WARNING);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

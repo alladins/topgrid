@@ -400,6 +400,12 @@ in-place SSR→hydrate(서버 SVG 가 같은 노드서 interactive 로 hydrate):
 ### 4-2. ROM
 - W1 React-어댑터에 내포 + **추가 DX ≈ 0.5~1개월**.
 
+### 4-3. W3 착수 — DX 마찰 분석 + 증분1 (2026-06-19, ✅ analysis + first fix)
+> W2 차트 완결 후 advisor 추천대로 W3 전환. 단계1=분석.
+- **분석 산출물**: `docs/internal/W3-DX-FRICTION-ANALYSIS.md` — Grid ~93 prop·TanStack 누출 11종·함정 인벤토리(P1~P4)·개선 백로그(W3-1~6). ★발견: 고수준 레이어(`createColumns`/`TopgridColumnDef`/`createAutoGroupColumn`) 이미 부분 존재 → W3=신규 프레임워크 아니라 **함정 제거+고수준 경로 보강**.
+- **증분1(W3-1, ✅)**: P1 최상위 함정(**getRowId 미지정→인덱스 식별로 selection/reorder/cell-flash 가 정렬 후 엉뚱한 행 추적**) dev-warn. 신규 pure `shouldWarnMissingRowId`(node 11)+Grid.tsx dev-guard useEffect. prod 무영향(additive·suppressed)→chromium 무영향. typecheck0·전패키지 build green.
+- 다음: W3-2(visibility no-op dev-warn) 등 §5 백로그. 발행=grid-core 변경 누적 후 user-gated.
+
 ---
 
 ## 5. PTLPSM — W1 으로 흡수 (별개 트랙 폐기, 2026-06-16 사용자 결정)
