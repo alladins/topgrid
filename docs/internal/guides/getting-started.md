@@ -557,4 +557,6 @@ import { Grid, EditableCell } from '@topgrid/grid';
 |---|---|
 | 패키지별 정확한 export + 시그니처 전체 | `api-reference.md` |
 | 셀 렌더러 11종 + EditableCell 상세 | `modules/renderers.md` |
+| **Next.js (App/Pages Router) · SSR 연동** | `nextjs-ssr.md` |
+| **차트 (스파크라인 ~ 엔터프라이즈 17종, React/Vue)** | `charting.md` |
 | 모듈별 설계/결정 | `modules/mod-grid-*.md` |

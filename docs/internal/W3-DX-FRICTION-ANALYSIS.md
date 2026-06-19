@@ -67,6 +67,10 @@
 - bump: grid-core 0.7.0·grid 0.10.0·grid-features 0.10.0·grid-renderers 0.4.0·grid-sizing 0.4.0·grid-pro-{edit-plus 0.4,filter 0.4,header 0.5,master 0.8,pivot 0.5,serverside 0.3,sheet 0.5,tracking 0.4}. 미터치 14.
 - 검증: build topo green·pnpm -r test EXIT0·pnpm pack ×13 누출0·topo 발행 13/13 OK·★스모크 `npm i @topgrid/grid`=**단일 grid-core@0.7.0 deduped**(혼재 0=lockstep 목적 달성)·toGridCell/toGridFilterColumn=function(facade 노출 확인). (npm audit 권고=차트/export 광범 그래프의 사전존재 transitive advisory, 본 변경 무관.)
 
+## 7c. 증분5(W3-5) — Next.js/SSR 가이드 (2026-06-20, ✅ docs)
+- `docs/internal/guides/nextjs-ssr.md`: App Router 핵심 3규칙(`'use client'`·컬럼은 클라이언트 생성·data 만 서버 전달)·App/Pages 패턴·SSR/하이드레이션(테이블 SSR O, 가상화 client-only, `ssr:false` dynamic)·Tailwind·함정표(함수 prop 직렬화·document undefined·hydration mismatch·getRowId)·Vue/Nuxt 차트 SSR 링크. getting-started §9 에 Next.js·charting 링크 추가(발견성).
+- docs-only.
+
 ## 8. 인프라 백로그 (W3 중 발견)
 - vitest 미설치인데 `*.test.ts`(vi/it) 다수 = dead test(createColumns.test 등) → node 포팅 or vitest 도입.
 - facade `tsc --noEmit`: grid-pro-filter dist 의 `@tanstack/table-core` 미해소(사전존재). build(tsup)는 green.
