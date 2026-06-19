@@ -85,9 +85,11 @@ export default {
 
 ### 2.3 첫 그리드
 
+**권장: 고수준 `createColumns`** — TanStack `ColumnDef` 지식 없이 `{ id, name, type }` 로
+선언하면, `type` 에 맞는 셀 렌더러가 자동 배선된다(facade `@topgrid/grid` 가 기본 렌더러를 wiring).
+
 ```tsx
-import { Grid } from '@topgrid/grid-core';
-import type { ColumnDef } from '@tanstack/react-table';
+import { Grid, createColumns } from '@topgrid/grid';   // facade = 렌더러 자동 배선
 
 interface User {
   id: number;
@@ -96,11 +98,11 @@ interface User {
   age: number;
 }
 
-const columns: ColumnDef<User>[] = [
-  { id: 'name', accessorKey: 'name', header: '이름', size: 150 },
-  { id: 'email', accessorKey: 'email', header: '이메일', size: 250 },
-  { id: 'age', accessorKey: 'age', header: '나이', size: 80 },
-];
+const columns = createColumns<User>([
+  { id: 'name', name: '이름', type: 'text', width: '150' },
+  { id: 'email', name: '이메일', type: 'text', width: '250' },
+  { id: 'age', name: '나이', type: 'number', align: 'right', width: '80' },
+]);
 
 const data: User[] = [
   { id: 1, name: '김철수', email: 'chulsoo@example.com', age: 30 },
@@ -112,7 +114,12 @@ export default function App() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">사용자 목록</h1>
-      <Grid<User> data={data} columns={columns} enableSorting />
+      <Grid<User>
+        data={data}
+        columns={columns}
+        getRowId={(u) => String(u.id)}   // ★ 안정적 행 식별 (아래 주의 참고)
+        enableSort
+      />
     </div>
   );
 }
@@ -124,8 +131,14 @@ npm run dev
 
 → 브라우저에 그리드가 표시되고, 컬럼 헤더 클릭 시 정렬이 동작한다.
 
-> 컬럼 정의는 TanStack Table 의 `ColumnDef` 를 그대로 쓴다. `id` + `accessorKey` 를
-> 함께 명시하는 것을 권장한다.
+> **★ getRowId 를 지정하라.** 미지정 시 행 식별이 **배열 인덱스**로 떨어져,
+> 선택(selection)·행 재정렬·셀 변경 플래시가 **정렬/필터 후 엉뚱한 행을 추적**한다(가장 흔한 함정).
+> dev 모드에서 이 조건이면 경고가 출력된다. `getRowId={(row) => row.<고유키>}` 권장.
+>
+> **정렬 prop 은 `enableSort`** (`enableSorting` 아님 — TanStack 옵션명과 다름).
+>
+> **저수준 경로**: TanStack 의 `ColumnDef<User>[]` 를 `columns` 에 직접 넘겨 완전 제어할 수도 있다
+> (accessorFn·커스텀 cell 등). 이때만 `@tanstack/react-table` 지식이 필요하다.
 
 ---
 

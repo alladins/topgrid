@@ -44,5 +44,10 @@
 - Grid.tsx: 기존 dev-warn 패턴(useEffect+NODE_ENV 가드+mount 1회)에 1개 추가. **prod 빌드 무영향**(가드).
 - 검증: node **devWarnings 11 passed**·typecheck0·`pnpm build` 전패키지 green. ★dev-only+prod-suppressed+additive useEffect → storybook(prod) byte-identical = chromium 무영향(미실행 정당).
 
-## 5. 다음
-W3-2(visibility dev-warn, node-test) 또는 W3-3(조합 경고). 그 후 W3-4(타입 누출 축소)=신중한 API 작업. 발행은 grid-core 변경 누적 후 user-gated(현재 dev-warn 만=다음 grid-core 릴리스에 동승).
+## 5. 증분2(W3-5 일부) — 온보딩 고수준 경로 전환 (✅ docs)
+★실측 발견: `getting-started.md` 가 **저수준 raw `ColumnDef` 경로**(TanStack import + `{id,accessorKey,header}`)를 가르치고 있었음 — 고수준 `createColumns` 가 이미 있는데도. + **doc 버그**: 예제가 `enableSorting`(존재 안 함, 실제=`enableSort`) 사용 → 정렬 안 됨.
+- 수정: 2.3 첫 그리드를 **`createColumns` from `@topgrid/grid`**(렌더러 자동 배선)로 전환, `{id,name,type}` 선언(TanStack 무지식). `enableSort` 정정. **getRowId 가이드 추가**(W3-1 dev-warn 과 연결). 저수준 경로는 "advanced"로 강등.
+- docs-only(코드 0, 게이트 없음).
+
+## 6. 다음
+W3-2(visibility no-op dev-warn, node-test) · W3-3(조합 경고) · W3-4(타입 누출 축소=신중한 API). 발행은 grid-core 변경 누적 후 user-gated(현재 dev-warn 만=다음 grid-core 릴리스 동승).
