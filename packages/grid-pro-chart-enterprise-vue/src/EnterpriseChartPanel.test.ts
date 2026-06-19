@@ -61,4 +61,20 @@ await nextTick();
 ok(c2.querySelector('[data-watermark]') !== null, 'watermark=true → watermark composited');
 ok(c1.querySelector('[data-watermark]') === null, 'watermark=false (default) → none');
 
+// --- toolbarTypes: custom set surfaces non-default catalog types ---
+const c3 = document.createElement('div');
+document.body.appendChild(c3);
+createApp(EnterpriseChartPanel, { data, initialType: 'bar', toolbarTypes: ['bar', 'radar', 'heatmap'] }).mount(c3);
+await nextTick();
+ok(c3.querySelectorAll('[data-chart-type-btn]').length === 3, 'toolbarTypes → exactly 3 buttons');
+const radarBtn = c3.querySelector('[data-chart-type-btn="radar"]')! as HTMLElement;
+ok(radarBtn !== null, 'radar button present (not in default 6)');
+radarBtn.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+await nextTick();
+await nextTick();
+ok(
+  c3.querySelector('[data-echarts-root]')!.getAttribute('data-rendered-type') === 'radar',
+  '★clicking radar (only via toolbarTypes) renders radar',
+);
+
 console.log(`\n[grid-pro-chart-enterprise-vue] ${pass} passed`);

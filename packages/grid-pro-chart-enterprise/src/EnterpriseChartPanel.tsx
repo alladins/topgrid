@@ -14,13 +14,16 @@ import { EChartsChart, type ChartSelection, type EChartsInstance } from './EChar
  */
 
 /** Types offered in the toolbar (subset of the implemented catalog). */
-const TOOLBAR_TYPES: EnterpriseChartType[] = ['bar', 'line', 'area', 'stacked-bar', 'pie', 'scatter'];
+/** Default toolbar types — a sensible subset; pass `toolbarTypes` to surface more of the catalog. */
+const DEFAULT_TOOLBAR_TYPES: EnterpriseChartType[] = ['bar', 'line', 'area', 'stacked-bar', 'pie', 'scatter'];
 
 export interface EnterpriseChartPanelProps {
   /** Bridge output — `seriesFromMatrix(...)` / `seriesFromPivot(...)`. */
   data: MatrixChartData;
   initialType?: EnterpriseChartType;
   enableToolbar?: boolean;
+  /** Which types the toolbar offers. Defaults to a 6-type subset; pass any of the 17 catalog types. */
+  toolbarTypes?: EnterpriseChartType[];
   enableExport?: boolean;
   /** Fires on chart datum click — map to a grid filter for cross-filtering. */
   onCrossFilter?: (sel: ChartSelection) => void;
@@ -32,6 +35,7 @@ export function EnterpriseChartPanel({
   data,
   initialType = 'bar',
   enableToolbar = true,
+  toolbarTypes = DEFAULT_TOOLBAR_TYPES,
   enableExport = true,
   onCrossFilter,
   title,
@@ -61,7 +65,7 @@ export function EnterpriseChartPanel({
       )}
       {enableToolbar && (
         <div data-chart-toolbar style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
-          {TOOLBAR_TYPES.map((t) => (
+          {toolbarTypes.map((t) => (
             <button
               key={t}
               type="button"

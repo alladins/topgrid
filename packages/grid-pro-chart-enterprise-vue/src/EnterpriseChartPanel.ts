@@ -17,8 +17,8 @@ import {
 } from '@topgrid/grid-chart-core';
 import { EChartsChart, type ChartSelection } from './EChartsChart.js';
 
-/** Types offered in the toolbar (subset of the implemented catalog). */
-const TOOLBAR_TYPES: EnterpriseChartType[] = ['bar', 'line', 'area', 'stacked-bar', 'pie', 'scatter'];
+/** Default toolbar types — a subset; pass `toolbarTypes` to surface more of the 17-type catalog. */
+const DEFAULT_TOOLBAR_TYPES: EnterpriseChartType[] = ['bar', 'line', 'area', 'stacked-bar', 'pie', 'scatter'];
 
 export const EnterpriseChartPanel = defineComponent({
   name: 'TopGridEnterpriseChartPanel',
@@ -27,6 +27,8 @@ export const EnterpriseChartPanel = defineComponent({
     data: { type: Object as PropType<ChartMatrix>, required: true },
     initialType: { type: String as PropType<EnterpriseChartType>, default: 'bar' },
     enableToolbar: { type: Boolean, default: true },
+    /** Which types the toolbar offers. Defaults to a 6-type subset; pass any of the 17 catalog types. */
+    toolbarTypes: { type: Array as PropType<EnterpriseChartType[]>, default: () => DEFAULT_TOOLBAR_TYPES },
     enableExport: { type: Boolean, default: true },
     onCrossFilter: { type: Function as PropType<(sel: ChartSelection) => void>, default: undefined },
     /** Host-supplied license gate (this package imports no React-coupled grid-license). */
@@ -51,7 +53,7 @@ export const EnterpriseChartPanel = defineComponent({
           : null,
         props.enableToolbar
           ? h('div', { 'data-chart-toolbar': '', style: { display: 'flex', gap: '4px', marginBottom: '4px' } }, [
-              ...TOOLBAR_TYPES.map((t) =>
+              ...props.toolbarTypes.map((t) =>
                 h(
                   'button',
                   {

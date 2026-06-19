@@ -33,6 +33,16 @@ export const Pie: Story = {
   args: { data, initialType: 'pie', enableToolbar: true, enableExport: true },
 };
 
+// toolbarTypes: surface catalog types beyond the default 6 (e.g. radar/heatmap) in the toolbar.
+export const CustomToolbar: Story = {
+  args: {
+    data,
+    initialType: 'bar',
+    toolbarTypes: ['bar', 'radar', 'heatmap'],
+    enableToolbar: true,
+  },
+};
+
 // Catalog-expansion live gates (증분3) — these exercise the trickier ECharts module registrations:
 // radar → RadarComponent, heatmap → VisualMapComponent + HeatmapChart, candlestick → CandlestickChart.
 export const Radar: Story = {

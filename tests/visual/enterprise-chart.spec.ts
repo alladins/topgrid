@@ -79,6 +79,24 @@ for (const [story, renderedType] of [
   });
 }
 
+test('toolbarTypes surfaces non-default catalog types; clicking radar renders radar', async ({
+  page,
+}: { page: Page }) => {
+  await page.goto(FRAME(`${BASE}--custom-toolbar`));
+  await page.locator('#storybook-root [data-echarts-root] svg').waitFor({ state: 'visible' });
+
+  // toolbar offers exactly the configured types (radar/heatmap are NOT in the default 6).
+  await expect(page.locator('#storybook-root [data-chart-type-btn]')).toHaveCount(3);
+  await expect(page.locator('#storybook-root [data-chart-type-btn="radar"]')).toBeVisible();
+
+  // clicking the radar button (only reachable because toolbarTypes included it) renders radar.
+  await page.locator('#storybook-root [data-chart-type-btn="radar"]').click();
+  await expect(page.locator('#storybook-root [data-echarts-root]')).toHaveAttribute(
+    'data-rendered-type',
+    'radar',
+  );
+});
+
 test('Pro license gate: unlicensed → watermark, licensed → none (PAT-003)', async ({
   page,
 }: { page: Page }) => {
