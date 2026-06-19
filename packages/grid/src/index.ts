@@ -51,6 +51,9 @@ export {
   TotalCount,
   // Column factory (deprecated들은 제외)
   createColumns,
+  // W3-4 (ADR-006): clean cell/filter adapters (read data without TanStack types)
+  toGridCell,
+  toGridFilterColumn,
   // ADR-009: column-drag + multi-sort 일부 (core 가 canonical)
   useColumnDrag,
   DropIndicator,
@@ -93,6 +96,10 @@ export type {
   UseColumnOrderPersistProps,
   SortBadgeProps,
   SortClearButtonProps,
+  GridCellContext,
+  GridFilterColumn,
+  CellLike,
+  FilterColumnLike,
 } from '@topgrid/grid-core';
 
 // ─────────────────────────────────────────────────────────────────────────────

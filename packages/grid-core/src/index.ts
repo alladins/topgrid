@@ -1,5 +1,9 @@
 // @topgrid/grid-core — public API (MOD-GRID-01 / G-001 + G-002 + G-003 + G-004 + G-005 + MOD-GRID-02 / G-001~G-006).
 export { Grid } from './Grid';
+// W3-4 (ADR-006) — clean cell/filter context + adapters (read cell/filter data without TanStack types).
+export { toGridCell, toGridFilterColumn } from './dx/adapters';
+export type { CellLike, FilterColumnLike } from './dx/adapters';
+export type { GridCellContext, GridFilterColumn } from './dx/cleanTypes';
 // MOD-GRID-29 i18n — consumers build localeText/icons overrides on top of the defaults.
 export {
   defaultGridLocale,

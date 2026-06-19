@@ -55,5 +55,12 @@
 - 검증: node **devWarnings 17 passed**·typecheck0·grid-core 전테스트 green·전패키지 build green. dev/config-time only → chromium 무영향.
 - ★**부수 발견(인프라)**: `createColumns.test.ts` 등 일부 테스트가 **vitest**(`vi`/`it`) 작성인데 **vitest 미설치·미실행**(grid-core test 스크립트=node --strip-types 체인만, vitest config 0) = **dead test**. → 인프라 백로그(node 로 포팅 or vitest 도입). 본 증분 신규 테스트는 검증되는 node 패턴 사용.
 
-## 7. 다음
-**W3-4(TanStack 타입 누출 축소)** = ADR 설계 후 착수(공개 API 표면 변경 — `Cell`/`Column`/State 노출 콜백에 thin 래퍼). 사용자 합의: W3-3 먼저(완료) → W3-4 ADR. 발행은 grid-core 변경 누적 후 user-gated(현재 dev-warn 3종=다음 grid-core 릴리스 동승).
+## 7. 증분4(W3-4) — TanStack 타입 누출 축소: ADR + clean adapter (✅ 설계+착수)
+- **설계=[[ADR-006]]**: non-breaking. clean topgrid 타입 + pure adapter helper 도입, 기존 시그니처 무변경, 콜백 retype 은 grid-core **1.0 으로 연기**. state onChange 래핑 거부(저ROI). breaking retype·병렬-prop 거부.
+- **착수(impl 증분1)**: grid-core `src/dx/cleanTypes.ts`(`GridCellContext<TData>`{rowId,columnId,value,row}·`GridFilterColumn`{id,value,setValue}) + `src/dx/adapters.ts`(`toGridCell`/`toGridFilterColumn`, 최소 structural 입력=TanStack Cell/Column 이 구조적 만족→node-test 가능, @tanstack import 0). grid-core+facade index export.
+- 검증: node **dx adapters 7 passed**·grid-core typecheck0·grid-core 전테스트 green·**전패키지 build green**(facade dist 포함). ★facade `tsc --noEmit` 는 **사전존재** gap(grid-pro-filter dist 가 `@tanstack/table-core` 참조, 루트 미해소)으로 실패 — 본 W3-4 변경과 무관(내 심볼 에러는 해소됨, 카논 게이트=build green). [인프라 백로그].
+- 남은 W3-4: 문서 레시피(onCellClick→toGridCell) + 1.0 migration 항목. 발행=grid-core 변경 누적 후 user-gated.
+
+## 8. 인프라 백로그 (W3 중 발견)
+- vitest 미설치인데 `*.test.ts`(vi/it) 다수 = dead test(createColumns.test 등) → node 포팅 or vitest 도입.
+- facade `tsc --noEmit`: grid-pro-filter dist 의 `@tanstack/table-core` 미해소(사전존재). build(tsup)는 green.
