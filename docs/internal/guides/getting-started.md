@@ -458,6 +458,38 @@ useStoragePersist(grid, { storageKey: 'my-grid' }); // 사용자 설정 유지
 />
 ```
 
+### 5.5 셀 이벤트 — TanStack 타입 없이 (`toGridCell`)
+
+`onCellClick` / `onCellKeyDown` / `getCellTooltip` 의 `cell` 인자는 TanStack 의 `Cell` 객체다
+(`cell.getValue()`, `cell.column.id`, `cell.row.original`…). TanStack API 를 모르고도 셀 데이터를
+읽으려면 **`toGridCell`** 어댑터로 깨끗한 `{ rowId, columnId, value, row }` 로 변환한다(ADR-006).
+
+```tsx
+import { Grid, toGridCell } from '@topgrid/grid';
+
+<Grid<User>
+  data={data}
+  columns={columns}
+  onCellClick={(cell) => {
+    const c = toGridCell<User>(cell);   // { rowId, columnId, value, row }
+    console.log(c.columnId, c.value, c.row.name);   // TanStack 메서드 호출 불필요
+  }}
+  getCellTooltip={(cell) => {
+    const c = toGridCell<User>(cell);
+    return c.columnId === 'email' ? `메일 보내기: ${c.value}` : null;
+  }}
+/>
+```
+
+- `c.value` = 셀 값(= `cell.getValue()`), `c.row` = 원본 행 객체(= `cell.row.original`),
+  `c.rowId` = 안정적 행 id(= `getRowId` 결과; §2.3 참고).
+- `cellClassName` 의 `cell` 에도 동일하게 쓸 수 있다(`toGridCell(cell).value` 등).
+- floating 필터를 직접 그릴 땐 `toGridFilterColumn(column)` 으로 `{ id, value, setValue }` 를 얻는다
+  (`column.getFilterValue()`/`setFilterValue()` 직접 호출 불필요).
+
+> 기존 콜백 시그니처는 그대로 TanStack 타입을 유지한다(하위호환). `toGridCell` 은 **opt-in 다리**이며,
+> grid-core **1.0** 에서 콜백 인자가 위 clean 타입으로 전환될 예정이다.
+
 ---
 
 ## 6. 기존 그리드에서 마이그레이션
