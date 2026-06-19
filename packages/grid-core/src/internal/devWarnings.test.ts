@@ -1,5 +1,10 @@
-// W3 DX node spine — shouldWarnMissingRowId. Run: node --experimental-strip-types src/internal/devWarnings.test.ts
-import { shouldWarnMissingRowId } from './devWarnings.ts';
+// W3 DX node spine — dev warnings. Run: node --experimental-strip-types src/internal/devWarnings.test.ts
+import {
+  shouldWarnMissingRowId,
+  shouldWarnVirtualizationRowPinning,
+  collectGridDevWarnings,
+  visibilityNoOpColumnIds,
+} from './devWarnings.ts';
 
 let pass = 0, fail = 0;
 const ok = (n: string, c: boolean): void => { if (c) pass++; else { fail++; console.log('  ❌', n); } };
@@ -20,6 +25,25 @@ ok('enableCellChangeFlash → WARN', shouldWarnMissingRowId({ enableCellChangeFl
 
 // explicit false flags → no warn.
 ok('reorder false → no warn', shouldWarnMissingRowId({ enableRowReorder: false }) === false);
+
+// F-B: virtualization + rowPinning.
+ok('virt+pinning → WARN', shouldWarnVirtualizationRowPinning({ enableVirtualization: true, enableRowPinning: true }) === true);
+ok('virt only → no warn', shouldWarnVirtualizationRowPinning({ enableVirtualization: true }) === false);
+ok('pinning only → no warn', shouldWarnVirtualizationRowPinning({ enableRowPinning: true }) === false);
+
+// collector: combines applicable warnings.
+ok('collector: getRowId + virt-pin = 2 warnings',
+  collectGridDevWarnings({ rowSelection: 'multi', enableVirtualization: true, enableRowPinning: true }).length === 2);
+ok('collector: clean props = 0 warnings', collectGridDevWarnings({ getRowId: () => '1' }).length === 0);
+
+// F-E: visibility:false column ids.
+ok('visibility ids: picks false-only with id',
+  JSON.stringify(visibilityNoOpColumnIds([
+    { id: 'a', visibility: false },
+    { id: 'b', visibility: true },
+    { id: 'c' },
+    { visibility: false }, // no id → skipped
+  ])) === JSON.stringify(['a']));
 
 console.log(`devWarnings spine: ${pass} passed, ${fail} failed`);
 if (fail) throw new Error(`${fail} failed`);

@@ -49,5 +49,11 @@
 - 수정: 2.3 첫 그리드를 **`createColumns` from `@topgrid/grid`**(렌더러 자동 배선)로 전환, `{id,name,type}` 선언(TanStack 무지식). `enableSort` 정정. **getRowId 가이드 추가**(W3-1 dev-warn 과 연결). 저수준 경로는 "advanced"로 강등.
 - docs-only(코드 0, 게이트 없음).
 
-## 6. 다음
-W3-2(visibility no-op dev-warn, node-test) · W3-3(조합 경고) · W3-4(타입 누출 축소=신중한 API). 발행은 grid-core 변경 누적 후 user-gated(현재 dev-warn 만=다음 grid-core 릴리스 동승).
+## 6. 증분3(W3-3) — 저비용 함정 dev-warn 묶음 (✅ node-tested)
+- **F-B virtualization+rowPinning**(미지원 조합) Grid-level dev-warn. **F-E visibility:false**(createColumns 무음 무시) dev-warn.
+- 구현: devWarnings.ts 에 `shouldWarnVirtualizationRowPinning`·`collectGridDevWarnings`(collector)·`visibilityNoOpColumnIds` 추가. Grid.tsx 의 W3-1 effect → collector 로 통합(getRowId+virt-pin 한 곳). createColumns.ts → visibility 경고(기존 unguarded warn 스타일 일치).
+- 검증: node **devWarnings 17 passed**·typecheck0·grid-core 전테스트 green·전패키지 build green. dev/config-time only → chromium 무영향.
+- ★**부수 발견(인프라)**: `createColumns.test.ts` 등 일부 테스트가 **vitest**(`vi`/`it`) 작성인데 **vitest 미설치·미실행**(grid-core test 스크립트=node --strip-types 체인만, vitest config 0) = **dead test**. → 인프라 백로그(node 로 포팅 or vitest 도입). 본 증분 신규 테스트는 검증되는 node 패턴 사용.
+
+## 7. 다음
+**W3-4(TanStack 타입 누출 축소)** = ADR 설계 후 착수(공개 API 표면 변경 — `Cell`/`Column`/State 노출 콜백에 thin 래퍼). 사용자 합의: W3-3 먼저(완료) → W3-4 ADR. 발행은 grid-core 변경 누적 후 user-gated(현재 dev-warn 3종=다음 grid-core 릴리스 동승).

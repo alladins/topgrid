@@ -15,6 +15,7 @@ import type { ColumnDef, CellContext } from '@tanstack/react-table';
 import type { TopgridColumnDef, RendererRegistry } from './types';
 import type { ColumnInfo } from '../legacy/ColumnInfo';
 import { defaultRendererRegistry } from './rendererRegistry';
+import { visibilityNoOpColumnIds, visibilityNoOpWarning } from '../internal/devWarnings';
 
 /**
  * ColumnInfo와 TopgridColumnDef는 런타임 구조가 동일하다 (G-001 hotfix 2026-05-14).
@@ -67,6 +68,10 @@ import { defaultRendererRegistry } from './rendererRegistry';
 export function createColumns<TData = unknown>(
   defs: TopgridColumnDef<TData>[] | ColumnInfo[],
 ): ColumnDef<TData>[] {
+  // F-E (W3-3): visibility:false is silently ignored here — warn so it isn't mistaken for working.
+  for (const id of visibilityNoOpColumnIds(defs as ReadonlyArray<{ id?: string; visibility?: boolean }>)) {
+    console.warn(visibilityNoOpWarning(id));
+  }
   return defs.map((raw) => {
     // AC-005 hotfix (2026-05-14): ColumnInfo와 TopgridColumnDef 구조 동일 — 단일 경로 처리.
     // 미등록 type은 registry fallback + warn으로 처리 (TC-06, EC-02).
