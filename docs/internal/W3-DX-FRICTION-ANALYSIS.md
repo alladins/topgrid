@@ -62,6 +62,11 @@
 - **마무리(✅ docs)**: getting-started §5.5 레시피 `onCellClick`/`getCellTooltip` → `toGridCell` (+ `toGridFilterColumn` 언급, 하위호환·1.0 전환 예고). W3-4 표면 작업 완료.
 - 남은: 1.0 migration 항목(콜백 시그니처 clean 전환)=차기 major. 발행=grid-core 변경 누적 후 user-gated.
 
+## 7b. ★grid-core@0.7.0 lockstep 발행 (2026-06-20, ✅ npm live)
+사용자 결정: 전체 lockstep. grid-core W3 변경(dev-warn 3 + toGridCell/toGridFilterColumn) 발행 = exact-pin 전이폐포 **13 패키지** minor bump·topo 발행.
+- bump: grid-core 0.7.0·grid 0.10.0·grid-features 0.10.0·grid-renderers 0.4.0·grid-sizing 0.4.0·grid-pro-{edit-plus 0.4,filter 0.4,header 0.5,master 0.8,pivot 0.5,serverside 0.3,sheet 0.5,tracking 0.4}. 미터치 14.
+- 검증: build topo green·pnpm -r test EXIT0·pnpm pack ×13 누출0·topo 발행 13/13 OK·★스모크 `npm i @topgrid/grid`=**단일 grid-core@0.7.0 deduped**(혼재 0=lockstep 목적 달성)·toGridCell/toGridFilterColumn=function(facade 노출 확인). (npm audit 권고=차트/export 광범 그래프의 사전존재 transitive advisory, 본 변경 무관.)
+
 ## 8. 인프라 백로그 (W3 중 발견)
 - vitest 미설치인데 `*.test.ts`(vi/it) 다수 = dead test(createColumns.test 등) → node 포팅 or vitest 도입.
 - facade `tsc --noEmit`: grid-pro-filter dist 의 `@tanstack/table-core` 미해소(사전존재). build(tsup)는 green.
