@@ -16,6 +16,25 @@ cd apps/docs && pnpm build:site  # 2) ★build:site (storybook→static/storyboo
 # 결과: apps/docs/build/ = index.html(ko) + en/ + storybook/ + assets/ ...
 ```
 
+## ★ 정규화 영구 제거 (매 배포 chmod 반복 없애기) — 2026-06-20
+
+> **원인**: scp 업로드는 topgrid 의 **non-interactive umask** 를 따르는데, `umask 022` 는 `~/.bashrc`(인터랙티브 전용)에만 있어 scp 엔 미적용 → 매번 070-계열로 올라와 정규화 필요. 로컬 scp(OpenSSH 9.0+)는 **SFTP 프로토콜**을 쓰므로 서버 SFTP umask 로 고칠 수 있다.
+
+### 영구 해결 (서버 root, 1회) — 이후 정규화 0
+```bash
+# /etc/ssh/sshd_config 의 Subsystem 줄을 internal-sftp + umask 강제로 교체
+sudo sed -i 's|^Subsystem\s\+sftp.*|Subsystem sftp internal-sftp -u 0022|' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+sudo setfacl -Rb /var/www/topgrid     # 잔존 ACL 1회 제거(mask 붕괴 원천 차단)
+```
+→ 이후 **`scp -r apps/docs/build/* topgrid@49.247.14.212:/var/www/topgrid/` 만** 하면 755/644 자동.
+
+### 서버 못 댈 때 — 원커맨드 스크립트(root 불필요)
+```bash
+bash apps/docs/deploy.sh    # scp + 정규화(topgrid 가 자기 파일 chmod) + curl 검증, 한 번에
+```
+(정규화를 스크립트가 대신 — 수동 단계 0. 비밀번호 프롬프트는 keyless 등록 시 사라짐.)
+
 ## 배포 (사용자 실행) — 원본 절차 = 2단계 (scp staging → 관리자 cp 웹루트)
 
 ### 방식 A — 직접 웹루트 scp + 권한 정규화 (★권장, 2026-06-11 검증)
