@@ -91,18 +91,19 @@ getting-started §5.6: `toGridFilterColumn(column)` → `{id,value,setValue}`. T
 ### ✅ F-F — reorder+pagination dev-warn (code, node 22 passed)
 `shouldWarnReorderWithPagination`(devWarnings.ts) + `collectGridDevWarnings` 편입(Grid.tsx 자동). `onRowReorder(from,to)`=DATA 인덱스인데 pagination 시 visual 위치와 불일치 → enableRowReorder + (enablePagination | pagination.mode client/server) 조합서 dev-warn. ★grid-core 누적 변경(다음 릴리스 동승).
 
-### 📋 W3-4 — 1.0 migration 추적 (계획 명문화, 코드 X)
-grid-core **1.0**(차기 major)서 콜백 인자를 TanStack→clean 타입 전환(ADR-006 D3):
-- `onCellClick`/`onCellKeyDown`/`getCellTooltip`: `Cell<TData>` → `GridCellContext<TData>`.
+### ✅ W3-4 — 1.0 콜백 clean 전환 (grid-core 1.0.0 발행, 2026-06-21)
+ADR-006 D3 이행 완료 — 콜백 인자가 TanStack→clean 타입으로 전환됨:
+- `onCellClick`/`onCellKeyDown`: `(Cell, row, event)` → `(GridCellContext, event)`.
+- `getCellTooltip`: `(Cell, row)` → `(GridCellContext)`. `cellClassName`: `(Cell)` → `(GridCellContext)`(D3-3 확장).
 - `renderFloatingFilter`: `Column<TData>` → `GridFilterColumn`.
-- migration: 0.x 소비자는 `toGridCell`/`toGridFilterColumn` 어댑터로 미리 이행 가능(이미 발행됨). 1.0 시 어댑터 호출 제거.
+- Grid 내부에서 `toGridCell`/`toGridFilterColumn` 어댑터로 배선(런타임 불변). 소비자 마이그레이션=grid-core CHANGELOG 1.0.0.
 - state onChange(`OnChangeFn<State>`)는 1.0 에서도 유지(ADR-006 D4, 저ROI).
 
-### ⏸ W3-6 — 컬럼 빌더 타입 추론 (✅ ADR 설계 완료 → grid-core 1.0 연기)
+### ✅ W3-6 — 컬럼 빌더 타입 추론 (grid-core 1.0.0 발행, 2026-06-21)
 `createColumns<TData>([{id,type}])` 에서 `id ∈ keyof TData` 강제 + `type↔value` 정합 검사가 목표. ★현 `TopgridColumnDef.id` 는 `(keyof TData & string) | string` 의 `| string` 때문에 타이포·잘못된 키 미검출(실증: `createColumns.typetest.ts:46` `id:'x'` 무오류 통과).
 - **설계 스케치**: type 으로 분기한 discriminated union — `{type:'checkbox'; id:string}` | `{type: 데이터바운드 10종; id: keyof TData & string}`. data 컬럼은 키 강제, checkbox 만 string 허용(현 카탈로그상 순수 display 컬럼은 checkbox 뿐).
 - **왜 연기**: (1)기존 소비자가 data 컬럼에 비-키 id(커스텀 display) 쓰면 **breaking** (2)복잡한 conditional 제네릭=엣지케이스. → 방금 안정화된 grid-core 에 급조 금지, **전용 ADR + major** 동반이 옳음.
-- **✅ 설계 확정 = [[ADR-007]]**(status=proposed): D1=키 강제(discriminated union)만 1.0 컷, D2=`type↔value` 정합은 복잡도/ROI 로 후속 ADR 분리. 게이트=`tsc --noEmit`. 구현은 ADR-006 의 1.0 콜백 retype 과 **같은 major 에 배치**(major 1회 흡수). 착수 전 PTLPSM 소비자 grep 으로 breaking 표면 실측 필요.
+- **✅ 구현·발행 = [[ADR-007]]**(status=accepted): D1=키 강제(discriminated union) grid-core 1.0.0 컷 완료(`types.ts` + `createColumns.typetest.ts` TC-T04/T05). D2=`type↔value` 정합은 복잡도/ROI 로 후속 ADR 분리(수요 게이트). 게이트=`tsc --noEmit` green. ADR-006 1.0 콜백 retype 과 **같은 major 동봉**(major 1회). 가시 소비자 31 호출부 breaking 표면 실측=**0건**(PTLPSM=세션 권한 밖, CHANGELOG 마이그레이션 가이드 커버).
 
 ### ⛔ 차트 in-place SSR→hydrate (over-claim 방지 → 의도적 미구현 유지)
 서버 SVG 를 **같은 노드**서 interactive 로 hydrate: ECharts SVG 의 incremental zrender id 가 server/client 프로세스 간 byte-identical 보장 안 됨 → Vue hydration mismatch 위험. ★실 Nuxt 환경 검증 불가 상태에서 발행=추측. **미구현 유지**(이미 제공: `renderChartToSvgString` 헬퍼 + SSR-safe 컴포넌트 + 2 패턴 문서, §3-17). 실 Nuxt 수요+검증 환경 확보 시 별도 트랙.
