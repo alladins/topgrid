@@ -1,9 +1,9 @@
 // Runnable consumer reference for the @topgrid React grid — exercises the W3 DX surface:
 //  - createColumns([{id,name,type}])  → no raw TanStack ColumnDef / no @tanstack import
 //  - getRowId                          → stable identity (no "missing getRowId" dev warning)
-//  - toGridCell(cell)                  → read cell data in onCellClick without TanStack types
+//  - onCellClick(ctx)                  → clean GridCellContext (grid-core 1.0, ADR-006 D3) — no TanStack types
 import { useState } from 'react';
-import { Grid, createColumns, toGridCell } from '@topgrid/grid';
+import { Grid, createColumns } from '@topgrid/grid';
 
 interface User {
   id: number;
@@ -34,9 +34,8 @@ export function App(): JSX.Element {
         columns={columns}
         getRowId={(u) => String(u.id)}
         enableSort
-        onCellClick={(cell) => {
-          const c = toGridCell<User>(cell);
-          setClicked(`${c.columnId}=${String(c.value)}`);
+        onCellClick={(ctx) => {
+          setClicked(`${ctx.columnId}=${String(ctx.value)}`);
         }}
       />
       <p>

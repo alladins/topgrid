@@ -14,7 +14,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import type { Column } from '@tanstack/react-table';
+import type { GridFilterColumn } from '@topgrid/grid-core';
 import type { TextFilterValue, NumberFilterValue } from './types';
 
 const DEBOUNCE_MS = 300;
@@ -35,17 +35,17 @@ const inputStyle = {
  * 텍스트 floating 필터 — always-visible 입력 1개. 연산자 `contains` 고정(기존 값의 연산자는 보존),
  * 300ms 디바운스 후 `TextFilterValue` set(빈 값=해제). `filterFn: textFilterFn` 컬럼에 사용.
  */
-export function TextFloatingFilter<TData>({
+export function TextFloatingFilter({
   column,
   placeholder,
   label,
 }: {
-  column: Column<TData, unknown>;
+  column: GridFilterColumn;
   placeholder?: string;
   /** SR 라벨용 컬럼명. 미지정 시 `column.id` 로 fallback(컬럼별 고유 보장 — 동일 라벨 모호성 방지). */
   label?: string;
 }): JSX.Element {
-  const current = column.getFilterValue() as TextFilterValue | undefined;
+  const current = column.value as TextFilterValue | undefined;
   const [value, setValue] = useState<string>(current?.value ?? '');
   // 외부(popover/reset)에서 값이 바뀌면 입력에 반영 — 동일 state 의 다른 표현(shared-state).
   useEffect(() => {
@@ -54,17 +54,18 @@ export function TextFloatingFilter<TData>({
 
   useEffect(() => {
     const t = setTimeout(() => {
-      if (value.trim() === '') column.setFilterValue(undefined);
+      if (value.trim() === '') column.setValue(undefined);
       else
-        column.setFilterValue({
+        column.setValue({
           operator: current?.operator ?? 'contains',
           value,
         } satisfies TextFilterValue);
     }, DEBOUNCE_MS);
     return () => clearTimeout(t);
     // current?.operator 는 set 직후 동기화되므로 의존성 제외(루프 방지) — value 변경만 트리거.
+    // ★column 은 GridFilterColumn(렌더마다 새 객체) → 식별자 churn 방지 위해 안정 `column.id` 로 의존(ADR-006 D3).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, column]);
+  }, [value, column.id]);
 
   return (
     <input
@@ -82,17 +83,17 @@ export function TextFloatingFilter<TData>({
  * 숫자 floating 필터 — always-visible 입력 1개. 연산자 `=`(정확히 일치) 고정, 300ms 디바운스 후
  * `NumberFilterValue` set(빈 값=해제). `filterFn: numberFilterFn` 컬럼에 사용.
  */
-export function NumberFloatingFilter<TData>({
+export function NumberFloatingFilter({
   column,
   placeholder,
   label,
 }: {
-  column: Column<TData, unknown>;
+  column: GridFilterColumn;
   placeholder?: string;
   /** SR 라벨용 컬럼명. 미지정 시 `column.id` fallback(컬럼별 고유 보장). */
   label?: string;
 }): JSX.Element {
-  const current = column.getFilterValue() as NumberFilterValue | undefined;
+  const current = column.value as NumberFilterValue | undefined;
   const [value, setValue] = useState<string>(
     current?.value !== undefined ? String(current.value) : '',
   );
@@ -104,12 +105,13 @@ export function NumberFloatingFilter<TData>({
     const t = setTimeout(() => {
       const trimmed = value.trim();
       const num = Number(trimmed);
-      if (trimmed === '' || Number.isNaN(num)) column.setFilterValue(undefined);
-      else column.setFilterValue({ operator: '=', value: num } satisfies NumberFilterValue);
+      if (trimmed === '' || Number.isNaN(num)) column.setValue(undefined);
+      else column.setValue({ operator: '=', value: num } satisfies NumberFilterValue);
     }, DEBOUNCE_MS);
     return () => clearTimeout(t);
+    // ★column.id 안정 의존(GridFilterColumn=렌더마다 새 객체, ADR-006 D3).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, column]);
+  }, [value, column.id]);
 
   return (
     <input

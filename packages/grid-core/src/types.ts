@@ -8,8 +8,6 @@
  */
 
 import type {
-  Cell,
-  Column,
   ColumnDef,
   ColumnFiltersState,
   ColumnOrderState,
@@ -23,6 +21,7 @@ import type {
   SortingState,
   VisibilityState,
 } from '@tanstack/react-table';
+import type { GridCellContext, GridFilterColumn } from './dx/cleanTypes';
 import type { PaginationMode } from './pagination/types';
 import type { GridLocale, GridIcons } from './internal/i18n';
 import type { GridTheme } from './internal/theme';
@@ -39,8 +38,9 @@ import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
 /**
  * Grid-level cell className callback (G-006).
  *
- * Receives a TanStack `Cell<TData, unknown>` and returns a Tailwind className
- * string (or undefined for no addition) to be appended to the rendered `<td>`.
+ * Receives a clean {@link GridCellContext} (rowId/columnId/value/row — no TanStack types) and
+ * returns a Tailwind className string (or undefined for no addition) appended to the `<td>`.
+ * grid-core 1.0 (ADR-006 D3): `Cell<TData,unknown>` → `GridCellContext<TData>`.
  *
  * Canonical home: `@topgrid/grid-core` (since G-006 / 2026-05-18 — ADR-MOD-GRID-01-007).
  * `@topgrid/grid-renderers` re-exports as type-only (ADR-MOD-GRID-REFACTOR-2026-05-17-009
@@ -51,7 +51,7 @@ import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
  * @see ADR-MOD-GRID-05-002 D3 (deferred Grid-level wiring 이행)
  */
 export type CellClassNameCallback<TData> = (
-  cell: Cell<TData, unknown>,
+  ctx: GridCellContext<TData>,
 ) => string | undefined;
 
 /**
@@ -542,8 +542,10 @@ export interface GridProps<TData> {
   /**
    * 셀 클릭 핸들러 — column-level 분기 의도 노출.
    *
-   * @param cell - TanStack `Cell` 객체 (`cell.column.id`, `cell.getValue()` 접근 가능).
-   * @param row - `row.original` (TData) — `onRowClick` 와 일관된 인자.
+   * grid-core 1.0 (ADR-006 D3): `(cell, row, event)` → `(ctx, event)`. `ctx` 는 clean
+   * {@link GridCellContext} — `ctx.columnId`·`ctx.value`·`ctx.rowId`·`ctx.row`(=구 `row.original`).
+   *
+   * @param ctx - clean 셀 컨텍스트(TanStack 타입 없음).
    * @param event - 원본 MouseEvent.
    *
    * @remarks
@@ -553,8 +555,7 @@ export interface GridProps<TData> {
    * @see G-003-spec.md Section 2.1 D4 + Section 6 EC-04
    */
   onCellClick?: (
-    cell: Cell<TData, unknown>,
-    row: TData,
+    ctx: GridCellContext<TData>,
     event: MouseEvent<HTMLTableCellElement>,
   ) => void;
 
@@ -562,20 +563,23 @@ export interface GridProps<TData> {
    * 셀 툴팁 (MOD-GRID-36 G-3). 셀마다 호출해 반환 문자열을 `<td title>` 로 부여(네이티브 hover
    * 툴팁) — 잘린 내용 표시·부가 설명 등. `undefined`/`null`/`''` 반환 시 해당 셀 title 미부여.
    *
-   * @example getCellTooltip={(cell) => String(cell.getValue())}  // 잘린 셀 전체값 툴팁
+   * grid-core 1.0 (ADR-006 D3): `(cell, row)` → `(ctx)` (clean {@link GridCellContext}).
+   *
+   * @example getCellTooltip={(ctx) => String(ctx.value)}  // 잘린 셀 전체값 툴팁
    */
-  getCellTooltip?: (cell: Cell<TData, unknown>, row: TData) => string | undefined | null;
+  getCellTooltip?: (ctx: GridCellContext<TData>) => string | undefined | null;
 
   // ─── G-007 (MOD-GRID-01): 셀 키보드 이벤트 (D1) ───
   /**
    * 셀 키보드 이벤트 핸들러 — `<td onKeyDown>` 으로 wire (G-007 D1).
    *
-   * @param cell - TanStack `Cell` 객체.
-   * @param row - `row.original` (TData) — `onCellClick` 와 일관된 (cell, row, event) 3-arg 시그니처.
+   * grid-core 1.0 (ADR-006 D3): `(cell, row, event)` → `(ctx, event)` (clean {@link GridCellContext}).
+   *
+   * @param ctx - clean 셀 컨텍스트(TanStack 타입 없음).
    * @param event - React `KeyboardEvent<HTMLTableCellElement>`.
    *
    * @remarks
-   * 시그니처는 `onCellClick` (ADR-MOD-GRID-01-004 D4) 과 일관 — `(cell, row, event)`.
+   * 시그니처는 `onCellClick` (ADR-006 D3) 과 일관 — `(ctx, event)`.
    *
    * **focus management**: `<td>` 는 default 로 tabIndex 부재 → native focus 불가.
    * 사용자가 `onCellKeyDown` 활용 시 cellRenderer 에서 `tabIndex={0}` 를 부여하거나
@@ -587,8 +591,7 @@ export interface GridProps<TData> {
    * @see ADR-MOD-GRID-01-008
    */
   onCellKeyDown?: (
-    cell: Cell<TData, unknown>,
-    row: TData,
+    ctx: GridCellContext<TData>,
     event: KeyboardEvent<HTMLTableCellElement>,
   ) => void;
 
@@ -607,9 +610,9 @@ export interface GridProps<TData> {
    *   data={rows}
    *   columns={columns}
    *   onStartEditing={(rowId, colId) => setEditingCell({ rowId: String(rowId), colId })}
-   *   onCellKeyDown={(cell, _row, event) => {
-   *     if (event.key.length === 1 && cell.column.id.startsWith('d')) {
-   *       gridRef.current?.startEditing(cell.row.id, cell.column.id);
+   *   onCellKeyDown={(ctx, event) => {
+   *     if (event.key.length === 1 && ctx.columnId.startsWith('d')) {
+   *       gridRef.current?.startEditing(ctx.rowId, ctx.columnId);
    *     }
    *   }}
    * />
@@ -822,10 +825,13 @@ export interface GridProps<TData> {
   /**
    * Floating 필터 행 렌더 콜백(MOD-GRID-30 G-1). 지정 시 leaf 헤더행 아래 always-visible 필터 입력
    * 행을 그린다(prop 존재=활성, `cellClassName` 관례 mirror). 컬럼당 1회 호출 — 보통 grid-features 의
-   * floating 입력 컴포넌트(`column.setFilterValue` 로 popover 와 동일 state 공유)를 반환. grid-core 는
+   * floating 입력 컴포넌트(`column.setValue` 로 popover 와 동일 state 공유)를 반환. grid-core 는
    * 구조 행 + 컬럼 윈도(가상화)·핀 sticky·ARIA 정합만 제공(grid-features 무의존=MIT). null 반환=빈 셀.
+   *
+   * grid-core 1.0 (ADR-006 D3): `Column<TData,unknown>` → clean {@link GridFilterColumn}
+   * (`id`·`value`·`setValue` — TanStack 타입 없음).
    */
-  renderFloatingFilter?: (column: Column<TData, unknown>) => ReactNode;
+  renderFloatingFilter?: (column: GridFilterColumn) => ReactNode;
 
   // ─── 트리 ───
   /** TanStack `getSubRows` — `enableExpanding=true` 시 사용. */

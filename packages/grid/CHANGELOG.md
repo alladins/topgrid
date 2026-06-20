@@ -1,5 +1,15 @@
 # @topgrid/grid
 
+## 1.0.0
+
+### Major Changes
+
+- **grid-core 1.0 lockstep 릴리스**. 13-패키지(grid-core·grid·grid-features·grid-renderers·grid-sizing·
+  grid-pro-{header,master,pivot,sheet,tracking,edit-plus,filter,serverside})가 1.0.0 으로 함께 발행.
+  BREAKING 2종 — (1) 컬럼 빌더 키 안전(ADR-007 D1: 데이터바운드 `id`=`keyof TData` 강제), (2) 셀/필터
+  콜백 clean 타입(ADR-006 D3: TanStack `Cell`/`Column` 제거 → `GridCellContext`/`GridFilterColumn`).
+  마이그레이션 상세 = `@topgrid/grid-core` CHANGELOG 1.0.0. 런타임 동작 불변(타입 표면 + adapter 배선만).
+
 ## 0.1.0
 
 ### Minor Changes

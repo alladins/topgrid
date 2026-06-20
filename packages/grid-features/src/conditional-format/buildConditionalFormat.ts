@@ -30,7 +30,7 @@ export function buildRowClassName<TData>(
 /**
  * 선언적 셀 룰 배열 → grid-core `CellClassNameCallback` 컴파일 (MOD-GRID-24 G-1).
  *
- * 술어는 `cell.getValue()`(값)와 `cell.row.original`(행 데이터)을 받는다.
+ * 술어는 `ctx.value`(값)와 `ctx.row`(행 데이터)을 받는다(grid-core 1.0 ADR-006 D3: clean ctx).
  * join/undefined 규칙은 `buildRowClassName` 과 동일. 순수 함수.
  *
  * @example
@@ -41,9 +41,9 @@ export function buildRowClassName<TData>(
 export function buildCellClassName<TData, TValue = unknown>(
   rules: CellFormatRule<TData, TValue>[],
 ): CellClassNameCallback<TData> {
-  return (cell) => {
-    const value = cell.getValue() as TValue;
-    const data = cell.row.original;
+  return (ctx) => {
+    const value = ctx.value as TValue;
+    const data = ctx.row;
     const matched = rules
       .filter((rule) => rule.when(value, data))
       .map((rule) => rule.className);

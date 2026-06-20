@@ -63,9 +63,7 @@ export const CellColorOverride: Story = {
       <style>{`.tg-red { color: rgb(255, 0, 0); }`}</style>
       <Grid
         {...args}
-        cellClassName={(cell: { column: { id: string } }) =>
-          cell.column.id === 'score' ? 'tg-red' : ''
-        }
+        cellClassName={(ctx) => (ctx.columnId === 'score' ? 'tg-red' : '')}
       />
     </>
   ),

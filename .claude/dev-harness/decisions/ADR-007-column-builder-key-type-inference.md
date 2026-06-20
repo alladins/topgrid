@@ -3,14 +3,15 @@ id: ADR-007
 title: W3-6 — createColumns 컬럼 빌더 키/타입 추론 강화 (breaking → grid-core 1.0)
 module: W3 (grid-core DX)
 date: 2026-06-20
-status: proposed
+status: accepted
 related: ["W3-DX-FRICTION-ANALYSIS.md(§10)", "ADR-006(non-breaking adapter)", LESS-002]
 ---
 
 # ADR-007 — 컬럼 빌더 키/타입 추론: discriminated union 으로 `id ∈ keyof TData` 강제 (breaking)
 
-> 상태 = **proposed**(설계만; 구현은 grid-core 1.0 major 동반). 본 ADR 은 [[W3-DX-FRICTION-ANALYSIS]] §10 의
-> "급조 금지, 전용 ADR + major 동반" 처분을 이행하는 설계 문서다. **코드 변경 없음.**
+> 상태 = **accepted·구현됨**(grid-core **1.0.0** 발행, 2026-06-21). D1 = `types.ts` discriminated union +
+> `createColumns.typetest.ts` TC-T04/T05. ADR-006 D3(콜백 clean 화)와 **같은 major 에 동봉**(major 1회).
+> 본 ADR 은 [[W3-DX-FRICTION-ANALYSIS]] §10 의 "급조 금지, 전용 ADR + major 동반" 처분을 이행했다.
 
 ## Context
 [[W3-DX-FRICTION-ANALYSIS]] §2(P3)·§10(W3-6): `createColumns<TData>([{id,type,…}])` 의 `id` 가

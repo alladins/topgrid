@@ -36,6 +36,7 @@ import {
   type Row,
 } from '@tanstack/react-table';
 import type { GridHandle, GridProps } from '@topgrid/grid-core';
+import { toGridCell } from '@topgrid/grid-core';
 import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 import type { MasterDetailGridProps, RenderDetailRow } from './types';
 import { ExpandToggleCell } from './internal/ExpandToggleCell';
@@ -149,7 +150,7 @@ function MasterRow<TData>({
             className="px-4 py-2"
             onClick={
               onCellClick !== undefined
-                ? (e) => onCellClick(cell, row.original, e)
+                ? (e) => onCellClick(toGridCell(cell), e)
                 : undefined
             }
           >

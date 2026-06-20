@@ -33,9 +33,10 @@ export function buildValidator<TData>(
 /**
  * 선언적 검증 룰 배열 → grid-core `CellClassNameCallback<TData>` 컴파일 (MOD-GRID-23 G-1).
  *
- * `field` 가 지정된 룰만 셀 표시에 참여한다 — 해당 컬럼(`cell.column.id === rule.field`) 셀이
+ * `field` 가 지정된 룰만 셀 표시에 참여한다 — 해당 컬럼(`ctx.columnId === rule.field`) 셀이
  * 위반(`!validate(row)`)이면 룰의 `className`(기본 `topgrid-cell-invalid`)을 부여한다.
  * MOD-GRID-24 `buildCellClassName` 과 **동일 계약·동형 패턴**(선언적 룰 → 기존 콜백). 순수 함수.
+ * grid-core 1.0 (ADR-006 D3): clean ctx — `cell.column.id`→`ctx.columnId`·`cell.row.original`→`ctx.row`.
  *
  * @example
  * <Grid cellClassName={buildValidationCellClass<Row>([
@@ -45,12 +46,12 @@ export function buildValidator<TData>(
 export function buildValidationCellClass<TData>(
   rules: ValidationRule<TData>[],
 ): CellClassNameCallback<TData> {
-  return (cell) => {
-    const data = cell.row.original;
+  return (ctx) => {
+    const data = ctx.row;
     const matched = rules
       .filter(
         (rule) =>
-          rule.field === cell.column.id && !rule.validate(data),
+          rule.field === ctx.columnId && !rule.validate(data),
       )
       .map((rule) => rule.className ?? DEFAULT_INVALID_CLASS);
     return matched.length > 0 ? matched.join(' ') : undefined;

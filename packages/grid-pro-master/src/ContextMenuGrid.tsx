@@ -30,6 +30,7 @@ import {
   type Cell,
 } from '@tanstack/react-table';
 import type { GridHandle } from '@topgrid/grid-core';
+import { toGridCell } from '@topgrid/grid-core';
 import type { ContextMenuGridProps } from './types';
 import { useContextMenu } from './internal/useContextMenu';
 import { ContextMenuPortal } from './internal/ContextMenuPortal';
@@ -281,7 +282,7 @@ function ContextMenuGridInner<TData>(
                     className="px-4 py-2"
                     onClick={
                       rest.onCellClick !== undefined
-                        ? (e) => rest.onCellClick!(cell, row.original, e)
+                        ? (e) => rest.onCellClick!(toGridCell(cell), e)
                         : undefined
                     }
                     onContextMenu={

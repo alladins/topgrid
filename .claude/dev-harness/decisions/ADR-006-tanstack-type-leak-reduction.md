@@ -43,5 +43,39 @@ related: ["W3-DX-FRICTION-ANALYSIS.md", LESS-002, "ADR-004(structural bridge)"]
 - 문서: getting-started/api-reference 에 "TanStack 없이 cell 데이터 쓰기" 레시피(`onCellClick={(cell) => { const c = toGridCell(cell); … }}`).
 - ★1.0 migration 항목 등록(콜백 시그니처 clean 전환). 발행=grid-core 변경 누적 후 user-gated.
 
+## 1.0 구현 컷 (2026-06-21, D3 이행 — grid-core 1.0 동반)
+D3 가 1.0 으로 연기했던 "콜백 시그니처 clean 전환"을 [[ADR-007]](키 안전 union)과 **같은 major(grid-core 1.0)** 에
+흡수해 실행한다(major 1회). 확정 시그니처 — 전부 TanStack 타입 0:
+
+```ts
+// 기존(0.x): cell: Cell<TData,unknown> + row: TData  →  1.0: 단일 GridCellContext<TData>(=cell+row 통합)
+onCellClick?:    (ctx: GridCellContext<TData>, event: MouseEvent<HTMLTableCellElement>) => void;
+onCellKeyDown?:  (ctx: GridCellContext<TData>, event: KeyboardEvent<HTMLTableCellElement>) => void;
+getCellTooltip?: (ctx: GridCellContext<TData>) => string | undefined | null;
+renderFloatingFilter?: (column: GridFilterColumn) => ReactNode;  // Column<TData,unknown> → GridFilterColumn
+// D3 확장(아래 근거): 동일 Cell 누출이므로 같은 컷에 포함
+type CellClassNameCallback<TData> = (ctx: GridCellContext<TData>) => string | undefined;
+```
+
+- **D3-1 단일 ctx 통합**: 기존 `(cell, row, event)` 3-arg 에서 `row` 는 `cell.row.original` 의 중복이었다 →
+  `GridCellContext` 가 이미 `row` 를 품으므로 `(ctx, event)` 2-arg 로 축약. `cell.column.id`→`ctx.columnId`,
+  `cell.row.id`→`ctx.rowId`, `cell.getValue()`→`ctx.value`, `row`→`ctx.row`. 소비자 코드 1:1 치환 가능.
+- **D3-2 Grid.tsx 배선**: 호출부에서 `toGridCell(cell)`·`toGridFilterColumn(col)` 로 변환해 콜백에 전달
+  (adapter=이미 발행된 순수 helper 재사용 — 신규 로직 0). 런타임 동작 불변(같은 데이터, 형태만 clean).
+- **D3-3 `cellClassName` 포함(scope 확장, 명시)**: ADR-006 D3 명시 목록(onCellClick/KeyDown/Tooltip/
+  renderFloatingFilter)엔 없었으나 `CellClassNameCallback` 도 동일한 `Cell<TData,unknown>` 누출이다.
+  지금 빼면 **나중에 그것만을 위해 또 major** 가 필요(retype=breaking) → 1.0 일관성 위해 동봉. 근거 기록(silent
+  확장 금지). 유일 가시 소비자=`Grid.theme.stories`(`cell.column.id`→`ctx.columnId`).
+- **D3-4 per-cell 할당 trade-off**: `getCellTooltip`·`cellClassName` 은 렌더마다 셀별 호출 → `toGridCell` 가
+  셀당 객체 1개 할당(0.x 는 TanStack cell 직전달=할당 0). **단 콜백 제공 시에만**, 가상화 시 viewport-bounded.
+  수용(클린 API > viewport 한정 소형 할당). onCellClick/KeyDown 은 이벤트시에만 할당(무관).
+- **마이그레이션 표면(가시, 1.0 동반 수정)**: grid-features `TextFloatingFilter`/`NumberFloatingFilter`
+  (`Column`→`GridFilterColumn`: `getFilterValue()`→`.value`·`setFilterValue`→`.setValue`·`id` 동일),
+  grid-pro-master `MasterDetailGrid`·`ContextMenuGrid`(`onCellClick(cell,row,e)`→`onCellClick(toGridCell(cell),e)`),
+  스토리(cell-tooltip·theme·FloatingFilters)·`apps/example-react`(이미 `toGridCell` 사용 → 인자 직수신으로 단순화).
+  PTLPSM=세션 권한 밖(릴리스 노트 마이그레이션 가이드로 커버, [[ADR-007]] 영향표면 실측과 동일 한계).
+- **검증 게이트**: `tsc --noEmit`(시그니처) + 기존 chromium 게이트(cell-tooltip·FloatingFilters 동작 불변) +
+  node adapters.test(toGridCell/toGridFilterColumn 불변). 런타임 무변경이므로 동작 회귀 0 기대.
+
 ## 컴파운딩 데이터포인트 (하네스 학습)
-**발행된 라이브러리의 DX 개선은 "깨끗한 재설계"가 아니라 "non-breaking 다리(adapter) + major 로 전환 연기".** [[ADR-004]] 의 structural-bridge(타입을 구조적으로 만족)와 짝 — 여기선 *역방향*(리치 TanStack→clean 부분집합 추출). 하위호환이 깨끗함을 이긴다(실 소비자 존재 시).
+**발행된 라이브러리의 DX 개선은 "깨끗한 재설계"가 아니라 "non-breaking 다리(adapter) + major 로 전환 연기".** [[ADR-004]] 의 structural-bridge(타입을 구조적으로 만족)와 짝 — 여기선 *역방향*(리치 TanStack→clean 부분집합 추출). 하위호환이 깨끗함을 이긴다(실 소비자 존재 시). ★1.0 컷에서 **adapter 가 다리에서 기본 경로로 승격**: 0.x 가 비축해 둔 순수 helper(toGridCell/toGridFilterColumn)를 Grid 내부 배선이 직접 호출 → major 전환 비용이 "신규 설계"가 아닌 "이미 검증된 helper 재사용"으로 흡수됨(연기 전략의 배당금).

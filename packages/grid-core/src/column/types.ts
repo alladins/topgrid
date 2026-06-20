@@ -66,18 +66,31 @@ export type TopgridColumnType =
  * @see TopgridColumnType
  * @see AC-001, AC-002
  */
-export interface TopgridColumnDef<TData = unknown> {
-  /**
-   * column accessor key (TData 키와 일치). `'checkbox'` type은 무시됨 (AC-006).
-   *
-   * 타입 파라미터 `TData`는 `createColumns<TData>(defs: TopgridColumnDef<TData>[])` 에서
-   * accessor key 타입 안전성을 위해 바인딩됨 (`keyof TData & string`).
-   */
-  id: keyof TData extends never ? string : (keyof TData & string) | string;
+export type TopgridColumnDef<TData = unknown> =
+  | (BaseColumnDef & {
+      /** 자동 renderer 분기 type — 데이터바운드 10종. AC-001 참조. */
+      type: DataColumnType;
+      /**
+       * column accessor key — **`keyof TData` 강제** (ADR-007 D1, grid-core 1.0).
+       * 오타/존재하지 않는 키는 컴파일 타임에 차단된다. `TData=unknown`(레거시 ColumnInfo
+       * 경로)이면 `keyof unknown = never` → `string` 폴백(분기 무너짐 방지).
+       */
+      id: keyof TData extends never ? string : keyof TData & string;
+    })
+  | (BaseColumnDef & {
+      /** selection 컬럼 — accessorKey 없음, id 무시 (AC-006). */
+      type: 'checkbox';
+      /** checkbox 는 데이터 키가 아닌 임의 id 허용 (예: 'sel'). */
+      id: string;
+    });
+
+/** 데이터바운드 컬럼 type(=accessorKey 로 셀 값을 읽는 10종). `'checkbox'` 제외 (ADR-007 D1). */
+export type DataColumnType = Exclude<TopgridColumnType, 'checkbox'>;
+
+/** {@link TopgridColumnDef} 의 공유 필드(discriminated union base — ADR-007). `id`/`type` 만 분기. */
+interface BaseColumnDef {
   /** 표시 헤더명 */
   name: string;
-  /** 자동 renderer 분기 type. AC-001 참조. */
-  type: TopgridColumnType;
   /** 정렬 방향 — Tailwind class에 반영. 미제공 시 'left' 기본 (W3 DX: 필수→옵셔널). */
   align?: 'left' | 'center' | 'right';
   /** 픽셀 단위 너비 문자열 ('100', '200px' 등). 미제공 시 '100' 기본. */

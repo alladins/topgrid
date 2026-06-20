@@ -46,6 +46,7 @@ import { DropIndicator } from './internal/column-drag/DropIndicator';
 import { SortClearButton } from './internal/multi-sort/SortClearButton';
 import { buildTableOptions } from './internal/buildTableOptions';
 import { collectGridDevWarnings } from './internal/devWarnings';
+import { toGridCell, toGridFilterColumn } from './dx/adapters';
 import { buildFloatingRows } from './internal/buildFloatingRows';
 import { computeColumnWindow, type ColumnWindow } from './internal/computeColumnWindow';
 import { useColumnVirtualizer } from './internal/useColumnVirtualizer';
@@ -559,12 +560,12 @@ function GridInner<TData>(
         cellStyle.transition = 'background-color 0.9s ease-out';
       }
       // MOD-GRID-36 G-3: cell tooltip — native `title` from the consumer callback (body cells only).
-      const tooltip = opts.withHandlers ? props.getCellTooltip?.(cell, row.original) : undefined;
+      const tooltip = opts.withHandlers ? props.getCellTooltip?.(toGridCell(cell)) : undefined;
       // MOD-GRID-28 G-2: active 셀(키보드 nav 대상) = 시각 링. floating 행(withHandlers=false)은 비대상.
       const isActiveCell = opts.withHandlers && cellDomId(cell.id) === activeCellId;
       const activeClass = isActiveCell ? 'outline outline-2 outline-blue-500 -outline-offset-2' : '';
       const className = opts.withCellClassName
-        ? `px-4 py-3 whitespace-nowrap ${pinnedCell.className} ${activeClass} ${props.cellClassName?.(cell) ?? ''}`
+        ? `px-4 py-3 whitespace-nowrap ${pinnedCell.className} ${activeClass} ${props.cellClassName?.(toGridCell(cell)) ?? ''}`
         : `px-4 py-3 whitespace-nowrap ${pinnedCell.className}`;
       return (
         <td
@@ -578,9 +579,9 @@ function GridInner<TData>(
           {...(opts.withHandlers
             ? {
                 onClick: (event: ReactMouseEvent<HTMLTableCellElement>) =>
-                  props.onCellClick?.(cell, row.original, event),
+                  props.onCellClick?.(toGridCell(cell), event),
                 onKeyDown: (event: ReactKeyboardEvent<HTMLTableCellElement>) =>
-                  props.onCellKeyDown?.(cell, row.original, event),
+                  props.onCellKeyDown?.(toGridCell(cell), event),
               }
             : {})}
         >
@@ -831,7 +832,7 @@ function GridInner<TData>(
         className={`px-2 py-1 align-top font-normal normal-case ${pinned.className}`}
         style={cellStyle}
       >
-        {props.renderFloatingFilter!(col)}
+        {props.renderFloatingFilter!(toGridFilterColumn(col))}
       </th>
     );
   };

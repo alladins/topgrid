@@ -28,8 +28,8 @@ export const Default: StoryObj = {
       columns={columns}
       data={data}
       // tooltip only for the name column; sku cells get no title.
-      getCellTooltip={(cell) =>
-        cell.column.id === 'name' ? `상세: ${String(cell.getValue())}` : undefined
+      getCellTooltip={(ctx) =>
+        ctx.columnId === 'name' ? `상세: ${String(ctx.value)}` : undefined
       }
     />
   ),

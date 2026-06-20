@@ -1,5 +1,30 @@
 # @topgrid/grid-core
 
+## 1.0.0
+
+### Major Changes
+
+- **BREAKING (ADR-007 D1) — 컬럼 빌더 키 안전성**: `TopgridColumnDef<TData>` 가 `type` 으로 판별하는
+  discriminated union 이 되었다. 데이터바운드 컬럼(`number`·`boolean`·`dateTime`·`date`·`text`·`badge`·
+  `link`·`icon`·`tag`·`progress`)의 `id` 는 이제 `keyof TData` 를 강제한다 — 오타/존재하지 않는 키는
+  **컴파일 타임에 차단**된다. `'checkbox'`(selection) 컬럼만 임의 `id: string` 을 허용한다(AC-006 = id 무시).
+
+  - **마이그레이션**: 진짜 데이터 컬럼의 잘못된 키는 고친다(의도된 이득). selection 컬럼은 `type: 'checkbox'`
+    이므로 영향 없음. `TData` 미지정(레거시 `ColumnInfo` 경로)이면 `keyof unknown = never` → `string` 폴백 =
+    영향 없음. (가시 소비자 31 호출부 실측 = breaking 0건.)
+
+- **BREAKING (ADR-006 D3) — 콜백 시그니처 clean 화(TanStack 타입 제거)**: 셀/필터 콜백이 TanStack `Cell`/
+  `Column` 대신 topgrid clean 타입을 받는다.
+
+  - `onCellClick`·`onCellKeyDown`: `(cell, row, event)` → `(ctx: GridCellContext, event)`.
+  - `getCellTooltip`: `(cell, row)` → `(ctx: GridCellContext)`.
+  - `cellClassName`(`CellClassNameCallback`): `(cell)` → `(ctx: GridCellContext)`.
+  - `renderFloatingFilter`: `(column: Column)` → `(column: GridFilterColumn)`.
+  - **마이그레이션**(1:1 치환): `cell.column.id`→`ctx.columnId`, `cell.row.id`→`ctx.rowId`,
+    `cell.getValue()`→`ctx.value`, `row`(2번째 인자)→`ctx.row`. floating: `column.getFilterValue()`→
+    `column.value`, `column.setFilterValue(x)`→`column.setValue(x)`, `column.id` 동일. 0.x 의 `toGridCell`/
+    `toGridFilterColumn` adapter 는 그대로 유지(이제 Grid 내부 배선에서 직접 사용). 런타임 동작 불변.
+
 ## 0.1.0
 
 ### Minor Changes
