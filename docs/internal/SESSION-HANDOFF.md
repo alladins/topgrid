@@ -1,0 +1,37 @@
+# SESSION HANDOFF — 다음 세션 재개 가이드 (2026-06-20)
+
+> 토픽그리드 제품화 라운드(W1 멀티프레임워크 · W2 엔터프라이즈 차트 · W3 React DX)가 **성숙 체크포인트**에 도달. npm 전부 live, CI 4중 게이트, 문서사이트 반영 완료. 이 문서가 다음 세션의 **단일 재개 진입점**.
+
+## 1. 현재 상태 (한눈에)
+- **W1**: grid headless 코어 + Vue 어댑터 — 완료·발행.
+- **W2 차트**: 설계(ADR-003) → 구현(17타입) → 멀티프레임워크(React+Vue, 동일 grid-chart-core 엔진) → 발행 → BYO(ADR-003 R4) → 실브라우저 e2e → SSR 헬퍼 — **완결·발행**.
+- **W3 DX**: 분석(93 prop·11 TanStack 누출·함정 인벤토리) → 함정 dev-warn(getRowId·virt+pinning·visibility·reorder+pagination) → 온보딩 createColumns 전환 → 타입누출 adapter(ADR-006 `toGridCell`/`toGridFilterColumn`) → 예제 앱 → align-optional → Next.js/SSR·BYO·차트 가이드 → CI 게이트 — **핵심 완료**.
+
+## 2. npm live (최신 버전)
+- **그리드 13패키지(grid-core@0.8.0 lockstep)**: grid-core@**0.8.0** · grid@**0.10.0**(facade는 다음 lockstep서 0.11.0… 주의: §4 참고) · grid-features@0.11.0 · grid-renderers@0.5.0 · grid-sizing@0.5.0 · grid-pro-{header@0.6.0,master@0.9.0,pivot@0.6.0,sheet@0.6.0,tracking@0.5.0,edit-plus@0.5.0,filter@0.5.0,serverside@0.4.0}. (facade grid@**0.11.0**·grid-core@0.8.0 = align-optional 배치, 둘 다 live)
+- **차트 4종**: grid-chart-core@0.1.0 · grid-pro-chart-enterprise@**0.4.0**(React) · grid-pro-chart-enterprise-vue@**0.4.0**(Vue, SSR 헬퍼 포함) · grid-license-core@0.1.0. 스파크라인 grid-pro-chart@0.4.0.
+- **W1**: grid-core-headless@0.1.0 · grid-vue@0.1.0. publisher=travia71([[npm-publish-topgrid]]).
+
+## 3. git / 게이트
+- **미푸시 2 커밋**: `cdbd84b`(F-F warn+잔여 docs) · `32cfc94`(CI 게이트). working tree clean. **origin push=사용자**.
+- **CI(추가됨, 다음 push서 첫 가동)**: `build-verify.yml`(빌드+dist+license+**유닛 `pnpm -r test`**) · **`e2e.yml`**(Vue+예제 실 chromium) · `visual-regression.yml`(storybook). 게이트 맵=`TESTING.md`. 로컬: `pnpm -r test`(유닛+vitest)·`pnpm test:e2e`(실브라우저)·`pnpm -F docs visual:test`.
+
+## 4. 잔여 작업 (전부 비크리티컬, 결론까지 도달)
+1. **grid-core 미발행 누적 1건 = F-F dev-warn**(reorder+pagination). dev-only라 단독 13-lockstep은 과함 → **다음 substantive grid-core 변경과 배치 발행** 권장.
+2. **W3-6 컬럼 타입추론**(`id ∈ keyof TData` + type↔value 정합) = **breaking + 복잡 제네릭** → **전용 ADR + major 동반**(설계 스케치 = `W3-DX-FRICTION-ANALYSIS.md` §10). 급조 금지.
+3. **차트 in-place SSR→hydrate**(서버 SVG가 같은 노드서 interactive 전환) = ECharts zr-id 비결정성 + 실 Nuxt 검증 불가 → **실 Nuxt 환경 확보 시** 별도 트랙. (이미 발행: `renderChartToSvgString` 헬퍼 + SSR-safe 컴포넌트 + 2 패턴 문서.)
+4. **문서사이트 배포**(outward·사용자): `apps/docs/build/` 준비됨 → `scp -r apps/docs/build/* topgrid@49.247.14.212:/var/www/topgrid/` 또는 `bash apps/docs/deploy.sh`. ★**403/권한정규화 영구해결**: 서버 root 1회 `sshd Subsystem sftp internal-sftp -u 0022` + restart + `setfacl -Rb /var/www/topgrid`(default ACL 제거) → 이후 scp 만으로 끝(상세 `apps/docs/DEPLOY.md`). storybook 403은 이번에 1회 정규화로 해결 확인됨.
+5. (선택) W3 추가 함정(F-C는 이미 warn) · toolbar 17타입 노출 폴리시 · PTLPSM Vue 차트 실통합(담당자 몫, 우리는 불안정 통지).
+
+## 5. canonical 상세 위치 (재-derive 금지)
+- W2 차트 전체 = `ROADMAP-MULTIFRAMEWORK-CHART.md` §3 (단계①~③·발행·BYO·e2e·SSR).
+- W3 DX 전체 = `W3-DX-FRICTION-ANALYSIS.md` (특히 **§10 잔여 disposition**).
+- ADR = `.claude/dev-harness/decisions/ADR-003~006` + ID-LEDGER.
+- 발행절차 = [[npm-publish-topgrid]] (수동 bump·pnpm pack ×N·topo publish·net-new 전파 ~3.5분).
+- 게이트 = `TESTING.md`. 배포 = `apps/docs/DEPLOY.md` + [[docs-site-hosting]].
+
+## 6. ★Windows 로컬 주의 (반복 함정)
+- **포트 6006 = Hyper-V 예외대역(5975-6074)** → 비주얼 스위트는 자유포트(9009)+throwaway playwright config, e2e=9011/9013(예외대역 밖).
+- **storybook 빌드**: `Tee-Object` 로그파일 락으로 반복 실패 가능 → 태스크 자체 output 사용(Tee 회피).
+- **lockstep 발행**: 수동 bump(★`changeset version` 금지=major-escalation [[changeset-peerdep-major-escalation]]) → pnpm install → build topo → `pnpm -r test` → **pnpm pack ×N 누출/구체핀 검증** → topo publish(grid-core→…→facade) → 스모크(단일 grid-core 버전 deduped 확인).
+- 세션 권한 = **topgrid 전용**([[session-scope-topgrid-only]]). TOMIS/PTLPSM/kforc 서버 = 타 세션·담당자.
