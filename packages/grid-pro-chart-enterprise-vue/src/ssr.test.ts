@@ -33,4 +33,14 @@ const html = await renderToString(
 ok(html.includes('data-echarts-root'), 'panel chart container server-rendered');
 ok(html.includes('data-chart-toolbar'), 'panel toolbar server-rendered');
 
+// 3) WHY in-place SSR→hydrate of the same node is deferred (not a bug — a documented limitation):
+//    ECharts names SVG classes `zr{instanceId}-cls-{n}`, where instanceId is a module-global counter
+//    incremented per echarts.init(). So two renders of the IDENTICAL option are NOT byte-identical —
+//    the server SVG (zr0…) can never match a client init's SVG (zrN…), which would trip Vue hydration.
+//    This locks in that fact so a future session does not naively attempt same-node hydration.
+const svgA = renderChartToSvgString(matrixToEChartsOption(data, { type: 'bar' }), { width: 640, height: 300 });
+const svgB = renderChartToSvgString(matrixToEChartsOption(data, { type: 'bar' }), { width: 640, height: 300 });
+ok(svgA !== svgB, 'two renders of the same option are NOT byte-identical (non-deterministic ids)');
+ok(/zr\d+-cls-/.test(svgA), 'SVG classes carry the per-instance zr{id}-cls prefix (the mismatch source)');
+
 console.log(`\n[grid-pro-chart-enterprise-vue ssr] ${pass} passed`);
