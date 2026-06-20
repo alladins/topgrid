@@ -24,29 +24,38 @@ pnpm add @topgrid/grid-pro-pivot @topgrid/grid-pro-serverside @topgrid/grid-pro-
 
 ## 기본 사용 예시
 
-`<Grid>`는 `columns`/`data`를 직접 받습니다(headless — TanStack `ColumnDef` 그대로 사용).
+권장 방식은 **`createColumns`** — `{ id, name, type }`로 컬럼을 선언하면 `type`에 맞는 셀 렌더러가
+자동 배선됩니다(TanStack `ColumnDef` 지식 불필요, `align`은 선택).
 
 ```tsx
-import { Grid } from '@topgrid/grid';
-import type { ColumnDef } from '@tanstack/react-table';
+import { Grid, createColumns } from '@topgrid/grid';
 
 interface Person {
   id: number;
   name: string;
+  age: number;
 }
 
-const columns: ColumnDef<Person>[] = [
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'name', header: '이름' },
-];
+const columns = createColumns<Person>([
+  { id: 'name', name: '이름', type: 'text' },
+  { id: 'age', name: '나이', type: 'number', align: 'right' },
+]);
 
 const data: Person[] = [
-  { id: 1, name: '홍길동' },
-  { id: 2, name: '김철수' },
+  { id: 1, name: '홍길동', age: 30 },
+  { id: 2, name: '김철수', age: 28 },
 ];
 
 export function BasicGrid() {
-  return <Grid<Person> columns={columns} data={data} enableSort enableFilter />;
+  return (
+    <Grid<Person>
+      columns={columns}
+      data={data}
+      getRowId={(p) => String(p.id)}   {/* 안정적 행 식별 (선택/정렬 안전) */}
+      enableSort
+      enableFilter
+    />
+  );
 }
 ```
 
@@ -54,8 +63,13 @@ export function BasicGrid() {
 플래그로 켭니다. 상태를 외부에서 제어하려면 `@topgrid/grid-core`의 `useGridState` 훅으로
 controlled state(`onSortingChange` 등)를 배선할 수 있습니다.
 
+> 완전한 제어가 필요하면 TanStack `ColumnDef<Person>[]`를 `columns`에 직접 넘길 수도 있습니다
+> (accessorFn·커스텀 cell 등 — 이때만 `@tanstack/react-table` 지식이 필요).
+
 ## 다음 단계
 
-- [아키텍처](./architecture) — 21개 패키지 구조와 의존성 다이어그램
+- [차트](./charting) — 셀 스파크라인부터 엔터프라이즈 17종(React/Vue)까지
+- [Next.js / SSR](./nextjs-ssr) — App/Pages Router 연동과 함정
+- [아키텍처](./architecture) — 패키지 구조와 의존성 다이어그램
 - [기능 비교](./comparison) — AG Grid / Wijmo 대비 기능 매트릭스
 - Pro 기능 — `@topgrid/grid-license`의 `setLicenseKey()`로 라이선스 활성화 후 Pro 패키지 사용

@@ -4,6 +4,8 @@ const sidebars: SidebarsConfig = {
   tutorialSidebar: [
     'intro',
     'getting-started',
+    'charting',
+    'nextjs-ssr',
     'architecture',
     'comparison',
     {
