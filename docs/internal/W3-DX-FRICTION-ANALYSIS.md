@@ -71,6 +71,8 @@
 - `docs/internal/guides/nextjs-ssr.md`: App Router 핵심 3규칙(`'use client'`·컬럼은 클라이언트 생성·data 만 서버 전달)·App/Pages 패턴·SSR/하이드레이션(테이블 SSR O, 가상화 client-only, `ssr:false` dynamic)·Tailwind·함정표(함수 prop 직렬화·document undefined·hydration mismatch·getRowId)·Vue/Nuxt 차트 SSR 링크. getting-started §9 에 Next.js·charting 링크 추가(발견성).
 - docs-only.
 
-## 8. 인프라 백로그 (W3 중 발견)
-- vitest 미설치인데 `*.test.ts`(vi/it) 다수 = dead test(createColumns.test 등) → node 포팅 or vitest 도입.
-- facade `tsc --noEmit`: grid-pro-filter dist 의 `@tanstack/table-core` 미해소(사전존재). build(tsup)는 green.
+## 8. 인프라 백로그 (W3 중 발견 → ✅ 정리 완료 2026-06-20)
+- ✅ **facade tsc gap**: `@tanstack/table-core ^8` 루트 devDep 추가 → 전 패키지 `tsc --noEmit` 무에러(게이트 복원). 소비자는 react-table peer 로 무관.
+- ✅ **dead vitest 부활**: 정밀 식별=**6 파일**(grid-core, `from 'vitest'`): createColumns·createGroupedColumns·useColumnPersistence·useStoragePersist·useUrlSync·ColumnVisibilityMenu. vitest+jsdom+@testing-library+jest-dom 도입(루트 devDep), `packages/grid-core/vitest.config.ts`(globals:true=auto-cleanup, jsdom, 6 파일 명시 include) + setup(jest-dom). grid-core `test` 에 `&& vitest run` 추가=게이트 편입.
+  - ★부활이 잡은 것(dead test 의 가치 실증): (1)2 env-setup gap(jest-dom 매처 누락·testing-library cleanup 미등록=globals) (2)**1 stale test**(useColumnPersistence TC-003): `toBeNull` 기대가 **persist-on-mount 효과 미고려**—hook 은 정상(version mismatch→stale 삭제 후 현 state 를 v:2 로 재기록). 테스트를 올바른 불변식(복원 skip + v:2 재기록·stale 데이터 미전파)으로 정정. **코드 버그 아님**.
+  - 결과: 6 파일 **42 tests passed**, `pnpm -r test` 전체 green.

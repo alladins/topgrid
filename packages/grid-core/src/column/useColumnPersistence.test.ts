@@ -116,9 +116,14 @@ describe('TC-003: version mismatch', () => {
 
     renderHook(() => useColumnPersistence(table, options));
 
-    expect(localStorageMock.getItem('tc003')).toBeNull();
+    // version mismatch → the stale v:1 entry is NOT restored (복원 skip)...
     expect(table.setColumnVisibility).not.toHaveBeenCalled();
     expect(table.setColumnOrder).not.toHaveBeenCalled();
+    // ...the stale entry is discarded, then the persist effect re-writes current state as v:2.
+    // (The old `toBeNull()` assertion ignored persist-on-mount.) Key invariant: stale v:1 data gone.
+    const after = JSON.parse(localStorageMock.getItem('tc003')!) as { v: number; data: { visibility?: unknown } };
+    expect(after.v).toBe(2);
+    expect(after.data.visibility).toEqual({}); // stale { name: false } is NOT carried over
   });
 });
 
