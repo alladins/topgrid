@@ -76,3 +76,9 @@
 - ✅ **dead vitest 부활**: 정밀 식별=**6 파일**(grid-core, `from 'vitest'`): createColumns·createGroupedColumns·useColumnPersistence·useStoragePersist·useUrlSync·ColumnVisibilityMenu. vitest+jsdom+@testing-library+jest-dom 도입(루트 devDep), `packages/grid-core/vitest.config.ts`(globals:true=auto-cleanup, jsdom, 6 파일 명시 include) + setup(jest-dom). grid-core `test` 에 `&& vitest run` 추가=게이트 편입.
   - ★부활이 잡은 것(dead test 의 가치 실증): (1)2 env-setup gap(jest-dom 매처 누락·testing-library cleanup 미등록=globals) (2)**1 stale test**(useColumnPersistence TC-003): `toBeNull` 기대가 **persist-on-mount 효과 미고려**—hook 은 정상(version mismatch→stale 삭제 후 현 state 를 v:2 로 재기록). 테스트를 올바른 불변식(복원 skip + v:2 재기록·stale 데이터 미전파)으로 정정. **코드 버그 아님**.
   - 결과: 6 파일 **42 tests passed**, `pnpm -r test` 전체 green.
+
+## 9. 증분6 — 예제 앱 (apps/example-react) (2026-06-20, ✅ advisor 위임 채택)
+> advisor 판단: W3 후보(1.0 migration 노트·예제 앱·문서사이트) 중 예제 앱이 최고가치(실행 레퍼런스 + 발행 직후 grid-core@0.7.0 facade 실브라우저 통합 검증 + 게이트 없음). 1.0 노트는 흡수.
+- **`apps/example-react/`**: 소비자 스타일 앱. `@topgrid/grid` facade + `createColumns([{id,name,type}])` + `getRowId` + `onCellClick→toGridCell`(W3 DX 표면 실증). esbuild 번들 + Playwright e2e.
+- **real chromium 3 passed**: 3행 렌더(createColumns+facade)·나이 헤더 클릭 live 정렬·셀 클릭 `toGridCell`. = 발행된 facade end-to-end 스모크(소비자-앱 통합 각도, storybook 컴포넌트 외 신규).
+- ★**예제가 잡은 실 함정**: `TopgridColumnDef.align` 이 **필수**였음 → `{id,name,type}` 만 쓰는 W3-2 docs/예제가 타입 부정합(createColumns 는 런타임 tolerant). **DX 수정: align 옵셔널화**(default 'left', types.ts+createColumns). ★단 align-optional 은 **미발행**(grid-core@0.7.0 은 align 필수) → 다음 grid-core 릴리스 동승. 예제/내부docs 는 workspace(align-optional) 소비라 in-repo 일관. 문서사이트 반영은 align-optional 발행 후.

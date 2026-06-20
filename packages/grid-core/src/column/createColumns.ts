@@ -95,7 +95,7 @@ export function createColumns<TData = unknown>(
       (def.meta?.primary ?? def.etc?.toLowerCase().includes('primary')) === true;
     const metaValue: { primary: boolean; align: 'left' | 'center' | 'right'; [key: string]: unknown } = {
       primary: primaryFlag,
-      align: def.align,
+      align: def.align ?? 'left', // W3 DX: align is now optional → default 'left'
     };
 
     // checkbox → DisplayColumnDef (AC-006, D5, EC-08)

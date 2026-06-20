@@ -78,8 +78,8 @@ export interface TopgridColumnDef<TData = unknown> {
   name: string;
   /** 자동 renderer 분기 type. AC-001 참조. */
   type: TopgridColumnType;
-  /** 정렬 방향 — Tailwind class에 반영 ('left'|'center'|'right') */
-  align: 'left' | 'center' | 'right';
+  /** 정렬 방향 — Tailwind class에 반영. 미제공 시 'left' 기본 (W3 DX: 필수→옵셔널). */
+  align?: 'left' | 'center' | 'right';
   /** 픽셀 단위 너비 문자열 ('100', '200px' 등). 미제공 시 '100' 기본. */
   width?: string;
   /** false이면 column 숨김. 기본 true. EC-05, OQ-01 참조. */

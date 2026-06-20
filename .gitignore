@@ -53,3 +53,8 @@ apps/docs/ss-srv.mjs
 
 # Vue chart e2e bundle (esbuild output)
 packages/grid-pro-chart-enterprise-vue/e2e/app.js
+
+# example app esbuild bundle + playwright artifacts
+apps/example-react/app.js
+apps/*/test-results/
+apps/*/playwright-report/

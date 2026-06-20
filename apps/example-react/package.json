@@ -1,0 +1,25 @@
+{
+  "name": "@topgrid/example-react",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Runnable consumer reference — @topgrid/grid facade with createColumns + getRowId + toGridCell (W3 DX).",
+  "scripts": {
+    "build:example": "esbuild src/main.tsx --bundle --format=esm --jsx=automatic --outfile=app.js --loader:.css=empty",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test --config e2e/playwright.config.ts"
+  },
+  "dependencies": {
+    "@topgrid/grid": "workspace:*",
+    "react": "^18",
+    "react-dom": "^18",
+    "@tanstack/react-table": "^8",
+    "@tanstack/react-virtual": "^3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "esbuild": "^0.24.0"
+  }
+}
