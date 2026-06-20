@@ -1,0 +1,49 @@
+name: E2E (real browser)
+
+# 실브라우저 e2e 게이트 — 수동 실행해온 Playwright 스위트를 CI 에 고정(회귀 방지).
+#  - Vue 차트(grid-pro-chart-enterprise-vue): render/layout/type-switch/export/cross-filter
+#  - 예제 앱(example-react): facade end-to-end (createColumns·getRowId·toGridCell)
+# 둘 다 esbuild 번들 + Playwright webServer(http-server) 자동기동. ubuntu 라 Windows 포트 예외대역 무관.
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build packages
+        # 직렬 빌드(build-verify 와 동일 이유). e2e 번들이 @topgrid/* dist 를 해소.
+        run: pnpm build
+
+      - name: Install Playwright chromium
+        run: pnpm --filter @topgrid/example-react exec playwright install --with-deps chromium
+
+      - name: Vue chart e2e (real chromium)
+        run: |
+          pnpm --filter @topgrid/grid-pro-chart-enterprise-vue build:e2e
+          pnpm --filter @topgrid/grid-pro-chart-enterprise-vue exec playwright test --config e2e/playwright.config.ts
+
+      - name: Example app e2e (facade end-to-end)
+        run: |
+          pnpm --filter @topgrid/example-react build:example
+          pnpm --filter @topgrid/example-react exec playwright test --config e2e/playwright.config.ts

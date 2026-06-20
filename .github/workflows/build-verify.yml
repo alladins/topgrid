@@ -73,3 +73,8 @@ jobs:
             exit 1
           fi
           echo "license API export check: PASS (useLicenseStatus, useWatermarkEnforcement, subscribeLicense)"
+
+      - name: Run unit tests
+        # node --experimental-strip-types spines + grid-core vitest(jsdom, @testing-library).
+        # build 후 실행: grid-vue/차트 happy-dom 테스트가 dist/index.mjs 를 import.
+        run: pnpm -r test

@@ -6,6 +6,7 @@
     "build": "pnpm -r --filter \"@topgrid/*\" --workspace-concurrency=1 build",
     "typecheck": "pnpm -r --filter './packages/*' exec tsc --noEmit",
     "test": "pnpm -r test",
+    "test:e2e": "pnpm --filter @topgrid/grid-pro-chart-enterprise-vue build:e2e && pnpm --filter @topgrid/grid-pro-chart-enterprise-vue exec playwright test --config e2e/playwright.config.ts && pnpm --filter @topgrid/example-react build:example && pnpm --filter @topgrid/example-react exec playwright test --config e2e/playwright.config.ts",
     "visual:test": "pnpm -F docs visual:test",
     "size": "pnpm build && size-limit",
     "size-limit": "size-limit",
