@@ -91,6 +91,18 @@ display 컬럼을 `type:'text'` + 합성 id 로 쓰던 코드)를 두면 즉시 
    conditional 제네릭 엣지(union/null/비1:1 매핑)로 유지·디버깅 비용 급증. → D1 우선, D2 분리(수요 게이트).
 4. **breaking 의 영향 표면**: 현 카탈로그상 순수 display 컬럼은 checkbox 뿐 → data 타입에 비-키 id 를 쓰던
    코드만 깨진다. 표면은 작다고 추정되나 **실측 미확인**(PTLPSM 코드 비가시) → 1.0 착수 전 소비자 grep 필요.
+   → ✅ **실측 완료(2026-06-21)**: 아래 「영향 표면 실측」 참조. 가시 소비자 **breaking 0건**.
+
+## 영향 표면 실측 (2026-06-21, 1.0 착수 전 전제 이행)
+Trade-off #4 가 요구한 "소비자 grep" 을 가시 코드베이스 전수로 이행했다(Explore 감사).
+- **범위**: `apps/example-react`·`apps/docs`(코드)·`packages/*/stories/**`·`grid-core` 컬럼 테스트/스토리/typetest.
+- **결과**: `createColumns`/`createGroupedColumns` 호출부 **31건** 전수 — 데이터바운드(비-checkbox) 컬럼에
+  비-키 id 를 쓴 사례 **0건**. 전부 (a) 구체 `<TData>` + 실 키만 사용, 또는 (b) TData 미지정/`Record<string,unknown>`
+  (= `keyof unknown=never` → `string` 폴백, 무영향). → **가시 breaking 표면 = 0**.
+- **미측정(정직 명시)**: PTLPSM 은 외부 소비자로 코드가 본 repo 에 없음 → 측정 불가. 1.0 릴리스 노트(D3 마이그레이션
+  경로)로 커버하되, 실제 파손 가능성은 가시 표면이 0 인 점·display 컬럼이 checkbox 뿐인 카탈로그 구조상 낮다고 추정.
+- **함의**: D1(키 강제)의 visible-side 리스크는 사실상 0 — 1.0 동반 시 typetest 전환(line 46)이 주 작업이고,
+  소비자 마이그레이션은 (있다면) PTLPSM 한정. **measurement 가 1.0 착수의 주 블로커였고, 해소됨.**
 
 ## 구현 함의 (grid-core 1.0 착수 시)
 - `types.ts` `TopgridColumnDef` 를 D1 union 으로 재작성(공유 필드 `BaseCol` 추출). `createColumns.ts`
