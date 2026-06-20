@@ -484,11 +484,34 @@ import { Grid, toGridCell } from '@topgrid/grid';
 - `c.value` = 셀 값(= `cell.getValue()`), `c.row` = 원본 행 객체(= `cell.row.original`),
   `c.rowId` = 안정적 행 id(= `getRowId` 결과; §2.3 참고).
 - `cellClassName` 의 `cell` 에도 동일하게 쓸 수 있다(`toGridCell(cell).value` 등).
-- floating 필터를 직접 그릴 땐 `toGridFilterColumn(column)` 으로 `{ id, value, setValue }` 를 얻는다
-  (`column.getFilterValue()`/`setFilterValue()` 직접 호출 불필요).
 
 > 기존 콜백 시그니처는 그대로 TanStack 타입을 유지한다(하위호환). `toGridCell` 은 **opt-in 다리**이며,
 > grid-core **1.0** 에서 콜백 인자가 위 clean 타입으로 전환될 예정이다.
+
+### 5.6 floating 필터 직접 그리기 — `toGridFilterColumn` (F-D)
+
+`renderFloatingFilter` 는 TanStack `Column` 을 넘긴다(`column.getFilterValue()`/`setFilterValue()`).
+`toGridFilterColumn(column)` 으로 `{ id, value, setValue }` 만 받아 TanStack API 없이 동기화한다.
+
+```tsx
+import { Grid, toGridFilterColumn } from '@topgrid/grid';
+
+<Grid<User>
+  data={data}
+  columns={columns}
+  enableFilter
+  renderFloatingFilter={(column) => {
+    const f = toGridFilterColumn(column);          // { id, value, setValue }
+    return (
+      <input
+        value={(f.value as string) ?? ''}
+        onChange={(e) => f.setValue(e.target.value)}  // getFilterValue/setFilterValue 직접 호출 불필요
+        placeholder={`${f.id} 필터`}
+      />
+    );
+  }}
+/>
+```
 
 ---
 

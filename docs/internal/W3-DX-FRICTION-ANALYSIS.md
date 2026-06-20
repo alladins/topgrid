@@ -82,3 +82,26 @@
 - **`apps/example-react/`**: 소비자 스타일 앱. `@topgrid/grid` facade + `createColumns([{id,name,type}])` + `getRowId` + `onCellClick→toGridCell`(W3 DX 표면 실증). esbuild 번들 + Playwright e2e.
 - **real chromium 3 passed**: 3행 렌더(createColumns+facade)·나이 헤더 클릭 live 정렬·셀 클릭 `toGridCell`. = 발행된 facade end-to-end 스모크(소비자-앱 통합 각도, storybook 컴포넌트 외 신규).
 - ★**예제가 잡은 실 함정**: `TopgridColumnDef.align` 이 **필수**였음 → `{id,name,type}` 만 쓰는 W3-2 docs/예제가 타입 부정합(createColumns 는 런타임 tolerant). **DX 수정: align 옵셔널화**(default 'left', types.ts+createColumns). ★단 align-optional 은 **미발행**(grid-core@0.7.0 은 align 필수) → 다음 grid-core 릴리스 동승. 예제/내부docs 는 workspace(align-optional) 소비라 in-repo 일관. ★align-optional 발행 완료(grid-core@0.8.0 lockstep 13, 2026-06-20): npm 타입 align? 옵셔널 확인·단일 0.8.0 deduped. → 문서/예제 npm 정합. 문서사이트 반영 진행.
+
+## 10. 잔여 일괄 처리 (2026-06-20) — "잔여 모두 진행" 사용자 요청
+
+### ✅ F-D — renderFloatingFilter 레시피 (docs)
+getting-started §5.6: `toGridFilterColumn(column)` → `{id,value,setValue}`. TanStack `getFilterValue`/`setFilterValue` 직접 호출 불필요. (W3-4 어댑터 활용.)
+
+### ✅ F-F — reorder+pagination dev-warn (code, node 22 passed)
+`shouldWarnReorderWithPagination`(devWarnings.ts) + `collectGridDevWarnings` 편입(Grid.tsx 자동). `onRowReorder(from,to)`=DATA 인덱스인데 pagination 시 visual 위치와 불일치 → enableRowReorder + (enablePagination | pagination.mode client/server) 조합서 dev-warn. ★grid-core 누적 변경(다음 릴리스 동승).
+
+### 📋 W3-4 — 1.0 migration 추적 (계획 명문화, 코드 X)
+grid-core **1.0**(차기 major)서 콜백 인자를 TanStack→clean 타입 전환(ADR-006 D3):
+- `onCellClick`/`onCellKeyDown`/`getCellTooltip`: `Cell<TData>` → `GridCellContext<TData>`.
+- `renderFloatingFilter`: `Column<TData>` → `GridFilterColumn`.
+- migration: 0.x 소비자는 `toGridCell`/`toGridFilterColumn` 어댑터로 미리 이행 가능(이미 발행됨). 1.0 시 어댑터 호출 제거.
+- state onChange(`OnChangeFn<State>`)는 1.0 에서도 유지(ADR-006 D4, 저ROI).
+
+### ⏸ W3-6 — 컬럼 빌더 타입 추론 (ADR 설계 후, breaking → 보류)
+`createColumns<TData>([{id,type}])` 에서 `id ∈ keyof TData` 강제 + `type↔value` 정합 검사가 목표. ★현 `TopgridColumnDef.id` 는 `(keyof TData & string) | string` 의 `| string` 때문에 타이포·잘못된 키 미검출.
+- **설계 스케치**: type 으로 분기한 discriminated union — `{type:'checkbox'; id:string}` | `{type: 데이터바운드; id: keyof TData & string}`. data 컬럼은 키 강제, checkbox/display 는 string 허용.
+- **왜 보류**: (1)기존 소비자가 data 컬럼에 비-키 id(커스텀 display) 쓰면 **breaking** (2)복잡한 conditional 제네릭=엣지케이스. → 방금 안정화된 grid-core 에 급조 금지, **전용 ADR + major** 동반이 옳음. 백로그 등록.
+
+### ⛔ 차트 in-place SSR→hydrate (over-claim 방지 → 의도적 미구현 유지)
+서버 SVG 를 **같은 노드**서 interactive 로 hydrate: ECharts SVG 의 incremental zrender id 가 server/client 프로세스 간 byte-identical 보장 안 됨 → Vue hydration mismatch 위험. ★실 Nuxt 환경 검증 불가 상태에서 발행=추측. **미구현 유지**(이미 제공: `renderChartToSvgString` 헬퍼 + SSR-safe 컴포넌트 + 2 패턴 문서, §3-17). 실 Nuxt 수요+검증 환경 확보 시 별도 트랙.

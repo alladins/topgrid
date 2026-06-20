@@ -44,13 +44,29 @@ export const VIRTUALIZATION_ROW_PINNING_WARNING =
   '[topgrid/grid-core] enableVirtualization + enableRowPinning are not supported together — ' +
   'pinned rows may not render or scroll correctly. Use one or the other.';
 
+/** Footgun F-F: onRowReorder(from,to) gives DATA indices — with pagination these ≠ visual positions. */
+export interface ReorderPaginationInput {
+  enableRowReorder?: boolean;
+  enablePagination?: boolean;
+  pagination?: { mode?: unknown } | unknown;
+}
+export function shouldWarnReorderWithPagination(p: ReorderPaginationInput): boolean {
+  if (p.enableRowReorder !== true) return false;
+  const mode = (p.pagination as { mode?: unknown } | undefined)?.mode;
+  return p.enablePagination === true || mode === 'client' || mode === 'server';
+}
+export const REORDER_PAGINATION_WARNING =
+  '[topgrid/grid-core] onRowReorder(from, to) receives DATA indices (row.index), not visual page ' +
+  'positions — with pagination active, map them against the full data array, not the current page.';
+
 /** Collect every Grid-level dev warning that applies to these props (caller console.warn's each). */
 export function collectGridDevWarnings(
-  props: RowIdWarningInput & VirtualizationPinningInput,
+  props: RowIdWarningInput & VirtualizationPinningInput & ReorderPaginationInput,
 ): string[] {
   const out: string[] = [];
   if (shouldWarnMissingRowId(props)) out.push(MISSING_ROW_ID_WARNING);
   if (shouldWarnVirtualizationRowPinning(props)) out.push(VIRTUALIZATION_ROW_PINNING_WARNING);
+  if (shouldWarnReorderWithPagination(props)) out.push(REORDER_PAGINATION_WARNING);
   return out;
 }
 
