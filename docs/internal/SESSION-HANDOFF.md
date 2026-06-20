@@ -13,14 +13,17 @@
 - **W1**: grid-core-headless@0.1.0 · grid-vue@0.1.0. publisher=travia71([[npm-publish-topgrid]]).
 
 ## 3. git / 게이트
-- **미푸시 2 커밋**: `cdbd84b`(F-F warn+잔여 docs) · `32cfc94`(CI 게이트). working tree clean. **origin push=사용자**.
+- ~~미푸시 2 커밋(cdbd84b·32cfc94)~~ → **이미 푸시됨**(origin/main==`0f8d6b9` 시점). 
+- **현 미푸시(2026-06-20 세션)**: `2850e14`(ADR-007 + 차트 SSR 비결정성 증명) + 본 핸드오프 갱신 커밋. **origin push=사용자**.
 - **CI(추가됨, 다음 push서 첫 가동)**: `build-verify.yml`(빌드+dist+license+**유닛 `pnpm -r test`**) · **`e2e.yml`**(Vue+예제 실 chromium) · `visual-regression.yml`(storybook). 게이트 맵=`TESTING.md`. 로컬: `pnpm -r test`(유닛+vitest)·`pnpm test:e2e`(실브라우저)·`pnpm -F docs visual:test`.
 
 ## 4. 잔여 작업 (전부 비크리티컬, 결론까지 도달)
-1. **grid-core 미발행 누적 1건 = F-F dev-warn**(reorder+pagination). dev-only라 단독 13-lockstep은 과함 → **다음 substantive grid-core 변경과 배치 발행** 권장.
-2. **W3-6 컬럼 타입추론**(`id ∈ keyof TData` + type↔value 정합) = **breaking + 복잡 제네릭** → **전용 ADR + major 동반**(설계 스케치 = `W3-DX-FRICTION-ANALYSIS.md` §10). 급조 금지.
-3. **차트 in-place SSR→hydrate**(서버 SVG가 같은 노드서 interactive 전환) = ECharts zr-id 비결정성 + 실 Nuxt 검증 불가 → **실 Nuxt 환경 확보 시** 별도 트랙. (이미 발행: `renderChartToSvgString` 헬퍼 + SSR-safe 컴포넌트 + 2 패턴 문서.)
-4. **문서사이트 배포**(outward·사용자): `apps/docs/build/` 준비됨 → `scp -r apps/docs/build/* topgrid@49.247.14.212:/var/www/topgrid/` 또는 `bash apps/docs/deploy.sh`. ★**403/권한정규화 영구해결**: 서버 root 1회 `sshd Subsystem sftp internal-sftp -u 0022` + restart + `setfacl -Rb /var/www/topgrid`(default ACL 제거) → 이후 scp 만으로 끝(상세 `apps/docs/DEPLOY.md`). storybook 403은 이번에 1회 정규화로 해결 확인됨.
+> 2026-06-20 세션서 ①②④ 처분·③ 배포 실행. 아래 상태 갱신 반영.
+
+1. **grid-core 미발행 누적 1건 = F-F dev-warn**(reorder+pagination). ✅ **점검 완료**(2026-06-20): 누적=정확히 1건·grid-core test green(42)=발행가능·push 우려 해소. dev-only라 단독 13-lockstep은 과함 → **hold 유지**(배치 임계 미도달, 다음 substantive grid-core 변경과 동승 발행).
+2. **차트 in-place SSR→hydrate** = ★**블로커 경험적 증명 완료**(2026-06-20): ECharts SVG class=`zr{instanceId}-cls-{n}`(instanceId=init마다 증가 전역 카운터) → 동일 option 두 렌더 byte-불일치, 서버 zr0↔클라 zrN 영구 mismatch. `ssr.test.ts` regression +2 고정·consumer-notes 정밀화. **실 Nuxt 환경 확보 시** 별도 트랙(보류 유지가 정직). (이미 발행: `renderChartToSvgString` + SSR-safe 컴포넌트 + 2 패턴.)
+3. **문서사이트 배포**(outward·사용자): ✅ **2026-06-20 세션 배포 실행**(`bash apps/docs/deploy.sh`). build/ 19M·412파일·storybook 임베드·소스보다 최신. 재배포는 동일 명령. ★403/권한정규화 영구해결: 서버 root 1회 `sshd Subsystem sftp internal-sftp -u 0022` + restart + `setfacl -Rb /var/www/topgrid` → 이후 scp 만으로 끝(상세 `apps/docs/DEPLOY.md`).
+4. **W3-6 컬럼 타입추론** = ✅ **ADR-007 작성 완료**(status=proposed, `decisions/ADR-007-…md`): `TopgridColumnDef` 를 type 판별 discriminated union(데이터바운드 10종 id=keyof TData 강제, checkbox 만 string). type↔value 정합(D2)=후속 ADR. **breaking → grid-core 1.0**(ADR-006 콜백 retype 과 동일 major). 착수 전 PTLPSM 소비자 grep 으로 breaking 표면 실측.
 5. (선택) W3 추가 함정(F-C는 이미 warn) · toolbar 17타입 노출 폴리시 · PTLPSM Vue 차트 실통합(담당자 몫, 우리는 불안정 통지).
 
 ## 5. canonical 상세 위치 (재-derive 금지)
