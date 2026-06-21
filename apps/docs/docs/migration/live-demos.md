@@ -326,7 +326,7 @@ formatValue(value); // "120"
 
 - <a href="/storybook/" target="_blank" rel="noopener">Storybook 데모</a> — 전 패키지 인터랙티브 컴포넌트 데모
 - [빠른 시작](/getting-started) — 설치와 기본 사용
-- [아키텍처](/architecture) — 21개 패키지 구성
+- [아키텍처](/architecture) — 27개 패키지 구성
 - [8개 Grid 변형 이전 가이드](./8-variant-table.md)
 - [DataTable 이전 가이드](./dataTable-migration.md)
 - [Deprecated Alias 목록](./deprecated-aliases.md)

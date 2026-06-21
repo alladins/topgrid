@@ -1,14 +1,15 @@
 # topgrid API 레퍼런스
 
-topgrid 13 패키지 (MIT 4 + Pro 8 + meta 1) 의 public export 와 주요 시그니처를 정리한다.
-시작 가이드는 [시작하기](./getting-started) 참고. 셀 렌더러 상세는 아래 §2 참고.
+이 레퍼런스는 **핵심 그리드 패키지**(아래 §0 표의 13종)의 public export 와 주요 시그니처를 정리한다.
+전체 **27 패키지** 구성은 [소개](/)·[아키텍처](./architecture), 차트(4종)는 [차트](./charting),
+Vue 어댑터는 `@topgrid/grid-vue` 를 참고. 시작 가이드는 [시작하기](./getting-started), 셀 렌더러 상세는 아래 §2.
 
 타입(`ColumnDef`, `Table`, `Row`, `Cell`, `Header` 등)은 별도 표기가 없는 한
 TanStack Table v8 의 것을 그대로 사용한다 (https://tanstack.com/table/v8).
 
 ---
 
-## 0. 패키지 개요
+## 0. 핵심 패키지 (이 레퍼런스 범위)
 
 | 패키지 | 라이선스 | 분류 | 목적 |
 |---|---|---|---|
@@ -542,7 +543,7 @@ import { AggregationGrid, GroupPanel, registerAggregationFn } from '@topgrid/gri
 
 ## 7. `@topgrid/grid` (meta facade)
 
-13 패키지를 한 곳에서 re-export 한다.
+전 패키지(약 20종)를 한 곳에서 re-export 한다.
 
 ```tsx
 import {

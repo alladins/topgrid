@@ -1,8 +1,9 @@
 # topgrid 시작 가이드
 
 topgrid 는 **TanStack Table v8 기반**의 React 그리드 라이브러리다. 핵심 그리드와 셀
-렌더러, 정렬/필터, Excel/CSV/PDF export 를 제공하는 **MIT 4 패키지**를 무료로 쓸 수 있고,
-다단 헤더·변경 추적·Excel-style 범위 편집 같은 고급 기능은 **Pro 패키지**로 확장한다.
+렌더러, 정렬/필터, Excel/CSV/PDF export, Vue 어댑터를 제공하는 **무료 MIT 패키지 7종**을 쓸 수 있고,
+다단 헤더·변경 추적·Excel-style 범위 편집 같은 고급 기능은 **상용 Pro 패키지**로 확장한다.
+(전체 27 패키지 구성은 [아키텍처](./architecture) 참고.)
 
 - npm scope: `@topgrid/*`
 - 권장 환경: React 18/19 + TypeScript + Tailwind CSS
@@ -24,8 +25,8 @@ topgrid 는 **TanStack Table v8 기반**의 React 그리드 라이브러리다. 
 | Group / Sum / Avg 집계 | + `@topgrid/grid-pro-agg` (Pro) |
 | 차트·시각화 (셀 스파크라인 ~ 엔터프라이즈 17종, React/Vue) | + 차트 패키지 → [차트](./charting) (Pro) |
 
-- **MIT 4 패키지** (`grid-core` / `grid-renderers` / `grid-features` / `grid-export`)
-  는 자유 사용.
+- **무료 MIT 7 패키지** (`grid-core` / `grid-core-headless` / `grid-renderers` /
+  `grid-features` / `grid-sizing` / `grid-export` / `grid-vue`) 는 자유 사용.
 - **Pro 패키지**는 라이선스 키가 필요하다. 미설정 시 그리드 우상단에
   `"Unlicensed @topgrid/grid"` watermark 가 표시되며, 기능 자체는 동작한다.
 

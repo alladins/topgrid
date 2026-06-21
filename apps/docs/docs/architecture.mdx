@@ -1,23 +1,33 @@
 # 아키텍처
 
-topgrid는 21개 패키지로 구성된 monorepo 구조입니다.
-공개(MIT) 패키지와 Pro(상용 라이선스) 패키지로 분류됩니다.
+topgrid는 **27개 패키지**로 구성된 monorepo 구조입니다 — **무료(MIT) 7 + 상용(EULA) 20**.
+React 코어 + Vue 어댑터(멀티프레임워크), Pro 기능, 차트 패밀리로 나뉩니다.
 
 ## 패키지 목록
 
-### 공개 (MIT) — 7
+### 무료 (MIT) — 7
+
+| 패키지 | 설명 |
+|--------|------|
+| `@topgrid/grid-core` | TanStack Table 추상화 wrapper + `useGridState`·`<Grid>`·가상화·페이지네이션·정렬/필터 배선 |
+| `@topgrid/grid-core-headless` | 프레임워크 무관 headless 코어(`@tanstack/table-core` 기반) — React/Vue 공유 |
+| `@topgrid/grid-renderers` | 셀 렌더러 11종(텍스트·숫자·날짜·배지·링크·버튼·체크·아이콘·태그·아바타·진행률) + 레지스트리 |
+| `@topgrid/grid-features` | 필터 UI(text/number/date/set·글로벌·플로팅)·다중 정렬 |
+| `@topgrid/grid-sizing` | 컬럼 사이징 — auto-size·size-to-fit·star(비율) 폭 |
+| `@topgrid/grid-export` | Excel/CSV/PDF 내보내기·클립보드·인쇄 (`xlsx`·`jspdf` peer) |
+| `@topgrid/grid-vue` | Vue 3 어댑터 — headless 코어를 `useVueTable` 로 구동 |
+
+### 상용 (EULA) — 20
+
+**파사드 · 라이선스 (3)**
 
 | 패키지 | 설명 |
 |--------|------|
 | `@topgrid/grid` | 메타 패키지 — 전체 패키지 re-export 파사드 |
-| `@topgrid/grid-core` | TanStack Table 추상화 wrapper + `useGridState`·`<Grid>`·가상화·페이지네이션·정렬/필터 배선 |
-| `@topgrid/grid-features` | 필터 UI(text/number/date/set·글로벌·플로팅)·다중 정렬 |
-| `@topgrid/grid-renderers` | 셀 렌더러 11종(텍스트·숫자·날짜·배지·링크·버튼·체크·아이콘·태그·아바타·진행률) + 레지스트리 |
-| `@topgrid/grid-sizing` | 컬럼 사이징 — auto-size·size-to-fit·star(비율) 폭 |
-| `@topgrid/grid-export` | Excel/CSV/PDF 내보내기·클립보드·인쇄 (`xlsx`·`jspdf` peer) |
-| `@topgrid/grid-license` | 런타임 Pro 라이선스 검증 |
+| `@topgrid/grid-license` | 런타임 Pro 라이선스 검증 + Watermark |
+| `@topgrid/grid-license-core` | 라이선스 검증 코어(프레임워크 무관) |
 
-### Pro (상용 라이선스) — 14
+**Pro 기능 (13)**
 
 | 패키지 | 설명 |
 |--------|------|
@@ -32,36 +42,50 @@ topgrid는 21개 패키지로 구성된 monorepo 구조입니다.
 | `@topgrid/grid-pro-range` | 범위 선택 — 드래그 선택·fill handle·클립보드 복사/붙여넣기 |
 | `@topgrid/grid-pro-edit-plus` | 편집 심화 — 검증 룰·undo/redo·find & replace·셀 코멘트 |
 | `@topgrid/grid-pro-filter` | 멀티(AND/OR)·어드밴스드(교차 컬럼 식)·크로스 필터 |
-| `@topgrid/grid-pro-chart` | 통합 차트·스파크라인 (zero-dep SVG 엔진) |
 | `@topgrid/grid-pro-panel` | 사이드바·툴 패널(컬럼 가시성/순서)·상태바·필터 패널 |
 | `@topgrid/grid-pro-sheet` | 스프레드시트 엔진(PoC) — A1 수식·의존 그래프 재계산·셀 서식/스타일/병합 |
+
+**차트 (4)** — 상세는 [차트](./charting)
+
+| 패키지 | 설명 |
+|--------|------|
+| `@topgrid/grid-chart-core` | 차트 엔진 코어(프레임워크 무관) — 17종 차트 타입 |
+| `@topgrid/grid-pro-chart` | 통합 차트·셀 스파크라인 (zero-dep SVG 엔진) |
+| `@topgrid/grid-pro-chart-enterprise` | 엔터프라이즈 차트(React) — 17종·다축·BYO·SSR |
+| `@topgrid/grid-pro-chart-enterprise-vue` | 엔터프라이즈 차트(Vue) — 동일 엔진·SSR 헬퍼 |
 
 ## 의존성 규칙
 
 ```mermaid
 graph TD
-  subgraph Open["Open (MIT)"]
-    grid["@topgrid/grid (메타)"]
+  subgraph Open["무료 (MIT) — 7"]
     grid-core["@topgrid/grid-core"]
+    grid-headless["@topgrid/grid-core-headless"]
     grid-features["@topgrid/grid-features"]
     grid-export["@topgrid/grid-export"]
     grid-renderers["@topgrid/grid-renderers"]
     grid-sizing["@topgrid/grid-sizing"]
-    grid-license["@topgrid/grid-license"]
+    grid-vue["@topgrid/grid-vue"]
   end
 
-  subgraph Pro["Pro (14 패키지 — 상용 라이선스)"]
-    proAll["grid-pro-{agg,pivot,serverside,master,merging,header,<br/>datamap,tracking,range,edit-plus,filter,chart,panel,sheet}"]
+  subgraph Commercial["상용 (EULA) — 20"]
+    grid["@topgrid/grid (메타 파사드)"]
+    grid-license["@topgrid/grid-license"]
+    proAll["grid-pro-* (기능 13)"]
+    charts["차트 4 (core·chart·enterprise·enterprise-vue)"]
   end
 
   grid --> grid-core
   grid --> grid-features
   grid --> grid-renderers
   grid --> grid-export
-  grid -.->|re-export| Pro
+  grid -.->|re-export| proAll
+  grid -.->|re-export| charts
   grid-core --> react["react ^18 \| ^19"]
   grid-core --> tanstack["@tanstack/react-table ^8"]
   grid-core --> virtual["@tanstack/react-virtual ^3"]
+  grid-headless --> tablecore["@tanstack/table-core"]
+  grid-vue --> grid-headless
   proAll -->|모든 Pro| grid-license
   proAll -.->|대부분| grid-core
 ```
