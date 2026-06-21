@@ -95,8 +95,8 @@ function MyGrid() {
       enableSorting
       enableColumnPinning
       defaultColumnPinning={{ left: ['name'], right: [] }}
-      cellClassName={(cell) => (cell.column.id === 'age' ? 'text-right' : '')}
-      onCellKeyDown={(cell, row, event) => { /* keyboard */ }}
+      cellClassName={(ctx) => (ctx.columnId === 'age' ? 'text-right' : '')}
+      onCellKeyDown={(ctx, event) => { /* keyboard */ }}
       onStartEditing={(rowId, colId) => { /* edit hook */ }}
     />
   );
@@ -126,11 +126,11 @@ interface GridProps<TData> {
   virtualOverscan?: number;
 
   // 셀 / 행 스타일
-  cellClassName?: CellClassNameCallback<TData>;  // (cell) => string
+  cellClassName?: CellClassNameCallback<TData>;  // (ctx: GridCellContext) => string
   rowClassName?: RowClassNameCallback<TData>;     // (row) => string
 
   // 편집 / 이벤트 hook
-  onCellKeyDown?: (cell, row, event) => void;
+  onCellKeyDown?: (ctx: GridCellContext, event) => void;
   onStartEditing?: (rowId: string | number, colId: string) => void;
   onRowClick?: (row: TData, event: MouseEvent<HTMLTableRowElement>) => void;
 
