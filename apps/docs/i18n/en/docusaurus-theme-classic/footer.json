@@ -1,0 +1,58 @@
+{
+  "link.title.문서": {
+    "message": "Docs",
+    "description": "The title of the footer links column with title=문서 in the footer"
+  },
+  "link.title.제품": {
+    "message": "Product",
+    "description": "The title of the footer links column with title=제품 in the footer"
+  },
+  "link.title.리소스": {
+    "message": "Resources",
+    "description": "The title of the footer links column with title=리소스 in the footer"
+  },
+  "link.item.label.시작하기": {
+    "message": "Get Started",
+    "description": "The label of footer link with label=시작하기 linking to /getting-started"
+  },
+  "link.item.label.API 레퍼런스": {
+    "message": "API Reference",
+    "description": "The label of footer link with label=API 레퍼런스 linking to /api-reference"
+  },
+  "link.item.label.차트": {
+    "message": "Charts",
+    "description": "The label of footer link with label=차트 linking to /charting"
+  },
+  "link.item.label.Next.js / SSR": {
+    "message": "Next.js / SSR",
+    "description": "The label of footer link with label=Next.js / SSR linking to /nextjs-ssr"
+  },
+  "link.item.label.소개": {
+    "message": "Overview",
+    "description": "The label of footer link with label=소개 linking to /intro"
+  },
+  "link.item.label.기능 비교": {
+    "message": "Comparison",
+    "description": "The label of footer link with label=기능 비교 linking to /comparison"
+  },
+  "link.item.label.예제": {
+    "message": "Examples",
+    "description": "The label of footer link with label=예제 linking to /migration/live-demos"
+  },
+  "link.item.label.데모 (Storybook)": {
+    "message": "Demos (Storybook)",
+    "description": "The label of footer link with label=데모 (Storybook) linking to pathname:///storybook/"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "The label of footer link with label=GitHub linking to https://github.com/alladins/topgrid"
+  },
+  "link.item.label.도입 문의": {
+    "message": "Contact Sales",
+    "description": "The label of footer link with label=도입 문의 linking to mailto:sales@platree.com"
+  },
+  "copyright": {
+    "message": "© 2026 platree · topgrid — Headless React grid built on TanStack Table",
+    "description": "The footer copyright"
+  }
+}

@@ -1,62 +1,587 @@
-# Getting Started
+# topgrid Getting Started Guide
 
-topgrid is a headless React grid library built on TanStack Table v8.
-It is organized as a monorepo of 21 packages, supporting both open-source (MIT) core and Pro features.
+topgrid is a React grid library **built on TanStack Table v8**. You can use **7 free MIT packages** that provide the core grid, cell
+renderers, sorting/filtering, Excel/CSV/PDF export, and a Vue adapter, while advanced features such as
+multi-level headers, change tracking, and Excel-style range editing extend it through **commercial Pro packages**.
+(For the full 27-package layout, see [Architecture](./architecture).)
 
-## Installation
+- npm scope: `@topgrid/*`
+- Recommended environment: React 18/19 + TypeScript + Tailwind CSS
+- For the complete exports and signatures, see the [API Reference](./api-reference)
+
+---
+
+## 1. Which packages do you need?
+
+| Use case | Recommended packages |
+|---|---|
+| Simple data display (no sorting/filtering) | `@topgrid/grid-core` + `@topgrid/grid-renderers` |
+| Sorting + filtering + search | + `@topgrid/grid-features` |
+| Excel/CSV/PDF download | + `@topgrid/grid-export` |
+| Multi-level headers (month/day/weekday, etc.) | + `@topgrid/grid-pro-header` (Pro) |
+| Inline editing + change tracking + save | + `@topgrid/grid-pro-tracking` (Pro) |
+| Excel-style range selection + keyboard | + `@topgrid/grid-pro-range` (Pro) |
+| Master-Detail (expand) + right-click menu | + `@topgrid/grid-pro-master` (Pro) |
+| Group / Sum / Avg aggregation | + `@topgrid/grid-pro-agg` (Pro) |
+| Charts & visualization (cell sparklines through 17 enterprise types, React/Vue) | + chart packages → [Charting](./charting) (Pro) |
+
+- The **7 free MIT packages** (`grid-core` / `grid-core-headless` / `grid-renderers` /
+  `grid-features` / `grid-sizing` / `grid-export` / `grid-vue`) are free to use.
+- **Pro packages** require a license key. When unset, an
+  `"Unlicensed @topgrid/grid"` watermark appears in the grid's top-right corner, but the features themselves still work.
+
+---
+
+## 2. Hello World — Display a grid in 5 minutes
+
+### 2.1 Installation
 
 ```bash
-# Open packages (headless core)
-pnpm add @topgrid/grid @topgrid/grid-core @topgrid/grid-features \
-         @topgrid/grid-renderers @topgrid/grid-export @topgrid/grid-license
+# Assuming a Vite + React project
+npm create vite@latest my-app -- --template react-ts
+cd my-app
+npm install
 
-# peer dependencies
-pnpm add react react-dom @tanstack/react-table @tanstack/react-virtual
+# topgrid + peer deps
+npm install @topgrid/grid-core @topgrid/grid-renderers \
+            @tanstack/react-table @tanstack/react-virtual
+
+# Tailwind CSS (for the renderer's className usage)
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
 ```
 
-Pro packages (pivot, server-side row model, charts, spreadsheet, advanced filtering,
-editing, aggregation, and more) require a license — see the package list in
-[Architecture](./architecture) and the [feature comparison](./comparison).
+Peer dependency:
+
+```
+react        ^18.0.0 || ^19.0.0
+react-dom    ^18.0.0 || ^19.0.0
+@tanstack/react-table    ^8.0.0
+@tanstack/react-virtual  ^3.0.0   (when using virtualization)
+```
+
+### 2.2 Tailwind configuration
+
+Every cell renderer is styled exclusively through Tailwind classNames. Add the package paths to `content` so that
+the classes inside the packages are included in the build.
+
+```javascript
+// tailwind.config.js
+export default {
+  content: [
+    './src/**/*.{js,ts,jsx,tsx}',
+    './node_modules/@topgrid/**/*.{js,mjs}',  // ★ recognize topgrid classes
+  ],
+  theme: { extend: {} },
+  plugins: [],
+};
+```
+
+```css
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+### 2.3 Your first grid
+
+**Recommended: the high-level `createColumns`** — declare columns as `{ id, name, type }` without any knowledge of
+TanStack `ColumnDef`, and the cell renderer matching `type` is wired automatically (the facade `@topgrid/grid` wires the default renderers).
+
+```tsx
+import { Grid, createColumns } from '@topgrid/grid';   // facade = automatic renderer wiring
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+}
+
+const columns = createColumns<User>([
+  { id: 'name', name: '이름', type: 'text', width: '150' },
+  { id: 'email', name: '이메일', type: 'text', width: '250' },
+  { id: 'age', name: '나이', type: 'number', align: 'right', width: '80' },
+]);
+
+const data: User[] = [
+  { id: 1, name: '김철수', email: 'chulsoo@example.com', age: 30 },
+  { id: 2, name: '이영희', email: 'younghee@example.com', age: 28 },
+  { id: 3, name: '박민수', email: 'minsoo@example.com', age: 35 },
+];
+
+export default function App() {
+  return (
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-4">사용자 목록</h1>
+      <Grid<User>
+        data={data}
+        columns={columns}
+        getRowId={(u) => String(u.id)}   // ★ stable row identity (see the note below)
+        enableSort
+      />
+    </div>
+  );
+}
+```
 
 ```bash
-# e.g. install only the Pro packages you need
-pnpm add @topgrid/grid-pro-pivot @topgrid/grid-pro-serverside @topgrid/grid-pro-chart
+npm run dev
 ```
 
-## Basic Usage
+→ The grid appears in the browser, and clicking a column header triggers sorting.
 
-`<Grid>` takes `columns`/`data` directly (headless — use TanStack `ColumnDef` as-is).
+> **★ Always specify getRowId.** When unset, row identity falls back to the **array index**, so
+> selection, row reordering, and cell-change flashes will **track the wrong rows after sorting/filtering** (the most common pitfall).
+> In dev mode, a warning is logged under this condition. We recommend `getRowId={(row) => row.<uniqueKey>}`.
+>
+> **The sorting prop is `enableSort`** (not `enableSorting` — it differs from the TanStack option name).
+>
+> **Low-level path**: you can also pass TanStack's `ColumnDef<User>[]` directly to `columns` for full control
+> (accessorFn, custom cell, etc.). Only in that case do you need knowledge of `@tanstack/react-table`.
+
+---
+
+## 3. Incremental expansion
+
+### 3.1 Pagination
+
+`GridPagination` is placed as a separate component from the grid.
+
+```tsx
+import { Grid, GridPagination, useGridState } from '@topgrid/grid-core';
+
+function App() {
+  const grid = useGridState<User>({
+    initialPagination: { pageIndex: 0, pageSize: 10 },
+  });
+
+  return (
+    <>
+      <Grid<User>
+        data={data}
+        columns={columns}
+        enablePagination
+        state={{ pagination: grid.pagination }}
+        onPaginationChange={grid.setPagination}
+      />
+      <GridPagination
+        table={grid.table}
+        mode="client"
+        pageSizeOptions={[10, 20, 50]}
+        showTotalCount
+      />
+    </>
+  );
+}
+```
+
+### 3.2 Filtering + search (`@topgrid/grid-features`)
+
+```tsx
+import { TextFilter, GlobalSearchInput, textFilterFn } from '@topgrid/grid-features';
+
+const columns: ColumnDef<User>[] = [
+  {
+    id: 'name',
+    accessorKey: 'name',
+    header: ({ column }) => (
+      <div className="flex items-center gap-1">
+        이름
+        <TextFilter column={column} defaultOperator="contains" />
+      </div>
+    ),
+    filterFn: textFilterFn,
+  },
+  // ...
+];
+
+// Global search above the grid
+<GlobalSearchInput table={table} placeholder="전체 검색..." />
+```
+
+> If you need multi-column sorting, use `useMultiSort`. This hook is exported from `@topgrid/grid-features`
+> (the sort-priority badge `SortBadge` and the reset button `SortClearButton`
+> live in `@topgrid/grid-core`).
+
+### 3.3 Cell renderers (`@topgrid/grid-renderers`)
+
+```tsx
+import { NumberCell, StatusBadgeCell, LinkCell } from '@topgrid/grid-renderers';
+
+const columns: ColumnDef<User>[] = [
+  {
+    id: 'name',
+    accessorKey: 'name',
+    header: '이름',
+    cell: (info) => (
+      <LinkCell value={String(info.getValue())} onClick={() => goToDetail(info.row.original.id)} />
+    ),
+  },
+  {
+    id: 'age',
+    accessorKey: 'age',
+    header: '나이',
+    cell: (info) => <NumberCell value={info.getValue() as number} unit="세" />,
+  },
+  {
+    id: 'status',
+    accessorKey: 'status',
+    header: '상태',
+    cell: (info) => (
+      <StatusBadgeCell
+        value={info.getValue() as string}
+        colorMap={{ active: 'green', inactive: 'gray', pending: 'yellow' }}
+      />
+    ),
+  },
+];
+```
+
+For the prop contracts of the 11 display cells plus the inline editing cell `EditableCell`, see [API Reference §2](./api-reference).
+
+### 3.4 Excel export (`@topgrid/grid-export`)
+
+```tsx
+import { exportToExcel } from '@topgrid/grid-export';
+
+<button onClick={() => exportToExcel(table, { fileName: '사용자목록.xlsx' })}>
+  엑셀 다운로드
+</button>
+```
+
+> **jspdf optional deps**: `exportToPdf` uses jspdf's 4 dynamic imports
+> (`fflate` / `html2canvas` / `dompurify` / `canvg`). If you only use Excel/CSV
+> and the build cannot find these modules, stub them via your bundler configuration.
+>
+> ```javascript
+> // next.config.ts or vite.config.ts
+> resolve: {
+>   fallback: { fflate: false, html2canvas: false, dompurify: false, canvg: false },
+> }
+> ```
+
+### 3.5 Column pinning + virtualization (large datasets)
+
+```tsx
+<Grid<User>
+  data={data}  // 10k+ rows
+  columns={columns}
+  enableColumnPinning
+  defaultColumnPinning={{ left: ['name'], right: ['actions'] }}
+  enableVirtualization
+  estimatedRowHeight={40}
+  virtualOverscan={5}
+/>
+```
+
+Virtualization applies only when `enableVirtualization` and `estimatedRowHeight` are specified together.
+
+---
+
+## 4. Pro features
+
+### 4.1 Setting the license key (`@topgrid/grid-license`)
+
+```tsx
+import { setLicenseKey } from '@topgrid/grid-license';
+
+useEffect(() => {
+  setLicenseKey(import.meta.env.VITE_TOPGRID_LICENSE_KEY ?? '');
+}, []);
+```
+
+When unset/expired, an `"Unlicensed @topgrid/grid"` watermark appears in the grid's top-right corner
+(usage is still allowed). Query the license status with `useLicenseStatus()`.
+
+### 4.2 Multi-level headers (`@topgrid/grid-pro-header`)
+
+```tsx
+import { createColumnGroup } from '@topgrid/grid-pro-header';
+
+const columns: ColumnDef<User>[] = [
+  createColumnGroup<User>({
+    header: '개인 정보',
+    columns: [
+      { id: 'name', accessorKey: 'name', header: '이름' },
+      { id: 'age', accessorKey: 'age', header: '나이' },
+    ],
+  }),
+  createColumnGroup<User>({
+    header: '연락처',
+    columns: [
+      { id: 'email', accessorKey: 'email', header: '이메일' },
+      { id: 'phone', accessorKey: 'phone', header: '전화' },
+    ],
+  }),
+];
+```
+
+### 4.3 Inline editing + change tracking (`@topgrid/grid-pro-tracking`)
+
+`ChangeTrackingGrid` tracks additions/updates/deletions relative to a baseline, and the
+`ChangeTrackingAPI` exposed via ref collects the changes for saving.
+
+```tsx
+import { ChangeTrackingGrid, type ChangeTrackingAPI } from '@topgrid/grid-pro-tracking';
+import { EditableCell } from '@topgrid/grid-renderers';
+import { useRef, useState } from 'react';
+
+function EditablePage() {
+  const trackingRef = useRef<ChangeTrackingAPI<User>>(null);
+  const [editingCell, setEditingCell] = useState<{ rowId: string; colId: string } | null>(null);
+
+  const editableColumns: ColumnDef<User>[] = [
+    {
+      id: 'name',
+      accessorKey: 'name',
+      header: '이름',
+      cell: (info) => {
+        const isEditing =
+          editingCell?.rowId === info.row.id && editingCell?.colId === 'name';
+        return (
+          <EditableCell
+            value={String(info.getValue() ?? '')}
+            editType="text"
+            isEditing={isEditing}
+            onStartEdit={() => setEditingCell({ rowId: info.row.id, colId: 'name' })}
+            onCommit={(newValue) => {
+              trackingRef.current?.updateRow(info.row.id, { name: newValue });
+              setEditingCell(null);
+            }}
+            onCancel={() => setEditingCell(null)}
+          />
+        );
+      },
+    },
+    // ...
+  ];
+
+  const handleSave = async () => {
+    const cs = trackingRef.current?.getChangeSet();
+    if (!cs) return;
+    await api.batchSave({ added: cs.added, updated: cs.updated, removed: cs.removed });
+    trackingRef.current?.resetChanges();
+  };
+
+  return (
+    <>
+      <ChangeTrackingGrid<User>
+        ref={trackingRef}
+        data={data}
+        columns={editableColumns}
+        getRowId={(row) => String(row.id)}
+      />
+      <button onClick={handleSave}>저장</button>
+      <button onClick={() => trackingRef.current?.resetChanges()}>취소</button>
+    </>
+  );
+}
+```
+
+- Changed rows are color-coded: added = green / updated = yellow / deleted = red.
+- `resetChanges()` restores the baseline. To also refresh the on-screen data right after saving,
+  update the data state together, then call `resetChanges()`.
+
+> **Preventing loss of the first character**: when starting an edit via keystroke, pass the first character
+> to `EditableCell` through the `initialDraft` prop so it isn't dropped.
+
+### 4.4 Excel-style range selection + keyboard (`@topgrid/grid-pro-range`)
+
+The simplest path is the all-in-one `RangeSelectGrid`.
+
+```tsx
+import { RangeSelectGrid } from '@topgrid/grid-pro-range';
+
+<RangeSelectGrid<User>
+  data={data}
+  columns={columns}
+  enableClipboard       // Ctrl+C/V
+  enableKeyboardNav     // arrow keys + Tab + Enter
+  enableDragFill        // Excel-style fill handle
+  onCellChange={(rowIdx, colIdx, newValue) => {
+    // update the data
+  }}
+/>
+```
+
+If you need low-level control, compose the hooks `useCellRange` (drag range) / `useKeyboardNav` (arrow keys, Tab)
+/ `useClipboard` (Ctrl+C/V) / `useKeyboardEdit` (Delete, batch input) directly.
+For the signatures, see [API Reference §6](./api-reference).
+
+---
+
+## 5. Commonly used patterns
+
+### 5.1 Server-side pagination
+
+```tsx
+<GridPagination
+  table={table}
+  mode="server"  // ★ server mode
+  totalCount={data?.totalCount ?? 0}
+  pageIndex={page}
+  pageSize={pageSize}
+  onPageChange={setPage}
+  onPageSizeChange={setPageSize}
+/>
+```
+
+### 5.2 URL synchronization + localStorage persistence
+
+```tsx
+import { useGridState, useUrlSync, useStoragePersist } from '@topgrid/grid-core';
+
+const grid = useGridState<User>({});
+useUrlSync(grid, { paramPrefix: 'users_' });       // ?users_sort=name&users_page=2
+useStoragePersist(grid, { storageKey: 'my-grid' }); // preserve user settings
+```
+
+### 5.3 Row click → navigate to detail
+
+```tsx
+<Grid<User> data={data} columns={columns} onRowClick={(row) => router.push(`/users/${row.id}`)} />
+```
+
+### 5.4 Conditional per-cell coloring
+
+```tsx
+<Grid<User>
+  data={data}
+  columns={columns}
+  cellClassName={(ctx) => {
+    if (ctx.columnId === 'age' && (ctx.value as number) >= 60) {
+      return 'bg-red-50 text-red-700';
+    }
+    return '';
+  }}
+/>
+```
+
+### 5.5 Cell events — a clean context (`GridCellContext`)
+
+As of grid-core **1.0**, the first argument to `onCellClick` / `onCellKeyDown` / `getCellTooltip` / `cellClassName` is
+not a TanStack `Cell` but a clean **`GridCellContext`** = `{ rowId, columnId, value, row }` (ADR-006 D3).
+You read cell data directly, without needing to import or understand the TanStack API.
 
 ```tsx
 import { Grid } from '@topgrid/grid';
-import type { ColumnDef } from '@tanstack/react-table';
 
-interface Person {
-  id: number;
-  name: string;
-}
-
-const columns: ColumnDef<Person>[] = [
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'name', header: 'Name' },
-];
-
-const data: Person[] = [
-  { id: 1, name: 'Alice' },
-  { id: 2, name: 'Bob' },
-];
-
-export function BasicGrid() {
-  return <Grid<Person> columns={columns} data={data} enableSort enableFilter />;
-}
+<Grid<User>
+  data={data}
+  columns={columns}
+  onCellClick={(ctx) => {
+    // ctx = { rowId, columnId, value, row }
+    console.log(ctx.columnId, ctx.value, ctx.row.name);
+  }}
+  getCellTooltip={(ctx) =>
+    ctx.columnId === 'email' ? `메일 보내기: ${ctx.value}` : null
+  }
+/>
 ```
 
-Enable sorting, filtering, pagination, selection, etc. via flags like `enableSort` /
-`enableFilter` / `enablePagination`. For externally controlled state, wire controlled
-state (`onSortingChange`, etc.) with the `useGridState` hook from `@topgrid/grid-core`.
+- `ctx.value` = the cell value, `ctx.row` = the original row object, `ctx.rowId` = the stable row id (= the `getRowId` result; §2.3),
+  `ctx.columnId` = the column id. `onCellClick`/`onCellKeyDown` take 2 args: `(ctx, event)`.
+- **0.x → 1.0 migration**: `cell.getValue()`→`ctx.value`, `cell.column.id`→`ctx.columnId`,
+  `cell.row.id`→`ctx.rowId`, the 2nd `row` argument →`ctx.row`. (Details = grid-core CHANGELOG 1.0.0.)
 
-## Next Steps
+> To convert the TanStack `CellContext` received in a custom column renderer (the `cell: (info) => …` of `createColumns`)
+> into the same clean shape, use the `toGridCell(info)` adapter (still exported).
 
-- [Architecture](./architecture) — 21-package structure and dependency diagram
-- [Feature comparison](./comparison) — feature matrix vs AG Grid / Wijmo
-- Pro features — activate a license via `setLicenseKey()` from `@topgrid/grid-license`
+### 5.6 Drawing floating filters yourself — `GridFilterColumn`
+
+As of grid-core **1.0**, the argument to `renderFloatingFilter` is not a TanStack `Column` but a clean
+**`GridFilterColumn`** = `{ id, value, setValue }` (ADR-006 D3). You synchronize directly, without the TanStack API.
+
+```tsx
+import { Grid } from '@topgrid/grid';
+
+<Grid<User>
+  data={data}
+  columns={columns}
+  enableFilter
+  renderFloatingFilter={(column) => (
+    // column = { id, value, setValue }
+    <input
+      value={(column.value as string) ?? ''}
+      onChange={(e) => column.setValue(e.target.value)}
+      placeholder={`${column.id} 필터`}
+    />
+  )}
+/>
+```
+
+> 0.x's `column.getFilterValue()`→`column.value`, `column.setFilterValue(x)`→`column.setValue(x)`,
+> `column.id` unchanged. (If you ever need to convert a raw TanStack `Column`, the `toGridFilterColumn` adapter is still there.)
+
+---
+
+## 6. Migrating from an existing grid
+
+When moving usages of an existing grid solution such as Wijmo / AG Grid over to topgrid, the column definitions and
+key props map 1:1 or closely. Representative mappings:
+
+| Existing (AG Grid) | topgrid |
+|---|---|
+| `<AgGridReact rowData={...} columnDefs={...} />` | `<Grid<TData> data={...} columns={...} />` |
+| `columnDefs: ColDef[]` | `columns: ColumnDef<TData>[]` |
+| `{ field: 'x' }` | `{ id: 'x', accessorKey: 'x' }` |
+| `{ headerName: '제목' }` | `{ header: '제목' }` |
+| `valueFormatter: (p) => fmt(p.value)` | `cell: (info) => fmt(info.getValue())` |
+| `cellStyle: { textAlign: 'center' }` | `meta: { align: 'center' }` + `cellClassName` |
+| `pagination: true` | a separate `<GridPagination mode="client" />` component |
+| `rowSelection="single"` | `enableRowSelection` + TanStack `rowSelection` state |
+| `ag-theme-*` CSS class | Tailwind-based — no separate CSS import needed |
+
+| Existing (Wijmo) | topgrid |
+|---|---|
+| `cellEditEnded` | `<EditableCell onCommit={...}>` |
+| `formatItem` (cell background) | `cellClassName={(ctx) => ...}` |
+| `allowMerging="ColumnHeaders"` | `createColumnGroup` (multi-level headers) |
+| `frozenColumns={n}` | `enableColumnPinning` + `defaultColumnPinning.left` |
+| `excelExport` | `exportToExcel(table, options)` or `exportRowsToExcel(...)` |
+
+The recommended strategy is **page-by-page incremental migration**. If the usages go through a common wrapper
+component, you can replace only the wrapper's internals with a topgrid base and apply the change across all usages
+without touching the usage code; however, since all usages are affected at once, visual regression testing is required.
+
+---
+
+## 7. Troubleshooting
+
+| Symptom | Cause | Resolution |
+|---|---|---|
+| Grid shows a blank screen | No data, or columns missing | Verify both are passed |
+| Broken styling (Tailwind classes not applied) | `tailwind.config.js` content missing | Add `./node_modules/@topgrid/**/*.{js,mjs}` (§2.2) |
+| `Module not found: @tanstack/table-core` | peer dep not installed | Install `@tanstack/react-table` and `@tanstack/react-virtual` |
+| `Module not found: fflate / html2canvas / ...` | grid-export's jspdf optional deps | Stub via the bundler's `resolve.fallback` (§3.4) |
+| Columns won't sort | `enableSorting` missing | Add `<Grid enableSorting>` |
+| Virtualization not applied | `enableVirtualization` or `estimatedRowHeight` absent | Specify both (§3.5) |
+| First character lost when editing a cell | `initialDraft` not passed | Pass `initialDraft` to `EditableCell` (§4.3) |
+| Pro watermark always shown | License key unset/invalid | Call `setLicenseKey()` + verify the key is valid |
+
+---
+
+## 8. Bundle optimization
+
+```tsx
+// ✅ Recommended — import individual packages (tree-shaking)
+import { Grid } from '@topgrid/grid-core';
+import { EditableCell } from '@topgrid/grid-renderers';
+
+// ❌ Not recommended — the meta facade may pull in the entire bundle
+import { Grid, EditableCell } from '@topgrid/grid';
+```
+
+---
+
+## 9. Next steps
+
+| Goal | Document |
+|---|---|
+| Exact exports + full signatures per package | [API Reference](./api-reference) |
+| The 11 cell renderers + EditableCell details | [API Reference §2](./api-reference) |
+| **Next.js (App/Pages Router) · SSR integration** | [Next.js / SSR](./nextjs-ssr) |
+| **Charts (sparklines through 17 enterprise types, React/Vue)** | [Charting](./charting) |
+| Architecture · package structure | [Architecture](./architecture) |

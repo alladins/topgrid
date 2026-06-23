@@ -1,0 +1,34 @@
+{
+  "title": {
+    "message": "topgrid",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "topgrid",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.시작하기": {
+    "message": "Get Started",
+    "description": "Navbar item with label 시작하기"
+  },
+  "item.label.API": {
+    "message": "API",
+    "description": "Navbar item with label API"
+  },
+  "item.label.기능 비교": {
+    "message": "Comparison",
+    "description": "Navbar item with label 기능 비교"
+  },
+  "item.label.예제": {
+    "message": "Examples",
+    "description": "Navbar item with label 예제"
+  },
+  "item.label.데모": {
+    "message": "Demos",
+    "description": "Navbar item with label 데모"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}

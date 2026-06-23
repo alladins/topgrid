@@ -1,0 +1,10 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.마이그레이션": {
+    "message": "Migration",
+    "description": "The label for category '마이그레이션' in sidebar 'tutorialSidebar'"
+  }
+}

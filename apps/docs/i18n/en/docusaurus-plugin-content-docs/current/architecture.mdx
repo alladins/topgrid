@@ -1,79 +1,103 @@
 # Architecture
 
-topgrid is a monorepo composed of 21 packages.
-Packages are classified as Open (MIT) or Pro (commercial license).
+topgrid is a monorepo composed of **27 packages** — **Free (MIT) 7 + Commercial (EULA) 20**.
+It is divided into a React core + Vue adapter (multi-framework), Pro features, and a chart family.
 
 ## Package List
 
-### Open (MIT) — 7
+### Free (MIT) — 7
 
 | Package | Description |
-|---------|-------------|
+|--------|------|
+| `@topgrid/grid-core` | TanStack Table abstraction wrapper + `useGridState`·`<Grid>`·virtualization·pagination·sort/filter wiring |
+| `@topgrid/grid-core-headless` | Framework-agnostic headless core (based on `@tanstack/table-core`) — shared by React/Vue |
+| `@topgrid/grid-renderers` | 11 cell renderers (text·number·date·badge·link·button·check·icon·tag·avatar·progress) + registry |
+| `@topgrid/grid-features` | Filter UI (text/number/date/set·global·floating)·multi-sort |
+| `@topgrid/grid-sizing` | Column sizing — auto-size·size-to-fit·star (proportional) widths |
+| `@topgrid/grid-export` | Excel/CSV/PDF export·clipboard·print (`xlsx`·`jspdf` peers) |
+| `@topgrid/grid-vue` | Vue 3 adapter — drives the headless core via `useVueTable` |
+
+### Commercial (EULA) — 20
+
+**Facade · License (3)**
+
+| Package | Description |
+|--------|------|
 | `@topgrid/grid` | Meta package — facade re-exporting every package |
-| `@topgrid/grid-core` | TanStack Table abstraction wrapper + `useGridState` / `<Grid>` / virtualization / pagination / sort & filter wiring |
-| `@topgrid/grid-features` | Filter UI (text/number/date/set, global, floating) + multi-sort |
-| `@topgrid/grid-renderers` | 11 cell renderers (text, number, date, badge, link, button, check, icon, tag, avatar, progress) + registry |
-| `@topgrid/grid-sizing` | Column sizing — auto-size, size-to-fit, star (proportional) widths |
-| `@topgrid/grid-export` | Excel/CSV/PDF export, clipboard, print (`xlsx` / `jspdf` peers) |
-| `@topgrid/grid-license` | Runtime Pro license validation |
+| `@topgrid/grid-license` | Runtime Pro license validation + Watermark |
+| `@topgrid/grid-license-core` | License validation core (framework-agnostic) |
 
-### Pro (commercial license) — 14
+**Pro Features (13)**
 
 | Package | Description |
-|---------|-------------|
-| `@topgrid/grid-pro-agg` | Aggregation/grouping — group sum/avg/count, group footer & panel |
-| `@topgrid/grid-pro-pivot` | Pivoting — multi-axis pivot table, subtotals, transpose, pivot panel (DnD) |
-| `@topgrid/grid-pro-serverside` | Server-side row model (SSRM) — block lazy-load, infinite scroll, viewport model, server-side tree |
-| `@topgrid/grid-pro-master` | Master-detail, tree, context menu |
+|--------|------|
+| `@topgrid/grid-pro-agg` | Aggregation/grouping — group sum·average·count, group footer·panel |
+| `@topgrid/grid-pro-pivot` | Pivoting — multi-axis pivot table·subtotals·transpose·pivot panel (DnD) |
+| `@topgrid/grid-pro-serverside` | Server-side row model (SSRM) — block lazy-load·infinite scroll·viewport model·server-side tree |
+| `@topgrid/grid-pro-master` | Master-detail·tree·context menu |
 | `@topgrid/grid-pro-merging` | Cell merging — rowSpan/colSpan |
-| `@topgrid/grid-pro-header` | Multi-row header, column groups |
+| `@topgrid/grid-pro-header` | Multi-row header·column groups |
 | `@topgrid/grid-pro-datamap` | Data mapping — code→label (FK display), async maps |
 | `@topgrid/grid-pro-tracking` | Change tracking — dirty row/cell state |
-| `@topgrid/grid-pro-range` | Range selection — drag select, fill handle, clipboard copy/paste |
-| `@topgrid/grid-pro-edit-plus` | Advanced editing — validation rules, undo/redo, find & replace, cell comments |
-| `@topgrid/grid-pro-filter` | Multi (AND/OR), advanced (cross-column expression), cross-filter |
-| `@topgrid/grid-pro-chart` | Integrated charts & sparklines (zero-dependency SVG engine) |
-| `@topgrid/grid-pro-panel` | Side bar, tool panel (column visibility/order), status bar, filters panel |
-| `@topgrid/grid-pro-sheet` | Spreadsheet engine (PoC) — A1 formulas, dependency-graph recalc, cell format/style/merge |
+| `@topgrid/grid-pro-range` | Range selection — drag select·fill handle·clipboard copy/paste |
+| `@topgrid/grid-pro-edit-plus` | Advanced editing — validation rules·undo/redo·find & replace·cell comments |
+| `@topgrid/grid-pro-filter` | Multi (AND/OR)·advanced (cross-column expression)·cross-filter |
+| `@topgrid/grid-pro-panel` | Side bar·tool panel (column visibility/order)·status bar·filters panel |
+| `@topgrid/grid-pro-sheet` | Spreadsheet engine (PoC) — A1 formulas·dependency-graph recalc·cell format/style/merge |
+
+**Charts (4)** — for details see [Charts](./charting)
+
+| Package | Description |
+|--------|------|
+| `@topgrid/grid-chart-core` | Chart engine core (framework-agnostic) — 17 chart types |
+| `@topgrid/grid-pro-chart` | Integrated charts·cell sparklines (zero-dependency SVG engine) |
+| `@topgrid/grid-pro-chart-enterprise` | Enterprise charts (React) — 17 types·multi-axis·BYO·SSR |
+| `@topgrid/grid-pro-chart-enterprise-vue` | Enterprise charts (Vue) — same engine·SSR helpers |
 
 ## Dependency Rules
 
 ```mermaid
 graph TD
-  subgraph Open["Open (MIT)"]
-    grid["@topgrid/grid (meta)"]
+  subgraph Open["Free (MIT) — 7"]
     grid-core["@topgrid/grid-core"]
+    grid-headless["@topgrid/grid-core-headless"]
     grid-features["@topgrid/grid-features"]
     grid-export["@topgrid/grid-export"]
     grid-renderers["@topgrid/grid-renderers"]
     grid-sizing["@topgrid/grid-sizing"]
-    grid-license["@topgrid/grid-license"]
+    grid-vue["@topgrid/grid-vue"]
   end
 
-  subgraph Pro["Pro (14 packages — commercial license)"]
-    proAll["grid-pro-{agg,pivot,serverside,master,merging,header,<br/>datamap,tracking,range,edit-plus,filter,chart,panel,sheet}"]
+  subgraph Commercial["Commercial (EULA) — 20"]
+    grid["@topgrid/grid (meta facade)"]
+    grid-license["@topgrid/grid-license"]
+    proAll["grid-pro-* (13 features)"]
+    charts["4 charts (core·chart·enterprise·enterprise-vue)"]
   end
 
   grid --> grid-core
   grid --> grid-features
   grid --> grid-renderers
   grid --> grid-export
-  grid -.->|re-export| Pro
+  grid -.->|re-export| proAll
+  grid -.->|re-export| charts
   grid-core --> react["react ^18 \| ^19"]
   grid-core --> tanstack["@tanstack/react-table ^8"]
   grid-core --> virtual["@tanstack/react-virtual ^3"]
+  grid-headless --> tablecore["@tanstack/table-core"]
+  grid-vue --> grid-headless
   proAll -->|every Pro| grid-license
   proAll -.->|most| grid-core
 ```
 
 - **Every Pro package → `@topgrid/grid-license`** (runtime license gate).
 - **Most Pro → `@topgrid/grid-core`** (built on top of `<Grid>`).
-- Some Pro packages **compose other Pro/Open packages**: `grid-pro-pivot` / `grid-pro-panel` → `grid-pro-agg`; `grid-pro-edit-plus` → `grid-pro-tracking`; `grid-pro-filter` → `grid-features`; `grid-pro-sheet` → `grid-pro-range`; `grid-pro-master` → `grid-export`.
+- Some Pro packages **compose other Pro/Open packages**: `grid-pro-pivot`·`grid-pro-panel` → `grid-pro-agg` · `grid-pro-edit-plus` → `grid-pro-tracking` · `grid-pro-filter` → `grid-features` · `grid-pro-sheet` → `grid-pro-range` · `grid-pro-master` → `grid-export`.
 - Internal dependencies use `workspace:*` → exact-version pins on publish (lockstep). The `@topgrid/grid` facade re-exports every package.
 
-## Pro License Activation
+## Pro Package License Activation
 
-Pro packages run a runtime license check via `@topgrid/grid-license`.
+When using Pro packages, a runtime license check runs via `@topgrid/grid-license`.
 Set your license key once at the app entry point.
 
 ```tsx
