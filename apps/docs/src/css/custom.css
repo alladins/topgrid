@@ -1,0 +1,184 @@
+/**
+ * topgrid 문서 사이트 테마 — blue 브랜드(제품 그리드 액센트 정합) + Pretendard 한글 타이포.
+ * Infima(Docusaurus) CSS 변수 오버라이드 + 컴포넌트 폴리시.
+ */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+:root {
+  /* ── 브랜드 컬러 (blue-600 기준 스케일) ── */
+  --ifm-color-primary: #2563eb;
+  --ifm-color-primary-dark: #1d4ed8;
+  --ifm-color-primary-darker: #1b48cc;
+  --ifm-color-primary-darkest: #1e40af;
+  --ifm-color-primary-light: #3b82f6;
+  --ifm-color-primary-lighter: #5996f7;
+  --ifm-color-primary-lightest: #93c5fd;
+
+  /* ── 타이포 ── */
+  --ifm-font-family-base: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+    'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+  --ifm-font-family-monospace: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', 'Menlo',
+    'Cascadia Code', 'Consolas', monospace;
+  --ifm-heading-font-weight: 700;
+  --ifm-font-weight-semibold: 600;
+  --ifm-line-height-base: 1.7;
+
+  /* ── 형태 ── */
+  --ifm-global-radius: 10px;
+  --ifm-code-border-radius: 6px;
+  --ifm-code-font-size: 88%;
+  --ifm-navbar-shadow: none;
+  --ifm-navbar-background-color: rgba(255, 255, 255, 0.82);
+  --ifm-background-surface-color: #ffffff;
+  --ifm-toc-border-color: #eef1f6;
+  --ifm-table-border-color: #eef1f6;
+  --ifm-table-head-background: #f7f9fc;
+  --ifm-table-stripe-background: #fafbfd;
+  --ifm-blockquote-border-color: var(--ifm-color-primary-lightest);
+  --docusaurus-highlighted-code-line-bg: rgba(37, 99, 235, 0.1);
+
+  /* 브랜드 그라데이션(랜딩 hero 등 재사용) */
+  --tg-hero-gradient: radial-gradient(1200px 600px at 50% -10%, rgba(37, 99, 235, 0.14), transparent 60%);
+  --tg-card-border: #e8ecf3;
+  --tg-card-bg: #ffffff;
+  --tg-muted: #5b6677;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #60a5fa;
+  --ifm-color-primary-dark: #3b82f6;
+  --ifm-color-primary-darker: #2f78f5;
+  --ifm-color-primary-darkest: #1d4ed8;
+  --ifm-color-primary-light: #82bafb;
+  --ifm-color-primary-lighter: #93c5fd;
+  --ifm-color-primary-lightest: #bfdbfe;
+
+  --ifm-background-color: #0c1018;
+  --ifm-background-surface-color: #121826;
+  --ifm-navbar-background-color: rgba(12, 16, 24, 0.78);
+  --ifm-toc-border-color: #20283a;
+  --ifm-table-border-color: #20283a;
+  --ifm-table-head-background: #161d2c;
+  --ifm-table-stripe-background: #111623;
+  --docusaurus-highlighted-code-line-bg: rgba(96, 165, 250, 0.16);
+
+  --tg-hero-gradient: radial-gradient(1200px 600px at 50% -10%, rgba(96, 165, 250, 0.16), transparent 60%);
+  --tg-card-border: #232c40;
+  --tg-card-bg: #121826;
+  --tg-muted: #9aa6b8;
+}
+
+/* ── 본문 ── */
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.markdown h1:first-child {
+  --ifm-h1-font-size: 2.4rem;
+  letter-spacing: -0.02em;
+}
+.markdown h2 {
+  letter-spacing: -0.01em;
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+  padding-bottom: 0.3rem;
+  margin-top: 2.5rem;
+}
+
+/* ── Navbar: 반투명 + blur + hairline ── */
+.navbar {
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+}
+.navbar__title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.navbar__item {
+  font-weight: 500;
+}
+
+/* ── 코드 블록 ── */
+.theme-code-block,
+div[class^='codeBlockContainer'] {
+  border-radius: var(--ifm-global-radius) !important;
+  border: 1px solid var(--ifm-toc-border-color);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+code {
+  border: 1px solid var(--ifm-toc-border-color);
+  background: var(--ifm-table-head-background);
+  padding: 0.12rem 0.38rem;
+}
+.theme-code-block code {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+/* ── 표 ── */
+.markdown table {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--ifm-table-border-color);
+  border-radius: var(--ifm-global-radius);
+  overflow: hidden;
+}
+.markdown table thead tr {
+  background: var(--ifm-table-head-background);
+}
+.markdown table th,
+.markdown table td {
+  border: none;
+  border-bottom: 1px solid var(--ifm-table-border-color);
+}
+.markdown table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ── 버튼 ── */
+.button--primary {
+  --ifm-button-background-color: var(--ifm-color-primary);
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.25);
+}
+.button {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ── admonition / 사이드바 / 스크롤바 ── */
+.theme-admonition {
+  border-radius: var(--ifm-global-radius);
+}
+.menu__link--active {
+  font-weight: 600;
+}
+.menu__link {
+  border-radius: 8px;
+}
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--ifm-color-primary) 32%, transparent);
+  border-radius: 8px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--ifm-color-primary) 55%, transparent);
+  background-clip: content-box;
+}
+
+/* ── 푸터 ── */
+.footer {
+  --ifm-footer-background-color: var(--ifm-table-head-background);
+  border-top: 1px solid var(--ifm-toc-border-color);
+}
+.footer__title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}

@@ -3,9 +3,10 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'topgrid',
-  tagline: 'Headless React grid',
+  tagline: 'TanStack Table 기반 Headless React 그리드 — MIT 코어 + Enterprise Pro',
   url: 'https://topgrid.platree.com',
   baseUrl: '/',
+  favicon: 'img/favicon.svg',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   i18n: {
@@ -16,22 +17,72 @@ const config: Config = {
     [
       'classic',
       {
-        docs: { sidebarPath: './sidebars.ts', routeBasePath: '/' },
+        docs: {
+          sidebarPath: './sidebars.ts',
+          routeBasePath: '/',
+        },
         blog: false,
+        theme: { customCss: './src/css/custom.css' },
       } satisfies Preset.Options,
     ],
   ],
   themeConfig: {
+    image: 'img/logo.svg',
+    metadata: [
+      {
+        name: 'description',
+        content:
+          'topgrid — TanStack Table v8 기반 Headless React 그리드. 가상화·피벗·집계·서버사이드·차트 17종·스프레드시트. MIT 코어 + Pro, 27 패키지.',
+      },
+    ],
+    colorMode: {
+      defaultMode: 'light',
+      respectPrefersColorScheme: true,
+    },
     navbar: {
       title: 'topgrid',
+      logo: { alt: 'topgrid', src: 'img/logo.svg' },
       items: [
-        { type: 'doc', docId: 'intro', position: 'left', label: '문서' },
+        { type: 'doc', docId: 'getting-started', position: 'left', label: '시작하기' },
+        { type: 'doc', docId: 'api-reference', position: 'left', label: 'API' },
         { type: 'doc', docId: 'comparison', position: 'left', label: '기능 비교' },
         { to: '/migration/live-demos', position: 'left', label: '예제' },
         // 인터랙티브 컴포넌트 데모(Storybook). `pnpm build:site` 가 static/storybook 으로
         // 빌드 → docusaurus build 가 /storybook/ 로 번들(href 라 onBrokenLinks 미검사).
-        { href: '/storybook/', position: 'left', label: '데모(Storybook)', target: '_blank' },
+        { href: 'pathname:///storybook/', position: 'right', label: '데모', target: '_blank' },
+        { href: 'https://github.com/alladins/topgrid', position: 'right', label: 'GitHub', target: '_blank' },
       ],
+    },
+    footer: {
+      style: 'light',
+      links: [
+        {
+          title: '문서',
+          items: [
+            { label: '시작하기', to: '/getting-started' },
+            { label: 'API 레퍼런스', to: '/api-reference' },
+            { label: '차트', to: '/charting' },
+            { label: 'Next.js / SSR', to: '/nextjs-ssr' },
+          ],
+        },
+        {
+          title: '제품',
+          items: [
+            { label: '소개', to: '/intro' },
+            { label: '기능 비교', to: '/comparison' },
+            { label: '예제', to: '/migration/live-demos' },
+            { label: '데모 (Storybook)', href: 'pathname:///storybook/' },
+          ],
+        },
+        {
+          title: '리소스',
+          items: [
+            { label: 'GitHub', href: 'https://github.com/alladins/topgrid' },
+            { label: '도입 문의', href: 'mailto:sales@platree.com' },
+          ],
+        },
+      ],
+      copyright: `© 2026 platree · topgrid — TanStack Table 기반 Headless React 그리드`,
     },
   } satisfies Preset.ThemeConfig,
   // NOTE: 자동 API 레퍼런스(docusaurus-plugin-typedoc)는 typedoc 버전 정합 이슈로

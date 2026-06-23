@@ -1,6 +1,5 @@
 ---
-slug: /
-title: topgrid
+title: topgrid 소개
 sidebar_label: 소개
 sidebar_position: 0
 ---

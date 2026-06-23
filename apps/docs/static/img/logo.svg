@@ -1,0 +1,17 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="topgrid logo">
+  <rect width="32" height="32" rx="7.5" fill="#2563eb"/>
+  <rect width="32" height="32" rx="7.5" fill="url(#tg_g)"/>
+  <rect x="6" y="6" width="20" height="6" fill="#ffffff" opacity="0.22"/>
+  <rect x="19.5" y="19.5" width="6.5" height="6.5" rx="1.4" fill="#bfdbfe"/>
+  <g stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.95">
+    <path d="M6 12h20M6 19h20"/>
+    <path d="M12.7 6v20M19.3 6v20"/>
+  </g>
+  <rect x="5.25" y="5.25" width="21.5" height="21.5" rx="5.5" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1.5"/>
+  <defs>
+    <linearGradient id="tg_g" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3b82f6"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+</svg>

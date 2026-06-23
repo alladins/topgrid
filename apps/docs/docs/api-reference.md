@@ -1,7 +1,7 @@
 # topgrid API 레퍼런스
 
 이 레퍼런스는 **핵심 그리드 패키지**(아래 §0 표의 13종)의 public export 와 주요 시그니처를 정리한다.
-전체 **27 패키지** 구성은 [소개](/)·[아키텍처](./architecture), 차트(4종)는 [차트](./charting),
+전체 **27 패키지** 구성은 [소개](/intro)·[아키텍처](./architecture), 차트(4종)는 [차트](./charting),
 Vue 어댑터는 `@topgrid/grid-vue` 를 참고. 시작 가이드는 [시작하기](./getting-started), 셀 렌더러 상세는 아래 §2.
 
 타입(`ColumnDef`, `Table`, `Row`, `Cell`, `Header` 등)은 별도 표기가 없는 한

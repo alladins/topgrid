@@ -1,0 +1,229 @@
+/* topgrid 랜딩 — hero / features / code showcase / CTA. 색은 custom.css 의 브랜드 변수 사용. */
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  padding: 6rem 1rem 4.5rem;
+  text-align: center;
+  background: var(--tg-hero-gradient), var(--ifm-background-color);
+  border-bottom: 1px solid var(--ifm-toc-border-color);
+  overflow: hidden;
+}
+.heroInner {
+  max-width: 880px;
+  margin: 0 auto;
+}
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.badge {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  color: var(--ifm-color-primary-darkest);
+  background: color-mix(in srgb, var(--ifm-color-primary) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ifm-color-primary) 22%, transparent);
+}
+[data-theme='dark'] .badge {
+  color: var(--ifm-color-primary-lightest);
+}
+.heroTitle {
+  font-size: clamp(2.4rem, 6vw, 3.8rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  margin: 0 0 1.1rem;
+  font-weight: 800;
+}
+.grad {
+  background: linear-gradient(120deg, var(--ifm-color-primary-light), var(--ifm-color-primary-darkest));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+[data-theme='dark'] .grad {
+  background: linear-gradient(120deg, var(--ifm-color-primary-lightest), var(--ifm-color-primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.heroSubtitle {
+  font-size: clamp(1.05rem, 2.4vw, 1.28rem);
+  line-height: 1.65;
+  color: var(--tg-muted);
+  max-width: 720px;
+  margin: 0 auto 2rem;
+}
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+}
+.install {
+  margin-top: 1.8rem;
+}
+.install code {
+  font-size: 0.95rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 10px;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-toc-border-color);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+}
+
+/* ── SECTIONS ── */
+.section {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 4.5rem 1rem;
+}
+.sectionHead {
+  text-align: center;
+  margin-bottom: 2.6rem;
+}
+.sectionHead h2 {
+  font-size: clamp(1.7rem, 3.6vw, 2.2rem);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.6rem;
+}
+.sectionHead p {
+  color: var(--tg-muted);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+/* ── FEATURE GRID ── */
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
+  gap: 1.1rem;
+}
+.card {
+  background: var(--tg-card-bg);
+  border: 1px solid var(--tg-card-border);
+  border-radius: 14px;
+  padding: 1.5rem 1.4rem;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(16, 24, 40, 0.09);
+  border-color: color-mix(in srgb, var(--ifm-color-primary) 40%, var(--tg-card-border));
+}
+.cardIcon {
+  font-size: 1.6rem;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  margin-bottom: 0.9rem;
+  background: color-mix(in srgb, var(--ifm-color-primary) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ifm-color-primary) 18%, transparent);
+}
+.cardTitle {
+  font-size: 1.12rem;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.4rem;
+}
+.cardDesc {
+  color: var(--tg-muted);
+  font-size: 0.94rem;
+  line-height: 1.62;
+  margin: 0;
+}
+.cardDesc code {
+  font-size: 0.85em;
+}
+
+/* ── CODE SHOWCASE ── */
+.codeSection {
+  background: var(--ifm-table-head-background);
+  max-width: none;
+  border-block: 1px solid var(--ifm-toc-border-color);
+}
+.codeGrid {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 2.6rem;
+  align-items: center;
+}
+.codeCopy h2 {
+  font-size: clamp(1.6rem, 3.2vw, 2rem);
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem;
+}
+.codeCopy p {
+  color: var(--tg-muted);
+  line-height: 1.7;
+}
+.checks {
+  list-style: none;
+  padding: 0;
+  margin: 1.2rem 0 1.6rem;
+}
+.checks li {
+  position: relative;
+  padding-left: 1.7rem;
+  margin-bottom: 0.6rem;
+  line-height: 1.55;
+}
+.checks li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 800;
+  color: var(--ifm-color-primary);
+}
+.codeBox :global(.theme-code-block) {
+  box-shadow: 0 16px 40px rgba(16, 24, 40, 0.14);
+}
+
+/* ── FINAL CTA BAND ── */
+.ctaBand {
+  padding: 4.5rem 1rem 5rem;
+  text-align: center;
+}
+.ctaBandInner {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  background: var(--tg-hero-gradient),
+    linear-gradient(180deg, var(--ifm-background-surface-color), var(--ifm-background-color));
+  border: 1px solid var(--ifm-toc-border-color);
+}
+.ctaBandInner h2 {
+  font-size: clamp(1.7rem, 3.6vw, 2.1rem);
+  letter-spacing: -0.02em;
+  margin: 0 0 0.6rem;
+}
+.ctaBandInner p {
+  color: var(--tg-muted);
+  margin: 0 0 1.6rem;
+}
+
+/* ── responsive ── */
+@media (max-width: 900px) {
+  .codeGrid {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+  }
+}
+@media (max-width: 600px) {
+  .hero {
+    padding: 4rem 1rem 3.2rem;
+  }
+  .section {
+    padding: 3.2rem 1rem;
+  }
+}
