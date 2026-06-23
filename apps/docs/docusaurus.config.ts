@@ -51,6 +51,7 @@ const config: Config = {
         // 빌드 → docusaurus build 가 /storybook/ 로 번들(href 라 onBrokenLinks 미검사).
         { href: 'pathname:///storybook/', position: 'right', label: '데모', target: '_blank' },
         { href: 'https://github.com/alladins/topgrid', position: 'right', label: 'GitHub', target: '_blank' },
+        { type: 'localeDropdown', position: 'right' },
       ],
     },
     footer: {
