@@ -1,7 +1,7 @@
 # MOD-GRID-63 — 시트 셀 스타일 (cell styling: fonts·fill·borders·alignment)
 
 dev-harness 45번째 (**Enterprise ❌ backlog — Tier 4 sheet**, advisor). grid-pro-sheet(Community 스코프).
-갭분석 **Spreadsheet ❌ = Cell styling: fonts, fill, borders, alignment, merged cells**. 경쟁: Wijmo FlexSheet per-cell font/fill/border.
+갭분석 **Spreadsheet ❌ = Cell styling: fonts, fill, borders, alignment, merged cells**. 경쟁: xxxx FlexSheet per-cell font/fill/border.
 
 ## verify-first + reuse-gate
 - grep: SheetGrid 고정 cellStyle 1개(per-cell 스타일 0). genuine 부재. MOD-62 formatSheetValue(자매=서식). 신규=per-cell 스타일.
@@ -35,7 +35,7 @@ grid-pro-sheet 내부(신규 internal/sheetStyleToCss + test + SheetGrid cellSty
 sheetStyleToCss=**종결형**(순수 map). SheetGrid cellStyles 배선=**배선형**(chromium).
 
 ## reuse-gate 결과 / 추측 0
-재사용=SheetGrid td 인라인 style·MOD-62 per-cell prop 패턴. 신규=순수 styleToCss+cellStyles prop. 추측 0: Wijmo FlexSheet per-cell font/fill/border=1차. verified 부재.
+재사용=SheetGrid td 인라인 style·MOD-62 per-cell prop 패턴. 신규=순수 styleToCss+cellStyles prop. 추측 0: xxxx FlexSheet per-cell font/fill/border=1차. verified 부재.
 
 ## specify rubric (Full — 게이트 C)
 - [x] Goal(cell styling, map+배선) **9/10** · [x] In/Out(merged cells/toolbar Out) **10/10** · [x] AC(map node·bold/bg/align·byte-identical chromium) **10/10**

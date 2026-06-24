@@ -1,6 +1,6 @@
 # MOD-GRID-32 — 스프레드시트 심화 (비교/논리 함수 · text/math · undo/redo)
 
-dev-harness 15번째. 갭분석 Spreadsheet(Wijmo FlexSheet, 미구현 9). MOD-26 `grid-pro-sheet` PoC(A1·=수식·
+dev-harness 15번째. 갭분석 Spreadsheet(xxxx FlexSheet, 미구현 9). MOD-26 `grid-pro-sheet` PoC(A1·=수식·
 SUM/AVG/MIN/MAX/COUNT 5함수·의존그래프 재계산·순환검출)를 **심화**한다.
 
 ## reuse-gate (LESS-003)

@@ -18,7 +18,7 @@ sidebar_position: 0
 
 - [빠른 시작](./getting-started) — 설치와 기본 사용
 - [아키텍처](./architecture) — 27개 패키지 구성과 설계
-- [기능 비교](./comparison) — AG Grid / Wijmo 대비 기능 매트릭스
+- [기능 비교](./comparison) — XX Grid / xxxx 대비 기능 매트릭스
 - [마이그레이션 가이드](./migration/dataTable-migration) — 레거시 그리드/DataTable에서 `<Grid>`로 전환
 
 ## 패키지

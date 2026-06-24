@@ -3,7 +3,7 @@ import { createRow, type Row, type Table } from '@tanstack/react-table';
 /**
  * 소비자 공급 floating 행 데이터를 실제 TanStack `Row<TData>` 객체로 변환한다 (MOD-GRID-24 G-2).
  *
- * **AG Grid 의 pinnedTopRowData/pinnedBottomRowData 와 동형** — 데이터 모델 밖의 *추가* 행
+ * **XX Grid 의 pinnedTopRowData/pinnedBottomRowData 와 동형** — 데이터 모델 밖의 *추가* 행
  * (합계/요약 등 소비자가 직접 만든 행)을 그리드 상/하단에 고정 표시한다.
  *
  * - **집계 계산 안 함**: 소비자가 total 객체를 제공 (집계는 `@topgrid/grid-pro-agg`/Pro 경계).

@@ -1,7 +1,7 @@
 # MOD-GRID-42 — 스프레드시트 함수 라이브러리 (VLOOKUP · 날짜 · 재무)
 
 dev-harness 25번째 (vN-3). 갭분석 「광범위 Excel 함수 라이브러리」 🟡 심화(MOD-32 가 VLOOKUP/날짜/재무 "미정" 표기).
-경쟁: Excel/Wijmo FlexSheet 400+ 함수. 본 모듈은 가장 자주 쓰는 lookup·날짜·재무를 추가(여전히 🟡 — 부분집합).
+경쟁: Excel/xxxx FlexSheet 400+ 함수. 본 모듈은 가장 자주 쓰는 lookup·날짜·재무를 추가(여전히 🟡 — 부분집합).
 
 ## reuse-gate (LESS-003)
 - **이미 있음**(MOD-26/32): `FUNCTIONS`(variadic flat-values: SUM/AVG/…/AND/OR/NOT) · `POSITIONAL_FUNCTIONS`(per-arg 스칼라:

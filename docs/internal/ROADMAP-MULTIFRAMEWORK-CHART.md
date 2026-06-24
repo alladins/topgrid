@@ -45,7 +45,7 @@
 ### 1-3. 차트 현황 (grid-pro-chart v0.4.0)
 - 지원: **line/bar/area 3종 + 스파크라인 4종(line/bar/area/win-loss)**. **순수 SVG ~1,200 LOC, 차트 라이브러리 의존 0**(C-001/AP-001 제약 = 셀 인라인 스파크라인 경량 유지 목적).
 - 보유: Y축 nice-ticks·카테고리 X축·범례·툴팁·6색 팔레트·cross-filter 선택·데이터 갭핑·grid-range→series 어댑터.
-- ★**"그리드 연동 경량 시각화"이지 차트 라이브러리가 아님.** Wijmo FlexChart/AG Charts 대비 부재 목록 → §3-2.
+- ★**"그리드 연동 경량 시각화"이지 차트 라이브러리가 아님.** xxxx FlexChart/AG Charts 대비 부재 목록 → §3-2.
 
 ---
 
@@ -138,12 +138,12 @@
 - `echarts-for-react`=**커뮤니티 유지**(Apache 공식 아님). 리스크 완화 옵션: 우리 시임이 이미 있으니 **얇은 자체 wrapper 자작**(ECharts core 직접 mount/dispose)도 저비용 대안 — 스펙 단계서 결정.
 - 라이선스/가격/티어 경계는 **2026-06 시점 웹 실측** — 계약/채택 확정 시 각 vendor 공식 문서 재확인 필수.
 - Highcharts 는 **완전 배제 아님**: financial/SSR-리포트가 강하므로 "**소비자 BYO(자체 라이선스) 어댑터**" 경로로 남겨둠(주입 시임이라 소비자가 자기 Highcharts 로 renderChart 주입 가능) — 단 우리가 번들/발행하지 않음.
-- AG Charts 도 동일하게 BYO-Enterprise 어댑터로 열어둘 수 있음(전략적으론 AG Grid=그리드 경쟁사라 기본 채택은 부적절).
+- AG Charts 도 동일하게 BYO-Enterprise 어댑터로 열어둘 수 있음(전략적으론 XX Grid=그리드 경쟁사라 기본 채택은 부적절).
 
 #### ★다음 = §3-1 단계② 스펙/ADR (미착수, 코드 변경 전 게이트)
 `@topgrid/grid-pro-chart-enterprise` API 표면(chart-from-range·타입 카탈로그·"Insert Chart" 툴바·cross-filter·export 계약) + 주입 시임 확장 ADR + ECharts 어댑터 wrapper 전략(커뮤니티 wrapper vs 자작). 구현(단계③) 전 ADR 승인 게이트.
 
-**출처(2026-06 실측)**: [AG Charts Community vs Enterprise](https://www.ag-grid.com/charts/javascript/community-vs-enterprise/) · [ag-charts-community npm](https://www.npmjs.com/package/ag-charts-community) · [Highcharts Standard License](https://shop.highcharts.com/license) · [Highcharts shop/FAQ](https://shop.highcharts.com/faq) · [ECharts SSR Handbook](https://apache.github.io/echarts-handbook/en/how-to/cross-platform/server/) · [echarts npm](https://www.npmjs.com/package/echarts) · [vue-echarts npm](https://www.npmjs.com/package/vue-echarts).
+**출처(2026-06 실측)**: [AG Charts Community vs Enterprise](https://www.xx-grid.com/charts/javascript/community-vs-enterprise/) · [ag-charts-community npm](https://www.npmjs.com/package/ag-charts-community) · [Highcharts Standard License](https://shop.highcharts.com/license) · [Highcharts shop/FAQ](https://shop.highcharts.com/faq) · [ECharts SSR Handbook](https://apache.github.io/echarts-handbook/en/how-to/cross-platform/server/) · [echarts npm](https://www.npmjs.com/package/echarts) · [vue-echarts npm](https://www.npmjs.com/package/vue-echarts).
 
 ### 3-5. W2 단계② — 스펙 + ADR-003 (2026-06-18, ✅ 설계 산출물·코드 0)
 

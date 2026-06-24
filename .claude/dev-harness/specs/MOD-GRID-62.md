@@ -1,7 +1,7 @@
 # MOD-GRID-62 — 시트 셀 숫자 서식 (cell / number formatting: currency·percent·decimals·date)
 
 dev-harness 44번째 (**Enterprise ❌ backlog — Tier 4 sheet, node-pure**, advisor). grid-pro-sheet(Community 스코프).
-갭분석 **Spreadsheet ❌ = Cell / number formatting (currency, date, decimals, conditional format)**. 경쟁: Wijmo FlexSheet `.format`·Excel number formats.
+갭분석 **Spreadsheet ❌ = Cell / number formatting (currency, date, decimals, conditional format)**. 경쟁: xxxx FlexSheet `.format`·Excel number formats.
 
 ## verify-first + reuse-gate
 - grep: grid-pro-sheet=number/cell format 0(SheetGrid 는 getDisplay 문자열 그대로 표시). genuine 부재.
@@ -38,7 +38,7 @@ grid-pro-sheet 내부(신규 internal/formatSheetValue + test + SheetGrid format
 formatSheetValue=**종결형**(순수). SheetGrid formats 배선=**배선형**(chromium).
 
 ## reuse-gate 결과 / 추측 0
-재사용=SheetGrid getDisplay(표시값). 신규=순수 서식 함수+formats prop. 추측 0: Wijmo FlexSheet .format·Excel number format=1차. verified 부재.
+재사용=SheetGrid getDisplay(표시값). 신규=순수 서식 함수+formats prop. 추측 0: xxxx FlexSheet .format·Excel number format=1차. verified 부재.
 
 ## specify rubric (Full — 게이트 C)
 - [x] Goal(number formatting, node-pure+배선) **9/10** · [x] In/Out(conditional/cell-styling Out) **10/10** · [x] AC(포맷 4종·비수치·passthrough node+chromium) **10/10**

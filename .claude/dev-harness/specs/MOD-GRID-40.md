@@ -2,7 +2,7 @@
 
 dev-harness 23번째 (vN 첫 모듈, MOD-39 이후). 갭분석 「기타 5」중 2건 = **$A$1 절대참조** · **상대참조 on copy/fill**.
 MOD-26(수식 PoC)·MOD-32(엔진 심화)가 명시적으로 `vN` 으로 미룬 항목(MOD-32 §모듈완주 "vN: …$A$1+상대참조").
-경쟁 대응: AG Grid headless fill/range API · Wijmo FlexSheet · Handsontable autofill · Excel 상대/절대 참조.
+경쟁 대응: XX Grid headless fill/range API · xxxx FlexSheet · Handsontable autofill · Excel 상대/절대 참조.
 
 ## reuse-gate (LESS-003)
 - **이미 있음**(MOD-26/32): tokenizer→재귀하강 parser(`parseFormula`) · `evaluate(ast,getCell)`(error-aware) ·
@@ -78,10 +78,10 @@ grid-pro-sheet 내부. 신규 외부 dep 0.
 
 ## reuse-gate 결과 / 추측 0
 - 재사용: parser·evaluate·extractRefs·createSheet·cellAddress 전부 기존(중복 작성 0). 신규=tokenizer `$`·플래그·serializer·translate.
-- 추측 0: 절대/혼합 참조 의미(`$col$row` 고정 축)·#REF! on out-of-bounds = Excel/AG/Wijmo **1차 동작**(공통). 미확인 없음.
+- 추측 0: 절대/혼합 참조 의미(`$col$row` 고정 축)·#REF! on out-of-bounds = Excel/AG/xxxx **1차 동작**(공통). 미확인 없음.
 
 ## specify rubric (Full — 점수 영속화, 진입 게이트 C)
-- [x] **Goal** 1문장 — 절대/혼합 참조 + copy/fill 상대조정, 경쟁 대응(Excel/AG/Wijmo) 명시. **9/10**
+- [x] **Goal** 1문장 — 절대/혼합 참조 + copy/fill 상대조정, 경쟁 대응(Excel/AG/xxxx) 명시. **9/10**
 - [x] **In/Out** — 엔진 프리미티브 In, fill-handle UI Out(MOD-49), 멀티시트 Out(MOD-41). **10/10**
 - [x] **AC 측정가능** — AC①~⑥ 전부 node assert(플래그값·평가등가·텍스트출력·라운드트립). 모호어 0. **10/10**
 - [x] **reuse-gate 반영** — 기존 5소스 인용, 신규 3항만 식별, 중복 0. **10/10**

@@ -1,6 +1,6 @@
 # @topgrid/grid-pro-filter (Pro)
 
-Multi-condition (AND/OR) column filtering — the compound-filter analog of AG Grid's
+Multi-condition (AND/OR) column filtering — the compound-filter analog of XX Grid's
 `agMultiColumnFilter`. Each column can stack multiple conditions combined with AND or OR.
 
 > **Pro** — requires a valid `@topgrid/grid-license`. Without one, the filter builder renders a

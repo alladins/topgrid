@@ -68,7 +68,7 @@ export const defaultRendererRegistry: RendererRegistry = new Map<TopgridColumnTy
 /**
  * 외부 renderer 등록 함수.
  *
- * L2: AG Grid `components` 주입 패턴 참조 (R-A).
+ * L2: XX Grid `components` 주입 패턴 참조 (R-A).
  * `Map.set()` 사용 — `any` 없음 (C-4).
  *
  * ADR-002 의 `@topgrid/grid-renderers/wireRegistry.ts` 가 이 함수로 8 슬롯

@@ -1,7 +1,7 @@
 # MOD-GRID-55 — 전 페이지 전체선택 (select-all across all pages)
 
 dev-harness 38번째 (**Enterprise ❌ backlog — Tier 2 verify-first**, advisor). grid-core(MIT).
-갭분석 **Selection ❌ = Select-all across ALL pages (action, not just current page)**. 경쟁: AG select-all-across-pages·Wijmo.
+갭분석 **Selection ❌ = Select-all across ALL pages (action, not just current page)**. 경쟁: AG select-all-across-pages·xxxx.
 
 ## verify-first (advisor Tier 2)
 - grep 확인: CheckboxColumn 헤더(multi)=`getIsAllPageRowsSelected`/`getToggleAllPageRowsSelectedHandler`(**현재 페이지만**). 전 페이지 전체선택=**genuine 부재**(stale ❌ 아님).

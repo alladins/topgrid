@@ -4,7 +4,7 @@ import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 /**
  * MOD-GRID-59 — FiltersToolPanel: a unified panel listing every column's filter in one surface.
  *
- * AG Grid filters tool panel 대응: 흩어진 floating filter 대신 모든 컬럼 필터를 한 패널에 모아 편집하고
+ * XX Grid filters tool panel 대응: 흩어진 floating filter 대신 모든 컬럼 필터를 한 패널에 모아 편집하고
  * 활성 필터 수를 집계한다. ToolPanel 과 동일한 callback-only 철학 — 패널은 grid 상태를 보유하지 않고
  * `onFilterChange` 를 emit, 소비자가 grid 필터 상태에 적용한다. SideBar(MOD-58)에 host 가능.
  */

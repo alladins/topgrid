@@ -1,7 +1,7 @@
 # MOD-GRID-53 — collapsible pivot column groups (펼침/접기 가능한 피벗 컬럼 그룹)
 
 dev-harness 36번째 (**Enterprise ❌20 backlog 1번째**, advisor triage 선정). grid-pro-pivot(**Pro**).
-갭분석 **Pivoting ❌ = Collapsible / expandable pivot column groups**(line: "VERIFIED missing — 컬럼 차원 nested 그룹은 렌더되나 collapse 어포던스 없음"). 경쟁: AG Grid pivot column group collapse·Wijmo.
+갭분석 **Pivoting ❌ = Collapsible / expandable pivot column groups**(line: "VERIFIED missing — 컬럼 차원 nested 그룹은 렌더되나 collapse 어포던스 없음"). 경쟁: XX Grid pivot column group collapse·xxxx.
 
 ## advisor triage (2026-06-07, 제품결정 4종 종결 후 Enterprise 진입)
 - advisor: **collapsePivotRows(MOD-31 G-2)의 컬럼 쌍둥이**. ★단 reuse-gate(buildPivotColumns/computePivot) 조사로 **비대칭 발견**:
@@ -59,7 +59,7 @@ computeCells 그룹 셀=**종결형**(순수 additive). buildPivotColumns/PivotG
 
 ## reuse-gate 결과 / 추측 0
 재사용=computeCells/applyReducer·mapColumnNode·CollapsibleSubtotalLabel(chevron 패턴)·PivotGrid state 배선·collapsePivotRows(행 쌍둥이 구조). 신규=컬럼-그룹 prefix 셀(source) + 컬럼 collapse 렌더.
-추측 0: AG pivot column group collapse(그룹 헤더 chevron→자식 숨김+그룹 집계, source 재집계)·Wijmo = 1차 출처. gap verified-absent(grep 0).
+추측 0: AG pivot column group collapse(그룹 헤더 chevron→자식 숨김+그룹 집계, source 재집계)·xxxx = 1차 출처. gap verified-absent(grep 0).
 
 ## specify rubric (Full — 점수, 게이트 C)
 - [x] Goal(컬럼 그룹 collapse, AG 대응; G-1 source 집계+G-2 발산) **9/10** · [x] In/Out(In computeCells additive+collapse 배선·row+col 동시/server Out) **10/10**

@@ -1,11 +1,11 @@
 ---
-title: 기능 비교 (vs AG Grid · Wijmo)
+title: 기능 비교 (vs XX Grid · xxxx)
 sidebar_position: 3
 ---
 
 # 기능 비교 — topgrid vs 상용 그리드
 
-`@topgrid` 를 **AG Grid (Community + Enterprise)** 와 **Wijmo (FlexGrid + FlexSheet)** 의 기능 카탈로그와
+`@topgrid` 를 **XX Grid (Community + Enterprise)** 와 **xxxx (FlexGrid + FlexSheet)** 의 기능 카탈로그와
 하나하나 대조한 결과다. 상태는 **코드 근거** 기준으로 판정하고(근거 없으면 미구현), 각 항목을 별도
 에이전트가 코드베이스를 재확인하는 **adversarial 검증**으로 한 번 더 걸러 over-claim 을 차단했다.
 
@@ -20,7 +20,7 @@ sidebar_position: 3
 | ❌ 미구현 | 6 | 2% |
 | ➖ 비해당 | 3 | 1% |
 
-`@topgrid` 는 AG Grid **Community** 핵심을 충족하고, **Enterprise 급 차별 기능**도 폭넓게 보유한다 —
+`@topgrid` 는 XX Grid **Community** 핵심을 충족하고, **Enterprise 급 차별 기능**도 폭넓게 보유한다 —
 피벗, 서버사이드 행 모델(SSRM), 컬럼(가로) 가상화, 통합 차트/스파크라인, 마스터-디테일, 고급 필터,
 스프레드시트(수식 엔진). 미구현(❌)은 6개로 좁혀졌고 모두 **설계상 의도적 연기**다(아래 로드맵).
 부분(🟡 22%)은 대부분 headless 특성상 "소비자가 raw `ColumnDef`·콜백으로 직접 배선"하거나 PoC 단계인
@@ -76,7 +76,7 @@ sidebar_position: 3
     의존 그래프 재계산 + 순환 검출 + 셀 서식/스타일/병합.
 - **접근성** — ARIA grid 의미론(default-on, 가상화 하 절대 인덱스) + 키보드 내비(aria-activedescendant) +
   스크린리더 live 알림. axe-core 검증.
-- **MIT 코어 + Pro 분리** — AG Grid(community/enterprise) 구조와 동일. headless(TanStack 기반) → 원하는 만큼만 켠다.
+- **MIT 코어 + Pro 분리** — XX Grid(community/enterprise) 구조와 동일. headless(TanStack 기반) → 원하는 만큼만 켠다.
 
 ## 로드맵 (정직한 갭 — ❌6)
 
@@ -91,7 +91,7 @@ sidebar_position: 3
 > 배선하거나(예: faceted 필터 값, 커스텀 comparator), 일부 한계가 있거나(예: 셀 병합·스프레드시트 PoC),
 > 렌더 후속이 남은(예: 일부 그룹 footer 렌더) 경우다. 정직하게 ✅ 와 구분한다.
 
-> 전체 330개 항목의 상세 대조 매트릭스(항목별 AG Grid 티어·Wijmo·근거 코드)는 내부 문서
+> 전체 330개 항목의 상세 대조 매트릭스(항목별 XX Grid 티어·xxxx·근거 코드)는 내부 문서
 > `docs/internal/COMMERCIAL-GAP-ANALYSIS.md` 가 SSoT 다.
 
 ## 직접 확인

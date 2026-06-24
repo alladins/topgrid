@@ -3,7 +3,7 @@
  *
  * grid-core follows a **controlled-data policy** (the grid never owns the row array; mutation
  * callbacks delegate to the parent). So these are pure helpers the consumer applies to its own
- * state — the same shape as {@link moveRow} (MOD-33). AG Grid's `applyTransaction` /
+ * state — the same shape as {@link moveRow} (MOD-33). XX Grid's `applyTransaction` /
  * `applyTransactionAsync` analogue, but headless: you call them and set your own data.
  */
 
@@ -22,7 +22,7 @@ export interface RowTransaction<TData> {
 
 /**
  * Apply a {@link RowTransaction} to `data`, returning a NEW array (input never mutated).
- * Order = **remove → update → add** (AG Grid semantics). Updates/removes for ids not present are
+ * Order = **remove → update → add** (XX Grid semantics). Updates/removes for ids not present are
  * ignored (no throw). `update` rows are matched by `getRowId` and replace the existing row in place.
  */
 export function applyRowTransaction<TData>(

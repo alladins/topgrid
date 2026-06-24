@@ -1,6 +1,6 @@
 # MOD-GRID-20 spec — `@topgrid/grid-sizing` (Lite, **MIT**)
 
-> dev-harness loop. weight=**Lite**(부분 루프 — 가벼운 rubric, capture 유지). competitive: 전 그리드 기본(AG column auto-size·star sizing · Wijmo).
+> dev-harness loop. weight=**Lite**(부분 루프 — 가벼운 rubric, capture 유지). competitive: 전 그리드 기본(AG column auto-size·star sizing · xxxx).
 > reuse-gate: 신규. 재사용 = **PAT-001**(headless 순수 helper). **첫 MIT 모듈** → PAT-003(라이선스 게이트) **미적용**(MIT 무료, checkLicense/Watermark/EULA 없음) — 하네스의 첫 비-Pro 데이터포인트.
 
 ## Goal

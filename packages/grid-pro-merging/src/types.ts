@@ -20,7 +20,7 @@ export type MergeRowsConfig<TData> =
 /**
  * 본문 셀 가로 병합(colSpan) 콜백 (MOD-GRID-52).
  *
- * AG Grid `colSpan:(params)=>number` 대응 — 이 셀이 가로로 차지할 컬럼 수를 반환한다.
+ * XX Grid `colSpan:(params)=>number` 대응 — 이 셀이 가로로 차지할 컬럼 수를 반환한다.
  * `1`(기본) = 스팬 없음, `n>1` = 자신 포함 n개 컬럼을 가로 병합(우측 n-1개 셀은 자동 skip).
  * mergeRows(값 비교 기반 rowSpan)와 달리 **per-cell 콜백 형식**이다.
  *

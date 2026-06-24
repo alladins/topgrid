@@ -1,7 +1,7 @@
 # MOD-GRID-59 — 필터 도구 패널 (filters tool panel)
 
 dev-harness 42번째 (**Enterprise ❌ backlog — Tier 3**, advisor). grid-pro-panel(**Pro**).
-갭분석 **Misc UX ❌ = Filters tool panel**. 경쟁: AG filters tool panel·Wijmo.
+갭분석 **Misc UX ❌ = Filters tool panel**. 경쟁: AG filters tool panel·xxxx.
 
 ## verify-first + reuse-gate
 - grep: grid-pro-panel=ToolPanel(컬럼)/StatusBar/RowGroupPanel/SideBar(MOD-58), **filters 패널 0**(genuine 부재). grid-pro-filter=MultiFilter/floating(개별 컬럼).

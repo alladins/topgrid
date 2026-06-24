@@ -519,12 +519,12 @@ import { Grid } from '@topgrid/grid';
 
 ## 6. Migrating from an existing grid
 
-When moving usages of an existing grid solution such as Wijmo / AG Grid over to topgrid, the column definitions and
+When moving usages of an existing grid solution such as xxxx / XX Grid over to topgrid, the column definitions and
 key props map 1:1 or closely. Representative mappings:
 
-| Existing (AG Grid) | topgrid |
+| Existing (XX Grid) | topgrid |
 |---|---|
-| `<AgGridReact rowData={...} columnDefs={...} />` | `<Grid<TData> data={...} columns={...} />` |
+| `<XxGridReact rowData={...} columnDefs={...} />` | `<Grid<TData> data={...} columns={...} />` |
 | `columnDefs: ColDef[]` | `columns: ColumnDef<TData>[]` |
 | `{ field: 'x' }` | `{ id: 'x', accessorKey: 'x' }` |
 | `{ headerName: '제목' }` | `{ header: '제목' }` |
@@ -534,7 +534,7 @@ key props map 1:1 or closely. Representative mappings:
 | `rowSelection="single"` | `enableRowSelection` + TanStack `rowSelection` state |
 | `ag-theme-*` CSS class | Tailwind-based — no separate CSS import needed |
 
-| Existing (Wijmo) | topgrid |
+| Existing (xxxx) | topgrid |
 |---|---|
 | `cellEditEnded` | `<EditableCell onCommit={...}>` |
 | `formatItem` (cell background) | `cellClassName={(ctx) => ...}` |

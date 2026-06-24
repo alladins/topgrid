@@ -12,7 +12,7 @@
 §6.1 의 "(grid-core/renderers 확장)" 괄호는 러프 가정. 실제: G-1 은 grid-core 의 className 콜백 타입을 **소비해 생성하는 순수 add-on helper** → grid-features 의 택소노미(reorder/sort/filter = core 콜백·prop 생성 add-on)와 동형. grid-core(중심부) 비대화·blast-radius 회피 + grid-features(MIT, grid-core peer, 이미 grid-core 타입 re-export)에 자연 안착. → **grid-features 에 `conditional-format/` 신규**.
 
 ## Goal
-표시 고도화 4종 중 grid-core 미존재분을 MIT 로 보강: **선언적 조건부 서식(G-1)** + **소비자 공급 floating 합계 행(G-2)** + **컬럼(가로) 가상화(G-3)**. alternating 은 기존 `rowClassName` 로 포섭(신규 0). 경쟁: AG Grid `rowClassRules`/`cellClassRules`·pinned rows·column virtualization.
+표시 고도화 4종 중 grid-core 미존재분을 MIT 로 보강: **선언적 조건부 서식(G-1)** + **소비자 공급 floating 합계 행(G-2)** + **컬럼(가로) 가상화(G-3)**. alternating 은 기존 `rowClassName` 로 포섭(신규 0). 경쟁: XX Grid `rowClassRules`/`cellClassRules`·pinned rows·column virtualization.
 
 ## Scope (모듈 전체 — Goal 단위 partial)
 - **In(G-1, 본 라운드)**: `grid-features/conditional-format` — 선언적 룰 배열 → grid-core `RowClassNameCallback`/`CellClassNameCallback` 컴파일하는 **순수 helper**.

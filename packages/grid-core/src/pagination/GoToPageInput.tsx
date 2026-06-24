@@ -5,7 +5,7 @@
  * 슬라이딩 윈도우 버튼(PageNumbers)으로 닿지 않는 먼 페이지로 직접 이동.
  * 경계 로직은 순수 `clampGoToPage` 에 위임(node 검증).
  *
- * @since MOD-GRID-49 (Track 1 — Wijmo pager 입력 대응)
+ * @since MOD-GRID-49 (Track 1 — xxxx pager 입력 대응)
  */
 
 import { useState } from 'react';

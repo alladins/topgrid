@@ -119,7 +119,7 @@ export interface EditableCellProps {
   /**
    * When `true`, calls `e.stopPropagation()` at the end of every keydown event
    * on the editor element, preventing the grid host's keyboard handler from
-   * intercepting the key (Wijmo `prepareCellForEdit` pattern).
+   * intercepting the key (xxxx `prepareCellForEdit` pattern).
    * Default `false`.
    *
    * @see ADR-MOD-GRID-05-003 D3 (G-004)
@@ -130,7 +130,7 @@ export interface EditableCellProps {
    *
    * Use case: G-7 keyboard-triggered editing — the first keystroke is captured
    * by the focusable view-mode `<div>` before `<EditableCell>` mounts, so the
-   * character would be lost. Passing it as `initialDraft` restores the Wijmo
+   * character would be lost. Passing it as `initialDraft` restores the xxxx
    * `prepareCellForEdit` + `hostElement.keydown` "type directly to enter" UX.
    *
    * Behaviour:

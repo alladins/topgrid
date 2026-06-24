@@ -3,7 +3,7 @@ import { test, expect, type Page } from '@playwright/test';
 // MOD-GRID-35 G-3 — indeterminate (partial) select-all. ★non-vacuous third state: selecting SOME
 // (not all) rows makes the header checkbox `indeterminate === true` — distinct from checked (all)
 // AND unchecked (none), with aria-checked="mixed". A test that only checks checked/unchecked would
-// miss the partial state entirely (the exact bug AG/Wijmo parity requires closing).
+// miss the partial state entirely (the exact bug AG/xxxx parity requires closing).
 const FRAME = (id: string) => `/iframe.html?id=${id}&viewMode=story`;
 
 test('partial selection → indeterminate; all → checked; none → unchecked', async ({

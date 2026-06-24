@@ -1,7 +1,7 @@
 # MOD-GRID-52 — 본문 셀 컬럼 스팬 (column spanning / body cell colSpan)
 
 dev-harness 35번째 (**Track 2 제품결정 3번째**, advisor 순서 = full-row✅ → custom editor slot✅ → **column spanning** → RTL). grid-pro-merging(**Pro**).
-갭분석 **Column features ❌ = Column spanning (body cell colSpan)**(line 157/577: "Grid.tsx colSpan is header-group/empty-state/padding-tr only; cell merging is rowSpan (grid-pro-merging), no body colSpan"). 경쟁: AG Grid `colSpan:(params)=>number`(Community)·Wijmo FlexGrid allowMerging(horizontal).
+갭분석 **Column features ❌ = Column spanning (body cell colSpan)**(line 157/577: "Grid.tsx colSpan is header-group/empty-state/padding-tr only; cell merging is rowSpan (grid-pro-merging), no body colSpan"). 경쟁: XX Grid `colSpan:(params)=>number`(Community)·xxxx FlexGrid allowMerging(horizontal).
 
 ## 제품결정 → advisor 위임 + bound-or-defer triage (2026-06-07)
 - advisor triage: arbitrary body colSpan = col-virt/pinned/ARIA 얽힘. **"bounded 버전이 비공허 단언 있으면 build, 전부 지원만 정직 스코프면 defer"**.
@@ -62,7 +62,7 @@ computeColSpans=**종결형**(순수). enableColSpan+MergingGrid 배선=**배선
 
 ## reuse-gate 결과 / 추측 0
 재사용=MergingGrid 자체 렌더·셀-skip(span0→null) 머신리·양 분기 구조(computeMergeSpans 수평 쌍둥이). 신규=순수 colSpan compute(clamp+skip-of-skip)+enableColSpan 배선.
-추측 0: AG `colSpan:(params)=>number`(per-cell callback, 우측 N-1 셀 자동 skip, col-virt/pin 하에서도)·Wijmo allowMerging(horizontal) = 1차 출처. gap line 157/577 verified-absent(grep 0).
+추측 0: AG `colSpan:(params)=>number`(per-cell callback, 우측 N-1 셀 자동 skip, col-virt/pin 하에서도)·xxxx allowMerging(horizontal) = 1차 출처. gap line 157/577 verified-absent(grep 0).
 
 ## specify rubric (Full — 점수, 게이트 C)
 - [x] Goal(body colSpan callback, AG colSpan 대응; G-1 순수+G-2 발산) **9/10** · [x] In/Out(In computeColSpans+배선·row+col 조합/grid-core 배선 Out 명시) **10/10**

@@ -1,6 +1,6 @@
 # MOD-GRID-19 spec — `@topgrid/grid-pro-chart` (Full)
 
-> dev-harness loop. weight=Full. competitive: Wijmo sparkline · AG integrated charts · SyncFusion.
+> dev-harness loop. weight=Full. competitive: xxxx sparkline · AG integrated charts · SyncFusion.
 > reuse-gate: 신규(§3·PATTERNS-INDEX에 sparkline/chart 0). 재사용 = **PAT-004**(optional-peer 올바른 형)·**PAT-003**(license gate)·**PAT-001**(headless/선언형).
 
 ## Goal

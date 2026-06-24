@@ -39,7 +39,7 @@ topgrid 제품을 구성하는 **패키지 분할 구조와 빌드/배포 파이
 ### 패키지 분할 원칙
 
 핵심(MIT)과 고급 기능(Pro)을 **별도 npm 패키지**로 분리하고, 메타 패키지가 전체를
-재export 한다. 이는 AG Grid (`ag-grid-community` MIT + `ag-grid-enterprise` 상용)와
+재export 한다. 이는 XX Grid (`xx-grid-community` MIT + `xx-grid-enterprise` 상용)와
 동일한 구조다. 분리의 이점:
 
 - 라이선스 모델 분리: MIT 소비자는 Pro 코드를 받지 않는다.
@@ -122,7 +122,7 @@ import 하지 않으면 해당 코드가 메인 번들에 섞이지 않는다.
 
 peer 미선언 상태로 소비자가 패키지를 설치하면 react 가 번들에 포함될 수 있고, 소비자 앱의
 react 와 **두 인스턴스**가 공존해 hooks 규칙 위반·오작동을 일으킨다. peer 선언은 (1) react
-중복 번들 방지, (2) 버전 불일치 조기 경고(`pnpm install` WARN), (3) AG Grid/Wijmo 등 React
+중복 번들 방지, (2) 버전 불일치 조기 경고(`pnpm install` WARN), (3) XX Grid/xxxx 등 React
 그리드 표준 패턴과의 정합을 동시에 달성한다. 이 정책은 위 §2 의 tsup `external` 배열과
 일관되게 유지된다.
 

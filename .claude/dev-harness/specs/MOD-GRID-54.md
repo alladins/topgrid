@@ -1,7 +1,7 @@
 # MOD-GRID-54 — 그룹 헤더 인라인 집계 (group-header inline aggregates, incl. when collapsed)
 
 dev-harness 37번째 (**Enterprise ❌19 backlog — Tier 1 #1**, advisor triage). grid-pro-agg(**Pro**).
-갭분석 **Row grouping ❌ = Aggregated values displayed inline on the group header row (incl. when collapsed)**. 경쟁: AG groupRowAggNodes·Wijmo.
+갭분석 **Row grouping ❌ = Aggregated values displayed inline on the group header row (incl. when collapsed)**. 경쟁: AG groupRowAggNodes·xxxx.
 
 ## advisor triage (Tier 1 — node-correctness anchor, reuse-gate-first)
 - reuse-gate: `GroupRow.tsx`=단일 colSpan(토글+키+카운트만), `FooterRow`=그룹 **끝** per-column 집계(collapsed 시 leaves+footer 숨김→사라짐). 갭=**헤더** 행 인라인 집계+**collapsed 시에도**.
@@ -45,7 +45,7 @@ GroupRow 인라인 집계 렌더=**배선형**(chromium). 순수 집계=computeA
 
 ## reuse-gate 결과 / 추측 0
 재사용=computeAggregateRow(source-safe)·GroupRow 토글·resolvedColumns. 신규=헤더 per-column 인라인 분기.
-추측 0: AG group row agg(헤더 행 집계, collapsed 시 표시)·Wijmo = 1차 출처. gap verified-absent.
+추측 0: AG group row agg(헤더 행 집계, collapsed 시 표시)·xxxx = 1차 출처. gap verified-absent.
 
 ## specify rubric (Full — 게이트 C)
 - [x] Goal(헤더 인라인 집계, AG 대응) **9/10** · [x] In/Out(footer 유지·avg-of-avgs 배제 명시) **10/10** · [x] AC(collapsed 잔존·중첩 avg=true·OFF chromium) **10/10**

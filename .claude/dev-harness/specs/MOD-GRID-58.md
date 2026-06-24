@@ -1,7 +1,7 @@
 # MOD-GRID-58 — 사이드바 (side bar — unified tool-panel container/accordion)
 
 dev-harness 41번째 (**Enterprise ❌ backlog — Tier 3**, advisor). grid-pro-panel(**Pro**).
-갭분석 **Misc UX ❌ = Side bar (unified tool-panel container/accordion)**. 경쟁: AG `sideBar`·Wijmo.
+갭분석 **Misc UX ❌ = Side bar (unified tool-panel container/accordion)**. 경쟁: AG `sideBar`·xxxx.
 
 ## verify-first + reuse-gate
 - grep: grid-pro-panel=ToolPanel/StatusBar/RowGroupPanel(개별), **통합 컨테이너 0**(genuine 부재).

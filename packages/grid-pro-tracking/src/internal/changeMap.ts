@@ -3,7 +3,7 @@
 // Spec: artifacts/MOD-GRID-10/tracking/G-002-spec.md Sections 2.1, 2.2, 6, 11.2
 // AC mapping: AC-001 (Map + structuredClone) / AC-002 (added/edited/deleted)
 //             AC-003 (net-zero + snapshot-once) / AC-004 (resetChanges)
-//             AC-005 (TanStack-compatible rows shape) / AC-006 (no Wijmo)
+//             AC-005 (TanStack-compatible rows shape) / AC-006 (no xxxx)
 //
 // Design notes
 // ------------

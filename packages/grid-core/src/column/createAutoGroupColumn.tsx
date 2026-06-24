@@ -1,7 +1,7 @@
 /**
  * MOD-GRID-57 — auto group column factory.
  *
- * AG Grid `autoGroupColumnDef` 대응: 트리/그룹 데이터(`enableExpanding` + `getSubRows`)에서 단일
+ * XX Grid `autoGroupColumnDef` 대응: 트리/그룹 데이터(`enableExpanding` + `getSubRows`)에서 단일
  * 컬럼이 **깊이 들여쓰기 + 펼침/접기 토글 + 그룹/노드 값**을 한 번에 렌더한다. 소비자가 직접 expand
  * 토글 컬럼을 만들 필요 없이 columns 좌측에 prepend 하면 된다.
  *

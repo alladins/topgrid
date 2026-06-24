@@ -45,7 +45,7 @@ function readNumber(row: Record<string, unknown>, field: string): number {
 /**
  * Build the nested column-combination tree from the rows present in the data.
  *
- * Only combinations that actually occur are emitted (sparse — matches AG/Wijmo
+ * Only combinations that actually occur are emitted (sparse — matches AG/xxxx
  * pivot behaviour). Returns the tree plus the ordered list of leaf keys.
  */
 function buildColumnTree(

@@ -9,7 +9,7 @@ ColumnPinGrid/GroupedHeaderGrid/TreeGrid/...)에서 중복되던 `useReactTable`
 - 패키지: `@topgrid/grid-core`
 - 라이선스: **MIT**
 - 의존: `react` / `react-dom` / `@tanstack/react-table` / `@tanstack/react-virtual` 는
-  모두 peer dependency (런타임 `dependencies` 0). 외부 그리드 라이브러리(AG Grid/Wijmo 등)
+  모두 peer dependency (런타임 `dependencies` 0). 외부 그리드 라이브러리(XX Grid/xxxx 등)
   의존 없음.
 - 스타일: 모든 마크업은 Tailwind className 으로만 스타일링한다. 인라인 `style` 은 핀 셀의
   동적 sticky offset(`left`/`right`)과 가상화 padding row 높이 등 런타임에 변하는 수치 한정.

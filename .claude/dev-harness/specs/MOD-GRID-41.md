@@ -1,7 +1,7 @@
 # MOD-GRID-41 — 멀티시트(Sheet2!A1) + 명명 범위 (named ranges)
 
 dev-harness 24번째 (vN-2). 갭분석 「기타 5」(이제 3) 중 2건 = **멀티시트(Sheet2!A1)** · **명명 범위**.
-MOD-26/32 가 vN 으로 미룬 항목. 경쟁: Wijmo FlexSheet 워크북·Excel 시트탭·명명 정의.
+MOD-26/32 가 vN 으로 미룬 항목. 경쟁: xxxx FlexSheet 워크북·Excel 시트탭·명명 정의.
 
 ## reuse-gate (LESS-003)
 - **이미 있음**: parser/`evaluate`/`extractRefs`/`createSheet`(단일 flat Map<key,…> + 정/역 의존그래프 — **키 문자열에
@@ -61,7 +61,7 @@ grid-pro-sheet 내부. 신규 외부 dep 0.
 
 ## reuse-gate 결과 / 추측 0
 재사용=parser/evaluate/extractRefs/createSheet/cellAddress/translate 전부 기존. 신규=sheet 접두·nameTable·qualify 패스.
-추측 0: `Sheet2!A1` 구문·명명 의미·#NAME? = Excel/Wijmo 1차. 따옴표 시트명=명시 vN.
+추측 0: `Sheet2!A1` 구문·명명 의미·#NAME? = Excel/xxxx 1차. 따옴표 시트명=명시 vN.
 
 ## specify rubric (Full — 점수 영속화, 게이트 C)
 - [x] Goal 1문장(멀티시트+명명, 경쟁 대응) **9/10**

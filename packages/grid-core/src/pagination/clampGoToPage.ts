@@ -2,7 +2,7 @@
  * `clampGoToPage` — go-to-page 입력 문자열을 유효한 0-based 페이지 인덱스로 변환 (MOD-GRID-49 G-2).
  *
  * 순수 함수 (node 검증). UI(`GoToPageInput`)와 분리해 경계 로직을 단독 테스트한다.
- * AG Grid `paginationGoToPage` / Wijmo pager 입력 대응.
+ * XX Grid `paginationGoToPage` / xxxx pager 입력 대응.
  *
  * @param raw   사용자 입력 (1-based, 예: "7"). 공백 trim.
  * @param pageCount 전체 페이지 수 (≥ 0).

@@ -131,7 +131,7 @@ export type RendererFn<TData = unknown> = (
  * type → RendererFn 매핑 타입.
  *
  * `Map<TopgridColumnType, RendererFn<TData>>` 기반.
- * `any` 없음 (C-4). AG Grid `components` registry 패턴 참조 (L2: R-A).
+ * `any` 없음 (C-4). XX Grid `components` registry 패턴 참조 (L2: R-A).
  *
  * @typeParam TData - 행 데이터 타입
  *

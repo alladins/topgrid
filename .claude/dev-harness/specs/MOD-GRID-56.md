@@ -1,7 +1,7 @@
 # MOD-GRID-56 — 그룹/계층 선택 (group / hierarchy selection)
 
 dev-harness 39번째 (**Enterprise ❌ backlog — Tier 1**, advisor). grid-pro-agg(**Pro**).
-갭분석 **Selection ❌ = Group / hierarchy selection (group selects children, leaf rolls up to group)**. 경쟁: AG groupSelectsChildren·Wijmo.
+갭분석 **Selection ❌ = Group / hierarchy selection (group selects children, leaf rolls up to group)**. 경쟁: AG groupSelectsChildren·xxxx.
 
 ## verify-first + reuse-gate
 - grep 확인: AggregationGrid=**selection 인프라 0**(rowSelection/checkbox 없음). genuine 부재.

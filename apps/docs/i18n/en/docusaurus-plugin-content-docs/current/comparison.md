@@ -1,12 +1,12 @@
 ---
-title: Feature Comparison (vs AG Grid · Wijmo)
+title: Feature Comparison (vs XX Grid · xxxx)
 sidebar_position: 3
 ---
 
 # Feature Comparison — topgrid vs Commercial Grids
 
 This is the result of comparing `@topgrid` item by item against the feature catalogs of
-**AG Grid (Community + Enterprise)** and **Wijmo (FlexGrid + FlexSheet)**. Status is judged on the
+**XX Grid (Community + Enterprise)** and **xxxx (FlexGrid + FlexSheet)**. Status is judged on the
 basis of **code evidence** (no evidence means not implemented), and every item was filtered once more
 through **adversarial verification** — a separate agent re-checks the codebase — to block over-claiming.
 
@@ -21,7 +21,7 @@ through **adversarial verification** — a separate agent re-checks the codebase
 | ❌ Not implemented | 6 | 2% |
 | ➖ Not applicable | 3 | 1% |
 
-`@topgrid` satisfies the AG Grid **Community** core, and also holds a broad set of
+`@topgrid` satisfies the XX Grid **Community** core, and also holds a broad set of
 **Enterprise-class differentiating features** — pivoting, server-side row model (SSRM), column
 (horizontal) virtualization, integrated charts/sparklines, master-detail, advanced filters, and a
 spreadsheet (formula engine). The not-implemented set (❌) has been narrowed to 6, all of which are
@@ -80,7 +80,7 @@ item is at a PoC stage — it works, but it isn't turnkey.
     dependency-graph recalculation + circular detection + cell formatting/styling/merging.
 - **Accessibility** — ARIA grid semantics (default-on, absolute indices under virtualization) + keyboard navigation (aria-activedescendant) +
   screen-reader live announcements. Verified with axe-core.
-- **MIT core + Pro split** — same structure as AG Grid (community/enterprise). Headless (TanStack-based) → turn on only as much as you want.
+- **MIT core + Pro split** — same structure as XX Grid (community/enterprise). Headless (TanStack-based) → turn on only as much as you want.
 
 ## Roadmap (Honest Gaps — ❌6)
 
@@ -96,7 +96,7 @@ There are 6 items that commercial grids have but that we **don't yet have**, all
 > are some limitations (e.g. cell merging, the spreadsheet PoC), or some rendering follow-up remains
 > (e.g. certain group footer rendering). We honestly distinguish these from ✅.
 
-> The detailed comparison matrix for all 330 items (per-item AG Grid tier · Wijmo · evidence code) lives in the internal document
+> The detailed comparison matrix for all 330 items (per-item XX Grid tier · xxxx · evidence code) lives in the internal document
 > `docs/internal/COMMERCIAL-GAP-ANALYSIS.md`, which is the SSoT.
 
 ## See for Yourself

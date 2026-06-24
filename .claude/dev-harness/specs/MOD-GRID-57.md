@@ -1,7 +1,7 @@
 # MOD-GRID-57 — 자동 그룹 컬럼 (auto group column)
 
 dev-harness 40번째 (**Enterprise ❌ backlog — Tier 2 verify-first**, advisor). grid-core(MIT).
-갭분석 **Master/Detail & Tree ❌ = Auto group column**. 경쟁: AG `autoGroupColumnDef`·Wijmo.
+갭분석 **Master/Detail & Tree ❌ = Auto group column**. 경쟁: AG `autoGroupColumnDef`·xxxx.
 
 ## verify-first
 - grep 확인: grid-core=auto group column 0(expand state 존재하나 indent/toggle 렌더는 소비자 cell 몫). genuine 부재. MOD-48 getDataPath/getSubRows(데이터 모델)는 있으나 렌더 절반 부재(그래서 🟡)였음 — 본 모듈이 렌더 절반.

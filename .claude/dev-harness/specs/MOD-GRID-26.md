@@ -21,7 +21,7 @@ error-aware 로 빌드(나중에 bolt-on 하면 평가기+전 함수 재작성).
 → 컨트롤러 레벨 검증(셀 편집 → 의존 셀이 순서대로·1회씩 재계산) = G-2 의 G-2-컨트롤러-테스트 아날로그.
 
 ## Goal (PoC)
-Excel-류 수식 셀 — A1 참조 + 사칙 + SUM/AVERAGE/MIN/MAX/COUNT, 셀 의존 그래프 재계산. 경쟁: Wijmo FlexSheet,
+Excel-류 수식 셀 — A1 참조 + 사칙 + SUM/AVERAGE/MIN/MAX/COUNT, 셀 의존 그래프 재계산. 경쟁: xxxx FlexSheet,
 Handsontable, SyncFusion Spreadsheet.
 
 ## Scope (PoC — AC①②③ 한정)

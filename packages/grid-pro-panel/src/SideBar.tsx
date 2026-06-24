@@ -4,7 +4,7 @@ import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 /**
  * MOD-GRID-58 — SideBar: a unified tool-panel container (accordion).
  *
- * AG Grid `sideBar` 대응: 여러 도구 패널(컬럼 ToolPanel, 필터 패널 등)을 하나의 아코디언 컨테이너로
+ * XX Grid `sideBar` 대응: 여러 도구 패널(컬럼 ToolPanel, 필터 패널 등)을 하나의 아코디언 컨테이너로
  * 묶어 헤더 클릭으로 한 번에 하나의 패널만 펼친다. 패널 자체는 소비자가 `content` 로 주입하므로
  * SideBar 는 그리드 상태를 모른다(ToolPanel 과 동일한 callback-only 철학).
  */

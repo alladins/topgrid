@@ -1,6 +1,6 @@
 // packages/grid-pro-datamap/src/DataMapCell.tsx
 // G-002: DataMapCell 렌더러 + resolveDataMap 헬퍼.
-// C-4: no any — C-12: tsc strict — C-16: @mescius/wijmo* import 0건
+// C-4: no any — C-12: tsc strict — C-16: @mescius/xxxx* import 0건
 // C-18: 가상화 호환 (DataMap 내부 Map O(1) — D-5)
 // C-29: exactOptionalPropertyTypes 호환 (undefined 분기 명시)
 import type { CellContext } from '@tanstack/react-table';

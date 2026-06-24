@@ -25,7 +25,7 @@ export const defaultRowStatusClassNames: Readonly<RowStatusClassNames> = {
  * @param classNames - Optional override map (full `RowStatusClassNames` shape).
  * @returns Tailwind className string, or `''` if status is not recognised.
  * @see AC-002 — default values canonical.
- * @see AC-003 — zero Wijmo import; pure helper (C-32).
+ * @see AC-003 — zero xxxx import; pure helper (C-32).
  */
 export function getRowStatusClassName(
   status: RowStatus,

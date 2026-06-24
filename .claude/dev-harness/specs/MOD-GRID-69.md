@@ -1,7 +1,7 @@
 # MOD-GRID-69 — 시트 .xlsx 가져오기/내보내기 (Excel import/export of the spreadsheet, with formulas)
 
 dev-harness 51번째 (**Enterprise ❌ backlog — 비-DnD tail 3**, advisor). grid-export(MIT/Lite).
-갭분석 **Spreadsheet ❌ = Excel import/export of the spreadsheet (.xlsx with formulas)**(시트 엔진 수식을 .xlsx 로 직렬화/역직렬화 부재). 경쟁: Wijmo FlexSheet native .xlsx load/save(수식 보존).
+갭분석 **Spreadsheet ❌ = Excel import/export of the spreadsheet (.xlsx with formulas)**(시트 엔진 수식을 .xlsx 로 직렬화/역직렬화 부재). 경쟁: xxxx FlexSheet native .xlsx load/save(수식 보존).
 
 ## verify-first + 경계-read (advisor: library-edition-gated=LESS-004, 경계 먼저)
 - ★**경계 실증(node probe)**: pinned `xlsx@0.18.5` 가 cell `.f`(수식) **write→read 라운드트립 보존**(A3 `=A1+A2` 생존 확인). `.s`(스타일)만 strip → **수식 import/export=가능, 스타일=별개 ❌(Excel cell styles, MOD-25 검증, 본 모듈 Out)**.

@@ -20,7 +20,7 @@ pinned/floating), chromium 은 "스크롤 후 DOM 2번째 행이 *절대* aria-r
 
 ## Goal
 베이스 `<Grid>` 가 **default-on** 으로 WAI-ARIA grid 패턴 충족 — 스크린리더가 행/열/정렬/선택을 올바로 읽고,
-키보드로 셀 간 이동(G-2)·변경 알림(G-3). 경쟁: AG Grid(role=grid + aria-rowindex 등 default), Wijmo FlexGrid.
+키보드로 셀 간 이동(G-2)·변경 알림(G-3). 경쟁: XX Grid(role=grid + aria-rowindex 등 default), xxxx FlexGrid.
 
 ## Goals
 - **G-1 ARIA 의미론 (default-on, all-or-nothing) — ★본 라운드**:

@@ -7,7 +7,7 @@
 **핀 컬럼은 가상화 집합에 절대 포함되지 않고 항상 렌더된다. padding 은 스킵된 *center* 컬럼 너비만 합산하고, 핀 컬럼 너비는 절대 포함하지 않는다.** 이를 G-1 코어에 인코딩하고 node 로 검증한다(렌더타임 특수처리로 미루지 않음). 핀-컬럼-항상-렌더가 가로 스크롤에서만 드러나는 chromium-only 결함의 원천이므로, 포함 로직을 node 에서 결정적으로 못박으면 chromium 의 일은 "sticky CSS 가 실제 스크롤서 유지되나"로 축소된다.
 
 ## Goal
-대용량(100+) 컬럼 그리드의 렌더 비용 절감 — 화면 밖 center 컬럼 미렌더(가로 가상화), 핀 컬럼은 항상 렌더. 경쟁: AG Grid column virtualization.
+대용량(100+) 컬럼 그리드의 렌더 비용 절감 — 화면 밖 center 컬럼 미렌더(가로 가상화), 핀 컬럼은 항상 렌더. 경쟁: XX Grid column virtualization.
 
 ## Scope (모듈 전체 — Goal 단위 partial)
 - **In(G-1, 본 라운드)**: `internal/computeColumnWindow`(순수) + (thin) `internal/useColumnVirtualizer`(horizontal `useVirtualizer` wiring, `useGridVirtualizer` mirror). **Grid.tsx 미접촉**.

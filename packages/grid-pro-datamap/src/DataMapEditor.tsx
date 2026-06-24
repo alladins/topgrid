@@ -1,6 +1,6 @@
 // packages/grid-pro-datamap/src/DataMapEditor.tsx
 // G-003: 편집 셀 필터-타이핑 드롭다운 (DataMapEditor).
-// C-4: no any — C-5: Tailwind CSS only — C-12: tsc strict — C-16: @mescius/wijmo* import 0건
+// C-4: no any — C-5: Tailwind CSS only — C-12: tsc strict — C-16: @mescius/xxxx* import 0건
 // C-18: 가상화 호환 (getItems() + filter O(n) — 드롭다운 UI 한정, 가상화 스크롤 불필요)
 // C-29: exactOptionalPropertyTypes 호환 (optional prop 내부 소비 — spread-skip 불필요)
 // D-7: 패키지 entrypoint(index.ts)가 아니므로 별도 verifyOrWarn 불필요 (ADR-MOD-GRID-00-012)

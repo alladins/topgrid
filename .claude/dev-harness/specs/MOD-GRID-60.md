@@ -1,7 +1,7 @@
 # MOD-GRID-60 — 뷰 상태 저장/복원 (view-state save: row-group + pivot)
 
 dev-harness 43번째 (**Enterprise ❌ backlog — Tier 1 node-pure**, advisor). grid-core(MIT).
-갭분석 **State, theming & i18n ❌ 2건 = Row-group state save/restore + Pivot state save/restore**. 경쟁: AG 그룹/피벗 상태 영속·Wijmo.
+갭분석 **State, theming & i18n ❌ 2건 = Row-group state save/restore + Pivot state save/restore**. 경쟁: AG 그룹/피벗 상태 영속·xxxx.
 
 ## verify-first + reuse-gate (advisor 사전 reconcile)
 - grep: useGridState 8-key 에 grouping/pivot 없음(genuine 부재). `useExpandedPersistence`(grid-pro-master)=per-package 독립 영속 훅 **선례** → straddle 아님(grid-core 엔벨로프 재사용, useGridState 무수정).

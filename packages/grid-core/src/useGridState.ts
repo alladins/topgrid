@@ -100,7 +100,7 @@ import {
  * - `resetState()`: 8개 state 모두 `initialState` (or defaultValues) 로 복원.
  * - `resetSection(key)`: 단일 또는 배열 key 의 state 만 선택적 복원 (Set dedup 멱등).
  * - `options.clearSelectionKey`: 외부 트리거 (string | number) 변경 시 `rowSelection` 자동 reset.
- *   AggridTable `clearSelectionKey` 패턴 흡수 (R-A). mount 시 reset 미발생 (isFirstClearRender flag).
+ *   XxgridTable `clearSelectionKey` 패턴 흡수 (R-A). mount 시 reset 미발생 (isFirstClearRender flag).
  *
  * @see GridState
  * @see UseGridStateOptions
@@ -237,7 +237,7 @@ export function useGridState<TData = unknown>(
   };
 
   // ─── G-004: clearSelectionKey useEffect (D4, EC-04) ───
-  // AggridTable L88-92 패턴 흡수. 외부에서 clearSelectionKey 가 변경되면 rowSelection 자동 reset.
+  // XxgridTable L88-92 패턴 흡수. 외부에서 clearSelectionKey 가 변경되면 rowSelection 자동 reset.
   // isFirstClearRender ref flag 로 mount 시 reset 방지 — 초기값이 undefined 가 아닐 때도 안전.
   //
   // setRowSelection 을 deps 에 포함하지 않는 이유 (spec D4):

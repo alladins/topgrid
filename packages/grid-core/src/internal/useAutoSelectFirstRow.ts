@@ -1,5 +1,5 @@
 /**
- * Internal — 데이터 로드 후 첫 행 자동 선택 훅 (AggridTable L78-85 패턴 차용).
+ * Internal — 데이터 로드 후 첫 행 자동 선택 훅 (XxgridTable L78-85 패턴 차용).
  *
  * G-003 D9: TanStack `RowSelectionState` 를 직접 사용 (별도 selectedRowId state 도입 안 함).
  * useEffect deps = `[dataLength, enabled, selectionMode]` — 배열 ref 변경에 둔감, length 변경에만 반응.
@@ -39,10 +39,10 @@ export function useAutoSelectFirstRow<TData>(
   useEffect(() => {
     // D9: selection 비활성 모드 — silent no-op (사용자 책임, warning 미발행)
     if (selectionMode === 'none') return;
-    // 사용자 selection 보존 — AggridTable 와 다름 (AggridTable 은 selectedRowId(null) 강제)
+    // 사용자 selection 보존 — XxgridTable 와 다름 (XxgridTable 은 selectedRowId(null) 강제)
     if (!enabled) return;
     if (dataLength === 0) {
-      // 데이터 없음 → 선택 해제 (AggridTable L83 패턴)
+      // 데이터 없음 → 선택 해제 (XxgridTable L83 패턴)
       table.setRowSelection({});
       return;
     }

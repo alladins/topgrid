@@ -3,7 +3,7 @@
 // C-4: no any — TItem 제네릭
 // C-29: staleTime? optional — !== undefined 체크 후 내부 사용 (exactOptionalPropertyTypes)
 // C-31: buildAsyncCache import + load() 내 실제 호출 (Wiring Audit — A-06)
-// C-16: @mescius/wijmo* import 없음
+// C-16: @mescius/xxxx* import 없음
 // D-7: 패키지 entrypoint(index.ts) 아님 → 별도 verifyOrWarn 불필요
 // EC-001: pendingPromise de-dupe (concurrent load() 방지)
 // EC-002: loader reject → state 'error', getItems() → []

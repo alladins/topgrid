@@ -132,7 +132,7 @@ function registerRenderer<TData>(
 ```
 
 - `defaultRendererRegistry` 는 11종 type 각각에 대한 entry 를 `Map` 으로 보유한다.
-- `createColumns` 는 `registry.get(type)` 조회 결과로 `cell` 을 연결한다(AG Grid 의
+- `createColumns` 는 `registry.get(type)` 조회 결과로 `cell` 을 연결한다(XX Grid 의
   `components` 주입 패턴과 동일 발상). hard-coded if/else 분기 없음.
 - `registerRenderer` 로 외부에서 커스텀 렌더러를 등록·덮어쓸 수 있다. 마지막 호출이
   우선한다.

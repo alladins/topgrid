@@ -1,7 +1,7 @@
 # MOD-GRID-50 — 행 단위 편집 (full-row editing)
 
 dev-harness 33번째 (**Track 2 제품결정 1번째**, 사용자 예시 "full-row editing부터"). grid-core(MIT, Community).
-갭분석 **Editing ❌ = Full-row editing**(per-cell only → 행 단위 edit/commit). 경쟁: AG Grid `editType:'fullRow'`(Community)·Wijmo FlexGrid row edit.
+갭분석 **Editing ❌ = Full-row editing**(per-cell only → 행 단위 edit/commit). 경쟁: XX Grid `editType:'fullRow'`(Community)·xxxx FlexGrid row edit.
 
 ## 제품결정 → advisor 위임 (사용자 지시 2026-06-07)
 - 이전 "제품 결정 4종 = STOP-and-ask" 게이트를 **사용자가 advisor 위임으로 전환**. 본 모듈 설계(상태 소유·커밋 단위·tier)는 advisor 결정.
@@ -60,7 +60,7 @@ applyRowDraft=**종결형**(순수). useFullRowEdit+UI 배선=**배선형**(chro
 
 ## reuse-gate 결과 / 추측 0
 재사용=EditableCell(isEditing 승격)·controlled-data(onRowEdit=onUpdateRow 동형)·atomic raw-truth(createSheet). 신규=행 draft 누적+원자 커밋.
-추측 0: AG `editType:'fullRow'`(전 셀 동시 에디터·행 단위 commit/cancel)·Wijmo row edit = 1차 출처(gap L272/575 verified-absent).
+추측 0: AG `editType:'fullRow'`(전 셀 동시 에디터·행 단위 commit/cancel)·xxxx row edit = 1차 출처(gap L272/575 verified-absent).
 
 ## specify rubric (Full — 점수, 게이트 C)
 - [x] Goal(행 편집, AG fullRow 대응) **9/10** · [x] In/Out(순수 In·per-cell/undo/custom-editor Out 명시) **10/10**

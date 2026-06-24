@@ -6,7 +6,7 @@ import { buildGridWorksheet } from './internal/buildGridWorksheet';
 
 /**
  * 여러 TanStack Table 을 **하나의 Excel 워크북**(여러 시트)으로 export·다운로드한다.
- * (MOD-GRID-25 G-2 — AG Grid/DevExpress 다중 시트 export 격차 해소)
+ * (MOD-GRID-25 G-2 — XX Grid/DevExpress 다중 시트 export 격차 해소)
  *
  * 각 시트는 `exportToExcel`(단일 시트)과 동일한 빌더(`buildGridWorksheet`)를 재사용하므로
  * 헤더 merge·scope·네이티브 숫자서식(`.z`)·컬럼 폭 동작이 단일 시트와 일관된다.

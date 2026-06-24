@@ -19,7 +19,7 @@ advanced filters, range selection, aggregation, and cell merging.
 
 - [Quick Start](./getting-started) — Installation and basic usage
 - [Architecture](./architecture) — The 27-package structure and design
-- [Feature Comparison](./comparison) — Feature matrix vs. AG Grid / Wijmo
+- [Feature Comparison](./comparison) — Feature matrix vs. XX Grid / xxxx
 - [Migration Guide](./migration/dataTable-migration) — Moving from a legacy grid/DataTable to `<Grid>`
 
 ## Packages

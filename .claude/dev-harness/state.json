@@ -630,7 +630,7 @@
         "v1_limits": "페이지네이션 aria-rowindex=현재 페이지 상대(AG viewport 동형, axe-clean)·aria-colspan=vN"
       },
       "g2": {
-        "design": "advisor: ★focus 모델=**aria-activedescendant**(roving tabindex 아님 — 가상화 시 active 셀 unmount→focus가 body로 붕괴; activedescendant는 안정 컨테이너(table tabIndex=0)에 focus 유지, AG Grid 동일). reuse-gate: range useKeyboardNav 는 Pro·범위결합·Home/End/PageUp/PageDown 없음 → 추출 시 shipped Pro 수정 → **신규 MIT 순수 코어 + 중복 정직 기록(LESS-005)**. 척추=절대좌표 nextCell(window 밖→scroll-into-view).",
+        "design": "advisor: ★focus 모델=**aria-activedescendant**(roving tabindex 아님 — 가상화 시 active 셀 unmount→focus가 body로 붕괴; activedescendant는 안정 컨테이너(table tabIndex=0)에 focus 유지, XX Grid 동일). reuse-gate: range useKeyboardNav 는 Pro·범위결합·Home/End/PageUp/PageDown 없음 → 추출 시 shipped Pro 수정 → **신규 MIT 순수 코어 + 중복 정직 기록(LESS-005)**. 척추=절대좌표 nextCell(window 밖→scroll-into-view).",
         "surface": [
           "internal/cellNavigation.ts(순수): nextCell(current,key,mods,bounds)→{row,col}|null · isNavKey",
           "Grid.tsx: <table tabIndex=0 aria-activedescendant onKeyDown(nav)> · td id=${gridId}-${cell.id}+active 링 · scroll-into-view effect · 헤더 th Space/Enter 정렬"

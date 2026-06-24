@@ -243,7 +243,7 @@ export interface GridRowSelectionOptions<TData> {
    * MOD-GRID-55: `'multi'` 헤더 전체선택 체크박스가 **모든 페이지**의 행을 선택/해제한다
    * (default `false` = 현재 페이지만). `true` 시 헤더 체크박스는 TanStack
    * `getToggleAllRowsSelectedHandler`(전 페이지) + `getIsAllRowsSelected`/`getIsSomeRowsSelected`
-   * 를 사용한다. AG Grid 의 "select all across all pages" 대응.
+   * 를 사용한다. XX Grid 의 "select all across all pages" 대응.
    */
   selectAllPages?: boolean;
 }
@@ -321,7 +321,7 @@ export interface GridPaginationOptions {
    * 특정 페이지로 점프하는 numeric 입력 UI 표시. 기본 `false`.
    * 슬라이딩 버튼만으로 닿지 않는 먼 페이지로 직접 이동.
    *
-   * @since MOD-GRID-49 (Track 1 — Wijmo pager 입력 대응)
+   * @since MOD-GRID-49 (Track 1 — xxxx pager 입력 대응)
    */
   enableGoToPage?: boolean;
 
@@ -669,7 +669,7 @@ export interface GridProps<TData> {
   /**
    * 그리드 **상단**에 고정 표시할 소비자 공급 행 데이터 (MOD-GRID-24 G-2).
    *
-   * AG Grid 의 `pinnedTopRowData` 와 동형 — 데이터 모델 *밖*의 추가 행(합계/요약 등).
+   * XX Grid 의 `pinnedTopRowData` 와 동형 — 데이터 모델 *밖*의 추가 행(합계/요약 등).
    * 컬럼 셀 렌더러(`columnDef.cell`)를 그대로 통과해 본문 행과 동일하게 표시되며,
    * 본문이 스크롤돼도 `position: sticky` 로 고정된다.
    *
@@ -1106,7 +1106,7 @@ export interface UseGridStateOptions<TData = unknown> {
   /**
    * 외부 트리거로 `rowSelection`을 자동 reset하는 옵션 (G-004 AC-003).
    *
-   * AggridTable `clearSelectionKey` 패턴 흡수 (R-A: AggridTable.tsx L88-92).
+   * XxgridTable `clearSelectionKey` 패턴 흡수 (R-A: XxgridTable.tsx L88-92).
    * 이 값이 변경될 때마다 `rowSelection: {}` 으로 자동 reset.
    * `undefined` 초기값은 mount 시 트리거 안 함 (EC-04 isFirstClearRender ref flag).
    *
@@ -1122,7 +1122,7 @@ export interface UseGridStateOptions<TData = unknown> {
    * ```
    *
    * @remarks
-   * - `string | number`로 타입 제한 (AggridTable의 `any` 개선 — C-4 strict)
+   * - `string | number`로 타입 제한 (XxgridTable의 `any` 개선 — C-4 strict)
    * - 값 내용보다 "변경" 자체가 목적 — number 카운터 또는 string 타임스탬프 권장
    *
    * @see G-004-spec.md Section 2.2 + Section 11.1 (D4)

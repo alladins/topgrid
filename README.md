@@ -2,7 +2,7 @@
 
 TanStack Table v8 기반 React 19 / TypeScript grid 라이브러리. **MIT 4 패키지** + **Pro EULA 8 패키지** + **메타 facade 1 패키지** 구성.
 
-> Wijmo / AG Grid 대체를 목표로 한 상용 grid 컴포넌트. 핵심 그리드는 MIT, 엔터프라이즈 기능(Range / Master-Detail / Merging / Multi-Header / Aggregation / Change Tracking / DataMap)은 EULA Pro.
+> xxxx / XX Grid 대체를 목표로 한 상용 grid 컴포넌트. 핵심 그리드는 MIT, 엔터프라이즈 기능(Range / Master-Detail / Merging / Multi-Header / Aggregation / Change Tracking / DataMap)은 EULA Pro.
 
 ---
 

@@ -1,7 +1,7 @@
 # MOD-GRID-43 — 증분 행 트랜잭션 (applyTransaction + async batching)
 
 dev-harness 26번째 (vN-4). 갭분석 Community ❌ 2건 = **applyTransaction**(증분 add/update/remove) · **async transaction batching**.
-경쟁: AG Grid `applyTransaction`/`applyTransactionAsync`. ★Community "빠른 승부" 9건 중 **첫 분할**(node-pure 자립 쌍).
+경쟁: XX Grid `applyTransaction`/`applyTransactionAsync`. ★Community "빠른 승부" 9건 중 **첫 분할**(node-pure 자립 쌍).
 
 ## reuse-gate (LESS-003) + 분할 근거 (advisor)
 - **survey 결과**(Explore): 9 community 중 applyTransaction·async batching = **genuine 부재**(grid-pro-tracking 은 change-*추적*, row-model

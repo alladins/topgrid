@@ -14,7 +14,7 @@
 → "선언적 룰 → 기존 콜백/계약 컴파일러" = MOD-24 G-1(`buildRowClassName`/`buildCellClassName`)에 이은 **N=2 패턴 후보**(capture 시 PAT 승격 점검).
 
 ## Goal
-편집 생산성 Pro 패키지 — 선언적 검증 룰 엔진(G-1) + undo/redo 스택(G-2) + find&replace(G-3) + 셀 코멘트(G-4). 경쟁: Wijmo·Handsontable·DevExpress 편집 고도화.
+편집 생산성 Pro 패키지 — 선언적 검증 룰 엔진(G-1) + undo/redo 스택(G-2) + find&replace(G-3) + 셀 코멘트(G-4). 경쟁: xxxx·Handsontable·DevExpress 편집 고도화.
 
 ## Scope (모듈 전체 — Goal 단위 partial)
 - **In(G-1, 본 라운드)**: `grid-pro-edit-plus` Pro 패키지 scaffold(라이선스 게이트) + 검증 룰 엔진(`buildValidator`/`buildValidationCellClass` + `ValidationRule` 타입).

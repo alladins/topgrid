@@ -19,7 +19,7 @@
 *정확히 1회* 호출 단언, "행이 좀 나왔다" 금지).
 
 ## Goal
-대용량 서버 데이터를 블록 단위로 lazy 로드 — 무한 스크롤 + 서버 정렬/필터/그룹/페이징 통합. 경쟁: AG Grid SSRM.
+대용량 서버 데이터를 블록 단위로 lazy 로드 — 무한 스크롤 + 서버 정렬/필터/그룹/페이징 통합. 경쟁: XX Grid SSRM.
 - **In**: datasource 인터페이스(`getRows({startRow,endRow,sortModel,filterModel}) → {rows, lastRow?}`), 블록 캐시
   (loaded/loading/stale + epoch), lazy 그룹/트리 펼침, 캐시 무효화 API.
 - **Out**: 클라이언트 전체로드(기존 `mode='client'`), 오프라인, LRU/메모리 eviction(AC④=명시적 무효화 전용).

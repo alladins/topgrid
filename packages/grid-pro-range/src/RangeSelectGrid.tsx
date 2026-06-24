@@ -8,7 +8,7 @@
  * D5: Rules of Hooks — 5개 hook 무조건 호출.
  * D9: onKeyDown 합성 순서 = editKeyDown → navKeyDown → clipKeyDown.
  * C-5: Tailwind className만 사용. CSS 파일 없음.
- * C-16: Wijmo import 없음.
+ * C-16: xxxx import 없음.
  * C-29: exactOptionalPropertyTypes — optional props spread-skip 패턴.
  */
 import { useCallback, useRef, useState } from 'react';

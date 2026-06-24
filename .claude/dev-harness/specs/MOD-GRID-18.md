@@ -1,6 +1,6 @@
 # MOD-GRID-18 spec — `@topgrid/grid-pro-pivot` (Full)
 
-> dev-harness loop. weight=Full(차트보다 큼 → 게이트형 골 분해). competitive: AG pivot · Wijmo PivotEngine · DevExpress · SyncFusion.
+> dev-harness loop. weight=Full(차트보다 큼 → 게이트형 골 분해). competitive: AG pivot · xxxx PivotEngine · DevExpress · SyncFusion.
 > reuse-gate: 신규. 재사용 = **PAT-001**(headless hook + `<Grid>` wrapper)·**PAT-003**(license gate)·POL-TANSTACK(column groups 선언형). **ADR-001** 적용(reducer 로컬, agg 어휘만 재사용).
 
 ## Goal
@@ -35,7 +35,7 @@
 ## constraints
 - **C-001**(필수): optional peer 정적 import 금지 → 가상화는 grid-core 위임(react-virtual 미import, 표면 0).
 - **C-003**(필수): 주석/README 의 집계종 개수 등 하드코딩 카운트 금지 → `BUILT_IN_AGGREGATION_KEYS.length` 참조.
-- **POL-TANSTACK**: column groups·`ColumnDef` 선언형. AG/Wijmo 피벗 엔진 직접 도입 0.
+- **POL-TANSTACK**: column groups·`ColumnDef` 선언형. AG/xxxx 피벗 엔진 직접 도입 0.
 - **ADR-001**: reducer 로컬 + agg 어휘만 재사용. 공유 추출은 N=2 트리거 전까지 금지.
 - 발행물 금지어(TOMIS/topvel/@tomis) 0.
 
