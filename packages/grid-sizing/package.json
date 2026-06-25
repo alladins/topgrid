@@ -1,6 +1,6 @@
 {
   "name": "@topgrid/grid-sizing",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "type": "module",
   "license": "MIT",
   "description": "Declarative column sizing: auto-size, star/flex ratio widths, sizeToFit (pure + injectable measurement)",
