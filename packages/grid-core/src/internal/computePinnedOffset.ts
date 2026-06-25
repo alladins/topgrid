@@ -63,10 +63,10 @@ export interface PinnedCellStyle {
 /**
  * `<th>` / `<td>` sticky style + className 생성 (D3 z-index 컨벤션).
  *
- * z-index:
- * - thead 일반 (비 pinned): `z-10` (Grid.tsx thead 자체 className 으로 처리)
+ * z-index (헤더는 항상 body 위 — pinned body 가 헤더를 가리지 않게):
+ * - thead 일반 (비 pinned): `z-30` (Grid.tsx thead 자체 className 으로 처리)
  * - tbody pinned: `z-20`
- * - thead pinned (intersection): `z-30`
+ * - thead pinned (intersection): `z-40` (thead base 위)
  *
  * boxShadow edge cue (D8 — 동적 RGBA → C-5 예외 인라인 style 허용):
  * - last-left pinned: `4px 0 6px -2px rgba(0,0,0,0.12)`
@@ -111,7 +111,7 @@ export function getPinnedCellStyle<TData>(
   }
 
   // D3 z-index 컨벤션 + sticky 셀 배경 (스크롤 콘텐츠 가림 방지).
-  const zClass = scope === 'thead' ? 'z-30' : 'z-20';
+  const zClass = scope === 'thead' ? 'z-40' : 'z-20';
   const bgClass = scope === 'thead' ? 'bg-gray-50' : 'bg-white';
   return { style, className: `${zClass} ${bgClass}` };
 }

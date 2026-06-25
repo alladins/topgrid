@@ -85,8 +85,10 @@ export function ColumnMenu<TData>({ column, label = '⋮' }: ColumnMenuProps<TDa
         data-column-menu-list=""
         onClick={(e) => e.stopPropagation()}
         style={{
+          // 드롭다운은 모든 pinned 셀(z 컨벤션 10/20/30) 위에 떠야 한다. Tailwind 환경에서 pinned
+          // sticky 셀(z-20/z-30)이 활성화되면 z-30 메뉴와 타이→클릭 가로챔 → 50 으로 명확히 위에.
           position: 'absolute',
-          zIndex: 30,
+          zIndex: 50,
           top: '100%',
           left: 0,
           background: '#fff',

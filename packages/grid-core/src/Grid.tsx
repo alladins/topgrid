@@ -982,7 +982,7 @@ function GridInner<TData>(
               class-based. Fallback hex = the gray-50 it replaced → default-on byte-identical. */}
           <thead
             ref={theadRef}
-            className="sticky top-0 z-10"
+            className="sticky top-0 z-30"
             style={{
               backgroundColor: 'var(--topgrid-header-bg, #f9fafb)',
               color: 'var(--topgrid-header-text, #6b7280)',

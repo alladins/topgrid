@@ -9,5 +9,15 @@ addons.setConfig({
     brandTitle: '← TOPGRID 문서 사이트',
     brandUrl: '/',
     brandTarget: '_self',
+    // 문서 사이트와 동일한 blue 브랜드 정합.
+    colorPrimary: '#2563eb',
+    colorSecondary: '#2563eb',
+    appBg: '#f7f9fc',
+    appContentBg: '#ffffff',
+    appBorderColor: '#e8ecf3',
+    appBorderRadius: 8,
+    barSelectedColor: '#2563eb',
+    barHoverColor: '#2563eb',
+    inputBorderRadius: 6,
   }),
 });
