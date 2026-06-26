@@ -15,6 +15,9 @@ type Content = {
   subtitle: ReactNode;
   ctaStart: string;
   github: string;
+  demoHead: string;
+  demoSub: string;
+  demoCta: string;
   featuresHead: string;
   featuresSub: string;
   features: Feature[];
@@ -91,6 +94,9 @@ const CONTENT: Record<string, Content> = {
     ),
     ctaStart: '시작하기 →',
     github: 'GitHub',
+    demoHead: '직접 만져보세요',
+    demoSub: '아래는 실제 동작하는 그리드입니다 — 헤더를 클릭해 정렬해 보세요. 셀 렌더러(숫자·날짜·배지·링크)가 자동 배선됩니다.',
+    demoCta: '전체 데모 (Storybook) →',
     featuresHead: '한 그리드로, 엔터프라이즈까지',
     featuresSub: '커뮤니티(MIT) 코어부터 Pro 기능까지 — 필요한 패키지만 골라 쓴다.',
     features: [
@@ -137,6 +143,9 @@ const CONTENT: Record<string, Content> = {
     ),
     ctaStart: 'Get Started →',
     github: 'GitHub',
+    demoHead: 'Try it live',
+    demoSub: 'A real, running grid below — click a header to sort. Cell renderers (number, date, badge, link) are wired automatically by type.',
+    demoCta: 'Full demos (Storybook) →',
     featuresHead: 'From one grid to enterprise',
     featuresSub: 'From the MIT community core to Pro features — install only the packages you need.',
     features: [
@@ -220,6 +229,26 @@ export default function Home() {
       </header>
 
       <main>
+        {/* ── LIVE DEMO (storybook iframe — 그리드에 Tailwind 적용된 실 컴포넌트) ── */}
+        <section className={styles.section}>
+          <div className={styles.sectionHead}>
+            <h2>{t.demoHead}</h2>
+            <p>{t.demoSub}</p>
+          </div>
+          <div className={styles.demoFrame}>
+            <iframe
+              src="/storybook/iframe.html?id=grid-core-grid-withregistryrenderers--default&viewMode=story"
+              title="topgrid live demo"
+              loading="lazy"
+            />
+          </div>
+          <div className={styles.demoCtaRow}>
+            <Link className="button button--secondary" href="/storybook/" target="_blank">
+              {t.demoCta}
+            </Link>
+          </div>
+        </section>
+
         {/* ── FEATURES ── */}
         <section className={styles.section}>
           <div className={styles.sectionHead}>

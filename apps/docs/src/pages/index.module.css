@@ -142,6 +142,32 @@
   font-size: 0.85em;
 }
 
+/* ── LIVE DEMO (storybook iframe) ── */
+.demoFrame {
+  max-width: 1000px;
+  margin: 0 auto;
+  border: 1px solid var(--tg-card-border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--tg-card-bg);
+  box-shadow: 0 20px 50px rgba(16, 24, 40, 0.12);
+}
+.demoFrame iframe {
+  display: block;
+  width: 100%;
+  height: 360px;
+  border: 0;
+}
+.demoCtaRow {
+  text-align: center;
+  margin-top: 1.4rem;
+}
+@media (max-width: 600px) {
+  .demoFrame iframe {
+    height: 320px;
+  }
+}
+
 /* ── CODE SHOWCASE ── */
 .codeSection {
   background: var(--ifm-table-head-background);
