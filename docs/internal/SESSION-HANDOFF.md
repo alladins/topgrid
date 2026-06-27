@@ -26,6 +26,11 @@
 4. **W3-6 컬럼 타입추론** = ✅✅ **grid-core 1.0.0 발행 완료(2026-06-21)**. ADR-007 D1(키 안전 discriminated union, 데이터바운드 10종 id=keyof TData 강제·checkbox만 string) + **ADR-006 D3 동봉**(콜백 clean화: onCellClick/KeyDown/Tooltip→`GridCellContext`, cellClassName→`GridCellContext`, renderFloatingFilter→`GridFilterColumn`)을 **같은 major 1회**로 발행. 13-패키지 lockstep 1.0.0(grid-core·grid·features·renderers·sizing·pro-{header,master,pivot,sheet,tracking,edit-plus,filter,serverside}). 검증=typecheck+전 워크스페이스 node/vitest+**chromium full-suite 132/132 green**(2026-06-22 전체 기능 회귀 재확인=1.0 major 무회귀 입증; 발행시점엔 affected 13만, 이후 전체 재실행)·pack-verify leak 0·consumer smoke clean. 런타임 불변(타입+adapter 배선만). ★**외부 소비자 통합 스모크 통과(2026-06-22)**: 모노레포 밖 fresh Vite/React19 앱에서 `npm i @topgrid/grid@1.0.0`(ERESOLVE 0·grid-core deduped) → `tsc -b`(발행 .d.ts 타입체크, ★오타키 `@ts-expect-error` 충족=키안전 ADR-007 D1 실증) → `vite build`(885 모듈 번들) → 렌더 스모크(행 렌더+셀클릭 clean 콜백 `GridCellContext` 동작) **전부 green** = 1.0 이 외부 프로젝트에서 install→build→run 가능 입증. type↔value 정합(ADR-007 D2)=수요 게이트 후속 ADR. ★발행 표면 실측=가시 소비자 31 호출부 breaking 0건(PTLPSM=세션 권한 밖, grid-core CHANGELOG 1.0.0 마이그레이션 가이드로 커버).
 5. (선택) W3 추가 함정(F-C는 이미 warn) · toolbar 17타입 노출 폴리시 · PTLPSM Vue 차트 실통합(담당자 몫, 우리는 불안정 통지).
 
+## 4.5 폴리시 라운드(2026-06-28, advisor-위임) + ★다음 release 흡수 번들
+- ✅ 배포 완료(자율, npm 게이트 무관): ①`onBrokenMarkdownLinks`→`markdown.hooks.onBrokenMarkdownLinks`(빌드 deprecation 제거) ②OG 소셜 이미지(1200×630 PNG `static/img/og-image.png`+themeConfig.image, og:image/twitter:image 메타) ③`static/robots.txt`(sitemap 포인터, SEO). ④랜딩 라이브 그리드 데모(storybook iframe). 전부 라이브 검증.
+- 📦 **deferred = 다음 grid-core release 때 흡수**(README/package.json 변경은 npm 반영에 13-패키지 lockstep republish 필요=과함, 단독 금지): (a) grid-core README 태그라인 benefit-oriented화·facade README의 내부 ADR-ID strip(둘 다 cosmetic, 현 상태 competent) (b) **전 발행 package.json `keywords` 추가**(현재 0개, npm SEO) + **facade `@topgrid/grid` package.json에 `repository`/`bugs`/`homepage` 추가**(누락; grid-core엔 있음). → 다음 substantive grid-core 변경+발행 시 동승.
+- ⏸ typedoc 자동 API(docusaurus.config NOTE): defer(deps는 Docusaurus3 정합=재가능하나 surface 큼, 수기 api-reference 충분).
+
 ## 5. canonical 상세 위치 (재-derive 금지)
 - W2 차트 전체 = `ROADMAP-MULTIFRAMEWORK-CHART.md` §3 (단계①~③·발행·BYO·e2e·SSR).
 - W3 DX 전체 = `W3-DX-FRICTION-ANALYSIS.md` (특히 **§10 잔여 disposition**).
