@@ -8,7 +8,8 @@ const config: Config = {
   baseUrl: '/',
   favicon: 'img/favicon.svg',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
+  // Docusaurus v4 migration: onBrokenMarkdownLinks moved under markdown.hooks.
+  markdown: { hooks: { onBrokenMarkdownLinks: 'warn' } },
   i18n: {
     defaultLocale: 'ko',
     locales: ['ko', 'en'],
@@ -27,7 +28,7 @@ const config: Config = {
     ],
   ],
   themeConfig: {
-    image: 'img/logo.svg',
+    image: 'img/og-image.png',
     metadata: [
       {
         name: 'description',
