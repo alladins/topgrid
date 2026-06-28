@@ -28,7 +28,7 @@
 
 ## 4.5 폴리시 라운드(2026-06-28, advisor-위임) + ★다음 release 흡수 번들
 - ✅ 배포 완료(자율, npm 게이트 무관): ①`onBrokenMarkdownLinks`→`markdown.hooks.onBrokenMarkdownLinks`(빌드 deprecation 제거) ②OG 소셜 이미지(1200×630 PNG `static/img/og-image.png`+themeConfig.image, og:image/twitter:image 메타) ③`static/robots.txt`(sitemap 포인터, SEO). ④랜딩 라이브 그리드 데모(storybook iframe). 전부 라이브 검증.
-- 📦 **deferred = 다음 grid-core release 때 흡수**(README/package.json 변경은 npm 반영에 13-패키지 lockstep republish 필요=과함, 단독 금지): (a) grid-core README 태그라인 benefit-oriented화·facade README의 내부 ADR-ID strip(둘 다 cosmetic, 현 상태 competent) (b) **전 발행 package.json `keywords` 추가**(현재 0개, npm SEO) + **facade `@topgrid/grid` package.json에 `repository`/`bugs`/`homepage` 추가**(누락; grid-core엔 있음). → 다음 substantive grid-core 변경+발행 시 동승.
+- ✅ **banked(소스 committed, 2026-06-28 `3d79a6a`) — 다음 grid-core release의 lockstep republish에 자동 동승, 재작업 금지**: (a) 전 27 발행 package.json `keywords` 추가(npm SEO) (b) facade `@topgrid/grid` package.json에 `repository`/`bugs`/`homepage` 추가(grid-core 미러) (c) grid-core README 태그라인 benefit-oriented화. ★이들은 **발행 안 됨**(npm 게이트) — 다음 substantive grid-core 변경+13-패키지 lockstep 발행 시 자동 포함(★지금 banking 안 했으면 다음 release가 free ride를 태웠을 것). 잔여 cosmetic(미banking): facade README 내부 ADR-ID strip(선택).
 - ⏸ typedoc 자동 API(docusaurus.config NOTE): defer(deps는 Docusaurus3 정합=재가능하나 surface 큼, 수기 api-reference 충분).
 
 ## 5. canonical 상세 위치 (재-derive 금지)
