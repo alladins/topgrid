@@ -41,5 +41,17 @@
     "echarts": "^6.0.0",
     "esbuild": "^0.24.0",
     "vue": "^3.5.0"
-  }
+  },
+  "keywords": [
+    "vue",
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "vue-chart",
+    "charting",
+    "echarts"
+  ]
 }

@@ -41,5 +41,17 @@
     "@topgrid/grid-export": "workspace:*",
     "@topgrid/grid-pro-range": "workspace:*",
     "esbuild": "^0.25.0"
-  }
+  },
+  "keywords": [
+    "react",
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "spreadsheet",
+    "excel",
+    "formula"
+  ]
 }

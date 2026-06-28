@@ -1,6 +1,6 @@
 # @topgrid/grid-core
 
-TanStack Table abstraction wrapper + useGridState core hook
+The headless React grid core — `<Grid>` + `useGridState` on top of TanStack Table v8, with sorting, filtering, pagination, virtualization, and column pinning built in.
 
 ## Installation
 

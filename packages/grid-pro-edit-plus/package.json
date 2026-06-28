@@ -39,5 +39,17 @@
   "devDependencies": {
     "@topgrid/grid-core": "workspace:*",
     "@topgrid/grid-pro-tracking": "workspace:*"
-  }
+  },
+  "keywords": [
+    "react",
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "editing",
+    "validation",
+    "undo-redo"
+  ]
 }

@@ -48,5 +48,16 @@
   },
   "devDependencies": {
     "@topgrid/grid-core": "workspace:*"
-  }
+  },
+  "keywords": [
+    "react",
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "cell-renderer",
+    "formatting"
+  ]
 }

@@ -41,5 +41,16 @@
     "@topgrid/grid-core": "workspace:*",
     "@topgrid/grid-features": "workspace:*",
     "@topgrid/grid-pro-chart": "workspace:*"
-  }
+  },
+  "keywords": [
+    "react",
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "filter",
+    "advanced-filter"
+  ]
 }

@@ -36,5 +36,16 @@
   },
   "devDependencies": {
     "echarts": "^6.0.0"
-  }
+  },
+  "keywords": [
+    "react",
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "chart",
+    "charting"
+  ]
 }

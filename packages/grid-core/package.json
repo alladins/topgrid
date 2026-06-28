@@ -56,5 +56,17 @@
   "homepage": "https://github.com/alladins/topgrid#readme",
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "keywords": [
+    "react",
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "react-grid",
+    "react-table",
+    "virtualization"
+  ]
 }

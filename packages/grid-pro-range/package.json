@@ -43,5 +43,17 @@
     "@tanstack/react-virtual": {
       "optional": true
     }
-  }
+  },
+  "keywords": [
+    "react",
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "range-selection",
+    "clipboard",
+    "fill-handle"
+  ]
 }

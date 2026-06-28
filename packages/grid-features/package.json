@@ -53,5 +53,17 @@
   "devDependencies": {
     "@topgrid/grid-core": "workspace:*",
     "@topgrid/grid-core-headless": "workspace:*"
-  }
+  },
+  "keywords": [
+    "react",
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "filter",
+    "sort",
+    "search"
+  ]
 }

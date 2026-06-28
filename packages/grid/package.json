@@ -75,5 +75,25 @@
     "xlsx": {
       "optional": true
     }
-  }
+  },
+  "keywords": [
+    "react",
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "react-grid",
+    "react-table"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alladins/topgrid.git",
+    "directory": "packages/grid"
+  },
+  "bugs": {
+    "url": "https://github.com/alladins/topgrid/issues"
+  },
+  "homepage": "https://github.com/alladins/topgrid#readme"
 }
