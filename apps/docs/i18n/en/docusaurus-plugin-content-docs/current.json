@@ -6,5 +6,9 @@
   "sidebar.tutorialSidebar.category.마이그레이션": {
     "message": "Migration",
     "description": "The label for category '마이그레이션' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.패키지별 API (자동 생성)": {
+    "message": "Per-package API (auto-generated)",
+    "description": "The label for category '패키지별 API (자동 생성)' in sidebar 'tutorialSidebar'"
   }
 }
