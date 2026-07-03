@@ -17,14 +17,14 @@
  */
 
 import type { ColumnDef } from '@tanstack/react-table';
-import { GRAND_TOTAL_COLUMN_KEY } from './computePivot';
-import type { PivotSortState } from './sortPivotRows';
+import { GRAND_TOTAL_COLUMN_KEY } from '@topgrid/grid-pro-pivot-core';
+import type { PivotSortState } from '@topgrid/grid-pro-pivot-core';
 import type {
   PivotColumnNode,
   PivotConfig,
   PivotModel,
   PivotRow,
-} from './types';
+} from '@topgrid/grid-pro-pivot-core';
 
 /**
  * 값 헤더 정렬 어포던스 옵션(MOD-GRID-31 G-1). 지정 시 값 leaf 헤더가 클릭→정렬 + 인디케이터(▲▼).

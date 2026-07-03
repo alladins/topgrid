@@ -1,0 +1,45 @@
+{
+  "name": "@topgrid/grid-pro-pivot-core",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "SEE LICENSE IN EULA",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Framework-neutral pivot engine: declarative 2-D pivot transform + pure value reducers (no React/Vue). Consumed by @topgrid/grid-pro-pivot (React) and grid-pro-pivot-vue.",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types src/sortPivotRows.test.ts && node --experimental-strip-types src/collapsePivotRows.test.ts && node --experimental-strip-types src/transposePivotConfig.test.ts && node --experimental-strip-types src/customizePivotTotals.test.ts && node --experimental-strip-types src/filterPivotRows.test.ts && node --experimental-strip-types src/movePivotField.test.ts && node computePivot.test.mjs"
+  },
+  "dependencies": {
+    "@topgrid/grid-pro-agg": "workspace:*"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  },
+  "keywords": [
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "pivot",
+    "pivot-table"
+  ]
+}

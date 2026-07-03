@@ -24,15 +24,13 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/sortPivotRows.test.ts && node --experimental-strip-types src/collapsePivotRows.test.ts && node --experimental-strip-types src/transposePivotConfig.test.ts && node --experimental-strip-types src/customizePivotTotals.test.ts && node --experimental-strip-types src/filterPivotRows.test.ts && node computePivot.test.mjs"
+    "test": "echo \"pivot 순수 로직은 @topgrid/grid-pro-pivot-core 에서 테스트\""
   },
   "dependencies": {
     "@topgrid/grid-license": "workspace:*",
     "@topgrid/grid-core": "workspace:*",
-    "@topgrid/grid-pro-agg": "workspace:*"
-  },
-  "devDependencies": {
-    "esbuild": "^0.25.0"
+    "@topgrid/grid-pro-agg": "workspace:*",
+    "@topgrid/grid-pro-pivot-core": "workspace:*"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.0.0",

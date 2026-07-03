@@ -16,12 +16,12 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { Grid, type RowClassNameCallback } from '@topgrid/grid-core';
 import { useLicenseStatus, Watermark } from '@topgrid/grid-license';
 
-import { computePivot } from './computePivot';
+import { computePivot } from '@topgrid/grid-pro-pivot-core';
 import { buildPivotColumns } from './buildPivotColumns';
-import { sortPivotRows, type PivotSortState } from './sortPivotRows';
-import { collapsePivotRows } from './collapsePivotRows';
-import { transposePivotConfig } from './transposePivotConfig';
-import type { PivotConfig, PivotRow } from './types';
+import { sortPivotRows, type PivotSortState } from '@topgrid/grid-pro-pivot-core';
+import { collapsePivotRows } from '@topgrid/grid-pro-pivot-core';
+import { transposePivotConfig } from '@topgrid/grid-pro-pivot-core';
+import type { PivotConfig, PivotRow } from '@topgrid/grid-pro-pivot-core';
 
 /**
  * Props for {@link PivotGrid}.

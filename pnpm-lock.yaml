@@ -622,12 +622,25 @@ importers:
       '@topgrid/grid-pro-agg':
         specifier: workspace:*
         version: link:../grid-pro-agg
+      '@topgrid/grid-pro-pivot-core':
+        specifier: workspace:*
+        version: link:../grid-pro-pivot-core
       react:
         specifier: ^18.3.1
         version: 18.3.1
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
+    devDependencies:
+      esbuild:
+        specifier: ^0.25.0
+        version: 0.25.12
+
+  packages/grid-pro-pivot-core:
+    dependencies:
+      '@topgrid/grid-pro-agg':
+        specifier: workspace:*
+        version: link:../grid-pro-agg
     devDependencies:
       esbuild:
         specifier: ^0.25.0

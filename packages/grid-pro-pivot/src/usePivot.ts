@@ -7,8 +7,8 @@
  */
 
 import { useMemo } from 'react';
-import { computePivot } from './computePivot';
-import type { PivotConfig, PivotModel } from './types';
+import { computePivot } from '@topgrid/grid-pro-pivot-core';
+import type { PivotConfig, PivotModel } from '@topgrid/grid-pro-pivot-core';
 
 /**
  * Compute a memoised {@link PivotModel} from flat data + a pivot config.

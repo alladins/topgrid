@@ -12,8 +12,8 @@
  */
 
 import { useRef, useState } from 'react';
-import type { PivotConfig } from './types.js';
-import { movePivotField, type PivotZone } from './movePivotField.js';
+import type { PivotConfig } from '@topgrid/grid-pro-pivot-core';
+import { movePivotField, type PivotZone } from '@topgrid/grid-pro-pivot-core';
 
 /** dataTransfer key for the dragged field (Safari fallback alongside the ref). */
 const FIELD_KEY = 'pivotField';
