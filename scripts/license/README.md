@@ -50,10 +50,28 @@ setLicenseKey('<발급받은 키>');
 ```
 검증은 런타임(브라우저). 무효/만료/도메인불일치 시 Pro 그리드에 워터마크(기능은 동작). SSR/SSG 정적 빌드 안전(window 없으면 도메인 검사 skip).
 
+## 발급 대장 (ledger.csv) — 자동 기록
+
+`sign` 을 실행하면 **발급 대장(`scripts/license/ledger.csv`)에 자동으로 한 줄 기록**된다
+(발급일시·도메인·만료·종류·고객·연락처·메모·키). 고객 정보는 선택 옵션으로 함께 남긴다:
+
+```bash
+node scripts/license/license.mjs sign --domain shipmg.example.com --expires +1y --tier pro \
+  --customer "회사명" --contact "dam@example.com" --kind paid --note "1호 딜, 첫해 50%"
+
+node scripts/license/license.mjs list                 # 대장 조회(활성/만료)
+node scripts/license/license.mjs expiring --days 14   # 만료 임박 — 갱신/트라이얼 전환 연락 타이밍
+```
+
+- 같은 도메인에 활성 키가 있으면 발급 시 **중복 경고**가 뜬다(발급은 계속).
+- `--kind trial|paid` 로 리드(평가)와 매출(유료)을 구분 — 유료 합계가 매출 집계 원장이 된다.
+- ⚠️ **대장은 gitignore(비커밋)** — 고객명·연락처·유효 키가 담기므로 공개 저장소에 올리면 안 된다.
+  이 PC에만 존재하므로 **`.private.key` 와 함께 주기적으로 별도 백업**할 것.
+
 ## 키 내용 확인 / 셀프테스트
 
 ```bash
 node scripts/license/license.mjs inspect <key>        # 페이로드 디코드(서명검증 X)
 pnpm --filter @topgrid/grid-license-core build
-node scripts/license/selftest.mjs                     # 발급→검증·위조차단 회귀 테스트
+node scripts/license/selftest.mjs                     # 발급→검증·위조차단·대장기록 회귀 테스트
 ```

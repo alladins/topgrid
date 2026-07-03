@@ -9,6 +9,7 @@ import { webcrypto as crypto } from 'node:crypto';
 import { execSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join } from 'node:path';
+import { rmSync, readFileSync, existsSync } from 'node:fs';
 
 const ROOT = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const DIST = join(ROOT, 'packages/grid-license-core/dist/index.mjs');
@@ -28,6 +29,11 @@ const signCLI = (dom, exp) => {
   const o = execSync(`node "${cli}" sign --domain ${dom} --expires ${exp} --tier pro`, { cwd: ROOT, encoding: 'utf8' });
   return o.split('\n').map((s) => s.trim()).find((s) => /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(s) && s.length > 60);
 };
+
+// ★대장 검증용 임시 ledger (실제 ledger.csv 오염 방지 — CLI 가 env 로 경로 재정의 지원)
+const TMP_LEDGER = join(ROOT, 'scripts/license/.selftest-ledger.tmp.csv');
+process.env.TOPGRID_LICENSE_LEDGER = TMP_LEDGER; // execSync(signCLI)가 상속
+rmSync(TMP_LEDGER, { force: true });
 
 const key = signCLI('shipmg.example.com', '+1y');
 const r1 = await verify(key);
@@ -50,6 +56,13 @@ chk('만료 키 → reason=expired', r4.valid === false && r4.reason === 'expire
 
 const r5 = await verify('aaa.bbb.ccc');
 chk('구 3파트 형식 → valid=false', r5.valid === false);
+
+// ★발급 대장 자동 기록 검증 (sign 2회 = 2행 + 헤더)
+chk('대장 파일 자동 생성', existsSync(TMP_LEDGER));
+const ledgerLines = readFileSync(TMP_LEDGER, 'utf8').split('\n').filter((l) => l.trim());
+chk('대장 = 헤더 + 발급 2행', ledgerLines.length === 3 && ledgerLines[0].startsWith('issued_at,domain'));
+chk('대장 1행: 도메인·키지문 기록', ledgerLines[1].includes('shipmg.example.com') && ledgerLines[1].includes(key.slice(0, 16)));
+rmSync(TMP_LEDGER, { force: true });
 
 console.log(`\n결과: ${pass} pass / ${fail} fail`);
 process.exit(fail ? 1 : 0);

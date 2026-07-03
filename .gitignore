@@ -64,3 +64,8 @@ scripts/license/.private.key
 
 # Vue 차트 데모 번들(생성물, build:site 에서 esbuild 로 재생성)
 apps/docs/static/vue-chart-demo/app.js
+
+# 경쟁사 가격 분석(내부용, 실브랜드명 — 절대 커밋 금지)
+docs/internal/competitor-pricing-2026.private.md
+# 발급 대장(고객명·연락처·키 포함 — 절대 커밋 금지, 개인키와 함께 백업)
+scripts/license/ledger.csv
