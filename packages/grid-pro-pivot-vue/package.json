@@ -1,0 +1,49 @@
+{
+  "name": "@topgrid/grid-pro-pivot-vue",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "SEE LICENSE IN EULA",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Pro: declarative 2-D pivot for Vue 3 — reuses the framework-neutral @topgrid/grid-pro-pivot-core engine (headless composable + tool panel).",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types src/useVuePivot.test.ts && node --experimental-strip-types src/VuePivotPanel.test.ts"
+  },
+  "dependencies": {
+    "@topgrid/grid-pro-pivot-core": "workspace:*",
+    "@topgrid/grid-license-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^15.0.0",
+    "vue": "^3.5.0"
+  },
+  "keywords": [
+    "vue",
+    "grid",
+    "datagrid",
+    "table",
+    "headless",
+    "pivot",
+    "pivot-table"
+  ]
+}

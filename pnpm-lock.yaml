@@ -642,6 +642,22 @@ importers:
         specifier: ^0.25.0
         version: 0.25.12
 
+  packages/grid-pro-pivot-vue:
+    dependencies:
+      '@topgrid/grid-license-core':
+        specifier: workspace:*
+        version: link:../grid-license-core
+      '@topgrid/grid-pro-pivot-core':
+        specifier: workspace:*
+        version: link:../grid-pro-pivot-core
+    devDependencies:
+      '@happy-dom/global-registrator':
+        specifier: ^15.0.0
+        version: 15.11.7
+      vue:
+        specifier: ^3.5.0
+        version: 3.5.38(typescript@5.8.3)
+
   packages/grid-pro-range:
     dependencies:
       '@tanstack/react-table':
