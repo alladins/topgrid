@@ -1,0 +1,57 @@
+{
+  "name": "@topgrid/grid-pro-serverside-vue",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "SEE LICENSE IN EULA",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Pro: server-side row model (SSRM) + viewport (push) row model for Vue 3 — reuses the framework-neutral @topgrid/grid-pro-serverside-core controllers.",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types src/useVueViewportRowModel.test.ts && node --experimental-strip-types src/useVueServerSideData.test.ts"
+  },
+  "dependencies": {
+    "@topgrid/grid-pro-serverside-core": "workspace:*",
+    "@topgrid/grid-license-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0",
+    "@tanstack/table-core": "^8.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@tanstack/table-core": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^15.0.0",
+    "@tanstack/table-core": "^8.0.0",
+    "vue": "^3.5.0"
+  },
+  "keywords": [
+    "vue",
+    "grid",
+    "datagrid",
+    "table",
+    "headless",
+    "server-side",
+    "ssrm",
+    "row-model"
+  ]
+}

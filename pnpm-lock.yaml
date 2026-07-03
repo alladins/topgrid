@@ -714,6 +714,25 @@ importers:
         specifier: ^8.0.0
         version: 8.21.3
 
+  packages/grid-pro-serverside-vue:
+    dependencies:
+      '@topgrid/grid-license-core':
+        specifier: workspace:*
+        version: link:../grid-license-core
+      '@topgrid/grid-pro-serverside-core':
+        specifier: workspace:*
+        version: link:../grid-pro-serverside-core
+    devDependencies:
+      '@happy-dom/global-registrator':
+        specifier: ^15.0.0
+        version: 15.11.7
+      '@tanstack/table-core':
+        specifier: ^8.0.0
+        version: 8.21.3
+      vue:
+        specifier: ^3.5.0
+        version: 3.5.38(typescript@5.8.3)
+
   packages/grid-pro-sheet:
     dependencies:
       '@tanstack/react-table':
