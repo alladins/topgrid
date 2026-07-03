@@ -1,38 +1,18 @@
 ---
-title: "@topgrid/grid-pro-serverside"
-sidebar_label: "grid-pro-serverside"
-sidebar_position: 27
+title: "@topgrid/grid-pro-serverside-core"
+sidebar_label: "grid-pro-serverside-core"
+sidebar_position: 28
 ---
 
-# @topgrid/grid-pro-serverside
+# @topgrid/grid-pro-serverside-core
 
-> Pro: server-side row model (SSRM) — block-based lazy loading, infinite scroll, server sort/filter/group with stale-response (epoch) rejection · **상용 (EULA)**
+> Framework-neutral server-side row model core: block cache, SSRM controller, lazy-group tree cache, viewport row model, server pivot columns (no React/Vue; @tanstack/table-core type-only). · **상용 (EULA)**
 
 :::info 자동 생성
 이 페이지는 소스 코드의 TSDoc 주석에서 자동 생성됩니다(내부 표식 정제). 큐레이트된 시작용 요약은 [API 레퍼런스](../api-reference) 참고.
 :::
 
-총 **61개** public export — 함수 27 · 훅 3 · 컴포넌트 0 · 타입 31 · 상수 0.
-
-## 훅 (Hooks)
-
-### `useServerSideData`
-
-```ts
-useServerSideData(datasource: ServerSideDatasource<TData>, options: UseServerSideDataOptions): UseServerSideDataResult<TData>
-```
-
-### `useServerSideTree`
-
-```ts
-useServerSideTree(datasource: ServerSideDatasource<TData>, options: UseServerSideTreeOptions): UseServerSideTreeResult<TData>
-```
-
-### `useViewportRowModel`
-
-```ts
-useViewportRowModel(datasource: ViewportDatasource<TData>, options: UseViewportRowModelOptions): UseViewportRowModelResult<TData>
-```
+총 **49개** public export — 함수 27 · 훅 0 · 컴포넌트 0 · 타입 22 · 상수 0.
 
 ## 함수
 
@@ -365,16 +345,6 @@ A derived pivot-result column: a leaf (accessorKey) or a group (columns).
 
 ### `ServerSideControllerOptions`
 
-`ServerSideController` — the SSRM data-flow logic , extracted from React so
-it is **node-verifiable without a DOM**. Holds the block cache + active sort/filter, plans and
-fetches blocks for a visible range, and emits a re-materialized array via `onChange`.
-
-The `useServerSideData` hook is a thin wrapper: it owns the React state and feeds this
-controller the virtualizer's visible range + sort/filter changes.
-
-Epoch invariant lives in the pure cache (./blockCache): each request captures the
-epoch at send time; a response for a since-invalidated query is discarded by `acceptBlock`.
-
 | 속성 | 타입 | 설명 |
 |---|---|---|
 | `blockSize` | `number` |  |
@@ -389,22 +359,6 @@ Consumer-supplied datasource. The single seam between the grid and the server.
 |---|---|---|
 | `getRows` | `unknown` |  |
 
-### `ServerSideGridProps`
-
-Props to spread onto `<Grid>`. The `data` may contain RowPlaceholder rows for
-not-yet-loaded indices — detect them with `isRowPlaceholder` in a cell renderer to show a
-skeleton (otherwise accessors read `undefined` → blank cells while loading).
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `data` | `TData[]` |  |
-| `enableVirtualization` | `true` |  |
-| `manualFiltering` | `true` |  |
-| `manualSorting` | `true` |  |
-| `onColumnFiltersChange` | `OnChangeFn<ColumnFiltersState>` |  |
-| `onSortingChange` | `OnChangeFn<SortingState>` |  |
-| `virtualizerOptions` | `{ … }` |  |
-
 ### `ServerSideTreeController`
 
 | 속성 | 타입 | 설명 |
@@ -418,34 +372,10 @@ skeleton (otherwise accessors read `undefined` → blank cells while loading).
 
 ### `ServerSideTreeControllerOptions`
 
-`ServerSideTreeController` — lazy-group SSRM data-flow logic , extracted from
-React so it is node-verifiable without a DOM. Wraps the pure./treeCache: plans/fetches
-child blocks for the visible display range, handles expand/collapse, and emits the flattened
-display list via `onChange`.
-
-Loop discipline (as in ): `emit` fires only on (a) a block resolving or (b) an expand/collapse
-toggle — never synchronously inside the virtualizer `onChange` path (`ensureRange` only
-plans+fetches). `ensureVisibleNodes` cannot change the flatten output (a missing node and an
-empty node both flatten to one loading placeholder), so it is safe to skip emit there.
-
 | 속성 | 타입 | 설명 |
 |---|---|---|
 | `blockSize` | `number` |  |
 | `rowGroupCols` | `string[]` | Grouping columns, outermost first. |
-
-### `ServerSideTreeGridProps`
-
-Props to spread onto `<Grid>` for a lazy-group SSRM grid.
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `data` | `TData[]` |  |
-| `enableVirtualization` | `true` |  |
-| `manualFiltering` | `true` |  |
-| `manualSorting` | `true` |  |
-| `onColumnFiltersChange` | `OnChangeFn<ColumnFiltersState>` |  |
-| `onSortingChange` | `OnChangeFn<SortingState>` |  |
-| `virtualizerOptions` | `{ … }` |  |
 
 ### `SortModelItem`
 
@@ -493,59 +423,6 @@ invalidate). `expanded` is the set of expanded path keys; collapsing **purges** 
 | `nodes` | `Map<string, BlockCacheState<TData>>` | pathKey (`JSON.stringify(groupKeys)`) → that node's children block cache. |
 | `rowGroupCols` | `string[]` | Grouping columns, outermost first. Level depth = `rowGroupCols.length`. |
 
-### `UseServerSideDataOptions`
-
-useServerSideData options.
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `blockSize` | `number` | Rows per block (request granularity). |
-| `pivot?` | `{ … }` | Server-side pivot — optional. When set, requests carry `pivotMode`/`pivotCols`/ `valueCols`; the response's `pivotResultFields` are surfaced as UseServerSideDataResult.pivotColumns. Absent = flat/group mode (byte-identical to before). Captured once like `datasource`. |
-| `rowCount` | `number` | Initial total row count (v1: required — sizes the virtualizer up front). Refined by a `getRows` response's `lastRow` once the end is reached. (v1 memory note: a `rowCount`-length placeholder array is allocated; no LRU eviction.) |
-
-### `UseServerSideDataResult`
-
-useServerSideData result.
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `gridProps` | `ServerSideGridProps<TData>` | Spread onto `<Grid columns={...} {...gridProps} virtualScrollHeight={...} />`. |
-| `pivotColumns` | `ServerPivotColumn[]` | Server-side pivot — the derived nested pivot-result column tree from the server's `pivotResultFields` (empty until a pivot response arrives / when not pivoting). Spread into `<Grid columns={[...fixedCols,...pivotColumns]} />`. |
-| `refresh` | `(…) => …` | Invalidate the cache (epoch++) and re-fetch the visible range — drops in-flight responses. |
-| `totalCount` | `number` | Current known total row count (grows as `lastRow` is learned). |
-
-### `UseServerSideTreeOptions`
-
-useServerSideTree options.
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `blockSize` | `number` | Rows per block (request granularity, per node). |
-| `rowGroupCols` | `string[]` | Grouping columns, outermost first (e.g. `['country', 'city']`). |
-
-### `UseServerSideTreeResult`
-
-useServerSideTree result.
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `gridProps` | `ServerSideTreeGridProps<TData>` | Spread onto `<Grid columns={...} {...gridProps} virtualScrollHeight={...} />`. |
-| `refresh` | `(…) => …` | Invalidate the whole tree and re-fetch the visible range. |
-| `toggleGroup` | `(…) => …` | Expand/collapse a group — call from a group cell renderer with `row.__ssrm.groupKeys`. |
-
-### `UseViewportRowModelOptions`
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `rowCount` | `number` | Initial total row count (refined by the datasource's `setRowCount`). |
-
-### `UseViewportRowModelResult`
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `gridProps` | `ViewportGridProps<TData>` | Spread onto `<Grid columns={...} {...gridProps} virtualScrollHeight={...} />`. |
-| `totalCount` | `number` | Current known total row count (grows as the datasource pushes `setRowCount`). |
-
 ### `ViewportDatasource`
 
 Consumer-supplied viewport datasource (AG IViewportDatasource shape).
@@ -564,16 +441,6 @@ Callbacks the controller hands the datasource so it can push counts/rows.
 |---|---|---|
 | `setRowCount` | `(…) => …` | Set the total row count (sizes the virtualizer). |
 | `setRowData` | `(…) => …` | Push rows by absolute index (in-place — re-pushing an index updates that row live). |
-
-### `ViewportGridProps`
-
-Props to spread onto `<Grid>`. `data` may contain RowPlaceholder rows (detect via `isRowPlaceholder`).
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `data` | `TData[]` |  |
-| `enableVirtualization` | `true` |  |
-| `virtualizerOptions` | `{ … }` |  |
 
 ### `ViewportRowModel`
 

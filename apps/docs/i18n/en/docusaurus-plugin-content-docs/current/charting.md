@@ -63,6 +63,15 @@ setLicenseKey(MY_KEY);
 
 - License watermark is **gated automatically** (on par with React) — with **zero React dependency**.
 - Server-side static SVG: `renderChartToSvgString(option, { width, height })` (SSR, no DOM required).
+- **Live demo**: [Vue 3 enterprise chart](pathname:///vue-chart-demo/) (switch types via the toolbar) — also embedded on the [Examples page](./migration/live-demos).
+
+:::tip Vue Pro data → chart
+To feed **pivot / server-side results into a chart** in a Vue 3 app, pair the new Vue Pro packages:
+- **Pivot → chart**: pass the `useVuePivot` model from [`@topgrid/grid-pro-pivot-vue`](./api/grid-pro-pivot-vue) through `seriesFromPivot` → `matrixToEChartsOption`.
+- **Server data → chart**: convert data from `useVueServerSideData` in [`@topgrid/grid-pro-serverside-vue`](./api/grid-pro-serverside-vue) via `seriesFromMatrix`.
+
+See [Getting Started §4.5](./getting-started#45-vue-3--pivot--server-side-pro) for usage.
+:::
 
 ## Cell / lightweight charts (zero-dep)
 

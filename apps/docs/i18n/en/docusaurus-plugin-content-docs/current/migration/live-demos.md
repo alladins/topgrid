@@ -441,7 +441,7 @@ import { RangeChartPanel } from '@topgrid/grid-pro-chart';
 - [Charting guide](/charting) — the 3-layer chart stack (sparkline · lightweight · 17-type enterprise)
 - <a href="/storybook/" target="_blank" rel="noopener">Storybook</a> — interactive component demos for all packages
 - [Getting Started](/getting-started) — installation and basic usage
-- [Architecture](/architecture) — the 27-package layout
+- [Architecture](/architecture) — the 31-package layout
 - [Migration Guide for the 8 Grid Variants](./8-variant-table.md)
 - [DataTable Migration Guide](./dataTable-migration.md)
 - [Deprecated Alias List](./deprecated-aliases.md)

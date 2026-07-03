@@ -33,7 +33,7 @@ const config: Config = {
       {
         name: 'description',
         content:
-          'topgrid — TanStack Table v8 기반 Headless React 그리드. 가상화·피벗·집계·서버사이드·차트 17종·스프레드시트. MIT 코어 + Pro, 27 패키지.',
+          'topgrid — TanStack Table v8 기반 Headless React 그리드. 가상화·피벗·집계·서버사이드·차트 17종·스프레드시트. MIT 코어 + Pro, 31 패키지.',
       },
     ],
     colorMode: {

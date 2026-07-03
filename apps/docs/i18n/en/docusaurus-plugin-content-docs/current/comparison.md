@@ -103,4 +103,4 @@ There are 6 items that commercial grids have but that we **don't yet have**, all
 
 - <a href="/storybook/" target="_blank" rel="noopener">Storybook demos</a> — interactive components for every package
 - [Examples](/migration/live-demos) — copy-paste code patterns
-- [Architecture](/architecture) — the 27-package layout
+- [Architecture](/architecture) — the 31-package layout

@@ -1,6 +1,6 @@
 # Architecture
 
-topgrid is a monorepo composed of **27 packages** — **Free (MIT) 7 + Commercial (EULA) 20**.
+topgrid is a monorepo composed of **31 packages** — **Free (MIT) 7 + Commercial (EULA) 24**.
 It is divided into a React core + Vue adapter (multi-framework), Pro features, and a chart family.
 
 ## Package List
@@ -17,7 +17,7 @@ It is divided into a React core + Vue adapter (multi-framework), Pro features, a
 | `@topgrid/grid-export` | Excel/CSV/PDF export·clipboard·print (`xlsx`·`jspdf` peers) |
 | `@topgrid/grid-vue` | Vue 3 adapter — drives the headless core via `useVueTable` |
 
-### Commercial (EULA) — 20
+### Commercial (EULA) — 24
 
 **Facade · License (3)**
 
@@ -27,13 +27,17 @@ It is divided into a React core + Vue adapter (multi-framework), Pro features, a
 | `@topgrid/grid-license` | Runtime Pro license validation + Watermark |
 | `@topgrid/grid-license-core` | License validation core (framework-agnostic) |
 
-**Pro Features (13)**
+**Pro Features (17)**
 
 | Package | Description |
 |--------|------|
 | `@topgrid/grid-pro-agg` | Aggregation/grouping — group sum·average·count, group footer·panel |
-| `@topgrid/grid-pro-pivot` | Pivoting — multi-axis pivot table·subtotals·transpose·pivot panel (DnD) |
-| `@topgrid/grid-pro-serverside` | Server-side row model (SSRM) — block lazy-load·infinite scroll·viewport model·server-side tree |
+| `@topgrid/grid-pro-pivot` | Pivoting (React) — multi-axis pivot table·subtotals·transpose·pivot panel (DnD) |
+| `@topgrid/grid-pro-pivot-core` | Pivot engine core (framework-agnostic) — `computePivot`·pure transforms. Shared by React/Vue |
+| `@topgrid/grid-pro-pivot-vue` | Pivoting (Vue 3) — `useVuePivot`·`VuePivotGrid`·`VuePivotPanel` |
+| `@topgrid/grid-pro-serverside` | Server-side row model (SSRM, React) — block lazy-load·infinite scroll·viewport model·server-side tree |
+| `@topgrid/grid-pro-serverside-core` | SSRM core (framework-agnostic) — block cache·controllers·viewport·tree. Shared by React/Vue |
+| `@topgrid/grid-pro-serverside-vue` | Server-side (Vue 3) — `useVueServerSideData`·`useVueViewportRowModel`·`useVueServerSideTree` |
 | `@topgrid/grid-pro-master` | Master-detail·tree·context menu |
 | `@topgrid/grid-pro-merging` | Cell merging — rowSpan/colSpan |
 | `@topgrid/grid-pro-header` | Multi-row header·column groups |
@@ -68,10 +72,10 @@ graph TD
     grid-vue["@topgrid/grid-vue"]
   end
 
-  subgraph Commercial["Commercial (EULA) — 20"]
+  subgraph Commercial["Commercial (EULA) — 24"]
     grid["@topgrid/grid (meta facade)"]
     grid-license["@topgrid/grid-license"]
-    proAll["grid-pro-* (13 features)"]
+    proAll["grid-pro-* (17 features, pivot·serverside incl. -core/-vue)"]
     charts["4 charts (core·chart·enterprise·enterprise-vue)"]
   end
 
@@ -93,6 +97,7 @@ graph TD
 - **Every Pro package → `@topgrid/grid-license`** (runtime license gate).
 - **Most Pro → `@topgrid/grid-core`** (built on top of `<Grid>`).
 - Some Pro packages **compose other Pro/Open packages**: `grid-pro-pivot`·`grid-pro-panel` → `grid-pro-agg` · `grid-pro-edit-plus` → `grid-pro-tracking` · `grid-pro-filter` → `grid-features` · `grid-pro-sheet` → `grid-pro-range` · `grid-pro-master` → `grid-export`.
+- **Multi-framework Pro**: the pure engines of `grid-pro-pivot`·`grid-pro-serverside` are extracted into `grid-pro-{pivot,serverside}-core` (framework-agnostic) so React (`grid-pro-*`) and Vue (`grid-pro-*-vue`) **share the same core** (mirroring the chart family's `grid-chart-core`). Vue Pro packages gate via `grid-license-core`, so no React dependency leaks in.
 - Internal dependencies use `workspace:*` → exact-version pins on publish (lockstep). The `@topgrid/grid` facade re-exports every package.
 
 ## Pro Package License Activation

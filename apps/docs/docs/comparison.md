@@ -98,4 +98,4 @@ sidebar_position: 3
 
 - <a href="/storybook/" target="_blank" rel="noopener">Storybook 데모</a> — 전 패키지 인터랙티브 컴포넌트
 - [예제](/migration/live-demos) — 복사-붙여넣기 코드 패턴
-- [아키텍처](/architecture) — 27개 패키지 구성
+- [아키텍처](/architecture) — 31개 패키지 구성

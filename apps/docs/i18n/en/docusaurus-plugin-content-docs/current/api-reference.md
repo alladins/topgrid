@@ -1,7 +1,7 @@
 # topgrid API Reference
 
 This reference summarizes the public exports and key signatures of the **core grid packages** (the 13 listed in the §0 table below).
-For the full **27-package** layout, see [Introduction](/intro) and [Architecture](./architecture); for charts (4 packages), see [Charting](./charting);
+For the full **31-package** layout, see [Introduction](/intro) and [Architecture](./architecture); for charts (4 packages), see [Charting](./charting);
 for the Vue adapter, see `@topgrid/grid-vue`. For the getting-started guide, see [Get Started](./getting-started); for cell renderer details, see §2 below.
 
 Unless noted otherwise, types (`ColumnDef`, `Table`, `Row`, `Cell`, `Header`, etc.) are used directly from

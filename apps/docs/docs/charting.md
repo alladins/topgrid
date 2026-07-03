@@ -63,6 +63,15 @@ setLicenseKey(MY_KEY);
 
 - License 워터마크 **자동 게이트**(React와 동등) — **React 의존 0**.
 - 서버 정적 SVG: `renderChartToSvgString(option, { width, height })` (SSR, DOM 불필요).
+- **라이브 데모**: [Vue 3 엔터프라이즈 차트](pathname:///vue-chart-demo/)(툴바로 타입 전환) — [예제 페이지](./migration/live-demos)에도 임베드.
+
+:::tip Vue Pro 데이터 → 차트
+Vue 3 앱에서 **피벗·서버사이드 결과를 차트로** 연결하려면 신규 Vue Pro 패키지를 함께 쓰세요:
+- **피벗 → 차트**: [`@topgrid/grid-pro-pivot-vue`](./api/grid-pro-pivot-vue)의 `useVuePivot` 모델을 `seriesFromPivot` → `matrixToEChartsOption` 으로 넘깁니다.
+- **서버 데이터 → 차트**: [`@topgrid/grid-pro-serverside-vue`](./api/grid-pro-serverside-vue)의 `useVueServerSideData` 로 받은 데이터를 `seriesFromMatrix` 로 변환합니다.
+
+사용법은 [시작 가이드 §4.5](./getting-started#45-vue-3--피벗--서버사이드-pro) 참고.
+:::
 
 ## 셀 / 경량 차트 (zero-dep)
 

@@ -12,13 +12,13 @@ filtering, sorting, pagination, and virtualization, to Enterprise-grade Pro feat
 such as pivoting, server-side row model (SSRM), integrated charts, spreadsheet,
 advanced filters, range selection, aggregation, and cell merging.
 
-- npm scope: `@topgrid` · **27 packages** (7 free MIT + 20 commercial EULA)
+- npm scope: `@topgrid` · **31 packages** (7 free MIT + 24 commercial EULA)
 - License: MIT core/adapters + commercial Pro packages
 
 ## Getting Started
 
 - [Quick Start](./getting-started) — Installation and basic usage
-- [Architecture](./architecture) — The 27-package structure and design
+- [Architecture](./architecture) — The 31-package structure and design
 - [Feature Comparison](./comparison) — Feature matrix vs. XX Grid / xxxx
 - [Migration Guide](./migration/dataTable-migration) — Moving from a legacy grid/DataTable to `<Grid>`
 

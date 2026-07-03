@@ -95,7 +95,7 @@ const CONTENT: Record<string, Content> = {
     subtitle: (
       <>
         TanStack Table v8 기반 <strong>Headless React 그리드</strong> — 가상화·피벗·집계·서버사이드·
-        차트 17종·스프레드시트까지. MIT 코어 + Enterprise Pro, <strong>27 패키지</strong>.
+        차트 17종·스프레드시트까지. MIT 코어 + Enterprise Pro, <strong>31 패키지</strong>.
       </>
     ),
     ctaStart: '시작하기 →',
@@ -150,7 +150,7 @@ const CONTENT: Record<string, Content> = {
       <>
         A <strong>headless React grid</strong> built on TanStack Table v8 — virtualization, pivoting,
         aggregation, server-side, 17 chart types, spreadsheet. MIT core + Enterprise Pro,{' '}
-        <strong>27 packages</strong>.
+        <strong>31 packages</strong>.
       </>
     ),
     ctaStart: 'Get Started →',
@@ -211,7 +211,7 @@ export default function Home() {
   return (
     <Layout
       title={`${siteConfig.title} — Headless React grid`}
-      description="A headless React grid built on TanStack Table v8. Virtualization, pivoting, aggregation, server-side, 17 chart types, spreadsheet. MIT core + Pro, 27 packages."
+      description="A headless React grid built on TanStack Table v8. Virtualization, pivoting, aggregation, server-side, 17 chart types, spreadsheet. MIT core + Pro, 31 packages."
     >
       {/* ── HERO ── */}
       <header className={styles.hero}>

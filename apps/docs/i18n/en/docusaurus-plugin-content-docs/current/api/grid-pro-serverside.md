@@ -1,7 +1,7 @@
 ---
 title: "@topgrid/grid-pro-serverside"
 sidebar_label: "grid-pro-serverside"
-sidebar_position: 25
+sidebar_position: 27
 ---
 
 # @topgrid/grid-pro-serverside
@@ -9,7 +9,7 @@ sidebar_position: 25
 > Pro: server-side row model (SSRM) — block-based lazy loading, infinite scroll, server sort/filter/group with stale-response (epoch) rejection · **Commercial (EULA)**
 
 :::info Auto-generated
-This page is auto-generated from the TSDoc comments in the source code (internal markers stripped). For a curated getting-started summary, see the [API Reference](../api-reference).
+This page is auto-generated from the TSDoc comments in the source code (internal markers scrubbed). For a curated getting-started summary, see the [API Reference](../api-reference).
 :::
 
 **61** public exports — 27 functions · 3 hooks · 0 components · 31 types · 0 constants.
@@ -365,6 +365,16 @@ A derived pivot-result column: a leaf (accessorKey) or a group (columns).
 
 ### `ServerSideControllerOptions`
 
+`ServerSideController` — the SSRM data-flow logic , extracted from React so
+it is **node-verifiable without a DOM**. Holds the block cache + active sort/filter, plans and
+fetches blocks for a visible range, and emits a re-materialized array via `onChange`.
+
+The `useServerSideData` hook is a thin wrapper: it owns the React state and feeds this
+controller the virtualizer's visible range + sort/filter changes.
+
+Epoch invariant lives in the pure cache (./blockCache): each request captures the
+epoch at send time; a response for a since-invalidated query is discarded by `acceptBlock`.
+
 | Property | Type | Description |
 |---|---|---|
 | `blockSize` | `number` |  |
@@ -407,6 +417,16 @@ skeleton (otherwise accessors read `undefined` → blank cells while loading).
 | `toggleGroup` | `unknown` |  |
 
 ### `ServerSideTreeControllerOptions`
+
+`ServerSideTreeController` — lazy-group SSRM data-flow logic , extracted from
+React so it is node-verifiable without a DOM. Wraps the pure ./treeCache: plans/fetches
+child blocks for the visible display range, handles expand/collapse, and emits the flattened
+display list via `onChange`.
+
+Loop discipline (as in ): `emit` fires only on (a) a block resolving or (b) an expand/collapse
+toggle — never synchronously inside the virtualizer `onChange` path (`ensureRange` only
+plans+fetches). `ensureVisibleNodes` cannot change the flatten output (a missing node and an
+empty node both flatten to one loading placeholder), so it is safe to skip emit there.
 
 | Property | Type | Description |
 |---|---|---|

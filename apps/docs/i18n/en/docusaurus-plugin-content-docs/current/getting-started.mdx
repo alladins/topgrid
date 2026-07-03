@@ -3,7 +3,7 @@
 topgrid is a React grid library **built on TanStack Table v8**. You can use **7 free MIT packages** that provide the core grid, cell
 renderers, sorting/filtering, Excel/CSV/PDF export, and a Vue adapter, while advanced features such as
 multi-level headers, change tracking, and Excel-style range editing extend it through **commercial Pro packages**.
-(For the full 27-package layout, see [Architecture](./architecture).)
+(For the full 31-package layout, see [Architecture](./architecture).)
 
 - npm scope: `@topgrid/*`
 - Recommended environment: React 18/19 + TypeScript + Tailwind CSS
@@ -409,6 +409,82 @@ import { RangeSelectGrid } from '@topgrid/grid-pro-range';
 If you need low-level control, compose the hooks `useCellRange` (drag range) / `useKeyboardNav` (arrow keys, Tab)
 / `useClipboard` (Ctrl+C/V) / `useKeyboardEdit` (Delete, batch input) directly.
 For the signatures, see [API Reference §6](./api-reference).
+
+---
+
+### 4.5 Vue 3 — pivot · server-side (Pro)
+
+Nuxt/Vue 3 apps use Vue-specific packages built on the **same framework-agnostic core**
+(`grid-pro-{pivot,serverside}-core`) for pivoting and server-side data. **Zero React dependency**;
+licensing gates via `@topgrid/grid-license-core`, and controllers are created only in `onMounted`,
+so they are **Nuxt SSR-safe**.
+
+```bash
+# Pivot (Vue) / server-side (Vue) — install only what you need
+pnpm add @topgrid/grid-pro-pivot-vue @topgrid/grid-pro-serverside-vue vue @tanstack/vue-table
+```
+
+**Pivot — `useVuePivot` composable + `VuePivotGrid` render shell**
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useVuePivot, VuePivotGrid, setLicenseKey } from '@topgrid/grid-pro-pivot-vue';
+
+setLicenseKey('YOUR-LICENSE-KEY'); // once at app entry (watermark if unset)
+
+const data = ref([
+  { region: 'Seoul', quarter: 'Q1', amt: 120 },
+  { region: 'Busan', quarter: 'Q1', amt: 90 },
+  // …
+]);
+const config = ref({
+  rows: ['region'],
+  columns: ['quarter'],
+  values: [{ field: 'amt', aggregationFn: 'sum' }],
+});
+
+// Headless: a reactive PivotModel (render it yourself)
+const model = useVuePivot(data, config);
+</script>
+
+<template>
+  <!-- Convenience render shell: multi-level headers + value cells via vue-table -->
+  <VuePivotGrid :data="data" :config="config" />
+  <!-- or render from `model` directly / edit config with VuePivotPanel (4-zone DnD) -->
+</template>
+```
+
+**Server-side (SSRM) — `useVueServerSideData`**
+
+```vue
+<script setup lang="ts">
+import { useVueServerSideData, isRowPlaceholder, setLicenseKey } from '@topgrid/grid-pro-serverside-vue';
+import type { ServerSideDatasource } from '@topgrid/grid-pro-serverside-vue';
+
+setLicenseKey('YOUR-LICENSE-KEY');
+
+const datasource: ServerSideDatasource<Row> = {
+  async getRows({ startRow, endRow, sortModel, filterModel }) {
+    const res = await fetch('/api/rows', {
+      method: 'POST',
+      body: JSON.stringify({ startRow, endRow, sortModel, filterModel }),
+    });
+    return await res.json(); // { rows, lastRow }
+  },
+};
+
+// Reactive data/totalCount + ensureRange·setSorting·refresh
+const { data, totalCount, ensureRange, setSorting, refresh } =
+  useVueServerSideData(datasource, { blockSize: 100, rowCount: 100_000 });
+// Wire your virtualizer's visible range → ensureRange(first, last)
+// Use isRowPlaceholder(row) to show a loading skeleton
+</script>
+```
+
+- Push (viewport) model: `useVueViewportRowModel`; lazy grouping: `useVueServerSideTree`.
+- **Charts (Vue 3)**: see the [Charting guide](./charting#vue-3-quick-start) (`@topgrid/grid-pro-chart-enterprise-vue`).
+- Signatures: [per-package API](./api/grid-pro-pivot-vue) · [grid-pro-serverside-vue](./api/grid-pro-serverside-vue).
 
 ---
 

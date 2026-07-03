@@ -1,78 +1,18 @@
 ---
-title: "@topgrid/grid-pro-pivot"
-sidebar_label: "grid-pro-pivot"
-sidebar_position: 23
+title: "@topgrid/grid-pro-pivot-core"
+sidebar_label: "grid-pro-pivot-core"
+sidebar_position: 24
 ---
 
-# @topgrid/grid-pro-pivot
+# @topgrid/grid-pro-pivot-core
 
-> Pro: declarative 2-D pivot table (row × column dimensions × value aggregation) over &lt;Grid> · **상용 (EULA)**
+> Framework-neutral pivot engine: declarative 2-D pivot transform + pure value reducers (no React/Vue). Consumed by @topgrid/grid-pro-pivot (React) and grid-pro-pivot-vue. · **상용 (EULA)**
 
 :::info 자동 생성
 이 페이지는 소스 코드의 TSDoc 주석에서 자동 생성됩니다(내부 표식 정제). 큐레이트된 시작용 요약은 [API 레퍼런스](../api-reference) 참고.
 :::
 
-총 **31개** public export — 함수 10 · 훅 1 · 컴포넌트 2 · 타입 16 · 상수 2.
-
-## 컴포넌트
-
-### `PivotGrid`
-
-`PivotGrid` — declarative 2-D pivot table over grid-core `<Grid>`.
-
-```ts
-PivotGrid(__namedParameters: PivotGridProps<TData>): Element
-```
-
-**예시**
-
-```tsx
-<PivotGrid
-  data={sales}
-  config={{
-    rows: ['region'],
-    columns: ['quarter'],
-    values: [{ field: 'sales', aggregationFn: 'sum' }],
-  }}
-/>
-```
-
-### `PivotPanel`
-
-`PivotPanel` — drag fields between Available / Rows / Columns / Values to
-configure a pivot. Pair it with a `<PivotGrid>` driven by the same `config`
-state so dropping a field re-pivots the grid.
-
-```ts
-PivotPanel(__namedParameters: PivotPanelProps): ReactElement
-```
-
-## 훅 (Hooks)
-
-### `usePivot`
-
-Compute a memoised PivotModel from flat data + a pivot config.
-
-```ts
-usePivot(data: TData[], config: PivotConfig): PivotModel
-```
-
-| 파라미터 | 타입 | 설명 |
-|---|---|---|
-| `data` | `TData[]` | Flat source rows. |
-| `config` | `PivotConfig` | Row/column dimensions + value (measure) definitions. |
-
-**반환** — A memoised pivot model (recomputed when `data` or `config` change).
-
-**예시**
-
-```ts
-const model = usePivot(rows, {
-  rows: ['region'],
-  columns: ['quarter'],
-  values: [{ field: 'sales', aggregationFn: 'sum' }],
-});
-```
+총 **22개** public export — 함수 9 · 훅 0 · 컴포넌트 0 · 타입 11 · 상수 2.
 
 ## 함수
 
@@ -91,23 +31,6 @@ applyReducer(reducer: AggregationFnKey | PivotValueReducer, values: number[]): n
 | `values` | `number[]` | Raw numeric values (may contain non-finite entries). |
 
 **반환** — The aggregated number, or `null` for an empty finite set.
-
-### `buildPivotColumns`
-
-Build the full `<Grid>` column set from a pivot model.
-
-```ts
-buildPivotColumns(model: PivotModel, sort: PivotSortOpts, collapse: PivotCollapseOpts, colCollapse: PivotColumnCollapseOpts): ColumnDef<PivotRow>[]
-```
-
-| 파라미터 | 타입 | 설명 |
-|---|---|---|
-| `model` | `PivotModel` | The headless pivot model. |
-| `sort` | `PivotSortOpts` |  |
-| `collapse` | `PivotCollapseOpts` |  |
-| `colCollapse` | `PivotColumnCollapseOpts` |  |
-
-**반환** — Declarative `ColumnDef<PivotRow>[]` (leading row-dimension columns +  nested value column groups + grand-total group).
 
 ### `collapsePivotRows`
 
@@ -215,28 +138,6 @@ transposePivotConfig(config: PivotConfig): PivotConfig
 
 ## 타입 · 인터페이스
 
-### `PivotCollapseOpts`
-
-행 그룹 collapse 어포던스 옵션. 지정 시 subtotal 행 라벨이 클릭→토글 + chevron(▶/▼).
-미지정 시 subtotal 라벨은 기존 plain text( 동작 불변).
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `collapsedIds` | `ReadonlySet<string>` |  |
-| `onToggle` | `(…) => …` |  |
-
-### `PivotColumnCollapseOpts`
-
-컬럼 그룹 collapse 어포던스 옵션. 지정 시 컬럼-그룹 헤더가 클릭→토글 + chevron(▶/▼).
-collapse 된 그룹(`node.key` ∈ `collapsedKeys`)은 자식 leaf 컬럼 대신 그룹 집계 셀(`<node.key>__<i>`,
-computePivot 이 source 에서 사전 계산 = avg-of-avgs 안전)을 읽는 단일/값별 컬럼으로 렌더된다.
-미지정 시 컬럼 그룹은 기존 plain 헤더 + 전체 자식 렌더( 동작 불변).
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `collapsedKeys` | `ReadonlySet<string>` |  |
-| `onToggle` | `(…) => …` |  |
-
 ### `PivotColumnNode`
 
 A node in the column-combination tree (nested by column-dimension order).
@@ -260,24 +161,6 @@ Declarative pivot configuration.
 | `rows` | `string[]` | Row-dimension field names (order = nesting order; one leading column each). |
 | `values` | `PivotValueDef[]` | Value/measure definitions (each multiplies the column count). |
 
-### `PivotGridProps`
-
-Props for PivotGrid.
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `className?` | `string` | Outer wrapper className. |
-| `config` | `PivotConfig` | Pivot configuration (row/column dimensions + value defs). |
-| `data` | `TData[]` | Flat source rows. |
-| `enableCollapse?` | `boolean` | 행 그룹 expand/collapse 활성 (default `false`). `true` 시 subtotal 행 라벨이 클릭(chevron ▶/▼)→그룹 하위 data 행 숨김/복원(subtotal 은 대표로 잔존). 정렬과 합성된다 (collapse(sort(rows))). 미지정= 동작(정적 subtotal 라벨). |
-| `enableColumnCollapse?` | `boolean` | 컬럼 그룹 expand/collapse 활성 (default `false`). `true` 시 컬럼-그룹 헤더가 클릭(chevron ▶/▼)→자식 leaf 컬럼 숨김/복원(그룹은 source-집계 셀을 읽는 단일 컬럼으로 잔존, avg-of-avgs 안전). ≥2 컬럼차원에서 의미. 미지정= 동작(정적 그룹 헤더, 전체 자식 렌더). |
-| `enableConfigControls?` | `boolean` | 런타임 config 컨트롤 활성 (default `false`). `true` 시 상단 툴바([⇄ 전치], [pivot 토글])가 렌더되고 PivotGrid 가 config/pivotMode 를 **내부 state 로 소유**(props.config·pivotMode 는 초기값). 미지정 시 props.config 를 직접 사용( controlled 동작 불변). config 소비자 제어와 배타적. |
-| `enableSort?` | `boolean` | Pivot 값 컬럼 정렬 활성 (default `false`). `true` 시 값 헤더가 클릭→그룹 내 정렬(subtotal/grandTotal 앵커, grid-core enableSort 아님). 미지정= 동작(정적 헤더). |
-| `enableVirtualization?` | `boolean` | Enable `<Grid>` virtualization (delegated — , no react-virtual here). |
-| `onConfigChange?` | `(…) => …` | config 변경(전치 등) 시 호출 — 소비자 영속/동기화용. |
-| `passthroughColumns?` | `ColumnDef<TData, unknown>[]` | Columns used when `pivotMode === false` (normal grid passthrough). Ignored in pivot mode. |
-| `pivotMode?` | `boolean` | When `false`, the pivot transform is skipped entirely and `data` is rendered as a normal grid using `passthroughColumns`. Default `true`. |
-
 ### `PivotModel`
 
 The complete headless pivot result returned by the pure transform / `usePivot`.
@@ -288,15 +171,6 @@ The complete headless pivot result returned by the pure transform / `usePivot`.
 | `columnTree` | `PivotColumnNode[]` | Column-combination tree (nested by `config.columns` order). |
 | `config` | `PivotConfig` | The config the model was built from (echoed for the renderer). |
 | `rows` | `PivotRow[]` | Flattened rows (data + subtotals + grand-total), in render order. |
-
-### `PivotPanelProps`
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `className?` | `string` | Optional extra class on the panel container. |
-| `config` | `PivotConfig` | Current pivot configuration (controlled). |
-| `fields` | `string[]` | All source field names available for pivoting. |
-| `onConfigChange` | `(…) => …` | Called with the next config after a field is dropped onto a zone. |
 
 ### `PivotRow`
 
@@ -311,16 +185,6 @@ cells use the reserved `GRAND_TOTAL_COLUMN_KEY` prefix.
 | `__depth` | `number` | Nesting depth (row-dimension index this row belongs to; grandTotal = -1). |
 | `__id` | `string` | Stable row id (unique within the model). |
 | `__kind` | `PivotRowKind` | Semantic kind (drives styling + label rendering). |
-
-### `PivotSortOpts`
-
-값 헤더 정렬 어포던스 옵션. 지정 시 값 leaf 헤더가 클릭→정렬 + 인디케이터(▲▼).
-미지정 시 헤더는 기존 plain string( 동작 불변).
-
-| 속성 | 타입 | 설명 |
-|---|---|---|
-| `active` | `null \| PivotSortState` |  |
-| `onSort` | `(…) => …` |  |
 
 ### `PivotSortState`
 
@@ -364,18 +228,6 @@ type PivotRowKind = "data" | "subtotal" | "grandTotal"
 ```
 
 ### `PivotSortDirection`
-
-@topgrid/grid-pro-pivot — pivot 결과 정렬 — 순수.
-
-★ grid-core `enableSort` 를 `<Grid>` 에 넘기면 평탄 배열 전체(subtotal/grandTotal 포함)를 섞어 정렬한다
-(갭분석 명시). pivot-aware 정렬은 **그룹 내에서만** data 행을 재정렬하고 합성 행을 앵커한다:
-- rows 를 **세그먼트**(연속한 `data` 행 run, `subtotal`/`grandTotal` 이 종료)로 나눈다.
-- 각 세그먼트 *내부*의 data 행만 값 셀(`row[leafKey]`)로 재정렬한다.
-- subtotal/grandTotal 은 위치 불변(앵커) — 종료자는 자기 자리에 그대로 push.
-- **null 셀은 항상 하단**(asc/desc 무관) — 빈 교차셀이 정렬 상단을 차지하지 않게.
-
-스코프: 그룹 *자체*를 subtotal 값으로 정렬하는 계층 정렬은 vN. 본 함수는 sibling(그룹 내) 정렬만.
-타입만 import(런타임 0) → node strip-types 직접 실행.
 
 ```ts
 type PivotSortDirection = "asc" | "desc"

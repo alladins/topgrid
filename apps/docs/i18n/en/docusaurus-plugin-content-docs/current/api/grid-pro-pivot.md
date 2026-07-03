@@ -365,6 +365,18 @@ type PivotRowKind = "data" | "subtotal" | "grandTotal"
 
 ### `PivotSortDirection`
 
+@topgrid/grid-pro-pivot — pivot result sorting — pure.
+
+★ Passing grid-core `enableSort` to `<Grid>` sorts the entire flat array (including subtotal/grandTotal) intermixed
+(gap analysis noted). Pivot-aware sorting reorders data rows **only within a group** and anchors the synthetic rows:
+- Split rows into **segments** (a run of consecutive `data` rows, terminated by a `subtotal`/`grandTotal`).
+- Reorder only the data rows *inside* each segment by the value cell (`row[leafKey]`).
+- subtotal/grandTotal keep their position (anchored) — the terminator is pushed back to its own place as is.
+- **null cells always at the bottom** (regardless of asc/desc) — so empty intersection cells don't occupy the top of the sort.
+
+Scope: hierarchical sorting that sorts the *group itself* by its subtotal value is vN. This function only does sibling (within-group) sorting.
+Types only import (0 runtime) → run node strip-types directly.
+
 ```ts
 type PivotSortDirection = "asc" | "desc"
 ```

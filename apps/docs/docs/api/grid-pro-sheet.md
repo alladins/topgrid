@@ -1,7 +1,7 @@
 ---
 title: "@topgrid/grid-pro-sheet"
 sidebar_label: "grid-pro-sheet"
-sidebar_position: 26
+sidebar_position: 30
 ---
 
 # @topgrid/grid-pro-sheet

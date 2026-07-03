@@ -3,7 +3,7 @@
 topgrid 는 **TanStack Table v8 기반**의 React 그리드 라이브러리다. 핵심 그리드와 셀
 렌더러, 정렬/필터, Excel/CSV/PDF export, Vue 어댑터를 제공하는 **무료 MIT 패키지 7종**을 쓸 수 있고,
 다단 헤더·변경 추적·Excel-style 범위 편집 같은 고급 기능은 **상용 Pro 패키지**로 확장한다.
-(전체 27 패키지 구성은 [아키텍처](./architecture) 참고.)
+(전체 31 패키지 구성은 [아키텍처](./architecture) 참고.)
 
 - npm scope: `@topgrid/*`
 - 권장 환경: React 18/19 + TypeScript + Tailwind CSS
@@ -409,6 +409,81 @@ import { RangeSelectGrid } from '@topgrid/grid-pro-range';
 저수준 제어가 필요하면 `useCellRange` (드래그 범위) / `useKeyboardNav` (방향키·Tab)
 / `useClipboard` (Ctrl+C/V) / `useKeyboardEdit` (Delete·일괄 입력) 훅을 직접 조합한다.
 시그니처는 [API 레퍼런스 §6](./api-reference) 참고.
+
+---
+
+### 4.5 Vue 3 — 피벗 · 서버사이드 (Pro)
+
+Nuxt/Vue 3 앱은 **동일한 프레임워크 무관 코어**(`grid-pro-{pivot,serverside}-core`) 위에 얹은
+Vue 전용 패키지로 피벗·서버사이드를 쓴다. **React 의존 0**, 라이선스는 `@topgrid/grid-license-core`로
+게이트하며 컨트롤러는 `onMounted`에서만 생성되어 **Nuxt SSR 안전**하다.
+
+```bash
+# 피벗(Vue) / 서버사이드(Vue) — 필요한 것만
+pnpm add @topgrid/grid-pro-pivot-vue @topgrid/grid-pro-serverside-vue vue @tanstack/vue-table
+```
+
+**피벗 — `useVuePivot` 컴포저블 + `VuePivotGrid` 렌더 셸**
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useVuePivot, VuePivotGrid, setLicenseKey } from '@topgrid/grid-pro-pivot-vue';
+
+setLicenseKey('YOUR-LICENSE-KEY'); // 앱 entry 1회 (미설정 시 워터마크)
+
+const data = ref([
+  { region: '서울', quarter: 'Q1', amt: 120 },
+  { region: '부산', quarter: 'Q1', amt: 90 },
+  // …
+]);
+const config = ref({
+  rows: ['region'],
+  columns: ['quarter'],
+  values: [{ field: 'amt', aggregationFn: 'sum' }],
+});
+
+// 헤드리스: 반응형 PivotModel (직접 렌더)
+const model = useVuePivot(data, config);
+</script>
+
+<template>
+  <!-- 편의 렌더 셸: 다단 헤더 + 값 셀을 vue-table 로 렌더 -->
+  <VuePivotGrid :data="data" :config="config" />
+  <!-- 또는 model 로 직접 렌더 / VuePivotPanel(4존 DnD)로 config 편집 -->
+</template>
+```
+
+**서버사이드(SSRM) — `useVueServerSideData`**
+
+```vue
+<script setup lang="ts">
+import { useVueServerSideData, isRowPlaceholder, setLicenseKey } from '@topgrid/grid-pro-serverside-vue';
+import type { ServerSideDatasource } from '@topgrid/grid-pro-serverside-vue';
+
+setLicenseKey('YOUR-LICENSE-KEY');
+
+const datasource: ServerSideDatasource<Row> = {
+  async getRows({ startRow, endRow, sortModel, filterModel }) {
+    const res = await fetch('/api/rows', {
+      method: 'POST',
+      body: JSON.stringify({ startRow, endRow, sortModel, filterModel }),
+    });
+    return await res.json(); // { rows, lastRow }
+  },
+};
+
+// 반응형 data/totalCount + ensureRange·setSorting·refresh
+const { data, totalCount, ensureRange, setSorting, refresh } =
+  useVueServerSideData(datasource, { blockSize: 100, rowCount: 100_000 });
+// 가상화 라이브러리의 visible range → ensureRange(first, last)
+// isRowPlaceholder(row) 로 로딩 스켈레톤 표시
+</script>
+```
+
+- 뷰포트(push) 모델은 `useVueViewportRowModel`, 지연 그룹은 `useVueServerSideTree`.
+- **차트(Vue 3)** 는 [차트 가이드](./charting#vue-3-빠른-시작) 참고(`@topgrid/grid-pro-chart-enterprise-vue`).
+- 시그니처는 [패키지별 API](./api/grid-pro-pivot-vue)·[grid-pro-serverside-vue](./api/grid-pro-serverside-vue).
 
 ---
 

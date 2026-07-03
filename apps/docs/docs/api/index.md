@@ -33,8 +33,12 @@ sidebar_position: 0
 | [`@topgrid/grid-pro-merging`](./grid-pro-merging) | Pro: Cell Merging (rowSpan) — column.mergeRows API + automatic rowSpan calculation |
 | [`@topgrid/grid-pro-panel`](./grid-pro-panel) | Pro: declarative grid chrome — StatusBar, ToolPanel (column visibility/order), and a reused drag-grouping RowGroupPanel |
 | [`@topgrid/grid-pro-pivot`](./grid-pro-pivot) | Pro: declarative 2-D pivot table (row × column dimensions × value aggregation) over &lt;Grid> |
+| [`@topgrid/grid-pro-pivot-core`](./grid-pro-pivot-core) | Framework-neutral pivot engine: declarative 2-D pivot transform + pure value reducers (no React/Vue). Consumed by @topgrid/grid-pro-pivot (React) and grid-pro-pivot-vue. |
+| [`@topgrid/grid-pro-pivot-vue`](./grid-pro-pivot-vue) | Pro: declarative 2-D pivot for Vue 3 — reuses the framework-neutral @topgrid/grid-pro-pivot-core engine (headless composable + tool panel). |
 | [`@topgrid/grid-pro-range`](./grid-pro-range) | Pro: Cell Range Selection, Drag-fill, Clipboard |
 | [`@topgrid/grid-pro-serverside`](./grid-pro-serverside) | Pro: server-side row model (SSRM) — block-based lazy loading, infinite scroll, server sort/filter/group with stale-response (epoch) rejection |
+| [`@topgrid/grid-pro-serverside-core`](./grid-pro-serverside-core) | Framework-neutral server-side row model core: block cache, SSRM controller, lazy-group tree cache, viewport row model, server pivot columns (no React/Vue; @tanstack/table-core type-only). |
+| [`@topgrid/grid-pro-serverside-vue`](./grid-pro-serverside-vue) | Pro: server-side row model (SSRM) + viewport (push) row model for Vue 3 — reuses the framework-neutral @topgrid/grid-pro-serverside-core controllers. |
 | [`@topgrid/grid-pro-sheet`](./grid-pro-sheet) | Pro: spreadsheet mode (PoC) — formula engine (A1 refs, SUM/AVERAGE/…), dependency-graph recalc with cycle detection |
 | [`@topgrid/grid-pro-tracking`](./grid-pro-tracking) | Pro: ChangeTracking, Mapping, Validator |
 

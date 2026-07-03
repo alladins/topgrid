@@ -1,7 +1,7 @@
 ---
 title: "@topgrid/grid-pro-tracking"
 sidebar_label: "grid-pro-tracking"
-sidebar_position: 27
+sidebar_position: 31
 ---
 
 # @topgrid/grid-pro-tracking
