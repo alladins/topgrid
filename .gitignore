@@ -58,3 +58,6 @@ packages/grid-pro-chart-enterprise-vue/e2e/app.js
 apps/example-react/app.js
 apps/*/test-results/
 apps/*/playwright-report/
+
+# 라이선스 서명 개인키 (절대 커밋 금지)
+scripts/license/.private.key

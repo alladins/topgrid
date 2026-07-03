@@ -1,5 +1,13 @@
 import type { LicenseStatus } from './types.js';
 
+/**
+ * vendor Ed25519 서명 **공개키**(raw 32바이트, base64url) — 라이브러리에 핀(하드코딩).
+ * 라이선스 키는 이 공개키에 대응하는 개인키(scripts/license/ CLI 보관)로 서명돼야만 유효.
+ * ★키에 동봉된 공개키를 신뢰하지 않으므로 자가서명(위조) 키는 거부된다.
+ * 키페어 교체 시: `node scripts/license/license.mjs keygen` → 출력된 공개키로 이 값을 갱신 후 재발행.
+ */
+const PINNED_PUBLIC_KEY = 'yDLmmLTiM1MDmdkrP0OIQZHxmM2ppEmscxH41ixBfU8';
+
 interface KeyPayload {
   domain: string;
   expiresAt: number; // Unix ms
@@ -25,12 +33,13 @@ function base64urlToBytes(s: string): Uint8Array {
 
 /** D7: C-32 pure async helper — no React, no DOM side-effects */
 export async function verifySignature(rawKey: string): Promise<LicenseStatus> {
+  // 키 형식: <서명>.<페이로드> (2파트). 공개키는 키에 넣지 않고 라이브러리에 핀된 값으로 검증.
   const parts = rawKey.split('.');
-  if (parts.length !== 3) {
+  if (parts.length !== 2) {
     return { valid: false, ...({ reason: 'invalid' } as { reason: 'invalid' }) };
   }
 
-  const [pubKeyB64, sigB64, payloadB64] = parts;
+  const [sigB64, payloadB64] = parts;
 
   let payload: unknown;
   try {
@@ -56,7 +65,7 @@ export async function verifySignature(rawKey: string): Promise<LicenseStatus> {
   try {
     pubKey = await cryptoSubtle.importKey(
       'raw',
-      base64urlToBytes(pubKeyB64),
+      base64urlToBytes(PINNED_PUBLIC_KEY),
       { name: 'Ed25519' },
       false,
       ['verify'],
