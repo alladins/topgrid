@@ -87,8 +87,10 @@ const config: Config = {
       copyright: `© 2026 platree · topgrid — TanStack Table 기반 Headless React 그리드`,
     },
   } satisfies Preset.ThemeConfig,
-  // NOTE: 자동 API 레퍼런스(docusaurus-plugin-typedoc)는 typedoc 버전 정합 이슈로
-  // 임시 비활성. 수기 문서 우선 배포 후 후속으로 복구 예정.
+  // 자동 API 레퍼런스: docusaurus-plugin-typedoc 체인(버전 정합 이슈) 대신 자체 생성기 사용.
+  // `pnpm --dir apps/docs gen:api` (apps/docs/scripts/gen-api.mjs) 가 typedoc 을 JSON 추출기로만
+  // 써서 소스 TSDoc → docs/api/<pkg>.md (한국어) 생성. 사이드바 '패키지별 API (자동 생성)' 로 노출.
+  // 영어(i18n/en)는 후속 단계. API 소스 변경 시 gen:api 재실행 후 커밋.
 };
 
 export default config;

@@ -14,7 +14,8 @@
     "storybook": "storybook dev --port 6006",
     "visual:test": "playwright test",
     "visual:update-baseline": "playwright test --update-snapshots",
-    "test": "echo TODO"
+    "test": "echo TODO",
+    "gen:api": "node scripts/gen-api.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
