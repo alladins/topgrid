@@ -48,6 +48,7 @@ const config: Config = {
         { type: 'doc', docId: 'api-reference', position: 'left', label: 'API' },
         { type: 'doc', docId: 'comparison', position: 'left', label: '기능 비교' },
         { to: '/migration/live-demos', position: 'left', label: '예제' },
+        { to: '/pricing', position: 'left', label: '가격' },
         // 인터랙티브 컴포넌트 데모(Storybook). `pnpm build:site` 가 static/storybook 으로
         // 빌드 → docusaurus build 가 /storybook/ 로 번들(href 라 onBrokenLinks 미검사).
         { href: 'pathname:///storybook/', position: 'right', label: '데모', target: '_blank' },
@@ -72,6 +73,7 @@ const config: Config = {
           items: [
             { label: '소개', to: '/intro' },
             { label: '기능 비교', to: '/comparison' },
+            { label: '가격', to: '/pricing' },
             { label: '예제', to: '/migration/live-demos' },
             { label: '데모 (Storybook)', href: 'pathname:///storybook/' },
           ],

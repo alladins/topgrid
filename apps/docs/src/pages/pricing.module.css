@@ -1,0 +1,195 @@
+/* ── PRICING 페이지 (랜딩 blue 브랜드와 동일 톤) ── */
+.wrap {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+.head {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+.head h1 {
+  font-size: 2.4rem;
+  margin-bottom: 0.4rem;
+}
+.head p {
+  color: var(--ifm-color-content-secondary);
+  font-size: 1.1rem;
+  margin: 0;
+}
+.promo {
+  max-width: 860px;
+  margin: 1.4rem auto 2.2rem;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid var(--ifm-color-primary-lighter);
+  background: var(--ifm-color-primary-contrast-background, rgba(37, 99, 235, 0.06));
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* 티어 카드 */
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+@media (max-width: 996px) {
+  .tiers {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .tiers {
+    grid-template-columns: 1fr;
+  }
+}
+.tier {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--tg-card-border, #e5e7eb);
+  border-radius: 14px;
+  padding: 1.3rem 1.2rem;
+  background: var(--tg-card-bg, #fff);
+}
+.tierHot {
+  border: 2px solid var(--ifm-color-primary);
+  box-shadow: 0 12px 34px rgba(37, 99, 235, 0.14);
+  position: relative;
+}
+.hotBadge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ifm-color-primary);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.tierName {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+}
+.tierFor {
+  font-size: 0.82rem;
+  color: var(--ifm-color-content-secondary);
+  min-height: 2.2em;
+  margin-bottom: 0.6rem;
+}
+.price {
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+.priceUnit {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ifm-color-content-secondary);
+  display: block;
+  margin-top: 2px;
+}
+.priceSub {
+  font-size: 0.78rem;
+  color: var(--ifm-color-content-secondary);
+  margin: 0.45rem 0 0.8rem;
+  min-height: 2.4em;
+}
+.feats {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+  font-size: 0.84rem;
+  flex: 1;
+}
+.feats li {
+  padding: 0.22rem 0 0.22rem 1.25rem;
+  position: relative;
+}
+.feats li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--ifm-color-primary);
+  font-weight: 700;
+}
+.tierCta {
+  text-align: center;
+}
+
+/* 공통 포함 밴드 */
+.includes {
+  margin: 2.6rem auto 0;
+  max-width: 960px;
+  border: 1px solid var(--tg-card-border, #e5e7eb);
+  border-radius: 14px;
+  padding: 1.3rem 1.5rem;
+  background: var(--ifm-table-head-background);
+}
+.includes h3 {
+  margin-bottom: 0.7rem;
+  font-size: 1.05rem;
+}
+.includesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px 24px;
+  font-size: 0.88rem;
+}
+@media (max-width: 600px) {
+  .includesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+.includesGrid div {
+  padding: 0.18rem 0 0.18rem 1.25rem;
+  position: relative;
+}
+.includesGrid div::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--ifm-color-primary);
+  font-weight: 700;
+}
+
+/* FAQ */
+.faq {
+  max-width: 860px;
+  margin: 2.8rem auto 0;
+}
+.faq h2 {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+.faq details {
+  border: 1px solid var(--tg-card-border, #e5e7eb);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.6rem;
+  background: var(--tg-card-bg, #fff);
+}
+.faq summary {
+  font-weight: 600;
+  cursor: pointer;
+}
+.faq details p {
+  margin: 0.6rem 0 0;
+  font-size: 0.92rem;
+  color: var(--ifm-color-content-secondary);
+}
+
+/* 하단 CTA */
+.bottomCta {
+  text-align: center;
+  margin-top: 2.8rem;
+}
+.bottomCta p {
+  color: var(--ifm-color-content-secondary);
+  margin-bottom: 1rem;
+}

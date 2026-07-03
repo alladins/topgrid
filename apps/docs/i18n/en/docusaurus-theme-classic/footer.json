@@ -54,5 +54,9 @@
   "copyright": {
     "message": "© 2026 platree · topgrid — Headless React grid built on TanStack Table",
     "description": "The footer copyright"
+  },
+  "link.item.label.가격": {
+    "message": "Pricing",
+    "description": "The label of footer link with label=가격 linking to /pricing"
   }
 }
