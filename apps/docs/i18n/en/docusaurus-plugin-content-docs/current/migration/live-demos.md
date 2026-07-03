@@ -313,8 +313,129 @@ formatValue(value); // "120"
 
 ---
 
+## Example 7: Charts — Lightweight (Sparkline · Range)
+
+> topgrid charts are **all Pro (EULA)** — there is no free chart tier. They split into a
+> **lightweight (zero-dep SVG)** layer and an **enterprise (17-type ECharts)** layer. The demos
+> below are **live, rendered charts**. For data flow and the full catalog see the [Charting guide](/charting).
+
+### Sparkline cells (`SparklineCell`)
+
+Inline mini charts inside a cell (line/bar/area/win-loss). **Zero** chart-library dependency (pure SVG).
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-sparkline--min-max-markers&viewMode=story" title="Sparkline cell demo" loading="lazy" style={{ width: '100%', height: '260px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+```tsx
+import { SparklineCell } from '@topgrid/grid-pro-chart';
+
+// In a column cell renderer — a number array as an in-cell mini chart
+{
+  accessorKey: 'trend',
+  header: 'Trend',
+  cell: ({ getValue }) => <SparklineCell type="line" values={getValue() as number[]} />,
+}
+```
+
+### Lightweight range chart (`RangeChart`)
+
+Zero-dep SVG chart (bar/line/area) — cell-range selection → instant visualization.
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-rangechart--bar&viewMode=story" title="Range chart demo" loading="lazy" style={{ width: '100%', height: '320px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+```tsx
+import { RangeChart } from '@topgrid/grid-pro-chart';
+
+const categories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+const series = [{ name: 'Shipments', data: [120, 200, 150, 80, 170, 210] }];
+
+export default function App() {
+  return <RangeChart type="bar" categories={categories} series={series} />;
+}
+```
+
+### Chart card — type switcher (`ChartCard`)
+
+Toolbar to switch bar/line/area. Visualize a cell range or pivot result in a single card.
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-chartcard--type-switcher&viewMode=story" title="Chart card demo" loading="lazy" style={{ width: '100%', height: '380px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+---
+
+## Example 8: Charts — Enterprise (17-type ECharts)
+
+`@topgrid/grid-pro-chart-enterprise` — an Apache [ECharts](https://echarts.apache.org/) adapter (17 types).
+Install `echarts` (5.x/6.x) as a **peer**; the whole app shares a single ECharts instance.
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-enterprise-enterprisechartpanel--default&viewMode=story" title="Enterprise chart demo" loading="lazy" style={{ width: '100%', height: '420px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+Switch among the 17 types via the toolbar — e.g. **radar**, **heatmap**.
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-enterprise-enterprisechartpanel--radar&viewMode=story" title="Radar chart" loading="lazy" style={{ width: '100%', height: '380px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-enterprise-enterprisechartpanel--heatmap&viewMode=story" title="Heatmap chart" loading="lazy" style={{ width: '100%', height: '380px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+```tsx
+import { EnterpriseChartPanel } from '@topgrid/grid-pro-chart-enterprise';
+import { setLicenseKey } from '@topgrid/grid-license';
+
+setLicenseKey('YOUR-LICENSE-KEY'); // once at app entry (watermark if unset)
+
+const data = {
+  categories: ['Jan', 'Feb', 'Mar', 'Apr'],
+  series: [
+    { name: 'Seoul', values: [120, 200, 150, 180] },
+    { name: 'Busan', values: [90, 130, 110, 160] },
+  ],
+};
+
+export default function App() {
+  return (
+    <EnterpriseChartPanel
+      data={data}
+      initialType="bar"
+      toolbarTypes={['bar', 'line', 'radar', 'heatmap', 'pie']} // which of the 17 to surface
+      enableExport
+      onCrossFilter={(sel) => applyGridFilter(sel.name)}         // chart click → grid filter
+    />
+  );
+}
+```
+
+17 types: line·bar·area·stacked-bar·stacked-area·100-stacked-bar·scatter·bubble·pie·doughnut·
+funnel·treemap·radar·heatmap·candlestick·boxplot·sankey.
+
+### Vue 3 (same engine)
+
+Nuxt/Vue apps use the **same engine**'s Vue package — zero React dependency, SSR-safe.
+
+```ts
+import { EnterpriseChartPanel, setLicenseKey } from '@topgrid/grid-pro-chart-enterprise-vue';
+
+setLicenseKey('YOUR-LICENSE-KEY');
+// <EnterpriseChartPanel :data="data" initial-type="bar"
+//   :toolbar-types="['bar','radar','heatmap']" @cross-filter="onSelect" />
+```
+
+### Bring-your-own (Highcharts / AG Charts)
+
+Inject your own licensed library instead of ECharts — the `renderChart` seam is library-agnostic (zero dep).
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-rangechartpanel--byo-renderer&viewMode=story" title="BYO renderer demo" loading="lazy" style={{ width: '100%', height: '320px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+```tsx
+import { RangeChartPanel } from '@topgrid/grid-pro-chart';
+
+<RangeChartPanel
+  series={selectedSeries}
+  renderChart={(s) => <MyOwnChart series={s} />} // Highcharts / AG Charts, etc.
+/>;
+```
+
+---
+
 ## Related Documentation
 
+- [Charting guide](/charting) — the 3-layer chart stack (sparkline · lightweight · 17-type enterprise)
 - <a href="/storybook/" target="_blank" rel="noopener">Storybook</a> — interactive component demos for all packages
 - [Getting Started](/getting-started) — installation and basic usage
 - [Architecture](/architecture) — the 27-package layout

@@ -322,8 +322,129 @@ formatValue(value); // "120"
 
 ---
 
+## 예제 7: 차트 — 경량 (스파크라인 · 범위)
+
+> topgrid 차트는 **모두 Pro(EULA)** 입니다 — 무료 차트 계층은 없습니다. 대신 **경량(zero-dep SVG)** 과
+> **엔터프라이즈(ECharts 17종)** 두 계층으로 나뉩니다. 아래는 **실제 렌더되는 라이브 데모**입니다.
+> 데이터 흐름·전체 카탈로그는 [차트 가이드](/charting)를 참고하세요.
+
+### 스파크라인 셀 (`SparklineCell`)
+
+셀 안 인라인 미니 차트(line/bar/area/win-loss). 차트 라이브러리 의존 **0**(순수 SVG).
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-sparkline--min-max-markers&viewMode=story" title="스파크라인 셀 데모" loading="lazy" style={{ width: '100%', height: '260px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+```tsx
+import { SparklineCell } from '@topgrid/grid-pro-chart';
+
+// 컬럼 셀 렌더러에서 — 숫자 배열을 셀 안 미니 차트로
+{
+  accessorKey: 'trend',
+  header: '추이',
+  cell: ({ getValue }) => <SparklineCell type="line" values={getValue() as number[]} />,
+}
+```
+
+### 경량 범위 차트 (`RangeChart`)
+
+zero-dep SVG 차트(bar/line/area) — 셀 범위 선택 → 즉석 시각화.
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-rangechart--bar&viewMode=story" title="범위 차트 데모" loading="lazy" style={{ width: '100%', height: '320px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+```tsx
+import { RangeChart } from '@topgrid/grid-pro-chart';
+
+const categories = ['1월', '2월', '3월', '4월', '5월', '6월'];
+const series = [{ name: '출하량', data: [120, 200, 150, 80, 170, 210] }];
+
+export default function App() {
+  return <RangeChart type="bar" categories={categories} series={series} />;
+}
+```
+
+### 차트 카드 — 타입 스위처 (`ChartCard`)
+
+툴바로 막대/선/영역 전환. 셀 범위·피벗 결과를 카드 하나로 시각화.
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-chartcard--type-switcher&viewMode=story" title="차트 카드 데모" loading="lazy" style={{ width: '100%', height: '380px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+---
+
+## 예제 8: 차트 — 엔터프라이즈 (ECharts 17종)
+
+`@topgrid/grid-pro-chart-enterprise` — Apache [ECharts](https://echarts.apache.org/) 어댑터(17 타입).
+`echarts`(5.x/6.x)를 **peer**로 설치하며, 앱 전체가 단일 ECharts 인스턴스를 공유합니다.
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-enterprise-enterprisechartpanel--default&viewMode=story" title="엔터프라이즈 차트 데모" loading="lazy" style={{ width: '100%', height: '420px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+툴바로 17종을 전환할 수 있습니다 — 예: **레이더**·**히트맵**.
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-enterprise-enterprisechartpanel--radar&viewMode=story" title="레이더 차트" loading="lazy" style={{ width: '100%', height: '380px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-enterprise-enterprisechartpanel--heatmap&viewMode=story" title="히트맵 차트" loading="lazy" style={{ width: '100%', height: '380px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+```tsx
+import { EnterpriseChartPanel } from '@topgrid/grid-pro-chart-enterprise';
+import { setLicenseKey } from '@topgrid/grid-license';
+
+setLicenseKey('YOUR-LICENSE-KEY'); // 앱 entry 1회 (미설정 시 워터마크)
+
+const data = {
+  categories: ['1월', '2월', '3월', '4월'],
+  series: [
+    { name: '서울', values: [120, 200, 150, 180] },
+    { name: '부산', values: [90, 130, 110, 160] },
+  ],
+};
+
+export default function App() {
+  return (
+    <EnterpriseChartPanel
+      data={data}
+      initialType="bar"
+      toolbarTypes={['bar', 'line', 'radar', 'heatmap', 'pie']} // 17 중 노출할 타입
+      enableExport
+      onCrossFilter={(sel) => applyGridFilter(sel.name)}         // 차트 클릭 → 그리드 필터
+    />
+  );
+}
+```
+
+17 타입: line·bar·area·stacked-bar·stacked-area·100-stacked-bar·scatter·bubble·pie·doughnut·
+funnel·treemap·radar·heatmap·candlestick·boxplot·sankey.
+
+### Vue 3 (동일 엔진)
+
+Nuxt/Vue 앱은 **같은 엔진**의 Vue 패키지를 씁니다 — React 의존 0, SSR 안전.
+
+```ts
+import { EnterpriseChartPanel, setLicenseKey } from '@topgrid/grid-pro-chart-enterprise-vue';
+
+setLicenseKey('YOUR-LICENSE-KEY');
+// <EnterpriseChartPanel :data="data" initial-type="bar"
+//   :toolbar-types="['bar','radar','heatmap']" @cross-filter="onSelect" />
+```
+
+### Bring-your-own (Highcharts / AG Charts)
+
+ECharts 대신 본인이 라이선스한 라이브러리를 주입할 수 있습니다 — `renderChart` 시임은 라이브러리 무관(의존 0).
+
+<iframe src="/storybook/iframe.html?id=grid-pro-chart-rangechartpanel--byo-renderer&viewMode=story" title="BYO 렌더러 데모" loading="lazy" style={{ width: '100%', height: '320px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
+
+```tsx
+import { RangeChartPanel } from '@topgrid/grid-pro-chart';
+
+<RangeChartPanel
+  series={selectedSeries}
+  renderChart={(s) => <MyOwnChart series={s} />} // Highcharts / AG Charts 등
+/>;
+```
+
+---
+
 ## 관련 문서
 
+- [차트 가이드](/charting) — 3계층 차트(스파크라인·경량·엔터프라이즈 17종) 상세
 - <a href="/storybook/" target="_blank" rel="noopener">Storybook 데모</a> — 전 패키지 인터랙티브 컴포넌트 데모
 - [빠른 시작](/getting-started) — 설치와 기본 사용
 - [아키텍처](/architecture) — 27개 패키지 구성
