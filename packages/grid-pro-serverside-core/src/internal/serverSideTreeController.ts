@@ -10,7 +10,7 @@
  * empty node both flatten to one loading placeholder), so it is safe to skip emit there.
  */
 
-import type { SortingState, ColumnFiltersState } from '@tanstack/react-table';
+import type { SortingState, ColumnFiltersState } from '@tanstack/table-core';
 import { blockBounds } from './blockCache.js';
 import {
   createTreeCache,

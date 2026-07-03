@@ -1,0 +1,51 @@
+{
+  "name": "@topgrid/grid-pro-serverside-core",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "SEE LICENSE IN EULA",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Framework-neutral server-side row model core: block cache, SSRM controller, lazy-group tree cache, viewport row model, server pivot columns (no React/Vue; @tanstack/table-core type-only).",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types src/internal/buildServerPivotColumns.test.ts && node --experimental-strip-types src/internal/viewportRowModel.test.ts"
+  },
+  "peerDependencies": {
+    "@tanstack/table-core": "^8.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@tanstack/table-core": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@tanstack/table-core": "^8.0.0"
+  },
+  "keywords": [
+    "grid",
+    "datagrid",
+    "table",
+    "tanstack-table",
+    "data-table",
+    "headless",
+    "server-side",
+    "ssrm",
+    "row-model"
+  ]
+}

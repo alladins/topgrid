@@ -18,8 +18,8 @@ import {
   materializeViewport,
   type ViewportDatasource,
   type ViewportRowModel,
-} from './internal/viewportRowModel.js';
-import type { RowPlaceholder } from './types.js';
+} from '@topgrid/grid-pro-serverside-core';
+import type { RowPlaceholder } from '@topgrid/grid-pro-serverside-core';
 
 export interface UseViewportRowModelOptions {
   /** Initial total row count (refined by the datasource's `setRowCount`). */

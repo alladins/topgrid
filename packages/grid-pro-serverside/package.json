@@ -24,10 +24,11 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/internal/buildServerPivotColumns.test.ts && node --experimental-strip-types src/internal/viewportRowModel.test.ts"
+    "test": "echo \"serverside 순수 로직은 @topgrid/grid-pro-serverside-core 에서 테스트\""
   },
   "dependencies": {
-    "@topgrid/grid-license": "workspace:*"
+    "@topgrid/grid-license": "workspace:*",
+    "@topgrid/grid-pro-serverside-core": "workspace:*"
   },
   "peerDependencies": {
     "@topgrid/grid-core": "workspace:*",

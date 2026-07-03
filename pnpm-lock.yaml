@@ -631,10 +631,6 @@ importers:
       react-dom:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
-    devDependencies:
-      esbuild:
-        specifier: ^0.25.0
-        version: 0.25.12
 
   packages/grid-pro-pivot-core:
     dependencies:
@@ -682,6 +678,9 @@ importers:
       '@topgrid/grid-license':
         specifier: workspace:*
         version: link:../grid-license
+      '@topgrid/grid-pro-serverside-core':
+        specifier: workspace:*
+        version: link:../grid-pro-serverside-core
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -692,6 +691,12 @@ importers:
       '@topgrid/grid-core':
         specifier: workspace:*
         version: link:../grid-core
+
+  packages/grid-pro-serverside-core:
+    devDependencies:
+      '@tanstack/table-core':
+        specifier: ^8.0.0
+        version: 8.21.3
 
   packages/grid-pro-sheet:
     dependencies:

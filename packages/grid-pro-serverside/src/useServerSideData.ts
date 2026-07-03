@@ -29,13 +29,13 @@ import type { Virtualizer } from '@tanstack/react-virtual';
 import {
   createServerSideController,
   type ServerSideController,
-} from './internal/serverSideController.js';
-import { materialize, createBlockCache } from './internal/blockCache.js';
+} from '@topgrid/grid-pro-serverside-core';
+import { materialize, createBlockCache } from '@topgrid/grid-pro-serverside-core';
 import {
   buildServerPivotColumns,
   type ServerPivotColumn,
-} from './internal/buildServerPivotColumns.js';
-import type { ServerSideDatasource, RowPlaceholder } from './types.js';
+} from '@topgrid/grid-pro-serverside-core';
+import type { ServerSideDatasource, RowPlaceholder } from '@topgrid/grid-pro-serverside-core';
 
 /** {@link useServerSideData} options. */
 export interface UseServerSideDataOptions {

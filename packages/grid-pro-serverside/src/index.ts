@@ -1,21 +1,18 @@
-// @topgrid/grid-pro-serverside — public API
+// @topgrid/grid-pro-serverside — public API (React)
 // MOD-GRID-22 / G-1: server-side row model (SSRM) pure block-cache core + Pro scaffold.
 //
-// REUSE ([[LESS-003]] live-overlap): grid-core already owns row virtualization
-// (useGridVirtualizer), server pagination (manualPagination/totalCount), and tree/expanding
-// (getSubRows). SSRM adds only what is absent — block-based lazy loading with stale-response
-// (epoch) rejection — as a PURE core (node-verified), feeding the existing
-// <Grid enableVirtualization> via a materialized placeholder array (LESS-005 shape). The G-2
-// hook + grid-core manualSorting/Filtering passthrough wire it; this G-1 ships the core only.
+// ★순수 서버사이드 코어(block cache·controllers·tree cache·viewport·server pivot·types)는
+// @topgrid/grid-pro-serverside-core 로 추출되어 React/Vue 가 공유한다. 여기서는 그대로
+// re-export 하여 public 표면을 불변 유지(비파괴). React 결합(useServerSideData·
+// useServerSideTree·useViewportRowModel 훅)만 이 패키지가 소유.
 //
-// AP-001 vacuous: no external/optional peer is imported (grid-license is a required Pro runtime
-// dep; react/react-table/grid-core are type-only peers). The block cache imports nothing.
+// AP-001 vacuous: react/react-table/react-virtual/grid-core 는 type-only peer.
 import { checkLicense } from '@topgrid/grid-license';
 
-// PAT-003 — module-load license gate (side effect; first Pro module since MOD-GRID-23).
+// PAT-003 — module-load license gate (side effect).
 checkLicense();
 
-// G-1 pure block-cache core (the SSRM epoch invariant + block math).
+// ── 순수 SSRM 코어 re-export (@topgrid/grid-pro-serverside-core) — 표면 불변 ──
 export {
   createBlockCache,
   blockIndexOf,
@@ -27,47 +24,10 @@ export {
   invalidate,
   materialize,
   isRowPlaceholder,
-} from './internal/blockCache.js';
-
-// G-2 data-flow controller (node-verifiable, React-free) + thin wiring hook.
-export {
   createServerSideController,
-} from './internal/serverSideController.js';
-export type {
-  ServerSideController,
-  ServerSideControllerOptions,
-} from './internal/serverSideController.js';
-export { useServerSideData } from './useServerSideData.js';
-export type {
-  UseServerSideDataOptions,
-  UseServerSideDataResult,
-  ServerSideGridProps,
-} from './useServerSideData.js';
-
-// MOD-GRID-67: server-side pivot — pure pivot-result column derivation (server returns field keys).
-export { buildServerPivotColumns } from './internal/buildServerPivotColumns.js';
-export type { ServerPivotColumn } from './internal/buildServerPivotColumns.js';
-
-// MOD-GRID-68: viewport row model — push-based real-time model (separate from SSRM pull).
-export {
+  buildServerPivotColumns,
   createViewportRowModel,
   materializeViewport,
-} from './internal/viewportRowModel.js';
-export type {
-  ViewportDatasource,
-  ViewportDatasourceParams,
-  ViewportRowModel,
-  ViewportRowModelOptions,
-} from './internal/viewportRowModel.js';
-export { useViewportRowModel } from './useViewportRowModel.js';
-export type {
-  UseViewportRowModelOptions,
-  UseViewportRowModelResult,
-  ViewportGridProps,
-} from './useViewportRowModel.js';
-
-// G-3 lazy grouping (hierarchical cache): pure tree core + React-free controller + thin hook.
-export {
   createTreeCache,
   pathKeyOf,
   toggleGroup,
@@ -80,22 +40,19 @@ export {
   clearTreeBlock,
   planTreeBlocks,
   flattenTree,
-} from './internal/treeCache.js';
-export type { TreeBlockRequest } from './internal/treeCache.js';
-export { createServerSideTreeController } from './internal/serverSideTreeController.js';
+  createServerSideTreeController,
+} from '@topgrid/grid-pro-serverside-core';
 export type {
+  ServerSideController,
+  ServerSideControllerOptions,
+  ServerPivotColumn,
+  ViewportDatasource,
+  ViewportDatasourceParams,
+  ViewportRowModel,
+  ViewportRowModelOptions,
+  TreeBlockRequest,
   ServerSideTreeController,
   ServerSideTreeControllerOptions,
-} from './internal/serverSideTreeController.js';
-export { useServerSideTree } from './useServerSideTree.js';
-export type {
-  UseServerSideTreeOptions,
-  UseServerSideTreeResult,
-  ServerSideTreeGridProps,
-} from './useServerSideTree.js';
-
-// Datasource contract + cache value types.
-export type {
   ServerSideDatasource,
   GetRowsRequest,
   GetRowsResult,
@@ -108,4 +65,24 @@ export type {
   SsrmRowMeta,
   TreeDisplayRow,
   TreeCacheState,
-} from './types.js';
+} from '@topgrid/grid-pro-serverside-core';
+
+// ── React 결합 훅 (이 패키지 소유) ──
+export { useServerSideData } from './useServerSideData.js';
+export type {
+  UseServerSideDataOptions,
+  UseServerSideDataResult,
+  ServerSideGridProps,
+} from './useServerSideData.js';
+export { useViewportRowModel } from './useViewportRowModel.js';
+export type {
+  UseViewportRowModelOptions,
+  UseViewportRowModelResult,
+  ViewportGridProps,
+} from './useViewportRowModel.js';
+export { useServerSideTree } from './useServerSideTree.js';
+export type {
+  UseServerSideTreeOptions,
+  UseServerSideTreeResult,
+  ServerSideTreeGridProps,
+} from './useServerSideTree.js';

@@ -18,8 +18,8 @@ import type { Virtualizer } from '@tanstack/react-virtual';
 import {
   createServerSideTreeController,
   type ServerSideTreeController,
-} from './internal/serverSideTreeController.js';
-import type { ServerSideDatasource, TreeDisplayRow } from './types.js';
+} from '@topgrid/grid-pro-serverside-core';
+import type { ServerSideDatasource, TreeDisplayRow } from '@topgrid/grid-pro-serverside-core';
 
 /** {@link useServerSideTree} options. */
 export interface UseServerSideTreeOptions {

@@ -10,7 +10,7 @@
  * epoch at send time; a response for a since-invalidated query is discarded by `acceptBlock`.
  */
 
-import type { SortingState, ColumnFiltersState } from '@tanstack/react-table';
+import type { SortingState, ColumnFiltersState } from '@tanstack/table-core';
 import {
   createBlockCache,
   planBlocks,
