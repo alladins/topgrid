@@ -654,6 +654,9 @@ importers:
       '@happy-dom/global-registrator':
         specifier: ^15.0.0
         version: 15.11.7
+      '@tanstack/vue-table':
+        specifier: ^8.0.0
+        version: 8.21.3(vue@3.5.38)
       vue:
         specifier: ^3.5.0
         version: 3.5.38(typescript@5.8.3)

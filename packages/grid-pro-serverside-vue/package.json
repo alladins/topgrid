@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/useVueViewportRowModel.test.ts && node --experimental-strip-types src/useVueServerSideData.test.ts"
+    "test": "node --experimental-strip-types src/useVueViewportRowModel.test.ts && node --experimental-strip-types src/useVueServerSideData.test.ts && node --experimental-strip-types src/useVueServerSideTree.test.ts"
   },
   "dependencies": {
     "@topgrid/grid-pro-serverside-core": "workspace:*",

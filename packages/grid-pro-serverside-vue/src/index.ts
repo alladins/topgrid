@@ -13,6 +13,11 @@ export type {
   UseVueViewportRowModelOptions,
   UseVueViewportRowModelResult,
 } from './useVueViewportRowModel.js';
+export { useVueServerSideTree } from './useVueServerSideTree.js';
+export type {
+  UseVueServerSideTreeOptions,
+  UseVueServerSideTreeResult,
+} from './useVueServerSideTree.js';
 
 // 코어 유틸·타입 재export (Vue 소비자 편의).
 export {

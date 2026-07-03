@@ -4,6 +4,8 @@
 
 export { useVuePivot } from './useVuePivot.js';
 export { VuePivotPanel } from './VuePivotPanel.js';
+export { VuePivotGrid } from './VuePivotGrid.js';
+export { buildVuePivotColumns } from './buildVuePivotColumns.js';
 
 // 엔진 + 타입 재export (Vue 소비자 편의).
 export {

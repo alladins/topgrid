@@ -11,5 +11,5 @@ export default defineConfig({
   outExtension({ format }) {
     return { js: format === 'esm' ? '.mjs' : '.cjs' };
   },
-  external: ['vue'],
+  external: ['vue', /^@tanstack\/(vue-table|table-core)(\/|$)/],
 });
