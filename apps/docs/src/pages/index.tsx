@@ -21,6 +21,9 @@ type Content = {
   chartHead: string;
   chartSub: string;
   chartCta: string;
+  chartLabelEnt: string;
+  chartLabelLight: string;
+  chartLabelVue: string;
   featuresHead: string;
   featuresSub: string;
   features: Feature[];
@@ -103,6 +106,9 @@ const CONTENT: Record<string, Content> = {
     chartHead: '차트도 내장',
     chartSub: '셀 스파크라인부터 엔터프라이즈 17종(Apache ECharts)까지. 아래 차트의 툴바로 막대·선·레이더·히트맵을 바로 전환해 보세요 — React·Vue 3 동일 엔진.',
     chartCta: '차트 가이드 →',
+    chartLabelEnt: '엔터프라이즈 (React) — ECharts 17종, 툴바로 라이브 전환',
+    chartLabelLight: '경량 (zero-dep SVG) — 스파크라인 · 범위 차트',
+    chartLabelVue: 'Vue 3 — 동일 엔진, 라이브 데모',
     featuresHead: '한 그리드로, 엔터프라이즈까지',
     featuresSub: '커뮤니티(MIT) 코어부터 Pro 기능까지 — 필요한 패키지만 골라 쓴다.',
     features: [
@@ -155,6 +161,9 @@ const CONTENT: Record<string, Content> = {
     chartHead: 'Charts, built in',
     chartSub: 'From cell sparklines to 17 enterprise types (Apache ECharts). Use the toolbar in the chart below to switch bar/line/radar/heatmap live — the same engine on React and Vue 3.',
     chartCta: 'Charting guide →',
+    chartLabelEnt: 'Enterprise (React) — 17 ECharts types, switch live via the toolbar',
+    chartLabelLight: 'Lightweight (zero-dep SVG) — sparkline · range chart',
+    chartLabelVue: 'Vue 3 — same engine, live demo',
     featuresHead: 'From one grid to enterprise',
     featuresSub: 'From the MIT community core to Pro features — install only the packages you need.',
     features: [
@@ -258,19 +267,48 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── CHART DEMO (엔터프라이즈 차트 iframe — 툴바로 17종 라이브 전환) ── */}
+        {/* ── CHART DEMOS (엔터프라이즈 React + 2단 경량 + Vue 라이브) ── */}
         <section className={styles.section}>
           <div className={styles.sectionHead}>
             <h2>{t.chartHead}</h2>
             <p>{t.chartSub}</p>
           </div>
+
+          {/* 엔터프라이즈 (React) — 툴바로 17종 라이브 전환 */}
+          <div className={styles.chartLabel}>{t.chartLabelEnt}</div>
           <div className={styles.demoFrame}>
             <iframe
               src="/storybook/iframe.html?id=grid-pro-chart-enterprise-enterprisechartpanel--default&viewMode=story"
-              title="topgrid chart demo"
+              title="topgrid enterprise chart demo"
               loading="lazy"
             />
           </div>
+
+          {/* 경량 (zero-dep SVG) — 스파크라인 · 범위 차트 2단 */}
+          <div className={styles.chartLabel}>{t.chartLabelLight}</div>
+          <div className={styles.chartPair}>
+            <div>
+              <iframe
+                src="/storybook/iframe.html?id=grid-pro-chart-sparkline--area-with-markers&viewMode=story"
+                title="스파크라인 데모"
+                loading="lazy"
+              />
+            </div>
+            <div>
+              <iframe
+                src="/storybook/iframe.html?id=grid-pro-chart-rangechart--multi-series&viewMode=story"
+                title="범위 차트 데모"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          {/* Vue 3 — 동일 엔진 라이브 데모(별도 정적 번들) */}
+          <div className={styles.chartLabel}>{t.chartLabelVue}</div>
+          <div className={styles.demoFrame}>
+            <iframe src="/vue-chart-demo/" title="topgrid Vue 3 chart demo" loading="lazy" />
+          </div>
+
           <div className={styles.demoCtaRow}>
             <Link className="button button--secondary" to="/charting">
               {t.chartCta}

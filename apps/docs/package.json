@@ -10,12 +10,13 @@
     "docs:clear": "docusaurus clear",
     "build": "docusaurus build",
     "build-storybook": "storybook build",
-    "build:site": "storybook build -o static/storybook && docusaurus build",
+    "build:site": "pnpm run build:vue-demo && storybook build -o static/storybook && docusaurus build",
     "storybook": "storybook dev --port 6006",
     "visual:test": "playwright test",
     "visual:update-baseline": "playwright test --update-snapshots",
     "test": "echo TODO",
-    "gen:api": "node scripts/gen-api.mjs"
+    "gen:api": "node scripts/gen-api.mjs",
+    "build:vue-demo": "pnpm --filter @topgrid/grid-pro-chart-enterprise-vue exec esbuild demo/main.ts --bundle --format=esm --outfile=../../apps/docs/static/vue-chart-demo/app.js"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",

@@ -415,7 +415,10 @@ funnel·treemap·radar·heatmap·candlestick·boxplot·sankey.
 
 ### Vue 3 (동일 엔진)
 
-Nuxt/Vue 앱은 **같은 엔진**의 Vue 패키지를 씁니다 — React 의존 0, SSR 안전.
+Nuxt/Vue 앱은 **같은 엔진**의 Vue 패키지를 씁니다 — React 의존 0, SSR 안전. 아래는 **실제 Vue 3
+`EnterpriseChartPanel`** 라이브 데모입니다(툴바로 타입 전환).
+
+<iframe src="/vue-chart-demo/" title="Vue 3 엔터프라이즈 차트 라이브 데모" loading="lazy" style={{ width: '100%', height: '440px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
 
 ```ts
 import { EnterpriseChartPanel, setLicenseKey } from '@topgrid/grid-pro-chart-enterprise-vue';

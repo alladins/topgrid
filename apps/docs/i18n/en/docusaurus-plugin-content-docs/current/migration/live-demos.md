@@ -406,7 +406,10 @@ funnel·treemap·radar·heatmap·candlestick·boxplot·sankey.
 
 ### Vue 3 (same engine)
 
-Nuxt/Vue apps use the **same engine**'s Vue package — zero React dependency, SSR-safe.
+Nuxt/Vue apps use the **same engine**'s Vue package — zero React dependency, SSR-safe. Below is a
+**live Vue 3 `EnterpriseChartPanel`** demo (switch types via the toolbar).
+
+<iframe src="/vue-chart-demo/" title="Live Vue 3 enterprise chart demo" loading="lazy" style={{ width: '100%', height: '440px', border: '1px solid #e5e7eb', borderRadius: '8px' }}></iframe>
 
 ```ts
 import { EnterpriseChartPanel, setLicenseKey } from '@topgrid/grid-pro-chart-enterprise-vue';
