@@ -2,14 +2,16 @@
 
 > 토픽그리드 제품화 라운드(W1 멀티프레임워크 · W2 엔터프라이즈 차트 · W3 React DX)가 **성숙 체크포인트**에 도달. npm 전부 live, CI 4중 게이트, 문서사이트 반영 완료. 이 문서가 다음 세션의 **단일 재개 진입점**.
 
-## 0. ★최신 세션(2026-07-03) — 라이선스 강화 + Vue Pro 지원 (미발행, origin 미푸시)
-PTLPSM(Nuxt3/Vue3 출하관리) 도입 문의 대응 = ①공개키 핀 강화 → ②발급 CLI → ③Vue 피벗·서버사이드 지원. **전부 구현·전체 회귀 그린, 발행+push 는 사용자 게이트.**
+## 0. ★최신 세션(2026-07-03) — 라이선스 강화 + Vue Pro 지원 ★발행 완료
+PTLPSM(Nuxt3/Vue3 출하관리) 도입 문의 대응 = ①공개키 핀 강화 → ②발급 CLI → ③Vue 피벗·서버사이드 지원 → **후속 옵션(VuePivotGrid·useVueServerSideTree) → npm 발행 완료.**
+**★npm 발행(2026-07-03, additive)**: grid-license-core@**0.2.0**(핀·키 3→2파트) + grid-pro-pivot-core@**0.1.0** + grid-pro-serverside-core@**0.1.0** + grid-pro-pivot-vue@**0.1.0** + grid-pro-serverside-vue@**0.1.0**. 13-패키지 1.0.2 lockstep 미개입. React grid-pro-pivot/serverside(npm 1.0.2)의 코어 재배선은 다음 grid-core lockstep 동승. 신규 스코프 패키지명은 발행 후 읽기 CDN 전파 수 분(403 "cannot publish over"=확정). git origin push=사용자.
 - **① 공개키 핀**(`5586141`): grid-license-core `verifySignature` 가 키 동봉 공개키(위조가능)→라이브러리 핀 `PINNED_PUBLIC_KEY` 로 검증. 키 3파트→2파트. 공개 API 불변. [[license-issuance-topgrid]].
 - **② 발급 CLI**(`5586141`): `scripts/license/license.mjs`(keygen·sign·inspect)+selftest 5/5+README. Node webcrypto=브라우저와 동일 Ed25519. 개인키 `.private.key` gitignore.
 - **③ Vue Pro**(`9083b27`·`cd78270`·`bb64b72`·`87bd5b1`): **-core 추출 + *-vue 신규**(chart-core 선례, Plan 6-Phase). grid-pro-pivot-core(78 test)·grid-pro-serverside-core(28)=순수 추출, React 표면 불변=비파괴. grid-pro-pivot-vue(useVuePivot·VuePivotPanel, 17)·grid-pro-serverside-vue(useVueServerSideData SSRM·useVueViewportRowModel, 15)=신규. Nuxt SSR 안전(컨트롤러 onMounted client-only). React peer 미유입(라이선스=grid-license-core). 상세 [[vue-pro-pivot-serverside]].
-- **★발행 게이트(사용자)**: grid-license-core(핀)+lockstep / pivot-core·serverside-core(신규)+pivot·serverside(patch) / pivot-vue·serverside-vue(신규 0.1.0). changeset+publish+`git push origin`(현재 11 커밋 ahead).
-- **후속 옵션(비크리티컬)**: VuePivotGrid(vue-table 렌더 셸), useVueServerSideTree(지연 그룹). 컴포저블로 이미 사용 가능.
-- **★패키지 수 변화**: 27→**31**(신규 4). 문서사이트 "27" 표기는 발행 후 갱신 필요.
+- **✅ 발행 완료**(위 참조). 남은 발행: React grid-pro-pivot/serverside 코어 재배선(다음 grid-core lockstep 동승) + grid-license 핀 전파(선택, 무 live 키).
+- **✅ 후속 옵션 완료**: VuePivotGrid(vue-table 렌더 셸 + buildVuePivotColumns) + useVueServerSideTree(지연 그룹) 발행됨.
+- **★패키지 수 변화**: 27→**31**(신규 4). 문서사이트 "27" 표기 갱신 필요(비크리티컬).
+- **잔여(비크리티컬)**: ①문서사이트 31패키지 표기·Vue Pro 문서 추가 ②고객 답변 메일(Vue Pro 지원으로 §2 갱신) ③git origin push(사용자).
 
 ## 1. 현재 상태 (한눈에)
 - **W1**: grid headless 코어 + Vue 어댑터 — 완료·발행.
