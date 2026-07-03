@@ -18,6 +18,9 @@ type Content = {
   demoHead: string;
   demoSub: string;
   demoCta: string;
+  chartHead: string;
+  chartSub: string;
+  chartCta: string;
   featuresHead: string;
   featuresSub: string;
   features: Feature[];
@@ -97,6 +100,9 @@ const CONTENT: Record<string, Content> = {
     demoHead: '직접 만져보세요',
     demoSub: '아래는 실제 동작하는 그리드입니다 — 헤더를 클릭해 정렬해 보세요. 셀 렌더러(숫자·날짜·배지·링크)가 자동 배선됩니다.',
     demoCta: '전체 데모 (Storybook) →',
+    chartHead: '차트도 내장',
+    chartSub: '셀 스파크라인부터 엔터프라이즈 17종(Apache ECharts)까지. 아래 차트의 툴바로 막대·선·레이더·히트맵을 바로 전환해 보세요 — React·Vue 3 동일 엔진.',
+    chartCta: '차트 가이드 →',
     featuresHead: '한 그리드로, 엔터프라이즈까지',
     featuresSub: '커뮤니티(MIT) 코어부터 Pro 기능까지 — 필요한 패키지만 골라 쓴다.',
     features: [
@@ -146,6 +152,9 @@ const CONTENT: Record<string, Content> = {
     demoHead: 'Try it live',
     demoSub: 'A real, running grid below — click a header to sort. Cell renderers (number, date, badge, link) are wired automatically by type.',
     demoCta: 'Full demos (Storybook) →',
+    chartHead: 'Charts, built in',
+    chartSub: 'From cell sparklines to 17 enterprise types (Apache ECharts). Use the toolbar in the chart below to switch bar/line/radar/heatmap live — the same engine on React and Vue 3.',
+    chartCta: 'Charting guide →',
     featuresHead: 'From one grid to enterprise',
     featuresSub: 'From the MIT community core to Pro features — install only the packages you need.',
     features: [
@@ -245,6 +254,26 @@ export default function Home() {
           <div className={styles.demoCtaRow}>
             <Link className="button button--secondary" href="/storybook/" target="_blank">
               {t.demoCta}
+            </Link>
+          </div>
+        </section>
+
+        {/* ── CHART DEMO (엔터프라이즈 차트 iframe — 툴바로 17종 라이브 전환) ── */}
+        <section className={styles.section}>
+          <div className={styles.sectionHead}>
+            <h2>{t.chartHead}</h2>
+            <p>{t.chartSub}</p>
+          </div>
+          <div className={styles.demoFrame}>
+            <iframe
+              src="/storybook/iframe.html?id=grid-pro-chart-enterprise-enterprisechartpanel--default&viewMode=story"
+              title="topgrid chart demo"
+              loading="lazy"
+            />
+          </div>
+          <div className={styles.demoCtaRow}>
+            <Link className="button button--secondary" to="/charting">
+              {t.chartCta}
             </Link>
           </div>
         </section>
