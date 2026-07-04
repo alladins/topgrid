@@ -41,23 +41,30 @@
    (`/api/` 프리픽스가 `/api/inquiry`(문의)와 `/api/hit`(비컨)을 함께 커버)
    후 `nginx -t && systemctl reload nginx`.
 
-## 문의 알림 (텔레그램) — 선택, 5분 설정
+## 문의 알림 — Slack (권장) / Telegram (선택)
 
-문의가 접수되면 **폰으로 즉시 푸시**. 미설정이어도 문의는 항상 저장되며 대시보드에 뜸(알림은 부가).
+문의 접수 시 **채널·폰으로 즉시 알림**(유형·회사·이메일·도메인·내용+대시보드 링크). 설정된 것만 발송,
+둘 다 설정도 가능. 미설정이어도 문의는 항상 저장·대시보드에 뜸(알림은 부가).
 
-1. 텔레그램 **@BotFather** 대화 → `/newbot` → 봇 이름 지정 → **토큰** 받기(`123456:ABC...`).
-2. 방금 만든 봇과 대화 시작(아무 메시지 전송) → 브라우저에서
-   `https://api.telegram.org/bot<토큰>/getUpdates` 열기 → 응답의 `chat.id`(숫자) 확인.
-3. 서버에 설정 파일 생성:
+### ✅ Slack (권장 — Webhook URL 하나면 끝)
+1. https://api.slack.com/apps → **Create New App** → From scratch → 워크스페이스 선택.
+2. **Incoming Webhooks** → Activate ON → **Add New Webhook to Workspace** → 알림 받을 채널 선택 →
+   **Webhook URL** 복사(`https://hooks.slack.com/services/T.../B.../xxxx`).
+3. 서버 설정:
    ```bash
    ssh topgrid@49.247.14.212
-   printf '{"telegram":{"token":"<토큰>","chatId":"<chat_id>"}}' > ~/topgrid-admin/notify.json
+   printf '{"slack":{"webhookUrl":"<Webhook URL>"}}' > ~/topgrid-admin/notify.json
    chmod 600 ~/topgrid-admin/notify.json
    pkill -f "node admin-server"; cd ~/topgrid-admin && setsid nohup node admin-server.mjs >> admin.log 2>&1 < /dev/null &
    ```
-4. 대시보드 📬 헤더에 "텔레그램 알림 **ON**" + [테스트 발송] 버튼 → 클릭해 폰 수신 확인.
+4. 대시보드 📬 헤더 "알림 **ON** (Slack)" + [테스트 발송] 클릭 → 채널 수신 확인.
 
-- notify.json 없으면 알림 OFF(대시보드로만 확인). 이메일 알림은 SMTP 필요·스팸함 이슈로 미채택(텔레그램 권장).
+### Telegram (선택)
+`notify.json` 에 `{"telegram":{"token":"<BotFather 토큰>","chatId":"<chat_id>"}}`. chatId 는
+봇과 대화 후 `https://api.telegram.org/bot<토큰>/getUpdates` 의 `chat.id`.
+Slack 과 함께 쓰려면 한 파일에 둘 다: `{"slack":{...},"telegram":{...}}`.
+
+- notify.json 없으면 알림 OFF(대시보드로만 확인). 이메일은 SMTP·스팸함 이슈로 미채택.
 
 ## 운영
 - 재시작: `ssh topgrid@… 'pkill -f admin-server; cd ~/topgrid-admin && setsid nohup node admin-server.mjs >> admin.log 2>&1 < /dev/null &'`

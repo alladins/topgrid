@@ -14,7 +14,9 @@ const PORT = 9101;
 const HOME = join(homedir(), 'topgrid-admin');
 const DATA = join(HOME, 'data');
 const AUTH_FILE = join(HOME, 'auth.json');
-const NOTIFY_FILE = join(HOME, 'notify.json'); // {telegram:{token,chatId}} — 선택. 없으면 알림 비활성(문의는 항상 저장됨).
+// {slack:{webhookUrl}} 및/또는 {telegram:{token,chatId}} — 선택. 설정된 것만 발송(둘 다도 가능).
+// 없으면 알림 비활성(문의는 항상 저장됨).
+const NOTIFY_FILE = join(HOME, 'notify.json');
 const INQ_FILE = join(DATA, 'inquiries.jsonl');
 const HITS_FILE = join(DATA, 'hits.jsonl'); // 1st-party 비컨(정확 UV/세션/PV)
 const LOG_DIR = '/var/log/nginx';
@@ -113,9 +115,22 @@ function rateOk(ip) {
 let notifyCfg = null;
 try { if (existsSync(NOTIFY_FILE)) notifyCfg = JSON.parse(readFileSync(NOTIFY_FILE, 'utf8')); } catch { /* 무시 */ }
 const TYPE_KO = { trial: '평가', purchase: '구매', enterprise: 'Enterprise/OEM', other: '기타' };
+
+// URL 로 JSON POST (fire-and-forget, 실패/타임아웃 무해).
+function postJSON(urlStr, obj) {
+  let u;
+  try { u = new URL(urlStr); } catch { return; }
+  const payload = JSON.stringify(obj);
+  const req = httpsRequest(
+    { hostname: u.hostname, path: u.pathname + u.search, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) }, timeout: 8000 },
+    (r) => { r.resume(); },
+  );
+  req.on('error', () => {});
+  req.on('timeout', () => req.destroy());
+  req.end(payload);
+}
+
 function notify(row) {
-  const tg = notifyCfg?.telegram;
-  if (!tg?.token || !tg?.chatId) return; // 미설정 = 알림 스킵(대시보드로만 확인)
   const text =
     `📬 새 문의 [${TYPE_KO[row.type] || row.type}]\n` +
     `회사: ${row.company || '-'}${row.name ? ' / ' + row.name : ''}\n` +
@@ -123,14 +138,16 @@ function notify(row) {
     (row.domain ? `도메인: ${row.domain}\n` : '') +
     (row.message ? `내용: ${row.message.slice(0, 500)}\n` : '') +
     `\n대시보드: https://topgrid.platree.com/admin/`;
-  const payload = JSON.stringify({ chat_id: tg.chatId, text, disable_web_page_preview: true });
-  const req = httpsRequest(
-    { hostname: 'api.telegram.org', path: `/bot${tg.token}/sendMessage`, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) }, timeout: 8000 },
-    (r) => { r.resume(); },
-  );
-  req.on('error', () => {});
-  req.on('timeout', () => req.destroy());
-  req.end(payload);
+
+  // Slack Incoming Webhook (설정 시)
+  const slack = notifyCfg?.slack;
+  if (slack?.webhookUrl) postJSON(slack.webhookUrl, { text });
+
+  // Telegram (설정 시)
+  const tg = notifyCfg?.telegram;
+  if (tg?.token && tg?.chatId) {
+    postJSON(`https://api.telegram.org/bot${tg.token}/sendMessage`, { chat_id: tg.chatId, text, disable_web_page_preview: true });
+  }
 }
 
 const INQ_TYPES = new Set(['trial', 'purchase', 'enterprise', 'other']);
@@ -275,9 +292,10 @@ document.getElementById('pricing').innerHTML='<tr><th>시각</th><th>IP</th><th>
 document.getElementById('ref').innerHTML='<tr><th>리퍼러</th><th>수</th></tr>'+s.referers.map(r=>'<tr><td>'+r.ref+'</td><td>'+r.n+'</td></tr>').join('');
 // 알림 상태 표시 + 테스트 버튼
 try{const ns=await j('/admin/api/notify-status');const el=document.getElementById('notify');
-if(ns.telegram){el.innerHTML='· 텔레그램 알림 <b style="color:#15803d">ON</b> <button id="ntest" style="font-size:12px;margin-left:6px">테스트 발송</button>';}
-else{el.innerHTML='· 텔레그램 알림 <b style="color:#b45309">OFF</b> (설정: 서버 ~/topgrid-admin/notify.json)';}
-const bt=document.getElementById('ntest');if(bt)bt.onclick=async()=>{bt.textContent='발송중…';await fetch('/admin/api/notify-test');bt.textContent='발송됨(폰 확인)';};
+const on=[];if(ns.slack)on.push('Slack');if(ns.telegram)on.push('Telegram');
+if(on.length){el.innerHTML='· 알림 <b style="color:#15803d">ON</b> ('+on.join(', ')+') <button id="ntest" style="font-size:12px;margin-left:6px">테스트 발송</button>';}
+else{el.innerHTML='· 알림 <b style="color:#b45309">OFF</b> (설정: 서버 ~/topgrid-admin/notify.json)';}
+const bt=document.getElementById('ntest');if(bt)bt.onclick=async()=>{bt.textContent='발송중…';await fetch('/admin/api/notify-test');bt.textContent='발송됨(확인)';};
 }catch(e){}
 const q=await j('/admin/api/inquiries');
 document.getElementById('inq').innerHTML='<tr><th>시각</th><th>유형</th><th>회사/이름</th><th>이메일</th><th>도메인</th><th>내용</th></tr>'+(q.length?q.map(i=>'<tr><td class="muted">'+i.ts.slice(0,16).replace('T',' ')+'</td><td><span class="tag t-'+i.type+'">'+(TYPE_LABEL[i.type]||i.type)+'</span></td><td>'+esc(i.company)+(i.name?' / '+esc(i.name):'')+'</td><td>'+esc(i.email)+'</td><td>'+esc(i.domain)+'</td><td><pre>'+esc(i.message)+'</pre></td></tr>').join(''):'<tr><td colspan="6" class="muted">아직 접수된 문의가 없습니다.</td></tr>');
@@ -339,11 +357,15 @@ http.createServer((req, res) => {
       try { return send(res, 200, computeVisitors()); } catch (e) { return send(res, 500, { err: String(e).slice(0, 200) }); }
     }
     if (url === '/admin/api/notify-status') {
-      return send(res, 200, { telegram: !!(notifyCfg?.telegram?.token && notifyCfg?.telegram?.chatId) });
+      return send(res, 200, {
+        slack: !!notifyCfg?.slack?.webhookUrl,
+        telegram: !!(notifyCfg?.telegram?.token && notifyCfg?.telegram?.chatId),
+      });
     }
     if (url === '/admin/api/notify-test') {
-      notify({ type: 'other', company: '[알림 테스트]', email: 'admin', message: '텔레그램 알림 연결 확인' });
-      return send(res, 200, { ok: !!(notifyCfg?.telegram?.token) });
+      notify({ type: 'other', company: '[알림 테스트]', email: 'admin', message: '알림 연결 확인' });
+      const on = !!(notifyCfg?.slack?.webhookUrl || notifyCfg?.telegram?.token);
+      return send(res, 200, { ok: on });
     }
   }
   send(res, 404, { err: 'not found' });
