@@ -1,4 +1,4 @@
-import { useState, type ReactNode, type FormEvent } from 'react';
+import { useState, type ReactNode, type FormEvent, type MouseEvent } from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -49,10 +49,6 @@ type Content = {
 
 const TRIAL_KO = `mailto:sales@platree.com?subject=${encodeURIComponent('[Trial] topgrid 30일 평가 키 신청')}&body=${encodeURIComponent('회사/소속:\n적용 도메인(개발용):\n간단한 용도 설명:\n')}`;
 const TRIAL_EN = `mailto:sales@platree.com?subject=${encodeURIComponent('[Trial] topgrid 30-day evaluation key request')}&body=${encodeURIComponent('Company:\nDomain (for development):\nBrief description of use case:\n')}`;
-const BUY_KO = `mailto:sales@platree.com?subject=${encodeURIComponent('[구매] topgrid Pro 라이선스 문의')}&body=${encodeURIComponent('회사/소속:\n적용 도메인 수(운영 기준):\n용도: 사내 시스템 / 외부(SaaS) 서비스 (해당 항목만 남겨주세요)\n프레임워크: React / Vue\n희망 시작 시기:\n기타 문의:\n')}`;
-const BUY_EN = `mailto:sales@platree.com?subject=${encodeURIComponent('[Purchase] topgrid Pro license inquiry')}&body=${encodeURIComponent('Company:\nNumber of production domains:\nUsage: internal system / external (SaaS) service (keep the one that applies)\nFramework: React / Vue\nDesired start date:\nAnything else:\n')}`;
-const ENT_KO = `mailto:sales@platree.com?subject=${encodeURIComponent('[도입] topgrid Enterprise 문의')}&body=${encodeURIComponent('회사/소속:\n적용 예정 도메인 수(또는 와일드카드 *.회사.com 필요 여부):\n용도: 사내 / 외부(SaaS) / 제3자 판매 제품 임베드(OEM)\n기타 문의:\n')}`;
-const ENT_EN = `mailto:sales@platree.com?subject=${encodeURIComponent('[Enterprise] topgrid inquiry')}&body=${encodeURIComponent('Company:\nNumber of domains (or wildcard *.company.com needed?):\nUsage: internal / external (SaaS) / embedded in a product sold to third parties (OEM)\nAnything else:\n')}`;
 
 const CONTENT: Record<string, Content> = {
   ko: {
@@ -78,7 +74,7 @@ const CONTENT: Record<string, Content> = {
         priceSub: '유지보수 연 15% (첫 1년 무상 포함) · 연간 구독 옵션 문의',
         feats: ['상용 24패키지 전부', '차트 17종 · 피벗 · 서버사이드 · 스프레드시트', '개발자·서버 무제한', '비프로덕션(dev/stage) 도메인 2개 무료'],
         cta: '구매 문의',
-        ctaHref: BUY_KO,
+        ctaHref: '#inquiry:purchase',
         hot: true,
         hotLabel: '가장 인기',
       },
@@ -90,7 +86,7 @@ const CONTENT: Record<string, Content> = {
         priceSub: '유지보수 연 15% (첫 1년 무상 포함) · 연간 구독 옵션 문의',
         feats: ['Pro Internal의 전부', '외부 고객 대상 서비스 허용', 'SaaS 프로덕션 도메인', '우선 이메일 지원'],
         cta: '구매 문의',
-        ctaHref: BUY_KO,
+        ctaHref: '#inquiry:purchase',
       },
       {
         name: 'Enterprise',
@@ -100,7 +96,7 @@ const CONTENT: Record<string, Content> = {
         priceSub: '도메인 7개 이상이면 Enterprise가 유리합니다',
         feats: ['사내 도메인 무제한', '와일드카드(*.company.com) 지원', '우선 기술 지원', 'OEM/재배포 별도 협의'],
         cta: '도입 문의',
-        ctaHref: ENT_KO,
+        ctaHref: '#inquiry:enterprise',
       },
     ],
     includesHead: '모든 Pro 라이선스 공통',
@@ -225,7 +221,7 @@ const CONTENT: Record<string, Content> = {
         priceSub: 'Less than a single per-developer seat elsewhere — with unlimited developers. Perpetual: $2,970.',
         feats: ['All 24 commercial packages', '17 chart types · pivot · server-side · spreadsheet', 'Unlimited developers & servers', '2 non-production (dev/stage) domains free'],
         cta: 'Contact sales',
-        ctaHref: BUY_EN,
+        ctaHref: '#inquiry:purchase',
         hot: true,
         hotLabel: 'Most popular',
       },
@@ -237,7 +233,7 @@ const CONTENT: Record<string, Content> = {
         priceSub: 'For products exposed to external users. Perpetual: $5,970.',
         feats: ['Everything in Pro Internal', 'External customer-facing use', 'SaaS production domains', 'Priority email support'],
         cta: 'Contact sales',
-        ctaHref: BUY_EN,
+        ctaHref: '#inquiry:purchase',
       },
       {
         name: 'Enterprise',
@@ -247,7 +243,7 @@ const CONTENT: Record<string, Content> = {
         priceSub: 'Enterprise wins when you run 7+ domains',
         feats: ['Unlimited internal domains', 'Wildcard (*.company.com) support', 'Priority technical support', 'OEM/redistribution by agreement'],
         cta: 'Contact sales',
-        ctaHref: ENT_EN,
+        ctaHref: '#inquiry:enterprise',
       },
     ],
     includesHead: 'Included with every Pro license',
@@ -344,7 +340,7 @@ const CONTENT: Record<string, Content> = {
   },
 };
 
-function InquiryForm({ t }: { t: Content }) {
+function InquiryForm({ t, initialType }: { t: Content; initialType: string }) {
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [err, setErr] = useState('');
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -386,7 +382,7 @@ function InquiryForm({ t }: { t: Content }) {
         </label>
         <label>
           {t.form.type}
-          <select name="type" defaultValue="trial">
+          <select name="type" key={initialType} defaultValue={initialType}>
             <option value="trial">{t.form.types.trial}</option>
             <option value="purchase">{t.form.types.purchase}</option>
             <option value="enterprise">{t.form.types.enterprise}</option>
@@ -415,6 +411,20 @@ function InquiryForm({ t }: { t: Content }) {
 export default function Pricing() {
   const { i18n } = useDocusaurusContext();
   const t = CONTENT[i18n.currentLocale] ?? CONTENT.ko;
+  const [formType, setFormType] = useState('trial');
+
+  // 카드 CTA 클릭 → 하단 문의 폼으로 스크롤 + 유형 자동 선택(메일 앱 창 없음).
+  function goToForm(e: MouseEvent<HTMLAnchorElement>, href: string) {
+    if (!href.startsWith('#inquiry:')) return; // getting-started 등은 정상 링크
+    e.preventDefault();
+    setFormType(href.split(':')[1] || 'purchase');
+    const el = document.getElementById('inquiry');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const email = el.querySelector('input[name="email"]') as HTMLInputElement | null;
+      setTimeout(() => email?.focus(), 500);
+    }
+  }
   return (
     <Layout title={t.title} description={t.subtitle}>
       <main className={styles.wrap}>
@@ -441,13 +451,23 @@ export default function Pricing() {
                 ))}
               </ul>
               <div className={styles.tierCta}>
-                <Link
-                  className={`button ${tier.hot ? 'button--primary' : 'button--secondary'} button--block`}
-                  href={tier.ctaHref.startsWith('mailto:') ? tier.ctaHref : undefined}
-                  to={tier.ctaHref.startsWith('mailto:') ? undefined : tier.ctaHref}
-                >
-                  {tier.cta}
-                </Link>
+                {tier.ctaHref.startsWith('#inquiry:') ? (
+                  <a
+                    className={`button ${tier.hot ? 'button--primary' : 'button--secondary'} button--block`}
+                    href={tier.ctaHref}
+                    onClick={(e) => goToForm(e, tier.ctaHref)}
+                  >
+                    {tier.cta}
+                  </a>
+                ) : (
+                  <Link
+                    className={`button ${tier.hot ? 'button--primary' : 'button--secondary'} button--block`}
+                    href={tier.ctaHref.startsWith('mailto:') ? tier.ctaHref : undefined}
+                    to={tier.ctaHref.startsWith('mailto:') ? undefined : tier.ctaHref}
+                  >
+                    {tier.cta}
+                  </Link>
+                )}
               </div>
             </div>
           ))}
@@ -472,10 +492,10 @@ export default function Pricing() {
           ))}
         </div>
 
-        <div className={styles.formSection}>
+        <div className={styles.formSection} id="inquiry">
           <h2>{t.form.head}</h2>
           <p className={styles.formSub}>{t.form.sub}</p>
-          <InquiryForm t={t} />
+          <InquiryForm t={t} initialType={formType} />
         </div>
 
         <div className={styles.bottomCta}>
