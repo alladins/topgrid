@@ -30,7 +30,6 @@ type Content = {
   faqs: Faq[];
   bottomHead: string;
   bottomCta: string;
-  bottomHref: string;
   form: {
     head: string;
     sub: string;
@@ -47,8 +46,6 @@ type Content = {
   };
 };
 
-const TRIAL_KO = `mailto:sales@platree.com?subject=${encodeURIComponent('[Trial] topgrid 30일 평가 키 신청')}&body=${encodeURIComponent('회사/소속:\n적용 도메인(개발용):\n간단한 용도 설명:\n')}`;
-const TRIAL_EN = `mailto:sales@platree.com?subject=${encodeURIComponent('[Trial] topgrid 30-day evaluation key request')}&body=${encodeURIComponent('Company:\nDomain (for development):\nBrief description of use case:\n')}`;
 
 const CONTENT: Record<string, Content> = {
   ko: {
@@ -182,7 +179,6 @@ const CONTENT: Record<string, Content> = {
     ],
     bottomHead: '30일이면 충분합니다 — 전 기능으로 직접 검증하세요.',
     bottomCta: '30일 평가 키 신청 →',
-    bottomHref: TRIAL_KO,
     form: {
       head: '바로 문의하기',
       sub: '아래 폼으로 보내주시면 1영업일 내 답변드립니다. (이메일이 편하시면 위 버튼들을 이용하세요)',
@@ -322,7 +318,6 @@ const CONTENT: Record<string, Content> = {
     ],
     bottomHead: '30 days is enough — evaluate every feature yourself.',
     bottomCta: 'Request a 30-day evaluation key →',
-    bottomHref: TRIAL_EN,
     form: {
       head: 'Contact us directly',
       sub: 'Send the form below and we reply within one business day. (Prefer email? Use the buttons above.)',
@@ -500,9 +495,13 @@ export default function Pricing() {
 
         <div className={styles.bottomCta}>
           <p>{t.bottomHead}</p>
-          <Link className="button button--primary button--lg" href={t.bottomHref}>
+          <a
+            className="button button--primary button--lg"
+            href="#inquiry:trial"
+            onClick={(e) => goToForm(e, '#inquiry:trial')}
+          >
             {t.bottomCta}
-          </Link>
+          </a>
         </div>
       </main>
     </Layout>
