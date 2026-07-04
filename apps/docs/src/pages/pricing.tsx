@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode, type FormEvent } from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -31,6 +31,20 @@ type Content = {
   bottomHead: string;
   bottomCta: string;
   bottomHref: string;
+  form: {
+    head: string;
+    sub: string;
+    company: string;
+    email: string;
+    type: string;
+    types: { trial: string; purchase: string; enterprise: string; other: string };
+    domain: string;
+    message: string;
+    submit: string;
+    sending: string;
+    done: string;
+    errPrefix: string;
+  };
 };
 
 const TRIAL_KO = `mailto:sales@platree.com?subject=${encodeURIComponent('[Trial] topgrid 30일 평가 키 신청')}&body=${encodeURIComponent('회사/소속:\n적용 도메인(개발용):\n간단한 용도 설명:\n')}`;
@@ -173,6 +187,20 @@ const CONTENT: Record<string, Content> = {
     bottomHead: '30일이면 충분합니다 — 전 기능으로 직접 검증하세요.',
     bottomCta: '30일 평가 키 신청 →',
     bottomHref: TRIAL_KO,
+    form: {
+      head: '바로 문의하기',
+      sub: '아래 폼으로 보내주시면 1영업일 내 답변드립니다. (이메일이 편하시면 위 버튼들을 이용하세요)',
+      company: '회사 / 성함',
+      email: '이메일 *',
+      type: '문의 유형',
+      types: { trial: '30일 평가 키', purchase: '구매 견적', enterprise: 'Enterprise / OEM', other: '기타' },
+      domain: '적용 도메인 (선택)',
+      message: '문의 내용',
+      submit: '문의 보내기',
+      sending: '전송 중…',
+      done: '✅ 접수되었습니다. 1영업일 내 이메일로 답변드리겠습니다.',
+      errPrefix: '전송 실패: ',
+    },
   },
   en: {
     title: 'Pricing',
@@ -299,8 +327,90 @@ const CONTENT: Record<string, Content> = {
     bottomHead: '30 days is enough — evaluate every feature yourself.',
     bottomCta: 'Request a 30-day evaluation key →',
     bottomHref: TRIAL_EN,
+    form: {
+      head: 'Contact us directly',
+      sub: 'Send the form below and we reply within one business day. (Prefer email? Use the buttons above.)',
+      company: 'Company / name',
+      email: 'Email *',
+      type: 'Inquiry type',
+      types: { trial: '30-day evaluation key', purchase: 'Purchase quote', enterprise: 'Enterprise / OEM', other: 'Other' },
+      domain: 'Target domain (optional)',
+      message: 'Message',
+      submit: 'Send inquiry',
+      sending: 'Sending…',
+      done: '✅ Received. We will reply by email within one business day.',
+      errPrefix: 'Failed to send: ',
+    },
   },
 };
+
+function InquiryForm({ t }: { t: Content }) {
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [err, setErr] = useState('');
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const body = Object.fromEntries(new FormData(form).entries());
+    setStatus('sending');
+    try {
+      const r = await fetch('/api/inquiry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const j = await r.json();
+      if (j.ok) setStatus('done');
+      else {
+        setErr(String(j.err || ''));
+        setStatus('error');
+      }
+    } catch {
+      // 폼 백엔드 미가동/네트워크 실패 → mailto 폴백(내용 프리필)
+      const subject = `[문의] topgrid — ${String(body.type || 'other')}`;
+      const lines = `회사/성함: ${body.company || ''}\n이메일: ${body.email || ''}\n도메인: ${body.domain || ''}\n\n${body.message || ''}`;
+      window.location.href = `mailto:sales@platree.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
+      setStatus('idle');
+    }
+  }
+  if (status === 'done') return <p className={styles.formDone}>{t.form.done}</p>;
+  return (
+    <form className={styles.form} onSubmit={onSubmit}>
+      <div className={styles.formGrid}>
+        <label>
+          {t.form.company}
+          <input name="company" maxLength={200} />
+        </label>
+        <label>
+          {t.form.email}
+          <input name="email" type="email" required maxLength={200} />
+        </label>
+        <label>
+          {t.form.type}
+          <select name="type" defaultValue="trial">
+            <option value="trial">{t.form.types.trial}</option>
+            <option value="purchase">{t.form.types.purchase}</option>
+            <option value="enterprise">{t.form.types.enterprise}</option>
+            <option value="other">{t.form.types.other}</option>
+          </select>
+        </label>
+        <label>
+          {t.form.domain}
+          <input name="domain" maxLength={300} placeholder="erp.company.com" />
+        </label>
+      </div>
+      <label className={styles.formMsg}>
+        {t.form.message}
+        <textarea name="message" rows={4} maxLength={5000} />
+      </label>
+      {/* honeypot — 사람은 안 보임 */}
+      <input name="website" tabIndex={-1} autoComplete="off" className={styles.hp} aria-hidden="true" />
+      {status === 'error' ? <p className={styles.formErr}>{t.form.errPrefix}{err}</p> : null}
+      <button className="button button--primary" type="submit" disabled={status === 'sending'}>
+        {status === 'sending' ? t.form.sending : t.form.submit}
+      </button>
+    </form>
+  );
+}
 
 export default function Pricing() {
   const { i18n } = useDocusaurusContext();
@@ -360,6 +470,12 @@ export default function Pricing() {
               {f.a}
             </details>
           ))}
+        </div>
+
+        <div className={styles.formSection}>
+          <h2>{t.form.head}</h2>
+          <p className={styles.formSub}>{t.form.sub}</p>
+          <InquiryForm t={t} />
         </div>
 
         <div className={styles.bottomCta}>

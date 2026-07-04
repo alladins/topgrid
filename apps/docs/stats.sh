@@ -7,7 +7,8 @@ set -euo pipefail
 HOST="${TOPGRID_HOST:-topgrid@49.247.14.212}"
 
 cat <<'SCRIPT' | ssh -o BatchMode=yes -o ConnectTimeout=15 "$HOST" bash -s
-LOGS() { zcat /var/log/nginx/topgrid.access_ssl.log-*.gz 2>/dev/null; cat /var/log/nginx/topgrid.access_ssl.log 2>/dev/null; }
+# 소유자 IP(사무실 183.100.140.45 · 집 162.120.184.41)는 전 지표에서 제외(자기 트래픽).
+LOGS() { { zcat /var/log/nginx/topgrid.access_ssl.log-*.gz 2>/dev/null; cat /var/log/nginx/topgrid.access_ssl.log 2>/dev/null; } | grep -vE '^(183\.100\.140\.45|162\.120\.184\.41) '; }
 BOT='[Bb]ot|[Cc]rawl|[Ss]pider|Slurp|GPT|OAI-|Amazonbot|PetalBot|Semrush|Ahrefs|MJ12|DotBot|Bytespider|python|curl|wget|Go-http|zgrab|censys|masscan|HeadlessChrome|Scrapy|facebookexternal|Applebot|ClaudeBot|PerplexityBot|meta-external'
 
 echo "========== topgrid.platree.com 방문 리포트 =========="
