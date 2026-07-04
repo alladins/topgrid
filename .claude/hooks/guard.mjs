@@ -10,17 +10,19 @@ try {
 }
 if (!cmd) process.exit(0);
 
+// ★[^|&;\n]* — 줄바꿈에서 스캔을 끊는다. 안 끊으면 heredoc 커밋 메시지의 서술 텍스트
+//   (예: "*.private.md 패턴화")까지 같은 명령 세그먼트로 오인해 오탐(2026-07-04 실사용 발견).
 const RULES = [
   {
-    re: /git\s+push\b[^|&;]*(--force\b|-f\b)/,
+    re: /git\s+push\b[^|&;\n]*(--force\b|-f\b)/,
     msg: 'force push 금지 — 이력 파괴. 필요하면 사용자에게 직접 요청할 것.',
   },
   {
-    re: /git\s+add\b[^|&;]*(\.private\.key|ledger\.csv|\.private\.md)/,
+    re: /git\s+add\b[^|&;\n]*(\.private\.key|ledger\.csv|\.private\.md)/,
     msg: '보호 파일(git add 대상에 개인키/발급대장/private 분석) — 절대 커밋 금지(CLAUDE.md).',
   },
   {
-    re: /git\s+add\b[^|&;]*(\s-f\b|--force\b)/,
+    re: /git\s+add\b[^|&;\n]*(\s-f\b|--force\b)/,
     msg: 'git add --force 금지 — gitignore 우회는 보호 파일(개인키·대장) 유출 벡터.',
   },
   {
@@ -28,7 +30,7 @@ const RULES = [
     msg: '루트/홈 재귀 삭제 차단.',
   },
   {
-    re: /curl\b[^|]*\|\s*(ba|z)?sh\b/,
+    re: /curl\b[^|\n]*\|\s*(ba|z)?sh\b/,
     msg: '원격 스크립트 파이프 실행(curl|sh) 금지 — 내려받아 검토 후 실행할 것.',
   },
 ];

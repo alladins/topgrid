@@ -66,6 +66,6 @@ scripts/license/.private.key
 apps/docs/static/vue-chart-demo/app.js
 
 # 경쟁사 가격 분석(내부용, 실브랜드명 — 절대 커밋 금지)
-docs/internal/competitor-pricing-2026.private.md
+docs/internal/*.private.md
 # 발급 대장(고객명·연락처·키 포함 — 절대 커밋 금지, 개인키와 함께 백업)
 scripts/license/ledger.csv

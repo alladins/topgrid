@@ -35,8 +35,10 @@ type Content = {
 
 const TRIAL_KO = `mailto:sales@platree.com?subject=${encodeURIComponent('[Trial] topgrid 30일 평가 키 신청')}&body=${encodeURIComponent('회사/소속:\n적용 도메인(개발용):\n간단한 용도 설명:\n')}`;
 const TRIAL_EN = `mailto:sales@platree.com?subject=${encodeURIComponent('[Trial] topgrid 30-day evaluation key request')}&body=${encodeURIComponent('Company:\nDomain (for development):\nBrief description of use case:\n')}`;
-const BUY_KO = `mailto:sales@platree.com?subject=${encodeURIComponent('[구매] topgrid Pro 라이선스 문의')}`;
-const BUY_EN = `mailto:sales@platree.com?subject=${encodeURIComponent('[Purchase] topgrid Pro license inquiry')}`;
+const BUY_KO = `mailto:sales@platree.com?subject=${encodeURIComponent('[구매] topgrid Pro 라이선스 문의')}&body=${encodeURIComponent('회사/소속:\n적용 도메인 수(운영 기준):\n용도: 사내 시스템 / 외부(SaaS) 서비스 (해당 항목만 남겨주세요)\n프레임워크: React / Vue\n희망 시작 시기:\n기타 문의:\n')}`;
+const BUY_EN = `mailto:sales@platree.com?subject=${encodeURIComponent('[Purchase] topgrid Pro license inquiry')}&body=${encodeURIComponent('Company:\nNumber of production domains:\nUsage: internal system / external (SaaS) service (keep the one that applies)\nFramework: React / Vue\nDesired start date:\nAnything else:\n')}`;
+const ENT_KO = `mailto:sales@platree.com?subject=${encodeURIComponent('[도입] topgrid Enterprise 문의')}&body=${encodeURIComponent('회사/소속:\n적용 예정 도메인 수(또는 와일드카드 *.회사.com 필요 여부):\n용도: 사내 / 외부(SaaS) / 제3자 판매 제품 임베드(OEM)\n기타 문의:\n')}`;
+const ENT_EN = `mailto:sales@platree.com?subject=${encodeURIComponent('[Enterprise] topgrid inquiry')}&body=${encodeURIComponent('Company:\nNumber of domains (or wildcard *.company.com needed?):\nUsage: internal / external (SaaS) / embedded in a product sold to third parties (OEM)\nAnything else:\n')}`;
 
 const CONTENT: Record<string, Content> = {
   ko: {
@@ -84,7 +86,7 @@ const CONTENT: Record<string, Content> = {
         priceSub: '도메인 7개 이상이면 Enterprise가 유리합니다',
         feats: ['사내 도메인 무제한', '와일드카드(*.company.com) 지원', '우선 기술 지원', 'OEM/재배포 별도 협의'],
         cta: '도입 문의',
-        ctaHref: BUY_KO,
+        ctaHref: ENT_KO,
       },
     ],
     includesHead: '모든 Pro 라이선스 공통',
@@ -217,7 +219,7 @@ const CONTENT: Record<string, Content> = {
         priceSub: 'Enterprise wins when you run 7+ domains',
         feats: ['Unlimited internal domains', 'Wildcard (*.company.com) support', 'Priority technical support', 'OEM/redistribution by agreement'],
         cta: 'Contact sales',
-        ctaHref: BUY_EN,
+        ctaHref: ENT_EN,
       },
     ],
     includesHead: 'Included with every Pro license',
