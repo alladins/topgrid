@@ -3,6 +3,7 @@
 // nginx 가 /admin/·/api/inquiry 를 HTTPS 로 프록시). 인증: Basic Auth(~/topgrid-admin/auth.json, 600).
 // 데이터: ~/topgrid-admin/data/inquiries.jsonl (웹루트 밖 — 직접 노출 불가).
 import http from 'node:http';
+import { request as httpsRequest } from 'node:https';
 import { readFileSync, existsSync, appendFileSync, readdirSync, mkdirSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { timingSafeEqual } from 'node:crypto';
@@ -13,6 +14,7 @@ const PORT = 9101;
 const HOME = join(homedir(), 'topgrid-admin');
 const DATA = join(HOME, 'data');
 const AUTH_FILE = join(HOME, 'auth.json');
+const NOTIFY_FILE = join(HOME, 'notify.json'); // {telegram:{token,chatId}} — 선택. 없으면 알림 비활성(문의는 항상 저장됨).
 const INQ_FILE = join(DATA, 'inquiries.jsonl');
 const HITS_FILE = join(DATA, 'hits.jsonl'); // 1st-party 비컨(정확 UV/세션/PV)
 const LOG_DIR = '/var/log/nginx';
@@ -107,6 +109,30 @@ function rateOk(ip) {
   rate.set(ip, arr);
   return true;
 }
+// ── 알림 (텔레그램) — 설정 파일 있으면만. 실패해도 문의 저장에 영향 없음(알림은 부가) ──
+let notifyCfg = null;
+try { if (existsSync(NOTIFY_FILE)) notifyCfg = JSON.parse(readFileSync(NOTIFY_FILE, 'utf8')); } catch { /* 무시 */ }
+const TYPE_KO = { trial: '평가', purchase: '구매', enterprise: 'Enterprise/OEM', other: '기타' };
+function notify(row) {
+  const tg = notifyCfg?.telegram;
+  if (!tg?.token || !tg?.chatId) return; // 미설정 = 알림 스킵(대시보드로만 확인)
+  const text =
+    `📬 새 문의 [${TYPE_KO[row.type] || row.type}]\n` +
+    `회사: ${row.company || '-'}${row.name ? ' / ' + row.name : ''}\n` +
+    `이메일: ${row.email}\n` +
+    (row.domain ? `도메인: ${row.domain}\n` : '') +
+    (row.message ? `내용: ${row.message.slice(0, 500)}\n` : '') +
+    `\n대시보드: https://topgrid.platree.com/admin/`;
+  const payload = JSON.stringify({ chat_id: tg.chatId, text, disable_web_page_preview: true });
+  const req = httpsRequest(
+    { hostname: 'api.telegram.org', path: `/bot${tg.token}/sendMessage`, method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) }, timeout: 8000 },
+    (r) => { r.resume(); },
+  );
+  req.on('error', () => {});
+  req.on('timeout', () => req.destroy());
+  req.end(payload);
+}
+
 const INQ_TYPES = new Set(['trial', 'purchase', 'enterprise', 'other']);
 function saveInquiry(body, ip) {
   const { name = '', company = '', email = '', type = 'other', domain = '', message = '', website = '' } = body;
@@ -121,6 +147,7 @@ function saveInquiry(body, ip) {
     message: String(message).slice(0, 5000),
   };
   appendFileSync(INQ_FILE, JSON.stringify(row) + '\n');
+  try { notify(row); } catch { /* 알림 실패가 접수에 영향 없게 */ }
   return { ok: true };
 }
 function readInquiries() {
@@ -217,7 +244,7 @@ pre{white-space:pre-wrap;margin:4px 0 0;font-family:inherit}</style></head><body
 <h3 style="font-size:14px;margin:14px 0 6px">페이지별 조회(30일)</h3><table id="vpages"></table>
 <h2>서버 로그 기준 (참고 — IP 단위·봇/내 IP 제외)</h2><div class="cards" id="cards"></div>
 <h2>일자별 고유 IP (최근 30일, 로그)</h2><table id="daily"></table>
-<h2>📬 문의 접수</h2><table id="inq"><tr><th>시각</th><th>유형</th><th>회사/이름</th><th>이메일</th><th>도메인</th><th>내용</th></tr></table>
+<h2>📬 문의 접수 <span id="notify" class="muted" style="font-size:13px;font-weight:400"></span></h2><table id="inq"><tr><th>시각</th><th>유형</th><th>회사/이름</th><th>이메일</th><th>도메인</th><th>내용</th></tr></table>
 <h2>페이지 TOP 20</h2><table id="pages"></table>
 <h2>/pricing 조회 (최근 30)</h2><table id="pricing"></table>
 <h2>외부 유입</h2><table id="ref"></table>
@@ -246,6 +273,12 @@ document.getElementById('daily').innerHTML=s.daily.map(d=>'<tr><td style="width:
 document.getElementById('pages').innerHTML='<tr><th>경로</th><th>조회</th></tr>'+s.topPages.map(p=>'<tr><td>'+p.path+'</td><td>'+p.views+'</td></tr>').join('');
 document.getElementById('pricing').innerHTML='<tr><th>시각</th><th>IP</th><th>경로</th></tr>'+s.pricingViews.map(p=>'<tr><td>'+p.ts+'</td><td>'+p.ip+'</td><td>'+p.path+'</td></tr>').join('');
 document.getElementById('ref').innerHTML='<tr><th>리퍼러</th><th>수</th></tr>'+s.referers.map(r=>'<tr><td>'+r.ref+'</td><td>'+r.n+'</td></tr>').join('');
+// 알림 상태 표시 + 테스트 버튼
+try{const ns=await j('/admin/api/notify-status');const el=document.getElementById('notify');
+if(ns.telegram){el.innerHTML='· 텔레그램 알림 <b style="color:#15803d">ON</b> <button id="ntest" style="font-size:12px;margin-left:6px">테스트 발송</button>';}
+else{el.innerHTML='· 텔레그램 알림 <b style="color:#b45309">OFF</b> (설정: 서버 ~/topgrid-admin/notify.json)';}
+const bt=document.getElementById('ntest');if(bt)bt.onclick=async()=>{bt.textContent='발송중…';await fetch('/admin/api/notify-test');bt.textContent='발송됨(폰 확인)';};
+}catch(e){}
 const q=await j('/admin/api/inquiries');
 document.getElementById('inq').innerHTML='<tr><th>시각</th><th>유형</th><th>회사/이름</th><th>이메일</th><th>도메인</th><th>내용</th></tr>'+(q.length?q.map(i=>'<tr><td class="muted">'+i.ts.slice(0,16).replace('T',' ')+'</td><td><span class="tag t-'+i.type+'">'+(TYPE_LABEL[i.type]||i.type)+'</span></td><td>'+esc(i.company)+(i.name?' / '+esc(i.name):'')+'</td><td>'+esc(i.email)+'</td><td>'+esc(i.domain)+'</td><td><pre>'+esc(i.message)+'</pre></td></tr>').join(''):'<tr><td colspan="6" class="muted">아직 접수된 문의가 없습니다.</td></tr>');
 function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -304,6 +337,13 @@ http.createServer((req, res) => {
     if (url === '/admin/api/inquiries') return send(res, 200, readInquiries());
     if (url === '/admin/api/visitors') {
       try { return send(res, 200, computeVisitors()); } catch (e) { return send(res, 500, { err: String(e).slice(0, 200) }); }
+    }
+    if (url === '/admin/api/notify-status') {
+      return send(res, 200, { telegram: !!(notifyCfg?.telegram?.token && notifyCfg?.telegram?.chatId) });
+    }
+    if (url === '/admin/api/notify-test') {
+      notify({ type: 'other', company: '[알림 테스트]', email: 'admin', message: '텔레그램 알림 연결 확인' });
+      return send(res, 200, { ok: !!(notifyCfg?.telegram?.token) });
     }
   }
   send(res, 404, { err: 'not found' });
