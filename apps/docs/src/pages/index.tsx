@@ -14,6 +14,7 @@ type Content = {
   titlePost: string;
   subtitle: ReactNode;
   ctaStart: string;
+  pricingCta: string;
   github: string;
   demoHead: string;
   demoSub: string;
@@ -99,6 +100,7 @@ const CONTENT: Record<string, Content> = {
       </>
     ),
     ctaStart: '시작하기 →',
+    pricingCta: '가격 보기',
     github: 'GitHub',
     demoHead: '직접 만져보세요',
     demoSub: '아래는 실제 동작하는 그리드입니다 — 헤더를 클릭해 정렬해 보세요. 셀 렌더러(숫자·날짜·배지·링크)가 자동 배선됩니다.',
@@ -154,6 +156,7 @@ const CONTENT: Record<string, Content> = {
       </>
     ),
     ctaStart: 'Get Started →',
+    pricingCta: 'View Pricing',
     github: 'GitHub',
     demoHead: 'Try it live',
     demoSub: 'A real, running grid below — click a header to sort. Cell renderers (number, date, badge, link) are wired automatically by type.',
@@ -232,6 +235,9 @@ export default function Home() {
           <div className={styles.cta}>
             <Link className="button button--primary button--lg" to="/getting-started">
               {t.ctaStart}
+            </Link>
+            <Link className="button button--secondary button--lg" to="/pricing">
+              {t.pricingCta}
             </Link>
             <Link
               className="button button--secondary button--lg"
@@ -365,7 +371,7 @@ export default function Home() {
               <Link className="button button--primary button--lg" to="/getting-started">
                 {t.viewDocs}
               </Link>
-              <Link className="button button--secondary button--lg" href="mailto:sales@platree.com">
+              <Link className="button button--secondary button--lg" to="/pricing#inquiry">
                 {t.contact}
               </Link>
             </div>

@@ -27,7 +27,8 @@ sidebar_position: 0
 |---|---|
 | 무료(MIT) — 7 | `@topgrid/grid-core`, `@topgrid/grid-core-headless`, `@topgrid/grid-renderers`, `@topgrid/grid-features`, `@topgrid/grid-sizing`, `@topgrid/grid-export`, `@topgrid/grid-vue` |
 | 상용 — 파사드·라이선스 (3) | `@topgrid/grid`(파사드), `@topgrid/grid-license`, `@topgrid/grid-license-core` |
-| 상용 — Pro 기능 (13) | `@topgrid/grid-pro-{agg, pivot, serverside, master, merging, header, datamap, tracking, range, edit-plus, filter, panel, sheet}` |
+| 상용 — Pro 기능 (17) | `@topgrid/grid-pro-{agg, pivot, pivot-core, pivot-vue, serverside, serverside-core, serverside-vue, master, merging, header, datamap, tracking, range, edit-plus, filter, panel, sheet}` |
 | 상용 — 차트 (4) | `@topgrid/grid-chart-core`, `@topgrid/grid-pro-chart`, `@topgrid/grid-pro-chart-enterprise`, `@topgrid/grid-pro-chart-enterprise-vue` |
 
-문의: [sales@platree.com](mailto:sales@platree.com)
+- [가격 · 도입 문의](/pricing) — 도메인당 라이선스, 30일 무료 평가
+- [시작하기](/getting-started) · [기능 비교](/comparison)

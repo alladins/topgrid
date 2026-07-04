@@ -84,7 +84,7 @@ const config: Config = {
           title: '리소스',
           items: [
             { label: 'GitHub', href: 'https://github.com/alladins/topgrid' },
-            { label: '도입 문의', href: 'mailto:sales@platree.com' },
+            { label: '도입 문의', to: '/pricing#inquiry' },
           ],
         },
       ],

@@ -104,3 +104,11 @@ There are 6 items that commercial grids have but that we **don't yet have**, all
 - <a href="/storybook/" target="_blank" rel="noopener">Storybook demos</a> — interactive components for every package
 - [Examples](/migration/live-demos) — copy-paste code patterns
 - [Architecture](/architecture) — the 31-package layout
+
+---
+
+## Evaluating topgrid?
+
+**Licensed per domain · unlimited developers** — the price stays the same as your team grows. Validate every feature with a free 30-day evaluation key.
+
+[View pricing · request a 30-day key →](/pricing)

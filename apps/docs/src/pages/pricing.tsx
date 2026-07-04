@@ -1,4 +1,4 @@
-import { useState, type ReactNode, type FormEvent, type MouseEvent } from 'react';
+import { useState, useEffect, type ReactNode, type FormEvent, type MouseEvent } from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -407,6 +407,19 @@ export default function Pricing() {
   const { i18n } = useDocusaurusContext();
   const t = CONTENT[i18n.currentLocale] ?? CONTENT.ko;
   const [formType, setFormType] = useState('trial');
+
+  // 다른 페이지의 "도입 문의"(/pricing#inquiry, #inquiry:purchase 등)로 진입 시 폼으로 스크롤 + 유형 선택.
+  useEffect(() => {
+    const h = typeof window !== 'undefined' ? window.location.hash : '';
+    if (!h.startsWith('#inquiry')) return;
+    const type = h.includes(':') ? h.split(':')[1] : 'purchase';
+    setFormType(type);
+    const el = document.getElementById('inquiry');
+    setTimeout(() => {
+      el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      (el?.querySelector('input[name="email"]') as HTMLInputElement | null)?.focus();
+    }, 300);
+  }, []);
 
   // 카드 CTA 클릭 → 하단 문의 폼으로 스크롤 + 유형 자동 선택(메일 앱 창 없음).
   function goToForm(e: MouseEvent<HTMLAnchorElement>, href: string) {

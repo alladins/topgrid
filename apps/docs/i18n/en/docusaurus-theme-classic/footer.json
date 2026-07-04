@@ -49,7 +49,7 @@
   },
   "link.item.label.도입 문의": {
     "message": "Contact Sales",
-    "description": "The label of footer link with label=도입 문의 linking to mailto:sales@platree.com"
+    "description": "The label of footer link with label=도입 문의 linking to /pricing#inquiry"
   },
   "copyright": {
     "message": "© 2026 platree · topgrid — Headless React grid built on TanStack Table",

@@ -28,7 +28,8 @@ advanced filters, range selection, aggregation, and cell merging.
 |---|---|
 | Free (MIT) — 7 | `@topgrid/grid-core`, `@topgrid/grid-core-headless`, `@topgrid/grid-renderers`, `@topgrid/grid-features`, `@topgrid/grid-sizing`, `@topgrid/grid-export`, `@topgrid/grid-vue` |
 | Commercial — facade & license (3) | `@topgrid/grid` (facade), `@topgrid/grid-license`, `@topgrid/grid-license-core` |
-| Commercial — Pro features (13) | `@topgrid/grid-pro-{agg, pivot, serverside, master, merging, header, datamap, tracking, range, edit-plus, filter, panel, sheet}` |
+| Commercial — Pro features (17) | `@topgrid/grid-pro-{agg, pivot, pivot-core, pivot-vue, serverside, serverside-core, serverside-vue, master, merging, header, datamap, tracking, range, edit-plus, filter, panel, sheet}` |
 | Commercial — charts (4) | `@topgrid/grid-chart-core`, `@topgrid/grid-pro-chart`, `@topgrid/grid-pro-chart-enterprise`, `@topgrid/grid-pro-chart-enterprise-vue` |
 
-Contact: [sales@platree.com](mailto:sales@platree.com)
+- [Pricing · contact sales](/pricing) — per-domain licensing, free 30-day evaluation
+- [Getting Started](/getting-started) · [Comparison](/comparison)

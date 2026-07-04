@@ -99,3 +99,11 @@ sidebar_position: 3
 - <a href="/storybook/" target="_blank" rel="noopener">Storybook 데모</a> — 전 패키지 인터랙티브 컴포넌트
 - [예제](/migration/live-demos) — 복사-붙여넣기 코드 패턴
 - [아키텍처](/architecture) — 31개 패키지 구성
+
+---
+
+## 도입 검토 중이신가요?
+
+**도메인당 라이선스 · 개발자 무제한** — 팀이 커져도 가격은 그대로입니다. 30일 무료 평가 키로 전 기능을 직접 검증해 보세요.
+
+[가격 보기 · 30일 평가 키 신청 →](/pricing)
