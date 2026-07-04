@@ -1,6 +1,16 @@
 # topgrid 관리자 대시보드 (admin-server)
 
-방문 통계(nginx 로그, **소유자 IP·봇 제외**) + 가격 페이지 문의 폼 접수/열람.
+방문 통계 + 가격 페이지 문의 폼 접수/열람. **방문 지표는 2계층**:
+
+| 계층 | 원천 | 지표 | 정확도 |
+|---|---|---|---|
+| ✅ **비컨(정확)** | 1st-party JS(`src/clientModules/beacon.js`) → `POST /api/hit` | **순방문자(UV)**·세션·페이지뷰 | 방문자 단위 정확(익명 ID). 봇=JS 미실행이라 자연 제외 |
+| 참고(로그) | nginx 로그 파싱 | IP 단위 추정·봇 감시·과거 데이터 | NAT/동적IP 한계 — 참고용 |
+
+**소유자 제외 3중**: ①소유자 IP(사무실 183.100.140.45·집 162.120.184.41) 서버측 제외 ②**관리자
+페이지(/admin/)를 한 번이라도 연 브라우저는 자동 제외**(localStorage `tg_owner`) ③자동화 브라우저(webdriver) 제외.
+→ 새 기기/브라우저를 쓰기 시작하면 그 브라우저로 /admin/ 을 한 번 열어주면 됨.
+비컨은 IP·개인정보를 저장하지 않음(익명 랜덤 ID·경로·리퍼러·언어만).
 
 ## 접속
 - URL: **https://topgrid.platree.com/admin/** (nginx 프록시 필요 — 아래 §설치 3)
@@ -26,8 +36,9 @@
 3. **nginx 프록시(root 1회)** — `/etc/nginx/conf.d/topgrid.conf` 의 **443 server 블록 안**에 추가:
    ```nginx
    location /admin/ { proxy_pass http://127.0.0.1:9101; proxy_set_header X-Real-IP $remote_addr; }
-   location = /api/inquiry { proxy_pass http://127.0.0.1:9101; proxy_set_header X-Real-IP $remote_addr; }
+   location /api/   { proxy_pass http://127.0.0.1:9101; proxy_set_header X-Real-IP $remote_addr; }
    ```
+   (`/api/` 프리픽스가 `/api/inquiry`(문의)와 `/api/hit`(비컨)을 함께 커버)
    후 `nginx -t && systemctl reload nginx`.
 
 ## 운영

@@ -14,6 +14,7 @@ const HOME = join(homedir(), 'topgrid-admin');
 const DATA = join(HOME, 'data');
 const AUTH_FILE = join(HOME, 'auth.json');
 const INQ_FILE = join(DATA, 'inquiries.jsonl');
+const HITS_FILE = join(DATA, 'hits.jsonl'); // 1st-party 비컨(정확 UV/세션/PV)
 const LOG_DIR = '/var/log/nginx';
 // 소유자 IP(사무실·집) — 방문 통계에서 제외(자기 트래픽).
 const OWNER_IPS = new Set(['183.100.140.45', '162.120.184.41']);
@@ -129,6 +130,70 @@ function readInquiries() {
     .filter(Boolean).reverse();
 }
 
+// ── 비컨 hit 수집·집계 (정확 방문자) ──
+const hitRate = new Map();
+function hitRateOk(ip) {
+  const now = Date.now();
+  const arr = (hitRate.get(ip) || []).filter((t) => now - t < 3600e3);
+  if (arr.length >= 120) return false; // 페이지뷰 단위라 넉넉히
+  arr.push(now);
+  hitRate.set(ip, arr);
+  return true;
+}
+function saveHit(body, ip, ua) {
+  if (OWNER_IPS.has(ip)) return { ok: true, skipped: 'owner' }; // 소유자 IP = 저장 안 함
+  if (BOT.test(ua || '')) return { ok: true, skipped: 'bot' };
+  const { vid = '', sid = '', path = '', ref = '', lang = '' } = body;
+  if (!vid || !path) return { ok: false };
+  const row = {
+    ts: new Date().toISOString(),
+    vid: String(vid).slice(0, 40),
+    sid: String(sid).slice(0, 12),
+    path: String(path).slice(0, 300),
+    ref: String(ref).slice(0, 300),
+    lang: String(lang).slice(0, 20),
+  };
+  appendFileSync(HITS_FILE, JSON.stringify(row) + '\n');
+  return { ok: true };
+}
+let hitCache = { at: 0, data: null };
+function computeVisitors() {
+  if (Date.now() - hitCache.at < 60 * 1000 && hitCache.data) return hitCache.data;
+  const rows = existsSync(HITS_FILE)
+    ? readFileSync(HITS_FILE, 'utf8').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean)
+    : [];
+  const now = Date.now();
+  const day = (ts) => ts.slice(0, 10);
+  const today = new Date().toISOString().slice(0, 10);
+  const within = (ts, d) => now - Date.parse(ts) < d * 86400e3;
+  const uv = (arr) => new Set(arr.map((r) => r.vid)).size;
+  const sess = (arr) => new Set(arr.map((r) => r.vid + '/' + r.sid)).size;
+  const todayRows = rows.filter((r) => day(r.ts) === today);
+  const d7 = rows.filter((r) => within(r.ts, 7));
+  const d30 = rows.filter((r) => within(r.ts, 30));
+  const daily = new Map();
+  for (const r of d30) {
+    const d = day(r.ts);
+    if (!daily.has(d)) daily.set(d, { uv: new Set(), pv: 0 });
+    daily.get(d).uv.add(r.vid);
+    daily.get(d).pv++;
+  }
+  const pages = new Map();
+  for (const r of d30) pages.set(r.path, (pages.get(r.path) || 0) + 1);
+  const refs = new Map();
+  for (const r of d30) if (r.ref && !/topgrid/.test(r.ref)) refs.set(r.ref, (refs.get(r.ref) || 0) + 1);
+  const data = {
+    since: rows[0]?.ts || null, // 비컨 수집 시작 시점(그 이전은 로그 지표만 존재)
+    today: { uv: uv(todayRows), sessions: sess(todayRows), pv: todayRows.length },
+    d7uv: uv(d7), d30uv: uv(d30), totalUv: uv(rows), totalPv: rows.length,
+    daily: [...daily.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)).map(([d, v]) => ({ day: d, uv: v.uv.size, pv: v.pv })),
+    topPages: [...pages.entries()].sort((a, b) => b[1] - a[1]).slice(0, 15).map(([path, pv]) => ({ path, pv })),
+    referers: [...refs.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([ref, n]) => ({ ref, n })),
+  };
+  hitCache = { at: Date.now(), data };
+  return data;
+}
+
 // ── 대시보드 HTML ──
 const HTML = `<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
@@ -145,16 +210,32 @@ th,td{padding:8px 10px;border-bottom:1px solid #f1f5f9;text-align:left;vertical-
 .t-trial{background:#dbeafe;color:#1d4ed8}.t-purchase{background:#dcfce7;color:#15803d}.t-enterprise{background:#fef3c7;color:#b45309}.t-other{background:#f3f4f6;color:#374151}
 pre{white-space:pre-wrap;margin:4px 0 0;font-family:inherit}</style></head><body><div class="wrap">
 <h1>📊 topgrid 관리자 대시보드</h1><div class="muted" id="gen"></div>
-<h2>방문 (봇·내 IP 제외)</h2><div class="cards" id="cards"></div>
-<h2>일자별 고유 방문자 (최근 30일)</h2><table id="daily"></table>
+<h2>✅ 정확 방문자 — 비컨 기준 (순방문자 UV·세션·페이지뷰)</h2>
+<div class="muted" id="vsince"></div>
+<div class="cards" id="vcards"></div>
+<h3 style="font-size:14px;margin:14px 0 6px">일자별 UV / PV</h3><table id="vdaily"></table>
+<h3 style="font-size:14px;margin:14px 0 6px">페이지별 조회(30일)</h3><table id="vpages"></table>
+<h2>서버 로그 기준 (참고 — IP 단위·봇/내 IP 제외)</h2><div class="cards" id="cards"></div>
+<h2>일자별 고유 IP (최근 30일, 로그)</h2><table id="daily"></table>
 <h2>📬 문의 접수</h2><table id="inq"><tr><th>시각</th><th>유형</th><th>회사/이름</th><th>이메일</th><th>도메인</th><th>내용</th></tr></table>
 <h2>페이지 TOP 20</h2><table id="pages"></table>
 <h2>/pricing 조회 (최근 30)</h2><table id="pricing"></table>
 <h2>외부 유입</h2><table id="ref"></table>
 </div><script>
+// ★이 브라우저를 소유자로 표시 — 관리자 페이지를 연 브라우저는 이후 비컨 집계에서 자동 제외.
+try{localStorage.setItem('tg_owner','1')}catch(e){}
 const TYPE_LABEL={trial:'평가',purchase:'구매',enterprise:'Enterprise',other:'기타'};
 async function j(u){const r=await fetch(u);return r.json()}
 (async()=>{
+// ── 비컨(정확 방문자) ──
+try{
+const v=await j('/admin/api/visitors');
+document.getElementById('vsince').textContent=v.since?('수집 시작: '+v.since.slice(0,16).replace('T',' ')+' (이전 기간은 아래 로그 지표 참고)'):'아직 비컨 데이터 없음 — 사이트 배포 후 방문부터 집계됩니다.';
+document.getElementById('vcards').innerHTML=[['오늘 순방문자',v.today.uv],['오늘 세션',v.today.sessions],['오늘 페이지뷰',v.today.pv],['7일 순방문자',v.d7uv],['30일 순방문자',v.d30uv],['누적 순방문자',v.totalUv]].map(([k,x])=>'<div class="card"><b>'+x+'</b><span>'+k+'</span></div>').join('');
+const vmx=Math.max(1,...v.daily.map(d=>d.uv));
+document.getElementById('vdaily').innerHTML='<tr><th>날짜</th><th>UV</th><th>PV</th><th></th></tr>'+v.daily.map(d=>'<tr><td style="width:100px">'+d.day+'</td><td style="width:40px">'+d.uv+'</td><td style="width:40px" class="muted">'+d.pv+'</td><td><span class="bar" style="width:'+(d.uv/vmx*300)+'px"></span></td></tr>').join('');
+document.getElementById('vpages').innerHTML='<tr><th>경로</th><th>PV</th></tr>'+v.topPages.map(p=>'<tr><td>'+p.path+'</td><td>'+p.pv+'</td></tr>').join('');
+}catch(e){document.getElementById('vsince').textContent='비컨 집계 오류: '+e}
 const s=await j('/admin/api/stats');
 document.getElementById('gen').textContent='생성: '+s.generatedAt+' · '+s.note+' (내 IP 요청 '+s.totals.ownerExcluded+'건 제외됨)';
 const c=document.getElementById('cards');
@@ -181,6 +262,20 @@ http.createServer((req, res) => {
   const url = (req.url || '/').split('?')[0];
   const ip = req.headers['x-real-ip'] || req.socket.remoteAddress || '?';
 
+  // 공개: 방문 비컨 (정확 UV/세션/PV)
+  if (req.method === 'POST' && url === '/api/hit') {
+    if (!hitRateOk(String(ip))) return send(res, 429, { ok: false });
+    let body = '';
+    req.on('data', (c) => { body += c; if (body.length > 4000) req.destroy(); });
+    req.on('end', () => {
+      let parsed = {};
+      try { parsed = JSON.parse(body); } catch { return send(res, 400, { ok: false }); }
+      try { send(res, 200, saveHit(parsed, String(ip), String(req.headers['user-agent'] || ''))); }
+      catch { send(res, 500, { ok: false }); }
+    });
+    return;
+  }
+
   // 공개: 문의 접수
   if (req.method === 'POST' && url === '/api/inquiry') {
     if (!rateOk(String(ip))) return send(res, 429, { ok: false, err: '요청이 너무 잦습니다. 잠시 후 다시 시도해 주세요.' });
@@ -203,6 +298,9 @@ http.createServer((req, res) => {
       try { return send(res, 200, computeStats()); } catch (e) { return send(res, 500, { err: String(e).slice(0, 200) }); }
     }
     if (url === '/admin/api/inquiries') return send(res, 200, readInquiries());
+    if (url === '/admin/api/visitors') {
+      try { return send(res, 200, computeVisitors()); } catch (e) { return send(res, 500, { err: String(e).slice(0, 200) }); }
+    }
   }
   send(res, 404, { err: 'not found' });
 }).listen(PORT, '127.0.0.1', () => {

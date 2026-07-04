@@ -14,6 +14,8 @@ const config: Config = {
     defaultLocale: 'ko',
     locales: ['ko', 'en'],
   },
+  // 1st-party 방문 비컨(정확 UV/세션/PV) — admin-server 가 수집·집계. src/clientModules/beacon.js 참조.
+  clientModules: ['./src/clientModules/beacon.js'],
   presets: [
     [
       'classic',
