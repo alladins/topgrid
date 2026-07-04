@@ -262,12 +262,18 @@ http.createServer((req, res) => {
   const url = (req.url || '/').split('?')[0];
   const ip = req.headers['x-real-ip'] || req.socket.remoteAddress || '?';
 
+  // POST 본문 수집 — ★Buffer.concat 후 일괄 utf8 디코드(청크 경계에서 멀티바이트 한글 깨짐 방지)
+  const readBody = (limit, cb) => {
+    const chunks = [];
+    let size = 0;
+    req.on('data', (c) => { size += c.length; if (size > limit) req.destroy(); else chunks.push(c); });
+    req.on('end', () => cb(Buffer.concat(chunks).toString('utf8')));
+  };
+
   // 공개: 방문 비컨 (정확 UV/세션/PV)
   if (req.method === 'POST' && url === '/api/hit') {
     if (!hitRateOk(String(ip))) return send(res, 429, { ok: false });
-    let body = '';
-    req.on('data', (c) => { body += c; if (body.length > 4000) req.destroy(); });
-    req.on('end', () => {
+    readBody(4000, (body) => {
       let parsed = {};
       try { parsed = JSON.parse(body); } catch { return send(res, 400, { ok: false }); }
       try { send(res, 200, saveHit(parsed, String(ip), String(req.headers['user-agent'] || ''))); }
@@ -279,9 +285,7 @@ http.createServer((req, res) => {
   // 공개: 문의 접수
   if (req.method === 'POST' && url === '/api/inquiry') {
     if (!rateOk(String(ip))) return send(res, 429, { ok: false, err: '요청이 너무 잦습니다. 잠시 후 다시 시도해 주세요.' });
-    let body = '';
-    req.on('data', (c) => { body += c; if (body.length > 20000) req.destroy(); });
-    req.on('end', () => {
+    readBody(20000, (body) => {
       let parsed = {};
       try { parsed = JSON.parse(body); } catch { return send(res, 400, { ok: false, err: '잘못된 요청' }); }
       const r = saveInquiry(parsed, String(ip));
