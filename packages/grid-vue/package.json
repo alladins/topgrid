@@ -1,6 +1,6 @@
 {
   "name": "@topgrid/grid-vue",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "license": "MIT",
   "description": "Vue 3 어댑터 (스켈레톤) — @topgrid/grid-core-headless 공유 코어를 @tanstack/vue-table 로 소비. W1 Phase 0. React 의존 0.",
@@ -12,6 +12,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
+    },
+    "./export": {
+      "types": "./dist/export/index.d.ts",
+      "import": "./dist/export/index.mjs",
+      "require": "./dist/export/index.cjs"
     }
   },
   "files": [
@@ -24,17 +29,25 @@
     "test": "node --experimental-strip-types src/Grid.test.ts"
   },
   "dependencies": {
-    "@topgrid/grid-core-headless": "workspace:*"
+    "@topgrid/grid-core-headless": "workspace:*",
+    "@topgrid/grid-export": "workspace:*"
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^15.0.0",
     "@tanstack/table-core": "8.21.3",
     "@tanstack/vue-table": "8.21.3",
-    "vue": "^3.5.0"
+    "vue": "^3.5.0",
+    "xlsx": "^0.18.5"
   },
   "peerDependencies": {
     "@tanstack/vue-table": "^8.0.0",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "xlsx": "^0.18.5"
+  },
+  "peerDependenciesMeta": {
+    "xlsx": {
+      "optional": true
+    }
   },
   "publishConfig": {
     "access": "public"

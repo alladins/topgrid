@@ -1,6 +1,6 @@
 {
   "name": "@topgrid/grid-export",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "type": "module",
   "license": "MIT",
   "description": "Excel, PDF, CSV export for grid data",
@@ -17,6 +17,11 @@
       "types": "./dist/legacy/downloadExcel.d.ts",
       "import": "./dist/legacy/downloadExcel.mjs",
       "require": "./dist/legacy/downloadExcel.cjs"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.mjs",
+      "require": "./dist/react/index.cjs"
     }
   },
   "files": [
@@ -26,7 +31,7 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types src/internal/csvSerialize.test.ts && node --experimental-strip-types src/internal/buildRowsPdfTable.test.ts && node --experimental-strip-types src/sheetXlsx.test.ts"
+    "test": "node --experimental-strip-types src/internal/csvSerialize.test.ts && node --experimental-strip-types src/internal/buildRowsPdfTable.test.ts && node --experimental-strip-types src/sheetXlsx.test.ts && node --experimental-strip-types src/react/stripExt.test.ts"
   },
   "peerDependencies": {
     "@tanstack/react-table": "^8.0.0",
@@ -45,6 +50,12 @@
     },
     "xlsx": {
       "optional": false
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
     }
   },
   "devDependencies": {

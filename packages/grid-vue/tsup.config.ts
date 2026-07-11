@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/index.ts'],
+  entry: ['src/index.ts', 'src/export/index.ts'],
   format: ['cjs', 'esm'],
   dts: true,
   sourcemap: true,
@@ -11,5 +11,14 @@ export default defineConfig({
   outExtension({ format }) {
     return { js: format === 'esm' ? '.mjs' : '.cjs' };
   },
-  external: ['vue', '@tanstack/vue-table', '@tanstack/table-core', '@topgrid/grid-core-headless'],
+  external: [
+    'vue',
+    '@tanstack/vue-table',
+    '@tanstack/table-core',
+    '@topgrid/grid-core-headless',
+    '@topgrid/grid-export',
+    'xlsx',
+    'jspdf',
+    'jspdf-autotable',
+  ],
 });
