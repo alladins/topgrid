@@ -14,6 +14,7 @@ type Content = {
   titlePost: string;
   subtitle: ReactNode;
   ctaStart: string;
+  trialCta: string;
   pricingCta: string;
   github: string;
   demoHead: string;
@@ -100,6 +101,7 @@ const CONTENT: Record<string, Content> = {
       </>
     ),
     ctaStart: '시작하기 →',
+    trialCta: '30일 평가 키 신청 →',
     pricingCta: '가격 보기',
     github: 'GitHub',
     demoHead: '직접 만져보세요',
@@ -120,6 +122,7 @@ const CONTENT: Record<string, Content> = {
       { icon: '🌐', title: '서버사이드 (SSRM)', desc: '블록 lazy 로드·무한 스크롤·뷰포트 행 모델·서버 트리. 대용량 백엔드 연동.' },
       { icon: '📈', title: '차트 17종 (React/Vue)', desc: '셀 스파크라인부터 엔터프라이즈 17종까지. BYO 엔진·SSR·동일 코어 멀티프레임워크.' },
       { icon: '📑', title: '스프레드시트', desc: 'A1 수식·의존 그래프 재계산·VLOOKUP/날짜/재무 함수·셀 서식/스타일/병합.' },
+      { icon: '⬇️', title: 'Excel·CSV·PDF 내보내기', desc: '버튼 하나로 Excel/CSV/PDF 다운로드·클립보드·인쇄. 전체/필터/선택 범위·숫자서식·다중 시트·수식 보존. (무료 MIT)' },
       { icon: '✏️', title: '편집 · 변경 추적', desc: '인라인 편집, 추가/수정/삭제 dirty 추적, 검증 룰, Excel-style 범위 선택·클립보드.' },
       { icon: '🧩', title: '멀티프레임워크', desc: '동일 headless 코어(@tanstack/table-core) 위에서 React 18/19 + Vue 3 어댑터.' },
     ],
@@ -156,6 +159,7 @@ const CONTENT: Record<string, Content> = {
       </>
     ),
     ctaStart: 'Get Started →',
+    trialCta: 'Get a 30-day key →',
     pricingCta: 'View Pricing',
     github: 'GitHub',
     demoHead: 'Try it live',
@@ -176,6 +180,7 @@ const CONTENT: Record<string, Content> = {
       { icon: '🌐', title: 'Server-side (SSRM)', desc: 'Block lazy-loading, infinite scroll, viewport row model, server-side tree. Connect large backends.' },
       { icon: '📈', title: '17 chart types (React/Vue)', desc: 'From cell sparklines to 17 enterprise chart types. BYO engine, SSR, one shared core across frameworks.' },
       { icon: '📑', title: 'Spreadsheet', desc: 'A1 formulas, dependency-graph recalculation, VLOOKUP / date / financial functions, cell formatting / styles / merging.' },
+      { icon: '⬇️', title: 'Excel/CSV/PDF export', desc: 'One button for Excel/CSV/PDF download, clipboard, print. All/filtered/selected scope, number formats, multi-sheet, formula round-trip. (Free, MIT)' },
       { icon: '✏️', title: 'Editing · change tracking', desc: 'Inline editing, add/update/delete dirty tracking, validation rules, Excel-style range selection and clipboard.' },
       { icon: '🧩', title: 'Multi-framework', desc: 'React 18/19 + Vue 3 adapters on the same headless core (@tanstack/table-core).' },
     ],
@@ -233,7 +238,10 @@ export default function Home() {
           </h1>
           <p className={styles.heroSubtitle}>{t.subtitle}</p>
           <div className={styles.cta}>
-            <Link className="button button--primary button--lg" to="/getting-started">
+            <Link className="button button--primary button--lg" to="/pricing#inquiry:trial">
+              {t.trialCta}
+            </Link>
+            <Link className="button button--secondary button--lg" to="/getting-started">
               {t.ctaStart}
             </Link>
             <Link className="button button--secondary button--lg" to="/pricing">

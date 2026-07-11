@@ -17,6 +17,8 @@ const AUTH_FILE = join(HOME, 'auth.json');
 // {slack:{webhookUrl}} 및/또는 {telegram:{token,chatId}} — 선택. 설정된 것만 발송(둘 다도 가능).
 // 없으면 알림 비활성(문의는 항상 저장됨).
 const NOTIFY_FILE = join(HOME, 'notify.json');
+// {total, claimed} — 얼리어답터 프로모 카운터. 없으면 total=10·claimed=0. 매 요청 갱신 반영(재시작 불필요).
+const PROMO_FILE = join(HOME, 'promo.json');
 const INQ_FILE = join(DATA, 'inquiries.jsonl');
 const HITS_FILE = join(DATA, 'hits.jsonl'); // 1st-party 비컨(정확 UV/세션/PV)
 const LOG_DIR = '/var/log/nginx';
@@ -304,6 +306,19 @@ function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt
 function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 </script></body></html>`;
 
+// 얼리어답터 프로모 남은 자리 — promo.json({total,claimed}) 매 요청 읽음(없으면 total=10·claimed=0).
+function readPromo() {
+  let total = 10, claimed = 0;
+  try {
+    if (existsSync(PROMO_FILE)) {
+      const p = JSON.parse(readFileSync(PROMO_FILE, 'utf8'));
+      if (Number.isFinite(p.total)) total = p.total;
+      if (Number.isFinite(p.claimed)) claimed = p.claimed;
+    }
+  } catch { /* 무시 — 기본값 */ }
+  return { total, claimed, remaining: Math.max(0, total - claimed) };
+}
+
 // ── HTTP 서버 ──
 const send = (res, code, body, type = 'application/json; charset=utf-8') => {
   res.writeHead(code, { 'Content-Type': type, 'Cache-Control': 'no-store' });
@@ -331,6 +346,11 @@ http.createServer((req, res) => {
       catch { send(res, 500, { ok: false }); }
     });
     return;
+  }
+
+  // 공개: 얼리어답터 프로모 남은 자리(가격 페이지 배너가 조회)
+  if (req.method === 'GET' && url === '/api/promo-slots') {
+    return send(res, 200, readPromo());
   }
 
   // 공개: 문의 접수

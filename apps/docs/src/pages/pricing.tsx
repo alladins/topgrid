@@ -403,6 +403,31 @@ function InquiryForm({ t, initialType }: { t: Content; initialType: string }) {
   );
 }
 
+// 얼리어답터 남은 자리 — admin-server 의 /api/promo-slots(공개 GET)를 런타임에 조회.
+// 실패/SSG(window 없음) 시 정적 프로모 문구만 노출(안전). 숫자 갱신은 서버 promo.json 편집만 하면 됨(재배포 불필요).
+function PromoBanner({ text, locale }: { text: string; locale: string }) {
+  const [slots, setSlots] = useState<{ total: number; remaining: number } | null>(null);
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/promo-slots')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (alive && d && typeof d.remaining === 'number') setSlots(d); })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
+  let suffix = '';
+  if (slots) {
+    if (slots.remaining > 0) {
+      suffix = locale === 'en'
+        ? ` — only ${slots.remaining} of ${slots.total} spots left`
+        : ` — ${slots.total}곳 중 ${slots.remaining}자리 남음`;
+    } else {
+      suffix = locale === 'en' ? ' — fully claimed' : ' — 마감';
+    }
+  }
+  return <div className={styles.promo}>{text}{suffix}</div>;
+}
+
 export default function Pricing() {
   const { i18n } = useDocusaurusContext();
   const t = CONTENT[i18n.currentLocale] ?? CONTENT.ko;
@@ -440,7 +465,7 @@ export default function Pricing() {
           <h1>{t.title}</h1>
           <p>{t.subtitle}</p>
         </div>
-        <div className={styles.promo}>{t.promo}</div>
+        <PromoBanner text={t.promo} locale={i18n.currentLocale} />
 
         <div className={styles.tiers}>
           {t.tiers.map((tier) => (
