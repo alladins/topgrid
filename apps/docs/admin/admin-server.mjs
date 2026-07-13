@@ -4,6 +4,8 @@
 // 데이터: ~/topgrid-admin/data/inquiries.jsonl (웹루트 밖 — 직접 노출 불가).
 import http from 'node:http';
 import { request as httpsRequest } from 'node:https';
+import net from 'node:net';
+import tls from 'node:tls';
 import { readFileSync, existsSync, appendFileSync, readdirSync, mkdirSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { timingSafeEqual, webcrypto } from 'node:crypto';
@@ -23,6 +25,9 @@ const PROMO_FILE = join(HOME, 'promo.json');
 const TRIAL_KEY_FILE = join(HOME, 'trial-signing.key');
 const TRIALS_FILE = join(DATA, 'trials.jsonl'); // 자동 발급 이력(도메인당 30일 1회 판단)
 const TRIAL_DAYS = 30;
+// 이메일 더블 옵트인 발송 설정 {host,port,user,pass,from,fromName}. 있으면 인증 후 발급, 없으면 즉시 발급(현행).
+const EMAIL_FILE = join(HOME, 'email.json');
+const SITE_BASE = 'https://topgrid.platree.com';
 const INQ_FILE = join(DATA, 'inquiries.jsonl');
 const HITS_FILE = join(DATA, 'hits.jsonl'); // 1st-party 비컨(정확 UV/세션/PV)
 const LOG_DIR = '/var/log/nginx';
@@ -131,6 +136,63 @@ try {
   }
 } catch { trialSignKey = null; }
 
+// 이메일 발송 설정 로드(있으면 더블 옵트인 켜짐).
+let emailCfg = null;
+try { if (existsSync(EMAIL_FILE)) emailCfg = JSON.parse(readFileSync(EMAIL_FILE, 'utf8')); } catch { emailCfg = null; }
+const emailEnabled = () => !!(emailCfg && emailCfg.host && emailCfg.user && emailCfg.pass);
+
+// 최소 SMTP 제출 클라이언트(의존성 0). 587=STARTTLS(기본) / 465=implicit TLS. AUTH LOGIN.
+function smtpSend(cfg, { to, subject, text }) {
+  return new Promise((resolve, reject) => {
+    const port = Number(cfg.port) || 587;
+    const host = String(cfg.host);
+    const from = cfg.from || cfg.user;
+    const fromName = cfg.fromName || 'topgrid';
+    const b64 = (s) => Buffer.from(s, 'utf8').toString('base64');
+    const body =
+      `From: ${fromName} <${from}>\r\nTo: ${to}\r\nSubject: =?UTF-8?B?${b64(subject)}?=\r\n` +
+      `MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n\r\n` +
+      String(text).replace(/\r?\n/g, '\r\n').replace(/^\./gm, '..') + `\r\n`;
+
+    let sock = port === 465 ? tls.connect({ host, port, servername: host }) : net.connect({ host, port });
+    let buf = '', stage = 'greet', upgraded = port === 465;
+    const timer = setTimeout(() => { try { sock.destroy(); } catch {} reject(new Error('SMTP timeout')); }, 20000);
+    const done = (ok, err) => { clearTimeout(timer); try { sock.end(); } catch {} ok ? resolve(true) : reject(err instanceof Error ? err : new Error(String(err))); };
+    const write = (s) => { try { sock.write(s + '\r\n'); } catch (e) { done(false, e); } };
+    const attach = (s) => { s.on('data', onData); s.on('error', (e) => done(false, e)); };
+
+    function onData(chunk) {
+      buf += chunk.toString('utf8');
+      const lines = buf.split(/\r?\n/).filter(Boolean);
+      const last = lines[lines.length - 1] || '';
+      if (!/^\d{3} /.test(last)) return; // 멀티라인 응답 미완
+      const code = parseInt(last.slice(0, 3), 10);
+      buf = '';
+      step(code, lines.join(' '));
+    }
+    function step(code, msg) {
+      if (stage === 'greet') { if (code !== 220) return done(false, 'greet:' + msg); stage = 'ehlo'; write('EHLO topgrid.platree.com'); }
+      else if (stage === 'ehlo') {
+        if (code !== 250) return done(false, 'EHLO:' + msg);
+        if (!upgraded) { stage = 'starttls'; write('STARTTLS'); }
+        else { stage = 'auth'; write('AUTH LOGIN'); }
+      } else if (stage === 'starttls') {
+        if (code !== 220) return done(false, 'STARTTLS:' + msg);
+        sock.removeListener('data', onData);
+        const sec = tls.connect({ socket: sock, servername: host }, () => { sock = sec; upgraded = true; stage = 'ehlo'; write('EHLO topgrid.platree.com'); });
+        attach(sec);
+      } else if (stage === 'auth') { if (code !== 334) return done(false, 'AUTH:' + msg); stage = 'user'; write(b64(cfg.user)); }
+      else if (stage === 'user') { if (code !== 334) return done(false, 'AUTH user:' + msg); stage = 'pass'; write(b64(cfg.pass)); }
+      else if (stage === 'pass') { if (code !== 235) return done(false, 'AUTH 실패:' + msg); stage = 'from'; write('MAIL FROM:<' + from + '>'); }
+      else if (stage === 'from') { if (code !== 250) return done(false, 'MAIL FROM:' + msg); stage = 'rcpt'; write('RCPT TO:<' + to + '>'); }
+      else if (stage === 'rcpt') { if (code !== 250 && code !== 251) return done(false, 'RCPT:' + msg); stage = 'data'; write('DATA'); }
+      else if (stage === 'data') { if (code !== 354) return done(false, 'DATA:' + msg); stage = 'body'; sock.write(body + '.\r\n'); }
+      else if (stage === 'body') { if (code !== 250) return done(false, '본문:' + msg); done(true); }
+    }
+    attach(sock);
+  });
+}
+
 // URL 로 JSON POST (fire-and-forget, 실패/타임아웃 무해).
 function postJSON(urlStr, obj) {
   let u;
@@ -202,7 +264,8 @@ async function signTrialKey(domain, expiresAt) {
   const sig = await webcrypto.subtle.sign({ name: 'Ed25519' }, trialSignKey, payloadBytes);
   return b64url(sig) + '.' + b64url(payloadBytes);
 }
-async function issueTrial(body, ip) {
+// 평가판 발급 요청 검증(공통). 통과 시 {ok, dom, email, company}.
+function validateTrialReq(body) {
   const { email = '', domain = '', company = '', website = '' } = body;
   if (website) return { ok: false, err: 'spam' }; // honeypot
   if (!trialSignKey) return { ok: false, err: '평가판 자동 발급이 일시적으로 비활성입니다. 문의 폼으로 신청해 주세요.' };
@@ -218,20 +281,81 @@ async function issueTrial(body, ip) {
   // 도메인당 30일 1회 — 남용 방지
   const prior = readTrials().find((t) => t.domain === dom && Date.now() - Date.parse(t.ts) < TRIAL_DAYS * 86400e3);
   if (prior) return { ok: false, err: '이 도메인은 최근 평가판이 이미 발급되었습니다. 연장/전환은 문의로 요청해 주세요.', already: true };
+  return { ok: true, dom, email: String(email).slice(0, 200), company: String(company).slice(0, 200) };
+}
 
+// 실제 30일 키 발급 + 기록 + 알림.
+async function finalizeTrial({ dom, email, company, ip, verified }) {
   const expiresAt = Date.now() + TRIAL_DAYS * 86400e3;
   const key = await signTrialKey(dom, expiresAt);
   const row = {
-    ts: new Date().toISOString(), ip, domain: dom,
-    email: String(email).slice(0, 200), company: String(company).slice(0, 200),
-    expiresAt: new Date(expiresAt).toISOString(), fingerprint: key.slice(0, 16),
+    ts: new Date().toISOString(), ip, domain: dom, email, company,
+    verified: !!verified, expiresAt: new Date(expiresAt).toISOString(), fingerprint: key.slice(0, 16),
   };
   appendFileSync(TRIALS_FILE, JSON.stringify(row) + '\n');
-  // 신규 리드 알림 — 슬랙/텔레그램(설정 시)
   try {
-    notify({ type: 'trial', company, email: String(email), domain: dom, message: `평가판 자동 발급(30일) — 만료 ${row.expiresAt.slice(0, 10)}` });
+    notify({ type: 'trial', company, email, domain: dom, message: `평가판 자동 발급(30일${verified ? ', ✅이메일확인' : ''}) — 만료 ${row.expiresAt.slice(0, 10)}` });
   } catch { /* 알림 실패 무해 */ }
   return { ok: true, key, expiresAt, domain: dom };
+}
+
+// 대기 토큰(더블 옵트인) — 메모리 Map, 30분 TTL(재시작 시 소멸=재신청).
+const pendingTrials = new Map();
+const PENDING_TTL = 30 * 60 * 1000;
+const newToken = () => Buffer.from(webcrypto.getRandomValues(new Uint8Array(24))).toString('base64url');
+function prunePending() { const now = Date.now(); for (const [k, v] of pendingTrials) if (v.exp < now) pendingTrials.delete(k); }
+
+// 신청 처리: 이메일 설정 있으면 인증메일 발송(pending), 없으면 즉시 발급(현행).
+async function requestTrial(body, ip) {
+  const v = validateTrialReq(body);
+  if (!v.ok) return v;
+  // 이메일 검증 미설정 = 미검증 자동발급 금지 → 문의로 접수(리드 확보, 키는 미발급).
+  if (!emailEnabled()) {
+    saveInquiry({ ...body, type: 'trial', message: `[평가판 신청 — 이메일 검증 대기]${body.message ? ' / ' + body.message : ''}` }, ip);
+    return { ok: true, inquiry: true };
+  }
+  prunePending();
+  const token = newToken();
+  pendingTrials.set(token, { dom: v.dom, email: v.email, company: v.company, ip, exp: Date.now() + PENDING_TTL });
+  const link = `${SITE_BASE}/api/verify-trial?token=${token}`;
+  const text =
+    `안녕하세요,\n\ntopgrid 30일 평가판 신청을 확인해 주세요. 아래 링크를 클릭하면 ${v.dom} 도메인용 평가 키가 발급됩니다.\n\n${link}\n\n` +
+    `이 링크는 30분간 유효합니다. 신청하지 않으셨다면 이 메일을 무시하세요.\n\n— topgrid`;
+  try {
+    await smtpSend(emailCfg, { to: v.email, subject: 'topgrid 30일 평가판 — 이메일 확인', text });
+  } catch {
+    pendingTrials.delete(token);
+    return { ok: false, err: '인증 메일 발송에 실패했습니다. 잠시 후 다시 시도하거나 문의 폼을 이용해 주세요.' };
+  }
+  return { ok: true, pending: true, email: v.email };
+}
+
+// 인증 링크 클릭 → 발급.
+async function verifyTrialToken(token) {
+  prunePending();
+  const p = token && pendingTrials.get(token);
+  if (!p) return { ok: false, err: '링크가 만료되었거나 이미 사용되었습니다. 다시 신청해 주세요.' };
+  pendingTrials.delete(token); // 단일 사용
+  const prior = readTrials().find((t) => t.domain === p.dom && Date.now() - Date.parse(t.ts) < TRIAL_DAYS * 86400e3);
+  if (prior) return { ok: false, err: '이 도메인은 이미 평가판이 발급되었습니다.' };
+  return finalizeTrial({ dom: p.dom, email: p.email, company: p.company, ip: p.ip, verified: true });
+}
+
+// 인증 링크 결과 페이지(HTML) — 키 표시 또는 오류.
+function trialResultHtml(r) {
+  const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const head = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>topgrid 평가판</title><style>body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 20px;color:#111827;line-height:1.6}code{background:#f3f4f6;padding:1px 5px;border-radius:4px}textarea{width:100%;font-family:ui-monospace,monospace;font-size:12px;padding:10px;border:1px solid #d1d5db;border-radius:8px;word-break:break-all}.b{background:#2563eb;color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:14px}.muted{color:#6b7280;font-size:13px}</style></head><body>`;
+  if (r.ok && r.key) {
+    const snippet = `setLicenseKey('${r.key}')`;
+    return head +
+      `<h2>✅ 30일 평가 키가 발급되었습니다</h2>` +
+      `<p>도메인 <code>${esc(r.domain)}</code> · 만료 ${new Date(r.expiresAt).toISOString().slice(0, 10)}</p>` +
+      `<p>앱 진입점(main.tsx / Nuxt 플러그인)에서 아래 한 줄로 적용하세요:</p>` +
+      `<textarea id="k" readonly rows="4" onclick="this.select()">${esc(snippet)}</textarea>` +
+      `<p><button class="b" onclick="navigator.clipboard&&navigator.clipboard.writeText(document.getElementById('k').value);this.textContent='복사됨 ✓'">키 복사</button></p>` +
+      `<p class="muted">이 키는 ${esc(r.domain)} 전용이며 30일 후 만료됩니다. 도입 문의는 <a href="${SITE_BASE}/pricing">가격 페이지</a>에서.</p></body></html>`;
+  }
+  return head + `<h2>링크를 처리할 수 없습니다</h2><p>${esc(r.err || '알 수 없는 오류')}</p><p><a href="${SITE_BASE}/pricing">평가판 다시 신청하기 →</a></p></body></html>`;
 }
 
 // ── 비컨 hit 수집·집계 (정확 방문자) ──
@@ -427,16 +551,26 @@ http.createServer((req, res) => {
     return;
   }
 
-  // 공개: 평가판 자동 발급(30일, 전용 서명키)
+  // 공개: 평가판 신청(이메일 설정 시 더블 옵트인, 없으면 즉시 발급)
   if (req.method === 'POST' && url === '/api/request-trial') {
     if (!rateOk(String(ip))) return send(res, 429, { ok: false, err: '요청이 너무 잦습니다. 잠시 후 다시 시도해 주세요.' });
     readBody(20000, (body) => {
       let parsed = {};
       try { parsed = JSON.parse(body); } catch { return send(res, 400, { ok: false, err: '잘못된 요청' }); }
-      issueTrial(parsed, String(ip))
+      requestTrial(parsed, String(ip))
         .then((r) => send(res, r.ok ? 200 : 400, r))
         .catch(() => send(res, 500, { ok: false, err: '발급 중 오류가 발생했습니다.' }));
     });
+    return;
+  }
+
+  // 공개: 평가판 이메일 인증 링크(더블 옵트인) → 발급 + HTML 페이지
+  if (req.method === 'GET' && url === '/api/verify-trial') {
+    let token = '';
+    try { token = new URL(req.url, SITE_BASE).searchParams.get('token') || ''; } catch { /* 무시 */ }
+    verifyTrialToken(token)
+      .then((r) => send(res, 200, trialResultHtml(r), 'text/html; charset=utf-8'))
+      .catch(() => send(res, 500, trialResultHtml({ ok: false, err: '발급 중 오류가 발생했습니다.' }), 'text/html; charset=utf-8'));
     return;
   }
 

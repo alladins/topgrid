@@ -48,6 +48,8 @@ type Content = {
     trialExpiry: string;
     copy: string;
     copied: string;
+    pendingHead: string;
+    pendingBody: string;
   };
 };
 
@@ -202,6 +204,8 @@ const CONTENT: Record<string, Content> = {
       trialExpiry: '만료',
       copy: '키 복사',
       copied: '복사됨 ✓',
+      pendingHead: '📧 인증 메일을 보냈습니다.',
+      pendingBody: '메일함(스팸함 포함)에서 확인 링크를 클릭하면 30일 평가 키가 즉시 발급됩니다. 링크는 30분간 유효합니다.',
     },
   },
   en: {
@@ -346,14 +350,17 @@ const CONTENT: Record<string, Content> = {
       trialExpiry: 'Expires',
       copy: 'Copy key',
       copied: 'Copied ✓',
+      pendingHead: '📧 Check your email.',
+      pendingBody: 'Click the confirmation link in your inbox (check spam too) and your 30-day key is issued instantly. The link is valid for 30 minutes.',
     },
   },
 };
 
 function InquiryForm({ t, initialType }: { t: Content; initialType: string }) {
-  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error' | 'trial'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error' | 'trial' | 'pending'>('idle');
   const [err, setErr] = useState('');
   const [trial, setTrial] = useState<{ key: string; expiresAt: number; domain: string } | null>(null);
+  const [pendingEmail, setPendingEmail] = useState('');
   const [copied, setCopied] = useState(false);
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -370,6 +377,17 @@ function InquiryForm({ t, initialType }: { t: Content; initialType: string }) {
           body: JSON.stringify(body),
         });
         const j = await r.json();
+        if (j.ok && j.inquiry) {
+          // 이메일 검증 미설정 → 문의로 접수됨(키 미발급)
+          setStatus('done');
+          return;
+        }
+        if (j.ok && j.pending) {
+          // 이메일 더블 옵트인 — 인증 메일 발송됨
+          setPendingEmail(String(j.email || ''));
+          setStatus('pending');
+          return;
+        }
         if (j.ok && j.key) {
           setTrial({ key: String(j.key), expiresAt: Number(j.expiresAt), domain: String(j.domain) });
           setStatus('trial');
@@ -402,6 +420,15 @@ function InquiryForm({ t, initialType }: { t: Content; initialType: string }) {
       window.location.href = `mailto:sales@platree.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
       setStatus('idle');
     }
+  }
+  if (status === 'pending') {
+    return (
+      <div className={styles.formDone}>
+        <p><strong>{t.form.pendingHead}</strong></p>
+        <p>{t.form.pendingBody}</p>
+        {pendingEmail ? <p style={{ opacity: 0.7, fontSize: 13 }}>{pendingEmail}</p> : null}
+      </div>
+    );
   }
   if (status === 'trial' && trial) {
     const snippet = `setLicenseKey('${trial.key}')`;
