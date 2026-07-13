@@ -1,8 +1,22 @@
-# SESSION HANDOFF — 다음 세션 재개 가이드 (2026-06-20)
+# SESSION HANDOFF — 다음 세션 재개 가이드 (2026-07-14)
 
 > 토픽그리드 제품화 라운드(W1 멀티프레임워크 · W2 엔터프라이즈 차트 · W3 React DX)가 **성숙 체크포인트**에 도달. npm 전부 live, CI 4중 게이트, 문서사이트 반영 완료. 이 문서가 다음 세션의 **단일 재개 진입점**.
 
-## 0. ★최신 세션(2026-07-03) — 라이선스 강화 + Vue Pro 지원 ★발행 완료
+## 0. ★최신 세션(2026-07-14) — Excel 발견성 + 평가키 자동발급 + 사이트 전환 ★발행 완료
+
+가격 페이지 전환 깔때기 + Excel UX + 30일 평가키 무마찰화. **npm 3종 발행**(전부 additive·13-lockstep 미개입).
+
+**★npm 발행(2026-07-14)**: grid-export@**0.7.0**(신규 `/react` 서브엔트리) + grid-vue@**0.2.0**(신규 `/export`) + grid-license-core@**0.3.0**(평가판 이중키). git push=완료.
+
+- **Excel 내보내기 발견성**(`8243ce6`): 엔진(exportToExcel 등)은 있었으나 버튼·매뉴얼 부재로 "없다" 오해. → grid-export/react `useGridExport`+`<GridExportButton>`(단일/드롭다운·빈데이터 비활성·대용량 가드·ko/en·CSS 시스템색), grid-vue/export `useVueGridExport`+`<VueGridExportButton>`, 가이드 `apps/docs/docs/exporting.md`+사이드바+홈 카드. react/react-dom→**optional peer**(Vue 안전 의존), Vue는 `/export` 서브엔트리 격리(xlsx 미강요). 설계 `docs/internal/EXPORT-UX-DESIGN.md`.
+- **사이트 전환**(`631b856`): 홈 상단 "30일 평가키 신청" CTA + 가격 배너 얼리어답터 실시간 카운터(admin-server `/api/promo-slots` + `promo.json{total,claimed}` 편집만으로 갱신·재배포 불필요). ★promo.json `claimed` 실제 계약 수로 갱신 필요.
+- **평가키 완전 자동발급(안 B)**(`91bdde2`): grid-license-core@0.3.0 = `PINNED_TRIAL_PUBLIC_KEY` + 35일 window 상한(이중키, 공개 API 불변). 유료 개인키는 서버 미탑재 — **평가판 전용 키만** 서버 `~/topgrid-admin/trial-signing.key`(600). 유출돼도 ≤35일 자동소멸 체험판만 위조 가능(유료 무영향). CLI `keygen/sign --trial`(기본 +30d·상한 35d), admin-server `POST /api/request-trial`(레이트리밋·도메인30일1회·Slack·대시보드 🎫 목록·`data/trials.jsonl`). pricing 폼: 평가+도메인→즉시 키 표시(실패=문의 폴백). ★nginx `/etc/nginx/conf.d/topgrid.conf` POST 화이트리스트에 `request-trial` 추가됨(`hit|inquiry|request-trial`). 셀프테스트 12/12. 설계 `docs/internal/TRIAL-AUTOISSUE-DESIGN.md`.
+- **Slack 알림 도입**: 문의/트라이얼 → **platree 워크스페이스 `#topgrid-문의알림`**(서버 `notify.json{slack.webhookUrl}`). admin-server 알림 프로바이더 일반화(slack/telegram).
+- **라이선스 발급**: shipmg.lphydrofoam.com(LP Hydrofoam/PTLPSM) 정품 1년 paid 키 발급(만료 2027-07-06, ledger 기록).
+- **롤아웃 참고**: 평가판 키는 고객 앱 grid-license-core@**0.3.0+** 일 때만 검증(직접 코어=즉시). facade(`@topgrid/grid-license` 0.3.1→core 0.2.0 핀)·pro-vue 재핀은 다음 lockstep 동승.
+- **잔여(비크리티컬)**: ①facade/pro-vue 코어 0.3.0 재핀(다음 lockstep) ②promo.json 실제 숫자 ③Vue export/pro-panel 툴바 통합(조합 레시피로 문서화됨) ④문서사이트 "31패키지" 표기 갱신(이월).
+
+## 0-prev. 이전 세션(2026-07-03) — 라이선스 강화 + Vue Pro 지원 ★발행 완료
 PTLPSM(Nuxt3/Vue3 출하관리) 도입 문의 대응 = ①공개키 핀 강화 → ②발급 CLI → ③Vue 피벗·서버사이드 지원 → **후속 옵션(VuePivotGrid·useVueServerSideTree) → npm 발행 완료.**
 **★npm 발행(2026-07-03, additive)**: grid-license-core@**0.2.0**(핀·키 3→2파트) + grid-pro-pivot-core@**0.1.0** + grid-pro-serverside-core@**0.1.0** + grid-pro-pivot-vue@**0.1.0** + grid-pro-serverside-vue@**0.1.0**. 13-패키지 1.0.2 lockstep 미개입. React grid-pro-pivot/serverside(npm 1.0.2)의 코어 재배선은 다음 grid-core lockstep 동승. 신규 스코프 패키지명은 발행 후 읽기 CDN 전파 수 분(403 "cannot publish over"=확정). git origin push=사용자.
 - **① 공개키 핀**(`5586141`): grid-license-core `verifySignature` 가 키 동봉 공개키(위조가능)→라이브러리 핀 `PINNED_PUBLIC_KEY` 로 검증. 키 3파트→2파트. 공개 API 불변. [[license-issuance-topgrid]].
