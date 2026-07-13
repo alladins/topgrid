@@ -1,7 +1,7 @@
 # topgrid Getting Started Guide
 
 topgrid is a React grid library **built on TanStack Table v8**. You can use **7 free MIT packages** that provide the core grid, cell
-renderers, sorting/filtering, Excel/CSV/PDF export, and a Vue adapter, while advanced features such as
+renderers, sorting/filtering, [Excel/CSV/PDF export](./exporting), and a Vue adapter, while advanced features such as
 multi-level headers, change tracking, and Excel-style range editing extend it through **commercial Pro packages**.
 (For the full 31-package layout, see [Architecture](./architecture).)
 
@@ -250,6 +250,9 @@ import { exportToExcel } from '@topgrid/grid-export';
   엑셀 다운로드
 </button>
 ```
+
+> To expose Excel/CSV/PDF from a single button, use the `<GridExportButton>` component.
+> See the [data export guide](./exporting) for scope (all/filtered/selected), multi-sheet, formula round-trip, and Vue usage.
 
 > **jspdf optional deps**: `exportToPdf` uses jspdf's 4 dynamic imports
 > (`fflate` / `html2canvas` / `dompurify` / `canvg`). If you only use Excel/CSV
