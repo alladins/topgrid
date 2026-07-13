@@ -79,8 +79,21 @@ ssh topgrid@49.247.14.212 'chmod 600 ~/topgrid-admin/trial-signing.key'
 ```
 
 - 발급 이력: `~/topgrid-admin/data/trials.jsonl`(도메인당 30일 1회 판단). 신규 발급 시 Slack/Telegram 알림.
-- 가드: honeypot + IP 레이트리밋(시간당 5회) + 도메인당 30일 1회.
+- 가드: honeypot + IP 레이트리밋(시간당 5회) + 도메인당 30일 1회 + 예약 TLD/특수문자 밸리데이션.
 - ⚠ `trial-signing.key` 는 유료 키가 **아닌** 전용 저가치 키(유출 시 ≤35일 체험판만 위조). 그래도 600 유지·백업.
+
+### 이메일 더블 옵트인 (권장 — 스팸/가짜 신청 차단)
+
+`~/topgrid-admin/email.json`(600) 이 있으면 **이메일 인증 후에만** 발급된다. 없으면 미검증 자동발급을
+막기 위해 신청이 **문의로 접수**된다(키 미발급). 자체 메일서버로 `topgrid@platree.com` 인증 발송(SPF/DKIM 정렬 → 스팸함 회피):
+
+```bash
+printf '{"host":"mail.platree.com","port":587,"user":"topgrid@platree.com","pass":"<비번>","from":"topgrid@platree.com","fromName":"topgrid"}' > ~/topgrid-admin/email.json
+chmod 600 ~/topgrid-admin/email.json   # 후 admin-server 재시작
+```
+
+- 흐름: `POST /api/request-trial` → 인증 링크 메일 발송(pending) → 사용자가 `GET /api/verify-trial?token=…` 클릭 → 발급 + 키 HTML 페이지. 대기 토큰 30분 TTL(메모리, 재시작 시 소멸=재신청).
+- port 587=STARTTLS(기본)/465=implicit TLS. admin-server 는 의존성 0 최소 SMTP 클라이언트(AUTH LOGIN) 사용.
 
 ## 운영
 - 재시작: `ssh topgrid@… 'pkill -f admin-server; cd ~/topgrid-admin && setsid nohup node admin-server.mjs >> admin.log 2>&1 < /dev/null &'`
