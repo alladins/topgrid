@@ -6,7 +6,7 @@ import http from 'node:http';
 import { request as httpsRequest } from 'node:https';
 import { readFileSync, existsSync, appendFileSync, readdirSync, mkdirSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
-import { timingSafeEqual } from 'node:crypto';
+import { timingSafeEqual, webcrypto } from 'node:crypto';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 
@@ -19,6 +19,10 @@ const AUTH_FILE = join(HOME, 'auth.json');
 const NOTIFY_FILE = join(HOME, 'notify.json');
 // {total, claimed} — 얼리어답터 프로모 카운터. 없으면 total=10·claimed=0. 매 요청 갱신 반영(재시작 불필요).
 const PROMO_FILE = join(HOME, 'promo.json');
+// 평가판 전용 Ed25519 개인키(base64url pkcs8). 유료 키는 절대 서버에 두지 않음(유출 시 ≤35일 체험판만 위조).
+const TRIAL_KEY_FILE = join(HOME, 'trial-signing.key');
+const TRIALS_FILE = join(DATA, 'trials.jsonl'); // 자동 발급 이력(도메인당 30일 1회 판단)
+const TRIAL_DAYS = 30;
 const INQ_FILE = join(DATA, 'inquiries.jsonl');
 const HITS_FILE = join(DATA, 'hits.jsonl'); // 1st-party 비컨(정확 UV/세션/PV)
 const LOG_DIR = '/var/log/nginx';
@@ -118,6 +122,15 @@ let notifyCfg = null;
 try { if (existsSync(NOTIFY_FILE)) notifyCfg = JSON.parse(readFileSync(NOTIFY_FILE, 'utf8')); } catch { /* 무시 */ }
 const TYPE_KO = { trial: '평가', purchase: '구매', enterprise: 'Enterprise/OEM', other: '기타' };
 
+// 평가판 서명키 로드(있으면만). 없으면 자동 발급 비활성(문의 폼은 정상 동작).
+let trialSignKey = null;
+try {
+  if (existsSync(TRIAL_KEY_FILE)) {
+    const raw = new Uint8Array(Buffer.from(readFileSync(TRIAL_KEY_FILE, 'utf8').trim(), 'base64url'));
+    trialSignKey = await webcrypto.subtle.importKey('pkcs8', raw, { name: 'Ed25519' }, false, ['sign']);
+  }
+} catch { trialSignKey = null; }
+
 // URL 로 JSON POST (fire-and-forget, 실패/타임아웃 무해).
 function postJSON(urlStr, obj) {
   let u;
@@ -174,6 +187,45 @@ function readInquiries() {
   return readFileSync(INQ_FILE, 'utf8').split('\n').filter(Boolean)
     .map((l) => { try { return JSON.parse(l); } catch { return null; } })
     .filter(Boolean).reverse();
+}
+
+// ── 평가판 자동 발급 (안 B: 전용 서명키로 30일 키 발급) ──
+const b64url = (buf) => Buffer.from(buf).toString('base64url');
+function readTrials() {
+  if (!existsSync(TRIALS_FILE)) return [];
+  return readFileSync(TRIALS_FILE, 'utf8').split('\n').filter(Boolean)
+    .map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+}
+async function signTrialKey(domain, expiresAt) {
+  // 라이브러리 CLI 와 동일 페이로드 순서 {domain, expiresAt, tier}. 서명 = 페이로드 바이트 Ed25519.
+  const payloadBytes = new TextEncoder().encode(JSON.stringify({ domain, expiresAt, tier: 'pro' }));
+  const sig = await webcrypto.subtle.sign({ name: 'Ed25519' }, trialSignKey, payloadBytes);
+  return b64url(sig) + '.' + b64url(payloadBytes);
+}
+async function issueTrial(body, ip) {
+  const { email = '', domain = '', company = '', website = '' } = body;
+  if (website) return { ok: false, err: 'spam' }; // honeypot
+  if (!trialSignKey) return { ok: false, err: '평가판 자동 발급이 일시적으로 비활성입니다. 문의 폼으로 신청해 주세요.' };
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) return { ok: false, err: '이메일 형식을 확인해 주세요.' };
+  const dom = String(domain).trim().toLowerCase();
+  if (!/^([a-z0-9-]+\.)+[a-z]{2,}$/.test(dom)) return { ok: false, err: '운영 도메인 형식을 확인해 주세요 (예: app.company.com).' };
+  // 도메인당 30일 1회 — 남용 방지
+  const prior = readTrials().find((t) => t.domain === dom && Date.now() - Date.parse(t.ts) < TRIAL_DAYS * 86400e3);
+  if (prior) return { ok: false, err: '이 도메인은 최근 평가판이 이미 발급되었습니다. 연장/전환은 문의로 요청해 주세요.', already: true };
+
+  const expiresAt = Date.now() + TRIAL_DAYS * 86400e3;
+  const key = await signTrialKey(dom, expiresAt);
+  const row = {
+    ts: new Date().toISOString(), ip, domain: dom,
+    email: String(email).slice(0, 200), company: String(company).slice(0, 200),
+    expiresAt: new Date(expiresAt).toISOString(), fingerprint: key.slice(0, 16),
+  };
+  appendFileSync(TRIALS_FILE, JSON.stringify(row) + '\n');
+  // 신규 리드 알림 — 슬랙/텔레그램(설정 시)
+  try {
+    notify({ type: 'trial', company, email: String(email), domain: dom, message: `평가판 자동 발급(30일) — 만료 ${row.expiresAt.slice(0, 10)}` });
+  } catch { /* 알림 실패 무해 */ }
+  return { ok: true, key, expiresAt, domain: dom };
 }
 
 // ── 비컨 hit 수집·집계 (정확 방문자) ──
@@ -264,6 +316,7 @@ pre{white-space:pre-wrap;margin:4px 0 0;font-family:inherit}</style></head><body
 <h2>서버 로그 기준 (참고 — IP 단위·봇/내 IP 제외)</h2><div class="cards" id="cards"></div>
 <h2>일자별 고유 IP (최근 30일, 로그)</h2><table id="daily"></table>
 <h2>📬 문의 접수 <span id="notify" class="muted" style="font-size:13px;font-weight:400"></span></h2><table id="inq"><tr><th>시각</th><th>유형</th><th>회사/이름</th><th>이메일</th><th>도메인</th><th>내용</th></tr></table>
+<h2>🎫 자동 발급 평가판 <span id="trialcnt" class="muted" style="font-size:13px;font-weight:400"></span></h2><table id="trials"></table>
 <h2>페이지 TOP 20</h2><table id="pages"></table>
 <h2>/pricing 조회 (최근 30)</h2><table id="pricing"></table>
 <h2>외부 유입</h2><table id="ref"></table>
@@ -301,6 +354,9 @@ const bt=document.getElementById('ntest');if(bt)bt.onclick=async()=>{bt.textCont
 }catch(e){}
 const q=await j('/admin/api/inquiries');
 document.getElementById('inq').innerHTML='<tr><th>시각</th><th>유형</th><th>회사/이름</th><th>이메일</th><th>도메인</th><th>내용</th></tr>'+(q.length?q.map(i=>'<tr><td class="muted">'+i.ts.slice(0,16).replace('T',' ')+'</td><td><span class="tag t-'+i.type+'">'+(TYPE_LABEL[i.type]||i.type)+'</span></td><td>'+esc(i.company)+(i.name?' / '+esc(i.name):'')+'</td><td>'+esc(i.email)+'</td><td>'+esc(i.domain)+'</td><td><pre>'+esc(i.message)+'</pre></td></tr>').join(''):'<tr><td colspan="6" class="muted">아직 접수된 문의가 없습니다.</td></tr>');
+const tr=await j('/admin/api/trials');
+document.getElementById('trialcnt').textContent=tr.length?('· 총 '+tr.length+'건'):'';
+document.getElementById('trials').innerHTML='<tr><th>발급</th><th>도메인</th><th>이메일</th><th>만료</th><th>상태</th></tr>'+(tr.length?tr.map(t=>{const exp=Date.parse(t.expiresAt);const active=exp>Date.now();const dleft=Math.ceil((exp-Date.now())/86400000);return '<tr><td class="muted">'+t.ts.slice(0,16).replace('T',' ')+'</td><td>'+esc(t.domain)+'</td><td>'+esc(t.email)+'</td><td>'+t.expiresAt.slice(0,10)+'</td><td>'+(active?'<span class="tag t-trial">D-'+dleft+'</span>':'<span class="tag t-other">만료</span>')+'</td></tr>'}).join(''):'<tr><td colspan="5" class="muted">아직 자동 발급된 평가판이 없습니다.</td></tr>');
 function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 })();
 function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
@@ -365,6 +421,19 @@ http.createServer((req, res) => {
     return;
   }
 
+  // 공개: 평가판 자동 발급(30일, 전용 서명키)
+  if (req.method === 'POST' && url === '/api/request-trial') {
+    if (!rateOk(String(ip))) return send(res, 429, { ok: false, err: '요청이 너무 잦습니다. 잠시 후 다시 시도해 주세요.' });
+    readBody(20000, (body) => {
+      let parsed = {};
+      try { parsed = JSON.parse(body); } catch { return send(res, 400, { ok: false, err: '잘못된 요청' }); }
+      issueTrial(parsed, String(ip))
+        .then((r) => send(res, r.ok ? 200 : 400, r))
+        .catch(() => send(res, 500, { ok: false, err: '발급 중 오류가 발생했습니다.' }));
+    });
+    return;
+  }
+
   // 관리자 영역
   if (url === '/admin' || url === '/admin/' || url.startsWith('/admin/api/')) {
     if (!checkAuth(req)) return deny(res);
@@ -373,6 +442,7 @@ http.createServer((req, res) => {
       try { return send(res, 200, computeStats()); } catch (e) { return send(res, 500, { err: String(e).slice(0, 200) }); }
     }
     if (url === '/admin/api/inquiries') return send(res, 200, readInquiries());
+    if (url === '/admin/api/trials') return send(res, 200, readTrials().reverse());
     if (url === '/admin/api/visitors') {
       try { return send(res, 200, computeVisitors()); } catch (e) { return send(res, 500, { err: String(e).slice(0, 200) }); }
     }

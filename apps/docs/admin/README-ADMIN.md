@@ -66,6 +66,22 @@ Slack 과 함께 쓰려면 한 파일에 둘 다: `{"slack":{...},"telegram":{..
 
 - notify.json 없으면 알림 OFF(대시보드로만 확인). 이메일은 SMTP·스팸함 이슈로 미채택.
 
+## 평가판 자동 발급 (POST /api/request-trial)
+
+가격 페이지에서 **평가 유형 + 도메인** 입력 시 30일 Pro 평가키를 **즉시 발급**(저마찰). 전용 서명키만
+서버에 두므로 유료 키는 안전(설계: `docs/internal/TRIAL-AUTOISSUE-DESIGN.md`).
+
+```bash
+# 평가판 개인키 배포(로컬 keygen --trial 로 생성한 .trial-private.key 를 서버로)
+scp scripts/license/.trial-private.key topgrid@49.247.14.212:~/topgrid-admin/trial-signing.key
+ssh topgrid@49.247.14.212 'chmod 600 ~/topgrid-admin/trial-signing.key'
+# admin-server 재시작(아래 §운영) 후 활성화. 파일 없으면 자동 발급 OFF(문의 폼은 정상).
+```
+
+- 발급 이력: `~/topgrid-admin/data/trials.jsonl`(도메인당 30일 1회 판단). 신규 발급 시 Slack/Telegram 알림.
+- 가드: honeypot + IP 레이트리밋(시간당 5회) + 도메인당 30일 1회.
+- ⚠ `trial-signing.key` 는 유료 키가 **아닌** 전용 저가치 키(유출 시 ≤35일 체험판만 위조). 그래도 600 유지·백업.
+
 ## 운영
 - 재시작: `ssh topgrid@… 'pkill -f admin-server; cd ~/topgrid-admin && setsid nohup node admin-server.mjs >> admin.log 2>&1 < /dev/null &'`
 - 서버 파일 갱신 시: scp 후 재시작.

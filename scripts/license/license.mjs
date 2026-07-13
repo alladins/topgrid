@@ -40,6 +40,10 @@ import { dirname, join } from 'node:path';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PRIV_FILE = join(HERE, '.private.key');
+// 평가판 전용 개인키(별도 키페어). 유출돼도 ≤35일 자동소멸 체험판만 위조 가능(유료 무영향).
+const TRIAL_PRIV_FILE = join(HERE, '.trial-private.key');
+// 라이브러리 verifySignature 의 TRIAL_MAX_WINDOW 와 동일해야 함(초과분은 무효 처리됨).
+const TRIAL_MAX_WINDOW_MS = 35 * 24 * 3600 * 1000;
 const LEDGER_FILE = process.env.TOPGRID_LICENSE_LEDGER || join(HERE, 'ledger.csv');
 const LEDGER_HEADER = 'issued_at,domain,expires_at,kind,tier,customer,contact,note,key_fingerprint,key';
 
@@ -77,25 +81,31 @@ function resolveExpiry(spec) {
   return t;
 }
 
-async function keygen() {
+async function keygen(args) {
+  const isTrial = !!args.trial;
+  const file = isTrial ? TRIAL_PRIV_FILE : PRIV_FILE;
+  const pinConst = isTrial ? 'PINNED_TRIAL_PUBLIC_KEY' : 'PINNED_PUBLIC_KEY';
+  const label = isTrial ? '평가판(TRIAL) 서명' : '유료(main) 서명';
+
   const pair = await crypto.subtle.generateKey({ name: 'Ed25519' }, true, ['sign', 'verify']);
   const pubRaw = await crypto.subtle.exportKey('raw', pair.publicKey);   // 32 bytes → 라이브러리 핀용
   const privPkcs8 = await crypto.subtle.exportKey('pkcs8', pair.privateKey); // 보관용
   const pub = b64url(pubRaw);
   const priv = b64url(privPkcs8);
 
-  console.log('\n=== Ed25519 라이선스 서명 키페어 ===\n');
+  console.log(`\n=== Ed25519 ${label} 키페어 ===\n`);
   console.log('■ 공개키 (PUBLIC — 라이브러리에 핀):');
   console.log('  ' + pub + '\n');
-  console.log('  → packages/grid-license-core/src/verifySignature.ts 의 PINNED_PUBLIC_KEY 상수에 붙여넣기.\n');
+  console.log(`  → packages/grid-license-core/src/verifySignature.ts 의 ${pinConst} 상수에 붙여넣기.\n`);
   console.log('■ 개인키 (PRIVATE — 절대 커밋/유출 금지):');
   console.log('  ' + priv + '\n');
+  if (isTrial) console.log('  ※ 평가판 개인키는 자동 발급 서버(~/topgrid-admin/trial-signing.key)에 배포됩니다. 유료 키는 배포 금지.\n');
 
-  if (!existsSync(PRIV_FILE)) {
-    writeFileSync(PRIV_FILE, priv + '\n', { mode: 0o600 });
-    console.log(`  → ${PRIV_FILE} 에 저장(.gitignore 처리됨). 안전한 곳에 별도 백업 권장.\n`);
+  if (!existsSync(file)) {
+    writeFileSync(file, priv + '\n', { mode: 0o600 });
+    console.log(`  → ${file} 에 저장(.gitignore 처리됨). 안전한 곳에 별도 백업 권장.\n`);
   } else {
-    console.log(`  ⚠ ${PRIV_FILE} 이미 존재 — 덮어쓰지 않음. 새 키를 쓰려면 파일을 먼저 지우세요.\n`);
+    console.log(`  ⚠ ${file} 이미 존재 — 덮어쓰지 않음. 새 키를 쓰려면 파일을 먼저 지우세요.\n`);
   }
 }
 
@@ -148,17 +158,22 @@ const isActive = (row) => Date.parse(row.expires_at) > Date.now();
 const fmtDate = (iso) => (iso || '').slice(0, 10);
 
 function loadPrivateKey(args) {
+  const isTrial = !!args.trial;
+  const file = isTrial ? TRIAL_PRIV_FILE : PRIV_FILE;
+  const envVal = isTrial ? process.env.TOPGRID_TRIAL_PRIVATE_KEY : process.env.TOPGRID_LICENSE_PRIVATE_KEY;
   let src;
   if (args.key) src = readFileSync(String(args.key), 'utf8').trim();
-  else if (process.env.TOPGRID_LICENSE_PRIVATE_KEY) src = process.env.TOPGRID_LICENSE_PRIVATE_KEY.trim();
-  else if (existsSync(PRIV_FILE)) src = readFileSync(PRIV_FILE, 'utf8').trim();
-  else die('개인키를 찾을 수 없음. `keygen` 먼저 실행하거나 --key <file> / env TOPGRID_LICENSE_PRIVATE_KEY 지정.');
+  else if (envVal) src = envVal.trim();
+  else if (existsSync(file)) src = readFileSync(file, 'utf8').trim();
+  else die(`${isTrial ? '평가판 ' : ''}개인키를 찾을 수 없음. \`keygen${isTrial ? ' --trial' : ''}\` 먼저 실행하거나 --key <file>${isTrial ? ' / env TOPGRID_TRIAL_PRIVATE_KEY' : ' / env TOPGRID_LICENSE_PRIVATE_KEY'} 지정.`);
   return src;
 }
 
 async function sign(args) {
+  const isTrial = !!args.trial;
   if (!args.domain || args.domain === true) die('--domain <운영 도메인> 필요 (키 1개 = 도메인 1개).');
-  if (!args.expires || args.expires === true) die('--expires <ISO8601|+Nd|+Nm|+Ny> 필요.');
+  // 평가판은 --expires 생략 시 +30d 기본. 유료는 --expires 필수.
+  if (!isTrial && (!args.expires || args.expires === true)) die('--expires <ISO8601|+Nd|+Nm|+Ny> 필요.');
   const tier = args.tier && args.tier !== true ? String(args.tier) : 'pro';
   const opt = (name) => (args[name] && args[name] !== true ? String(args[name]) : '');
 
@@ -171,7 +186,12 @@ async function sign(args) {
   const privB64 = loadPrivateKey(args);
   const privKey = await crypto.subtle.importKey('pkcs8', fromB64url(privB64), { name: 'Ed25519' }, false, ['sign']);
 
-  const expiresAt = resolveExpiry(String(args.expires));
+  const expiresSpec = args.expires && args.expires !== true ? String(args.expires) : (isTrial ? '+30d' : '');
+  const expiresAt = resolveExpiry(expiresSpec);
+  // ★평가판 window 상한 — 라이브러리가 now+35일 초과분을 무효 처리하므로 발급 단계에서 차단.
+  if (isTrial && expiresAt > Date.now() + TRIAL_MAX_WINDOW_MS) {
+    die('평가판은 지금+35일 이내만 발급 가능(라이브러리가 초과분을 무효 처리). --expires 를 줄이세요.');
+  }
   const payload = { domain: String(args.domain), expiresAt, tier };
   const payloadBytes = new TextEncoder().encode(JSON.stringify(payload));
   const sig = await crypto.subtle.sign({ name: 'Ed25519' }, privKey, payloadBytes);
@@ -183,7 +203,7 @@ async function sign(args) {
     issuedAt: new Date().toISOString(),
     domain: payload.domain,
     expiresAt: new Date(expiresAt).toISOString(),
-    kind: opt('kind'),
+    kind: opt('kind') || (isTrial ? 'trial' : ''),
     tier,
     customer: opt('customer'),
     contact: opt('contact'),
@@ -250,16 +270,17 @@ function inspect(args) {
 const args = parseArgs(process.argv.slice(2));
 const cmd = args._?.shift();
 
-if (cmd === 'keygen') await keygen();
+if (cmd === 'keygen') await keygen(args);
 else if (cmd === 'sign') await sign(args);
 else if (cmd === 'list') list();
 else if (cmd === 'expiring') expiringCmd(args);
 else if (cmd === 'inspect') inspect(args);
 else {
   console.log('topgrid 라이선스 발급 CLI\n');
-  console.log('  node scripts/license/license.mjs keygen');
+  console.log('  node scripts/license/license.mjs keygen [--trial]      # --trial: 평가판 전용 키페어');
   console.log('  node scripts/license/license.mjs sign --domain <d> --expires <+1y|ISO> [--tier pro]');
   console.log('                                        [--customer <회사>] [--contact <email>] [--kind trial|paid] [--note <메모>]');
+  console.log('  node scripts/license/license.mjs sign --trial --domain <d> [--expires +30d]  # 평가판(기본 +30d, 상한 35일)');
   console.log('  node scripts/license/license.mjs list                 # 발급 대장 조회');
   console.log('  node scripts/license/license.mjs expiring [--days 14] # 만료 임박(갱신 영업)');
   console.log('  node scripts/license/license.mjs inspect <key>');

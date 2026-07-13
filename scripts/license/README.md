@@ -68,6 +68,26 @@ node scripts/license/license.mjs expiring --days 14   # 만료 임박 — 갱신
 - ⚠️ **대장은 gitignore(비커밋)** — 고객명·연락처·유효 키가 담기므로 공개 저장소에 올리면 안 된다.
   이 PC에만 존재하므로 **`.private.key` 와 함께 주기적으로 별도 백업**할 것.
 
+## 평가판 자동 발급 (전용 서명키 — 안 B)
+
+신규 검토자가 **가격 페이지 폼에서 즉시** 30일 Pro 평가키를 받게 하는 흐름. **유료 개인키는 서버에
+올리지 않고**, 별개의 **평가판 전용 키페어**만 서버에 둔다(설계: `docs/internal/TRIAL-AUTOISSUE-DESIGN.md`).
+
+```bash
+# 1) 평가판 키페어 생성(최초 1회). 공개키 → verifySignature.ts 의 PINNED_TRIAL_PUBLIC_KEY, 개인키 → .trial-private.key
+node scripts/license/license.mjs keygen --trial
+
+# 2) 수동 평가판 발급(선택) — 기본 +30d, 상한 35일
+node scripts/license/license.mjs sign --trial --domain eval.company.com
+```
+
+- **보안 모델**: 평가판 키로 서명된 라이선스는 라이브러리가 **만료 ≤ 지금+35일** 일 때만 유효로 인정.
+  평가판 키(+개인키)가 유출돼도 **≤35일 자동소멸 체험판만 위조 가능**, 유료 라이선스는 위조 불가.
+  복구 = `keygen --trial` 재생성 → `PINNED_TRIAL_PUBLIC_KEY` 갱신 → grid-license-core 재발행(유료 무영향).
+- **자동 발급 서버**: `.trial-private.key` 를 서버 `~/topgrid-admin/trial-signing.key`(600)로 배포하면
+  admin-server 의 `POST /api/request-trial`(도메인당 30일 1회·레이트리밋·Slack 알림)이 30일 키를 즉시 발급.
+- ★평가판 키는 **고객 앱의 grid-license-core 가 신버전(TRIAL 핀키 포함)일 때만** 검증됨. 유료 키는 무관.
+
 ## 키 내용 확인 / 셀프테스트
 
 ```bash

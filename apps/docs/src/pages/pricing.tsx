@@ -43,6 +43,11 @@ type Content = {
     sending: string;
     done: string;
     errPrefix: string;
+    trialHead: string;
+    trialApply: string;
+    trialExpiry: string;
+    copy: string;
+    copied: string;
   };
 };
 
@@ -192,6 +197,11 @@ const CONTENT: Record<string, Content> = {
       sending: '전송 중…',
       done: '✅ 접수되었습니다. 1영업일 내 이메일로 답변드리겠습니다.',
       errPrefix: '전송 실패: ',
+      trialHead: '✅ 30일 평가 키가 발급되었습니다.',
+      trialApply: '앱 진입점(main.tsx / Nuxt 플러그인)에서 아래 한 줄로 적용하세요:',
+      trialExpiry: '만료',
+      copy: '키 복사',
+      copied: '복사됨 ✓',
     },
   },
   en: {
@@ -331,18 +341,48 @@ const CONTENT: Record<string, Content> = {
       sending: 'Sending…',
       done: '✅ Received. We will reply by email within one business day.',
       errPrefix: 'Failed to send: ',
+      trialHead: '✅ Your 30-day evaluation key is ready.',
+      trialApply: 'Apply it once at your app entry (main.tsx / Nuxt plugin):',
+      trialExpiry: 'Expires',
+      copy: 'Copy key',
+      copied: 'Copied ✓',
     },
   },
 };
 
 function InquiryForm({ t, initialType }: { t: Content; initialType: string }) {
-  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error' | 'trial'>('idle');
   const [err, setErr] = useState('');
+  const [trial, setTrial] = useState<{ key: string; expiresAt: number; domain: string } | null>(null);
+  const [copied, setCopied] = useState(false);
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const body = Object.fromEntries(new FormData(form).entries());
     setStatus('sending');
+    setErr('');
+    // 평가 유형 + 도메인 → 30일 평가 키 자동 발급 시도(저마찰). 실패 시 일반 문의로 폴백.
+    if (body.type === 'trial' && String(body.domain || '').trim()) {
+      try {
+        const r = await fetch('/api/request-trial', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const j = await r.json();
+        if (j.ok && j.key) {
+          setTrial({ key: String(j.key), expiresAt: Number(j.expiresAt), domain: String(j.domain) });
+          setStatus('trial');
+          return;
+        }
+        // 이미 발급됨 / 도메인 형식 오류 등 → 에러 표시(폼 유지)
+        setErr(String(j.err || ''));
+        setStatus('error');
+        return;
+      } catch {
+        // 네트워크/백엔드 실패 → 아래 일반 문의 경로로 폴백
+      }
+    }
     try {
       const r = await fetch('/api/inquiry', {
         method: 'POST',
@@ -362,6 +402,32 @@ function InquiryForm({ t, initialType }: { t: Content; initialType: string }) {
       window.location.href = `mailto:sales@platree.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines)}`;
       setStatus('idle');
     }
+  }
+  if (status === 'trial' && trial) {
+    const snippet = `setLicenseKey('${trial.key}')`;
+    return (
+      <div className={styles.formDone}>
+        <p><strong>{t.form.trialHead}</strong></p>
+        <p>{t.form.trialApply}</p>
+        <textarea
+          readOnly
+          rows={3}
+          value={snippet}
+          onFocus={(e) => e.currentTarget.select()}
+          style={{ width: '100%', fontFamily: 'monospace', fontSize: 12, wordBreak: 'break-all' }}
+        />
+        <button
+          type="button"
+          className="button button--primary button--sm"
+          onClick={() => { void navigator.clipboard?.writeText(snippet); setCopied(true); }}
+        >
+          {copied ? t.form.copied : t.form.copy}
+        </button>
+        <p style={{ marginTop: 8, opacity: 0.7, fontSize: 13 }}>
+          {trial.domain} · {t.form.trialExpiry} {new Date(trial.expiresAt).toLocaleDateString()}
+        </p>
+      </div>
+    );
   }
   if (status === 'done') return <p className={styles.formDone}>{t.form.done}</p>;
   return (

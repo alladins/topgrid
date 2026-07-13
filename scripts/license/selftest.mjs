@@ -16,6 +16,7 @@ const DIST = join(ROOT, 'packages/grid-license-core/dist/index.mjs');
 const { setLicenseKey, checkLicense, subscribeLicense } = await import(pathToFileURL(DIST).href);
 
 const b64url = (b) => Buffer.from(b).toString('base64url');
+const fromB64url = (s) => new Uint8Array(Buffer.from(s, 'base64url'));
 let pass = 0, fail = 0;
 const chk = (n, c) => { console.log((c ? '  OK   ' : '  FAIL ') + n); c ? pass++ : fail++; };
 
@@ -63,6 +64,29 @@ const ledgerLines = readFileSync(TMP_LEDGER, 'utf8').split('\n').filter((l) => l
 chk('대장 = 헤더 + 발급 2행', ledgerLines.length === 3 && ledgerLines[0].startsWith('issued_at,domain'));
 chk('대장 1행: 도메인·키지문 기록', ledgerLines[1].includes('shipmg.example.com') && ledgerLines[1].includes(key.slice(0, 16)));
 rmSync(TMP_LEDGER, { force: true });
+
+// ── 평가판(trial) 키 검증 (안 B — 이중키 + window 상한) ──
+const TRIAL_PRIV_FILE = join(ROOT, 'scripts/license/.trial-private.key');
+if (existsSync(TRIAL_PRIV_FILE)) {
+  const trialPriv = await crypto.subtle.importKey('pkcs8', fromB64url(readFileSync(TRIAL_PRIV_FILE, 'utf8').trim()), { name: 'Ed25519' }, false, ['sign']);
+  const signTrial = async (domain, expiresAt) => {
+    const p = new TextEncoder().encode(JSON.stringify({ domain, expiresAt, tier: 'pro' }));
+    const s = await crypto.subtle.sign({ name: 'Ed25519' }, trialPriv, p);
+    return b64url(s) + '.' + b64url(p);
+  };
+  const day = 86400000;
+  const rT1 = await verify(await signTrial('eval.example.com', Date.now() + 30 * day));
+  chk('평가판 키(30일) → valid=true, watermark=false', rT1.valid === true && rT1.watermarkRequired === false);
+  const rT2 = await verify(await signTrial('eval.example.com', Date.now() + 100 * day));
+  chk('★평가판 키 window 초과(100일) → invalid (blast-radius 35일 bound)', rT2.valid === false);
+  const rT3 = await verify(await signTrial('eval.example.com', Date.now() - day));
+  chk('평가판 만료 키 → invalid', rT3.valid === false);
+  // ★유료(main) 키는 상한 없음 — 1년 키가 평가판 규칙에 걸리지 않아야 함(회귀 방지)
+  const rT4 = await verify(signCLI('paid.example.com', '+1y'));
+  chk('유료 키 1년 → valid (window 상한 미적용)', rT4.valid === true);
+} else {
+  console.log('  SKIP 평가판 테스트(.trial-private.key 없음 — keygen --trial 후 재실행)');
+}
 
 console.log(`\n결과: ${pass} pass / ${fail} fail`);
 process.exit(fail ? 1 : 0);

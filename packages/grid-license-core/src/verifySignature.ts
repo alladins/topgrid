@@ -8,6 +8,16 @@ import type { LicenseStatus } from './types.js';
  */
 const PINNED_PUBLIC_KEY = 'yDLmmLTiM1MDmdkrP0OIQZHxmM2ppEmscxH41ixBfU8';
 
+/**
+ * 평가판 전용 서명 **공개키**(핀). 이 키로 서명된 라이선스는 ★만료가 `지금 + TRIAL_MAX_WINDOW` 이내일
+ * 때만 유효하다. 유료 키와 별개의 키페어라, 이 키(및 대응 개인키)가 유출돼도 **≤35일 자동소멸 체험판만
+ * 위조 가능**하고 유료 라이선스는 위조할 수 없다. 교체: `keygen --trial` 후 이 값 갱신·재발행.
+ */
+const PINNED_TRIAL_PUBLIC_KEY = '9ITla68wi7J1E8nSm_Wi8c712mhmldJ-9GbyAZwA8GM';
+
+/** 평가판 키로 서명된 라이선스의 최대 유효 창(35일). scripts/license/license.mjs 와 동일해야 함. */
+const TRIAL_MAX_WINDOW_MS = 35 * 24 * 3600 * 1000;
+
 interface KeyPayload {
   domain: string;
   expiresAt: number; // Unix ms
@@ -61,35 +71,42 @@ export async function verifySignature(rawKey: string): Promise<LicenseStatus> {
     return { valid: false, ...({ reason: 'invalid' } as { reason: 'invalid' }) };
   }
 
-  let pubKey: CryptoKey;
-  try {
-    pubKey = await cryptoSubtle.importKey(
-      'raw',
-      base64urlToBytes(PINNED_PUBLIC_KEY),
-      { name: 'Ed25519' },
-      false,
-      ['verify'],
-    );
-  } catch {
-    return { valid: false, ...({ reason: 'invalid' } as { reason: 'invalid' }) };
-  }
-
   const sigBytes = base64urlToBytes(sigB64);
   const msgBytes = base64urlToBytes(payloadB64);
 
-  let sigOk: boolean;
-  try {
-    sigOk = await cryptoSubtle.verify('Ed25519', pubKey, sigBytes, msgBytes);
-  } catch {
-    return { valid: false, ...({ reason: 'invalid' } as { reason: 'invalid' }) };
+  // 핀된 공개키로 서명 검증(성공 시 true). importKey/verify 예외는 false 로 흡수.
+  const verifyWith = async (pinnedB64: string): Promise<boolean> => {
+    try {
+      const pk = await cryptoSubtle.importKey(
+        'raw',
+        base64urlToBytes(pinnedB64),
+        { name: 'Ed25519' },
+        false,
+        ['verify'],
+      );
+      return await cryptoSubtle.verify('Ed25519', pk, sigBytes, msgBytes);
+    } catch {
+      return false;
+    }
+  };
+
+  // 1) 유료(main) 키 → 상한 없음. 2) 실패하면 평가판(trial) 키 시도 → 만료 window 상한 강제.
+  let signedByTrial = false;
+  if (!(await verifyWith(PINNED_PUBLIC_KEY))) {
+    if (!(await verifyWith(PINNED_TRIAL_PUBLIC_KEY))) {
+      return { valid: false, ...({ reason: 'invalid' } as { reason: 'invalid' }) };
+    }
+    signedByTrial = true;
   }
 
-  if (!sigOk) {
+  const now = Date.now();
+
+  // ★평가판 키 서명은 만료가 지금+35일 이내일 때만 유효 — 유출 blast-radius 를 35일로 bound(장기 위조 차단).
+  if (signedByTrial && payload.expiresAt > now + TRIAL_MAX_WINDOW_MS) {
     return { valid: false, ...({ reason: 'invalid' } as { reason: 'invalid' }) };
   }
 
   // expiry check
-  const now = Date.now();
   if (payload.expiresAt < now) {
     return {
       valid: false,

@@ -61,6 +61,7 @@ apps/*/playwright-report/
 
 # 라이선스 서명 개인키 (절대 커밋 금지)
 scripts/license/.private.key
+scripts/license/.trial-private.key
 
 # Vue 차트 데모 번들(생성물, build:site 에서 esbuild 로 재생성)
 apps/docs/static/vue-chart-demo/app.js
