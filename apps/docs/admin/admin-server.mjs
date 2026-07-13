@@ -209,6 +209,12 @@ async function issueTrial(body, ip) {
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email))) return { ok: false, err: '이메일 형식을 확인해 주세요.' };
   const dom = String(domain).trim().toLowerCase();
   if (!/^([a-z0-9-]+\.)+[a-z]{2,}$/.test(dom)) return { ok: false, err: '운영 도메인 형식을 확인해 주세요 (예: app.company.com).' };
+  // 예약/테스트 TLD 거부(실제 운영 도메인만) — 가짜 신청 차단
+  const RESERVED_TLD = /\.(test|example|invalid|localhost|local|internal|lan|home|arpa)$/i;
+  if (RESERVED_TLD.test(dom)) return { ok: false, err: '실제 운영 도메인을 입력해 주세요 (test/example 등 예약 도메인은 발급 불가).' };
+  if (RESERVED_TLD.test(String(email).split('@')[1] || '')) return { ok: false, err: '실제 이메일 주소를 입력해 주세요.' };
+  // 특수문자만 입력 차단 — 회사/이름에 실제 텍스트(글자·숫자) 요구
+  if (company && !/[\p{L}\p{N}]/u.test(String(company))) return { ok: false, err: '회사/이름을 정확히 입력해 주세요.' };
   // 도메인당 30일 1회 — 남용 방지
   const prior = readTrials().find((t) => t.domain === dom && Date.now() - Date.parse(t.ts) < TRIAL_DAYS * 86400e3);
   if (prior) return { ok: false, err: '이 도메인은 최근 평가판이 이미 발급되었습니다. 연장/전환은 문의로 요청해 주세요.', already: true };
