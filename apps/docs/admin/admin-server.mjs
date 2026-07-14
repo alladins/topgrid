@@ -142,17 +142,29 @@ try { if (existsSync(EMAIL_FILE)) emailCfg = JSON.parse(readFileSync(EMAIL_FILE,
 const emailEnabled = () => !!(emailCfg && emailCfg.host && emailCfg.user && emailCfg.pass);
 
 // 최소 SMTP 제출 클라이언트(의존성 0). 587=STARTTLS(기본) / 465=implicit TLS. AUTH LOGIN.
-function smtpSend(cfg, { to, subject, text }) {
+function smtpSend(cfg, { to, subject, text, html }) {
   return new Promise((resolve, reject) => {
     const port = Number(cfg.port) || 587;
     const host = String(cfg.host);
     const from = cfg.from || cfg.user;
     const fromName = cfg.fromName || 'topgrid';
     const b64 = (s) => Buffer.from(s, 'utf8').toString('base64');
+    // 본문: html 있으면 multipart/alternative(text+html), 없으면 text/plain.
+    let mime, payload;
+    if (html) {
+      const boundary = 'tg_' + Buffer.from(webcrypto.getRandomValues(new Uint8Array(12))).toString('hex');
+      mime = `Content-Type: multipart/alternative; boundary="${boundary}"\r\n`;
+      payload =
+        `--${boundary}\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n\r\n${text}\r\n` +
+        `--${boundary}\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n\r\n${html}\r\n` +
+        `--${boundary}--\r\n`;
+    } else {
+      mime = `Content-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n`;
+      payload = String(text);
+    }
     const body =
-      `From: ${fromName} <${from}>\r\nTo: ${to}\r\nSubject: =?UTF-8?B?${b64(subject)}?=\r\n` +
-      `MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\n\r\n` +
-      String(text).replace(/\r?\n/g, '\r\n').replace(/^\./gm, '..') + `\r\n`;
+      `From: ${fromName} <${from}>\r\nTo: ${to}\r\nSubject: =?UTF-8?B?${b64(subject)}?=\r\nMIME-Version: 1.0\r\n${mime}\r\n` +
+      payload.replace(/\r?\n/g, '\r\n').replace(/^\./gm, '..') + `\r\n`;
 
     let sock = port === 465 ? tls.connect({ host, port, servername: host }) : net.connect({ host, port });
     let buf = '', stage = 'greet', upgraded = port === 465;
@@ -305,6 +317,29 @@ const PENDING_TTL = 30 * 60 * 1000;
 const newToken = () => Buffer.from(webcrypto.getRandomValues(new Uint8Array(24))).toString('base64url');
 function prunePending() { const now = Date.now(); for (const [k, v] of pendingTrials) if (v.exp < now) pendingTrials.delete(k); }
 
+// 인증 메일 HTML(테이블 레이아웃 + 인라인 CSS + 솔리드 색 = 이메일 클라이언트 호환).
+function verifyEmailHtml(domain, link) {
+  const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const d = esc(domain), l = esc(link);
+  const F = '-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Apple SD Gothic Neo,sans-serif';
+  return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light only"></head>
+<body style="margin:0;padding:0;background:#eef1f7;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">topgrid 30일 평가판 신청을 확인하고 평가 키를 받으세요.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef1f7;"><tr><td align="center" style="padding:32px 12px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e6ef;">
+<tr><td style="background:#111827;padding:22px 32px;"><span style="font-family:${F};font-size:20px;font-weight:800;color:#ffffff;letter-spacing:-0.02em;">📊 topgrid</span></td></tr>
+<tr><td style="padding:36px 32px 8px;font-family:${F};">
+<h1 style="margin:0 0 12px;font-size:22px;font-weight:800;color:#111827;letter-spacing:-0.02em;">30일 평가판 이메일 확인</h1>
+<p style="margin:0 0 26px;font-size:15px;line-height:1.7;color:#4b5563;">아래 버튼을 클릭하면 <b style="color:#111827;">${d}</b> 도메인용 <b style="color:#111827;">30일 Pro 평가 키</b>가 즉시 발급됩니다.</p>
+<table role="presentation" cellpadding="0" cellspacing="0"><tr><td align="center" bgcolor="#2563eb" style="border-radius:12px;">
+<a href="${l}" style="display:inline-block;padding:15px 34px;font-family:${F};font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:12px;">평가 키 발급받기 →</a>
+</td></tr></table>
+<p style="margin:26px 0 0;font-size:13px;line-height:1.6;color:#9ca3af;">버튼이 안 열리면 이 주소를 복사해 브라우저에 붙여넣으세요:<br><a href="${l}" style="color:#2563eb;text-decoration:none;word-break:break-all;">${l}</a></p></td></tr>
+<tr><td style="padding:20px 32px 32px;font-family:${F};"><div style="border-top:1px solid #eef1f6;padding-top:16px;"><p style="margin:0;font-size:13px;line-height:1.6;color:#9ca3af;">이 링크는 <b>30분간</b> 유효합니다. 신청하지 않으셨다면 이 메일을 무시하셔도 됩니다.</p></div></td></tr>
+<tr><td style="background:#f9fafb;padding:18px 32px;border-top:1px solid #eef1f6;font-family:${F};"><p style="margin:0;font-size:12px;color:#9ca3af;">© topgrid — Headless React/Vue 데이터 그리드 · <a href="https://topgrid.platree.com" style="color:#6b7280;text-decoration:none;">topgrid.platree.com</a></p></td></tr>
+</table></td></tr></table></body></html>`;
+}
+
 // 신청 처리: 이메일 설정 있으면 인증메일 발송(pending), 없으면 즉시 발급(현행).
 async function requestTrial(body, ip) {
   const v = validateTrialReq(body);
@@ -321,8 +356,9 @@ async function requestTrial(body, ip) {
   const text =
     `안녕하세요,\n\ntopgrid 30일 평가판 신청을 확인해 주세요. 아래 링크를 클릭하면 ${v.dom} 도메인용 평가 키가 발급됩니다.\n\n${link}\n\n` +
     `이 링크는 30분간 유효합니다. 신청하지 않으셨다면 이 메일을 무시하세요.\n\n— topgrid`;
+  const html = verifyEmailHtml(v.dom, link);
   try {
-    await smtpSend(emailCfg, { to: v.email, subject: 'topgrid 30일 평가판 — 이메일 확인', text });
+    await smtpSend(emailCfg, { to: v.email, subject: 'topgrid 30일 평가판 — 이메일 확인', text, html });
   } catch {
     pendingTrials.delete(token);
     return { ok: false, err: '인증 메일 발송에 실패했습니다. 잠시 후 다시 시도하거나 문의 폼을 이용해 주세요.' };
