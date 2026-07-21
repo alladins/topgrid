@@ -36,6 +36,8 @@ yarn-error.log*
 .env.local
 .env.*.local
 .npmrc
+email.json
+auth.json
 
 # Probe / temporary artifacts (Wave 1-5 spec writer)
 **/__probe__/
